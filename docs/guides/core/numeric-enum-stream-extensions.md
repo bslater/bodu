@@ -38,7 +38,7 @@ long lcmAll = new long[] { 4, 6, 10 }.LeastCommonMultiple();// 60
 uint bitsFlipped = 0b0000_0001u.ReverseBits();              // 0x80000000 - full 32-bit mirror
 byte nibble      = ((byte)0b0110).ReverseBits(bitLength: 4);// 6 - mirror within the low 4 bits only
 uint bytesSwapped = 0x12345678u.ReverseBytes();             // 0x78563412
-uint wordsSwapped = 0x12345678u.ReverseWords();             // 0x34127856 - 16-bit halves exchanged
+uint wordsSwapped = 0x12345678u.ReverseWords();             // 0x34127856 - bytes swapped within each 16-bit word
 uint rotl = 0x80000001u.RotateBitsLeft(1);                  // 3
 ushort rotr = ((ushort)1).RotateBitsRight(1);               // 32768
 
@@ -56,13 +56,13 @@ byte[] be = 0x0102u.GetBytes(asBigEndian: true);            // 00-00-01-02
 | Bits | `ReverseBits` (whole width, or the low `bitLength` bits) on `byte` … `ulong` and `byte[]`; `RotateBitsLeft` / `RotateBitsRight` on `byte` … `ulong` |
 | Bytes and words | `ReverseBytes` on `ushort` … `ulong`; `ReverseWords` on `ushort` … `ulong`, `byte[]`, and `Span<byte>` (in place) |
 | Rounding | `RoundToSignificantDigits(digits)` on `double` and `decimal` |
-| Extraction | `GetBytes<T>(asBigEndian = false)` for any unmanaged `T` |
+| Extraction | `GetBytes<T>(asBigEndian = false)` on `byte`, `sbyte`, `short`, `ushort`, `int`, `uint`, `long`, `ulong`, `float`, and `double`; any other `INumberBase<T>` type (`decimal`, `Half`, `Int128`, …) throws `InvalidOperationException` |
 
 Rotation counts must lie in `[0, width]` (0 and the full width are no-ops; anything else throws `ArgumentOutOfRangeException`), `RoundToSignificantDigits` accepts 1-15 significant digits for `double` (`ArgumentOutOfRangeException` otherwise), and the array forms of `GreatestCommonDivisor` / `LeastCommonMultiple` reject an empty array.
 
 ## Pattern 2 - `ComparableExtensions` and `ComparableHelper`
 
-The extension forms work on any `IComparable<T>` (with an `IComparer<T>` overload each); the bounds may be `null` to mean "unbounded" for reference types and, for `Clamp` on value types, `Nullable<T>`.
+The extension forms work on any `IComparable<T>` (with an `IComparer<T>` overload each). A `null` bound on a reference type never matches, so the predicates return `false`; for `Clamp` on value types the bounds are `Nullable<T>`, where `null` means unbounded.
 
 ```csharp
 using Bodu.Extensions;
@@ -133,7 +133,7 @@ bool unknown  = Enums.TryParse("Bogus", out Access _);                          
 bool byDesc   = Enums.TryParseDescription("Execute access", out Access x);     // true, Execute
 ```
 
-`SetFlag` / `ClearFlag` / `ToggleFlag` / `HasAllFlags` / `HasAnyFlag` work on any enum, converting through the underlying integer without boxing. The attribute readers are generic over `TEnum` and read the attributes once per enum type into a static cache; `GetValues` and `GetNames` return a fresh copy of their cached arrays on every call, so callers may mutate the result freely. `GetDisplayName` prefers `[Display(Name = …)]`, then `[Description]`, then the member name; `GetDescription` prefers `[Description]` and falls back to the name; `TryGetDescription` reports whether an attribute was actually found.
+`SetFlag` / `ClearFlag` / `ToggleFlag` / `HasAllFlags` / `HasAnyFlag` work on any enum, converting through the underlying integer without boxing. The attribute readers are generic over `TEnum` and read the attributes once per enum type into a static cache; `GetValues` and `GetNames` return a fresh copy of their cached arrays on every call, so callers may mutate the result freely. `GetDisplayName` prefers `[Display(Name = …)]`, then `[Description]`, then the member name; `GetDescription` prefers `[Description]`, then `[Display]`, then the member name; `TryGetDescription` reports whether an attribute was actually found.
 
 ## Pattern 4 - `ArrayExtensions` and `SpanExtensions`
 
@@ -163,7 +163,7 @@ Span<int> reversed = readOnly.ToReversed();     // new buffer: 3, 2, 1; span sti
 |---|---|
 | `Copy()` | Shallow copy. |
 | `Slice(index[, count])` | New array. |
-| `PadLeft(totalLength, padValue)` / `PadRight(totalLength, padValue)` | Returns the input unchanged when already long enough. |
+| `PadLeft(totalLength, padValue)` / `PadRight(totalLength, padValue)` | New array. Throws `ArgumentOutOfRangeException` when `totalLength` is less than the length; returns a copy when it is equal. |
 | `ToReversed()` / `ToReversed(index, count)` / `ToReversed(Range)` | **Returns a new array** - unlike `Array.Reverse`, which is in place. Non-generic `Array` overloads exist too. Named `ToReversed` to match `SpanExtensions.ToReversed` below and the BCL's `To*` convention for materializing a new collection; the old name `Reverse` also collided with `Enumerable.Reverse<TSource>(TSource[])`, added in .NET 10. An array binds to this overload rather than the span one, which takes a conversion. |
 | `Clear()` / `Clear(index[, count])` | In place; generic and non-generic forms. |
 | `ToMatrix(transpose)` | Jagged `T[][]` → rectangular `T[,]`; every row must have the same length. |

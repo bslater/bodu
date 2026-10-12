@@ -254,7 +254,7 @@ string sentence = "the API of the iPhone. a second sentence".ToSentenceCase();
                                             // "The api of the iPhone. A second sentence"
 ```
 
-The parameterless overloads use <xref:Bodu.Extensions.WordCasingOptions.Default> - invariant culture, the built-in acronym list recognised for *splitting*, mixed-case brand words (`iPhone`, `eBay`) preserved, and every word re-cased (which is why `HTTP` becomes `Http` above). Pass a <xref:Bodu.Extensions.WordCasingOptions> to change that:
+The parameterless camel, Pascal, snake, kebab, constant, dot, and train overloads use <xref:Bodu.Extensions.WordCasingOptions.Default> - invariant culture, the built-in acronym list recognised for *splitting*, and mixed-case brand words (`iPhone`, `eBay`) preserved. `ToTitleCase()` and `ToSentenceCase()` instead use `TitleCaseOptions.None` / `SentenceCaseOptions.None`, which preserve no acronyms, so every word is re-cased - which is why `HTTP` becomes `Http` above; `ToTitleCase(WordCasingOptions.Default)` keeps `HTTP`. Pass a <xref:Bodu.Extensions.WordCasingOptions> to change any of this:
 
 <!-- compile -->
 ```csharp

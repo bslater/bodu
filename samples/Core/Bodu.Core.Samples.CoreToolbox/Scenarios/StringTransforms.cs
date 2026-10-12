@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StringTransforms.cs" company="Bodu Pty. Ltd.">
 //     Copyright (c) Bodu Pty. Ltd.. All rights reserved.
 // </copyright>
@@ -45,7 +45,7 @@ public static class StringTransforms
         // RemoveDiacritics folds accented characters down to their base ASCII letters.
         Console.WriteLine($"  RemoveDiacritics : {"Crème brûlée à la mode".RemoveDiacritics()}  (keeps the letters and drops the marks: e-acute becomes e, not nothing)");
 
-        // Truncate caps the length, appending an ellipsis when it actually had to cut.
+        // Truncate caps the length; the overload taking an ellipsis appends it when it had to cut.
         Console.WriteLine($"  Truncate(12)     : {"The quick brown fox".Truncate(12)}  (a hard cut at 12 characters - no ellipsis is added unless one is asked for)");
 
         // --- ComparableExtensions: range helpers that read as English. ---
