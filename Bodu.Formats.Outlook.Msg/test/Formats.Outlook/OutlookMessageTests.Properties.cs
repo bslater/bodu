@@ -218,4 +218,28 @@ public partial class OutlookMessageTests
 
         Assert.AreEqual("Größe", message.Properties.GetString(MapiPropertyIds.Subject));
     }
+
+    /// <summary>
+    /// Verifies that a <c>String8</c> value of a message declaring a UTF-32 code page, which cannot describe a
+    /// code-page string, decodes through the Windows-1252 fallback: the bytes <c>48 69</c> read as <c>Hi</c> rather
+    /// than as a replacement character.
+    /// </summary>
+    /// <param name="testName">The declared code page, by name.</param>
+    /// <param name="codePage">The declared message code page.</param>
+    [TestMethod]
+    [DataRow("Utf32LE", 12000)]
+    [DataRow("Utf32BE", 12001)]
+    public void Properties_WhenMessageCodePageIsUtf32_ShouldDecodeString8ThroughTheFallback(
+        string testName,
+        int codePage)
+    {
+        using MemoryStream container = new MsgFixtureBuilder()
+            .AddFixedEntry(0x3FFD0003, (ulong)codePage)
+            .AddString8(MapiPropertyIds.Subject, "Hi", 1252)
+            .Build();
+
+        using var message = OutlookMessage.OpenRead(container);
+
+        Assert.AreEqual("Hi", message.Properties.GetString(MapiPropertyIds.Subject), testName);
+    }
 }

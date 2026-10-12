@@ -109,4 +109,18 @@ public partial class MapiEncodingResolverTests
     {
         Assert.AreEqual(internetCodePage, MapiEncodingResolver.GetHtmlEncoding(internetCodePage, 1251).CodePage);
     }
+
+    /// <summary>
+    /// Verifies that the UTF-32 code pages, which cannot describe a code-page string any more than UTF-16 can, are
+    /// skipped for code-page strings in favor of the next candidate, or the Windows-1252 fallback.
+    /// </summary>
+    /// <param name="messageCodePage">The declared UTF-32 message code page.</param>
+    [TestMethod]
+    [DataRow(12000)]
+    [DataRow(12001)]
+    public void GetEncoding_WhenMessageCodePageIsUtf32_ShouldFallThroughToNextCandidate(int messageCodePage)
+    {
+        Assert.AreEqual(1251, MapiEncodingResolver.GetEncoding(messageCodePage, 1251).CodePage);
+        Assert.AreEqual(1252, MapiEncodingResolver.GetEncoding(messageCodePage, null).CodePage);
+    }
 }
