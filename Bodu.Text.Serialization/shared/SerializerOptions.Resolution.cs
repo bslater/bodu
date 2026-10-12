@@ -60,7 +60,8 @@ public sealed partial class YamlSerializerOptions
     [RequiresUnreferencedCode(TomlTrimming.RequiresUnreferencedCodeMessage)]
     [RequiresDynamicCode(TomlTrimming.RequiresDynamicCodeMessage)]
 #elif YAML
-    [RequiresUnreferencedCode("Reflection-based YAML serialization may require types that trimming cannot statically determine.")]
+    [RequiresUnreferencedCode(YamlTrimming.RequiresUnreferencedCodeMessage)]
+    [RequiresDynamicCode(YamlTrimming.RequiresDynamicCodeMessage)]
 #endif
     public FormatConverter GetConverter(Type typeToConvert)
     {

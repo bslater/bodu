@@ -34,7 +34,8 @@ public static partial class YamlSerializer
     /// <exception cref="YamlSerializationException">
     /// The source is valid YAML, but cannot be bound to <typeparamref name="T" />.
     /// </exception>
-    [RequiresUnreferencedCode("Reflection-based YAML deserialization may require types that trimming cannot statically determine.")]
+    [RequiresUnreferencedCode(YamlTrimming.RequiresUnreferencedCodeMessage)]
+    [RequiresDynamicCode(YamlTrimming.RequiresDynamicCodeMessage)]
     public static T? Deserialize<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] T>(string yaml, YamlSerializerOptions? options = null)
     {
         ThrowHelper.ThrowIfNull(yaml);
@@ -52,7 +53,8 @@ public static partial class YamlSerializer
     /// <exception cref="YamlSerializationException">
     /// The source is valid YAML, but cannot be bound to <typeparamref name="T" />.
     /// </exception>
-    [RequiresUnreferencedCode("Reflection-based YAML deserialization may require types that trimming cannot statically determine.")]
+    [RequiresUnreferencedCode(YamlTrimming.RequiresUnreferencedCodeMessage)]
+    [RequiresDynamicCode(YamlTrimming.RequiresDynamicCodeMessage)]
     public static T? Deserialize<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] T>(ReadOnlySpan<byte> utf8Yaml, YamlSerializerOptions? options = null) =>
         (T?)Deserialize(utf8Yaml, typeof(T), options);
 
@@ -68,7 +70,8 @@ public static partial class YamlSerializer
     /// <exception cref="YamlSerializationException">
     /// The source is valid YAML, but cannot be bound to <paramref name="returnType" />.
     /// </exception>
-    [RequiresUnreferencedCode("Reflection-based YAML deserialization may require types that trimming cannot statically determine.")]
+    [RequiresUnreferencedCode(YamlTrimming.RequiresUnreferencedCodeMessage)]
+    [RequiresDynamicCode(YamlTrimming.RequiresDynamicCodeMessage)]
     public static object? Deserialize(
         ReadOnlySpan<byte> utf8Yaml,
         [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type returnType,
@@ -128,7 +131,8 @@ public static partial class YamlSerializer
     /// <exception cref="YamlSerializationException">
     /// The stream contents are valid YAML, but cannot be bound to <typeparamref name="T" />.
     /// </exception>
-    [RequiresUnreferencedCode("Reflection-based YAML deserialization may require types that trimming cannot statically determine.")]
+    [RequiresUnreferencedCode(YamlTrimming.RequiresUnreferencedCodeMessage)]
+    [RequiresDynamicCode(YamlTrimming.RequiresDynamicCodeMessage)]
     public static T? Deserialize<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] T>(Stream source, YamlSerializerOptions? options = null)
     {
         ThrowHelper.ThrowIfNull(source);
@@ -161,7 +165,8 @@ public static partial class YamlSerializer
     /// <exception cref="YamlSerializationException">
     /// The stream contents are valid YAML, but cannot be bound to <typeparamref name="T" />.
     /// </exception>
-    [RequiresUnreferencedCode("Reflection-based YAML deserialization may require types that trimming cannot statically determine.")]
+    [RequiresUnreferencedCode(YamlTrimming.RequiresUnreferencedCodeMessage)]
+    [RequiresDynamicCode(YamlTrimming.RequiresDynamicCodeMessage)]
     public static async ValueTask<T?> DeserializeAsync<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] T>(Stream source, YamlSerializerOptions? options = null, CancellationToken cancellationToken = default)
     {
         ThrowHelper.ThrowIfNull(source);

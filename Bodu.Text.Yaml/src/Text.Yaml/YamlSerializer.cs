@@ -34,7 +34,8 @@ public static partial class YamlSerializer
     /// <param name="value">The value to serialize.</param>
     /// <param name="options">The serializer options, or <see langword="null" /> for the defaults.</param>
     /// <returns>The YAML representation of <paramref name="value" />.</returns>
-    [RequiresUnreferencedCode("Reflection-based YAML serialization may require types that trimming cannot statically determine.")]
+    [RequiresUnreferencedCode(YamlTrimming.RequiresUnreferencedCodeMessage)]
+    [RequiresDynamicCode(YamlTrimming.RequiresDynamicCodeMessage)]
     public static string Serialize<T>(T value, YamlSerializerOptions? options = null) =>
         Serialize(value, typeof(T), options);
 
@@ -46,7 +47,8 @@ public static partial class YamlSerializer
     /// <param name="options">The serializer options, or <see langword="null" /> for the defaults.</param>
     /// <returns>The YAML representation of <paramref name="value" />.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="inputType" /> is <see langword="null" />.</exception>
-    [RequiresUnreferencedCode("Reflection-based YAML serialization may require types that trimming cannot statically determine.")]
+    [RequiresUnreferencedCode(YamlTrimming.RequiresUnreferencedCodeMessage)]
+    [RequiresDynamicCode(YamlTrimming.RequiresDynamicCodeMessage)]
     public static string Serialize(object? value, Type inputType, YamlSerializerOptions? options = null)
     {
         ThrowHelper.ThrowIfNull(inputType);
@@ -66,7 +68,8 @@ public static partial class YamlSerializer
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="destination" /> is <see langword="null" />.
     /// </exception>
-    [RequiresUnreferencedCode("Reflection-based YAML serialization may require types that trimming cannot statically determine.")]
+    [RequiresUnreferencedCode(YamlTrimming.RequiresUnreferencedCodeMessage)]
+    [RequiresDynamicCode(YamlTrimming.RequiresDynamicCodeMessage)]
     public static void Serialize<T>(IBufferWriter<byte> destination, T value, YamlSerializerOptions? options = null)
     {
         ThrowHelper.ThrowIfNull(destination);
@@ -94,7 +97,8 @@ public static partial class YamlSerializer
     /// <exception cref="ArgumentException">
     /// Thrown when <paramref name="destination" /> does not support writing.
     /// </exception>
-    [RequiresUnreferencedCode("Reflection-based YAML serialization may require types that trimming cannot statically determine.")]
+    [RequiresUnreferencedCode(YamlTrimming.RequiresUnreferencedCodeMessage)]
+    [RequiresDynamicCode(YamlTrimming.RequiresDynamicCodeMessage)]
     public static ValueTask SerializeAsync<T>(Stream destination, T value, YamlSerializerOptions? options = null, CancellationToken cancellationToken = default)
     {
         ThrowHelper.ThrowIfNull(destination);
@@ -113,7 +117,8 @@ public static partial class YamlSerializer
     /// <param name="value">The value to serialize.</param>
     /// <param name="inputType">The declared type of the value.</param>
     /// <param name="options">The serializer options.</param>
-    [RequiresUnreferencedCode("Reflection-based YAML serialization may require types that trimming cannot statically determine.")]
+    [RequiresUnreferencedCode(YamlTrimming.RequiresUnreferencedCodeMessage)]
+    [RequiresDynamicCode(YamlTrimming.RequiresDynamicCodeMessage)]
     private static void SerializeCore(IBufferWriter<byte> destination, object? value, Type inputType, YamlSerializerOptions options)
     {
         options.MakeReadOnly();
