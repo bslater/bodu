@@ -39,7 +39,7 @@ using Microsoft.Extensions.Logging;
 ///     DefaultLookback = TimeSpan.FromDays(14),   // window used by the timeless lookup surface
 /// };
 ///
-/// options.CurrencyAliases["CNH"] = "CNY";        // map a non-ISO source symbol onto its ISO code
+/// options.CurrencyAliases["CNY"] = "CNH";        // request the source's CNH symbol wherever CNY is asked for
 ///
 /// if (!options.TryValidate(out string? error))
 ///     throw new InvalidOperationException(error);
@@ -57,7 +57,8 @@ public abstract class WebRateProviderOptions
     public Uri BaseAddress { get; set; } = null!;
 
     /// <summary>
-    /// Gets or sets the HTTP request timeout applied to requests by the dependency-injection registration.
+    /// Gets or sets the HTTP request timeout, applied to the client a provider builds for itself and to the client the
+    /// dependency-injection registration configures.
     /// </summary>
     /// <value>The HTTP timeout; defaults to 30 seconds.</value>
     public TimeSpan HttpTimeout { get; set; } = TimeSpan.FromSeconds(30);
@@ -110,8 +111,8 @@ public abstract class WebRateProviderOptions
     public bool AllowSynchronousNetworkAccess { get; set; }
 
     /// <summary>
-    /// Gets or sets the look-back window used when a synchronous or undated lookup must fetch a pair on demand. The
-    /// provider fetches the window ending on the requested date and spanning this duration.
+    /// Gets or sets the look-back window used when a synchronous, undated, or asynchronous single-date lookup must
+    /// fetch a pair on demand. The provider fetches the window ending on the requested date and spanning this duration.
     /// </summary>
     /// <value>The look-back window; defaults to 7 days.</value>
     public TimeSpan DefaultLookback { get; set; } = TimeSpan.FromDays(7);

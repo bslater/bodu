@@ -59,13 +59,15 @@ public sealed class BoeRateProviderOptions
     public bool AllowSynchronousNetworkAccess { get; set; }
 
     /// <summary>
-    /// Gets or sets the number of days on each side of a requested date that an on-demand load fetches.
+    /// Gets or sets the number of days before a requested date that an on-demand load fetches.
     /// </summary>
-    /// <value>The on-demand window radius in days; defaults to 10.</value>
+    /// <value>The on-demand look-back window in days; defaults to 10.</value>
     /// <remarks>
-    /// A synchronous lookup that misses loads the inclusive range from the requested date minus this many days to the
-    /// requested date plus this many days (clamped to the current date), so a date-resolution tolerance can still find
-    /// a neighbouring business day without downloading the entire history.
+    /// A lookup that misses and must fetch (a synchronous lookup with <see cref="AllowSynchronousNetworkAccess" />
+    /// enabled, or an asynchronous single-date lookup) loads the inclusive range from the requested date minus this
+    /// many days to the requested date, so a backward date-resolution tolerance can still find an earlier business day
+    /// without downloading the entire history. The window has no forward part, so a forward tolerance finds nothing
+    /// after the requested date until a later range has been loaded.
     /// </remarks>
     public int OnDemandWindowDays { get; set; } = 10;
 

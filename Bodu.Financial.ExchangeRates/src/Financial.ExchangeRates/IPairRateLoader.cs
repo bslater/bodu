@@ -32,7 +32,12 @@ public interface IPairRateLoader
     /// <returns>A task that completes when the pair's window has been loaded.</returns>
     /// <exception cref="ArgumentNullException">Thrown when an ISO code is <see langword="null" />.</exception>
     /// <exception cref="ArgumentException">
-    /// Thrown when an ISO code is malformed, the range is inverted, or the provider does not serve the requested pair.
+    /// Thrown when an ISO code is malformed or names no <see cref="Currencies.CurrencyCode" /> member, or the range is
+    /// inverted.
+    /// </exception>
+    /// <exception cref="RateSeriesNotFoundException">
+    /// Thrown when a single-base provider is asked for a pair its feed cannot carry (one that does not include its base
+    /// currency), before any download.
     /// </exception>
     Task LoadPairAsync(string fromIsoCode, string toIsoCode, DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken = default);
 

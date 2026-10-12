@@ -41,13 +41,15 @@ public sealed class BoeEndpointOptions
     public string QueryPath { get; set; } = "_iadb-fromshowcolumns.asp";
 
     /// <summary>
-    /// Gets or sets the HTTP request timeout applied to range downloads by the dependency-injection registration.
+    /// Gets or sets the HTTP request timeout applied to range downloads, by the client the provider builds for itself
+    /// and by the dependency-injection registration.
     /// </summary>
     /// <value>The HTTP timeout; defaults to 30 seconds.</value>
     public TimeSpan HttpTimeout { get; set; } = TimeSpan.FromSeconds(30);
 
     /// <summary>
-    /// Gets or sets the <c>User-Agent</c> header applied to range downloads by the dependency-injection registration.
+    /// Gets or sets the <c>User-Agent</c> header applied to range downloads, by the client the provider builds for
+    /// itself and by the dependency-injection registration.
     /// </summary>
     /// <value>The user-agent string; defaults to a Bodu identifier.</value>
     public string UserAgent { get; set; } = "Bodu.Financial.ExchangeRates.Boe";

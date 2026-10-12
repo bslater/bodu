@@ -25,7 +25,8 @@ namespace Bodu.Financial.ExchangeRates;
 /// <strong>Plan limits.</strong> Fixer's free plan is locked to a EUR base and to the latest and single-date endpoints;
 /// changing the base currency and the time-series endpoint require a paid plan. A request the account's plan does not
 /// permit surfaces as a fetch failure rather than being pre-empted, so a caller on the free plan should request pairs
-/// whose source currency is EUR (or map non-EUR sources through the inverse-lookup fallback).
+/// whose source currency is EUR. A request for the reverse pair sends that pair's own source currency as the base, so
+/// to read <c>USD/EUR</c> warm <c>EUR/USD</c> first; its reverse then resolves by inversion from the loaded series.
 /// </para>
 /// <para>
 /// <strong>HttpClient ownership.</strong> The constructor that takes only options builds and owns an

@@ -37,12 +37,16 @@ namespace Bodu.Financial.ExchangeRates;
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
-/// using Bodu.Financial;
+/// using Bodu.Financial.ExchangeRates;
 ///
 /// // A derived provider supplies only the feed-specific fetch and coverage check.
 /// sealed class MyFeedProvider : WebRateProvider
 /// {
-///     public MyFeedProvider(HttpClient client) : base(client, timeProvider: null) { }
+///     // The caller owns this client, so the base receives null as the owned client and never disposes it.
+///     private readonly HttpClient _client;
+///
+///     public MyFeedProvider(HttpClient client) : base(ownedHttpClient: null, timeProvider: null) =>
+///         _client = client;
 ///
 ///     protected override string ProviderId => "MyFeed";
 ///     protected override bool AllowSynchronousNetworkAccess => false;
@@ -54,7 +58,8 @@ namespace Bodu.Financial.ExchangeRates;
 ///     protected override async ValueTask EnsureLoadedAsync(
 ///         CurrencyPair pair, DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken)
 ///     {
-///         IEnumerable<ExchangeRate> fetched = await FetchFromFeedAsync(pair, startDate, endDate, cancellationToken);
+///         IEnumerable<ExchangeRate> fetched =
+///             await FetchFromFeedAsync(_client, pair, startDate, endDate, cancellationToken);
 ///         lock (SyncRoot)
 ///         {
 ///             AddObservations(fetched, DateTimeOffset.UtcNow);
@@ -166,6 +171,11 @@ public abstract class WebRateProvider
     protected TimeProvider TimeProvider => _timeProvider;
 
     /// <inheritdoc />
+    /// <exception cref="ObjectDisposedException">Thrown when the provider has been disposed.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when <see cref="AllowSynchronousNetworkAccess" /> is enabled, the lookup needs a fetch, and the calling
+    /// thread has a captured <see cref="SynchronizationContext" />.
+    /// </exception>
     public RateLookupResult GetRate(string fromIsoCode, string toIsoCode, RateLookupOptions? options = null)
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
@@ -175,12 +185,22 @@ public abstract class WebRateProvider
     }
 
     /// <inheritdoc />
+    /// <exception cref="ObjectDisposedException">Thrown when the provider has been disposed.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when <see cref="AllowSynchronousNetworkAccess" /> is enabled, the lookup needs a fetch, and the calling
+    /// thread has a captured <see cref="SynchronizationContext" />.
+    /// </exception>
     public RateLookupResult GetRate(string fromIsoCode, string toIsoCode, DateOnly date, RateLookupOptions? options = null) =>
         TryGetRate(fromIsoCode, toIsoCode, date, options, out RateLookupResult result)
             ? result
             : throw new KeyNotFoundException(FormatRateNotFound(fromIsoCode, toIsoCode, date));
 
     /// <inheritdoc />
+    /// <exception cref="ObjectDisposedException">Thrown when the provider has been disposed.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when <see cref="AllowSynchronousNetworkAccess" /> is enabled, the lookup needs a fetch, and the calling
+    /// thread has a captured <see cref="SynchronizationContext" />.
+    /// </exception>
     public bool TryGetRate(string fromIsoCode, string toIsoCode, DateOnly date, RateLookupOptions? options, out RateLookupResult result)
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
@@ -199,6 +219,11 @@ public abstract class WebRateProvider
     }
 
     /// <inheritdoc />
+    /// <exception cref="ObjectDisposedException">Thrown when the provider has been disposed.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when <see cref="AllowSynchronousNetworkAccess" /> is enabled, the lookup needs a fetch, and the calling
+    /// thread has a captured <see cref="SynchronizationContext" />.
+    /// </exception>
     public RateRangeResult GetRates(string fromIsoCode, string toIsoCode, DateOnly startDate, DateOnly endDate)
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
@@ -217,6 +242,7 @@ public abstract class WebRateProvider
     }
 
     /// <inheritdoc />
+    /// <exception cref="ObjectDisposedException">Thrown when the provider has been disposed.</exception>
     public ValueTask<RateLookupResult> GetRateAsync(
         string fromIsoCode,
         string toIsoCode,
@@ -235,6 +261,7 @@ public abstract class WebRateProvider
     }
 
     /// <inheritdoc />
+    /// <exception cref="ObjectDisposedException">Thrown when the provider has been disposed.</exception>
     public async ValueTask<RateLookupResult> GetRateAsync(
         string fromIsoCode,
         string toIsoCode,
@@ -260,6 +287,7 @@ public abstract class WebRateProvider
     }
 
     /// <inheritdoc />
+    /// <exception cref="ObjectDisposedException">Thrown when the provider has been disposed.</exception>
     public async ValueTask<RateRangeResult> GetRatesAsync(
         string fromIsoCode,
         string toIsoCode,
@@ -281,6 +309,7 @@ public abstract class WebRateProvider
     }
 
     /// <inheritdoc />
+    /// <exception cref="ObjectDisposedException">Thrown when the provider has been disposed.</exception>
     /// <remarks>
     /// The load is delegated to the feed-specific
     /// <see cref="EnsureLoadedAsync(CurrencyPair, DateOnly, DateOnly, CancellationToken)" />, so it warms whatever unit
@@ -305,6 +334,7 @@ public abstract class WebRateProvider
     }
 
     /// <inheritdoc />
+    /// <exception cref="ObjectDisposedException">Thrown when the provider has been disposed.</exception>
     public IReadOnlyCollection<CurrencyPair> GetLoadedPairs()
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
@@ -632,12 +662,12 @@ public abstract class WebRateProvider
     }
 
     /// <summary>
-    /// Synchronously fetches a window around a date for the on-demand single-rate path, unless the pair is a
-    /// same-currency request or the window is already covered.
+    /// Synchronously fetches the look-back window ending on a date for the on-demand single-rate path, unless the pair
+    /// is a same-currency request or the window is already covered.
     /// </summary>
     /// <param name="fromIsoCode">The source-currency ISO code.</param>
     /// <param name="toIsoCode">The destination-currency ISO code.</param>
-    /// <param name="date">The date around which to fetch.</param>
+    /// <param name="date">The date the fetched window ends on.</param>
     /// <returns><see langword="true" /> when a fetch was attempted; otherwise <see langword="false" />.</returns>
     private bool TryLoadForDate(string fromIsoCode, string toIsoCode, DateOnly date)
     {

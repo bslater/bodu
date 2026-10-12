@@ -75,8 +75,8 @@ public sealed class OfxRateProviderOptions
     public int DecimalPlaces { get; set; } = 6;
 
     /// <summary>
-    /// Gets or sets the reporting interval requested from the OFX endpoint, substituted into <see cref="HistoryPath" />
-    /// and sent as the <c>ReportingInterval</c> query parameter.
+    /// Gets or sets the reporting interval requested from the OFX endpoint, sent as the <c>ReportingInterval</c> query
+    /// parameter.
     /// </summary>
     /// <value>The reporting interval; defaults to <c>daily</c>.</value>
     public string ReportingInterval { get; set; } = "daily";
