@@ -6,6 +6,8 @@
 
 using System.Text;
 using Bodu.Test.Kat;
+using Bodu.Text.Bencode.Serialization;
+using Bodu.Text.Serialization;
 
 namespace Bodu.Text.Bencode;
 
@@ -591,5 +593,181 @@ public partial class BencodeSerializerTests
         });
 
         Assert.AreEqual(1, exception.BytesOffset);
+    }
+
+    /// <summary>
+    /// Verifies that an enumeration key is written by its wire name, as System.Text.Json writes it: a member renamed with
+    /// <see cref="StringEnumMemberNameAttribute" /> by its configured name, sorted canonically with the other keys.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenEnumKeyIsRenamed_ShouldWriteConfiguredName()
+    {
+        var value = new Dictionary<KeyToggle, int> { [KeyToggle.Enabled] = 1, [KeyToggle.Disabled] = 2 };
+
+        byte[] bytes = BencodeSerializer.Serialize(value);
+
+        Assert.AreEqual("d8:Disabledi2e2:oni1ee", Encoding.Latin1.GetString(bytes));
+    }
+
+    /// <summary>
+    /// Verifies that, under a <see cref="BencodeStringEnumConverter" /> with a naming policy, an enumeration key and a
+    /// combination of flags used as a key are written with the policy's names, as System.Text.Json writes them.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenStringEnumConverterHasNamingPolicy_ShouldWriteKeysWithPolicyNames()
+    {
+        var value = new Dictionary<KeyAccess, int> { [KeyAccess.CanRead | KeyAccess.CanExecute] = 1, [KeyAccess.CanWrite] = 2 };
+
+        byte[] bytes = BencodeSerializer.Serialize(value, SnakeCaseKeyOptions(allowIntegerValues: true));
+
+        Assert.AreEqual("d21:can_read, can_executei1e9:can_writei2ee", Encoding.Latin1.GetString(bytes));
+    }
+
+    /// <summary>
+    /// Verifies that an enumeration key whose value is neither a member nor a combination of defined flags is written
+    /// as its decimal text.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenEnumKeyIsUndefinedValue_ShouldWriteDecimalText()
+    {
+        var value = new Dictionary<KeyToggle, int> { [(KeyToggle)7] = 1 };
+
+        byte[] bytes = BencodeSerializer.Serialize(value);
+
+        Assert.AreEqual("d1:7i1ee", Encoding.Latin1.GetString(bytes));
+    }
+
+    /// <summary>
+    /// Verifies that a dictionary key holding a renamed member's configured name binds to that member.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenEnumKeyIsConfiguredName_ShouldBindRenamedMember()
+    {
+        byte[] bytes = Encoding.Latin1.GetBytes("d2:oni1ee");
+
+        Dictionary<KeyToggle, int> value = BencodeSerializer.Deserialize<Dictionary<KeyToggle, int>>(bytes);
+
+        Assert.AreEqual(1, value[KeyToggle.Enabled]);
+    }
+
+    /// <summary>
+    /// Verifies that a dictionary key holding the CLR name of a member renamed with
+    /// <see cref="StringEnumMemberNameAttribute" /> throws <see cref="BencodeSerializationException" />, as
+    /// System.Text.Json rejects it.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenEnumKeyIsRenamedMembersClrName_ShouldThrowBencodeSerializationException()
+    {
+        byte[] bytes = Encoding.Latin1.GetBytes("d7:Enabledi1ee");
+
+        BencodeSerializationException ex = Assert.ThrowsExactly<BencodeSerializationException>(() =>
+        {
+            _ = BencodeSerializer.Deserialize<Dictionary<KeyToggle, int>>(bytes);
+        });
+
+        Assert.IsTrue(ex.Message.Contains("'Enabled'", StringComparison.Ordinal));
+    }
+
+    /// <summary>
+    /// Verifies that a dictionary key holding integer text binds to the value it names under the default enumeration
+    /// handling, and that an unrenamed member's CLR name binds in any case.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenEnumKeyIsIntegerTextOrClrNameInAnotherCase_ShouldBind()
+    {
+        byte[] bytes = Encoding.Latin1.GetBytes("d1:1i1e8:disabledi2ee");
+
+        Dictionary<KeyToggle, int> value = BencodeSerializer.Deserialize<Dictionary<KeyToggle, int>>(bytes);
+
+        Assert.AreEqual(1, value[KeyToggle.Enabled]);
+        Assert.AreEqual(2, value[KeyToggle.Disabled]);
+    }
+
+    /// <summary>
+    /// Verifies that, under a <see cref="BencodeStringEnumConverter" /> with a naming policy, a dictionary key holding
+    /// the policy's names of a combination of flags binds to that combination.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenStringEnumConverterHasNamingPolicy_ShouldBindKeyPolicyNames()
+    {
+        byte[] bytes = Encoding.Latin1.GetBytes("d21:can_execute, can_readi1ee");
+
+        Dictionary<KeyAccess, int> value = BencodeSerializer.Deserialize<Dictionary<KeyAccess, int>>(
+            bytes, SnakeCaseKeyOptions(allowIntegerValues: true));
+
+        Assert.AreEqual(1, value[KeyAccess.CanRead | KeyAccess.CanExecute]);
+    }
+
+    /// <summary>
+    /// Verifies that, under a <see cref="BencodeStringEnumConverter" /> that disallows integer values, a dictionary key
+    /// holding integer text throws <see cref="BencodeSerializationException" />, as System.Text.Json rejects it.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenStringEnumConverterDisallowsIntegersAndKeyIsIntegerText_ShouldThrowBencodeSerializationException()
+    {
+        byte[] bytes = Encoding.Latin1.GetBytes("d1:1i1ee");
+        var options = new BencodeSerializerOptions();
+        options.Converters.Add(new BencodeStringEnumConverter(namingPolicy: null, allowIntegerValues: false));
+
+        _ = Assert.ThrowsExactly<BencodeSerializationException>(() =>
+        {
+            _ = BencodeSerializer.Deserialize<Dictionary<KeyToggle, int>>(bytes, options);
+        });
+    }
+
+    /// <summary>
+    /// Creates options that convert enumerations by name with the lower snake-case naming policy.
+    /// </summary>
+    /// <param name="allowIntegerValues">Whether integer values are allowed.</param>
+    /// <returns>The options.</returns>
+    private static BencodeSerializerOptions SnakeCaseKeyOptions(bool allowIntegerValues)
+    {
+        var options = new BencodeSerializerOptions();
+        options.Converters.Add(new BencodeStringEnumConverter(NamingPolicy.SnakeCaseLower, allowIntegerValues));
+        return options;
+    }
+
+    /// <summary>
+    /// An enumeration used as a dictionary key, one of whose members carries a configured name.
+    /// </summary>
+    private enum KeyToggle
+    {
+        /// <summary>
+        /// The disabled state.
+        /// </summary>
+        Disabled = 0,
+
+        /// <summary>
+        /// The enabled state, written under the name <c>on</c>.
+        /// </summary>
+        [StringEnumMemberName("on")]
+        Enabled = 1,
+    }
+
+    /// <summary>
+    /// A flags enumeration used as a dictionary key, whose members' names change under a naming policy.
+    /// </summary>
+    [Flags]
+    private enum KeyAccess
+    {
+        /// <summary>
+        /// No access.
+        /// </summary>
+        None = 0,
+
+        /// <summary>
+        /// Read access.
+        /// </summary>
+        CanRead = 1,
+
+        /// <summary>
+        /// Write access.
+        /// </summary>
+        CanWrite = 2,
+
+        /// <summary>
+        /// Execute access.
+        /// </summary>
+        CanExecute = 4,
     }
 }

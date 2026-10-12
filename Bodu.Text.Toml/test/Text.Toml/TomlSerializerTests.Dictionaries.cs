@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using Bodu.Text.Serialization;
+using Bodu.Text.Toml.Serialization;
 
 namespace Bodu.Text.Toml;
 
@@ -745,5 +746,158 @@ public partial class TomlSerializerTests
         /// <value>The dictionary.</value>
         [PropertyName("test")]
         public Dictionary<string, int> Test { get; set; } = [];
+    }
+
+    /// <summary>
+    /// Verifies that an enumeration key is written by its wire name, as System.Text.Json writes it: a member renamed with
+    /// <see cref="StringEnumMemberNameAttribute" /> by its configured name, in insertion order.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenEnumKeyIsRenamed_ShouldWriteConfiguredName()
+    {
+        var value = new Dictionary<KeyToggle, int> { [KeyToggle.Enabled] = 1, [KeyToggle.Disabled] = 2 };
+
+        string text = TomlSerializer.Serialize(value);
+
+        Assert.AreEqual("on = 1\nDisabled = 2\n", text);
+    }
+
+    /// <summary>
+    /// Verifies that, under a <see cref="TomlStringEnumConverter" /> with a naming policy, an enumeration key and a
+    /// combination of flags used as a key are written with the policy's names, as System.Text.Json writes them.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenStringEnumConverterHasNamingPolicy_ShouldWriteKeysWithPolicyNames()
+    {
+        var value = new Dictionary<KeyAccess, int> { [KeyAccess.CanRead | KeyAccess.CanExecute] = 1, [KeyAccess.CanWrite] = 2 };
+
+        string text = TomlSerializer.Serialize(value, SnakeCaseKeyOptions(allowIntegerValues: true));
+
+        Assert.AreEqual("\"can_read, can_execute\" = 1\ncan_write = 2\n", text);
+    }
+
+    /// <summary>
+    /// Verifies that a table key holding a renamed member's configured name binds to that member.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenEnumKeyIsConfiguredName_ShouldBindRenamedMember()
+    {
+        Dictionary<KeyToggle, int> value = TomlSerializer.Deserialize<Dictionary<KeyToggle, int>>("on = 1\n");
+
+        Assert.AreEqual(1, value[KeyToggle.Enabled]);
+    }
+
+    /// <summary>
+    /// Verifies that a table key holding the CLR name of a member renamed with
+    /// <see cref="StringEnumMemberNameAttribute" /> throws <see cref="TomlSerializationException" />, as
+    /// System.Text.Json rejects it.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenEnumKeyIsRenamedMembersClrName_ShouldThrowTomlSerializationException()
+    {
+        TomlSerializationException ex = Assert.ThrowsExactly<TomlSerializationException>(() =>
+        {
+            _ = TomlSerializer.Deserialize<Dictionary<KeyToggle, int>>("Enabled = 1\n");
+        });
+
+        Assert.IsTrue(ex.Message.Contains("'Enabled'", StringComparison.Ordinal));
+    }
+
+    /// <summary>
+    /// Verifies that a table key holding integer text binds to the value it names under the default enumeration
+    /// handling, and that an unrenamed member's CLR name binds in any case.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenEnumKeyIsIntegerTextOrClrNameInAnotherCase_ShouldBind()
+    {
+        Dictionary<KeyToggle, int> value = TomlSerializer.Deserialize<Dictionary<KeyToggle, int>>("1 = 1\ndisabled = 2\n");
+
+        Assert.AreEqual(1, value[KeyToggle.Enabled]);
+        Assert.AreEqual(2, value[KeyToggle.Disabled]);
+    }
+
+    /// <summary>
+    /// Verifies that, under a <see cref="TomlStringEnumConverter" /> with a naming policy, a table key holding the
+    /// policy's names of a combination of flags binds to that combination.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenStringEnumConverterHasNamingPolicy_ShouldBindKeyPolicyNames()
+    {
+        Dictionary<KeyAccess, int> value = TomlSerializer.Deserialize<Dictionary<KeyAccess, int>>(
+            "\"can_execute, can_read\" = 1\n", SnakeCaseKeyOptions(allowIntegerValues: true));
+
+        Assert.AreEqual(1, value[KeyAccess.CanRead | KeyAccess.CanExecute]);
+    }
+
+    /// <summary>
+    /// Verifies that, under a <see cref="TomlStringEnumConverter" /> that disallows integer values, a table key holding
+    /// integer text throws <see cref="TomlSerializationException" />, as System.Text.Json rejects it.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenStringEnumConverterDisallowsIntegersAndKeyIsIntegerText_ShouldThrowTomlSerializationException()
+    {
+        var options = new TomlSerializerOptions();
+        options.Converters.Add(new TomlStringEnumConverter(namingPolicy: null, allowIntegerValues: false));
+
+        _ = Assert.ThrowsExactly<TomlSerializationException>(() =>
+        {
+            _ = TomlSerializer.Deserialize<Dictionary<KeyToggle, int>>("1 = 1\n", options);
+        });
+    }
+
+    /// <summary>
+    /// Creates options that convert enumerations by name with the lower snake-case naming policy.
+    /// </summary>
+    /// <param name="allowIntegerValues">Whether integer values are allowed.</param>
+    /// <returns>The options.</returns>
+    private static TomlSerializerOptions SnakeCaseKeyOptions(bool allowIntegerValues)
+    {
+        var options = new TomlSerializerOptions();
+        options.Converters.Add(new TomlStringEnumConverter(NamingPolicy.SnakeCaseLower, allowIntegerValues));
+        return options;
+    }
+
+    /// <summary>
+    /// An enumeration used as a dictionary key, one of whose members carries a configured name.
+    /// </summary>
+    private enum KeyToggle
+    {
+        /// <summary>
+        /// The disabled state.
+        /// </summary>
+        Disabled = 0,
+
+        /// <summary>
+        /// The enabled state, written under the name <c>on</c>.
+        /// </summary>
+        [StringEnumMemberName("on")]
+        Enabled = 1,
+    }
+
+    /// <summary>
+    /// A flags enumeration used as a dictionary key, whose members' names change under a naming policy.
+    /// </summary>
+    [Flags]
+    private enum KeyAccess
+    {
+        /// <summary>
+        /// No access.
+        /// </summary>
+        None = 0,
+
+        /// <summary>
+        /// Read access.
+        /// </summary>
+        CanRead = 1,
+
+        /// <summary>
+        /// Write access.
+        /// </summary>
+        CanWrite = 2,
+
+        /// <summary>
+        /// Execute access.
+        /// </summary>
+        CanExecute = 4,
     }
 }
