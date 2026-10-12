@@ -403,6 +403,22 @@ public partial class ArrayExtensionsTests
     }
 
     /// <summary>
+    /// Verifies that passing a multidimensional array to the whole-array overload throws
+    /// <see cref="ArgumentException" />, as the windowed overloads do, and that the exception identifies the correct
+    /// parameter name.
+    /// </summary>
+    [TestMethod]
+    public void ToReversed_WhenSourceIsMultidimensional_ForNonGenericArray_ShouldThrowArgumentException()
+    {
+        Array source = new int[2, 3];
+        ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            source.ToReversed();
+        });
+        Assert.AreEqual("source", ex.ParamName);
+    }
+
+    /// <summary>
     /// Verifies that passing a multidimensional array to the index + count overload throws
     /// <see cref="ArgumentException"/> and that the exception identifies the correct
     /// parameter name.
