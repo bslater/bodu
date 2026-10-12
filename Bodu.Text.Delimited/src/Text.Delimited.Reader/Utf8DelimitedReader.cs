@@ -551,7 +551,9 @@ public ref struct Utf8DelimitedReader
                     || _data[_position] is (byte)'\r' or (byte)'\n';
             }
 
-            if (b == (byte)'\n')
+            // A line feed ends a line, and so does a carriage return that no line feed follows; the line feed of a
+            // CRLF is counted on its own, so the pair counts once.
+            if (b == (byte)'\n' || (b == (byte)'\r' && (_position + 1 >= _data.Length || _data[_position + 1] != (byte)'\n')))
                 _line++;
 
             _position += AppendByte(sb, b);
