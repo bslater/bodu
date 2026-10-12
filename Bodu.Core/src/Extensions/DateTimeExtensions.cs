@@ -647,8 +647,11 @@ public static partial class DateTimeExtensions
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static DayOfWeek GetDayOfWeekForJanuary1(int year)
     {
-        // Zeller’s-like congruence to determine the weekday of Jan 1
-        int weekdayIndex = (year + (year / 4) - (year / 100) + (year / 400)) % 7;
+        // y + y/4 - y/100 + y/400 (mod 7) is the weekday of 31 December of year y (0 = Sunday), because 1 January of
+        // year 1 is a Monday and each year advances the weekday by one day, or two in a leap year. 1 January of 'year'
+        // is therefore the day after 31 December of 'year - 1'.
+        int previousYear = year - 1;
+        int weekdayIndex = (previousYear + (previousYear / 4) - (previousYear / 100) + (previousYear / 400) + 1) % 7;
         return (DayOfWeek)((weekdayIndex + 7) % 7); // Ensure non-negative
     }
 
