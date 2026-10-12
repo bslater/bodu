@@ -186,8 +186,11 @@
   <data name="Validation_RecurrenceInvalid" xml:space="preserve">
     <value>Notable date '{0}', rule '{1}': the recurrence definition is invalid. {2}</value>
   </data>
+  <data name="Validation_OccurrenceSourceMissing" xml:space="preserve">
+    <value>Notable date '{0}', rule '{1}': the rule declares no recognized strategy or recurrence; exactly one is required.</value>
+  </data>
   <data name="Validation_OccurrenceSourceConflict" xml:space="preserve">
-    <value>Notable date '{0}', rule '{1}': a rule must not declare both a strategy and a recurrence.</value>
+    <value>Notable date '{0}', rule '{1}': the rule declares more than one strategy or recurrence; exactly one is required.</value>
   </data>
   <data name="Validation_InvalidOrdinalValue" xml:space="preserve">
     <value>Notable date '{0}', rule '{1}': ordinal '{2}' is invalid.</value>

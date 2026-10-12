@@ -276,7 +276,7 @@ In place of a `<Strategy>`, a rule may carry a `<Recurrence>` child holding exac
 </Rule>
 ```
 
-`anchorDate` is an ISO-8601 `yyyy-MM-dd` date. A rule declaring both `<Strategy>` and `<Recurrence>`, or neither, is rejected at load time.
+`anchorDate` is an ISO-8601 `yyyy-MM-dd` date. A rule declaring both `<Strategy>` and `<Recurrence>`, or neither, is rejected at load time with `BODU-CAL-RULE-SOURCE`, in XML and JSON alike.
 
 ---
 

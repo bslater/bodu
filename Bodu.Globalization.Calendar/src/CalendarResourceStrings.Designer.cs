@@ -430,7 +430,16 @@ namespace Bodu {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to a rule must not declare both a strategy and a recurrence..
+        ///   Looks up a localized string similar to the rule declares no recognized strategy or recurrence; exactly one is required..
+        /// </summary>
+        internal static string Validation_OccurrenceSourceMissing {
+            get {
+                return ResourceManager.GetString("Validation_OccurrenceSourceMissing", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to the rule declares more than one strategy or recurrence; exactly one is required..
         /// </summary>
         internal static string Validation_OccurrenceSourceConflict {
             get {

@@ -63,6 +63,7 @@ Codes are stable identifiers: they are safe to match on, suppress by, or documen
 | `BODU-CAL-DAY` | Error | A strategy's day is outside the valid range for its month/calendar. |
 | `BODU-CAL-YEARS` | Error | A rule's or adjustment scope's `fromYear` is after its `toYear`. |
 | `BODU-CAL-RECURRENCE` | Error | A recurrence declaration is invalid. |
+| `BODU-CAL-RULE-SOURCE` | Error | A rule declares no recognized strategy or recurrence, or more than one (a strategy and a recurrence, or two strategy kinds). XML documents also fail the schema for the same rule; the code exists for JSON, which is not schema-validated. |
 
 ### Cross-references
 

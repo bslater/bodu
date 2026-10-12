@@ -15,6 +15,17 @@ namespace Bodu.Globalization.Calendar;
 /// </summary>
 internal static class NotableDateDocumentReader
 {
+    /// <summary>The node names of the calculation-strategy kinds a <c>Strategy</c> node may hold.</summary>
+    private static readonly string[] s_strategyKinds =
+    [
+        "fixed", "dayOfWeekInMonth", "weekdayNearDate", "relativeWeekdayInMonth", "offsetFromRule", "algorithm",
+        "weekdayNearRule", "nthWeekdayFromRule", "workingDayOffsetFromRule", "workingDayInMonth", "ordinalDayOfMonth",
+        "isoWeekDate", "dayOfYear",
+    ];
+
+    /// <summary>The node names of the recurrence kinds a <c>Recurrence</c> node may hold.</summary>
+    private static readonly string[] s_recurrenceKinds = ["dailyInterval", "weekly", "monthlyDay", "monthlyWeekday"];
+
     /// <summary>
     /// Reads a document from its root node.
     /// </summary>
@@ -195,9 +206,13 @@ internal static class NotableDateDocumentReader
     private static NotableDateRule ReadRule(IDocumentNode node, string notableDateId, ICollection<NotableDateValidationDiagnostic> diagnostics)
     {
         string id = node.Scalar("id") ?? string.Empty;
+        IDocumentNode? strategyNode = node.Child("strategy");
+        IDocumentNode? recurrenceNode = node.Child("recurrence");
+        ValidateOccurrenceSource(strategyNode, recurrenceNode, notableDateId, id, diagnostics);
+
         RuleApplicability applicability = ReadApplicability(node.Child("applicability"));
         NotableDateDurationDefinition? duration = ReadDuration(node, applicability.Calendar, notableDateId, id, diagnostics);
-        IDateRecurrenceStrategy? recurrence = ReadRecurrence(node.Child("recurrence"), notableDateId, id, diagnostics);
+        IDateRecurrenceStrategy? recurrence = ReadRecurrence(recurrenceNode, notableDateId, id, diagnostics);
 
         IReadOnlyList<string> adjustments = node.ScalarList("Adjustments", "Adjustment", "policyRef", "adjustments");
         IReadOnlyList<string> tags = node.ScalarList("Tags", "Tag", "value", "tags");
@@ -220,10 +235,48 @@ internal static class NotableDateDocumentReader
                 ParseNullableBool(node.Scalar("nonWorking")),
                 duration,
                 applicability,
-                ReadStrategy(node.Child("strategy"), applicability.Calendar, notableDateId, id, diagnostics),
+                ReadStrategy(strategyNode, applicability.Calendar, notableDateId, id, diagnostics),
                 adjustments,
                 tags);
     }
+
+    /// <summary>
+    /// Reports a rule that does not declare exactly one occurrence source: one recognized strategy kind or one
+    /// recognized recurrence kind.
+    /// </summary>
+    /// <param name="strategy">The rule's strategy node, or <see langword="null" />.</param>
+    /// <param name="recurrence">The rule's recurrence node, or <see langword="null" />.</param>
+    /// <param name="notableDateId">The identifier of the owning concept, used in diagnostics.</param>
+    /// <param name="ruleId">The identifier of the rule, used in diagnostics.</param>
+    /// <param name="diagnostics">The collection that receives semantic diagnostics.</param>
+    /// <remarks>
+    /// The XSD already enforces this for XML; the check exists for JSON, which is not schema-validated, and reports the
+    /// same condition for both formats so a rule never falls back to a placeholder date or silently drops a source.
+    /// </remarks>
+    private static void ValidateOccurrenceSource(IDocumentNode? strategy, IDocumentNode? recurrence, string notableDateId, string ruleId, ICollection<NotableDateValidationDiagnostic> diagnostics)
+    {
+        int sources = CountKinds(strategy, s_strategyKinds) + CountKinds(recurrence, s_recurrenceKinds);
+        if (sources == 1)
+            return;
+
+        string format = sources == 0
+            ? CalendarResourceStrings.Validation_OccurrenceSourceMissing
+            : CalendarResourceStrings.Validation_OccurrenceSourceConflict;
+
+        diagnostics.Add(new NotableDateValidationDiagnostic(
+            NotableDateValidationSeverity.Error,
+            "BODU-CAL-RULE-SOURCE",
+            string.Format(System.Globalization.CultureInfo.CurrentCulture, format, notableDateId, ruleId)));
+    }
+
+    /// <summary>
+    /// Counts the recognized kinds a strategy or recurrence node holds.
+    /// </summary>
+    /// <param name="node">The strategy or recurrence node, or <see langword="null" />.</param>
+    /// <param name="kinds">The recognized kind names.</param>
+    /// <returns>The number of recognized kinds present; zero when <paramref name="node" /> is absent.</returns>
+    private static int CountKinds(IDocumentNode? node, string[] kinds) =>
+        node is null ? 0 : kinds.Count(kind => node.Child(kind) is not null);
 
     /// <summary>
     /// Reads a rule's applicability, falling back to a global Gregorian applicability when absent.
