@@ -109,7 +109,7 @@ binds to <xref:Bodu.Financial.ExchangeRates.EcbRateProviderOptions> (and its nes
 | `EnableDiskCache` | `true` | Whether downloaded feed files are kept on disk so immutable history is not re-fetched. |
 | `CacheDirectory` | `null` | Where the payload cache lives. `null` or blank resolves to `bodu-ecb` under `Path.GetTempPath()`. |
 | `RefreshInterval` | 12 h | A cached file older than this is re-downloaded. |
-| `CurrencyAliases` | `{}` | ISO code → feed symbol overrides; entries **merge into** the defaults rather than replacing them. |
+| `CurrencyAliases` | `{}` | Feed currency label → ISO code, applied while the feed is parsed (the reverse of the pair providers' ISO code → request symbol map). Empty by default, because the ECB publishes ISO codes. |
 | `*LogLevel` | see block | The level each diagnostic is logged at; `None` suppresses it. |
 
 One member does **not** bind: `Feeds`, an `IReadOnlyList<EcbRateFeed>` whose elements carry a
@@ -193,7 +193,7 @@ reaches the wire.
 | RBA | `Financial:Rba` | `RbaRateProviderOptions` | bulk, flat | `BaseUrl` (`https://www.rba.gov.au/statistics/tables/xls-hist/`), `HttpTimeout` (30 s), `UserAgent` (`Bodu.Financial.ExchangeRates.Rba`), `EnableDiskCache` (**`false`**), `CacheDirectory` (`null` → `bodu-rba`), `CurrentEraRefreshInterval` (12 h), `CurrencyAliases` (`{ "SDR": "XDR" }`); `Eras` code-only; no `SynchronousNetworkFetchLogLevel` | none |
 | IMF | `Financial:Imf` | `ImfRateProviderOptions` | `WebRateProviderOptions` + report keys | `BaseAddress` (`https://www.imf.org/external/np/fin/data/`), `ReportPath` (`rms_mth.aspx`), `ReportType` (`REP`), `EnableDiskCache` (`true`), `CacheDirectory` (`null` → `bodu-imf`), `RefreshInterval` (12 h), `CurrencyNames` (report label → ISO code, ~35 defaults, merges) | none |
 | Yahoo Finance | `Financial:Yahoo` | `YahooRateProviderOptions` | pair | `BaseAddress` (`https://query1.finance.yahoo.com/`), `ChartPath` (`v8/finance/chart/{symbol}`), `SymbolFormat` (`{from}{to}=X`) | none |
-| OFX | `Financial:Ofx` | `OfxRateProviderOptions` | pair | `BaseAddress` (`https://api.ofx.com/`), `HistoryPath` (`PublicSite.ApiService/SpotRateHistory/{from}/{to}/{start}/{end}`), `DecimalPlaces` (6), `ReportingInterval` (`daily`) | none |
+| OFX | `Financial:Ofx` | `OfxRateProviderOptions` | pair | `BaseAddress` (`https://api.ofx.com/`), `HistoryPath` (`PublicSite.ApiService/SpotRateHistory/{from}/{to}/{start}/{end}`), `DecimalPlaces` (6), `ReportingInterval` (`daily`), `FutureClampSkew` (`00:00:00`; subtracted from the current instant when capping a request's end bound) | none |
 | XE.com | `Financial:Xe` | `XeRateProviderOptions` | pair | `BaseAddress` (`https://www.xe.com/`), `ChartingRatesPath` (`api/protected/charting-rates/`), `AuthBootstrapUrl` (`https://www.xe.com/currencycharts`), `AuthScriptBaseUrl` (`https://www.xe.com/_next/`) | none (token scraped at runtime) |
 | OANDA | `Financial:Oanda` | `OandaRateProviderOptions` | pair | `BaseAddress` (`https://fxds-hcc.oanda.com/`), `UpdatePath` (`api/data/update/`), `PrimePath` (`""`), `Source` (`OANDA`), `Price` (`mid`; `bid`/`ask`), `Period` (`daily`), `Adjustment` (0) | none |
 | Fixer | `Financial:Fixer` | `FixerRateProviderOptions` | pair | `BaseAddress` (`https://data.fixer.io/api/`), `TimeSeriesPath` (`timeseries`), `HistoricalPath` (`{date}`) | `ApiKey` → `access_key` query parameter |
@@ -320,7 +320,7 @@ builder.Services
 
 The key goes on the wire as a query parameter (`access_key` for Fixer and exchangerate.host,
 `api_key` for FRED), which is the endpoints' own convention - so avoid logging request URIs at
-`Information` in production. XE needs no key: its provider recovers the endpoint's bearer token
+`Information` in production. XE needs no key: its provider recovers the endpoint's `Authorization: Basic` credential
 from the public site at runtime.
 
 ## Pattern 5 - resilience and the `HttpClient`

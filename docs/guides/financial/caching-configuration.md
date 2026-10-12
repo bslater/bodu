@@ -368,7 +368,7 @@ host's lifetime:
 | `AddAggregatedRateProvider` | keyed `IDatedRateProvider` per child name | singleton per child (`TryAddKeyedSingleton`) |
 | | <xref:Bodu.Financial.ExchangeRates.Caching.AggregatingRateProvider>, `IDatedRateProvider`, `IRateProvider` | one singleton under all three |
 | `AddSqliteRateCache(name)` | keyed `SqliteRateCache` / `IRateCache` per name; default `IRateCache` | one instance per provider name, each with its own keep-alive connection; the first registered is also the unkeyed default |
-| `AddDistributedRateCache(name)` / `AddRedisRateCache` | `DistributedRateCache`, `IRateCache`, keyed `IRateCache` | one instance per host (see the note in Pattern 3) |
+| `AddDistributedRateCache(name)` / `AddRedisRateCache` | keyed `DistributedRateCache` / `IRateCache` per name; default `DistributedRateCache` and `IRateCache` | one instance per provider name over the shared `IDistributedCache`; the first registered is also the unkeyed default (see the note in Pattern 3) |
 | `AddRateCacheWarmup` | `IHostedService` | one hosted service, runs once at start |
 
 The container disposes each singleton on shutdown; a cached provider does not dispose the inner
