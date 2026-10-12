@@ -24,7 +24,7 @@ The synchronous getters (`GetRate`, `TryGetRate`, `GetRates`) resolve against th
 
 ## Bulk provider vs pair provider
 
-<xref:Bodu.Financial.ExchangeRates.WebRateProvider> is the root base. A **bulk** provider (RBA, ECB, BoE, IMF) derives from it directly: the feed publishes one base currency against many quotes, so a load brings in every pair at once and the provider tracks coverage per feed, era, or window. Only direct (`base→X`) and inverse (`X→base`) pairs resolve; a cross pair such as `USD→JPY` on the ECB provider is rejected with <xref:Bodu.Financial.ExchangeRates.RateSeriesNotFoundException> before any download.
+<xref:Bodu.Financial.ExchangeRates.WebRateProvider> is the root base. A **bulk** provider (RBA, ECB, BoE, IMF) derives from it directly: the feed publishes one base currency against many quotes, so a load brings in every pair at once and the provider tracks coverage per feed, era, or window. Only direct (`base→X`) and inverse (`X→base`) pairs resolve. The range and warm-up members (`GetRates`, `GetRatesAsync`, `LoadPairAsync`) reject a cross pair such as `USD→JPY` on the ECB provider with <xref:Bodu.Financial.ExchangeRates.RateSeriesNotFoundException> before any download; a single-date `GetRateAsync` downloads first and then throws a plain `KeyNotFoundException`, and the synchronous point lookups report a miss.
 
 <xref:Bodu.Financial.ExchangeRates.PairWebRateProvider`1> is the **pair** specialization (Yahoo, OFX, XE, OANDA, Fixer, exchangerate.host, FRED). It implements coverage tracking with a gap-aware per-pair <xref:Bodu.Financial.ExchangeRates.DateRangeCoverage> set - a request that straddles an unfetched interior gap is treated as uncovered and fetched - and delegates the actual fetch-and-parse to an <xref:Bodu.Financial.ExchangeRates.IPairRateSource`1>. The `TSeries` type parameter is the feed-specific series metadata (`YahooSeriesInfo`, `FixerSeriesInfo`, …) that `GetAvailablePairs()` returns.
 
@@ -56,7 +56,7 @@ Every web provider implements <xref:Bodu.Financial.ExchangeRates.IHistoricalRate
 | `RateHistoryAvailability.RollingDays(n)` | `Rolling` | Only the last `n` days relative to the current date - OANDA's anonymous endpoint (~180 days), or the ECB provider when only rolling feeds are configured. |
 | `RateHistoryAvailability.Since(date)` | `Since` | Data exists from a fixed epoch - Fixer's 1999-01-01, the ECB full-history feed's 1999-01-04. |
 
-`GetEarliestAvailable(asOf)` and `IsAvailable(date, asOf)` let a caller - or the [caching layer](../../guides/financial/exchange-rate-caching.md#respecting-advertised-history) - avoid asking for dates the feed has declared unavailable. Pair providers read the value from `WebRateProviderOptions.HistoryAvailability`; bulk providers derive it from their feed configuration.
+`GetEarliestAvailable(asOf)` and `IsAvailable(date, asOf)` let a caller - or the [caching layer](../../guides/financial/exchange-rate-caching.md#respecting-advertised-history) - avoid asking for dates the feed has declared unavailable. Pair providers read the value from `WebRateProviderOptions.HistoryAvailability`, and the BoE and IMF providers from the `HistoryAvailability` property of their own options; the ECB and RBA providers derive it from their feed and era configuration.
 
 ## Payload cache vs rate cache
 
@@ -67,7 +67,7 @@ Two caches with different jobs:
 | Lives in | This package (<xref:Bodu.Financial.ExchangeRates.IByteCache`1>, <xref:Bodu.Financial.ExchangeRates.FileSystemByteCache`1>) and the bulk provider packages | `Bodu.Financial.ExchangeRates.Caching` (<xref:Bodu.Financial.ExchangeRates.Caching.CachingRateProvider>) |
 | Stores | The **raw bytes** of a downloaded file, keyed by download unit (an ECB feed, an RBA era, an IMF report month) | **Parsed, resolved rates** plus the fetched-window coverage, per provider and pair |
 | Purpose | Avoid re-downloading immutable history across process restarts | Serve repeated lookups without consulting the provider at all; share across processes and machines |
-| Freshness | A file older than the options' `RefreshInterval` is re-downloaded | Per-provider expiry, jitter, and refresh-ahead |
+| Freshness | A file older than the options' `RefreshInterval` is re-downloaded - except that RBA refreshes only its current era, on `CurrentEraRefreshInterval`, and closed RBA eras and closed IMF months never refresh | Per-provider expiry, jitter, and refresh-ahead |
 | Configured by | `EnableDiskCache`, `CacheDirectory`, `RefreshInterval` on the bulk providers' options | `AddCachedRateProvider` and the `IRateCache` backends |
 
 The payload cache is **best-effort**: an I/O failure while reading is a miss, a failure while writing is swallowed (and logged when a logger is supplied), so a cache problem never breaks rate retrieval. Pair providers keep no payload cache - each pair-and-window request is a distinct query - and rely on in-memory coverage and, optionally, the rate cache.
@@ -93,14 +93,14 @@ A provider registered through `AddWebRateProvider` (every `Add<Source>ExchangeRa
 | Situation | Surfaces as | Where |
 |---|---|---|
 | A date the snapshot cannot resolve under the lookup options | `TryGetRate` returns `false`; `GetRate` / `GetRateAsync` throw `KeyNotFoundException` | Every provider |
-| A pair a single-base feed does not quote (cross pair) | <xref:Bodu.Financial.ExchangeRates.RateSeriesNotFoundException> (a `KeyNotFoundException`) | Bulk providers, before any download |
+| A pair a single-base feed does not quote (cross pair) | <xref:Bodu.Financial.ExchangeRates.RateSeriesNotFoundException> (a `KeyNotFoundException`) | Bulk providers' `GetRates`, `GetRatesAsync`, and `LoadPairAsync`, before any download; a single-date lookup reports an ordinary miss |
 | An inverted date range (`endDate < startDate`), a malformed ISO code | `ArgumentException` (`ArgumentNullException` for a null code) | Range and warm-up surfaces |
 | Invalid options (`BaseAddress` null, non-positive timeout, missing API key, …) | `ArgumentException` from the constructor; with DI, an options-validation failure at startup (`ValidateOnStart`) | Construction / registration |
 | A downloaded payload that cannot be parsed | <xref:Bodu.Financial.ExchangeRates.ExchangeRateFormatException> (a `FormatException`) | The fetch, propagated to the caller that triggered it |
 | A transport failure (DNS, connection, non-success status) | `HttpRequestException` - on the DI path, after the resilience pipeline has exhausted its retries | The fetch |
 | A per-request timeout on an owned client | `TaskCanceledException` (the `HttpClient` convention) | The fetch |
 | A synchronous fetch attempted on a thread with a `SynchronizationContext` | `InvalidOperationException` | Synchronous getters with `AllowSynchronousNetworkAccess` enabled |
-| Any member after `Dispose()` | `ObjectDisposedException` | Every provider |
+| A lookup, range, load, or snapshot member after `Dispose()` | `ObjectDisposedException` | Every provider (`GetAvailablePairs`, `HistoryAvailability`, and the feed warm-ups such as `LoadRangeAsync` and `PreloadAsync` do not check) |
 
 Fetch failures are logged at `DownloadFailedLogLevel` (`Warning` by default) and rethrown; the pair base logs anything other than a transport, I/O, or format failure under a distinct error event so a bug is not mislabelled as a feed problem. Cancellation is never logged.
 
@@ -108,7 +108,7 @@ Fetch failures are logged at `DownloadFailedLogLevel` (`Warning` by default) and
 
 A provider is designed to be **long-lived**: its value is the accumulated snapshot. The DI registration makes it a singleton and exposes the same instance as `IDatedRateProvider` and `IRateProvider` (idempotent `TryAdd` registrations, so the first registered provider wins each contract).
 
-The options-only constructor **owns** the `HttpClient` it builds and disposes it with the provider. The constructor that accepts an `HttpClient` leaves the client's lifetime - and its user agent and timeout - to the caller; that is the shape `AddWebRateProvider` uses with `IHttpClientFactory`. Dispose an owned provider when it goes out of scope; after disposal every public member throws `ObjectDisposedException`, but snapshots already handed out through `GetLoadedBook()` / `GetLoadedSnapshot()` stay valid because they are immutable.
+The options-only constructor **owns** the `HttpClient` it builds and disposes it with the provider. The constructor that accepts an `HttpClient` leaves the client's lifetime - and its user agent and timeout - to the caller; that is the shape `AddWebRateProvider` uses with `IHttpClientFactory`. Dispose an owned provider when it goes out of scope; after disposal the lookup, range, load, and snapshot members throw `ObjectDisposedException`, but snapshots already handed out through `GetLoadedBook()` / `GetLoadedSnapshot()` stay valid because they are immutable.
 
 ## Thread safety
 

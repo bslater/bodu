@@ -215,7 +215,7 @@ The bulk providers (ECB, BoE, RBA, IMF) keep a best-effort on-disk cache of the 
 
 | Member | Default | Effect |
 |---|---|---|
-| `EnableDiskCache` | `true` (ECB, BoE, IMF); `false` (RBA) | `false` substitutes the no-op <xref:Bodu.Financial.ExchangeRates.NullByteCache`1> - nothing is written or read. |
+| `EnableDiskCache` | `true` (ECB, BoE, IMF); `false` (RBA) | `false` substitutes a no-op cache - <xref:Bodu.Financial.ExchangeRates.NullByteCache`1>, or IMF's own null report cache - so nothing is written or read. |
 | `CacheDirectory` | `null` | The folder that holds one file per download unit. `null` or blank resolves to a provider-named folder under the system temporary path - `bodu-ecb`, `bodu-boe`, `bodu-rba`, `bodu-imf` beneath `Path.GetTempPath()`. |
 | `RefreshInterval` | 12 hours | A cached file older than this is re-downloaded, so a feed that gains a new observation is refreshed. |
 

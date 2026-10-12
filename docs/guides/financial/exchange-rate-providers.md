@@ -22,8 +22,8 @@ caching; that is added in front (see the caching guide).
 | Bank of England | `Bodu.Financial.ExchangeRates.Boe` | GBP | CSV over a date **window** | since 1975‑01‑02 (daily spot inception) | `AddBoeExchangeRates()` |
 | Yahoo Finance | `Bodu.Financial.ExchangeRates.Yahoo` | *any pair* | per-**ticker** chart JSON | since 2003‑12‑01 (chart inception) | `AddYahooExchangeRates()` |
 | OFX (ofx.com) | `Bodu.Financial.ExchangeRates.Ofx` | *any pair* | per-**pair** spot-rate-history JSON | unbounded (multi-decade, no published floor) | `AddOfxExchangeRates()` |
-| XE.com | `Bodu.Financial.ExchangeRates.Xe` | *any pair* | per-**pair** charting-rates JSON | rolling ~10 years (server-determined, estimated) | `AddXeExchangeRates()` |
-| OANDA | `Bodu.Financial.ExchangeRates.Oanda` | *any pair* | per-**pair** rate-history JSON | rolling ~180 days | `AddOandaExchangeRates()` |
+| XE.com | `Bodu.Financial.ExchangeRates.Xe` (not on nuget.org) | *any pair* | per-**pair** charting-rates JSON | rolling ~10 years (server-determined, estimated) | `AddXeExchangeRates()` |
+| OANDA | `Bodu.Financial.ExchangeRates.Oanda` (not on nuget.org) | *any pair* | per-**pair** rate-history JSON | rolling ~180 days | `AddOandaExchangeRates()` |
 | Fixer (fixer.io) | `Bodu.Financial.ExchangeRates.Fixer` | *any pair* | per-**pair** time-series / single-date JSON (`access_key`) | since 1999‑01‑01 | `AddFixerExchangeRates()` |
 | exchangerate.host | `Bodu.Financial.ExchangeRates.ExchangeRateHost` | *any pair* | per-**pair** time-series / single-date JSON (`access_key`) | since 1999‑01‑01 | `AddExchangeRateHostExchangeRates()` |
 | FRED (St. Louis Fed) | `Bodu.Financial.ExchangeRates.Fred` | *mapped pairs* | per-**pair** `series_id` observations JSON (`api_key`) | unbounded (per series) | `AddFredExchangeRates()` |
@@ -198,8 +198,8 @@ RateLookupResult inverse = ecb.GetRate("USD", "EUR", new DateOnly(2023, 1, 3)); 
 
 [`BoeRateProvider`](xref:Bodu.Financial.ExchangeRates.BoeRateProvider)
 serves the Bank of England daily spot rates, downloaded as CSV over a requested
-date **window**. A synchronous miss loads a window around the requested date;
-`LoadRangeAsync` warms an explicit range. Options are
+date **window**. With `AllowSynchronousNetworkAccess` on, a synchronous miss loads the
+look-back window ending on the requested date; `LoadRangeAsync` warms an explicit range. Options are
 [`BoeRateProviderOptions`](xref:Bodu.Financial.ExchangeRates.BoeRateProviderOptions).
 
 ```csharp
@@ -308,7 +308,9 @@ destination currency as the quote symbol. Set the `access_key` through
 > Fixer's free plan is locked to a EUR base and to the latest and single-date
 > endpoints; changing the base currency and the time-series endpoint require a paid
 > plan. A request the plan does not permit surfaces as a fetch failure, so on the free
-> plan request pairs whose source currency is EUR (or rely on the inverse fallback).
+> plan request pairs whose source currency is EUR. A request for the reverse pair sends that
+> pair's own source currency as the base, so to read `USD/EUR` warm `EUR/USD` first; its
+> reverse then resolves by inversion from the loaded series.
 
 ```csharp
 using Bodu.Financial.ExchangeRates;
@@ -487,13 +489,13 @@ condition, and where in the call chain it surfaces:
 | Exception | Raised when | Surfaces from |
 |---|---|---|
 | `KeyNotFoundException` | A pair the provider covers has no observation on the requested date under the lookup options - the ordinary miss. `TryGetRate` returns `false` for the same case. | `GetRate` / `GetRateAsync`, after any fetch the call was allowed to make |
-| <xref:Bodu.Financial.ExchangeRates.RateSeriesNotFoundException> (a `KeyNotFoundException`) | A single-base feed is asked for a pair it structurally cannot carry - `USD/JPY` on the ECB, a cross pair on RBA, BoE, or IMF. Thrown by `ValidateRangeRequest` **before any download**. Catch it ahead of the base type to tell "never" from "not today". | `GetRates` / `GetRatesAsync` / `LoadPairAsync` / `LoadRangeAsync` |
+| <xref:Bodu.Financial.ExchangeRates.RateSeriesNotFoundException> (a `KeyNotFoundException`) | A single-base feed is asked for a pair it structurally cannot carry - `USD/JPY` on the ECB, a cross pair on RBA, BoE, or IMF. Thrown by `ValidateRangeRequest` **before any download**. Catch it ahead of the base type to tell "never" from "not today". | `GetRates` / `GetRatesAsync` / `LoadPairAsync` |
 | <xref:Bodu.Financial.ExchangeRates.ExchangeRateFormatException> (a `FormatException`) | A downloaded payload is malformed or lacks the expected rows (a maintenance page, an API error envelope, a changed schema). Never retried by the resilience pipeline. | The call that triggered the fetch: a warm-up, an asynchronous lookup, or a synchronous lookup with `AllowSynchronousNetworkAccess` on |
 | `HttpRequestException` | DNS, connection, TLS, or a non-success status. On a hand-built provider it is immediate; under DI it appears only after the standard resilience handler has exhausted its retries and timeouts. | The call that triggered the fetch |
 | `TaskCanceledException` | The per-request timeout of a provider-owned `HttpClient` (`HttpTimeout`), or the caller's token. | The call that triggered the fetch |
 | `InvalidOperationException` | `AllowSynchronousNetworkAccess` is `true`, a synchronous lookup misses, and the calling thread carries a `SynchronizationContext` - blocking there could deadlock, so the provider refuses. With the option at its default `false`, a synchronous miss is simply a miss (row 1) and never reaches the network. | Synchronous `GetRate` / `TryGetRate` / `GetRates` |
 | `ArgumentException` / `ArgumentNullException` | A malformed or null ISO code, an inverted range (`endDate < startDate`), or options that fail `Validate` in a constructor. | Argument validation, before any work |
-| `ObjectDisposedException` | Any member after `Dispose()`. Snapshots already handed out stay valid. | Every public member |
+| `ObjectDisposedException` | A lookup, range, load, or snapshot member after `Dispose()`. Snapshots already handed out stay valid. | The lookup, range, `LoadPairAsync`, and snapshot members; `GetAvailablePairs`, `HistoryAvailability`, and the feed warm-ups such as `LoadRangeAsync` do not check |
 
 Each case, exercised against the ECB provider over a
 `StubHttpMessageHandler` (the two-day `eurofxref`
