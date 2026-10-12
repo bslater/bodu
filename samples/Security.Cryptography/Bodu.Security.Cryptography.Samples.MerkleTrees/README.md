@@ -6,8 +6,8 @@ commitment (roots and proofs), the length-bound root that closes RFC 6962's tree
 guarantee, the blocked/streaming/async surface, write-time accumulation, the fan-out and parallelism knobs, and
 the diagnostics trace.
 
-Everything runs offline and deterministically: every input is fixed, and the appendix D vectors are reproduced
-byte for byte so the roots can be checked against the RFC by eye.
+Everything runs offline and deterministically: every input is fixed, and the appendix D vectors of the Merkle
+requirements document are reproduced byte for byte so the roots can be checked against them by eye.
 
 ```bash
 dotnet run --project samples/Security.Cryptography/Bodu.Security.Cryptography.Samples.MerkleTrees
@@ -102,7 +102,7 @@ rejects all three misstatements:
   13 and 14 bytes are both 4 blocks, bound roots differ: True
 ```
 
-All three hex values are the published appendix D vectors, so this scenario doubles as a conformance check you can
+All three hex values are the requirements document's appendix D vectors, so this scenario doubles as a conformance check you can
 eyeball. The last line is why the library binds the *byte length* rather than the block count in block mode: it is
 strictly stronger, because it also pins the final block's length. `BindRoot` computes
 `H(0x02 ‖ u64_be(length) ‖ root)` and is an addition to RFC 6962, not part of it.

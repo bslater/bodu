@@ -30,7 +30,7 @@ public static class SizeBinding
 
         var tree = new MerkleTree(SHA256.Create);
 
-        // A 16-byte payload cut into four 4-byte blocks - a four-leaf tree. These are the RFC 6962 appendix D vectors.
+        // A 16-byte payload cut into four 4-byte blocks - a four-leaf tree. These are the requirements document's appendix D vectors.
         var input = SampleLog.Payload(16);
         var blocks = SampleLog.Cut(input, BlockSize);
 
