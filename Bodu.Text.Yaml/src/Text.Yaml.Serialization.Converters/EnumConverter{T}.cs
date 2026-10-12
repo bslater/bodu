@@ -54,9 +54,16 @@ namespace Bodu.Text.Yaml.Serialization.Converters;
 /// value that is neither a member nor a combination of defined flags throws <see cref="YamlSerializationException" />
 /// on write, as <c>JsonStringEnumConverter</c> refuses to write it when integers are not allowed.
 /// </para>
+/// <para>
+/// The keys of a dictionary keyed by <typeparamref name="T" /> are read and written by the same names and the same rule
+/// for integer values, through <see cref="IEnumKeyConverter{T}" />, as System.Text.Json's enum converter reads and
+/// writes property names: a key is always written by name, whatever
+/// <see cref="YamlSerializerOptions.WriteEnumsAsStrings" /> says, and a key whose value has no name is written as its
+/// decimal text whatever the rule for integer values says.
+/// </para>
 /// </remarks>
 internal sealed class EnumConverter<T>
-    : YamlConverter<T>
+    : YamlConverter<T>, IEnumKeyConverter<T>
     where T : struct, Enum
 {
     /// <summary>The naming policy applied to member names, or <see langword="null" /> to use member names unchanged.</summary>
@@ -70,6 +77,9 @@ internal sealed class EnumConverter<T>
 
     /// <summary>The members' wire names, and the CLR names that also bind, in both directions.</summary>
     private readonly EnumNameTable<T> _names;
+
+    /// <summary>Reads and writes the keys of a dictionary keyed by <typeparamref name="T" />.</summary>
+    private readonly EnumKeyConverter<T> _keys;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="EnumConverter{T}" /> class that applies no naming policy, accepts
@@ -107,6 +117,7 @@ internal sealed class EnumConverter<T>
         _allowIntegerValues = allowIntegerValues;
         _alwaysWriteNames = alwaysWriteNames;
         _names = new EnumNameTable<T>(namingPolicy);
+        _keys = new EnumKeyConverter<T>(_names, allowIntegerValues);
     }
 
     /// <inheritdoc />
@@ -188,4 +199,12 @@ internal sealed class EnumConverter<T>
     private static YamlSerializationException ValueNotFound(string text) =>
         new(string.Format(
             CultureInfo.CurrentCulture, YamlResourceStrings.Op_Invalid_EnumValueNotFound, text, typeof(T)));
+
+    /// <inheritdoc />
+    bool IEnumKeyConverter<T>.TryReadKey(string text, out T value) =>
+        _keys.TryReadKey(text, out value);
+
+    /// <inheritdoc />
+    string IEnumKeyConverter<T>.WriteKey(T value) =>
+        _keys.WriteKey(value);
 }

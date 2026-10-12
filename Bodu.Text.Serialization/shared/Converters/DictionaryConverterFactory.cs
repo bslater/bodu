@@ -59,8 +59,28 @@ internal sealed class DictionaryConverterFactory
 
         _ = TryGetInfo(typeToConvert, out Type? keyType, out Type? valueType, out DictionaryKeyKind keyKind, out bool concrete);
         FormatConverter valueConverter = options.GetConverter(valueType!);
+        object? enumKeyConverter = keyKind == DictionaryKeyKind.Enum ? GetEnumKeyConverter(keyType!, options) : null;
         Type converterType = typeof(DictionaryConverter<,,>).MakeGenericType(typeToConvert, keyType!, valueType!);
-        return (FormatConverter)Activator.CreateInstance(converterType, valueConverter, keyKind, concrete)!;
+        return (FormatConverter)Activator.CreateInstance(converterType, valueConverter, keyKind, concrete, enumKeyConverter)!;
+    }
+
+    /// <summary>
+    /// Gets the converter that reads and writes the keys of a dictionary keyed by an enumeration.
+    /// </summary>
+    /// <param name="keyType">The enumeration key type.</param>
+    /// <param name="options">The options whose converter for <paramref name="keyType" /> is consulted.</param>
+    /// <returns>
+    /// The by-name converter the options resolve for <paramref name="keyType" />, so that keys follow its names, naming
+    /// policy, and rule for integer values; otherwise an <see cref="EnumKeyConverter{T}" /> that reads and writes keys
+    /// by the members' wire names, as System.Text.Json does for an enumeration with no string enum converter.
+    /// </returns>
+    private static object GetEnumKeyConverter(Type keyType, FormatOptions options)
+    {
+        FormatConverter keyConverter = options.GetConverter(keyType);
+        if (typeof(IEnumKeyConverter<>).MakeGenericType(keyType).IsInstanceOfType(keyConverter))
+            return keyConverter;
+
+        return Activator.CreateInstance(typeof(EnumKeyConverter<>).MakeGenericType(keyType))!;
     }
 
     /// <summary>

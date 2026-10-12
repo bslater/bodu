@@ -31,6 +31,11 @@ namespace Bodu.Text.Toml.Serialization.Converters;
 /// narrowed into that type. An integer inside a list never binds.
 /// </para>
 /// <para>
+/// The keys of a dictionary keyed by <typeparamref name="T" /> are read and written by the same names and the same rule
+/// for integer values, through <see cref="IEnumKeyConverter{T}" />, as System.Text.Json's enum converter reads and
+/// writes property names: a key whose value has no name is written as its decimal text whatever that rule says.
+/// </para>
+/// <para>
 /// When <see cref="_allowIntegerValues" /> is <see langword="false" /> an integer token throws, and so does a string
 /// that is not a name and holds an integer in any of its comma-separated parts, such as <c>2</c>, <c> +2 </c> or
 /// <c>Read, 2</c>, as <see cref="EnumIntegerConversion.ContainsIntegerText(ReadOnlySpan{char})" /> determines: the
@@ -43,7 +48,7 @@ namespace Bodu.Text.Toml.Serialization.Converters;
 /// </para>
 /// </remarks>
 internal sealed class EnumConverter<T>
-    : SharedConverter<T>
+    : SharedConverter<T>, IEnumKeyConverter<T>
     where T : struct, Enum
 {
     /// <summary>The naming policy applied to member names, or <see langword="null" /> to use member names unchanged.</summary>
@@ -54,6 +59,9 @@ internal sealed class EnumConverter<T>
 
     /// <summary>The members' wire names, and the CLR names that also bind, in both directions.</summary>
     private readonly EnumNameTable<T> _names;
+
+    /// <summary>Reads and writes the keys of a dictionary keyed by <typeparamref name="T" />.</summary>
+    private readonly EnumKeyConverter<T> _keys;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="EnumConverter{T}" /> class.
@@ -75,6 +83,7 @@ internal sealed class EnumConverter<T>
         _namingPolicy = namingPolicy;
         _allowIntegerValues = allowIntegerValues;
         _names = new EnumNameTable<T>(namingPolicy);
+        _keys = new EnumKeyConverter<T>(_names, allowIntegerValues);
     }
 
     /// <inheritdoc />
@@ -115,4 +124,12 @@ internal sealed class EnumConverter<T>
 
         writer.WriteString(text);
     }
+
+    /// <inheritdoc />
+    bool IEnumKeyConverter<T>.TryReadKey(string text, out T value) =>
+        _keys.TryReadKey(text, out value);
+
+    /// <inheritdoc />
+    string IEnumKeyConverter<T>.WriteKey(T value) =>
+        _keys.WriteKey(value);
 }

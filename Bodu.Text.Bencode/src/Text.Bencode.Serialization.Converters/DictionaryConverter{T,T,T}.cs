@@ -24,14 +24,19 @@ namespace Bodu.Text.Bencode.Serialization.Converters;
 /// <remarks>
 /// <para>
 /// Bencode dictionary keys are byte strings, so a non-string key is converted to round-trippable invariant-culture text
-/// on write and parsed back on read: integers use decimal text, enumerations use the member name produced by
-/// <see cref="Enum.ToString()" /> (decimal or comma-separated fallback for undefined or combined values, matched
-/// case-insensitively on read), <see cref="Guid" /> uses the hyphenated "D" format, <see cref="bool" /> uses
-/// <c>True</c>/<c>False</c>, and <see cref="char" /> uses a single-character string. Key stringification ignores naming
-/// policies and <see cref="StringEnumMemberNameAttribute" />; dictionary keys are treated independently of value
-/// converters. The writer's canonical ordering applies to the stringified keys, so entries are emitted in ascending
-/// bytewise order of their text form. A key that cannot be parsed back surfaces as a
-/// <see cref="BencodeSerializationException" />.
+/// on write and parsed back on read: integers use decimal text, <see cref="Guid" /> uses the hyphenated "D" format,
+/// <see cref="bool" /> uses <c>True</c>/<c>False</c>, and <see cref="char" /> uses a single-character string. The
+/// writer's canonical ordering applies to the stringified keys, so entries are emitted in ascending bytewise order of
+/// their text form. A key that cannot be parsed back surfaces as a <see cref="BencodeSerializationException" />.
+/// </para>
+/// <para>
+/// An enumeration key is read and written as System.Text.Json reads and writes an enumeration used as a property name,
+/// through <see cref="IEnumKeyConverter{T}" />. When the options resolve a <see cref="BencodeStringEnumConverter" />
+/// for the key type, keys follow its names, its naming policy and its rule for integer values; otherwise keys use the
+/// members' names, honoring <see cref="StringEnumMemberNameAttribute" />, with no naming policy, and integer text
+/// binds. A member is written by its name and a combination of flags by its flags' names joined by <c>", "</c>; any
+/// other value is written as its decimal text. A name binds as written, and the name of a member that
+/// <see cref="StringEnumMemberNameAttribute" /> does not rename also binds in any case.
 /// </para>
 /// <para>
 /// Bencode has no null token, so an entry whose value is <see langword="null" /> is omitted from the output rather than
@@ -52,22 +57,32 @@ internal sealed class DictionaryConverter<TDictionary, TKey, TValue>
     /// <summary>Indicates whether the declared type is a concrete dictionary that must be instantiated and populated.</summary>
     private readonly bool _concrete;
 
+    /// <summary>Reads and writes an enumeration key, or <see langword="null" /> when <typeparamref name="TKey" /> is not an enumeration.</summary>
+    private readonly IEnumKeyConverter<TKey>? _enumKeys;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="DictionaryConverter{TDictionary, TKey, TValue}" /> class.
     /// </summary>
     /// <param name="valueConverter">The converter for the value type.</param>
     /// <param name="keyKind">The kind of key conversion to apply.</param>
     /// <param name="concrete">Whether the declared type is a concrete dictionary.</param>
+    /// <param name="enumKeys">
+    /// The converter that reads and writes an enumeration key, or <see langword="null" /> when
+    /// <typeparamref name="TKey" /> is not an enumeration.
+    /// </param>
     /// <exception cref="ArgumentNullException">
-    /// Thrown when <paramref name="valueConverter" /> is <see langword="null" />.
+    /// Thrown when <paramref name="valueConverter" /> is <see langword="null" />, or when <paramref name="keyKind" />
+    /// is <see cref="DictionaryKeyKind.Enum" /> and <paramref name="enumKeys" /> is <see langword="null" />.
     /// </exception>
-    public DictionaryConverter(BencodeConverter valueConverter, DictionaryKeyKind keyKind, bool concrete)
+    public DictionaryConverter(BencodeConverter valueConverter, DictionaryKeyKind keyKind, bool concrete, IEnumKeyConverter<TKey>? enumKeys)
     {
         ThrowHelper.ThrowIfNull(valueConverter);
+        if (keyKind == DictionaryKeyKind.Enum) ThrowHelper.ThrowIfNull(enumKeys);
 
         _valueConverter = valueConverter;
         _keyKind = keyKind;
         _concrete = concrete;
+        _enumKeys = enumKeys;
     }
 
     /// <inheritdoc />
@@ -141,6 +156,7 @@ internal sealed class DictionaryConverter<TDictionary, TKey, TValue>
             DictionaryKeyKind.String => (string)(object)key,
             DictionaryKeyKind.Integer => ((IFormattable)key).ToString(null, CultureInfo.InvariantCulture),
             DictionaryKeyKind.Guid => ((Guid)(object)key).ToString("D", CultureInfo.InvariantCulture),
+            DictionaryKeyKind.Enum => _enumKeys!.WriteKey(key),
             _ => key.ToString()!,
         };
 
@@ -173,8 +189,8 @@ internal sealed class DictionaryConverter<TDictionary, TKey, TValue>
                 }
 
             case DictionaryKeyKind.Enum:
-                return Enum.TryParse(typeof(TKey), text, ignoreCase: true, out object? parsedEnum)
-                    ? (TKey)parsedEnum
+                return _enumKeys!.TryReadKey(text, out TKey parsedEnum)
+                    ? parsedEnum
                     : throw KeyParseException(text);
 
             case DictionaryKeyKind.Guid:
