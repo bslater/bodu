@@ -55,12 +55,14 @@ The primitives provided here exist mainly to cover what the BCL does not ship (B
 | Rabbit | RFC 4503 (eSTREAM) | 128 | 64 | Legacy / compat | |
 | HC-128 | eSTREAM portfolio | 128 | 128 | Legacy / compat | |
 
-The AEAD stream constructions pair a stream cipher with Poly1305: `ChaCha20-Poly1305` (RFC 8439), `XChaCha20-Poly1305`, and `XSalsa20-Poly1305` (NaCl `secretbox`). Each is single-use per message and verifies the tag with `CryptographicOperations.FixedTimeEquals`.
+The AEAD stream constructions pair an extended-nonce stream cipher with Poly1305: `XChaCha20Poly1305`, `XSalsa20Poly1305Aead` (XSalsa20 with the RFC 8439 Poly1305 framing), and `XSalsa20Poly1305` (NaCl `crypto_secretbox`, without associated data). Each takes a 192-bit nonce, is single-use per message, and verifies the tag with `CryptographicOperations.FixedTimeEquals`. For the 96-bit-nonce ChaCha20-Poly1305 of RFC 8439, use the BCL's `System.Security.Cryptography.ChaCha20Poly1305`.
 
 ### Asymmetric algorithms
 
-All asymmetric types derive from `System.Security.Cryptography.AsymmetricAlgorithm` and support only the raw byte
-encodings of their defining specification (PKCS#8 / SubjectPublicKeyInfo DER import/export is not implemented).
+All asymmetric types derive from `System.Security.Cryptography.AsymmetricAlgorithm` and import and export the raw byte
+encodings of their defining specification. X25519 and Ed25519 also implement the PKCS#8 and SubjectPublicKeyInfo DER
+formats of RFC 8410, and the RFC 7468 PEM forms through the inherited `ImportFromPem` and `Export*Pem` members;
+encrypted PKCS#8 is not supported. ML-KEM and ML-DSA use only the raw encodings of FIPS 203 and FIPS 204.
 Private key material is zeroed on dispose and exports return defensive copies.
 
 | Algorithm | Kind | Standard | Key / output sizes (bytes) | Notes | KAT source |
