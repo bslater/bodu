@@ -97,9 +97,10 @@ namespace Bodu.Text.Yaml.Serialization;
 /// constructor so it can be used through the converter attribute. The produced converter writes the numeric value
 /// regardless of <see cref="Bodu.Text.Yaml.YamlSerializerOptions.WriteEnumsAsStrings" />. On read an integer scalar
 /// outside the range of the underlying type of <typeparamref name="TEnum" /> throws
-/// <see cref="Bodu.Text.Yaml.YamlSerializationException" /> rather than being narrowed into that type; the scalar must
-/// be a YAML integer, a signed 64-bit value, so an enumeration based on <see cref="ulong" /> reads integers up to
-/// <see cref="long.MaxValue" />.
+/// <see cref="Bodu.Text.Yaml.YamlSerializationException" /> rather than being narrowed into that type. YAML resolves a
+/// plain integer above <see cref="long.MaxValue" /> as a string, which an enumeration based on <see cref="ulong" />
+/// also reads, up to <see cref="ulong.MaxValue" />, as a <see cref="ulong" /> member reads it; a quoted or tagged
+/// string is rejected.
 /// </remarks>
 /// <example>
 /// <code language="csharp">
