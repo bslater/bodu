@@ -123,6 +123,56 @@ public sealed partial class NotableDateResourceLoaderTests
     }
 
     /// <summary>
+    /// Verifies that a strategy value outside the strategy's range is reported as a <c>BODU-CAL-STRATEGY</c> error
+    /// diagnostic, so linting such a document needs no exception handling.
+    /// </summary>
+    [TestMethod]
+    public void TryLoad_WhenStrategyValueIsOutOfRange_ShouldReportStrategyDiagnostic()
+    {
+        const string xml = """
+            <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="test.trylad.strategy">
+              <NotableDates>
+                <NotableDate id="x" displayName="X" category="PublicHoliday">
+                  <Rules><Rule id="r"><Strategy><OrdinalDayOfMonth month="February" ordinal="-40" /></Strategy></Rule></Rules>
+                </NotableDate>
+              </NotableDates>
+            </NotableDateResource>
+            """;
+
+        bool loaded = NotableDateResourceLoader.TryLoad(xml, _ => null, out NotableDateResource? resource, out IReadOnlyList<NotableDateValidationDiagnostic> diagnostics);
+
+        Assert.IsFalse(loaded);
+        Assert.IsNull(resource);
+        Assert.Contains(d => d.Code == "BODU-CAL-STRATEGY" && d.Severity == NotableDateValidationSeverity.Error, diagnostics, "BODU-CAL-STRATEGY");
+    }
+
+    /// <summary>
+    /// Verifies that an imported resource whose content is not well-formed is reported as a <c>BODU-CAL-SYNTAX</c> error
+    /// diagnostic naming the import, rather than a <see cref="FormatException" />, through both collect-mode entry
+    /// points.
+    /// </summary>
+    [TestMethod]
+    public void TryLoad_WhenImportIsNotWellFormed_ShouldReportSyntaxDiagnostic()
+    {
+        const string xml = """
+            <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="test.trylad.import">
+              <Imports><Import resource="broken" /></Imports>
+            </NotableDateResource>
+            """;
+        const string json = """{ "schemaVersion": "1.0", "resourceId": "test.trylad.import-json", "imports": [ { "resource": "broken" } ] }""";
+
+        static string? Resolve(string name) =>
+            name == "broken" ? "{ not json" : null;
+
+        bool loadedXml = NotableDateResourceLoader.TryLoad(xml, Resolve, out _, out IReadOnlyList<NotableDateValidationDiagnostic> xmlDiagnostics);
+        bool loadedJson = NotableDateResourceLoader.TryLoadJson(json, Resolve, out _, out IReadOnlyList<NotableDateValidationDiagnostic> jsonDiagnostics);
+
+        Assert.AreEqual((false, false), (loadedXml, loadedJson));
+        Assert.Contains(d => d.Code == "BODU-CAL-SYNTAX" && d.Message.Contains("broken", StringComparison.Ordinal), xmlDiagnostics, "XML import");
+        Assert.Contains(d => d.Code == "BODU-CAL-SYNTAX" && d.Message.Contains("broken", StringComparison.Ordinal), jsonDiagnostics, "JSON import");
+    }
+
+    /// <summary>
     /// Verifies that malformed XML is reported as a <c>BODU-CAL-SYNTAX</c> error diagnostic rather than an exception.
     /// </summary>
     [TestMethod]
