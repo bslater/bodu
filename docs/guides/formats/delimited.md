@@ -43,6 +43,8 @@ List<Trade> trades = DelimitedSerializer.Deserialize<Trade>(csvText, options); /
 string back = DelimitedSerializer.Serialize(trades, options);                  // header row from the record type
 ```
 
+A record is a `string[]`, whose fields are written and read by position, or an object whose public properties (and, with `IncludeFields`, public fields) map to columns. Reading creates each record through its public parameterless constructor, so a record type read back needs one. A scalar, such as `int`, `string`, `decimal`, an enum, `Guid`, a date or time type or `Uri`, and a collection are not records: every `Serialize`, `SerializeAsync`, `Deserialize` and `DeserializeAsyncEnumerableAsync` overload rejects such a record type with `DelimitedSerializationException` before it reads or writes anything, as it rejects a root that is not a collection, a `string` among them. A dictionary is a collection of `KeyValuePair<TKey, TValue>` records, written with `Key` and `Value` columns.
+
 The header row comes from the record type, so serializing an empty collection writes the header row alone, through every `Serialize` and `SerializeAsync` overload; with `NoHeader` it writes nothing. Scalars parse and format with `InvariantCulture`; `[PropertyName]`, `[Ignore]`, `[Required]`, and `[PropertyOrder]` apply per member, and a property hidden with `new` maps once, to the most derived declaration. An empty field, or one of white space only, binds `null` to a nullable value-type member (`int?`, `DateTime?`, `decimal?`, and so on), except a `char?` member, to which only an empty field binds `null`: it converts any other field as a `char` member does, so a single space binds a space. Other members convert the text as it is, so a `string` member keeps the spaces and an `int` member throws `DelimitedSerializationException`. Temporal values are written in invariant round-trip forms that read back equal:
 
 | Type | Written form | Example |
@@ -112,7 +114,7 @@ Strict field counts (the default) are measured against the header row and throw 
 
 ## Exceptions
 
-`DelimitedFormatException` for malformed input (position attached); `DelimitedSerializationException` for binding failures (unsupported record type, missing `[Required]` member, non-convertible value).
+`DelimitedFormatException` for malformed input (position attached); `DelimitedSerializationException` for binding failures (a root that is not a collection, a record type that is not a record or cannot be created, a missing `[Required]` member, a non-convertible value).
 
 ## When *not* to use it
 

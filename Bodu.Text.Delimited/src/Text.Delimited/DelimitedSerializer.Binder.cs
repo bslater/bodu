@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Reflection;
@@ -184,8 +185,15 @@ public static partial class DelimitedSerializer
     /// </summary>
     /// <param name="collectionType">The collection type.</param>
     /// <returns>The record type, or <see langword="null" />.</returns>
+    /// <remarks>
+    /// A <see cref="string" /> is a scalar rather than a collection, although it enumerates its characters, so it has
+    /// no record type.
+    /// </remarks>
     private static Type? GetRecordType(Type collectionType)
     {
+        if (collectionType == typeof(string))
+            return null;
+
         if (collectionType.IsArray)
             return collectionType.GetElementType();
 
@@ -196,6 +204,67 @@ public static partial class DelimitedSerializer
         }
 
         return null;
+    }
+
+    /// <summary>
+    /// Gets the mapped members of a record type, and rejects a type that cannot be a record.
+    /// </summary>
+    /// <param name="recordType">The record type, other than a <see cref="string" /> array.</param>
+    /// <param name="options">The serializer options.</param>
+    /// <param name="reading">
+    /// Whether records of the type are created, which needs a public parameterless constructor.
+    /// </param>
+    /// <returns>The ordered member descriptors.</returns>
+    /// <exception cref="DelimitedSerializationException">
+    /// Thrown when <paramref name="recordType" /> is a scalar or a collection, or when <paramref name="reading" /> is
+    /// <see langword="true" /> and the type has no public parameterless constructor.
+    /// </exception>
+    /// <remarks>
+    /// A scalar converts as one field and a collection holds values rather than columns, so neither is a record,
+    /// although both have public properties (<see cref="string.Length" />, <see cref="DateTime.Year" />,
+    /// <see cref="List{T}.Capacity" />) that would otherwise be mapped as columns. The check is made before anything is
+    /// read or written, so a type that is not a record is rejected whether or not there are records.
+    /// </remarks>
+    [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
+    private static Member[] GetRecordMembers(
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)] Type recordType,
+        DelimitedSerializerOptions options,
+        bool reading)
+    {
+        if (IsScalarType(recordType) || typeof(IEnumerable).IsAssignableFrom(recordType))
+        {
+            throw new DelimitedSerializationException(
+                string.Format(CultureInfo.CurrentCulture, DelimitedResourceStrings.Op_Invalid_DelimitedRecordTypeNotSupported, recordType));
+        }
+
+        if (reading && !recordType.IsValueType && (recordType.IsAbstract || recordType.GetConstructor(Type.EmptyTypes) is null))
+        {
+            throw new DelimitedSerializationException(
+                string.Format(CultureInfo.CurrentCulture, DelimitedResourceStrings.Op_Invalid_DelimitedRecordTypeNotCreatable, recordType));
+        }
+
+        return GetMembers(recordType, options);
+    }
+
+    /// <summary>
+    /// Determines whether a type is a scalar, which converts as one field rather than mapping to columns.
+    /// </summary>
+    /// <param name="type">The type to examine.</param>
+    /// <returns>
+    /// <see langword="true" /> for a primitive, an enumeration, <see cref="string" />, <see cref="decimal" />,
+    /// <see cref="Guid" />, a date or time type, <see cref="Uri" />, a 128-bit or half-precision number,
+    /// <see cref="System.Numerics.BigInteger" />, or the nullable form of any of them; otherwise
+    /// <see langword="false" />.
+    /// </returns>
+    private static bool IsScalarType(Type type)
+    {
+        Type underlying = Nullable.GetUnderlyingType(type) ?? type;
+
+        return underlying.IsPrimitive || underlying.IsEnum || underlying == typeof(string) || underlying == typeof(decimal) ||
+            underlying == typeof(Guid) || underlying == typeof(DateTime) || underlying == typeof(DateTimeOffset) ||
+            underlying == typeof(DateOnly) || underlying == typeof(TimeOnly) || underlying == typeof(TimeSpan) ||
+            underlying == typeof(Uri) || underlying == typeof(Int128) || underlying == typeof(UInt128) ||
+            underlying == typeof(Half) || underlying == typeof(System.Numerics.BigInteger);
     }
 
     /// <summary>

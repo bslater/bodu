@@ -129,6 +129,24 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to A delimited record is a string array or an object whose members map to columns; the record type '{0}', a scalar or a collection, is not supported..
+        /// </summary>
+        internal static string Op_Invalid_DelimitedRecordTypeNotSupported {
+            get {
+                return ResourceManager.GetString("Op_Invalid_DelimitedRecordTypeNotSupported", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The record type '{0}' cannot be created; reading a delimited record needs a public parameterless constructor..
+        /// </summary>
+        internal static string Op_Invalid_DelimitedRecordTypeNotCreatable {
+            get {
+                return ResourceManager.GetString("Op_Invalid_DelimitedRecordTypeNotCreatable", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The delimited value for column '{0}' could not be converted to type '{1}'..
         /// </summary>
         internal static string Format_Invalid_DelimitedValueConversion {
