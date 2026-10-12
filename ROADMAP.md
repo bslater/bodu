@@ -169,9 +169,9 @@ Preview one only when the release moved `BoduPreviewVersion`; after
 The repository is deliberately not doing these. They appear here so
 proposals can be closed quickly.
 
-- **Wrapping or replacing `bc-csharp`.** The vendored Bouncy Castle
-  source lives under `bc-csharp/` purely as a KAT reference for the
-  cryptography test suites. It is not redistributed.
+- **Wrapping or replacing Bouncy Castle.** `.gitignore` lists
+  `/bc-csharp/` among its local, experimental folders; nothing in the
+  tree builds against Bouncy Castle, and it is not redistributed.
 - **Classical prime-curve and RSA public-key cryptography.**
   `Bodu.Security.Cryptography` ships the curve25519 / edwards25519 and
   post-quantum primitives the BCL lacked on `net8.0` - Ed25519 (RFC
@@ -196,19 +196,24 @@ proposals can be closed quickly.
   cached results; EPPlus / ClosedXML / NPOI cover the full-fidelity
   authoring space.
 - **Shipping the plugin fixture projects as packages.** The
-  `Bodu.Globalization.Calendar.Plugins.TestPlugin*` fixture assemblies
-  (under the Plugins test project's `Fixtures/`) exist purely to
+  `TestPlugin*` fixture projects under
+  `Bodu.Globalization.Calendar.Plugins/test/Fixtures/` exist purely to
   exercise the calendar plugin loader in tests.
 - **Duplicating algorithms already shipped in the .NET BCL or
   Microsoft's first-party `System.*` NuGet packages.** Where the
   framework ships a stable equivalent, consumers should use it directly.
-  Concretely, the roadmap will not re-implement:
-  `System.Security.Cryptography.ChaCha20Poly1305`, `AesGcm`, `HKDF`,
-  `Rfc2898DeriveBytes.Pbkdf2`, `Shake128/256`, `CShake128/256`,
-  `Kmac*`; `System.IO.Hashing.XxHash32/64/3/128`;
-  `System.Buffers.Text.Base64` / `Base64Url`; `Convert.ToHexString` /
-  `FromHexString`; `System.Formats.Cbor` / `System.Formats.Asn1`. Bodu
-  only takes on algorithms with a genuine BCL gap.
+  Concretely, the roadmap will not add:
+  `System.Security.Cryptography.ChaCha20Poly1305`, `AesGcm`,
+  `Rfc2898DeriveBytes.Pbkdf2`, `CShake128/256`, `Kmac*`;
+  `System.IO.Hashing.XxHash32/64/3/128`; `System.Formats.Cbor` /
+  `System.Formats.Asn1`. Bodu only takes on algorithms with a genuine
+  BCL gap. Some overlap already ships: `Hkdf` mirrors the BCL's `HKDF`
+  so the library (HPKE's labeled KDF among it) has a self-contained
+  surface, and its documentation sends consumers to the platform type
+  where that covers their need; `Shake` exposes SHAKE128 / SHAKE256 as a
+  `HashAlgorithm`; and `Bodu.Text.Encoding`'s `Base16`, `Base64` and
+  `Base64Url` belong to its encoder family, with `Base16` delegating its
+  upper-case path to `Convert.ToHexString`.
 - **HTML parsing or sanitization.** The jsoup / BeautifulSoup niche is
   deliberately out: the full WHATWG parsing algorithm is an enormous
   grammar surface, and AngleSharp / HtmlAgilityPack already serve it
@@ -216,10 +221,10 @@ proposals can be closed quickly.
 - **Template engines.** The Jinja2 / Freemarker / Mustache space is
   served by Scriban and Fluid; a text-templating language is a product,
   not a utility building block.
-- **A date-time model replacement.** No Joda-Time / NodaTime analogue:
+- **A date-time model replacement.** No Joda-Time / NodaTime analog:
   `DateOnly` / `TimeOnly` / `DateTimeOffset` / `TimeZoneInfo` plus
   NodaTime cover the space. Bodu stays at the layer above - notable
-  dates, working days, and (proposed) recurrence.
+  dates, working days, and recurrence (`Bodu.Globalization.Recurrence`).
 - **DataFrames, ndarrays, and scientific computing.** The pandas / NumPy
   space belongs to Microsoft.Data.Analysis, ML.NET, and TorchSharp;
   `Bodu.Numerics` stays at value-type scalars, intervals, and
@@ -229,7 +234,7 @@ proposals can be closed quickly.
   the existing bindings (ZstdSharp, K4os.Compression.LZ4) are the right
   answer, and the BCL covers deflate / gzip / Brotli / ZIP / TAR.
 - **Object mappers and validation frameworks.** No AutoMapper /
-  MapStruct or pydantic / Hibernate-Validator analogue - mapping is
+  MapStruct or pydantic / Hibernate-Validator analog - mapping is
   application code, and DataAnnotations / FluentValidation own the
   validation space.
 - **A Disruptor-style ring buffer / sequencer.** The LMAX Disruptor
@@ -1241,7 +1246,9 @@ to it. Non-goal: do not redistribute, do not extend.
 Proposed *net-new* projects. Each fills a genuine BCL / ecosystem gap,
 targets functionality that today is pulled in as an independently-developed
 GitHub dependency, and reuses one of the repository's proven architectural
-patterns (see *Architectural patterns*). Listed roughly by leverage.
+patterns (see *Architectural patterns*). Listed roughly by leverage;
+candidates that have since been built stay listed, marked as such, with
+their detail in the per-project sections.
 
 The 2026-07 additions come from a systematic gap review against the
 highest-adoption Java and Python utility ecosystems (Guava / Apache
@@ -1253,54 +1260,22 @@ kept: (a) no `net8.0`+ BCL equivalent, (b) demonstrably reached for in
 onto one of the proven architectural patterns. Proposals that failed the
 filter were added to *Non-goals* instead.
 
-- **`Bodu.Formats.Outlook.Msg`** - a read-only `.msg` (Outlook message)
-  reader over `Bodu.IO.Compound`. The `.msg` container *is* CFB, so this
-  is the highest-leverage reuse of the existing container: it inherits
-  the full CFB read stack and only adds MAPI property-name decoding.
-  Independently, `.msg` reading is served almost entirely by commercial
-  libraries or `MsgReader`; there is no first-party option. The
-  namespace should flatten to **`Bodu.Formats.Outlook`** (the
-  `Bodu.Formats.Excel` convention) so the MAPI property surface -
-  property tags / types, named-property resolution, the recipient and
-  attachment tables, and the message / folder value types - is shared
-  with the `.pst` candidate below rather than owned by either package.
-  **In flight** - kickoff plan authored and scaffolding landed
-  2026-07-31; tracked in the per-project section
-  *`Bodu.Formats.Outlook` / `Bodu.Formats.Outlook.Msg`* above, executing
-  [`Bodu.Formats.Outlook/docs/msg-reader-implementation-plan.md`](Bodu.Formats.Outlook/docs/msg-reader-implementation-plan.md).
-- **`Bodu.Formats.Outlook.Pst`** (over a new low-level **`Bodu.IO.Pst`**
-  container) - a read-only `.pst` / `.ost` mailbox-archive reader:
-  folder hierarchy, message enumeration, recipients, and attachments
-  (including nested attached messages). Deliberately **not** built on
-  `Bodu.IO.Compound`: MS-PST is its own three-layer container - the NDB
-  block / B-tree layer (with the "compressible encryption" byte
-  permutation), the LTP heap-on-node / property-context / table-context
-  layer, and the messaging layer - with no CFB inside, so it adds a
-  third low-level container to the container + format-reader split
-  (`Bodu.IO.Compound` for CFB, the proposed `Bodu.IO.Packaging` for
-  OPC, `Bodu.IO.Pst` for NDB/LTP). What it *does* reuse is the
-  flattened `Bodu.Formats.Outlook` MAPI value model shared with the
-  `.msg` reader. Java: `java-libpst`; Python: `libpff` / `readpst`;
-  .NET: XstReader or commercial suites (Aspose.Email) - one of the
-  least-served document formats in the ecosystem. Initial scope:
-  Unicode-format PST (the post-2003 default), with the legacy ANSI
-  variant and OST deltas as demand-driven follow-ons.
-  **Exploration authored 2026-07-31** - format anatomy, the NDB+LTP
-  vs messaging layering split, API sketch, the fixture-acquisition
-  blocker, and sequencing P0-P3:
+- **`Bodu.Formats.Outlook.Msg` - built.** The read-only `.msg` reader
+  over `Bodu.IO.Compound`, with the MAPI value model in the flattened
+  `Bodu.Formats.Outlook` namespace shared with the `.pst` reader,
+  shipped at 0.5.0 and is on the Preview stream; see the per-project
+  section *`Bodu.Formats.Outlook` / `Bodu.Formats.Outlook.Msg`*.
+- **`Bodu.Formats.Outlook.Pst` over `Bodu.IO.Pst` - built.** The
+  read-only mail-store reader over its own NDB / LTP container (MS-PST
+  has no CFB inside), sharing the `Bodu.Formats.Outlook` value model,
+  shipped at 0.5.0 and is on the Preview stream. It reads Unicode and
+  ANSI stores; the OST variant remains the demand-driven follow-on. See
+  the per-project section *`Bodu.IO.Pst` / `Bodu.Formats.Outlook.Pst`*
+  and the exploration that sequenced it,
   [`Bodu.IO.Pst/docs/pst-container-exploration.md`](Bodu.IO.Pst/docs/pst-container-exploration.md).
-  **P0 executed same day** - `Bodu.IO.Pst` landed with the full NDB
-  read layer at Preview; **P1 (the LTP layer) executed 2026-08-19** per
-  [`Bodu.IO.Pst/docs/ltp-implementation-plan.md`](Bodu.IO.Pst/docs/ltp-implementation-plan.md);
-  **P2 (the `Bodu.Formats.Outlook.Pst` messaging reader plus the
-  container hardening pass) executed 2026-08-31** per
-  [`Bodu.Formats.Outlook.Pst/docs/pst-reader-implementation-plan.md`](Bodu.Formats.Outlook.Pst/docs/pst-reader-implementation-plan.md) -
-  all tracked in the per-project *`Bodu.IO.Pst`* section above. Both
-  packages ship in release wave 3; the ANSI variant and OST deltas
-  remain the demand-driven follow-ons.
 - **`Bodu.Formats.Excel.OpenXml`** - a read-only `.xlsx` value reader over
-  an OPC/ZIP container, **sharing the flattened `Bodu.Formats.Excel`
-  value model** (`ExcelCell` / `ExcelWorksheet` / `ExcelWorkbookProperties`).
+  an OPC/ZIP container, **sharing the flattened `Bodu.Formats.Excel` value
+  model** (`ExcelCell` / `ExcelWorksheet` / `ExcelWorkbookProperties`).
   The namespace was already flattened in anticipation of this. Would
   likely sit on a new **`Bodu.IO.Packaging`** (Open Packaging Convention
   over `System.IO.Compression`) container - the ZIP-era sibling to
@@ -1309,70 +1284,15 @@ filter were added to *Non-goals* instead.
   edit-distance family (Levenshtein, Damerau-Levenshtein, Jaro-Winkler,
   longest-common-subsequence, n-gram / cosine similarity) plus the
   phonetic encoders (Soundex, Metaphone / Double Metaphone, NYSIIS,
-  Caverphone). The Java analogue is `commons-text` similarity +
+  Caverphone). The Java analog is `commons-text` similarity +
   `commons-codec` language; Python's is `rapidfuzz` / `jellyfish`; .NET
   consumers currently pull FuzzySharp or Fastenshtein. Span-based,
   allocation-free, KAT-driven - the same profile as the check-digit
-  family it conceptually neighbours.
-- **`Bodu.Globalization.Recurrence` has landed.** ✅ Recurrence-rule
-  evaluation shipped as its own Core-only package: `RecurrenceRule`
-  (RFC 5545 `RRULE` parse/format over `IParsable`/`ISpanParsable`/
-  `IFormattable`, the full `FREQ`/`INTERVAL`/`COUNT`/`UNTIL`/`WKST` and
-  `BY*` model, and occurrence enumeration for `DAILY`..`YEARLY` with
-  `BYSETPOS` over `DateTime`/`DateTimeOffset`), the fluent
-  `RecurrenceRuleBuilder`, `RecurrenceSet` (compose rules with
-  `RDATE`/`EXDATE` and parse an iCalendar property block), and
-  `CronExpression` (Vixie five-field and optional-seconds six-field
-  layouts, ranges/steps/lists/names, the `@yearly`…`@hourly` macros, and
-  `GetNextOccurrence`/`GetPreviousOccurrence`). Conforms to the existing
-  calendar `IDateRecurrenceStrategy` contract shape (ascending,
-  deduplicated, window-invariant) and reuses `Bodu.Core`'s `NextOccurrence`
-  primitives rather than taking a `Bodu.Globalization.Calendar` dependency.
-  Validated against an RFC 5545 §3.8.5.3 worked-example corpus. A second
-  wave (driven by the FallbackPlan shared-scheduling requirements) added
-  `AnchoredInterval` (instant-anchored interval recurrence in the RFC 5545
-  §3.3.6 duration grammar, `anchor + k·interval` for `k ≥ 1` with the
-  anchor passed per query), previous-occurrence queries on every form,
-  `RecurrenceSet` canonical formatting and value equality, defect-naming
-  `TryParse(s, out result, out failureMessage)` overloads on all four
-  forms, and a metadata-scan purity guard banning wall-clock and
-  machine-time-zone APIs from the assembly. A third pass compared the
-  engine against defects reported to python-dateutil, rrule.js, ical4j,
-  ical.net, ical.js, libical, lib-recur, ice_cube, Cronos, NCrontab,
-  cronie, croniter, robfig/cron and Quartz, adding that corpus as
-  regression tests and fixing what it found: Vixie's leading-character
-  rule for cron day-field restriction (and the day-mask combination that
-  depends on it), candidate-set deduplication before `BYSETPOS`/`COUNT`,
-  the `BYDAY` ordinal when `BYDAY` limits alongside `BYMONTHDAY`, a
-  calendar overflow while scanning never-matching weekly rules, and
-  `BYWEEKNO` week numbering (now the ISO rule generalized to `WKST`,
-  keeping year-straddling weeks and expanding the whole week when
-  `BYDAY` is absent). A fourth pass (REC-N-009, for 1.3.0) made the
-  point queries and windows of `RecurrenceRule` and `RecurrenceSet`
-  begin at the frequency period that holds the query instead of at
-  `DTSTART`, so a distant anchor no longer costs time per elapsed period
-  (a rule with `COUNT` still enumerates from its start). A fifth pass,
-  also for 1.3.0, enumerates the sub-daily frequencies (`HOURLY`,
-  `MINUTELY`, `SECONDLY`), which had parsed and round-tripped but thrown
-  `NotSupportedException`, held to RFC 5545's examples, libical's
-  counts, python-dateutil's output for 200 generated rules, and a
-  reference model that visits every period. A sixth pass, also for
-  1.3.0, accepts the Quartz day tokens in cron (`L`, `L-n`, `nW`, `LW`,
-  `dL`, `d#k` and `?`) in the shapes Cronos accepts, keeping Vixie's
-  weekday numbering and union rule, which brings Cronos's 319 token
-  vectors into reconciliation. A seventh pass, also for 1.3.0, adopts
-  Bodu.Core's calendar value sets: cron holds its fields as the sets
-  and its day tokens as two typed records, an RRULE tests its months,
-  month days and weekdays against sets precomputed from its parts, and
-  `RecurrenceRuleBuilder` gains an overload per part that takes the set
-  expressing it. An eighth pass, also for 1.3.0, holds cron to the test
-  suites of 21 cron libraries, restated in Vixie's dialect, and to the
-  scenarios of every fix in their release notes, and fixes the two
-  defects they found: a search near either end of the calendar threw
-  rather than answering `null`, and the search gave up after twelve
-  years. It now scans 400 years, one whole Gregorian cycle, so `null`
-  means "never". Deferred follow-on: a read-only `.ics` (iCalendar)
-  reader.
+  family it conceptually neighbors.
+- **`Bodu.Globalization.Recurrence` - built.** Recurrence-rule
+  evaluation shipped as its own Core-only package at 0.6.0 and has been
+  Stable since 1.0.0; see its per-project section for what it covers,
+  what landed for 1.3.0, and the deferred read-only `.ics` reader.
 - **`Bodu.Identifiers`** - ULID, Snowflake, NanoID, KSUID generation and
   parsing. Ubiquitous independently-built functionality with no BCL home,
   and a natural consumer of the existing Crockford Base32 support (in
@@ -1401,10 +1321,10 @@ filter were added to *Non-goals* instead.
   reader: header parsing with encoded-word (RFC 2047) decoding, the
   multipart body tree, and attachment extraction. Python ships `email`
   in the stdlib; Java has jakarta.mail; .NET's only real option is
-  MimeKit. Pairs with the `.msg` candidate above so the two email
-  containers share one reading story, and consumes `QuotedPrintable` /
-  `Base64` from `Bodu.Text.Encoding`. Read-only - composing and sending
-  mail stay out of scope.
+  MimeKit. Pairs with the `.msg` reader so the two email containers
+  share one reading story, and consumes `QuotedPrintable` / `Base64`
+  from `Bodu.Text.Encoding`. Read-only - composing and sending mail stay
+  out of scope.
 - **`Bodu.Globalization.PhoneNumbers`** - E.164 phone-number parse /
   validate / format with per-region metadata packs mirroring the
   `Calendar.Data.<Region>` pattern. Google's libphonenumber is among the
@@ -1421,14 +1341,14 @@ filter were added to *Non-goals* instead.
   tables and span-based transforms - the `Bodu.Text.Encoding` profile
   applied to text normalization.
 - **`Bodu.Functional`** - the railway set (`Result<T>` / `Option<T>` /
-  `Either<TLeft,TRight>` plus the async combinators) has now **shipped
+  `Either<TLeft,TRight>` plus the async combinators) has **shipped
   inside the `Bodu.Core/Functional` seam**, deliberately not as a
   package (the HOTP/TOTP restraint precedent). The extraction trigger
   stands: if the seam grows further - `Validation`-style error
-  accumulation, `ValueTask` combinator variants, applicative
-  surfaces - extract the whole seam into this dedicated package rather
-  than bloating Core. Decide before `Bodu.Core/v1.0.0` tags if such
-  growth is imminent; afterwards the move is breaking.
+  accumulation, `ValueTask` combinator variants, applicative surfaces -
+  extract the whole seam into this dedicated package rather than
+  bloating Core. `Bodu.Core` 1.0.0 shipped with the seam inside it, so
+  the move is now a breaking change and has to be weighed as one.
 - **`Bodu.Units`** - dimensioned quantities and unit conversion over
   generic math (length / mass / duration / data size / …, with
   compile-time dimension safety on the `Money<TCurrency>` model).
@@ -1445,23 +1365,22 @@ filter were added to *Non-goals* instead.
   invariant-English core with per-culture packs (the data-pack pattern
   again) is the only shape worth shipping; without that discipline this
   stays a candidate, not a commitment.
-- ~~**Numeric value types in `Bodu.Numerics`** - a generic `Complex<T>`
-  (the BCL `Complex` is `double`-only)~~ - **shipped.** `Complex<T>` over
-  `IFloatingPointIeee754<T>` landed inside the existing `Bodu.Numerics`
-  project (no new package), with a companion `ComplexJsonConverter<T>` in
-  `Bodu.Numerics.Serialization.Json`. `BigDecimal` and the
-  running-statistics aggregates shipped earlier in the same wave.
-- ~~**One-time-password codes (TOTP/HOTP)**~~ - **shipped.** `Hotp` /
-  `Totp` landed inside `Bodu.Security.Cryptography` (flat namespace, no new
+- **Numeric value types in `Bodu.Numerics` - built.** A generic
+  `Complex<T>` (the BCL `Complex` is `double`-only) landed inside the
+  existing `Bodu.Numerics` project (no new package), with a companion
+  `ComplexJsonConverter<T>` in `Bodu.Numerics.Serialization.Json`.
+  `BigDecimal` and the running-statistics aggregates shipped earlier in
+  the same wave.
+- **One-time-password codes (TOTP/HOTP) - built.** `Hotp` / `Totp`
+  landed inside `Bodu.Security.Cryptography` (flat namespace, no new
   package or dependency), not the `Bodu.Security.Otp` sibling that was
   floated - the raw-byte-secret design kept it dependency-free, so a
   sibling was not warranted.
-- ~~**Probabilistic data structures**~~ - **shipped.** `BloomFilter<T>`,
+- **Probabilistic data structures - built.** `BloomFilter<T>`,
   `CountMinSketch<T>`, and `HyperLogLog<T>` landed inside the
   `Bodu.Collections` package as the `Bodu.Collections.Probabilistic`
   namespace - no separate package was warranted (the comparer-based
-  hashing kept the types dependency-free beyond Core). See the
-  `Bodu.Core` section above for the shipped contracts.
+  hashing kept the types dependency-free beyond Core).
 
 ## Cross-cutting themes
 
