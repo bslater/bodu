@@ -64,6 +64,7 @@ collisions - each provider's series stays partitioned. Construct one cache per p
 `DatabaseFilePath` and wrap each in its own `CachingRateProvider`:
 
 ```csharp
+using Bodu.Financial.ExchangeRates;
 using Bodu.Financial.ExchangeRates.Caching;
 
 var options = new CachingRateOptions { DefaultExpiry = TimeSpan.FromHours(24) };
