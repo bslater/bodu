@@ -232,19 +232,32 @@ public partial class BencodeSerializerTests
     }
 
     /// <summary>
-    /// Verifies that deserializing a Bencode integer beyond <see cref="long.MaxValue" /> into a signed
-    /// <see cref="long" /> member throws <see cref="BencodeFormatException" />, because the value is readable only
-    /// through the unsigned surface.
+    /// Verifies that a well-formed Bencode integer beyond <see cref="long.MaxValue" />, given for a member read through
+    /// the signed 64-bit surface, throws <see cref="BencodeSerializationException" /> at the start of the integer
+    /// token, as a value outside the member's range, rather than <see cref="BencodeFormatException" />, which reports
+    /// malformed bytes.
     /// </summary>
+    /// <param name="memberType">The member's type: <c>long</c>, <c>int</c>, <c>uint</c> or <c>Int128</c>.</param>
+    /// <param name="digits">The integer's digits, beyond <see cref="long.MaxValue" />.</param>
     [TestMethod]
-    public void Deserialize_WhenIntegerExceedsInt64RangeIntoInt64_ShouldThrowBencodeFormatException()
+    [DataRow("long", "9223372036854775808", DisplayName = "long, long.MaxValue + 1")]
+    [DataRow("long", "18446744073709551615", DisplayName = "long, ulong.MaxValue")]
+    [DataRow("int", "9223372036854775808", DisplayName = "int, long.MaxValue + 1")]
+    [DataRow("uint", "18446744073709551615", DisplayName = "uint, ulong.MaxValue")]
+    [DataRow("Int128", "9223372036854775808", DisplayName = "Int128, long.MaxValue + 1")]
+    public void Deserialize_WhenIntegerExceedsInt64RangeIntoSignedSurface_ShouldThrowBencodeSerializationException(
+        string memberType,
+        string digits)
     {
-        byte[] bytes = Encoding.Latin1.GetBytes("d5:Valuei18446744073709551615ee");
+        // The integer for "Value" starts at offset 8: d(0) 5:Value(1-7) i(8).
+        byte[] bytes = Encoding.Latin1.GetBytes("d5:Valuei" + digits + "ee");
 
-        Assert.ThrowsExactly<BencodeFormatException>(() =>
+        BencodeSerializationException ex = Assert.ThrowsExactly<BencodeSerializationException>(() =>
         {
-            _ = BencodeSerializer.Deserialize<LongModel>(bytes);
+            _ = DeserializeSignedSurfaceMember(memberType, bytes);
         });
+
+        Assert.AreEqual(8, ex.BytesOffset);
     }
 
     /// <summary>
@@ -513,4 +526,21 @@ public partial class BencodeSerializerTests
 
         Assert.AreEqual(("text", 1), (model.Value, ((HiddenPropertyBaseModel)model).Value));
     }
+
+    /// <summary>
+    /// Deserializes a document into the single-member model whose member has the named type, one of the types read
+    /// through the signed 64-bit surface.
+    /// </summary>
+    /// <param name="memberType">The member's type: <c>long</c>, <c>int</c>, <c>uint</c> or <c>Int128</c>.</param>
+    /// <param name="bytes">The document.</param>
+    /// <returns>The bound model.</returns>
+    private static object DeserializeSignedSurfaceMember(string memberType, byte[] bytes) =>
+        memberType switch
+        {
+            "long" => BencodeSerializer.Deserialize<LongModel>(bytes),
+            "int" => BencodeSerializer.Deserialize<IntModel>(bytes),
+            "uint" => BencodeSerializer.Deserialize<UIntModel>(bytes),
+            "Int128" => BencodeSerializer.Deserialize<SingleValueModel<Int128>>(bytes),
+            _ => throw new ArgumentOutOfRangeException(nameof(memberType), memberType, null),
+        };
 }
