@@ -17,10 +17,11 @@ Bencode (BEP 3) has exactly two scalar forms - integers and byte strings - and t
 | `string` | byte string (UTF-8) | byte string | |
 | `byte[]` | byte string | byte string | The native binary form; no transcoding. |
 | `Memory<byte>` / `ReadOnlyMemory<byte>` | byte string | byte string | |
-| `sbyte` `byte` `short` `ushort` `int` `uint` `long` `nint` `nuint` | integer (`i…e`) | integer | Checked conversions through the signed 64-bit surface; a value outside the target type's range throws <xref:Bodu.Text.Bencode.BencodeSerializationException> on read. |
-| `ulong` | integer | integer | Dedicated converter on the unsigned surface - the full `[0, ulong.MaxValue]` range round-trips. |
-| `Int128` | integer | integer | Confined by checked conversion to the signed 64-bit surface. |
-| `UInt128` | integer | integer | Rides the unsigned surface like `ulong`; values above `ulong.MaxValue` throw on write. |
+| `sbyte` `byte` `short` `ushort` `int` `uint` `long` `nint` | integer (`i…e`) | integer | Checked conversions through the signed 64-bit surface; a value outside the target type's range throws <xref:Bodu.Text.Bencode.BencodeSerializationException> on read, with the integer's offset as its `BytesOffset`. |
+| `ulong` | integer | integer | Dedicated converter on the unsigned surface - the full `[0, ulong.MaxValue]` range round-trips; a negative integer throws <xref:Bodu.Text.Bencode.BencodeSerializationException> on read, with its offset as the `BytesOffset`. |
+| `nuint` | integer | integer | Dedicated converter on the unsigned surface, like `ulong`: a 64-bit process reads and writes the full `[0, ulong.MaxValue]` range. A 32-bit process rejects an integer above `uint.MaxValue`, and every process rejects a negative integer, each with <xref:Bodu.Text.Bencode.BencodeSerializationException> on read and the integer's offset as its `BytesOffset`. |
+| `Int128` | integer | integer | Confined by checked conversion to the signed 64-bit surface; an integer beyond it throws <xref:Bodu.Text.Bencode.BencodeSerializationException> on read, as for the narrower types. |
+| `UInt128` | integer | integer | Rides the unsigned surface like `ulong`; values above `ulong.MaxValue` throw on write, and a negative integer throws on read, with its offset as the `BytesOffset`. |
 | `enum` (any) | byte string, the member name | byte string (case-insensitive) or integer | The default enum handling - no converter needed; per-member names via `[StringEnumMemberName]`. The explicit string and number enum converters below override it.|
 
 ## Structural and document-model types
@@ -42,6 +43,8 @@ Registered on the options or referenced from a `[Converter(...)]` attribute:
 
 - <xref:Bodu.Text.Bencode.Serialization.BencodeStringEnumConverter> / `BencodeStringEnumConverter<TEnum>` - member-name byte strings with an optional naming policy and integer-on-read flag.
 - `BencodeNumberEnumConverter<TEnum>` - the underlying numeric value as a Bencode integer.
+
+An integer read as an enum, by the default handling or by either converter, must lie within the range of the enum's underlying type: one outside it raises <xref:Bodu.Text.Bencode.BencodeSerializationException> at the integer's offset rather than being narrowed into the type, so `i300e` never binds a `byte`-based enum as 44. An integer inside the range binds whether or not it names a member, and an enum based on `ulong` reads integers up to `ulong.MaxValue`, which `BencodeNumberEnumConverter<TEnum>` also writes.
 
 ## Types that need a user converter
 

@@ -346,6 +346,15 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The value {0} is outside the signed 64-bit range in which a member of type '{1}' is read..
+        /// </summary>
+        internal static string Op_Invalid_IntegerOutsideSignedSurface {
+            get {
+                return ResourceManager.GetString("Op_Invalid_IntegerOutsideSignedSurface", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The converter '{0}' cannot convert type '{1}'..
         /// </summary>
         internal static string Op_Invalid_ConverterCannotConvert {

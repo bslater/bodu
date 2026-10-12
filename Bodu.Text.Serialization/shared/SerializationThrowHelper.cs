@@ -67,4 +67,30 @@ internal static class SerializationThrowHelper
 #else
         new(string.Format(CultureInfo.CurrentCulture, FormatResourceStrings.Op_Invalid_EnumValueNotFound, text, enumType));
 #endif
+
+    /// <summary>
+    /// Creates the exception reporting that the integer token holds a value outside the range of the target type, an
+    /// integer type or the underlying type of an enumeration.
+    /// </summary>
+    /// <param name="reader">The reader positioned on the offending token.</param>
+    /// <param name="value">The integer the token holds.</param>
+    /// <param name="targetType">The target integer or enumeration type.</param>
+    /// <param name="innerException">The exception the checked conversion threw, if any.</param>
+    /// <returns>The exception to throw.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static FormatSerializationException IntegerOutOfRange(
+        ref FormatReader reader,
+        object value,
+        Type targetType,
+        Exception? innerException = null) =>
+#if BENCODE
+        new(
+            string.Format(CultureInfo.CurrentCulture, FormatResourceStrings.Op_Invalid_IntegerOverflow, value, targetType),
+            reader.TokenStartIndex,
+            innerException);
+#else
+        new(
+            string.Format(CultureInfo.CurrentCulture, FormatResourceStrings.Op_Invalid_IntegerOverflow, value, targetType),
+            innerException);
+#endif
 }

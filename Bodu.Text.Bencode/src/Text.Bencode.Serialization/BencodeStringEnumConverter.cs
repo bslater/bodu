@@ -17,7 +17,9 @@ namespace Bodu.Text.Bencode.Serialization;
 /// Register the factory on <see cref="BencodeSerializerOptions.Converters" /> to apply it to every enumeration, or use
 /// the generic <see cref="BencodeStringEnumConverter{TEnum}" /> with <see cref="ConverterAttribute" /> to apply it to a
 /// single enumeration. Two constructors are provided: a parameterless form that applies no naming policy and accepts
-/// integers on read, and a form that takes an explicit naming policy and integer-handling flag.
+/// integers on read, and a form that takes an explicit naming policy and integer-handling flag. An integer accepted on
+/// read must lie within the range of the enumeration's underlying type; one outside it throws
+/// <see cref="BencodeSerializationException" /> rather than being narrowed into that type.
 /// </remarks>
 /// <example>
 /// <code language="csharp">

@@ -17,7 +17,9 @@ namespace Bodu.Text.Toml.Serialization;
 /// Register the factory on <see cref="TomlSerializerOptions.Converters" /> to apply it to every enumeration, or use the
 /// generic <see cref="TomlStringEnumConverter{TEnum}" /> with <see cref="ConverterAttribute" /> to apply it to a single
 /// enumeration. Two constructors are provided: a parameterless form that applies no naming policy and accepts integers
-/// on read, and a form that takes an explicit naming policy and integer-handling flag.
+/// on read, and a form that takes an explicit naming policy and integer-handling flag. An integer accepted on read must
+/// lie within the range of the enumeration's underlying type; one outside it throws
+/// <see cref="TomlSerializationException" /> rather than being narrowed into that type.
 /// </remarks>
 /// <example>
 /// <code language="csharp">

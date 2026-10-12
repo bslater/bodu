@@ -122,6 +122,18 @@ public ref struct Utf8YamlReader
     internal readonly int CurrentRow => _currentRow;
 
     /// <summary>
+    /// Gets a value indicating whether the cursor is positioned on a plain scalar that carries no tag, the form whose
+    /// type the schema resolves from its text alone.
+    /// </summary>
+    /// <value>
+    /// <see langword="true" /> when the current node is a plain, untagged scalar; otherwise, <see langword="false" />,
+    /// including for a quoted, block or tagged scalar.
+    /// </value>
+    internal readonly bool IsPlainUntaggedScalar =>
+        _currentRow >= 0
+        && _rows[_currentRow] is { Kind: YamlReaderNodeKind.Scalar, ScalarStyle: YamlScalarStyle.Plain, Tag: null };
+
+    /// <summary>
     /// Records the source position of the current token on a binding failure that carries none.
     /// </summary>
     /// <param name="exception">The binding failure.</param>

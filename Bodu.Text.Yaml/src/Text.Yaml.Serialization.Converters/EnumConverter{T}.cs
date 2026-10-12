@@ -23,9 +23,15 @@ namespace Bodu.Text.Yaml.Serialization.Converters;
 /// <para>
 /// On write a defined value is emitted as its mapped wire name; a value that does not correspond to a single defined
 /// member - an undefined value or a combination of flags - falls back to the value's decimal or comma-separated string
-/// form. On read a scalar is matched case-insensitively against the wire names and then, as a fallback, parsed by the
-/// runtime so numeric and combined-flag strings are accepted. When <see cref="_allowIntegerValues" /> is
-/// <see langword="false" /> an integer scalar is rejected rather than mapped through the underlying value.
+/// form. With <see cref="YamlSerializerOptions.WriteEnumsAsStrings" /> off the underlying value is written instead,
+/// through <see cref="EnumIntegerConversion.WriteInteger{T}(ref Utf8YamlWriter, T)" />, which writes a value of an
+/// enumeration based on <see cref="ulong" /> above <see cref="long.MaxValue" /> as its plain invariant text, as a
+/// <see cref="ulong" /> member is written. On read a scalar is matched case-insensitively against the wire names and
+/// then, as a fallback, parsed by the runtime so numeric and combined-flag strings are accepted. An integer scalar maps
+/// through the underlying value, by way of <see cref="EnumIntegerConversion.ReadInteger{T}(ref Utf8YamlReader)" />, so
+/// one outside the range of the enumeration's underlying type throws <see cref="YamlSerializationException" /> rather
+/// than being narrowed into that type. When <see cref="_allowIntegerValues" /> is <see langword="false" /> an integer
+/// scalar is rejected rather than mapped through the underlying value.
 /// </para>
 /// </remarks>
 internal sealed class EnumConverter<T>
@@ -92,7 +98,7 @@ internal sealed class EnumConverter<T>
         if (reader.TokenType == YamlTokenType.Integer)
         {
             if (_allowIntegerValues)
-                return (T)Enum.ToObject(typeof(T), reader.GetInt64());
+                return EnumIntegerConversion.ReadInteger<T>(ref reader);
 
             string integerText = reader.GetInt64().ToString(CultureInfo.InvariantCulture);
             throw new YamlSerializationException(string.Format(
@@ -115,6 +121,6 @@ internal sealed class EnumConverter<T>
         if (options.WriteEnumsAsStrings)
             writer.WriteString(_valueToName.TryGetValue(value, out string? name) ? name : value.ToString());
         else
-            writer.WriteInteger(Convert.ToInt64(value, CultureInfo.InvariantCulture));
+            EnumIntegerConversion.WriteInteger(ref writer, value);
     }
 }

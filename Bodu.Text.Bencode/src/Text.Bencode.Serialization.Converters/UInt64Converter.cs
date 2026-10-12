@@ -18,7 +18,8 @@ namespace Bodu.Text.Bencode.Serialization.Converters;
 /// Bencode integers are arbitrary-precision per BEP 3, so values above <see cref="long.MaxValue" /> are valid
 /// documents; this converter reads them through <see cref="Utf8BencodeReader.TryGetUInt64" /> rather than the signed
 /// accessor the shared <see cref="IntegerConverter{T}" /> uses. A negative document value surfaces as a
-/// <see cref="BencodeSerializationException" />, matching the overflow contract of the other fixed-width integer types.
+/// <see cref="BencodeSerializationException" /> whose <see cref="BencodeSerializationException.BytesOffset" /> is the
+/// integer token's start offset, matching the overflow contract of the other fixed-width integer types.
 /// </remarks>
 internal sealed class UInt64Converter
     : BencodeConverter<ulong>
@@ -37,8 +38,7 @@ internal sealed class UInt64Converter
             return value;
 
         // The token is a negative integer; report it as an overflow of the target type, mirroring IntegerConverter<T>.
-        throw new BencodeSerializationException(
-            string.Format(CultureInfo.CurrentCulture, BencodeResourceStrings.Op_Invalid_IntegerOverflow, reader.GetInt64(), typeof(ulong)));
+        throw SerializationThrowHelper.IntegerOutOfRange(ref reader, reader.GetInt64(), typeof(ulong));
     }
 
     /// <inheritdoc />

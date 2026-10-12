@@ -18,7 +18,9 @@ namespace Bodu.Text.Yaml.Serialization;
 /// generic <see cref="YamlStringEnumConverter{TEnum}" /> with <see cref="ConverterAttribute" /> to apply it to a single
 /// enumeration. Two constructors are provided: a parameterless form that applies no naming policy and accepts integers
 /// on read, and a form that takes an explicit naming policy and integer-handling flag. The produced converter writes
-/// the member name regardless of <see cref="YamlSerializerOptions.WriteEnumsAsStrings" />.
+/// the member name regardless of <see cref="YamlSerializerOptions.WriteEnumsAsStrings" />. An integer accepted on read
+/// must lie within the range of the enumeration's underlying type; one outside it throws
+/// <see cref="YamlSerializationException" /> rather than being narrowed into that type.
 /// </remarks>
 /// <example>
 /// <code language="csharp">
