@@ -81,7 +81,7 @@ string asInteger = YamlSerializer.Serialize(new { State = Status.OnHold }, asInt
 // State: 1
 ```
 
-On read an enum binds from a wire name (case-insensitively), or from an integer scalar (through `Enum.ToObject`), regardless of `WriteEnumsAsStrings` - the flag affects only the write side. Individual members rename on the wire with the shared <xref:Bodu.Text.Serialization.StringEnumMemberNameAttribute>, honored by the default handling and by the public enum converters:
+On read an enum binds from a wire name (case-insensitively), or from an integer scalar within the range of its underlying type, regardless of `WriteEnumsAsStrings` - the flag affects only the write side. An integer outside that range raises <xref:Bodu.Text.Yaml.YamlSerializationException> with the scalar's line, column and path rather than being narrowed into the type, so `Level: 300` never binds a `byte`-based enum as 44; an integer inside the range binds whether or not it names a member. Individual members rename on the wire with the shared <xref:Bodu.Text.Serialization.StringEnumMemberNameAttribute>, honored by the default handling and by the public enum converters:
 
 - <xref:Bodu.Text.Yaml.Serialization.YamlStringEnumConverter> / `YamlStringEnumConverter<TEnum>` - member-name strings with an optional naming policy and an integers-on-read flag; register on the options for every enum, or reference the generic form from a `[Converter(...)]` attribute.
 - `YamlNumberEnumConverter<TEnum>` - the underlying numeric value as a YAML integer, regardless of `WriteEnumsAsStrings`.

@@ -68,6 +68,8 @@ Registered on the options or referenced from a `[Converter(...)]` attribute:
 - <xref:Bodu.Text.Toml.Serialization.TomlStringEnumConverter> / `TomlStringEnumConverter<TEnum>` - member-name strings with an optional naming policy and integer-on-read flag.
 - `TomlNumberEnumConverter<TEnum>` - the underlying numeric value as a TOML integer.
 
+An integer read as an enum, by the default handling or by either converter, must lie within the range of the enum's underlying type: one outside it raises <xref:Bodu.Text.Toml.TomlSerializationException> with the integer's line, column and path rather than being narrowed into the type, so `Level = 300` never binds a `byte`-based enum as 44. An integer inside the range binds whether or not it names a member. A TOML integer is a signed 64-bit value, so an enum based on `ulong` reads integers up to `long.MaxValue`.
+
 ## Representation decisions at a glance
 
 TOML's native scalar kinds - string, integer, float, boolean, and the four date-time forms - cover nearly every common BCL type without a choice to make. Two types carry a representation selector on the options:

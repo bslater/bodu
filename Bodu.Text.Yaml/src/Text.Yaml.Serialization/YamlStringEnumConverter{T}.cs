@@ -18,7 +18,9 @@ namespace Bodu.Text.Yaml.Serialization;
 /// <remarks>
 /// Unlike the non-generic <see cref="YamlStringEnumConverter" />, this strongly typed factory can be referenced from a
 /// <see cref="ConverterAttribute" /> on a member, property, or the enumeration itself, because it exposes a public
-/// parameterless constructor and applies to a single enumeration type.
+/// parameterless constructor and applies to a single enumeration type. An integer accepted on read must lie within the
+/// range of the underlying type of <typeparamref name="TEnum" />; one outside it throws
+/// <see cref="YamlSerializationException" /> rather than being narrowed into that type.
 /// </remarks>
 /// <example>
 /// <code language="csharp">

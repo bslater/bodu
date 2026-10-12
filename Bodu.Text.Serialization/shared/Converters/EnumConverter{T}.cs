@@ -24,7 +24,9 @@ namespace Bodu.Text.Toml.Serialization.Converters;
 /// member - an undefined value or a combination of flags - falls back to the value's decimal or comma-separated string
 /// form. On read a string is matched case-insensitively against the member names and then, as a fallback, parsed by the
 /// runtime so numeric and combined-flag strings are accepted. When <see cref="_allowIntegerValues" /> is
-/// <see langword="true" /> an integer token is also accepted and converted to the underlying enumeration value.
+/// <see langword="true" /> an integer token is also accepted and converted to the underlying enumeration value, through
+/// <see cref="EnumIntegerConversion.ReadInteger{T}(ref FormatReader)" />: an integer outside the range of the
+/// enumeration's underlying type throws the format's serialization exception rather than being narrowed into that type.
 /// </para>
 /// </remarks>
 internal sealed class EnumConverter<T>
@@ -88,7 +90,7 @@ internal sealed class EnumConverter<T>
         }
 
         if (reader.TokenType == FormatToken.Integer && _allowIntegerValues)
-            return (T)Enum.ToObject(typeof(T), reader.GetInt64());
+            return EnumIntegerConversion.ReadInteger<T>(ref reader);
 
         throw SerializationThrowHelper.ExpectedString(ref reader);
     }

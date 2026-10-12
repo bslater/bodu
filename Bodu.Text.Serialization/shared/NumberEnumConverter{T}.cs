@@ -17,7 +17,9 @@ namespace Bodu.Text.Bencode.Serialization;
 /// <remarks>
 /// Reference the factory from a <see cref="ConverterAttribute" /> on a member, property, or the enumeration itself, or
 /// register it on <see cref="BencodeSerializerOptions.Converters" />. It exposes a public parameterless constructor so
-/// it can be used through the converter attribute.
+/// it can be used through the converter attribute. On read an integer outside the range of the underlying type of
+/// <typeparamref name="TEnum" /> throws <see cref="BencodeSerializationException" /> rather than being narrowed into
+/// that type; an enumeration based on <see cref="ulong" /> reads integers up to <see cref="ulong.MaxValue" />.
 /// </remarks>
 /// <example>
 /// <code language="csharp">
@@ -53,7 +55,10 @@ namespace Bodu.Text.Toml.Serialization;
 /// <remarks>
 /// Reference the factory from a <see cref="ConverterAttribute" /> on a member, property, or the enumeration itself, or
 /// register it on <see cref="TomlSerializerOptions.Converters" />. It exposes a public parameterless constructor so it
-/// can be used through the converter attribute.
+/// can be used through the converter attribute. On read an integer outside the range of the underlying type of
+/// <typeparamref name="TEnum" /> throws <see cref="TomlSerializationException" /> rather than being narrowed into that
+/// type; a TOML integer is a signed 64-bit value, so an enumeration based on <see cref="ulong" /> reads integers up to
+/// <see cref="long.MaxValue" />.
 /// </remarks>
 /// <example>
 /// <code language="csharp">
@@ -90,7 +95,11 @@ namespace Bodu.Text.Yaml.Serialization;
 /// Reference the factory from a <see cref="ConverterAttribute" /> on a member, property, or the enumeration itself, or
 /// register it on <see cref="Bodu.Text.Yaml.YamlSerializerOptions.Converters" />. It exposes a public parameterless
 /// constructor so it can be used through the converter attribute. The produced converter writes the numeric value
-/// regardless of <see cref="Bodu.Text.Yaml.YamlSerializerOptions.WriteEnumsAsStrings" />.
+/// regardless of <see cref="Bodu.Text.Yaml.YamlSerializerOptions.WriteEnumsAsStrings" />. On read an integer scalar
+/// outside the range of the underlying type of <typeparamref name="TEnum" /> throws
+/// <see cref="Bodu.Text.Yaml.YamlSerializationException" /> rather than being narrowed into that type; the scalar must
+/// be a YAML integer, a signed 64-bit value, so an enumeration based on <see cref="ulong" /> reads integers up to
+/// <see cref="long.MaxValue" />.
 /// </remarks>
 /// <example>
 /// <code language="csharp">

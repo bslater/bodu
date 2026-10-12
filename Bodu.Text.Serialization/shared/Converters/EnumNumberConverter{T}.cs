@@ -17,9 +17,12 @@ namespace Bodu.Text.Toml.Serialization.Converters;
 /// </summary>
 /// <typeparam name="T">The enumeration type.</typeparam>
 /// <remarks>
-/// The numeric value is read and written through a signed 64-bit integer, which is the only integer width the format
-/// can store; an enumeration whose underlying type is <see cref="ulong" /> with values above
-/// <see cref="long.MaxValue" /> therefore cannot be represented.
+/// The numeric value is read through <see cref="EnumIntegerConversion.ReadInteger{T}(ref FormatReader)" />, so an
+/// integer outside the range of the enumeration's underlying type throws the format's serialization exception rather
+/// than being narrowed into that type. A Bencode integer reaches <see cref="ulong.MaxValue" /> for an enumeration based
+/// on <see cref="ulong" />, whereas a TOML integer is a signed 64-bit value. The value is written through a signed
+/// 64-bit integer, so a value of an enumeration based on <see cref="ulong" /> above <see cref="long.MaxValue" /> cannot
+/// be written.
 /// </remarks>
 internal sealed class EnumNumberConverter<T>
     : SharedConverter<T>
@@ -31,7 +34,7 @@ internal sealed class EnumNumberConverter<T>
         if (reader.TokenType != FormatToken.Integer)
             throw SerializationThrowHelper.ExpectedInteger(ref reader);
 
-        return (T)Enum.ToObject(typeof(T), reader.GetInt64());
+        return EnumIntegerConversion.ReadInteger<T>(ref reader);
     }
 
     /// <inheritdoc />

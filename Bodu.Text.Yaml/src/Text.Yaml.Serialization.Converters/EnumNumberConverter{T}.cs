@@ -16,9 +16,11 @@ namespace Bodu.Text.Yaml.Serialization.Converters;
 /// </summary>
 /// <typeparam name="T">The enumeration type.</typeparam>
 /// <remarks>
-/// The numeric value is read and written through a signed 64-bit integer, which is the only integer width the writer
-/// can store; an enumeration whose underlying type is <see cref="ulong" /> with values above
-/// <see cref="long.MaxValue" /> therefore cannot be represented.
+/// The numeric value is read from an integer token, a signed 64-bit value, through
+/// <see cref="EnumIntegerConversion.ReadInteger{T}(ref Utf8YamlReader)" />, so an integer outside the range of the
+/// enumeration's underlying type throws <see cref="YamlSerializationException" /> rather than being narrowed into that
+/// type. The value is written through a signed 64-bit integer, the only integer width the writer can store, so a value
+/// of an enumeration based on <see cref="ulong" /> above <see cref="long.MaxValue" /> cannot be represented.
 /// </remarks>
 internal sealed class EnumNumberConverter<T>
     : YamlConverter<T>
@@ -36,7 +38,7 @@ internal sealed class EnumNumberConverter<T>
                 CultureInfo.CurrentCulture, YamlResourceStrings.Op_Invalid_ExpectedInteger, reader.TokenType));
         }
 
-        return (T)Enum.ToObject(typeof(T), reader.GetInt64());
+        return EnumIntegerConversion.ReadInteger<T>(ref reader);
     }
 
     /// <inheritdoc />

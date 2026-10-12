@@ -43,6 +43,8 @@ Registered on the options or referenced from a `[Converter(...)]` attribute:
 - <xref:Bodu.Text.Bencode.Serialization.BencodeStringEnumConverter> / `BencodeStringEnumConverter<TEnum>` - member-name byte strings with an optional naming policy and integer-on-read flag.
 - `BencodeNumberEnumConverter<TEnum>` - the underlying numeric value as a Bencode integer.
 
+An integer read as an enum, by the default handling or by either converter, must lie within the range of the enum's underlying type: one outside it raises <xref:Bodu.Text.Bencode.BencodeSerializationException> at the integer's offset rather than being narrowed into the type, so `i300e` never binds a `byte`-based enum as 44. An integer inside the range binds whether or not it names a member, and an enum based on `ulong` reads integers up to `ulong.MaxValue`.
+
 ## Types that need a user converter
 
 | Capability | Bencode |
