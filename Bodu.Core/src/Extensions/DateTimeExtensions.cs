@@ -610,18 +610,15 @@ public static partial class DateTimeExtensions
     /// A <see cref="long" /> value representing the number of ticks since 0001-01-01T00:00:00.000 that correspond to
     /// the specified date.
     /// </returns>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="year" />, <paramref name="month" />, or <paramref name="day" /> is outside the valid
-    /// range of the Gregorian calendar or does not form a valid date.
-    /// </exception>
     /// <remarks>
     /// <para>
-    /// This method performs full validation of the input parameters and throws an exception if the combination does not
-    /// represent a valid calendar date.
+    /// This method performs no validation; the caller must ensure that the components form a valid calendar date. It
+    /// scales <see cref="GetDayNumberUnchecked(int, int, int)" />, so an invalid combination either produces a wrong
+    /// value (a day past the end of a month rolls into the next month) or throws an unrelated exception.
     /// </para>
     /// <para>
-    /// It is equivalent in result to <c>new DateTime(year, month, day).Ticks</c> but avoids object allocation and is
-    /// optimized for high-performance internal date calculations.
+    /// For a valid date it is equivalent in result to <c>new DateTime(year, month, day).Ticks</c> but avoids object
+    /// allocation and is optimized for high-performance internal date calculations.
     /// </para>
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

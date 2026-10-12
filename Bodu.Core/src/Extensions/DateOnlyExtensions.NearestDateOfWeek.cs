@@ -65,10 +65,15 @@ public static partial class DateOnlyExtensions
     /// </para>
     /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown if <paramref name="dayOfWeek" /> is not a defined value of the <see cref="DayOfWeek" /> enumeration.
+    /// Thrown if <paramref name="year" />, <paramref name="month" />, or <paramref name="day" /> does not represent a
+    /// valid date, -or- <paramref name="dayOfWeek" /> is not a defined value of the <see cref="DayOfWeek" />
+    /// enumeration.
     /// </exception>
     public static DateOnly GetNearestDateOfWeek(int year, int month, int day, DayOfWeek dayOfWeek)
     {
+        ThrowHelper.ThrowIfOutOfRange(year, DateTimeExtensions.MinYear, DateTimeExtensions.MaxYear);
+        ThrowHelper.ThrowIfOutOfRange(month, 1, 12);
+        ThrowHelper.ThrowIfOutOfRange(day, 1, DateTime.DaysInMonth(year, month));
         ThrowHelper.ThrowIfEnumValueIsUndefined(dayOfWeek);
 
         return DateOnly.FromDayNumber(GetNearestDayOfWeek(DateTimeExtensions.GetDayNumberUnchecked(year, month, day), dayOfWeek));

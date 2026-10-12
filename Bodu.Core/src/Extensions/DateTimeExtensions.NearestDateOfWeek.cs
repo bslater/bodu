@@ -70,7 +70,11 @@ public static partial class DateTimeExtensions
     /// </exception>
     public static DateTime GetNearestDateOfWeek(int year, int month, int day, DayOfWeek dayOfWeek)
     {
+        ThrowHelper.ThrowIfOutOfRange(year, MinYear, MaxYear);
+        ThrowHelper.ThrowIfOutOfRange(month, 1, 12);
+        ThrowHelper.ThrowIfOutOfRange(day, 1, DateTime.DaysInMonth(year, month));
         ThrowHelper.ThrowIfEnumValueIsUndefined(dayOfWeek);
+
         return new DateTime(GetTicksForNearestDayOfWeek(GetDateTicks(year, month, day), dayOfWeek), DateTimeKind.Unspecified);
     }
 }
