@@ -1,0 +1,18 @@
+<Solution>
+  <Project Path="Bodu.Core/src/Bodu.Core.csproj" />
+  <Project Path="Bodu.Globalization.Calendar/src/Bodu.Globalization.Calendar.csproj" />
+  <Project Path="Bodu.Globalization.Calendar.Build/src/Bodu.Globalization.Calendar.Build.csproj" />
+  <Project Path="Bodu.Globalization.Calendar.Build/test/Bodu.Globalization.Calendar.Build.Test.csproj" />
+  <Project Path="Bodu.Globalization.Calendar.Tool/src/Bodu.Globalization.Calendar.Tool.csproj" />
+  <Project Path="Bodu.Globalization.Calendar.Tool/test/Bodu.Globalization.Calendar.Tool.Test.csproj" />
+  <Project Path="Bodu.Numerics/aot/Bodu.Numerics.AotSmoke.csproj" />
+  <Project Path="Bodu.Numerics/src/Bodu.Numerics.csproj" />
+  <Project Path="Bodu.Numerics.Serialization.Json/src/Bodu.Numerics.Serialization.Json.csproj" />
+  <Project Path="Bodu.Test/test/Bodu.Test.csproj" />
+  <Project Path="Bodu.Text.Delimited/src/Bodu.Text.Delimited.csproj" />
+  <Project Path="Bodu.Text.Formats.Generators/src/Bodu.Text.Formats.Generators.csproj" />
+  <Project Path="Bodu.Text.Formats.Generators/test/Bodu.Text.Formats.Generators.Test.csproj" />
+  <Project Path="Bodu.Text.Ini/src/Bodu.Text.Ini.csproj" />
+  <Project Path="Bodu.Text.Serialization/src/Bodu.Text.Serialization.csproj" />
+  <Project Path="docs/doc.csproj" />
+</Solution>

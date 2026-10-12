@@ -36,7 +36,7 @@ residue; and the pipeline continuously tries to make itself unnecessary by pushi
 | Tier | Enforcer | What it checks | Cost / determinism |
 |---|---|---|---|
 | **0** | Roslyn analyzers in-build (`EnforceCodeStyleInBuild`, `WarningsAsErrors` for the doc-comment family) | file-scoped ns, `var` cascade, missing XML doc (CS1591) | free, deterministic |
-| **1** | **Policy Gate** - `check-folder-namespace-alignment.sh` + `check-policy.sh` | folder↔namespace; banner; file-scoped ns on new files; no literal exception messages | free, deterministic |
+| **1** | **Policy Gate** - `check-folder-namespace-alignment.sh` + `check-policy.sh` + `generate-solutions.py --check` | folder↔namespace; banner; file-scoped ns on new files; no literal exception messages; generated solution views | free, deterministic |
 | **2** | **Claude Policy Review** - the AI agent | test partial placement; bespoke-vs-shared KAT; pass/fail split; doc summaries; `<returns>` on properties; resx key taxonomy; validation grouping | per-PR model cost, judgment |
 
 Every policy has a stable ID (`BODU-P001` …) in `bld/policy/POLICIES.md`, so the checker, the

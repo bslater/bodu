@@ -7,12 +7,14 @@ name: Policy Gate
 # protection) when a change violates a policy. Because it is deterministic there are no
 # false-positive merges and no per-PR model cost.
 #
-# It runs two checkers:
+# It runs three checkers:
 #   • bld/check-folder-namespace-alignment.sh - whole-tree (the tree is clean today), the
 #     folder ↔ namespace convention.
 #   • bld/check-policy.sh - DIFF-SCOPED (added files / added lines only) so pre-existing
 #     grandfathered stragglers don't block unrelated PRs: copyright banner, file-scoped
 #     namespace, and no string-literal exception messages (resx/ThrowHelper policy).
+#   • tools/solutions/generate-solutions.py --check - whole-tree: the bodu.*.slnx solution
+#     views match bodu.slnx and tools/solutions/solutions.json, and hold only project entries.
 #
 # The judgment-based policies that can't be expressed deterministically are handled by the
 # companion Tier-2 agent in claude-policy-review.yml.
@@ -71,3 +73,12 @@ jobs:
           POLICY_BASE_REF: ${{ steps.base.outputs.base_sha }}
           POLICY_HEAD_REF: HEAD
         run: bash bld/check-policy.sh
+
+      # Whole tree, and Python only. The solution views (bodu.*.slnx) are generated from bodu.slnx and
+      # tools/solutions/solutions.json (BODU-P016), so a project added to the master without regenerating
+      # them, a view edited by hand, or a build file that reads $(SolutionName) fails here. The
+      # generator's own tests run first, so a broken checker cannot pass the tree.
+      - name: Solution views (whole tree)
+        run: |
+          python3 -m unittest discover -s tools/solutions/tests -t tools/solutions/tests
+          python3 tools/solutions/generate-solutions.py --check

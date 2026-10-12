@@ -55,6 +55,8 @@ Guidance for AI assistants working in this repository. Read this file before mak
 
 A separate solution **`Bodu.CodeStyle/Bodu.CodeStyle.sln`** holds the Bodu code-style analyzers, code fixes, and XML-doc formatter (`Bodu.CodeStyle.XmlDocumentation.{Analyzers,CodeFixes,Core}` plus `Bodu.CodeStyle.Test.Common`). It is **not** referenced by `bodu.slnx` - treat it as an independent unit.
 
+**Solution views.** `bodu.slnx` is the master inventory and is maintained by hand. Beside it, the repository root holds eleven **generated** solutions that select projects from it and do nothing else: by purpose (`bodu.libraries.slnx`, `bodu.tests.slnx`, `bodu.benchmarks.slnx`, `bodu.samples.slnx`, `bodu.tooling.slnx`) and by domain (`bodu.core.slnx`, `bodu.security.slnx`, `bodu.globalization.slnx`, `bodu.financial.slnx`, `bodu.text.slnx`, `bodu.formats.slnx`). Each is a `<Solution>` of sorted `<Project Path="..." />` entries - no folders, configurations, build flags or solution items - holding the projects its kinds or domain select plus everything they reference, so it builds in Visual Studio too. `tools/solutions/generate-solutions.py` writes them from the classification in `tools/solutions/solutions.json`; **never edit a view by hand**. Add a new project to `bodu.slnx`, run the generator, and add an `exceptions` entry (with the reason) if it reports the project unclassified. The Policy Gate runs `--check` (BODU-P016), which also fails on any `.csproj` missing from `bodu.slnx`, on a new Debug exclusion in `bodu.slnx`, and on any MSBuild file that reads `$(SolutionName)` or its siblings: build policy must not depend on the solution a project is built through. See `tools/solutions/README.md` and `plans/multi-solution-architecture.md`.
+
 Each project has the layout:
 
 ```
@@ -149,6 +151,9 @@ dotnet test  bodu.slnx --settings bvt.runsettings              # default build r
 dotnet test  bodu.slnx --settings smoke.runsettings            # smoke only
 dotnet test  bodu.slnx --settings regression.runsettings       # full regression
 dotnet test  Bodu.Core/test/Bodu.Core.Test.csproj --settings bvt.runsettings
+dotnet test  bodu.core.slnx --settings bvt.runsettings         # one domain (see Solution views above)
+dotnet test  bodu.tests.slnx -c Release --settings test.runsettings   # every test project CI runs
+python3 tools/solutions/generate-solutions.py                 # regenerate the views after changing bodu.slnx
 ```
 
 See **Test Tiers** below for the category convention each runsettings file applies.
@@ -220,6 +225,11 @@ not build a reference that the active configuration excludes, so in Debug the `C
 task assembly under `Bodu.Globalization.Calendar.Build/src/bin/Debug` never exists, and the consuming
 project fails with `MSB4062`, in Visual Studio and in `dotnet build bodu.slnx` alike. That is why the
 `RulePackToolchain` sample is one of the three samples excluded.
+
+The generated solution views (see **Solution views** above) carry none of these exclusions, so every
+project in a view builds, and restores, in Debug as in Release: `bodu.tooling.slnx` builds the toolchain
+and `bodu.samples.slnx` builds `RulePackToolchain` in Debug. The master's exclusions are recorded in
+`tools/solutions/solutions.json`, and the check fails if `bodu.slnx` gains another.
 
 **After the target-framework list changes, restore before building.** Every
 `obj/project.assets.json` records the frameworks it was restored for. Change a project's

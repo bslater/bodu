@@ -39,6 +39,7 @@ catch should be distilled into the Learning log below so the next author applies
 | BODU-P013 | Validation grouped at the top of the member | 2 | Claude Policy Review | All guards contiguous before the body, then a blank line |
 | BODU-P014 | No em-dashes or en-dashes, in any file | 1 | `check-policy.sh` (added lines, every text file) | ` - ` for an aside, `-` in a range (`2020-2026`); a dash that is test data is listed in `bld/policy/dash-allowlist.txt` |
 | BODU-P015 | No XML-doc line continues a paragraph with a Markdown block marker | 0/1 | BODU1001/BODU1002 (the formatter never wraps one there) · `validate_api_site.py` `doclines` | Keep `-`, `+`, `*`, `#`, `&gt;` or `1.` at the end of the previous line; DocFX renders the text as Markdown |
+| BODU-P016 | Solution views are generated selection manifests | 1 | `tools/solutions/generate-solutions.py --check` (whole tree, Policy Gate) | Add a project to `bodu.slnx`, classify it in `tools/solutions/solutions.json` if no rule fits, and run the generator; never edit a `bodu.*.slnx` view by hand, and never read `$(SolutionName)` and its siblings in a build file |
 
 ## Learning log
 

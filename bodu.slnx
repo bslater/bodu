@@ -8,6 +8,7 @@
     <Project Path="Bodu.Collections.Concurrent\test\Bodu.Collections.Concurrent.Test.csproj" />
   </Folder>
   <Folder Name="/Bodu.Core/">
+    <Project Path="Bodu.Core/bench/Bodu.Collections.Generic.Concurrent.Benchmarks/Bodu.Collections.Generic.Concurrent.Benchmarks.csproj" />
     <Project Path="Bodu.Core\src\Bodu.Core.csproj" />
     <Project Path="Bodu.Core\test\Bodu.Core.Test.csproj" />
   </Folder>
