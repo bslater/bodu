@@ -168,4 +168,52 @@ public sealed partial class ParserValidationTests
             new DateOnly(2026, 3, 14),
             service.Resolve(new DateRange(new DateOnly(2026, 1, 1), new DateOnly(2026, 12, 31)), "XX").Single().Date);
     }
+
+    /// <summary>
+    /// Verifies that a JSON rule with no recognized occurrence source - no strategy, an empty strategy, or only an
+    /// unrecognized strategy kind - is rejected with the <c>BODU-CAL-RULE-SOURCE</c> diagnostic rather than resolving
+    /// to 1 January.
+    /// </summary>
+    /// <param name="rule">The JSON rule object under test.</param>
+    [TestMethod]
+    [DataRow("""{ "id": "r" }""", DisplayName = "No strategy or recurrence")]
+    [DataRow("""{ "id": "r", "strategy": { } }""", DisplayName = "Empty strategy")]
+    [DataRow("""{ "id": "r", "strategy": { "fixd": { "month": 3, "day": 1 } } }""", DisplayName = "Unrecognized strategy kind")]
+    public void LoadJson_WhenRuleHasNoOccurrenceSource_ShouldThrowRuleSourceDiagnostic(string rule)
+    {
+        string json = """
+            { "schemaVersion": "1.0", "resourceId": "test.bad",
+              "notableDates": [ { "id": "x", "displayName": "X", "category": "PublicHoliday", "rules": [ __RULE__ ] } ] }
+            """.Replace("__RULE__", rule, StringComparison.Ordinal);
+
+        NotableDateValidationException ex = Assert.ThrowsExactly<NotableDateValidationException>(() =>
+        {
+            _ = NotableDateResourceLoader.LoadJson(json);
+        });
+
+        Assert.Contains(d => d.Code == "BODU-CAL-RULE-SOURCE" && d.Severity == NotableDateValidationSeverity.Error, ex.Diagnostics, "BODU-CAL-RULE-SOURCE");
+    }
+
+    /// <summary>
+    /// Verifies that a JSON rule declaring more than one occurrence source - a strategy and a recurrence, or two
+    /// strategy kinds - is rejected with the <c>BODU-CAL-RULE-SOURCE</c> diagnostic rather than silently using one.
+    /// </summary>
+    /// <param name="rule">The JSON rule object under test.</param>
+    [TestMethod]
+    [DataRow("""{ "id": "r", "strategy": { "fixed": { "month": 3, "day": 1 } }, "recurrence": { "weekly": { "days": [ "Monday" ] } } }""", DisplayName = "Strategy and recurrence")]
+    [DataRow("""{ "id": "r", "strategy": { "fixed": { "month": 3, "day": 1 }, "algorithm": { "key": "western-easter" } } }""", DisplayName = "Two strategy kinds")]
+    public void LoadJson_WhenRuleHasMoreThanOneOccurrenceSource_ShouldThrowRuleSourceDiagnostic(string rule)
+    {
+        string json = """
+            { "schemaVersion": "1.0", "resourceId": "test.bad",
+              "notableDates": [ { "id": "x", "displayName": "X", "category": "PublicHoliday", "rules": [ __RULE__ ] } ] }
+            """.Replace("__RULE__", rule, StringComparison.Ordinal);
+
+        NotableDateValidationException ex = Assert.ThrowsExactly<NotableDateValidationException>(() =>
+        {
+            _ = NotableDateResourceLoader.LoadJson(json);
+        });
+
+        Assert.Contains(d => d.Code == "BODU-CAL-RULE-SOURCE" && d.Severity == NotableDateValidationSeverity.Error, ex.Diagnostics, "BODU-CAL-RULE-SOURCE");
+    }
 }

@@ -75,6 +75,36 @@ public sealed partial class ParserValidationTests
     }
 
     /// <summary>
+    /// Verifies that a rule declaring both a <c>Strategy</c> and a <c>Recurrence</c> is reported with the
+    /// <c>BODU-CAL-RULE-SOURCE</c> diagnostic that the JSON path shares, alongside the schema diagnostic.
+    /// </summary>
+    [TestMethod]
+    public void Load_WhenRuleHasStrategyAndRecurrence_ShouldThrowRuleSourceDiagnostic()
+    {
+        const string xml = """
+            <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="test.bad">
+              <NotableDates>
+                <NotableDate id="x" displayName="X" category="PublicHoliday">
+                  <Rules>
+                    <Rule id="r">
+                      <Strategy><Fixed month="March" day="1" /></Strategy>
+                      <Recurrence><Weekly><Day dayOfWeek="Monday" /></Weekly></Recurrence>
+                    </Rule>
+                  </Rules>
+                </NotableDate>
+              </NotableDates>
+            </NotableDateResource>
+            """;
+
+        NotableDateValidationException ex = Assert.ThrowsExactly<NotableDateValidationException>(() =>
+        {
+            _ = NotableDateResourceLoader.Load(xml);
+        });
+
+        Assert.Contains(d => d.Code == "BODU-CAL-RULE-SOURCE" && d.Severity == NotableDateValidationSeverity.Error, ex.Diagnostics, "BODU-CAL-RULE-SOURCE");
+    }
+
+    /// <summary>
     /// Verifies that the v1 <c>Holiday</c> category token, renamed to <c>PublicHoliday</c> in v2, is rejected with a
     /// schema diagnostic.
     /// </summary>
