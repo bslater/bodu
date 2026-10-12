@@ -138,7 +138,7 @@ public static partial class DotEnvSerializer
         Type concrete = targetType.IsInterface
             ? typeof(Dictionary<,>).MakeGenericType(typeof(string), valueType)
             : targetType;
-        var dictionary = (IDictionary)Activator.CreateInstance(concrete)!;
+        var dictionary = (IDictionary)CreateInstance(concrete);
 
         foreach ((string key, string raw) in entries)
             dictionary[key] = ConvertFromString(raw, valueType, key);
@@ -153,12 +153,14 @@ public static partial class DotEnvSerializer
     /// <param name="targetType">The POCO type.</param>
     /// <param name="options">The serializer options.</param>
     /// <returns>The populated instance.</returns>
-    /// <exception cref="DotEnvSerializationException">Thrown when a required key is missing.</exception>
+    /// <exception cref="DotEnvSerializationException">
+    /// Thrown when the type cannot be created or a required key is missing.
+    /// </exception>
     [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
     [RequiresDynamicCode(RequiresDynamicCodeMessage)]
     private static object ReadPoco(List<KeyValuePair<string, string>> entries, Type targetType, DotEnvSerializerOptions options)
     {
-        object instance = Activator.CreateInstance(targetType)!;
+        object instance = CreateInstance(targetType);
         (instance as IOnDeserializing)?.OnDeserializing();
 
         StringComparison comparison = options.PropertyNameCaseInsensitive ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
@@ -186,6 +188,25 @@ public static partial class DotEnvSerializer
         (instance as IOnDeserialized)?.OnDeserialized();
 
         return instance;
+    }
+
+    /// <summary>
+    /// Creates an instance of a type the document is read into, after checking that the type can be created.
+    /// </summary>
+    /// <param name="type">The type to create.</param>
+    /// <returns>The new instance.</returns>
+    /// <exception cref="DotEnvSerializationException">
+    /// Thrown when <paramref name="type" /> is an interface or an abstract class, or a class with no public
+    /// parameterless constructor.
+    /// </exception>
+    [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
+    private static object CreateInstance(Type type)
+    {
+        // A value type can always be created; a reference type needs the constructor Activator calls.
+        if (!type.IsValueType && (type.IsAbstract || type.GetConstructor(Type.EmptyTypes) is null))
+            throw new DotEnvSerializationException(string.Format(CultureInfo.CurrentCulture, DotEnvResourceStrings.Op_Invalid_DotEnvTypeNotCreatable, type));
+
+        return Activator.CreateInstance(type)!;
     }
 
     /// <summary>

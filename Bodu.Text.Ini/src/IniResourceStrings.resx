@@ -79,6 +79,9 @@
   <data name="Op_Invalid_IniRootNotObject" xml:space="preserve">
     <value>INI serialization requires an object root; the type '{0}' is not supported.</value>
   </data>
+  <data name="Op_Invalid_IniTypeNotCreatable" xml:space="preserve">
+    <value>The type '{0}' cannot be created; reading an INI document into it needs a public parameterless constructor.</value>
+  </data>
   <data name="Op_Invalid_IniDepthExceeded" xml:space="preserve">
     <value>INI supports only two levels (section then key); the member '{0}' nests deeper.</value>
   </data>

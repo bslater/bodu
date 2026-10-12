@@ -110,6 +110,8 @@ catch (DelimitedSerializationException ex)
 // The input string 'ten' was not in a correct format.
 ```
 
+The record type is checked before anything is read or written. A record is a `string[]` or an object whose members map to columns, so since 1.3.0 a scalar or collection record type throws *A delimited record is a string array or an object whose members map to columns; the record type '...', a scalar or a collection, is not supported.*, and reading into an abstract record type, or one with no public parameterless constructor, throws *The record type '...' cannot be created; reading a delimited record needs a public parameterless constructor.*
+
 A *missing* column is not an error - Delimited does not honor `[Required]`, so `Symbol\nMSFT\n` binds a `Trade` with `Quantity` left at its default. And because the document is parsed before it is bound, a structural error inside the same call still surfaces as the format exception:
 
 <!-- compile -->
@@ -149,7 +151,7 @@ The DotEnv knobs on <xref:Bodu.Text.DotEnv.Reader.DotEnvReaderOptions> run in th
 
 ## Pattern 5 - DotEnv: binding failures
 
-`DotEnvSerializationException` covers the two binding failures the format can have: a `[Required]` key that is absent, and a value that does not convert:
+`DotEnvSerializationException` covers the binding failures: a `[Required]` key that is absent, a value that does not convert, and a type that cannot hold the document:
 
 <!-- compile -->
 ```csharp
@@ -171,6 +173,8 @@ DotEnvSerializer.Deserialize<ApiSettings>("ApiKey=k\nTimeout=soon\n");
 // → throws DotEnvSerializationException: The DotEnv value for key 'Timeout' could not be converted to type 'System.Int32'.
 //   InnerException: FormatException: The input string 'soon' was not in a correct format.
 ```
+
+The type is checked as well. A DotEnv root is an object or a string-keyed dictionary, so a scalar root (a primitive, `string`, an enum, `decimal`, `Guid`, a date or time type, `Uri`, a 128-bit or half-precision number, `BigInteger`, or the nullable form of one) or a collection root throws *DotEnv serialization requires an object or string-keyed dictionary root; the type '...' is not supported.*, from `Serialize` and `Deserialize` alike. Since 1.3.0 that covers every scalar: earlier versions bound `decimal`, `Guid`, the date and time types, `Uri`, the 128-bit and half-precision numbers, `BigInteger` and the nullable forms as objects, through their public properties. Reading into an abstract type, or one with no public parameterless constructor such as a positional `record`, throws *The type '...' cannot be created; reading a DotEnv document into it needs a public parameterless constructor.* rather than the runtime's `MissingMethodException`.
 
 As with Delimited, a syntax error in the same call is the format exception (`ApiKey="k` → *Unterminated double-quoted DotEnv value beginning on line 1.*), so handlers around `Deserialize<T>` need both clauses.
 
@@ -249,6 +253,8 @@ IniSerializer.Deserialize<AppConfig>("Name=x\n[Server]\nPort=eighty\n");
 ```
 
 A `Server` type that itself held an object-typed member - `public Tls? Tls { get; set; }` - fails at first use with *INI supports only two levels (section then key); the member 'Tls' nests deeper.*, whether or not the member is `null`: the check is on the type's shape, not the instance.
+
+The root type is checked as it is for DotEnv: an INI root is an object or a string-keyed dictionary, so a scalar or collection root throws *INI serialization requires an object root; the type '...' is not supported.* on write and on read. Since 1.3.0 that includes `DateOnly`, `TimeOnly`, the 128-bit and half-precision numbers and `BigInteger`, and their nullable forms, which earlier versions bound as objects through their public properties. Reading into an abstract type, or one with no public parameterless constructor, whether the root or the type of a section, throws *The type '...' cannot be created; reading an INI document into it needs a public parameterless constructor.* rather than the runtime's `MissingMethodException`.
 
 ## Pattern 8 - Catch both families
 

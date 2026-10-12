@@ -142,6 +142,15 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The type '{0}' cannot be created; reading a DotEnv document into it needs a public parameterless constructor..
+        /// </summary>
+        internal static string Op_Invalid_DotEnvTypeNotCreatable {
+            get {
+                return ResourceManager.GetString("Op_Invalid_DotEnvTypeNotCreatable", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Required DotEnv key '{0}' was not present in the document..
         /// </summary>
         internal static string Op_Invalid_DotEnvMissingRequiredKey {

@@ -317,7 +317,7 @@ public static partial class IniSerializer
     [RequiresDynamicCode(RequiresDynamicCodeMessage)]
     private static object ReadRootDictionary(IniNormalizedDocument document, Type targetType, Type valueType, IniSerializerOptions options)
     {
-        var dictionary = (IDictionary)Activator.CreateInstance(ConcreteDictionaryType(targetType, valueType))!;
+        var dictionary = (IDictionary)CreateInstance(ConcreteDictionaryType(targetType, valueType));
 
         if (TryGetStringKeyedDictionary(valueType, out Type? nestedValueType))
         {
@@ -353,13 +353,14 @@ public static partial class IniSerializer
     /// <param name="options">The serializer options.</param>
     /// <returns>The populated instance.</returns>
     /// <exception cref="IniSerializationException">
-    /// Thrown when a required member has no matching key or section, or a member nests beyond INI's two levels.
+    /// Thrown when the type or a section type cannot be created, a required member has no matching key or section, or a
+    /// member nests beyond INI's two levels.
     /// </exception>
     [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
     [RequiresDynamicCode(RequiresDynamicCodeMessage)]
     private static object ReadRootPoco(IniNormalizedDocument document, Type targetType, IniSerializerOptions options)
     {
-        object instance = Activator.CreateInstance(targetType)!;
+        object instance = CreateInstance(targetType);
         (instance as IOnDeserializing)?.OnDeserializing();
 
         StringComparison comparison = options.PropertyNameCaseInsensitive ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
@@ -409,7 +410,8 @@ public static partial class IniSerializer
     /// <param name="options">The serializer options.</param>
     /// <returns>The populated value.</returns>
     /// <exception cref="IniSerializationException">
-    /// Thrown when a required member has no matching key, or a member nests beyond INI's two levels.
+    /// Thrown when the type cannot be created, a required member has no matching key, or a member nests beyond INI's
+    /// two levels.
     /// </exception>
     [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
     [RequiresDynamicCode(RequiresDynamicCodeMessage)]
@@ -417,14 +419,14 @@ public static partial class IniSerializer
     {
         if (TryGetStringKeyedDictionary(targetType, out Type? valueType))
         {
-            var dictionary = (IDictionary)Activator.CreateInstance(ConcreteDictionaryType(targetType, valueType))!;
+            var dictionary = (IDictionary)CreateInstance(ConcreteDictionaryType(targetType, valueType));
             foreach ((string key, string raw) in entries)
                 dictionary[key] = ConvertFromString(raw, valueType, key);
 
             return dictionary;
         }
 
-        object instance = Activator.CreateInstance(targetType)!;
+        object instance = CreateInstance(targetType);
         (instance as IOnDeserializing)?.OnDeserializing();
 
         StringComparison comparison = options.PropertyNameCaseInsensitive ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
@@ -447,6 +449,25 @@ public static partial class IniSerializer
         (instance as IOnDeserialized)?.OnDeserialized();
 
         return instance;
+    }
+
+    /// <summary>
+    /// Creates an instance of a type the document is read into, after checking that the type can be created.
+    /// </summary>
+    /// <param name="type">The type to create.</param>
+    /// <returns>The new instance.</returns>
+    /// <exception cref="IniSerializationException">
+    /// Thrown when <paramref name="type" /> is an interface or an abstract class, or a class with no public
+    /// parameterless constructor.
+    /// </exception>
+    [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
+    private static object CreateInstance(Type type)
+    {
+        // A value type can always be created; a reference type needs the constructor Activator calls.
+        if (!type.IsValueType && (type.IsAbstract || type.GetConstructor(Type.EmptyTypes) is null))
+            throw new IniSerializationException(string.Format(CultureInfo.CurrentCulture, IniResourceStrings.Op_Invalid_IniTypeNotCreatable, type));
+
+        return Activator.CreateInstance(type)!;
     }
 
     /// <summary>
@@ -496,7 +517,7 @@ public static partial class IniSerializer
     [RequiresDynamicCode(RequiresDynamicCodeMessage)]
     private static object BuildEntryDictionary(List<KeyValuePair<string, string>> entries, Type dictionaryType, Type valueType)
     {
-        var dictionary = (IDictionary)Activator.CreateInstance(ConcreteDictionaryType(dictionaryType, valueType))!;
+        var dictionary = (IDictionary)CreateInstance(ConcreteDictionaryType(dictionaryType, valueType));
         foreach ((string key, string raw) in entries)
             dictionary[key] = ConvertFromString(raw, valueType, key);
 

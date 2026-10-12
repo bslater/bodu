@@ -120,6 +120,15 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The type '{0}' cannot be created; reading an INI document into it needs a public parameterless constructor..
+        /// </summary>
+        internal static string Op_Invalid_IniTypeNotCreatable {
+            get {
+                return ResourceManager.GetString("Op_Invalid_IniTypeNotCreatable", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to INI supports only two levels (section then key); the member '{0}' nests deeper..
         /// </summary>
         internal static string Op_Invalid_IniDepthExceeded {
