@@ -73,8 +73,8 @@ public static partial class DateTimeExtensions
     /// </exception>
     public static DateTime Truncate(this DateTime dateTime, DateTimeResolution resolution)
     {
-        ThrowHelper.ThrowIfEnumValueIsUndefined(resolution);
-
+        // An undefined resolution reaches the default branch, which throws; checking it up front as well would cost
+        // every call a metadata lookup.
         switch (resolution)
         {
             case DateTimeResolution.Year:
