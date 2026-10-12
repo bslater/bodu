@@ -14,7 +14,7 @@ namespace Bodu.Text.DotEnv.Reader;
 /// <summary>
 /// Provides a high-performance, forward-only, allocation-light reader for DotEnv bytes. The reader is a
 /// <see langword="ref struct" />, so it lives on the stack and cannot be boxed or captured; pass it by
-/// <see langword="ref" /> to thread it through a converter.
+/// <see langword="ref" /> to share its position with a helper method.
 /// </summary>
 /// <remarks>
 /// <para>

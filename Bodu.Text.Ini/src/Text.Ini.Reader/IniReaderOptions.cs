@@ -35,7 +35,8 @@ public readonly struct IniReaderOptions
     public bool DisallowHashComments { get; init; }
 
     /// <summary>
-    /// Gets a value indicating whether comment lines are surfaced as <see cref="IniTokenType.Comment" /> tokens.
+    /// Gets a value indicating whether comment lines are skipped rather than surfaced as
+    /// <see cref="IniTokenType.Comment" /> tokens.
     /// </summary>
     /// <value><see langword="true" /> to skip comment tokens; otherwise <see langword="false" />.</value>
     /// <remarks>
