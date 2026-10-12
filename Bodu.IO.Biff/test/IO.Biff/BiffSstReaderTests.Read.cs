@@ -445,4 +445,51 @@ public sealed partial class BiffSstReaderTests
 
         Assert.IsEmpty(ReadAll(stream, out _));
     }
+
+    /// <summary>
+    /// Verifies that a surrogate pair whose high surrogate ends the SST record and whose low surrogate opens the
+    /// CONTINUE record after it decodes to its character, as the same code units in one record do.
+    /// </summary>
+    [TestMethod]
+    public void Read_WhenSurrogatePairStraddlesTheSstBoundary_ShouldDecodeTheCharacter()
+    {
+        byte[] stream = Table(
+            BiffTestRecords.Sst(1, 1, [0x02, 0x00, Wide, 0x3D, 0xD8]),
+            BiffTestRecords.Continue(Wide, 0x00, 0xDE));
+
+        CollectionAssert.AreEqual(new[] { "\uD83D\uDE00" }, ReadAll(stream, out _));
+    }
+
+    /// <summary>
+    /// Verifies that a surrogate pair split between two CONTINUE records decodes to its character, after the characters
+    /// the SST record holds.
+    /// </summary>
+    [TestMethod]
+    public void Read_WhenSurrogatePairStraddlesTwoContinuations_ShouldDecodeTheCharacter()
+    {
+        byte[] stream = Table(
+            BiffTestRecords.Sst(1, 1, [0x04, 0x00, Compressed, (byte)'a']),
+            BiffTestRecords.Continue(Wide, (byte)'b', 0x00, 0x3D, 0xD8),
+            BiffTestRecords.Continue(Wide, 0x00, 0xDE));
+
+        CollectionAssert.AreEqual(new[] { "ab\uD83D\uDE00" }, ReadAll(stream, out _));
+    }
+
+    /// <summary>
+    /// Verifies that a high surrogate that ends a segment without its low surrogate decodes to U+FFFD, followed by the
+    /// character that opens the next segment, whether that segment holds 16-bit or 8-bit characters.
+    /// </summary>
+    /// <param name="nextIsWide">Whether the CONTINUE record after the lone surrogate holds 16-bit characters.</param>
+    [TestMethod]
+    [DataRow(true)]
+    [DataRow(false)]
+    public void Read_WhenLoneHighSurrogateEndsASegment_ShouldDecodeItAsReplacementCharacter(bool nextIsWide)
+    {
+        byte[] next = nextIsWide ? [Wide, 0x41, 0x00] : [Compressed, 0x41];
+        byte[] stream = Table(
+            BiffTestRecords.Sst(1, 1, [0x02, 0x00, Wide, 0x3D, 0xD8]),
+            BiffTestRecords.Continue(next));
+
+        CollectionAssert.AreEqual(new[] { "\uFFFDA" }, ReadAll(stream, out _));
+    }
 }

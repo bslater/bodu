@@ -588,4 +588,20 @@ public partial class ExcelWorksheetReaderTests
 
         CollectionAssert.AreEqual(new double?[] { 1.0, 2.0 }, values);
     }
+
+    /// <summary>
+    /// Verifies that a formula's text result whose surrogate pair is split between its STRING record and the CONTINUE
+    /// record after it is read as the character.
+    /// </summary>
+    [TestMethod]
+    public void TryReadCell_WhenFormulaStringSplitsASurrogatePair_ShouldReadTheCharacter()
+    {
+        using ExcelWorksheetReader reader = Biff8TestWorkbook.OpenWorksheetReader(
+            Biff8TestWorkbook.Formula(0, 0, [0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF, 0xFF]),
+            Biff8TestWorkbook.Record(0x0207, [0x02, 0x00, 0x01, 0x3D, 0xD8]),
+            Biff8TestWorkbook.Record(0x003C, [0x01, 0x00, 0xDE]));
+
+        Assert.IsTrue(reader.TryReadCell(out ExcelCell cell));
+        Assert.AreEqual("\uD83D\uDE00", cell.StringValue);
+    }
 }

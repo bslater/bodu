@@ -117,4 +117,32 @@ public sealed partial class BiffStringRecordTests
 
         Assert.AreEqual("café", BiffStringRecord.ReadContinuedText(ref reader));
     }
+
+    /// <summary>
+    /// Verifies that a surrogate pair whose high surrogate ends the STRING record and whose low surrogate opens the
+    /// CONTINUE record after it decodes to its character, as the same code units in one record do.
+    /// </summary>
+    [TestMethod]
+    public void ReadContinuedText_WhenSurrogatePairStraddlesTheBoundary_ShouldDecodeTheCharacter()
+    {
+        byte[] stream = Stream8(
+            BiffTestRecords.Record(BiffRecordType.String, [0x03, 0x00, 0x01, (byte)'a', 0x00, 0x3D, 0xD8]),
+            BiffTestRecords.Continue(0x01, 0x00, 0xDE));
+
+        Assert.AreEqual("a\uD83D\uDE00", ReadText(stream, out _));
+    }
+
+    /// <summary>
+    /// Verifies that a high surrogate that ends a segment without its low surrogate decodes to U+FFFD, followed by the
+    /// character that opens the next segment.
+    /// </summary>
+    [TestMethod]
+    public void ReadContinuedText_WhenLoneHighSurrogateEndsASegment_ShouldDecodeItAsReplacementCharacter()
+    {
+        byte[] stream = Stream8(
+            BiffTestRecords.Record(BiffRecordType.String, [0x02, 0x00, 0x01, 0x3D, 0xD8]),
+            BiffTestRecords.Continue(0x00, (byte)'A'));
+
+        Assert.AreEqual("\uFFFDA", ReadText(stream, out _));
+    }
 }
