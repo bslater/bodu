@@ -326,7 +326,8 @@ public sealed class ImfRateProvider
     }
 
     /// <summary>
-    /// Builds the <see cref="HttpClient" /> this provider owns, configured with the options' user agent and timeout.
+    /// Builds the <see cref="HttpClient" /> this provider owns, configured with the options' user agent, timeout, and
+    /// response buffer cap.
     /// </summary>
     /// <param name="options">The provider options.</param>
     /// <returns>A new, configured client owned by the provider.</returns>
@@ -335,7 +336,7 @@ public sealed class ImfRateProvider
         ThrowHelper.ThrowIfNull(options);
         options.Validate();
 
-        return RateProviderHttpClientFactory.Create(options.UserAgent, options.HttpTimeout);
+        return RateProviderHttpClientFactory.Create(options.UserAgent, options.HttpTimeout, options.MaxResponseContentBufferSize);
     }
 
     /// <summary>
