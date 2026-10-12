@@ -71,8 +71,30 @@ public static partial class DotEnvSerializer
             if (entry.Value is null && options.DefaultIgnoreCondition is IgnoreCondition.WhenWritingNull or IgnoreCondition.WhenWritingDefault)
                 continue;
 
-            writer.WritePropertyName(Convert.ToString(entry.Key, CultureInfo.InvariantCulture) ?? string.Empty);
+            WriteKey(ref writer, Convert.ToString(entry.Key, CultureInfo.InvariantCulture) ?? string.Empty);
             writer.WriteString(ValueToString(entry.Value));
+        }
+    }
+
+    /// <summary>
+    /// Writes a key, translating the writer's refusal of a key that would not read back into the serializer's
+    /// exception.
+    /// </summary>
+    /// <param name="writer">The writer.</param>
+    /// <param name="key">The key to write.</param>
+    /// <exception cref="DotEnvSerializationException">
+    /// Thrown when <paramref name="key" /> is not a key the reader reads back; the writer's
+    /// <see cref="ArgumentException" /> is the inner exception.
+    /// </exception>
+    private static void WriteKey(ref Utf8DotEnvWriter writer, string key)
+    {
+        try
+        {
+            writer.WritePropertyName(key);
+        }
+        catch (ArgumentException ex) when (ex.GetType() == typeof(ArgumentException))
+        {
+            throw new DotEnvSerializationException(string.Format(CultureInfo.CurrentCulture, DotEnvResourceStrings.Op_Invalid_DotEnvUnwritableKey, key), ex);
         }
     }
 
@@ -95,7 +117,7 @@ public static partial class DotEnvSerializer
             if (ShouldSkipOnWrite(memberValue, member, options))
                 continue;
 
-            writer.WritePropertyName(member.Name);
+            WriteKey(ref writer, member.Name);
             writer.WriteString(ValueToString(memberValue));
         }
     }

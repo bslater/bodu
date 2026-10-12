@@ -97,6 +97,8 @@ writer.Flush();
 
 The value containing ` #` is double-quoted automatically, because unquoted it would read back as `s3cret` followed by a comment. `DotEnvSerializerOptions.WriteExportPrefix` is the serializer-level form of the same flag; the mutable `DotEnvObject` DOM preserves each entry's own export flag instead.
 
+A key cannot be quoted, so the writer accepts only the keys the reader reads, which match `[A-Za-z_][A-Za-z0-9_]*`: `WritePropertyName` throws `ArgumentException` for an empty name or one holding `=`, `#`, white space, a line break or any other character, and `DotEnvSerializer` reports such a member name or dictionary key as a `DotEnvSerializationException` naming the key. `WriteComment` writes one `#` line per line of its text, so a line break in a comment cannot start an entry.
+
 ## Pattern 3 - INI writer: the comment prefix
 
 | Member | Type | Default | Effect |

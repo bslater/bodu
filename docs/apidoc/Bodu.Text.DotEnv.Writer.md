@@ -39,5 +39,6 @@ writer.Flush();
 
 - **Line-oriented and progressive.** Each name/value pair or comment is emitted as its own line; `WriteStartObject` / `WriteEndObject` mirror the reader's tokens but emit no bytes.
 - **Quoting is automatic.** A value with leading/trailing whitespace, a `#` sequence, a quote, a backslash, or a line break is double-quoted with escapes so it reads back exactly.
+- **Keys and comments read back.** A key cannot be quoted, so `WritePropertyName` accepts only the keys the reader reads, `[A-Za-z_][A-Za-z0-9_]*`, and throws `ArgumentException` for any other name; `WriteComment` writes one `#` line per line of its text.
 - **Flush to commit.** Bytes are staged until `Flush` (or `Dispose`).
 - **See also:** the [line-formats introduction](~/docs/formats/index.md) and the [DotEnv guide](~/guides/formats/dotenv.md).

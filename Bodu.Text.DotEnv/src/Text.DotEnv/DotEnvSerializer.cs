@@ -40,7 +40,9 @@ public static partial class DotEnvSerializer
     /// <param name="options">The serializer options, or <see langword="null" /> to use the defaults.</param>
     /// <returns>The DotEnv text.</returns>
     /// <exception cref="DotEnvSerializationException">
-    /// Thrown when <typeparamref name="T" /> cannot be mapped to a DotEnv object.
+    /// Thrown when <typeparamref name="T" /> cannot be mapped to a DotEnv object, or when a member name or dictionary
+    /// key is not a key the reader reads back (one matching <c>[A-Za-z_][A-Za-z0-9_]*</c>); the message then names the
+    /// key, and the writer's <see cref="ArgumentException" /> is the inner exception.
     /// </exception>
     [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
     [RequiresDynamicCode(RequiresDynamicCodeMessage)]
@@ -63,7 +65,9 @@ public static partial class DotEnvSerializer
     /// Thrown when <paramref name="destination" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="DotEnvSerializationException">
-    /// Thrown when <typeparamref name="T" /> cannot be mapped to a DotEnv object.
+    /// Thrown when <typeparamref name="T" /> cannot be mapped to a DotEnv object, or when a member name or dictionary
+    /// key is not a key the reader reads back (one matching <c>[A-Za-z_][A-Za-z0-9_]*</c>); the message then names the
+    /// key, and the writer's <see cref="ArgumentException" /> is the inner exception.
     /// </exception>
     [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
     [RequiresDynamicCode(RequiresDynamicCodeMessage)]
@@ -92,7 +96,9 @@ public static partial class DotEnvSerializer
     /// Thrown when <paramref name="destination" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="DotEnvSerializationException">
-    /// Thrown when <typeparamref name="T" /> cannot be mapped to a DotEnv object.
+    /// Thrown when <typeparamref name="T" /> cannot be mapped to a DotEnv object, or when a member name or dictionary
+    /// key is not a key the reader reads back (one matching <c>[A-Za-z_][A-Za-z0-9_]*</c>); the message then names the
+    /// key, and the writer's <see cref="ArgumentException" /> is the inner exception.
     /// </exception>
     [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
     [RequiresDynamicCode(RequiresDynamicCodeMessage)]

@@ -120,12 +120,20 @@ public abstract class DotEnvNode
     /// Writes this node's DotEnv representation to the supplied writer.
     /// </summary>
     /// <param name="writer">The writer that receives the DotEnv bytes.</param>
+    /// <exception cref="ArgumentException">
+    /// Thrown when the node holds a key that is not a key the reader reads back, one that does not match
+    /// <c>[A-Za-z_][A-Za-z0-9_]*</c>.
+    /// </exception>
     public abstract void WriteTo(ref Utf8DotEnvWriter writer);
 
     /// <summary>
     /// Serializes this node to a new UTF-8 byte array.
     /// </summary>
     /// <returns>The DotEnv bytes.</returns>
+    /// <exception cref="ArgumentException">
+    /// Thrown when the node holds a key that is not a key the reader reads back, one that does not match
+    /// <c>[A-Za-z_][A-Za-z0-9_]*</c>.
+    /// </exception>
     public byte[] ToUtf8Bytes()
     {
         var buffer = new ArrayBufferWriter<byte>();
@@ -140,6 +148,10 @@ public abstract class DotEnvNode
     /// Serializes this node to DotEnv text.
     /// </summary>
     /// <returns>The DotEnv text.</returns>
+    /// <exception cref="ArgumentException">
+    /// Thrown when the node holds a key that is not a key the reader reads back, one that does not match
+    /// <c>[A-Za-z_][A-Za-z0-9_]*</c>.
+    /// </exception>
     public override string ToString() =>
         Encoding.UTF8.GetString(ToUtf8Bytes());
 

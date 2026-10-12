@@ -54,4 +54,35 @@ public partial class Utf8DotEnvWriterTests
         Assert.AreEqual("name", exportEx.ParamName, testName);
         Assert.AreEqual(0, buffer.WrittenCount, testName);
     }
+
+    /// <summary>
+    /// Verifies that a name matching <c>[A-Za-z_][A-Za-z0-9_]*</c>, the word <c>export</c> included, is written and
+    /// reads back as the same key, with and without the <c>export</c> prefix.
+    /// </summary>
+    /// <param name="name">The name to write.</param>
+    [TestMethod]
+    [DataRow("_")]
+    [DataRow("a")]
+    [DataRow("API_KEY_2")]
+    [DataRow("_private")]
+    [DataRow("export")]
+    public void WritePropertyName_WhenTheNameIsAKey_ShouldReadBackAsTheKey(string name)
+    {
+        foreach (bool export in new[] { false, true })
+        {
+            var buffer = new ArrayBufferWriter<byte>();
+            var writer = new Utf8DotEnvWriter(buffer);
+            writer.WritePropertyName(name, export);
+            writer.WriteString("1");
+            writer.Flush();
+
+            var reader = new Bodu.Text.DotEnv.Reader.Utf8DotEnvReader(buffer.WrittenSpan);
+            while (reader.Read() && reader.TokenType != DotEnvTokenType.PropertyName)
+            {
+            }
+
+            Assert.AreEqual(name, reader.GetString(), $"export: {export}");
+            Assert.AreEqual(export, reader.CurrentIsExport, $"export: {export}");
+        }
+    }
 }

@@ -145,6 +145,10 @@ public ref struct Utf8DotEnvWriter
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="name" /> is <see langword="null" />.
     /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when <paramref name="name" /> is not a key the reader reads back: one that begins with an ASCII letter or
+    /// <c>_</c> and holds only ASCII letters, digits and <c>_</c>.
+    /// </exception>
     /// <remarks>
     /// The <c>export</c> prefix is emitted when <see cref="DotEnvWriterOptions.WriteExportPrefix" /> is set.
     /// </remarks>
@@ -160,9 +164,19 @@ public ref struct Utf8DotEnvWriter
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="name" /> is <see langword="null" />.
     /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when <paramref name="name" /> is not a key the reader reads back: one that begins with an ASCII letter or
+    /// <c>_</c> and holds only ASCII letters, digits and <c>_</c>.
+    /// </exception>
+    /// <remarks>
+    /// The writer accepts exactly the keys <see cref="Bodu.Text.DotEnv.Reader.Utf8DotEnvReader" /> reads, which match
+    /// <c>[A-Za-z_][A-Za-z0-9_]*</c>, so an empty name, or one holding <c>=</c>, <c>#</c>, white space, a line break or
+    /// any other character, is refused rather than written as text that does not read back.
+    /// </remarks>
     public void WritePropertyName(string name, bool export)
     {
         ThrowHelper.ThrowIfNull(name);
+        if (!IsKey(name)) throw new ArgumentException(DotEnvResourceStrings.Arg_Invalid_DotEnvKeyName, nameof(name));
 
         if (export)
             WriteRaw("export "u8);
@@ -191,9 +205,15 @@ public ref struct Utf8DotEnvWriter
     }
 
     /// <summary>
-    /// Writes a comment line prefixed with <c>#</c>, followed by a line feed.
+    /// Writes a comment as one comment line per line of its text, each prefixed with <c>#</c> and followed by a line
+    /// feed.
     /// </summary>
     /// <param name="text">The comment text, without the leading prefix.</param>
+    /// <remarks>
+    /// A carriage return, a line feed, or a carriage return followed by a line feed ends a line of the text, as it ends
+    /// a line for <see cref="Bodu.Text.DotEnv.Reader.Utf8DotEnvReader" />, so each line reads back as a comment of its
+    /// own rather than as an entry; an empty line becomes an empty comment line.
+    /// </remarks>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="text" /> is <see langword="null" />.
     /// </exception>
@@ -201,9 +221,20 @@ public ref struct Utf8DotEnvWriter
     {
         ThrowHelper.ThrowIfNull(text);
 
-        WriteRaw("#"u8);
-        WriteText(text);
-        WriteRaw("\n"u8);
+        ReadOnlySpan<char> remaining = text;
+        int lineBreak;
+        while ((lineBreak = remaining.IndexOfAny('\r', '\n')) >= 0)
+        {
+            WriteCommentLine(remaining[..lineBreak]);
+
+            int next = lineBreak + 1;
+            if (remaining[lineBreak] == '\r' && next < remaining.Length && remaining[next] == '\n')
+                next++;
+
+            remaining = remaining[next..];
+        }
+
+        WriteCommentLine(remaining);
     }
 
     /// <summary>
@@ -228,10 +259,41 @@ public ref struct Utf8DotEnvWriter
     public void Dispose() => Flush();
 
     /// <summary>
+    /// Determines whether a name is a key <see cref="Bodu.Text.DotEnv.Reader.Utf8DotEnvReader" /> reads back, one that
+    /// matches <c>[A-Za-z_][A-Za-z0-9_]*</c>.
+    /// </summary>
+    /// <param name="name">The name to test.</param>
+    /// <returns><see langword="true" /> when the name is a readable key; otherwise <see langword="false" />.</returns>
+    private static bool IsKey(string name)
+    {
+        if (name.Length == 0 || !(char.IsAsciiLetter(name[0]) || name[0] == '_'))
+            return false;
+
+        foreach (char c in name.AsSpan(1))
+        {
+            if (!(char.IsAsciiLetterOrDigit(c) || c == '_'))
+                return false;
+        }
+
+        return true;
+    }
+
+    /// <summary>
+    /// Writes one comment line: the <c>#</c> prefix, the text and a line feed.
+    /// </summary>
+    /// <param name="line">The text of the line, which holds no line break.</param>
+    private void WriteCommentLine(ReadOnlySpan<char> line)
+    {
+        WriteRaw("#"u8);
+        WriteText(line);
+        WriteRaw("\n"u8);
+    }
+
+    /// <summary>
     /// Writes the supplied text as UTF-8 bytes verbatim.
     /// </summary>
     /// <param name="text">The text to write.</param>
-    private void WriteText(string text)
+    private void WriteText(scoped ReadOnlySpan<char> text)
     {
         int byteCount = Encoding.UTF8.GetByteCount(text);
         Span<byte> destination = _output.GetSpan(byteCount);

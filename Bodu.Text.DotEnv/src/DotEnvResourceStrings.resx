@@ -94,4 +94,10 @@
   <data name="Format_Invalid_DotEnvValueConversion" xml:space="preserve">
     <value>The DotEnv value for key '{0}' could not be converted to type '{1}'.</value>
   </data>
+  <data name="Arg_Invalid_DotEnvKeyName" xml:space="preserve">
+    <value>A DotEnv key must begin with an ASCII letter or '_' and hold only ASCII letters, digits and '_', or the reader would not read it back.</value>
+  </data>
+  <data name="Op_Invalid_DotEnvUnwritableKey" xml:space="preserve">
+    <value>The key '{0}' cannot be written so that it reads back as a DotEnv key.</value>
+  </data>
 </root>
