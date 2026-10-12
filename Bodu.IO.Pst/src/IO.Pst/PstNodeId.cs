@@ -38,6 +38,7 @@ public readonly struct PstNodeId
     /// </summary>
     /// <param name="type">The node type (the five low bits).</param>
     /// <param name="index">The 27-bit index.</param>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="index" /> &gt; <c>0x07FFFFFF</c>.</exception>
     public PstNodeId(PstNodeType type, uint index)
     {
         ThrowHelper.ThrowIfGreaterThan(index, MaxIndex);

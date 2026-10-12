@@ -84,7 +84,7 @@ foreach (PstPropertyValue value in store.ReadPropertyContext())
 | <xref:Bodu.IO.Pst.PstNodeId> | The 32-bit identifier - <xref:Bodu.IO.Pst.PstNodeType> in the five low bits, index above; well-knowns `MessageStore` / `NameToIdMap` / `RootFolder`. |
 | <xref:Bodu.IO.Pst.PstPropertyContext> | The property bag - tag-ordered <xref:Bodu.IO.Pst.PstPropertyValue> entries with typed accessors, values resolved on access. |
 | <xref:Bodu.IO.Pst.PstTableContext> | The table - <xref:Bodu.IO.Pst.PstTableColumn> metadata, `RowCount`, streaming `EnumerateRows`, keyed `TryGetRow`. |
-| <xref:Bodu.IO.Pst.PstFileOptions> | Read options - <xref:Bodu.IO.Pst.PstValidationLevel> and the decoded-block `BlockCacheSize`. |
+| <xref:Bodu.IO.Pst.PstFileOptions> | Read options - <xref:Bodu.IO.Pst.PstValidationLevel>, the salvage option `OmitUnresolvableValues`, the decoded page and block caches' `BlockCacheSize`, and the `MaxNodeDataLength` / `MaxDataTreeLeaves` limits. |
 | <xref:Bodu.IO.Pst.PstFileException> | The common base, carrying a <xref:Bodu.IO.Pst.PstFileError> category; `PstFileFormatException`, `PstUnsupportedFormatException`, and `PstNodeNotFoundException` derive from it. |
 
 ## The mail-store reader built on this package

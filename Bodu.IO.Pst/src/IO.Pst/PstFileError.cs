@@ -63,8 +63,14 @@ public enum PstFileError
     InvalidTableContext,
 
     /// <summary>
-    /// A property value reference does not resolve.
+    /// Under <see cref="PstValidationLevel.Strict" />, a property-context record declares a wire type the reader does
+    /// not know.
     /// </summary>
+    /// <remarks>
+    /// A value reference that does not resolve is not reported here: it raises <see cref="InvalidHeap" />,
+    /// <see cref="InvalidPropertyContext" />, or <see cref="InvalidSubnodeTree" />, or is omitted under
+    /// <see cref="PstFileOptions.OmitUnresolvableValues" />.
+    /// </remarks>
     InvalidPropertyValue,
 
     /// <summary>

@@ -26,7 +26,7 @@ The type bits make identifiers self-describing: a folder's hierarchy table, cont
 
 ## Block, BID, and trailer
 
-Raw bytes live in **blocks**, addressed by 64-bit **block identifiers (BIDs)** and aligned to 64-byte boundaries. Every block ends with a 16-byte trailer recording its payload length, a signature computed from its address and identifier, a CRC over the payload, and the BID itself. Bit 1 of a BID marks an **internal** block (tree metadata); internal blocks are never content-encoded. Under `Strict` validation every trailer field is enforced; `Compatible` checks structure but tolerates writer quirks.
+Raw bytes live in **blocks**, addressed by 64-bit **block identifiers (BIDs)** (32-bit in the ANSI format) and aligned to 64-byte boundaries. Every block ends with a 16-byte trailer (12 bytes in ANSI) recording its payload length, a signature computed from its address and identifier, a CRC over the payload, and the BID itself. Bit 1 of a BID marks an **internal** block (tree metadata); internal blocks are never content-encoded. Under `Strict` validation every trailer field is enforced; `Compatible` checks structure but tolerates writer quirks.
 
 ## Content encoding
 
@@ -62,18 +62,18 @@ A **table context** (heap client signature `0x7C`) is a node's table: a `TCINFO`
 
 - **`Compatible`** (default) - structural validation with tolerance for real-world writer quirks.
 - **`Strict`** - every CRC, trailer signature, and page invariant enforced; malformed content that a tolerant level would skip is rejected.
-- **`Minimal`** - bounds and type checks only, for maximum tolerance.
+- **`Minimal`** - as `Compatible`, but the header CRC is skipped too; the structural checks are the same. To salvage a damaged file, set <xref:Bodu.IO.Pst.PstFileOptions.OmitUnresolvableValues>, which leaves out a value whose reference does not resolve instead of failing its context.
 
 ## Decoded-block cache
 
-<xref:Bodu.IO.Pst.PstFileOptions.BlockCacheSize> bounds a least-recently-used cache of decoded blocks and pages (default 256 entries; `0` disables it). Repeated reads through the same structures - a table walked twice, a property bag revisited - are then served without re-reading or re-decoding from the source. The cache trades memory for I/O; the entries are the decoded payloads themselves.
+<xref:Bodu.IO.Pst.PstFileOptions.BlockCacheSize> bounds two least-recently-used caches, one of decoded pages and one of decoded blocks (default 256 entries each; `0` disables both). Repeated reads through the same structures - a table walked twice, a property bag revisited - are then served without re-reading or re-decoding from the source. The cache trades memory for I/O; the entries are the decoded payloads themselves.
 
 ## Exceptions
 
 Every failure surfaces through the <xref:Bodu.IO.Pst.PstFileException> family, carrying a <xref:Bodu.IO.Pst.PstFileError> category (invalid header, invalid block, invalid heap, node not found, …):
 
 - <xref:Bodu.IO.Pst.PstFileFormatException> - the file violates the format at the active validation level.
-- <xref:Bodu.IO.Pst.PstUnsupportedFormatException> - a recognized but unsupported variant (the 4 KiB-page OST).
+- <xref:Bodu.IO.Pst.PstUnsupportedFormatException> - a recognized but unsupported variant: an OST file of any version (the 4 KiB-page variant among them), or a content encoding other than none, permute, or cyclic.
 - <xref:Bodu.IO.Pst.PstNodeNotFoundException> - a `GetNode` lookup for an absent identifier.
 
 Corruption never escapes as any other exception type - the corruption sweeps in the test suite enforce exactly that contract.

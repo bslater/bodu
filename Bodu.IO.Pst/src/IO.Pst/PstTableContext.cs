@@ -81,7 +81,8 @@ public sealed class PstTableContext
     /// </summary>
     /// <returns>The rows.</returns>
     /// <exception cref="PstFileFormatException">
-    /// The row matrix does not resolve or holds fewer rows than the row index records.
+    /// The row matrix does not resolve or holds fewer rows than the row index records, or, under
+    /// <see cref="PstValidationLevel.Strict" />, holds more.
     /// </exception>
     public IEnumerable<PstTableRow> EnumerateRows()
     {
@@ -112,7 +113,8 @@ public sealed class PstTableContext
     /// </summary>
     /// <returns>The row identifiers.</returns>
     /// <exception cref="PstFileFormatException">
-    /// The row matrix does not resolve or holds fewer rows than the row index records.
+    /// The row matrix does not resolve or holds fewer rows than the row index records, or, under
+    /// <see cref="PstValidationLevel.Strict" />, holds more.
     /// </exception>
     /// <remarks>
     /// Hierarchy, contents, and attachment tables are usually consumed for their row identifiers alone - each names the

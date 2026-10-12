@@ -228,6 +228,7 @@ public sealed class PstFile
     /// <returns>The node.</returns>
     /// <exception cref="ObjectDisposedException">The session has been disposed.</exception>
     /// <exception cref="PstNodeNotFoundException">No node with the identifier exists.</exception>
+    /// <exception cref="PstFileFormatException">A node B-tree page fails validation during the lookup.</exception>
     public PstNode GetNode(PstNodeId id)
     {
         if (TryGetNode(id, out PstNode? node))
@@ -243,6 +244,7 @@ public sealed class PstFile
     /// <param name="node">When this method returns <see langword="true" />, the node.</param>
     /// <returns><see langword="true" /> when the node exists.</returns>
     /// <exception cref="ObjectDisposedException">The session has been disposed.</exception>
+    /// <exception cref="PstFileFormatException">A node B-tree page fails validation during the lookup.</exception>
     public bool TryGetNode(PstNodeId id, [System.Diagnostics.CodeAnalysis.MaybeNullWhen(false)] out PstNode node)
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
