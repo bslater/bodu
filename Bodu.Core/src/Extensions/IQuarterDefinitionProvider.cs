@@ -215,19 +215,23 @@ public interface IQuarterDefinitionProvider
     /// <remarks>
     /// <para>
     /// The default implementation probes the calendar years <c>dateTime.Year - 1</c>, <c>dateTime.Year</c>, and
-    /// <c>dateTime.Year + 1</c>, returning the candidate whose Q1 start and Q4 end bracket <paramref name="dateTime" />
-    /// . This works for any provider whose fiscal year is contiguous and at most one calendar year away from the
-    /// observed calendar year. Implementations may override with a more efficient or more precise computation.
+    /// <c>dateTime.Year + 1</c>, returning the candidate whose Q1 start and Q4 end bracket the date of
+    /// <paramref name="dateTime" />. The time of day is ignored, so any time on the last day of a fiscal year belongs
+    /// to that year even though <see cref="GetQuarterEnd(int, int)" /> returns midnight. This works for any provider
+    /// whose fiscal year is contiguous and at most one calendar year away from the observed calendar year.
+    /// Implementations may override with a more efficient or more precise computation.
     /// </para>
     /// </remarks>
     int GetFiscalYear(DateTime dateTime)
     {
+        // GetQuarterEnd returns midnight on the last day, so compare dates rather than instants.
+        DateTime date = dateTime.Date;
         int calendarYear = dateTime.Year;
         for (int candidate = calendarYear - 1; candidate <= calendarYear + 1; candidate++)
         {
             DateTime q1Start = GetQuarterStart(1, candidate);
             DateTime q4End = GetQuarterEnd(4, candidate);
-            if (dateTime >= q1Start && dateTime <= q4End)
+            if (date >= q1Start && date <= q4End)
                 return candidate;
         }
 
