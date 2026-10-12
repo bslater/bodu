@@ -172,7 +172,7 @@ public sealed class FredRateProvider
     /// </summary>
     /// <param name="options">The provider options.</param>
     /// <returns>A new, configured client owned by the provider.</returns>
-    private static HttpClient CreateOwnedClient(FredRateProviderOptions options)
+    internal static HttpClient CreateOwnedClient(FredRateProviderOptions options)
     {
         ThrowHelper.ThrowIfNull(options);
         options.Validate();

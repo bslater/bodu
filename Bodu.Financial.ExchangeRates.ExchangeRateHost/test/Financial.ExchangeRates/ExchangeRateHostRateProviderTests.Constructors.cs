@@ -77,4 +77,18 @@ public sealed partial class ExchangeRateHostRateProviderTests
 
         Assert.AreEqual("httpClient", ex.ParamName);
     }
+
+    /// <summary>
+    /// Verifies that the client the provider builds and owns applies the configured
+    /// <see cref="WebRateProviderOptions.MaxResponseContentBufferSize" />.
+    /// </summary>
+    [TestMethod]
+    public void CreateOwnedClient_WhenMaxResponseContentBufferSizeSet_ShouldApplyItToTheClient()
+    {
+        var options = new ExchangeRateHostRateProviderOptions { ApiKey = "test-key", MaxResponseContentBufferSize = 1_048_576 };
+
+        using HttpClient client = ExchangeRateHostRateProvider.CreateOwnedClient(options);
+
+        Assert.AreEqual(1_048_576, client.MaxResponseContentBufferSize);
+    }
 }

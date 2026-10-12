@@ -173,7 +173,7 @@ public sealed class ExchangeRateHostRateProvider
     /// </summary>
     /// <param name="options">The provider options.</param>
     /// <returns>A new, configured client owned by the provider.</returns>
-    private static HttpClient CreateOwnedClient(ExchangeRateHostRateProviderOptions options)
+    internal static HttpClient CreateOwnedClient(ExchangeRateHostRateProviderOptions options)
     {
         ThrowHelper.ThrowIfNull(options);
         options.Validate();

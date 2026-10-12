@@ -330,7 +330,7 @@ public sealed class ImfRateProvider
     /// </summary>
     /// <param name="options">The provider options.</param>
     /// <returns>A new, configured client owned by the provider.</returns>
-    private static HttpClient CreateOwnedClient(ImfRateProviderOptions options)
+    internal static HttpClient CreateOwnedClient(ImfRateProviderOptions options)
     {
         ThrowHelper.ThrowIfNull(options);
         options.Validate();

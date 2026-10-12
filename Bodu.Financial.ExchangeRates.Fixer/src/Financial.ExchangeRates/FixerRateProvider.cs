@@ -172,7 +172,7 @@ public sealed class FixerRateProvider
     /// </summary>
     /// <param name="options">The provider options.</param>
     /// <returns>A new, configured client owned by the provider.</returns>
-    private static HttpClient CreateOwnedClient(FixerRateProviderOptions options)
+    internal static HttpClient CreateOwnedClient(FixerRateProviderOptions options)
     {
         ThrowHelper.ThrowIfNull(options);
         options.Validate();
