@@ -353,7 +353,7 @@ foreach (OutlookMailMessage message in AllMessages(store.RootFolder))
 //   Here is a sample message - Terry Mahaffey (code page 1252)
 ```
 
-The Windows code pages that dominate real-world mail are available on every platform because the reader registers `CodePagesEncodingProvider` - that is what the `System.Text.Encoding.CodePages` dependency is for.
+The Windows code pages that dominate real-world mail are available on every platform because the reader registers `CodePagesEncodingProvider`, which ships in the shared framework, so the package needs no extra dependency for them.
 
 ## Errors: two families, not one
 

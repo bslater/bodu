@@ -35,7 +35,7 @@ For the full glossary, see [Core concepts](concepts.md); for every record the co
 - **A codec, not a spreadsheet library.** The reader keeps only the state needed to interpret the forward stream - the version, the code page, the current record. Sheets, cells by address, formats, and formula results as *values* belong to `Bodu.Formats.Excel.Binary`.
 - **BIFF5 and BIFF8.** A stream opening with a BIFF2, BIFF3, or BIFF4 beginning-of-file record is rejected with <xref:Bodu.IO.Biff.BiffUnsupportedVersionException> - recognized, not mis-parsed.
 - **Untrusted input.** Every declared length is bounds-checked; a truncated header, a payload that overruns the buffer, or a known record shorter than its layout is a <xref:Bodu.IO.Biff.BiffFormatException>. An unknown record identifier is never an error.
-- **Reader over a span.** Supply the whole stream, or read incrementally by carrying <xref:Bodu.IO.Biff.BiffReaderState> between buffers; a record is at most 8,228 bytes, so a modest chunk always holds one.
+- **Reader over a span.** Supply the whole stream, or read incrementally by carrying <xref:Bodu.IO.Biff.BiffReaderState> between buffers; a conformant record is at most 8,228 bytes with its header, but the reader accepts any declared payload up to 65,535 bytes (65,539 with the header), so size the chunk for that, or grow it when `Read` returns `false` on a block that is not final.
 - **Writer over `IBufferWriter<byte>`.** The writer serializes records; it does not order them, and the sheet offsets a `BOUNDSHEET` carries are computed by the caller from <xref:Bodu.IO.Biff.BiffWriter.BytesCommitted>.
 
 ## Worked example - walk a workbook stream
