@@ -726,4 +726,52 @@ public partial class DelimitedSerializerTests
 
         Assert.IsTrue(ex.Message.Contains(nameof(ConstructedRecord), StringComparison.Ordinal), ex.Message);
     }
+
+    /// <summary>
+    /// Verifies that a <see langword="null" /> source throws <see cref="ArgumentNullException" /> for <c>source</c> when
+    /// the method is called, before the sequence is enumerated.
+    /// </summary>
+    [TestMethod]
+    public void DeserializeAsyncEnumerableAsync_WhenTheSourceIsNull_ShouldThrowArgumentNullExceptionAtTheCall()
+    {
+        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = DelimitedSerializer.DeserializeAsyncEnumerableAsync<string[]>(null!);
+        });
+
+        Assert.AreEqual("source", ex.ParamName);
+    }
+
+    /// <summary>
+    /// Verifies that a delimiter outside ASCII throws <see cref="ArgumentException" /> for <c>options</c> when the
+    /// method is called, before the sequence is enumerated.
+    /// </summary>
+    [TestMethod]
+    public void DeserializeAsyncEnumerableAsync_WhenTheDelimiterIsNotAscii_ShouldThrowArgumentExceptionAtTheCall()
+    {
+        var options = new DelimitedSerializerOptions { Delimiter = '\u00A3', NoHeader = true };
+        using var stream = new MemoryStream(Encoding.UTF8.GetBytes("a\u00A3b\n"));
+
+        var ex = Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            _ = DelimitedSerializer.DeserializeAsyncEnumerableAsync<string[]>(stream, options);
+        });
+
+        Assert.AreEqual("options", ex.ParamName);
+    }
+
+    /// <summary>
+    /// Verifies that a scalar record type throws <see cref="DelimitedSerializationException" /> when the method is
+    /// called, before the sequence is enumerated.
+    /// </summary>
+    [TestMethod]
+    public void DeserializeAsyncEnumerableAsync_WhenTheRecordTypeIsAScalar_ShouldThrowDelimitedSerializationExceptionAtTheCall()
+    {
+        using var source = new MemoryStream(Encoding.UTF8.GetBytes("a\n1\n"));
+
+        _ = Assert.ThrowsExactly<DelimitedSerializationException>(() =>
+        {
+            _ = DelimitedSerializer.DeserializeAsyncEnumerableAsync<int>(source);
+        });
+    }
 }
