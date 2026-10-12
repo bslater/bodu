@@ -134,7 +134,7 @@ streaming reader is reached through `unit` rows.
 `StrictValidation`, cfb's `Strict` and `Permissive`); POI and compoundfiles have one. A check a library applies only
 in its strict mode runs at `ValidationLevel=Strict`, and a deviation its default mode accepts runs at the default
 level. A recovery runs at `ValidationLevel=Minimal`. Bodu's levels are its documented leniency
-(`CompoundValidationLevel.cs:13-49`; the concepts page, Validation level), so a row that holds Bodu to a level cites
+(`CompoundValidationLevel.cs:13-89`; the concepts page, Validation level), so a row that holds Bodu to a level cites
 that documentation, and a `Strict` row that rejects a violation of an [MS-CFB] MUST cites both.
 
 **Categories.** A `reject` row names a category only when the fix is about that class of defect (a cycle, a missing
@@ -245,58 +245,63 @@ Of the 308 `applies` and `dialect` rows, 192 are runnable and 116 are `unit` row
 
 ### Status
 
-The catalogue is not yet embedded in `Bodu.IO.Compound.Test`. A scratch harness implementing the rules above ran
-every runnable row against `Bodu.IO.Compound` at 378a6099db, each with a 10-second timeout; no row timed out or
-crashed, 152 passed and 40 failed. The failures, which are reported here and not yet fixed, fall into these groups:
+The catalogue runs in `Bodu.IO.Compound.Test`, from a byte-identical copy of `fixes/` under
+`Bodu.IO.Compound/test/Fixtures/ReleaseNotes/`. `CompoundReleaseNoteCorpusTests` runs each runnable row as its own test
+case, named for its library, and its governance tests check that every file loads, that the rows of each class match
+the counts above, that every option and scenario is well formed, that every `unit` row names a test that exists, and
+that the copy matches this tree byte for byte.
 
-- **The Strict level accepts violations of [MS-CFB] MUSTs** (24 rows), although it is documented to reject every
-  non-conformant condition (`CompoundValidationLevel.cs:34`; concepts page, Validation level): a header CLSID or
-  reserved bytes that are not zero, a major version of 5, a version-3 Number of Directory Sectors that is not 0 and a
-  version-4 one that does not count the chain, FAT entries past the end of the file that are not `FREESECT`, FAT and
-  DIFAT sectors not marked `FATSECT` and `DIFSECT`, a DIFAT chain ending in `FREESECT`, two consecutive red nodes, a
-  root not named `Root Entry`, a stream CLSID, stream times or root creation time that are not zero, a storage start
-  sector that is not zero, names whose length is wrong or that lack their terminator, and two streams sharing sectors
-  (olefile 0.16 and 0.12 cases 1 to 4, OpenMcdf PR #482, #454 and #437, cfb PR #91, ac9d592f05, PR #53, PR #50,
-  50a3c3d3e5, f894aba526, 16481f5c28 and f5c29eb014, compoundfiles #2 cases 2 and 5).
-- **The header's mini stream cutoff is used as written** (2 rows): a cutoff of 0 reads a mini stream from regular
-  sectors, so its bytes come back wrong without an error (olefile 0.43 #27), and Strict accepts a cutoff other than
-  4096 (olefile 0.31).
-- **A final sector shorter than a sector is rejected at every level** (5 rows), with `SectorOutOfRange`, even when the
-  file holds every byte its streams declare. Every library here reads such files (olefile 0.18, OpenMcdf 1.5.2, cfb
-  0.4.0 #1, POI 3.1-final and 3.8-FINAL, the last a cut directory sector). Bodu documents that file truncation is
-  always validated (`CompoundValidationLevel.cs:13-15`), but [MS-CFB] 2.3 requires a file whose FAT uses sector N to
-  be at least (N + 1) x (Sector Size) bytes long, the offset where sector N starts, so the rows stay `applies`.
-- **Header counts are not checked against what they count** (2 rows): a Number of DIFAT Sectors of 0 with a DIFAT
-  sector in use (OpenMcdf PR #388 case 3) and a Number of FAT Sectors of 0x20202001 in a 2560-byte file (POI 3.6),
-  both read without error at the default level, and at Strict too.
-- **A duplicate name throws `CompoundFileSerializationException`** (2 rows), where `CompoundStorage.CreateStream` and
-  `CreateStorage` document `ArgumentException` (OpenMcdf 1.5.1, the second case differing only in case).
-- **The category differs from the defect** (3 rows): a mini stream whose start lies past the mini FAT, and a header
-  naming no mini FAT for a mini stream, report `SectorOutOfRange` rather than `InvalidMiniFat` (cfb 0.7.0 #16,
-  compoundfiles #2 case 8); a version-4 file cut to 1000 bytes reports `InvalidDifat` rather than `TruncatedFile` (cfb
-  0.7.0 PR #24 case 1).
-- **A directory entry of an invalid type in the tree fails the file at the default level** (1 row): the entry is
-  skipped when the directory is parsed, as documented (`CompoundValidationLevel.cs:40-41`), but the tree walk then
-  reports its sibling link as `DirectoryCycle` (POI 3.12, 57851).
-- **`Minimal` does not recover a chain that runs past the end of the file** (1 row): a stream whose last sector lies
-  beyond the end throws `SectorOutOfRange` at `Minimal`, which is documented to stop such a chain and zero-pad it
-  (`CompoundValidationLevel.cs:46-47`; compoundfiles #2 case 7). A chain that leaves the FAT is recovered (olefile 0.44
-  cf8bd94140 case 2 passes).
+A first run, before any fix, passed 152 of the 192 runnable rows; 13 of the `unit` rows described behaviour Bodu
+lacked. Each defect found has a GitHub issue, and each issue was fixed test first, as `CLAUDE.md` requires: a commit
+adding the tests that fail for its reason, then the fix. All 192 runnable rows and the tests of all 116 `unit` rows now
+pass on net8.0 and net10.0. The fixes, by issue:
 
-Where a scratch probe or the code settled a `unit` row, its reason says what Bodu does today. Thirteen of them
-describe behaviour Bodu lacks:
+- **#943** `Strict` rejects a header that breaks a value [MS-CFB] 2.2 fixes (a class identifier or reserved bytes that
+  are not zero, a major version that does not match the sector size, a Number of Directory Sectors that is not 0 in
+  version 3 or the chain's length in version 4, a mini stream cutoff other than 4096) with `InvalidHeader`, and every
+  level reads streams under 4096 bytes from the mini stream, whatever cutoff the header declares.
+- **#944** `Strict` checks the allocation tables whole: FAT and DIFAT sectors marked as such, a DIFAT chain ending in
+  ENDOFCHAIN, free FAT entries past the end of the file, and no sector in two chains. The other levels read a DIFAT
+  chain that ends in FREESECT or DIFSECT as ending there.
+- **#945** `Strict` checks each directory entry against [MS-CFB] 2.6 (the name's terminator, the root's name and
+  creation time, a stream's class identifier and times, a storage's start sector, the colour byte, and no two
+  consecutive red nodes) with `InvalidDirectory`; below it, an entry whose name length is odd is skipped.
+- **#946** A final sector the file cuts short is read when it holds every byte its structures declare, as [MS-CFB] 2.3
+  allows; a declared byte the file lacks is `TruncatedFile`, and reads as zero at `Minimal`.
+- **#947** `Strict` checks the header's Number of FAT Sectors and Number of DIFAT Sectors against the tables
+  (`InvalidDifat`), and a Number of DIFAT Sectors of zero means no DIFAT chain at every level, as decided on the issue.
+- **#948** A writable storage's `CreateStream` and `CreateStorage` throw `ArgumentException` for a taken name, and
+  `Rename` throws `KeyNotFoundException` for a missing child and `ArgumentException` for a taken name.
+- **#949** A malformed mini FAT reports `InvalidMiniFat`, and a version-4 header cut short `TruncatedFile`.
+- **#950** `Compatible` prunes a sibling or child link that reaches an entry it skipped, with the entries beneath it.
+- **#951** `Minimal` zero-pads a sector past the end of the file and a chain shorter than its stream; the stricter
+  levels reject such a stream when it is opened (`StreamChainTooShort`).
+- **#952** (and its duplicate **#985**) The writer emits a directory sector's unused slots as free entries, with
+  NOSTREAM sibling and child links, from the builder and from a commit, at both versions.
+- **#953** A version-3 container over 2 GB is rejected before any byte is written, in update mode too.
+- **#954** A version-4 container over 2 GB keeps the range lock sector (0x7FFFE) free: zeros, marked ENDOFCHAIN, in no
+  chain.
+- **#955** A `CompoundFileVersion` that is neither the default nor defined is rejected with
+  `ArgumentOutOfRangeException` by every serializer and by `CompoundFile.Create`.
+- **#956** A vector's strings and variants read whether they are padded, as [MS-OLEPS] writes them, or not, as
+  [MS-OSHARED] stores document parts and heading pairs.
+- **#957** Vectors of 1- and 2-byte values are read and written packed, as [MS-OLEPS] 2.15 lays them out (found while
+  checking the vector rows; no row covers it).
+- **#958** `CompoundFile.Open` and `CompoundStorageBuilder.Load` read a container from the stream's position under
+  every read strategy.
+- **#959** The documentation says names match case-insensitively, as [MS-CFB] 2.6.4 compares them, and names only the
+  `olefile` cross-check the tests run.
+- **#960** The Reserve Bank of Australia workbook committed as the compound tests' sample, the Excel binary tests'
+  sample and the two samples' data is replaced by containers and workbooks they build; the RBA provider's own fixture is
+  left to a separate decision.
+- **#961** Property identifiers read as unsigned 32-bit values (PID_LOCALE and PID_BEHAVIOR included), and a length,
+  offset or count past the data is malformed rather than an `OverflowException`.
+- **#962** A property whose type carries `VT_ARRAY`, `VT_BYREF` or `VT_RESERVED` is dropped.
+- **#963** A `VT_LPWSTR` whose writer put its length on the next four-byte boundary is read from there.
+- **#964** A commit plans the container before it truncates its destination, so a tree that cannot be written leaves
+  the destination unchanged.
 
-- Unused directory slots are written with zero sibling and child links rather than `NOSTREAM` ([MS-CFB] 2.6.3;
-  OpenMcdf PR #376 case 2, cfb 32983e7d16 case 2).
-- A version-3 container is written past 2 GB ([MS-CFB] 2.9; OpenMcdf PR #274, and #14 for update mode), and a
-  version-4 container past 2 GB chains stream data through the range lock sector ([MS-CFB] 2.8; OpenMcdf PR #270).
-- A `CompoundFileVersion` that is neither `V3` nor `V4` is written as version 3 rather than rejected (OpenMcdf PR #314
-  case 2).
-- Document parts and heading pairs written as unaligned strings, as [MS-OSHARED] 2.3.3.1.12 to 2.3.3.1.15 and
-  2.3.3.2.2.1 require, are dropped or misread (OpenMcdf PR #108, POI HPSF 3.8-FINAL).
-- A string or dictionary length whose byte count overflows `Int32` escapes from `OlePropertySet.Parse` as
-  `OverflowException` (POI HPSF PR #1064 case 1 and PR #1345).
-- A `VT_ARRAY` value is read as a scalar of its element type rather than dropped (POI HPSF PR #1064 case 2, OpenMcdf
-  PR #371 case 2).
-- A Unicode string that begins on the next 4-byte boundary, as some writers place it, is dropped (POI HPSF
-  3.10-beta2).
+No row became `dialect`, and the counts above are unchanged. Two rows moved to `ValidationLevel=Strict`, where Bodu now
+checks what they reject: OpenMcdf 3.1.2 PR #388 case 3 and POI 3.6 0ca2252df0 case 1, whose reasons cite
+`CompoundValidationLevel.cs:24-26` and `:56-58` and concepts.md:43. The 13 `unit` rows that described a defect now say
+which issue fixed it, and the file and line citations in the rows were brought up to the current sources.
