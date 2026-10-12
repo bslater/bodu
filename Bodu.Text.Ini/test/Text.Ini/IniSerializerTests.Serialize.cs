@@ -6,6 +6,7 @@
 
 using System.Buffers;
 
+using Bodu.Test.Kat;
 using Bodu.Text.Serialization;
 
 namespace Bodu.Text.Ini;
@@ -237,5 +238,26 @@ public partial class IniSerializerTests
         Assert.IsNotNull(ex.InnerException);
         Assert.AreEqual(typeof(ArgumentException), ex.InnerException.GetType());
         Assert.Contains("'db];primary'", ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that a scalar root, such as a <see cref="decimal" />, a <see cref="DateTime" /> or a
+    /// <see cref="DateOnly" />, throws <see cref="IniSerializationException" /> naming its type rather than being written through
+    /// its public properties.
+    /// </summary>
+    /// <param name="kat">The scalar root and the exception it raises.</param>
+    [TestMethod]
+    [DynamicData(
+        nameof(ScalarRootValues),
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
+    public void Serialize_WhenRootIsAScalar_ShouldThrowIniSerializationException(InvalidKat<object> kat)
+    {
+        var ex = Assert.ThrowsExactly<IniSerializationException>(() =>
+        {
+            _ = IniSerializer.Serialize(kat.Input);
+        });
+
+        Assert.IsTrue(ex.Message.Contains(kat.MessageContains!, StringComparison.Ordinal), ex.Message);
     }
 }

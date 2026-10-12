@@ -6,6 +6,8 @@
 
 using System.Globalization;
 
+using Bodu.Test.Kat;
+
 namespace Bodu.Text.Ini;
 
 /// <summary>
@@ -214,5 +216,25 @@ public partial class IniSerializerTests
         {
             CultureInfo.CurrentCulture = original;
         }
+    }
+
+    /// <summary>
+    /// Verifies that a scalar root type, or the nullable form of one, throws <see cref="IniSerializationException" /> naming the
+    /// type rather than returning its default value.
+    /// </summary>
+    /// <param name="kat">The scalar root type and the exception it raises.</param>
+    [TestMethod]
+    [DynamicData(
+        nameof(ScalarRootTypes),
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
+    public void Deserialize_WhenRootIsAScalar_ShouldThrowIniSerializationException(InvalidKat<Type> kat)
+    {
+        var ex = Assert.ThrowsExactly<IniSerializationException>(() =>
+        {
+            _ = DeserializeAs(kat.Input, "A=1\n");
+        });
+
+        Assert.IsTrue(ex.Message.Contains(kat.MessageContains!, StringComparison.Ordinal), ex.Message);
     }
 }

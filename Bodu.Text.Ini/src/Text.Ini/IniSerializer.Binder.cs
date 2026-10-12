@@ -7,6 +7,7 @@
 using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using System.Numerics;
 using System.Reflection;
 
 using Bodu.Text.Ini.Reader;
@@ -46,7 +47,7 @@ public static partial class IniSerializer
 
         if (value is IDictionary dictionary)
             WriteRootDictionary(ref writer, dictionary, options);
-        else if (IsScalarOrEnumerable(value.GetType()))
+        else if (IsUnsupportedRoot(value.GetType()))
             throw new IniSerializationException(string.Format(CultureInfo.CurrentCulture, IniResourceStrings.Op_Invalid_IniRootNotObject, value.GetType()));
         else
             WriteRootPoco(ref writer, value, options);
@@ -292,7 +293,7 @@ public static partial class IniSerializer
         if (TryGetStringKeyedDictionary(targetType, out Type? valueType))
             return ReadRootDictionary(document, targetType, valueType, options);
 
-        if (IsScalarOrEnumerable(targetType))
+        if (IsUnsupportedRoot(targetType))
             throw new IniSerializationException(string.Format(CultureInfo.CurrentCulture, IniResourceStrings.Op_Invalid_IniRootNotObject, targetType));
 
         return ReadRootPoco(document, targetType, options);
@@ -631,6 +632,28 @@ public static partial class IniSerializer
     /// <returns><see langword="true" /> when the type cannot be an INI document root.</returns>
     private static bool IsScalarOrEnumerable(Type type) =>
         IsScalarType(type) || IsUnsupportedEnumerable(type);
+
+    /// <summary>
+    /// Determines whether a type cannot be an INI document root: a scalar or a non-dictionary enumerable, as
+    /// <see cref="IsScalarOrEnumerable(Type)" /> determines, or one of the scalar types that
+    /// <see cref="IsScalarType" /> does not map as keys.
+    /// </summary>
+    /// <param name="type">The type to test.</param>
+    /// <returns><see langword="true" /> when the type cannot be an INI document root.</returns>
+    /// <remarks>
+    /// A <see cref="DateOnly" />, <see cref="TimeOnly" />, 128-bit or half-precision number, or
+    /// <see cref="BigInteger" />, or the nullable form of one, is a scalar, although it has public properties, or none,
+    /// that would otherwise be bound as global keys. It is checked only at the root, so how a member of one of these
+    /// types maps is unchanged.
+    /// </remarks>
+    private static bool IsUnsupportedRoot(Type type)
+    {
+        Type underlying = Nullable.GetUnderlyingType(type) ?? type;
+
+        return IsScalarOrEnumerable(type) || underlying == typeof(DateOnly) || underlying == typeof(TimeOnly) ||
+            underlying == typeof(Int128) || underlying == typeof(UInt128) || underlying == typeof(Half) ||
+            underlying == typeof(BigInteger);
+    }
 
     /// <summary>
     /// Determines whether a type is a non-dictionary enumerable, which INI cannot represent at any level.

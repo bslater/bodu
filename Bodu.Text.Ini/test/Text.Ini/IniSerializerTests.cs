@@ -5,7 +5,11 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Globalization;
+using System.Numerics;
+using System.Reflection;
+using System.Runtime.ExceptionServices;
 
+using Bodu.Test.Kat;
 using Bodu.Text.Serialization;
 
 namespace Bodu.Text.Ini;
@@ -135,6 +139,75 @@ public partial class IniSerializerTests
             }
 
             return section;
+        }
+    }
+
+    /// <summary>
+    /// Gets scalar root values, each of which serialization must reject with <see cref="IniSerializationException" /> naming its type.
+    /// </summary>
+    /// <value>The rows, each a named scalar value and the exception it raises.</value>
+    public static IEnumerable<object[]> ScalarRootValues =>
+    [
+        [new InvalidKat<object>("decimal", 1.5m, typeof(IniSerializationException), MessageContains: "System.Decimal")],
+        [new InvalidKat<object>("DateTime", new DateTime(2026, 1, 2, 0, 0, 0, DateTimeKind.Utc), typeof(IniSerializationException), MessageContains: "System.DateTime")],
+        [new InvalidKat<object>("DateTimeOffset", DateTimeOffset.UnixEpoch, typeof(IniSerializationException), MessageContains: "System.DateTimeOffset")],
+        [new InvalidKat<object>("TimeSpan", TimeSpan.FromHours(1), typeof(IniSerializationException), MessageContains: "System.TimeSpan")],
+        [new InvalidKat<object>("Guid", Guid.Empty, typeof(IniSerializationException), MessageContains: "System.Guid")],
+        [new InvalidKat<object>("Uri", new Uri("https://example.com/"), typeof(IniSerializationException), MessageContains: "System.Uri")],
+        [new InvalidKat<object>("DateOnly", new DateOnly(2026, 1, 2), typeof(IniSerializationException), MessageContains: "System.DateOnly")],
+        [new InvalidKat<object>("TimeOnly", new TimeOnly(1, 2), typeof(IniSerializationException), MessageContains: "System.TimeOnly")],
+        [new InvalidKat<object>("Int128", (Int128)5, typeof(IniSerializationException), MessageContains: "System.Int128")],
+        [new InvalidKat<object>("UInt128", (UInt128)5, typeof(IniSerializationException), MessageContains: "System.UInt128")],
+        [new InvalidKat<object>("Half", (Half)1, typeof(IniSerializationException), MessageContains: "System.Half")],
+        [new InvalidKat<object>("BigInteger", new BigInteger(7), typeof(IniSerializationException), MessageContains: "System.Numerics.BigInteger")],
+        [new InvalidKat<object>("char", 'c', typeof(IniSerializationException), MessageContains: "System.Char")],
+    ];
+
+    /// <summary>
+    /// Gets scalar root types, including nullable forms, each of which deserialization must reject with
+    /// <see cref="IniSerializationException" /> naming its type.
+    /// </summary>
+    /// <value>The rows, each a named scalar type and the exception it raises.</value>
+    public static IEnumerable<object[]> ScalarRootTypes =>
+    [
+        [new InvalidKat<Type>("decimal", typeof(decimal), typeof(IniSerializationException), MessageContains: "System.Decimal")],
+        [new InvalidKat<Type>("DateTime", typeof(DateTime), typeof(IniSerializationException), MessageContains: "System.DateTime")],
+        [new InvalidKat<Type>("DateTimeOffset", typeof(DateTimeOffset), typeof(IniSerializationException), MessageContains: "System.DateTimeOffset")],
+        [new InvalidKat<Type>("TimeSpan", typeof(TimeSpan), typeof(IniSerializationException), MessageContains: "System.TimeSpan")],
+        [new InvalidKat<Type>("Guid", typeof(Guid), typeof(IniSerializationException), MessageContains: "System.Guid")],
+        [new InvalidKat<Type>("Uri", typeof(Uri), typeof(IniSerializationException), MessageContains: "System.Uri")],
+        [new InvalidKat<Type>("DateOnly", typeof(DateOnly), typeof(IniSerializationException), MessageContains: "System.DateOnly")],
+        [new InvalidKat<Type>("TimeOnly", typeof(TimeOnly), typeof(IniSerializationException), MessageContains: "System.TimeOnly")],
+        [new InvalidKat<Type>("Int128", typeof(Int128), typeof(IniSerializationException), MessageContains: "System.Int128")],
+        [new InvalidKat<Type>("UInt128", typeof(UInt128), typeof(IniSerializationException), MessageContains: "System.UInt128")],
+        [new InvalidKat<Type>("Half", typeof(Half), typeof(IniSerializationException), MessageContains: "System.Half")],
+        [new InvalidKat<Type>("BigInteger", typeof(BigInteger), typeof(IniSerializationException), MessageContains: "System.Numerics.BigInteger")],
+        [new InvalidKat<Type>("int?", typeof(int?), typeof(IniSerializationException), MessageContains: "System.Nullable")],
+        [new InvalidKat<Type>("Guid?", typeof(Guid?), typeof(IniSerializationException), MessageContains: "System.Nullable")],
+        [new InvalidKat<Type>("DateOnly?", typeof(DateOnly?), typeof(IniSerializationException), MessageContains: "System.Nullable")],
+    ];
+
+    /// <summary>
+    /// Deserializes text into a root of a type known only at run time, through
+    /// <see cref="IniSerializer.Deserialize{T}(string, IniSerializerOptions?)" />, rethrowing the serializer's own exception.
+    /// </summary>
+    /// <param name="rootType">The root type.</param>
+    /// <param name="text">The text to deserialize.</param>
+    /// <returns>The deserialized root.</returns>
+    private static object? DeserializeAs(Type rootType, string text)
+    {
+        MethodInfo method = typeof(IniSerializer)
+            .GetMethod(nameof(IniSerializer.Deserialize), [typeof(string), typeof(IniSerializerOptions)])!
+            .MakeGenericMethod(rootType);
+
+        try
+        {
+            return method.Invoke(null, [text, null]);
+        }
+        catch (TargetInvocationException ex) when (ex.InnerException is not null)
+        {
+            ExceptionDispatchInfo.Capture(ex.InnerException).Throw();
+            throw;
         }
     }
 }
