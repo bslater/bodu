@@ -42,4 +42,19 @@ public partial class MoneyBagJsonConverterPolicyTests
             _ = JsonSerializer.Deserialize<MoneyBag>(json, Options(FinancialJsonPolicy.Lenient));
         });
     }
+
+    /// <summary>
+    /// Verifies that the lenient policy rejects two ISO code keys that name the same currency once normalized with
+    /// <see cref="JsonException" />.
+    /// </summary>
+    [TestMethod]
+    public void Read_WhenLenientPolicyAndCodesCollideAfterNormalization_ShouldThrowJsonException()
+    {
+        string json = "{\"balances\":{\"usd\":1,\" USD\":2}}";
+
+        _ = Assert.ThrowsExactly<JsonException>(() =>
+        {
+            _ = JsonSerializer.Deserialize<MoneyBag>(json, Options(FinancialJsonPolicy.Lenient));
+        });
+    }
 }
