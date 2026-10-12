@@ -300,6 +300,43 @@ internal static class NotableDateDocumentReader
     }
 
     /// <summary>
+    /// Reads a rule's strategy, recording an error diagnostic instead of throwing when a value lies outside the
+    /// strategy's own range.
+    /// </summary>
+    /// <param name="node">The strategy node, or <see langword="null" />.</param>
+    /// <param name="calendar">The calendar system the rule's applicability declares.</param>
+    /// <param name="notableDateId">The identifier of the owning concept, used in diagnostics.</param>
+    /// <param name="ruleId">The identifier of the owning rule, used in diagnostics.</param>
+    /// <param name="diagnostics">The collection that receives semantic diagnostics.</param>
+    /// <returns>
+    /// The parsed <see cref="IDateCalculationStrategy" />, or a 1 January placeholder when the strategy is absent,
+    /// unrecognized, or invalid. The caller has then recorded an error diagnostic, so the placeholder never reaches a
+    /// loaded resource.
+    /// </returns>
+    /// <remarks>
+    /// The schema reports an out-of-range value in an XML document but parsing carries on, and a JSON document has no
+    /// schema at all, so the strategy constructors' range guards are the last line of defence. Their
+    /// <see cref="ArgumentException" /> becomes a <c>BODU-CAL-STRATEGY</c> diagnostic, as <see cref="ReadRecurrence" />
+    /// does for recurrences, so a load fails only with its documented exceptions and a collect-mode load never throws
+    /// for bad data.
+    /// </remarks>
+    private static IDateCalculationStrategy ReadStrategy(IDocumentNode? node, CalendarSystem calendar, string notableDateId, string ruleId, ICollection<NotableDateValidationDiagnostic> diagnostics)
+    {
+        try
+        {
+            return ReadStrategyCore(node, calendar, notableDateId, ruleId, diagnostics);
+        }
+        catch (ArgumentException ex)
+        {
+            diagnostics.Add(new NotableDateValidationDiagnostic(
+                NotableDateValidationSeverity.Error,
+                "BODU-CAL-STRATEGY",
+                string.Format(System.Globalization.CultureInfo.CurrentCulture, CalendarResourceStrings.Validation_StrategyInvalid, notableDateId, ruleId, ex.Message)));
+            return new FixedDateStrategy(1, 1);
+        }
+    }
+
+    /// <summary>
     /// Reads a rule's strategy by probing for the single populated strategy kind.
     /// </summary>
     /// <param name="node">The strategy node, or <see langword="null" />.</param>
@@ -307,8 +344,12 @@ internal static class NotableDateDocumentReader
     /// <param name="notableDateId">The identifier of the owning concept, used in diagnostics.</param>
     /// <param name="ruleId">The identifier of the owning rule, used in diagnostics.</param>
     /// <param name="diagnostics">The collection that receives semantic diagnostics.</param>
-    /// <returns>The parsed <see cref="IDateCalculationStrategy" />.</returns>
-    private static IDateCalculationStrategy ReadStrategy(IDocumentNode? node, CalendarSystem calendar, string notableDateId, string ruleId, ICollection<NotableDateValidationDiagnostic> diagnostics)
+    /// <returns>
+    /// The parsed <see cref="IDateCalculationStrategy" />, or a 1 January placeholder when no recognized strategy kind
+    /// is present.
+    /// </returns>
+    /// <exception cref="ArgumentException">A parsed value lies outside the strategy's range.</exception>
+    private static IDateCalculationStrategy ReadStrategyCore(IDocumentNode? node, CalendarSystem calendar, string notableDateId, string ruleId, ICollection<NotableDateValidationDiagnostic> diagnostics)
     {
         if (node is null)
             return new FixedDateStrategy(1, 1);

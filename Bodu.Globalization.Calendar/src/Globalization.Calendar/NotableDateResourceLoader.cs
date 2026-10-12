@@ -23,6 +23,12 @@ namespace Bodu.Globalization.Calendar;
 /// carries the full diagnostic set.
 /// </para>
 /// <para>
+/// Problems in the document's data are diagnostics, not exceptions: an imported resource whose content is not
+/// well-formed is a <c>BODU-CAL-SYNTAX</c> error naming the import, and a strategy value outside the strategy's range
+/// is a <c>BODU-CAL-STRATEGY</c> error. Only the loaded document's own malformed text raises a
+/// <see cref="FormatException" /> from the throwing overloads.
+/// </para>
+/// <para>
 /// The overloads without a resolver cannot satisfy imports; a document declaring <c>Imports</c> must be loaded with the
 /// resolver overload, whose delegate maps a resource name to that resource's XML or JSON content.
 /// </para>
@@ -318,7 +324,8 @@ public static class NotableDateResourceLoader
     /// <para>
     /// Unlike the throwing <c>Load</c> overloads, malformed XML is reported as a <c>BODU-CAL-SYNTAX</c> error
     /// diagnostic rather than a <see cref="FormatException" />, so a caller can lint arbitrary input without exception
-    /// handling. Argument errors still throw - the <c>Try</c> contract covers data, not usage.
+    /// handling; malformed imported content and out-of-range strategy values are diagnostics in every overload.
+    /// Argument errors still throw - the <c>Try</c> contract covers data, not usage.
     /// </para>
     /// </remarks>
     public static bool TryLoad(string xml, Func<string, string?> resourceResolver, out NotableDateResource? resource, out IReadOnlyList<NotableDateValidationDiagnostic> diagnostics) =>
@@ -576,7 +583,20 @@ public static class NotableDateResourceLoader
                     continue;
                 }
 
-                ParsedNotableDateDocument source = ParseAny(content, diagnostics);
+                ParsedNotableDateDocument source;
+                try
+                {
+                    source = ParseAny(content, diagnostics);
+                }
+                catch (FormatException ex)
+                {
+                    // Malformed imported content is a defect of the document set, not of the caller's argument, so it
+                    // is reported like every other import failure rather than escaping as the FormatException that
+                    // Load documents for its own input.
+                    AddError(diagnostics, "BODU-CAL-SYNTAX", CalendarResourceStrings.Validation_ImportNotWellFormed, import.Resource, ex.Message);
+                    continue;
+                }
+
                 (List<AdjustmentPolicy> sourcePolicies, List<NotableDateDefinition> sourceConcepts) =
                     ResolveImports(source, resourceResolver, visiting, diagnostics);
 

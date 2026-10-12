@@ -186,6 +186,12 @@
   <data name="Validation_RecurrenceInvalid" xml:space="preserve">
     <value>Notable date '{0}', rule '{1}': the recurrence definition is invalid. {2}</value>
   </data>
+  <data name="Validation_StrategyInvalid" xml:space="preserve">
+    <value>Notable date '{0}', rule '{1}': the strategy definition is invalid. {2}</value>
+  </data>
+  <data name="Validation_ImportNotWellFormed" xml:space="preserve">
+    <value>Imported resource '{0}' is not a well-formed notable-date document. {1}</value>
+  </data>
   <data name="Validation_OccurrenceSourceMissing" xml:space="preserve">
     <value>Notable date '{0}', rule '{1}': the rule declares no recognized strategy or recurrence; exactly one is required.</value>
   </data>

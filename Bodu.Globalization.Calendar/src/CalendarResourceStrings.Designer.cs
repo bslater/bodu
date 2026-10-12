@@ -430,6 +430,24 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to the strategy definition is invalid. {2}.
+        /// </summary>
+        internal static string Validation_StrategyInvalid {
+            get {
+                return ResourceManager.GetString("Validation_StrategyInvalid", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Imported resource '{0}' is not a well-formed notable-date document. {1}.
+        /// </summary>
+        internal static string Validation_ImportNotWellFormed {
+            get {
+                return ResourceManager.GetString("Validation_ImportNotWellFormed", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to the rule declares no recognized strategy or recurrence; exactly one is required..
         /// </summary>
         internal static string Validation_OccurrenceSourceMissing {

@@ -49,7 +49,7 @@ Codes are stable identifiers: they are safe to match on, suppress by, or documen
 
 | Code | Severity | Condition |
 |---|---|---|
-| `BODU-CAL-SYNTAX` | Error | The input is not well-formed XML/JSON, or the JSON content is empty. Produced by the `Try` overloads; the throwing overloads raise `FormatException` for the same input. |
+| `BODU-CAL-SYNTAX` | Error | The input is not well-formed XML/JSON, or the JSON content is empty; or an imported resource's content is not well-formed. For the loaded document's own text it is produced by the `Try` overloads, and the throwing overloads raise `FormatException` for the same input; for an imported resource every overload reports it as a diagnostic naming the import. |
 | `BODU-CAL-SCHEMA` | Error or Warning | The XML document violates the embedded notable-date XSD; the severity mirrors the schema validator's. |
 
 ### Document structure
@@ -63,6 +63,7 @@ Codes are stable identifiers: they are safe to match on, suppress by, or documen
 | `BODU-CAL-DAY` | Error | A strategy's day is outside the valid range for its month/calendar. |
 | `BODU-CAL-YEARS` | Error | A rule's or adjustment scope's `fromYear` is after its `toYear`. |
 | `BODU-CAL-RECURRENCE` | Error | A recurrence declaration is invalid. |
+| `BODU-CAL-STRATEGY` | Error | A strategy value lies outside the strategy's range (for example an `<OrdinalDayOfMonth>` ordinal beyond 31, ISO week 54, or a zero ordinal). In XML the schema reports most of these too. |
 | `BODU-CAL-RULE-SOURCE` | Error | A rule declares no recognized strategy or recurrence, or more than one (a strategy and a recurrence, or two strategy kinds). XML documents also fail the schema for the same rule; the code exists for JSON, which is not schema-validated. |
 
 ### Cross-references
