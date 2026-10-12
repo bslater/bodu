@@ -103,6 +103,114 @@ public partial class BencodeSerializerTests
     }
 
     /// <summary>
+    /// Verifies that an integer outside the range of a <see cref="byte" /> member is reported at the start of the
+    /// integer token, where the shared integer converter rejects it.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenIntegerOverflowsByte_ShouldReportTokenStartOffset()
+    {
+        // The integer for "Value" starts at offset 8: d(0) 5:Value(1-7) i(8).
+        byte[] bytes = Encoding.Latin1.GetBytes("d5:Valuei300ee");
+
+        BencodeSerializationException ex = Assert.ThrowsExactly<BencodeSerializationException>(() =>
+        {
+            _ = BencodeSerializer.Deserialize<ByteModel>(bytes);
+        });
+
+        Assert.AreEqual(8, ex.BytesOffset);
+    }
+
+    /// <summary>
+    /// Verifies that an integer outside the range of a <see cref="byte" /> member is reported with the checked
+    /// conversion's <see cref="OverflowException" /> as the inner exception.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenIntegerOverflowsByte_ShouldKeepOverflowExceptionAsInnerException()
+    {
+        byte[] bytes = Encoding.Latin1.GetBytes("d5:Valuei300ee");
+
+        BencodeSerializationException ex = Assert.ThrowsExactly<BencodeSerializationException>(() =>
+        {
+            _ = BencodeSerializer.Deserialize<ByteModel>(bytes);
+        });
+
+        Assert.IsNotNull(ex.InnerException);
+        Assert.IsInstanceOfType<OverflowException>(ex.InnerException);
+    }
+
+    /// <summary>
+    /// Verifies that a negative integer given for a <see cref="ulong" /> member is reported at the start of the
+    /// integer token.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenNegativeIntegerIntoUInt64_ShouldReportTokenStartOffset()
+    {
+        byte[] bytes = Encoding.Latin1.GetBytes("d5:Valuei-1ee");
+
+        BencodeSerializationException ex = Assert.ThrowsExactly<BencodeSerializationException>(() =>
+        {
+            _ = BencodeSerializer.Deserialize<ULongModel>(bytes);
+        });
+
+        Assert.AreEqual(8, ex.BytesOffset);
+    }
+
+    /// <summary>
+    /// Verifies that, in a 32-bit process, an integer above the range of a <see cref="nuint" /> member is reported at
+    /// the start of the integer token; in a 64-bit process every integer Bencode reads fits, so the test is
+    /// inconclusive there.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenIntegerOverflowsNUIntIn32BitProcess_ShouldReportTokenStartOffset()
+    {
+        if (Environment.Is64BitProcess)
+            Assert.Inconclusive("Every integer Bencode reads fits a nuint in a 64-bit process.");
+
+        byte[] bytes = Encoding.Latin1.GetBytes("d5:Valuei4294967296ee");
+
+        BencodeSerializationException ex = Assert.ThrowsExactly<BencodeSerializationException>(() =>
+        {
+            _ = BencodeSerializer.Deserialize<NUIntModel>(bytes);
+        });
+
+        Assert.AreEqual(8, ex.BytesOffset);
+    }
+
+    /// <summary>
+    /// Verifies that a negative integer given for a <see cref="nuint" /> member is reported at the start of the
+    /// integer token.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenNegativeIntegerIntoNUInt_ShouldReportTokenStartOffset()
+    {
+        byte[] bytes = Encoding.Latin1.GetBytes("d5:Valuei-1ee");
+
+        BencodeSerializationException ex = Assert.ThrowsExactly<BencodeSerializationException>(() =>
+        {
+            _ = BencodeSerializer.Deserialize<NUIntModel>(bytes);
+        });
+
+        Assert.AreEqual(8, ex.BytesOffset);
+    }
+
+    /// <summary>
+    /// Verifies that a negative integer given for a <see cref="UInt128" /> member is reported at the start of the
+    /// integer token.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenNegativeIntegerIntoUInt128_ShouldReportTokenStartOffset()
+    {
+        byte[] bytes = Encoding.Latin1.GetBytes("d5:Valuei-1ee");
+
+        BencodeSerializationException ex = Assert.ThrowsExactly<BencodeSerializationException>(() =>
+        {
+            _ = BencodeSerializer.Deserialize<SingleValueModel<UInt128>>(bytes);
+        });
+
+        Assert.AreEqual(8, ex.BytesOffset);
+    }
+
+    /// <summary>
     /// Verifies that deserializing a Bencode integer whose value overflows the target integer type throws
     /// <see cref="BencodeSerializationException" />.
     /// </summary>

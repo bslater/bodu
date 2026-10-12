@@ -244,6 +244,24 @@ public partial class TomlSerializerTests
     }
 
     /// <summary>
+    /// Verifies that an integer outside the range of the <see cref="byte" /> member it is given for is reported at the
+    /// integer: its line, column, offset and path.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenIntegerOverflowsByteMember_ShouldReportValuePosition()
+    {
+        TomlSerializationException ex = Assert.ThrowsExactly<TomlSerializationException>(() =>
+        {
+            _ = TomlSerializer.Deserialize<NarrowNumberModel>("u8 = 300\n");
+        });
+
+        Assert.AreEqual(1, ex.LineNumber, "LineNumber");
+        Assert.AreEqual(6, ex.ColumnNumber, "ColumnNumber");
+        Assert.AreEqual(5, ex.Offset, "Offset");
+        Assert.AreEqual("u8", ex.Path, "Path");
+    }
+
+    /// <summary>
     /// A model with a string member and two code members read by <see cref="OkCodeConverter" />.
     /// </summary>
     private sealed class OkCodesModel
