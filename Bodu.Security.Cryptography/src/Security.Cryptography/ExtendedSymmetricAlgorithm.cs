@@ -124,8 +124,11 @@ public abstract class ExtendedSymmetricAlgorithm
     /// <inheritdoc />
     /// <remarks>
     /// Also synchronizes <see cref="BlockMode" /> so that encryptor and decryptor creation, which read
-    /// <see cref="BlockMode" />, honour the assigned value. Every <see cref="CipherMode" /> member has a matching
-    /// <see cref="CipherModeKind" /> member, so the synchronization always succeeds.
+    /// <see cref="BlockMode" />, honour the assigned value. The inherited <see cref="SymmetricAlgorithm.Mode" /> setter
+    /// accepts only <see cref="CipherMode.CBC" />, <see cref="CipherMode.ECB" />, and <see cref="CipherMode.CFB" />,
+    /// and throws <see cref="CryptographicException" /> for any other value, <see cref="CipherMode.OFB" /> and
+    /// <see cref="CipherMode.CTS" /> included. Select OFB and CTR through <see cref="BlockMode" /> instead; assigning
+    /// it also updates the value this property reports wherever a <see cref="CipherMode" /> equivalent exists.
     /// </remarks>
     public override CipherMode Mode
     {
