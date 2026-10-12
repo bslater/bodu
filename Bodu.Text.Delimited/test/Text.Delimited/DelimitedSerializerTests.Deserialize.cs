@@ -497,4 +497,78 @@ public partial class DelimitedSerializerTests
         Assert.AreEqual("x", records[0].Name);
         Assert.AreEqual(0, ((NamedBase)records[0]).Name);
     }
+
+    /// <summary>
+    /// Verifies that a scalar record type throws <see cref="DelimitedSerializationException" /> naming the type, rather
+    /// than binding every record as the type's default value.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenTheRecordTypeIsAScalar_ShouldThrowDelimitedSerializationException()
+    {
+        var ex = Assert.ThrowsExactly<DelimitedSerializationException>(() =>
+        {
+            _ = DelimitedSerializer.Deserialize<int>("a\n1\n");
+        });
+
+        Assert.IsTrue(ex.Message.Contains("System.Int32", StringComparison.Ordinal), ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that a <see cref="string" /> record type throws <see cref="DelimitedSerializationException" /> naming
+    /// the type, rather than an exception from creating the record.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenTheRecordTypeIsString_ShouldThrowDelimitedSerializationException()
+    {
+        var ex = Assert.ThrowsExactly<DelimitedSerializationException>(() =>
+        {
+            _ = DelimitedSerializer.Deserialize<string>("a\nb\n");
+        });
+
+        Assert.IsTrue(ex.Message.Contains("System.String", StringComparison.Ordinal), ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that a collection record type throws <see cref="DelimitedSerializationException" /> naming the type,
+    /// rather than binding its own properties as columns.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenTheRecordTypeIsACollection_ShouldThrowDelimitedSerializationException()
+    {
+        var ex = Assert.ThrowsExactly<DelimitedSerializationException>(() =>
+        {
+            _ = DelimitedSerializer.Deserialize<List<string>>("Capacity\n4\n");
+        });
+
+        Assert.IsTrue(ex.Message.Contains("System.Collections.Generic.List", StringComparison.Ordinal), ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that a scalar record type throws <see cref="DelimitedSerializationException" /> even when the text holds
+    /// no records.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenTheRecordTypeIsAScalarAndTheTextIsEmpty_ShouldThrowDelimitedSerializationException()
+    {
+        _ = Assert.ThrowsExactly<DelimitedSerializationException>(() =>
+        {
+            _ = DelimitedSerializer.Deserialize<int>(string.Empty);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that a record type without a public parameterless constructor throws
+    /// <see cref="DelimitedSerializationException" /> naming the type, rather than the runtime's
+    /// <see cref="MissingMethodException" />.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenTheRecordTypeHasNoParameterlessConstructor_ShouldThrowDelimitedSerializationException()
+    {
+        var ex = Assert.ThrowsExactly<DelimitedSerializationException>(() =>
+        {
+            _ = DelimitedSerializer.Deserialize<ConstructedRecord>("A\nx\n");
+        });
+
+        Assert.IsTrue(ex.Message.Contains(nameof(ConstructedRecord), StringComparison.Ordinal), ex.Message);
+    }
 }

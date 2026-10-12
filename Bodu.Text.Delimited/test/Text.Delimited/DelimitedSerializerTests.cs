@@ -6,6 +6,8 @@
 
 using System.Globalization;
 
+using Bodu.Test.Kat;
+
 namespace Bodu.Text.Delimited;
 
 /// <summary>
@@ -495,5 +497,42 @@ public partial class DelimitedSerializerTests
 
             return person;
         }
+    }
+
+    /// <summary>
+    /// Gets collections whose element type is not a record but a scalar, the nullable form of one, or a collection, each
+    /// of which serialization must reject with <see cref="DelimitedSerializationException" />.
+    /// </summary>
+    /// <value>The rows, each a named collection and the exception it raises.</value>
+    public static IEnumerable<object[]> NonRecordCollections =>
+    [
+        [new InvalidKat<object>("List<int>", new List<int> { 1, 2 }, typeof(DelimitedSerializationException), MessageContains: "System.Int32")],
+        [new InvalidKat<object>("empty List<int>", new List<int>(), typeof(DelimitedSerializationException), MessageContains: "System.Int32")],
+        [new InvalidKat<object>("List<int?>", new List<int?> { 1 }, typeof(DelimitedSerializationException), MessageContains: "System.Nullable")],
+        [new InvalidKat<object>("List<string>", new List<string> { "ab" }, typeof(DelimitedSerializationException), MessageContains: "System.String")],
+        [new InvalidKat<object>("List<decimal>", new List<decimal> { 1.5m }, typeof(DelimitedSerializationException), MessageContains: "System.Decimal")],
+        [new InvalidKat<object>("List<DateTime>", new List<DateTime> { new(2026, 1, 2, 0, 0, 0, DateTimeKind.Utc) }, typeof(DelimitedSerializationException), MessageContains: "System.DateTime")],
+        [new InvalidKat<object>("List<Guid>", new List<Guid> { Guid.Empty }, typeof(DelimitedSerializationException), MessageContains: "System.Guid")],
+        [new InvalidKat<object>("List<Uri>", new List<Uri> { new("https://example.com/") }, typeof(DelimitedSerializationException), MessageContains: "System.Uri")],
+        [new InvalidKat<object>("Code[]", new[] { Code.One }, typeof(DelimitedSerializationException), MessageContains: "Code")],
+        [new InvalidKat<object>("List<int[]>", new List<int[]> { new[] { 1, 2 } }, typeof(DelimitedSerializationException), MessageContains: "System.Int32[]")],
+        [new InvalidKat<object>("List<List<string>>", new List<List<string>> { new() { "a" } }, typeof(DelimitedSerializationException), MessageContains: "System.Collections.Generic.List")],
+    ];
+
+    /// <summary>
+    /// A record POCO with a column <c>A</c> and no public parameterless constructor, which deserialization cannot create.
+    /// </summary>
+    public sealed class ConstructedRecord
+    {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ConstructedRecord" /> class.
+        /// </summary>
+        /// <param name="a">The first column's text.</param>
+        public ConstructedRecord(string a) =>
+            A = a;
+
+        /// <summary>Gets or sets the first column.</summary>
+        /// <value>The first column's text.</value>
+        public string A { get; set; }
     }
 }

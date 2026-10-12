@@ -687,4 +687,43 @@ public partial class DelimitedSerializerTests
         for (int i = 0; i < expected.Length; i++)
             CollectionAssert.AreEqual(expected[i], actual[i], $"Record {i} differs.");
     }
+
+    /// <summary>
+    /// Verifies that a scalar record type throws <see cref="DelimitedSerializationException" /> naming the type, rather
+    /// than yielding every record as the type's default value.
+    /// </summary>
+    /// <returns>A task representing the asynchronous test.</returns>
+    [TestMethod]
+    public async Task DeserializeAsyncEnumerableAsync_WhenTheRecordTypeIsAScalar_ShouldThrowDelimitedSerializationException()
+    {
+        using var source = new MemoryStream(Encoding.UTF8.GetBytes("a\n1\n"));
+
+        var ex = await Assert.ThrowsExactlyAsync<DelimitedSerializationException>(async () =>
+        {
+            await foreach (int record in DelimitedSerializer.DeserializeAsyncEnumerableAsync<int>(source))
+                _ = record;
+        });
+
+        Assert.IsTrue(ex.Message.Contains("System.Int32", StringComparison.Ordinal), ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that a record type without a public parameterless constructor throws
+    /// <see cref="DelimitedSerializationException" /> naming the type, rather than the runtime's
+    /// <see cref="MissingMethodException" />.
+    /// </summary>
+    /// <returns>A task representing the asynchronous test.</returns>
+    [TestMethod]
+    public async Task DeserializeAsyncEnumerableAsync_WhenTheRecordTypeHasNoParameterlessConstructor_ShouldThrowDelimitedSerializationException()
+    {
+        using var source = new MemoryStream(Encoding.UTF8.GetBytes("A\nx\n"));
+
+        var ex = await Assert.ThrowsExactlyAsync<DelimitedSerializationException>(async () =>
+        {
+            await foreach (ConstructedRecord record in DelimitedSerializer.DeserializeAsyncEnumerableAsync<ConstructedRecord>(source))
+                _ = record;
+        });
+
+        Assert.IsTrue(ex.Message.Contains(nameof(ConstructedRecord), StringComparison.Ordinal), ex.Message);
+    }
 }

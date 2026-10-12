@@ -65,7 +65,8 @@ public static partial class DelimitedSerializer
     /// <param name="options">The serializer options, or <see langword="null" /> to use the defaults.</param>
     /// <returns>The delimited text.</returns>
     /// <exception cref="DelimitedSerializationException">
-    /// Thrown when <typeparamref name="T" /> is not a collection of records.
+    /// Thrown when <typeparamref name="T" /> is not a collection of records, such as a <see cref="string" />, or its
+    /// element type is not a record type but a scalar or a collection.
     /// </exception>
     /// <exception cref="ArgumentException">
     /// Thrown when the delimiter, quote or comment character of <paramref name="options" /> cannot be used by the
@@ -92,7 +93,8 @@ public static partial class DelimitedSerializer
     /// Thrown when <paramref name="destination" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="DelimitedSerializationException">
-    /// Thrown when <typeparamref name="T" /> is not a collection of records.
+    /// Thrown when <typeparamref name="T" /> is not a collection of records, such as a <see cref="string" />, or its
+    /// element type is not a record type but a scalar or a collection.
     /// </exception>
     /// <exception cref="ArgumentException">
     /// Thrown when the delimiter, quote or comment character of <paramref name="options" /> cannot be used by the
@@ -110,14 +112,14 @@ public static partial class DelimitedSerializer
         Type collectionType = value?.GetType() ?? typeof(T);
         Type recordType = GetRecordType(collectionType)
             ?? throw new DelimitedSerializationException(string.Format(CultureInfo.CurrentCulture, DelimitedResourceStrings.Op_Invalid_DelimitedRootNotCollection, collectionType));
+        bool isStringArray = recordType == typeof(string[]);
+        Member[] members = isStringArray ? [] : GetRecordMembers(recordType, effective, reading: false);
 
         var writer = new Utf8DelimitedWriter(destination, effective.ToWriterOptions());
         writer.WriteStartArray();
 
         if (value is IEnumerable records)
         {
-            bool isStringArray = recordType == typeof(string[]);
-            Member[] members = isStringArray ? [] : GetMembers(recordType, effective);
             bool wroteRecord = false;
 
             foreach (object? record in records)
@@ -155,7 +157,8 @@ public static partial class DelimitedSerializer
     /// Thrown when <paramref name="destination" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="DelimitedSerializationException">
-    /// Thrown when <typeparamref name="T" /> is not a collection of records.
+    /// Thrown when <typeparamref name="T" /> is not a collection of records, such as a <see cref="string" />, or its
+    /// element type is not a record type but a scalar or a collection.
     /// </exception>
     /// <exception cref="ArgumentException">
     /// Thrown when the delimiter, quote or comment character of <paramref name="options" /> cannot be used by the
@@ -184,7 +187,10 @@ public static partial class DelimitedSerializer
     /// Thrown when <paramref name="text" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="DelimitedFormatException">Thrown when the text is not valid delimited data.</exception>
-    /// <exception cref="DelimitedSerializationException">Thrown when a record cannot be mapped.</exception>
+    /// <exception cref="DelimitedSerializationException">
+    /// Thrown when <typeparamref name="TRecord" /> is not a record type or has no public parameterless constructor, or
+    /// when a record cannot be mapped.
+    /// </exception>
     /// <exception cref="ArgumentException">
     /// Thrown when the delimiter, quote or comment character of <paramref name="options" /> cannot be used by the
     /// reader (see <see cref="Reader.DelimitedReaderOptions" />).
@@ -206,7 +212,10 @@ public static partial class DelimitedSerializer
     /// <param name="options">The serializer options, or <see langword="null" /> to use the defaults.</param>
     /// <returns>The list of deserialized records.</returns>
     /// <exception cref="DelimitedFormatException">Thrown when the bytes are not valid delimited data.</exception>
-    /// <exception cref="DelimitedSerializationException">Thrown when a record cannot be mapped.</exception>
+    /// <exception cref="DelimitedSerializationException">
+    /// Thrown when <typeparamref name="TRecord" /> is not a record type or has no public parameterless constructor, or
+    /// when a record cannot be mapped.
+    /// </exception>
     /// <exception cref="ArgumentException">
     /// Thrown when the delimiter, quote or comment character of <paramref name="options" /> cannot be used by the
     /// reader (see <see cref="Reader.DelimitedReaderOptions" />).
@@ -218,10 +227,13 @@ public static partial class DelimitedSerializer
         DelimitedSerializerOptions effective = options ?? DelimitedSerializerOptions.Default;
         effective.MakeReadOnly();
 
+        bool isStringArray = typeof(TRecord) == typeof(string[]);
+        Member[] members = isStringArray ? [] : GetRecordMembers(typeof(TRecord), effective, reading: true);
+
         ReadRows(utf8Delimited, effective.ToReaderOptions(), out List<string> headers, out List<string[]> rows);
 
         var result = new List<TRecord>(rows.Count);
-        if (typeof(TRecord) == typeof(string[]))
+        if (isStringArray)
         {
             foreach (string[] row in rows)
                 result.Add((TRecord)(object)row);
@@ -229,7 +241,6 @@ public static partial class DelimitedSerializer
             return result;
         }
 
-        Member[] members = GetMembers(typeof(TRecord), effective);
         foreach (string[] row in rows)
             result.Add((TRecord)BindRecord(row, headers, members, typeof(TRecord), effective));
 
@@ -247,7 +258,10 @@ public static partial class DelimitedSerializer
     /// Thrown when <paramref name="source" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="DelimitedFormatException">Thrown when the content is not valid delimited data.</exception>
-    /// <exception cref="DelimitedSerializationException">Thrown when a record cannot be mapped.</exception>
+    /// <exception cref="DelimitedSerializationException">
+    /// Thrown when <typeparamref name="TRecord" /> is not a record type or has no public parameterless constructor, or
+    /// when a record cannot be mapped.
+    /// </exception>
     /// <exception cref="ArgumentException">
     /// Thrown when the delimiter, quote or comment character of <paramref name="options" /> cannot be used by the
     /// reader (see <see cref="Reader.DelimitedReaderOptions" />).

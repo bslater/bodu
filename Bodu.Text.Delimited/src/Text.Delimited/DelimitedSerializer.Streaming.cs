@@ -36,6 +36,9 @@ public static partial class DelimitedSerializer
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="destination" /> or <paramref name="records" /> is <see langword="null" />.
     /// </exception>
+    /// <exception cref="DelimitedSerializationException">
+    /// Thrown when <typeparamref name="TRecord" /> is not a record type but a scalar or a collection.
+    /// </exception>
     /// <exception cref="ArgumentException">
     /// Thrown when the delimiter, quote or comment character of <paramref name="options" /> cannot be used by the
     /// writer (see <see cref="Writer.DelimitedWriterOptions" />).
@@ -61,7 +64,7 @@ public static partial class DelimitedSerializer
         DelimitedThrowHelper.ThrowIfUnusableDialect(writerOptions, nameof(options));
 
         bool isStringArray = typeof(TRecord) == typeof(string[]);
-        Member[] members = isStringArray ? [] : GetMembers(typeof(TRecord), effective);
+        Member[] members = isStringArray ? [] : GetRecordMembers(typeof(TRecord), effective, reading: false);
 
         var buffer = new ArrayBufferWriter<byte>();
         bool headerPending = !isStringArray && !writerOptions.NoHeader;
@@ -101,7 +104,10 @@ public static partial class DelimitedSerializer
     /// Thrown when <paramref name="source" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="DelimitedFormatException">Thrown when the content is not valid delimited data.</exception>
-    /// <exception cref="DelimitedSerializationException">Thrown when a record cannot be mapped.</exception>
+    /// <exception cref="DelimitedSerializationException">
+    /// Thrown when <typeparamref name="TRecord" /> is not a record type or has no public parameterless constructor, or
+    /// when a record cannot be mapped.
+    /// </exception>
     /// <exception cref="ArgumentException">
     /// Thrown when the delimiter, quote or comment character of <paramref name="options" /> cannot be used by the
     /// reader (see <see cref="Reader.DelimitedReaderOptions" />).
@@ -141,7 +147,7 @@ public static partial class DelimitedSerializer
         DelimitedThrowHelper.ThrowIfUnusableDialect(readerOptions, nameof(options));
 
         bool isStringArray = typeof(TRecord) == typeof(string[]);
-        Member[] members = isStringArray ? [] : GetMembers(typeof(TRecord), effective);
+        Member[] members = isStringArray ? [] : GetRecordMembers(typeof(TRecord), effective, reading: true);
 
         byte[] buffer = ArrayPool<byte>.Shared.Rent(StreamReadChunkSize);
         try

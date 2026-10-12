@@ -8,6 +8,8 @@ using System.Buffers;
 using System.Globalization;
 using System.Text;
 
+using Bodu.Test.Kat;
+
 namespace Bodu.Text.Delimited;
 
 /// <summary>
@@ -417,5 +419,71 @@ public partial class DelimitedSerializerTests
             "At,Moment,Day,Time,Span\r\n"
             + "2021-02-06T01:02:03.4567891Z,2021-02-06T01:02:03.4567891+10:00,2021-02-06,01:02:03.4567891,1.02:03:04.5670000\r\n",
             text);
+    }
+
+    /// <summary>
+    /// Verifies that a <see cref="string" /> root, a sequence of characters rather than of records, throws
+    /// <see cref="DelimitedSerializationException" /> as a root that is not a collection of records.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenRootIsAString_ShouldThrowDelimitedSerializationException()
+    {
+        var ex = Assert.ThrowsExactly<DelimitedSerializationException>(() =>
+        {
+            _ = DelimitedSerializer.Serialize("abc");
+        });
+
+        Assert.IsTrue(ex.Message.Contains("System.String", StringComparison.Ordinal), ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that a collection whose element type is not a record but a scalar or a collection throws
+    /// <see cref="DelimitedSerializationException" /> naming that type.
+    /// </summary>
+    /// <param name="kat">The collection and the exception it raises.</param>
+    [TestMethod]
+    [DynamicData(
+        nameof(NonRecordCollections),
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
+    public void Serialize_WhenTheRecordTypeIsNotARecord_ShouldThrowDelimitedSerializationException(InvalidKat<object> kat)
+    {
+        var ex = Assert.ThrowsExactly<DelimitedSerializationException>(() =>
+        {
+            _ = DelimitedSerializer.Serialize(kat.Input);
+        });
+
+        Assert.IsTrue(ex.Message.Contains(kat.MessageContains!, StringComparison.Ordinal), ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that a collection whose element type is not a record is rejected before anything is written to the
+    /// destination.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenTheRecordTypeIsNotARecord_ShouldWriteNothing()
+    {
+        var destination = new ArrayBufferWriter<byte>();
+
+        _ = Assert.ThrowsExactly<DelimitedSerializationException>(() =>
+        {
+            DelimitedSerializer.Serialize(destination, new List<int> { 1, 2 });
+        });
+
+        Assert.AreEqual(0, destination.WrittenCount);
+    }
+
+    /// <summary>
+    /// Verifies that a dictionary root, a collection of key and value pairs, still serializes with <c>Key</c> and
+    /// <c>Value</c> columns.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenRootIsADictionary_ShouldWriteKeyAndValueColumns()
+    {
+        var pairs = new Dictionary<string, int> { ["a"] = 1, ["b"] = 2 };
+
+        string text = DelimitedSerializer.Serialize(pairs);
+
+        Assert.AreEqual("Key,Value\r\na,1\r\nb,2\r\n", text);
     }
 }

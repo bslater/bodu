@@ -82,6 +82,12 @@
   <data name="Op_Invalid_DelimitedRootNotCollection" xml:space="preserve">
     <value>Delimited serialization requires a collection root; the type '{0}' is not supported.</value>
   </data>
+  <data name="Op_Invalid_DelimitedRecordTypeNotSupported" xml:space="preserve">
+    <value>A delimited record is a string array or an object whose members map to columns; the record type '{0}', a scalar or a collection, is not supported.</value>
+  </data>
+  <data name="Op_Invalid_DelimitedRecordTypeNotCreatable" xml:space="preserve">
+    <value>The record type '{0}' cannot be created; reading a delimited record needs a public parameterless constructor.</value>
+  </data>
   <data name="Format_Invalid_DelimitedValueConversion" xml:space="preserve">
     <value>The delimited value for column '{0}' could not be converted to type '{1}'.</value>
   </data>
