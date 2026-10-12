@@ -109,10 +109,10 @@ DateTime today = DateTime.Today;
 DateTime startOfWeek  = today.FirstDateOfWeek();                 // culture's first day of the current week
 DateTime nextFriday   = today.NextDateOfWeek(DayOfWeek.Friday);  // strictly after today
 DateTime endOfQuarter = today.LastDateOfQuarter();              // calendar Q-end
-int isoWeek           = today.IsoWeekOfYear();                  // ISO 8601 week number (method, not property)
+int isoWeek           = today.IsoWeekOfYear;                    // ISO 8601 week number (C# 14 extension property)
 ```
 
-`FirstDateOfWeek` has overloads taking a `CultureInfo` or a <xref:Bodu.WorkingDaysOfWeek> preset; `LastDateOfQuarter` accepts a <xref:Bodu.Extensions.CalendarQuarterDefinition> (e.g. `AprilToMarch`, `April6ToApril5` for the UK tax year) so the same call covers fiscal calendars. The `DateOnly` equivalents live on <xref:Bodu.Extensions.DateOnlyExtensions>, which adds an `Age` calculation.
+`IsoWeekOfYear` is read without parentheses; consuming the C# 14 extension properties needs `<LangVersion>14</LangVersion>` (or `latest` on the .NET 10 SDK) - see the [date and time extensions guide](../../guides/core/date-extensions.md). `FirstDateOfWeek` has overloads taking a `CultureInfo` or a <xref:Bodu.WorkingDaysOfWeek> preset; `LastDateOfQuarter` accepts a <xref:Bodu.Extensions.CalendarQuarterDefinition> (e.g. `AprilToMarch`, `April6ToApril5` for the UK tax year) so the same call covers fiscal calendars. The `DateOnly` equivalents, `Age` included, live on <xref:Bodu.Extensions.DateOnlyExtensions>.
 
 ### Centralized argument validation (`ThrowHelper`)
 
