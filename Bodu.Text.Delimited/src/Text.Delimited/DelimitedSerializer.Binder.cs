@@ -88,34 +88,74 @@ public static partial class DelimitedSerializer
     /// Binds a single decoded row to a new record instance of the target type.
     /// </summary>
     /// <param name="fields">The decoded field values.</param>
-    /// <param name="headers">The header column names.</param>
+    /// <param name="headers">The header column names, or an empty list for a headerless document.</param>
     /// <param name="members">The mapped members.</param>
     /// <param name="recordType">The record type.</param>
     /// <param name="options">The serializer options.</param>
     /// <returns>The bound record.</returns>
     /// <exception cref="DelimitedSerializationException">Thrown when a field cannot be converted.</exception>
+    /// <remarks>
+    /// With a header, each writable member binds to the first column whose header has its name. Without one, the fields
+    /// bind by position, as a generated <see cref="IDelimitedRecordFactory{TRecord}" /> binds them: the columns are
+    /// those <c>Serialize</c> writes, one for each readable member in member order, so a field binds to the member
+    /// written in its position, a get-only member's field is skipped, and a member past the last field keeps its
+    /// default.
+    /// </remarks>
     [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
     [RequiresDynamicCode(RequiresDynamicCodeMessage)]
-    private static object BindRecord(string[] fields, IReadOnlyList<string> headers, Member[] members, Type recordType, DelimitedSerializerOptions options)
+    private static object BindRecord(string[] fields, List<string> headers, Member[] members, Type recordType, DelimitedSerializerOptions options)
     {
         object instance = Activator.CreateInstance(recordType)!;
         (instance as IOnDeserializing)?.OnDeserializing();
 
-        StringComparison comparison = options.PropertyNameCaseInsensitive ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
-
-        foreach (Member member in members)
+        if (headers.Count == 0)
         {
-            if (!member.CanWrite)
-                continue;
+            BindPositionally(instance, fields, members);
+        }
+        else
+        {
+            StringComparison comparison = options.PropertyNameCaseInsensitive ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
 
-            int column = IndexOfHeader(headers, member.Name, comparison);
-            if (column >= 0 && column < fields.Length)
-                member.SetValue(instance, ConvertFromString(fields[column], member.MemberType, member.Name));
+            foreach (Member member in members)
+            {
+                if (!member.CanWrite)
+                    continue;
+
+                int column = IndexOfHeader(headers, member.Name, comparison);
+                if (column >= 0 && column < fields.Length)
+                    member.SetValue(instance, ConvertFromString(fields[column], member.MemberType, member.Name));
+            }
         }
 
         (instance as IOnDeserialized)?.OnDeserialized();
 
         return instance;
+    }
+
+    /// <summary>
+    /// Binds the fields of a headerless row to a record by position, each to the member written in its column.
+    /// </summary>
+    /// <param name="instance">The record instance.</param>
+    /// <param name="fields">The decoded field values.</param>
+    /// <param name="members">The mapped members, in the order their columns are written.</param>
+    /// <exception cref="DelimitedSerializationException">Thrown when a field cannot be converted.</exception>
+    private static void BindPositionally(object instance, string[] fields, Member[] members)
+    {
+        int column = 0;
+        foreach (Member member in members)
+        {
+            // Only a readable member is written, so only a readable member has a column.
+            if (!member.CanRead)
+                continue;
+
+            if (column >= fields.Length)
+                return;
+
+            if (member.CanWrite)
+                member.SetValue(instance, ConvertFromString(fields[column], member.MemberType, member.Name));
+
+            column++;
+        }
     }
 
     /// <summary>
@@ -125,7 +165,7 @@ public static partial class DelimitedSerializer
     /// <param name="name">The column name to find.</param>
     /// <param name="comparison">The name comparison.</param>
     /// <returns>The zero-based column index, or <c>-1</c> when absent.</returns>
-    private static int IndexOfHeader(IReadOnlyList<string> headers, string name, StringComparison comparison)
+    private static int IndexOfHeader(List<string> headers, string name, StringComparison comparison)
     {
         for (int i = 0; i < headers.Count; i++)
         {
