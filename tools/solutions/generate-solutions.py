@@ -633,7 +633,9 @@ def check_committed(repo_root: str, result: Result) -> list[str]:
         with open(full_path, "rb") as stream:
             raw = stream.read()
         try:
-            actual = raw.decode("utf-8")
+            # A Windows checkout with core.autocrlf materialises the committed LF text as CRLF, so
+            # line endings are not part of the comparison.
+            actual = raw.decode("utf-8").replace("\r\n", "\n")
         except UnicodeDecodeError:
             problems.append(f"{file_name}: is not UTF-8; run {REGENERATE_COMMAND}.")
             continue
@@ -654,13 +656,13 @@ def check_committed(repo_root: str, result: Result) -> list[str]:
 
 
 def write_views(repo_root: str, result: Result) -> list[str]:
-    """Writes every view whose text changed and returns the names written."""
+    """Writes every view whose text changed, line endings aside, and returns the names written."""
     written = []
     for file_name, text in result.views.items():
         full_path = os.path.join(repo_root, file_name)
         if os.path.isfile(full_path):
             with open(full_path, "rb") as stream:
-                if stream.read() == text.encode("utf-8"):
+                if stream.read().replace(b"\r\n", b"\n") == text.encode("utf-8"):
                     continue
         with open(full_path, "w", encoding="utf-8", newline="\n") as stream:
             stream.write(text)

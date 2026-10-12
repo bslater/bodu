@@ -435,6 +435,17 @@ class MainTests(RepositoryTestCase):
         self.assertEqual(1, code)
         self.assertIn("bodu.core.slnx: is out of date (missing Bodu.Test/test/Bodu.Test.csproj)", errors)
 
+    def test_main_when_a_checkout_converts_views_to_crlf_should_pass_check_and_leave_them_unwritten(self) -> None:
+        repository = self.repository()
+        repository.main()
+        crlf = repository.read("bodu.core.slnx").replace("\n", "\r\n")
+        with open(os.path.join(repository.root, "bodu.core.slnx"), "w", encoding="utf-8", newline="") as stream:
+            stream.write(crlf)
+        self.assertEqual((0, ""), repository.main("--check"))
+        self.assertEqual(0, repository.main()[0])
+        with open(os.path.join(repository.root, "bodu.core.slnx"), encoding="utf-8", newline="") as stream:
+            self.assertEqual(crlf, stream.read())
+
     def test_main_when_a_committed_view_breaks_the_contract_should_fail_check(self) -> None:
         repository = self.repository()
         repository.main()
