@@ -59,7 +59,8 @@ public sealed partial class CronExpression
                 return false;
             }
 
-            return day.Day == new DateOnly(day.Year, day.Month, target).NearestWeekdayInMonth().Day;
+            // Compare whole dates: taking the nearest weekday's day of the month apart again would cost more.
+            return DateOnly.FromDateTime(day) == new DateOnly(day.Year, day.Month, target).NearestWeekdayInMonth();
         }
 
         /// <summary>

@@ -96,4 +96,34 @@ public partial class DateTimeExtensionsTests
         });
     }
 
+    /// <summary>
+    /// Verifies that a resolution just outside the range <see cref="DateTimeResolution" /> defines throws
+    /// <see cref="ArgumentOutOfRangeException" /> naming the <c>resolution</c> parameter.
+    /// </summary>
+    /// <param name="value">The undefined resolution value.</param>
+    [TestMethod]
+    [DataRow(-1)]
+    [DataRow(8)]
+    public void Truncate_WhenResolutionIsJustOutsideRange_ShouldThrowNamingParameter(int value)
+    {
+        var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = Sample.Truncate((DateTimeResolution)value);
+        });
+
+        Assert.AreEqual("resolution", ex.ParamName);
+    }
+
+    /// <summary>
+    /// Verifies that every defined <see cref="DateTimeResolution" /> is accepted and keeps the value's
+    /// <see cref="DateTime.Kind" />.
+    /// </summary>
+    [TestMethod]
+    public void Truncate_WhenEveryDefinedResolution_ShouldAcceptIt()
+    {
+        foreach (DateTimeResolution resolution in Enum.GetValues<DateTimeResolution>())
+        {
+            Assert.AreEqual(Sample.Kind, Sample.Truncate(resolution).Kind, resolution.ToString());
+        }
+    }
 }
