@@ -321,7 +321,7 @@ string file = "report: q1/q2 <final>.pdf".ToSafeFileName();   // on Linux: "repo
 | `ToIdentifier(IdentifierCase)` | As above, then reshapes the detected words to <xref:Bodu.Extensions.IdentifierCase> `Camel`, `Pascal`, or `Snake` (`Preserve` is the default). |
 | `IsValidIdentifier()` | A letter or `_` followed by letters, digits, `_`, or connector punctuation. It is a syntactic check - it does not reject C# keywords. |
 | `ToSafeFileName()` | Replaces every character in <xref:System.IO.Path.GetInvalidFileNameChars> with `_`. The invalid set is **platform-dependent**: on Windows `:`, `<`, `>`, `"`, `|`, `?`, `*` and the control characters are replaced too; on Linux only `/` and NUL are. |
-| `ToSafePathSegment()` | The same set plus both directory separators, so the result can never escape into a parent or child segment. |
+| `ToSafePathSegment()` | The same set plus `/` and `\` on every platform, so the result can never escape into a parent or child segment. |
 
 ## Pattern 10 - truncation, slicing, Base64, and parsing
 

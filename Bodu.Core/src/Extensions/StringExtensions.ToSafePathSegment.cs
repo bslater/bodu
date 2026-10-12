@@ -10,28 +10,33 @@ namespace Bodu.Extensions;
 
 public static partial class StringExtensions
 {
-    /// <summary>The platform's invalid file-name characters plus both directory separators as a vectorised search set, computed once per process.</summary>
+    /// <summary>The platform's invalid file-name characters plus both the forward slash and the backslash as a vectorised search set, computed once per process.</summary>
+    /// <remarks>
+    /// Both slashes are listed explicitly rather than through <see cref="Path.DirectorySeparatorChar" /> and
+    /// <see cref="Path.AltDirectorySeparatorChar" />, which are both <c>'/'</c> on Linux and macOS, so a segment
+    /// produced on one platform cannot be read as two segments on another.
+    /// </remarks>
     private static readonly System.Buffers.SearchValues<char> s_invalidPathSegmentChars =
-        System.Buffers.SearchValues.Create([.. Path.GetInvalidFileNameChars(), Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar]);
+        System.Buffers.SearchValues.Create([.. Path.GetInvalidFileNameChars(), '/', '\\']);
 
     /// <summary>
     /// Returns <paramref name="value" /> with every character that <see cref="Path.GetInvalidFileNameChars" /> reports
-    /// as invalid for a single path segment (plus the platform path separators) replaced by an underscore.
+    /// as invalid for a single path segment, plus the forward slash and the backslash, replaced by an underscore.
     /// </summary>
     /// <param name="value">The candidate path segment to sanitise.</param>
     /// <returns>
-    /// A string in which each invalid character - including <see cref="Path.DirectorySeparatorChar" /> and
-    /// <see cref="Path.AltDirectorySeparatorChar" /> - has been replaced by <c>'_'</c>; the original instance when
-    /// nothing required replacement. Returns <c>"_"</c> when the input is empty so that the result is never itself an
-    /// empty segment.
+    /// A string in which each invalid character, and every <c>'/'</c> and <c>'\'</c> on every platform, has been
+    /// replaced by <c>'_'</c>; the original instance when nothing required replacement. Returns <c>"_"</c> when the
+    /// input is empty so that the result is never itself an empty segment.
     /// </returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="value" /> is <see langword="null" />.
     /// </exception>
     /// <remarks>
     /// Use this when composing a path from user input where each component must be a single segment without embedded
-    /// separators. For a full file name (no embedded separators required as a rule), prefer
-    /// <see cref="ToSafeFileName(string)" /> - the two differ only in whether path separators are stripped.
+    /// separators. For a full file name, prefer <see cref="ToSafeFileName(string)" />; the two differ only in the
+    /// backslash, which <see cref="ToSafeFileName(string)" /> keeps on Linux and macOS, where a file name may contain
+    /// it.
     /// </remarks>
     public static string ToSafePathSegment(this string value)
     {
