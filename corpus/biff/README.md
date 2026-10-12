@@ -238,7 +238,7 @@ Fixed, each after a commit of its regression tests:
 - **Shared string table, the declared count (#937).** The table ends where its records end, even when `cstUnique`
   declares more strings. As decided, apache-poi 5.2.4 Bug 65543, apache-poi 3.12-beta1 Bug 57456, calamine 0.30.1 #548
   and exceldatareader 3.7.0-develop00310 #477 case 4 moved from `dialect` (reject) to `applies` (parse), citing
-  docs/docs/io-biff/records.md:89 and BiffSstReader.cs:243, and libxls 1.5.0 #22 case 2, which expected an SST declaring
+  docs/docs/io-biff/records.md:89 and BiffSstReader.cs:244, and libxls 1.5.0 #22 case 2, which expected an SST declaring
   16,777,217 strings to be rejected, moved from `applies` (reject) to `dialect` (parse, A1 reading the one string it
   holds), citing docs/docs/io-biff/records.md:89.
 - **Exception translation (#933).** A sheet whose BOF declares BIFF4 raises `ExcelBinaryUnsupportedException`, with the
@@ -264,6 +264,10 @@ Fixed, each after a commit of its regression tests:
   docs/docs/excel/concepts.md:65 and ExcelBinaryWorkbook.cs:365, with `expected` set to what Bodu produces.
 - **Documentation (#938).** The guides say that a malformed record in the workbook globals fails the open and one in a
   sheet fails when the sheet is read, and the package README lists RSTRING.
+- **Surrogate pairs split across a CONTINUE boundary (#1012, found in review).** The shared string table and a formula's
+  continued STRING text gather the code units of every segment before decoding them, so a surrogate pair split between
+  two segments decodes to its character, and a surrogate without its partner to U+FFFD, as in an unsplit string. No
+  catalogue row covers it.
 
 Fixed in `Bodu.IO.Compound`:
 

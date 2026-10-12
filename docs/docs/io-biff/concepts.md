@@ -35,7 +35,7 @@ The record stream is a sequence of **substreams**, each bracketed by a `BOF` and
 When a logical structure exceeds one record, the format carries the overflow in one or more **`CONTINUE`** records that immediately follow. The reader is deliberately physical: `Read()` yields the `CONTINUE` record like any other, and <xref:Bodu.IO.Biff.BiffReader.IsContinuation> flags it. Two facilities handle the logical view:
 
 - <xref:Bodu.IO.Biff.BiffReader.TryReadContinuation*> consumes the next record *only if* it is a `CONTINUE`, for structures whose continuation is a plain byte split (drawing and text objects, for example).
-- <xref:Bodu.IO.Biff.BiffSstReader> handles the one structure with its own continuation rules - the shared string table - where a string's header never straddles a boundary, its characters may, and every continued run restarts with a flags byte selecting 8-bit or 16-bit characters.
+- <xref:Bodu.IO.Biff.BiffSstReader> handles the one structure with its own continuation rules - the shared string table - where a string's header never straddles a boundary, its characters may, and every continued run restarts with a flags byte selecting 8-bit or 16-bit characters. The code units of all the runs are decoded together, so a surrogate pair split across a boundary keeps its character.
 
 The writer mirrors both: `WriteContinuedRecord` splits at the maximum length, and `WriteSst` splits at string and character boundaries with the flags byte the reader expects.
 

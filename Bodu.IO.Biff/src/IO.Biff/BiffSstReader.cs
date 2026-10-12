@@ -5,7 +5,6 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Buffers.Binary;
-using System.Text;
 
 namespace Bodu.IO.Biff;
 
@@ -35,8 +34,10 @@ namespace Bodu.IO.Biff;
 /// A string whose characters lie within one record is exposed as a span-backed <see cref="Current" /> view. A string
 /// whose characters straddle a boundary (<see cref="IsFragmented" />) has no single span; it is decoded into a reusable
 /// scratch buffer during <see cref="Read(ref BiffReader)" />, and <see cref="GetString" /> and <see cref="CopyTo" />
-/// serve both kinds uniformly. Formatting-run and extended-data trailers that straddle a boundary are skipped and
-/// reported as empty.
+/// serve both kinds uniformly. Its code units are gathered from every segment before they are decoded, so a surrogate
+/// pair split between two segments decodes to its character, and a surrogate without its partner to U+FFFD, exactly as
+/// the same code units in one record do. Formatting-run and extended-data trailers that straddle a boundary are skipped
+/// and reported as empty.
 /// </para>
 /// <example>
 /// <code language="csharp">
@@ -447,8 +448,8 @@ public ref struct BiffSstReader
     }
 
     /// <summary>
-    /// Decodes characters that straddle one or more continuation boundaries into the scratch buffer, re-reading the
-    /// option-flags byte at the start of each continued segment.
+    /// Assembles the code units of characters that straddle one or more continuation boundaries in the scratch buffer,
+    /// re-reading the option-flags byte at the start of each continued segment, and decodes them as one run.
     /// </summary>
     /// <param name="reader">The parent reader.</param>
     /// <param name="length">The number of characters to decode.</param>
@@ -457,8 +458,15 @@ public ref struct BiffSstReader
     /// Thrown when the data runs out, a continuation record is empty, or a 16-bit segment holds half a code unit.
     /// </exception>
     /// <remarks>
+    /// <para>
     /// A continuation record that holds only its flags byte is a segment of no characters: the loop moves on to the
     /// next continuation record.
+    /// </para>
+    /// <para>
+    /// No segment is decoded on its own: a boundary may fall between the two code units of a surrogate pair, so the
+    /// code units are copied as they are, and only the surrogates left without a partner in the assembled string are
+    /// replaced with U+FFFD.
+    /// </para>
     /// </remarks>
     private void ReadFragmentedCharacters(scoped ref BiffReader reader, int length, bool highByte)
     {
@@ -492,7 +500,7 @@ public ref struct BiffSstReader
                 if (take <= 0)
                     throw Malformed();
 
-                Encoding.Unicode.GetChars(_block.Slice(_offset, take * 2), output.Slice(written, take));
+                BiffContinuedText.CopyCodeUnits(_block.Slice(_offset, take * 2), output.Slice(written, take));
                 _offset += take * 2;
                 written += take;
             }
@@ -503,13 +511,13 @@ public ref struct BiffSstReader
                 if (take <= 0)
                     throw Malformed();
 
-                for (int i = 0; i < take; i++)
-                    output[written + i] = (char)_block[_offset + i];
-
+                BiffContinuedText.Widen(_block.Slice(_offset, take), output.Slice(written, take));
                 _offset += take;
                 written += take;
             }
         }
+
+        BiffContinuedText.ReplaceUnpairedSurrogates(output);
     }
 
     /// <summary>

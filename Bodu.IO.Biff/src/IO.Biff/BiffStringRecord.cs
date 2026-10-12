@@ -6,7 +6,6 @@
 
 using System.Buffers.Binary;
 using System.Globalization;
-using System.Text;
 
 namespace Bodu.IO.Biff;
 
@@ -82,7 +81,9 @@ public readonly ref struct BiffStringRecord
     /// <remarks>
     /// In BIFF8 each continued segment opens with its own flags byte, whose bit 0 selects the width of the characters
     /// that follow it, and a segment that holds only that flags byte contributes no characters, as in the shared string
-    /// table. A text that lies within the <c>STRING</c> record, and any BIFF5 text, is read as
+    /// table. The code units of every segment are gathered before they are decoded, so a surrogate pair split between
+    /// two segments decodes to its character, and a surrogate without its partner to U+FFFD, exactly as the same code
+    /// units in one record do. A text that lies within the <c>STRING</c> record, and any BIFF5 text, is read as
     /// <see cref="BiffReader.GetString" /> reads it.
     /// </remarks>
     internal static string ReadContinuedText(scoped ref BiffReader reader)
@@ -103,13 +104,16 @@ public readonly ref struct BiffStringRecord
         {
             int take = Math.Min(length - written, highByte ? segment.Length / 2 : segment.Length);
             if (highByte)
-                _ = Encoding.Unicode.GetChars(segment[..(take * 2)], characters.AsSpan(written, take));
+                BiffContinuedText.CopyCodeUnits(segment[..(take * 2)], characters.AsSpan(written, take));
             else
-                _ = Encoding.Latin1.GetChars(segment[..take], characters.AsSpan(written, take));
+                BiffContinuedText.Widen(segment[..take], characters.AsSpan(written, take));
 
             written += take;
             if (written == length)
+            {
+                BiffContinuedText.ReplaceUnpairedSurrogates(characters);
                 return new string(characters);
+            }
 
             // The segment is spent and characters remain: a 16-bit segment of odd length split a code unit.
             if (highByte && segment.Length % 2 != 0)
