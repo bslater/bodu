@@ -90,7 +90,7 @@
     <value>The document cannot be serialized to JSON because it uses the feature '{0}', which the JSON subset schema cannot represent. Use XML serialization for full-fidelity documents.</value>
   </data>
   <data name="Arg_Invalid_UnknownFileExtension" xml:space="preserve">
-    <value>The file path '{0}' has an unrecognized extension. Use a '.xml' or '.json' extension, or specify the format explicitly.</value>
+    <value>The file path '{0}' has an unrecognized extension. Use a '.xml', '.json', or '.bcal' extension, or specify the format explicitly.</value>
   </data>
   <data name="Format_Invalid_RootElement" xml:space="preserve">
     <value>The document root element is '{0}' but a 'NotableDateResource' element in the 'urn:bodu:globalization:calendar' namespace was expected.</value>

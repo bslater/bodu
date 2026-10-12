@@ -17,14 +17,16 @@ The <xref:Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder> serial
 | Bundled catalogue XML → `FromXml` → `Build()` | **Semantic equivalence.** Every bundled catalogue re-parsed through the builder produces a resource with the same identifier, rule count, and multi-territory, multi-year resolved-occurrence fingerprint as loading it directly. | `…BundledRoundTrip.FromXml_WhenBundledCatalogue_ShouldRoundTripToEquivalentResource` (all bundled catalogues) |
 | `ToXml()` → canonical loader | **Loader parity.** XML the builder emits, loaded through <xref:Bodu.Globalization.Calendar.NotableDateResourceLoader>, assembles the same resource as calling `Build()` directly - `Build()` *is* the canonical loader over `ToXml()`. | `…Serialization.ToXml_WhenLoadedByResourceLoader_ShouldMatchDirectBuild` |
 | `ToXml()` vs `ToJson()` of the same document | **Format parity.** When a document fits the JSON subset, its XML and JSON serializations resolve identical occurrences. | `…Serialization.ToXmlAndToJson_WhenResolved_ShouldAgree` |
-| `Save(path)` → `Load(path)` | **Disk round-trip.** Saving and re-loading a document (`.xml` or `.json`, format inferred from the extension) resolves identically. | `…SaveLoad.SaveLoad_WhenXmlFile_ShouldRoundTripThroughDisk`, `…SaveLoad_WhenJsonFile_ShouldRoundTripThroughDisk` |
+| `Save(path)` → `Load(path)` | **Disk round-trip.** Saving and re-loading a document (`.xml` or `.json`, format inferred from the extension) resolves identically. A `.bcal` save writes a binary rule pack, which `Load` rejects with `NotSupportedException`. | `…SaveLoad.SaveLoad_WhenXmlFile_ShouldRoundTripThroughDisk`, `…SaveLoad_WhenJsonFile_ShouldRoundTripThroughDisk` |
 | `Clone()` | **Deep, independent copy.** Mutating a clone never affects the original. | `…Clone` partial |
 
 ## XML is the full-fidelity format
 
 Every document the builder can express serializes to XML, and builder-canonical XML round-trips byte-for-byte. The byte-identity guarantee applies to **builder-emitted** XML: parse the output of `ToXml()` (or a file written by `Save`) and re-serialize it, and you get the same bytes back.
 
-Hand-authored XML is normalized, not preserved: the builder parses into its object model and re-emits its canonical form, so insignificant whitespace, attribute ordering, XML comments, and alternative lexical forms from a hand-written file are replaced by the canonical rendering. What *is* guaranteed for any accepted XML - hand-authored or generated - is semantic equivalence: the re-emitted document builds a resource that resolves the same occurrences, which is the guarantee the bundled-catalogue sweep pins across every shipped catalogue.
+Hand-authored XML is normalized, not preserved: the builder parses into its object model and re-emits its canonical form, so insignificant whitespace, attribute ordering, XML comments, and alternative lexical forms from a hand-written file are replaced by the canonical rendering. What *is* guaranteed for any XML the loader accepts - hand-authored or generated - is semantic equivalence: the re-emitted document builds a resource that resolves the same occurrences, which is the guarantee the bundled-catalogue sweep pins across every shipped catalogue.
+
+Parsing is not validation. `FromXml`, `FromJson`, and `Load` are lenient: an unrecognized enumeration token becomes the default or is dropped (a misspelled category becomes `None`, and a misspelled `duplicatePolicy` disappears), a malformed integer is dropped, and any Boolean other than `true` or `1` reads as `false`. A document the loader would reject can therefore parse, and even `Build()`, with different data, so the equivalence above holds only for input the loader accepts. Validate untrusted input with `Validate()` / `TryBuild(...)` or by loading it with <xref:Bodu.Globalization.Calendar.NotableDateResourceLoader>. `FromJson` also throws `InvalidOperationException`, not `FormatException`, for a value of the wrong JSON type (for example `"priority": "5"`).
 
 ## JSON is a subset - the lossiness runs one way
 
@@ -43,7 +45,7 @@ Features outside the JSON subset (each rejection pinned by `…JsonSubset.ToJson
 | XML-only adjustment triggers and actions (for example `IfBeforeFixedDate`, `ReplaceWithRule`) | Adjustment policies |
 | Trigger refinements: month, day, week ordinal, custom trigger handler keys | Adjustment policies |
 | Action refinements: replacement rule references, custom action handler keys, handler parameters | Adjustment policies |
-| Scope year bounds (`FromYear` / `ToYear` / `OnlyYears` / `ExceptYears`) and notable-date / rule scope references | Adjustment scopes |
+| Scope year bounds (`FromYear` / `ToYear` / `OnlyYear` / `ExceptYear`) and notable-date / rule scope references | Adjustment scopes |
 | Override patches carrying applicability, strategy, tag, or adjustment changes | Overrides |
 
 Serialize such documents as XML. Scopes confined to territories, calendars, and categories - and lunisolar strategy flags - are inside the subset and round-trip through JSON unchanged.

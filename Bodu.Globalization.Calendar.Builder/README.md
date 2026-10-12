@@ -15,16 +15,29 @@ Targets `net8.0` and `net10.0`. All types live in the `Bodu.Globalization.Calend
 ## Authoring
 
 ```csharp
+using Bodu.Globalization.Calendar;
 using Bodu.Globalization.Calendar.Builder;
+using Bodu.Globalization.Calendar.RangeResolution;
 
 NotableDateResource resource = NotableDateDocumentBuilder
     .Create("au-national", schemaVersion: "1.0")
     .WithMetadata("Australia - National", description: "Federal public holidays")
-    .WithResolutionPolicy(p => /* collision, priority, working-week rules */)
-    .AddImport("christian-western")
-    .AddNotableDate("australia-day", "Australia Day", category: "public", b => /* rules */)
-    .Build();
+    .WithResolutionPolicy(p => p.WithSameDayCollisionPolicy(CollisionPolicy.KeepAll))
+    .AddAdjustmentPolicy("weekend-to-monday", a => a
+        .When(AdjustmentTrigger.IfWeekend)
+        .Then(AdjustmentAction.MoveToNextWorkingDay)
+        .Emit(EmissionMode.ObservedOnly))
+    .AddImport("christian-western", i => i.Use("easter-sunday").Use("good-friday"))
+    .AddNotableDate("australia-day", "Australia Day", NotableDateCategory.PublicHoliday, d => d
+        .AsNonWorkingByDefault()
+        .AddRule("default", r => r
+            .ForTerritory("AU")
+            .Fixed(1, 26)
+            .WithAdjustment("weekend-to-monday")))
+    .Build(CommonNotableDateResources.Resolver);   // the resolver supplies the imported catalogue
 ```
+
+A document that imports a catalogue must be built with a resolver; `Build()` resolves no imports, so the import above would fail with `BODU-CAL-IMPORT-MISSING`. Good Friday is defined relative to Easter Sunday, so both are imported.
 
 The fluent entry points - `WithResourceId`, `WithSchemaVersion`, `WithMetadata`, `WithResolutionPolicy`, `AddAdjustmentPolicy`, `AddImport`, `AddNotableDate`, and `AddOverride` - are backed by the section builders `NotableDateDefinitionBuilder`, `NotableDateRuleBuilder`, `AdjustmentPolicyBuilder`, `ResolutionPolicyBuilder`, `ImportBuilder`, and `OverrideBuilder`.
 
@@ -35,8 +48,8 @@ The fluent entry points - `WithResourceId`, `WithSchemaVersion`, `WithMetadata`,
 | `Build()` / `Build(importResolver)` | Materialize and validate a `NotableDateResource` |
 | `ToXml()` / `ToXDocument()` | Render full-fidelity XML (`urn:bodu:globalization:calendar`) |
 | `ToJson()` | Render the JSON subset (Gregorian-only, reduced trigger/action surface) |
-| `Save(path)` / `Save(path, format)` | Persist as XML (default) or JSON (`NotableDateDocumentFormat`) |
-| `Load(path)` | Reconstruct a builder from a saved document |
+| `Save(path)` / `Save(path, format)` | Persist in the format the extension names (`.xml`, `.json`, or `.bcal` for a binary rule pack; any other extension throws), or the `NotableDateDocumentFormat` passed |
+| `Load(path)` | Reconstruct a builder from a saved `.xml` or `.json` document (a `.bcal` pack cannot be reopened) |
 | `ToProvider()` | Wrap the result as an `INotableDateResourceProvider` |
 
 ## Testing
