@@ -47,7 +47,7 @@ public static partial class IniSerializer
 
         if (value is IDictionary dictionary)
             WriteRootDictionary(ref writer, dictionary, options);
-        else if (IsUnsupportedRoot(value.GetType()))
+        else if (IsScalarOrEnumerable(value.GetType()))
             throw new IniSerializationException(string.Format(CultureInfo.CurrentCulture, IniResourceStrings.Op_Invalid_IniRootNotObject, value.GetType()));
         else
             WriteRootPoco(ref writer, value, options);
@@ -293,7 +293,7 @@ public static partial class IniSerializer
         if (TryGetStringKeyedDictionary(targetType, out Type? valueType))
             return ReadRootDictionary(document, targetType, valueType, options);
 
-        if (IsUnsupportedRoot(targetType))
+        if (IsScalarOrEnumerable(targetType))
             throw new IniSerializationException(string.Format(CultureInfo.CurrentCulture, IniResourceStrings.Op_Invalid_IniRootNotObject, targetType));
 
         return ReadRootPoco(document, targetType, options);
@@ -630,7 +630,11 @@ public static partial class IniSerializer
     /// Determines whether a type maps to a single INI value rather than a section.
     /// </summary>
     /// <param name="type">The type to test.</param>
-    /// <returns><see langword="true" /> when the type is scalar-convertible.</returns>
+    /// <returns>
+    /// <see langword="true" /> for <see cref="string" />, a primitive, an enumeration, <see cref="decimal" />,
+    /// <see cref="Guid" />, a date or time type, <see cref="Uri" />, a 128-bit or half-precision number,
+    /// <see cref="BigInteger" />, or the nullable form of any of them; otherwise <see langword="false" />.
+    /// </returns>
     private static bool IsScalarType(Type type)
     {
         Type underlying = Nullable.GetUnderlyingType(type) ?? type;
@@ -641,9 +645,15 @@ public static partial class IniSerializer
             || underlying == typeof(decimal)
             || underlying == typeof(DateTime)
             || underlying == typeof(DateTimeOffset)
+            || underlying == typeof(DateOnly)
+            || underlying == typeof(TimeOnly)
             || underlying == typeof(TimeSpan)
             || underlying == typeof(Guid)
-            || underlying == typeof(Uri);
+            || underlying == typeof(Uri)
+            || underlying == typeof(Int128)
+            || underlying == typeof(UInt128)
+            || underlying == typeof(Half)
+            || underlying == typeof(BigInteger);
     }
 
     /// <summary>
@@ -653,28 +663,6 @@ public static partial class IniSerializer
     /// <returns><see langword="true" /> when the type cannot be an INI document root.</returns>
     private static bool IsScalarOrEnumerable(Type type) =>
         IsScalarType(type) || IsUnsupportedEnumerable(type);
-
-    /// <summary>
-    /// Determines whether a type cannot be an INI document root: a scalar or a non-dictionary enumerable, as
-    /// <see cref="IsScalarOrEnumerable(Type)" /> determines, or one of the scalar types that
-    /// <see cref="IsScalarType" /> does not map as keys.
-    /// </summary>
-    /// <param name="type">The type to test.</param>
-    /// <returns><see langword="true" /> when the type cannot be an INI document root.</returns>
-    /// <remarks>
-    /// A <see cref="DateOnly" />, <see cref="TimeOnly" />, 128-bit or half-precision number, or
-    /// <see cref="BigInteger" />, or the nullable form of one, is a scalar, although it has public properties, or none,
-    /// that would otherwise be bound as global keys. It is checked only at the root, so how a member of one of these
-    /// types maps is unchanged.
-    /// </remarks>
-    private static bool IsUnsupportedRoot(Type type)
-    {
-        Type underlying = Nullable.GetUnderlyingType(type) ?? type;
-
-        return IsScalarOrEnumerable(type) || underlying == typeof(DateOnly) || underlying == typeof(TimeOnly) ||
-            underlying == typeof(Int128) || underlying == typeof(UInt128) || underlying == typeof(Half) ||
-            underlying == typeof(BigInteger);
-    }
 
     /// <summary>
     /// Determines whether a type is a non-dictionary enumerable, which INI cannot represent at any level.

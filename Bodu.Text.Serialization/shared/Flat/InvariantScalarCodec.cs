@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Globalization;
+using System.Numerics;
 
 namespace Bodu.Text.Serialization;
 
@@ -36,6 +37,10 @@ internal static class InvariantScalarCodec
     /// <param name="value">The scalar value to format.</param>
     /// <param name="policy">The formatting policy to apply.</param>
     /// <returns>The scalar's serialized representation.</returns>
+    /// <remarks>
+    /// A <see cref="TimeOnly" /> is written in its round-trip form, <c>HH:mm:ss.fffffff</c>, under both policies, since
+    /// its general invariant form holds only hours and minutes and would not read back as the value written.
+    /// </remarks>
     internal static string Format(object? value, Policy policy) =>
         value switch
         {
@@ -45,7 +50,7 @@ internal static class InvariantScalarCodec
             DateTime dateTime when policy == Policy.Delimited => dateTime.ToString("O", CultureInfo.InvariantCulture),
             DateTimeOffset dateTimeOffset when policy == Policy.Delimited => dateTimeOffset.ToString("O", CultureInfo.InvariantCulture),
             DateOnly date when policy == Policy.Delimited => date.ToString("O", CultureInfo.InvariantCulture),
-            TimeOnly time when policy == Policy.Delimited => time.ToString("O", CultureInfo.InvariantCulture),
+            TimeOnly time => time.ToString("O", CultureInfo.InvariantCulture),
             TimeSpan span when policy == Policy.Delimited => span.ToString("c", CultureInfo.InvariantCulture),
             IFormattable formattable => formattable.ToString(null, CultureInfo.InvariantCulture),
             _ => value.ToString() ?? string.Empty,
@@ -55,6 +60,12 @@ internal static class InvariantScalarCodec
     /// Converts a scalar. A malformed value throws the underlying parsing exception, which each serializer wraps in its
     /// own serialization exception.
     /// </summary>
+    /// <remarks>
+    /// Every scalar <see cref="Format(object?, Policy)" /> writes reads back with the invariant culture under both
+    /// policies, <see cref="DateOnly" />, <see cref="TimeOnly" />, <see cref="Int128" />, <see cref="UInt128" />,
+    /// <see cref="Half" /> and <see cref="BigInteger" /> included; a type with no case of its own converts through
+    /// <see cref="Convert.ChangeType(object?, Type, IFormatProvider?)" />.
+    /// </remarks>
     /// <param name="raw">The text to convert.</param>
     /// <param name="targetType">The desired result type, including nullable wrappers.</param>
     /// <param name="policy">The parsing policy to apply.</param>
@@ -81,14 +92,25 @@ internal static class InvariantScalarCodec
             return DateTime.Parse(raw, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
         if (underlying == typeof(DateTimeOffset))
             return DateTimeOffset.Parse(raw, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
-        if (underlying == typeof(DateOnly) && policy == Policy.Delimited)
+        if (underlying == typeof(DateOnly))
             return DateOnly.Parse(raw, CultureInfo.InvariantCulture);
-        if (underlying == typeof(TimeOnly) && policy == Policy.Delimited)
+        if (underlying == typeof(TimeOnly))
             return TimeOnly.Parse(raw, CultureInfo.InvariantCulture);
         if (underlying == typeof(TimeSpan))
             return TimeSpan.Parse(raw, CultureInfo.InvariantCulture);
         if (underlying == typeof(Uri))
             return new Uri(raw, UriKind.RelativeOrAbsolute);
+
+        // The numbers IConvertible does not cover parse with the styles Convert.ChangeType gives the ones it does.
+        if (underlying == typeof(Int128))
+            return Int128.Parse(raw, NumberStyles.Integer, CultureInfo.InvariantCulture);
+        if (underlying == typeof(UInt128))
+            return UInt128.Parse(raw, NumberStyles.Integer, CultureInfo.InvariantCulture);
+        if (underlying == typeof(Half))
+            return Half.Parse(raw, NumberStyles.Float | NumberStyles.AllowThousands, CultureInfo.InvariantCulture);
+        if (underlying == typeof(BigInteger))
+            return BigInteger.Parse(raw, NumberStyles.Integer, CultureInfo.InvariantCulture);
+
         return Convert.ChangeType(raw, underlying, CultureInfo.InvariantCulture);
     }
 }
