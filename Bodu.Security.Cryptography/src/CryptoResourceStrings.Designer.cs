@@ -619,15 +619,6 @@ namespace Bodu {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Invalid hash size: The hash size must be a positive multiple of {0} bytes..
-        /// </summary>
-        internal static string Crypt_Invalid_HashSizePositiveMultipleOf {
-            get {
-                return ResourceManager.GetString("Crypt_Invalid_HashSizePositiveMultipleOf", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to The input data length must be a multiple of the block size ({0} bytes)..
         /// </summary>
         internal static string Crypt_Invalid_InputLengthBlockMultiple {
@@ -768,6 +759,15 @@ namespace Bodu {
         internal static string Crypt_Invalid_PartialBufferOverlap {
             get {
                 return ResourceManager.GetString("Crypt_Invalid_PartialBufferOverlap", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The value of &apos;{0}&apos; must be a positive multiple of {1}..
+        /// </summary>
+        internal static string Crypt_Invalid_PositiveMultipleOf {
+            get {
+                return ResourceManager.GetString("Crypt_Invalid_PositiveMultipleOf", resourceCulture);
             }
         }
         

@@ -498,8 +498,7 @@ internal static partial class CryptographyThrowHelper
 
         if (value <= T.Zero || value % divisor != T.Zero)
             throw new CryptographicException(
-                paramName!,
-                string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Crypt_Invalid_HashSizePositiveMultipleOf, divisor));
+                string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Crypt_Invalid_PositiveMultipleOf, paramName, divisor));
     }
 
     /// <summary>
