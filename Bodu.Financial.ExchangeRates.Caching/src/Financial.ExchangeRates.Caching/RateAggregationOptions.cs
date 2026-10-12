@@ -65,11 +65,16 @@ public sealed class RateAggregationOptions
     public bool RespectHistoryAvailability { get; set; } = true;
 
     /// <summary>
-    /// Gets or sets the lookup options applied by the timeless <see cref="IRateProvider.GetRate(string, string)" />
-    /// surface, which resolves the rate for the current UTC date.
+    /// Gets or sets the lookup options the undated lookups apply against the current UTC date: the <c>GetRate</c> and
+    /// <c>GetRateAsync</c> overloads without a date when no options are passed, and the timeless
+    /// <see cref="IRateProvider.GetRate(string, string)" /> surface.
     /// </summary>
-    /// <value>The lookup options used for timeless lookups; defaults to <see cref="RateLookupOptions.Exact" />.</value>
-    public RateLookupOptions DefaultLookupOptions { get; set; } = RateLookupOptions.Exact;
+    /// <value>
+    /// The lookup options used for undated lookups; defaults to <see cref="RateLookupOptions.PreviousWithin(int)" />
+    /// with a tolerance of 100,000 days, which resolves the most recent available rate on or before the current date,
+    /// as the undated lookups of the shipped web providers do.
+    /// </value>
+    public RateLookupOptions DefaultLookupOptions { get; set; } = RateLookupOptions.PreviousWithin(CachingRateOptions.LatestRateToleranceDays);
 
     /// <summary>
     /// Gets or sets the level at which the selected route is logged.

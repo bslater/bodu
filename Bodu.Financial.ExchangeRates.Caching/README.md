@@ -32,7 +32,8 @@ over **one** single-provider `IRateCache`. On a lookup it first tries the cache'
 fresh rows (reusing `FixedDatedRateProvider` for date-resolution, inverse, and
 identity handling) and, on a miss, delegates to the inner provider and stores what it
 returns. It also exposes the timeless `IRateProvider.GetRate(from, to)`, which
-resolves the current UTC date under `CachingRateOptions.DefaultLookupOptions`.
+resolves the current UTC date under `CachingRateOptions.DefaultLookupOptions` (by default the
+most recent rate on or before that date, as the undated lookups do).
 
 The cache is bound to a single provider, so its surface carries no provider argument:
 

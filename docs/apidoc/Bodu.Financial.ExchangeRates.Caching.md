@@ -53,7 +53,7 @@ All dependency-injection registration lives in the `Bodu.Financial.ExchangeRates
 
 - <xref:Bodu.Financial.ExchangeRates.Caching.CachingRateProvider> - wraps one inner source over one cache; implements both the dated and timeless surfaces.
 - <xref:Bodu.Financial.ExchangeRates.Caching.CachingRateProviderBase> - the abstract base holding the read-through, staleness, and range logic; derived types supply the wrapped inner provider.
-- <xref:Bodu.Financial.ExchangeRates.Caching.CachingRateOptions> - cache location (`CacheDirectory`), `DefaultExpiry`, the per-provider `ProviderExpiry` overrides, the per-event log levels, and `DefaultLookupOptions` for the timeless surface.
+- <xref:Bodu.Financial.ExchangeRates.Caching.CachingRateOptions> - cache location (`CacheDirectory`), `DefaultExpiry`, the per-provider `ProviderExpiry` overrides, the per-event log levels, and `DefaultLookupOptions` for the undated lookups and the timeless surface.
 - <xref:Bodu.Financial.ExchangeRates.Caching.RateCacheWarmupOptions>, <xref:Bodu.Financial.ExchangeRates.RateCacheWarmupExtensions> - the startup warm-up: the pairs (`"XXX/YYY"`), `LookbackDays` or explicit `StartDate` / `EndDate` window, and optional provider filter, registered on the `IFinancialServiceBuilder` with `AddRateCacheWarmup(...)` (default configuration section `Financial:RateCacheWarmup`) as a hosted service that pre-fetches through every registered caching provider.
 
 **Aggregation (group many providers)**

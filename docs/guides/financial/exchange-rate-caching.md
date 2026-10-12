@@ -36,7 +36,7 @@ providers, or compose them as above.
 - **Options** - [`CachingRateOptions`](xref:Bodu.Financial.ExchangeRates.Caching.CachingRateOptions)
   carries the cache **location** (`CacheDirectory`), the **default expiry**
   (`DefaultExpiry`), **per-provider overrides** (`ProviderExpiry`), the per-event
-  log levels, and `DefaultLookupOptions` for the timeless surface.
+  log levels, and `DefaultLookupOptions` for the undated lookups and the timeless surface.
 - **Aggregator** - [`AggregatingRateProvider`](xref:Bodu.Financial.ExchangeRates.Caching.AggregatingRateProvider)
   groups named children behind one entry point, combining them with a pluggable
   [`IRateAggregationStrategy`](xref:Bodu.Financial.ExchangeRates.Caching.IRateAggregationStrategy)
@@ -156,8 +156,9 @@ using var cached = new CachingRateProvider(
     ownsInner: true);
 ```
 
-The decorator also implements the timeless surface, which resolves the current UTC
-date under `CachingRateOptions.DefaultLookupOptions`:
+The decorator also implements the timeless surface, which, like the undated lookups, resolves
+the current UTC date under `CachingRateOptions.DefaultLookupOptions` (by default the most recent
+rate on or before that date):
 
 ```csharp
 decimal todayRate = ((IRateProvider)cachedRba).GetRate("AUD", "USD");
