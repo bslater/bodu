@@ -151,6 +151,8 @@ options.Converters.Add(new BencodeStringEnumConverter(NamingPolicy.SnakeCaseLowe
 // Status.OnHold now serializes as the byte string "on_hold" everywhere.
 ```
 
+With `allowIntegerValues: false`, as above, the converter reads names only, as System.Text.Json's `JsonStringEnumConverter` does from .NET 9: a Bencode integer raises <xref:Bodu.Text.Bencode.BencodeSerializationException>, and so does a byte string that is not a wire name and holds an integer in any of its comma-separated parts, such as `1:2` or `7:Read, 2`. The default handling, and a converter created with `allowIntegerValues: true`, bind both.
+
 The generic forms expose a public parameterless constructor, which is what makes them usable from a `[Converter]` attribute; the non-generic factory is the options-level, all-enums form. There is no non-generic number-enum converter.
 
 ## Pattern 6 - Fail clearly on malformed data

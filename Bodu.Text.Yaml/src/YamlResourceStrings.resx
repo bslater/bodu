@@ -62,6 +62,7 @@
   <data name="Arg_OutOfRange_DefaultIgnoreConditionAlways" xml:space="preserve"><value>IgnoreCondition.Always is not a valid value for DefaultIgnoreCondition.</value></data>
   <data name="Op_Invalid_DuplicateWireName" xml:space="preserve"><value>The type '{0}' maps more than one member to the YAML key '{1}'.</value></data>
   <data name="Op_Invalid_EnumValueNotFound" xml:space="preserve"><value>'{0}' is not a defined value of enumeration '{1}'.</value></data>
+  <data name="Op_Invalid_EnumIntegerNotAllowed" xml:space="preserve"><value>'{0}' cannot be read because integer values are not allowed for enumeration '{1}'.</value></data>
   <data name="Op_Invalid_ExpectedInteger" xml:space="preserve"><value>Expected an integer but found '{0}'.</value></data>
   <data name="Op_Invalid_OptionsReadOnly" xml:space="preserve"><value>Serializer options cannot be changed after the options instance has been used to serialize or deserialize.</value></data>
   <data name="Op_Invalid_YamlCycleDetected" xml:space="preserve"><value>A reference cycle was detected while serializing an instance of type '{0}'; YAML cannot represent an object cycle.</value></data>

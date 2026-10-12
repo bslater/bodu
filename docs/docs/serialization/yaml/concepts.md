@@ -87,7 +87,7 @@ The serializer maps the BCL types it can represent natively:
 
 - `string` / `char` / `Guid` / `Uri` and the integer family → string or integer scalars; `double` / `float` → float scalars (with `.nan` / `.inf` / `-.inf`); `bool` → a Boolean scalar; `null` and a null `Nullable<T>` → the null scalar.
 - `decimal` → a quoted exact-text string; `DateTime` / `DateTimeOffset` → a round-trip ISO-8601 string; `TimeSpan` → its invariant string. None of these is a native YAML kind, so each travels as a string and parses back with `CultureInfo.InvariantCulture`.
-- Enums → member-name strings (or integers when `WriteEnumsAsStrings` is `false`); read back by name (case-insensitively) or by integer.
+- Enums → member-name strings (or integers when `WriteEnumsAsStrings` is `false`); read back by name (case-insensitively) or by integer. A string-enum converter created with `allowIntegerValues: false` reads by name only: it rejects an integer scalar, and a scalar such as `"2"` or `2.0` whose text holds one.
 - Collections → sequences; dictionaries and plain objects → mappings. A dictionary keeps insertion order; an object writes its properties first (reflection order) then public fields when `IncludeFields` is set.
 - An `object`-typed member writes its runtime type's form. On **read** an `object` target binds to a loosely-typed graph - `Dictionary<string, object?>` for a mapping, `List<object?>` for a sequence, and `bool` / `long` / `double` / `string` / `null` for scalars - not a <xref:Bodu.Text.Yaml.Document.YamlElement>. (A custom converter's `Read`, by contrast, works through the `Utf8YamlReader` token cursor.)
 

@@ -16,11 +16,20 @@ namespace Bodu.Text.Yaml.Serialization;
 /// </summary>
 /// <typeparam name="TEnum">The enumeration type the produced converter handles.</typeparam>
 /// <remarks>
+/// <para>
 /// Unlike the non-generic <see cref="YamlStringEnumConverter" />, this strongly typed factory can be referenced from a
 /// <see cref="ConverterAttribute" /> on a member, property, or the enumeration itself, because it exposes a public
 /// parameterless constructor and applies to a single enumeration type. An integer accepted on read must lie within the
 /// range of the underlying type of <typeparamref name="TEnum" />; one outside it throws
 /// <see cref="YamlSerializationException" /> rather than being narrowed into that type.
+/// </para>
+/// <para>
+/// A converter that does not allow integers throws <see cref="YamlSerializationException" /> on an integer scalar, and
+/// at any other scalar that is not a member's wire name and whose text has an integer in any of its comma-separated
+/// parts, such as a quoted <c>"2"</c>, <c>!!str 2</c>, an integral float such as <c>2.0</c>, or <c>Read, 2</c>, as
+/// System.Text.Json's <c>JsonStringEnumConverter</c> rejects a numeric string from .NET 9. A member whose wire name is
+/// an integer's text still reads from a string scalar, because the wire names are matched first.
+/// </para>
 /// </remarks>
 /// <example>
 /// <code language="csharp">
@@ -43,7 +52,7 @@ public sealed class YamlStringEnumConverter<TEnum>
     /// <summary>The naming policy applied to member names, or <see langword="null" /> to use member names unchanged.</summary>
     private readonly NamingPolicy? _namingPolicy;
 
-    /// <summary>Whether a YAML integer scalar is accepted as an enumeration value on read.</summary>
+    /// <summary>Whether a YAML integer scalar, or a scalar whose text holds an integer, is accepted as an enumeration value on read.</summary>
     private readonly bool _allowIntegerValues;
 
     /// <summary>
@@ -63,7 +72,8 @@ public sealed class YamlStringEnumConverter<TEnum>
     /// The naming policy applied to member names, or <see langword="null" /> to use member names unchanged.
     /// </param>
     /// <param name="allowIntegerValues">
-    /// Whether a YAML integer scalar is accepted as an enumeration value on read.
+    /// Whether a YAML integer scalar, or a scalar whose text holds an integer, is accepted as an enumeration value on
+    /// read.
     /// </param>
     public YamlStringEnumConverter(NamingPolicy? namingPolicy, bool allowIntegerValues)
     {

@@ -136,6 +136,8 @@ options.Converters.Add(new TomlStringEnumConverter(NamingPolicy.SnakeCaseLower, 
 // Status.OnHold now serializes as "on_hold" everywhere.
 ```
 
+With `allowIntegerValues: false`, as above, the converter reads names only, as System.Text.Json's `JsonStringEnumConverter` does from .NET 9: a TOML integer raises <xref:Bodu.Text.Toml.TomlSerializationException>, and so does a string that is not a wire name and holds an integer in any of its comma-separated parts, such as `"2"` or `"Read, 2"`. The default handling, and a converter created with `allowIntegerValues: true`, bind both.
+
 The generic forms expose a public parameterless constructor, which is what makes them usable from a `[Converter]` attribute; the non-generic factory is the options-level, all-enums form. There is no non-generic number-enum converter.
 
 ## Pattern 6 - Fail clearly on malformed data

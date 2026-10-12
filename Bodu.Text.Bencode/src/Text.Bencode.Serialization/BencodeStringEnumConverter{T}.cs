@@ -16,11 +16,19 @@ namespace Bodu.Text.Bencode.Serialization;
 /// </summary>
 /// <typeparam name="TEnum">The enumeration type the produced converter handles.</typeparam>
 /// <remarks>
+/// <para>
 /// Unlike the non-generic <see cref="BencodeStringEnumConverter" />, this strongly typed factory can be referenced from
 /// a <see cref="ConverterAttribute" /> on a member, property, or the enumeration itself, because it exposes a public
 /// parameterless constructor and applies to a single enumeration type. An integer accepted on read must lie within the
 /// range of the underlying type of <typeparamref name="TEnum" />; one outside it throws
 /// <see cref="BencodeSerializationException" /> rather than being narrowed into that type.
+/// </para>
+/// <para>
+/// Like System.Text.Json's <c>JsonStringEnumConverter</c> from .NET 9, a converter that does not allow integers throws
+/// <see cref="BencodeSerializationException" /> on a Bencode integer, and at a byte string that is not a member's wire
+/// name and has an integer in any of its comma-separated parts, such as <c>2</c> or <c>Read, 2</c>. A member whose wire
+/// name is an integer's text still reads, because the wire names are matched first.
+/// </para>
 /// </remarks>
 /// <example>
 /// <code language="csharp">
@@ -43,7 +51,7 @@ public sealed class BencodeStringEnumConverter<TEnum>
     /// <summary>The naming policy applied to member names, or <see langword="null" /> to use member names unchanged.</summary>
     private readonly NamingPolicy? _namingPolicy;
 
-    /// <summary>Whether a Bencode integer is accepted as an enumeration value on read.</summary>
+    /// <summary>Whether a Bencode integer, or a byte string that holds an integer, is accepted as an enumeration value on read.</summary>
     private readonly bool _allowIntegerValues;
 
     /// <summary>
@@ -62,7 +70,9 @@ public sealed class BencodeStringEnumConverter<TEnum>
     /// <param name="namingPolicy">
     /// The naming policy applied to member names, or <see langword="null" /> to use member names unchanged.
     /// </param>
-    /// <param name="allowIntegerValues">Whether a Bencode integer is accepted as an enumeration value on read.</param>
+    /// <param name="allowIntegerValues">
+    /// Whether a Bencode integer, or a byte string that holds an integer, is accepted as an enumeration value on read.
+    /// </param>
     public BencodeStringEnumConverter(NamingPolicy? namingPolicy, bool allowIntegerValues)
     {
         _namingPolicy = namingPolicy;

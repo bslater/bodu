@@ -69,6 +69,36 @@ internal static class SerializationThrowHelper
 #endif
 
     /// <summary>
+    /// Creates the exception reporting that a string holds an integer, which the converter of the target enumeration
+    /// does not allow.
+    /// </summary>
+    /// <param name="reader">The reader positioned on the offending token.</param>
+    /// <param name="text">The enumeration text that holds an integer.</param>
+    /// <param name="enumType">The target enumeration type.</param>
+    /// <returns>The exception to throw.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static FormatSerializationException EnumIntegerNotAllowed(
+        ref FormatReader reader,
+        string text,
+        Type enumType) =>
+#if BENCODE
+        new(
+            string.Format(
+                CultureInfo.CurrentCulture,
+                FormatResourceStrings.Op_Invalid_EnumIntegerNotAllowed,
+                text,
+                enumType),
+            reader.TokenStartIndex);
+#else
+        new(
+            string.Format(
+                CultureInfo.CurrentCulture,
+                FormatResourceStrings.Op_Invalid_EnumIntegerNotAllowed,
+                text,
+                enumType));
+#endif
+
+    /// <summary>
     /// Creates the exception reporting that the integer token holds a value outside the range of the target type, an
     /// integer type or the underlying type of an enumeration.
     /// </summary>

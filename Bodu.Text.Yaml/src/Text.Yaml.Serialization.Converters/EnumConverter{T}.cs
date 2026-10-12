@@ -27,11 +27,22 @@ namespace Bodu.Text.Yaml.Serialization.Converters;
 /// through <see cref="EnumIntegerConversion.WriteInteger{T}(ref Utf8YamlWriter, T)" />, which writes a value of an
 /// enumeration based on <see cref="ulong" /> above <see cref="long.MaxValue" /> as its plain invariant text, as a
 /// <see cref="ulong" /> member is written. On read a scalar is matched case-insensitively against the wire names and
-/// then, as a fallback, parsed by the runtime so numeric and combined-flag strings are accepted. An integer scalar maps
-/// through the underlying value, by way of <see cref="EnumIntegerConversion.ReadInteger{T}(ref Utf8YamlReader)" />, so
-/// one outside the range of the enumeration's underlying type throws <see cref="YamlSerializationException" /> rather
-/// than being narrowed into that type. When <see cref="_allowIntegerValues" /> is <see langword="false" /> an integer
-/// scalar is rejected rather than mapped through the underlying value.
+/// then, as a fallback, parsed by the runtime, so combined-flag strings, and numeric strings when integers are allowed,
+/// are accepted. An integer scalar maps through the underlying value, by way of
+/// <see cref="EnumIntegerConversion.ReadInteger{T}(ref Utf8YamlReader)" />, so one outside the range of the
+/// enumeration's underlying type throws <see cref="YamlSerializationException" /> rather than being narrowed into that
+/// type.
+/// </para>
+/// <para>
+/// When <see cref="_allowIntegerValues" /> is <see langword="false" /> an integer scalar is rejected rather than mapped
+/// through the underlying value, and so is any other scalar whose text, as
+/// <see cref="ScalarCoercion.ReaderScalarText(ref Utf8YamlReader)" /> gives it, is not a wire name and holds an integer
+/// in any of its comma-separated parts, as <see cref="EnumIntegerConversion.ContainsIntegerText(ReadOnlySpan{char})" />
+/// determines: a quoted <c>"2"</c>, <c>!!str 2</c>, a plain integer beyond the 64-bit range, which YAML resolves as a
+/// string, an integral float such as <c>2.0</c>, or a list such as <c>Read, 2</c>. Each is rejected before the runtime
+/// could read the integer, as System.Text.Json's <c>JsonStringEnumConverter</c> rejects a numeric string from .NET 9,
+/// and a wire name that is an integer's text, given through <see cref="StringEnumMemberNameAttribute" />, still binds
+/// its member.
 /// </para>
 /// </remarks>
 internal sealed class EnumConverter<T>
@@ -41,7 +52,7 @@ internal sealed class EnumConverter<T>
     /// <summary>The naming policy applied to member names, or <see langword="null" /> to use member names unchanged.</summary>
     private readonly NamingPolicy? _namingPolicy;
 
-    /// <summary>Whether an integer scalar is accepted as an enumeration value on read.</summary>
+    /// <summary>Whether an integer scalar, or a scalar whose text holds an integer, is accepted as an enumeration value on read.</summary>
     private readonly bool _allowIntegerValues;
 
     /// <summary>Maps each wire name to its enumeration value, matched case-insensitively.</summary>
@@ -65,7 +76,9 @@ internal sealed class EnumConverter<T>
     /// <param name="namingPolicy">
     /// The naming policy applied to member names, or <see langword="null" /> to use member names unchanged.
     /// </param>
-    /// <param name="allowIntegerValues">Whether an integer scalar is accepted as an enumeration value on read.</param>
+    /// <param name="allowIntegerValues">
+    /// Whether an integer scalar, or a scalar whose text holds an integer, is accepted as an enumeration value on read.
+    /// </param>
     /// <remarks>
     /// The name maps are built once at construction by reflecting over the public, static fields of
     /// <typeparamref name="T" />, resolving each member's wire name from its
@@ -108,6 +121,12 @@ internal sealed class EnumConverter<T>
         string text = ScalarCoercion.ReaderScalarText(ref reader);
         if (_nameToValue.TryGetValue(text, out T mapped))
             return mapped;
+
+        if (!_allowIntegerValues && EnumIntegerConversion.ContainsIntegerText(text))
+        {
+            throw new YamlSerializationException(string.Format(
+                CultureInfo.CurrentCulture, YamlResourceStrings.Op_Invalid_EnumIntegerNotAllowed, text, typeof(T)));
+        }
 
         return Enum.TryParse(text, ignoreCase: true, out T parsed)
             ? parsed

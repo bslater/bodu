@@ -33,6 +33,10 @@ namespace Bodu.Text.Yaml.Serialization.Converters;
 /// <see cref="ulong" /> above <see cref="long.MaxValue" /> as the format's <see cref="ulong" /> converter carries such
 /// a value.
 /// </para>
+/// <para>
+/// A by-name converter that does not allow integer values also turns away a string that holds one, which
+/// <see cref="ContainsIntegerText(ReadOnlySpan{char})" /> recognizes.
+/// </para>
 /// </remarks>
 internal static class EnumIntegerConversion
 {
@@ -135,6 +139,64 @@ internal static class EnumIntegerConversion
             throw new FormatSerializationException(message, ex);
         }
 #endif
+    }
+
+    /// <summary>
+    /// Determines whether the text of an enumeration value holds an integer in any of its comma-separated parts.
+    /// </summary>
+    /// <param name="text">The text, as a string token carries it.</param>
+    /// <returns>
+    /// <see langword="true" /> when a comma-separated part of <paramref name="text" />, once trimmed, is an optional
+    /// <c>+</c> or <c>-</c> sign followed by one or more of the digits <c>0</c> to <c>9</c>; otherwise,
+    /// <see langword="false" />.
+    /// </returns>
+    /// <remarks>
+    /// A by-name converter matches a string against the wire names and then parses it with
+    /// <see cref="Enum.TryParse{TEnum}(string?, bool, out TEnum)" />, which reads text that is an integer as the value
+    /// it holds. A converter that does not allow integer values asks this method between the two, and rejects text that
+    /// holds an integer, as System.Text.Json's <c>JsonStringEnumConverter</c> rejects it from .NET 9. Each part is
+    /// trimmed of white space and of null characters, which the runtime's integer parsing ignores after the digits, so
+    /// no text that the runtime would read as an integer passes.
+    /// </remarks>
+    internal static bool ContainsIntegerText(ReadOnlySpan<char> text)
+    {
+        while (true)
+        {
+            int separator = text.IndexOf(',');
+            if (IsIntegerText(separator < 0 ? text : text[..separator]))
+                return true;
+
+            if (separator < 0)
+                return false;
+
+            text = text[(separator + 1)..];
+        }
+    }
+
+    /// <summary>
+    /// Determines whether one comma-separated part of an enumeration value's text is an integer.
+    /// </summary>
+    /// <param name="part">The part, as it stands between commas.</param>
+    /// <returns>
+    /// <see langword="true" /> when <paramref name="part" />, trimmed of white space and null characters, is an
+    /// optional <c>+</c> or <c>-</c> sign followed by one or more of the digits <c>0</c> to <c>9</c>; otherwise,
+    /// <see langword="false" />.
+    /// </returns>
+    private static bool IsIntegerText(ReadOnlySpan<char> part)
+    {
+        int start = 0;
+        int end = part.Length;
+        while (start < end && (char.IsWhiteSpace(part[start]) || part[start] == '\0'))
+            start++;
+
+        while (end > start && (char.IsWhiteSpace(part[end - 1]) || part[end - 1] == '\0'))
+            end--;
+
+        ReadOnlySpan<char> digits = part[start..end];
+        if (!digits.IsEmpty && digits[0] is '+' or '-')
+            digits = digits[1..];
+
+        return !digits.IsEmpty && !digits.ContainsAnyExceptInRange('0', '9');
     }
 
     /// <summary>
