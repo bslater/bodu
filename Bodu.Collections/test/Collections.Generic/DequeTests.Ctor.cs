@@ -37,6 +37,29 @@ public partial class DequeTests
     }
 
     /// <summary>
+    /// Verifies that the (collection, capacity, allowGrow) constructor rejects a capacity below 1 with
+    /// <see cref="ArgumentOutOfRangeException" /> whether or not growth is allowed.
+    /// </summary>
+    /// <param name="capacity">The invalid capacity.</param>
+    /// <param name="allowGrow">The growth policy passed to the constructor.</param>
+    [TestMethod]
+    [DataRow(-1, true)]
+    [DataRow(0, true)]
+    [DataRow(-1, false)]
+    [DataRow(0, false)]
+    public void Ctor_WhenCollectionAndGrowthPolicyProvidedAndCapacityIsInvalid_ShouldThrowArgumentOutOfRangeException(int capacity, bool allowGrow)
+    {
+        int[] source = [1];
+
+        var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = new Deque<int>(source, capacity, allowGrow);
+        });
+
+        Assert.AreEqual("capacity", ex.ParamName);
+    }
+
+    /// <summary>
     /// Verifies that constructing from a null collection throws <see cref="ArgumentNullException"/>.
     /// </summary>
     [TestMethod]
@@ -46,6 +69,26 @@ public partial class DequeTests
         {
             _ = new Deque<int>(null!);
         });
+    }
+
+    /// <summary>
+    /// Verifies that the (collection, capacity) constructor rejects a capacity below 1 with
+    /// <see cref="ArgumentOutOfRangeException" />, even though growth would let the source fit.
+    /// </summary>
+    /// <param name="capacity">The invalid capacity.</param>
+    [TestMethod]
+    [DataRow(-1)]
+    [DataRow(0)]
+    public void Ctor_WhenCollectionProvidedAndCapacityIsInvalid_ShouldThrowArgumentOutOfRangeException(int capacity)
+    {
+        int[] source = [1, 2];
+
+        var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = new Deque<int>(source, capacity);
+        });
+
+        Assert.AreEqual("capacity", ex.ParamName);
     }
 
     /// <summary>
