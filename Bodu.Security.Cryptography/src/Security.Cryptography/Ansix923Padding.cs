@@ -49,7 +49,7 @@ public sealed class Ansix923Padding
     /// <param name="input">The data to pad.</param>
     /// <param name="blockSize">The block size in bits.</param>
     /// <returns>The padded data as a byte array.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">
+    /// <exception cref="CryptographicException">
     /// Thrown if <paramref name="blockSize" /> is not a positive multiple of 8.
     /// </exception>
     public byte[] Pad(ReadOnlySpan<byte> input, int blockSize)
@@ -77,13 +77,13 @@ public sealed class Ansix923Padding
     /// <param name="input">The padded data.</param>
     /// <param name="blockSize">The block size in bits.</param>
     /// <returns>The unpadded data as a byte array.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown if <paramref name="blockSize" /> is not a positive multiple of 8.
-    /// </exception>
     /// <exception cref="ArgumentException">
     /// Thrown if <paramref name="input" /> is empty or not aligned to the block size.
     /// </exception>
-    /// <exception cref="CryptographicException">Thrown if the padding is invalid or malformed.</exception>
+    /// <exception cref="CryptographicException">
+    /// Thrown if <paramref name="blockSize" /> is not a positive multiple of 8, or if the padding is invalid or
+    /// malformed.
+    /// </exception>
     public byte[] Unpad(ReadOnlySpan<byte> input, int blockSize)
     {
         CryptographyThrowHelper.ThrowIfNotPositiveMultipleOf(blockSize, 8);

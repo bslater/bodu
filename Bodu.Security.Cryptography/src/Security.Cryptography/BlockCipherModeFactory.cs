@@ -15,9 +15,10 @@ namespace Bodu.Security.Cryptography;
 /// <remarks>
 /// <para>
 /// The factory dispatches a <see cref="CipherModeKind" /> enumeration value to the matching mode-transform
-/// implementation. Used internally by every <see cref="System.Security.Cryptography.SymmetricAlgorithm" /> in this
-/// library when its <see cref="System.Security.Cryptography.SymmetricAlgorithm.Mode" /> is set, so that the same enum
-/// value selects the appropriate transform regardless of which cipher is in play.
+/// implementation. Used internally by every block-cipher <see cref="System.Security.Cryptography.SymmetricAlgorithm" />
+/// wrapper in this library: the wrappers read their <c>BlockMode</c> property and run the factory when
+/// <c>CreateEncryptor</c> or <c>CreateDecryptor</c> is called, so that the same enum value selects the appropriate
+/// transform regardless of which cipher is in play.
 /// </para>
 /// <para>
 /// <strong>What this factory covers and does not cover.</strong> Only the classic confidentiality-only modes (ECB, CBC,
@@ -36,7 +37,7 @@ namespace Bodu.Security.Cryptography;
 /// <code language="csharp">
 ///<![CDATA[
 /// using IBlockCipher cipher = /* construct an IBlockCipher, e.g. an AES wrapper */;
-/// IBlockCipherModeTransform mode = BlockCipherModeFactory.Create(CipherBlockMode.CBC, cipher, iv);
+/// IBlockCipherModeTransform mode = BlockCipherModeFactory.Create(CipherModeKind.CBC, cipher, iv);
 /// IPaddingStrategy padding = PaddingFactory.Create(PaddingMode.PKCS7);
 ///
 /// byte[] padded = padding.Pad(plaintext, cipher.BlockSize);

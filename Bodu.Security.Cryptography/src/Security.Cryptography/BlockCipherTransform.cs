@@ -51,10 +51,9 @@ namespace Bodu.Security.Cryptography;
 /// mode and padding.
 /// </para>
 /// <para>
-/// Most callers never touch this type directly - they use
-/// <see cref="System.Security.Cryptography.SymmetricAlgorithm.Mode" /> and
-/// <see cref="System.Security.Cryptography.SymmetricAlgorithm.Padding" /> to configure encryption and let the existing
-/// transform infrastructure handle the wiring.
+/// Most callers never touch this type directly - they set <c>BlockMode</c> and
+/// <see cref="System.Security.Cryptography.SymmetricAlgorithm.Padding" /> on a block-cipher wrapper to configure
+/// encryption and let the existing transform infrastructure handle the wiring.
 /// </para>
 /// </remarks>
 /// <example>

@@ -55,8 +55,8 @@ public abstract class ExtendedSymmetricAlgorithm
     /// <para>
     /// This property replaces the inherited <see cref="SymmetricAlgorithm.Mode" /> property for use with
     /// <see cref="BlockCipherModeFactory" /> and the extended set of modes it supports, including
-    /// <see cref="CipherModeKind.CTR" /> and <see cref="CipherModeKind.OFB" />, which are not available via the
-    /// standard <see cref="CipherMode" /> enumeration.
+    /// <see cref="CipherModeKind.CTR" />, which is not available via the standard <see cref="CipherMode" />
+    /// enumeration.
     /// </para>
     /// <para>
     /// When the assigned value has a matching member in <see cref="CipherMode" /> (for example, CBC, ECB, CFB), the
@@ -73,7 +73,7 @@ public abstract class ExtendedSymmetricAlgorithm
             _blockMode = value;
 
             // Keep the inherited Mode in sync where a direct CipherMode equivalent exists. Extended modes without a
-            // mapping (e.g. CTR, OFB) intentionally leave ModeValue untouched.
+            // mapping (e.g. CTR) intentionally leave ModeValue untouched.
             if (Enum.TryParse<CipherMode>(value.ToString(), out CipherMode mode) &&
                 Enum.IsDefined(mode))
             {

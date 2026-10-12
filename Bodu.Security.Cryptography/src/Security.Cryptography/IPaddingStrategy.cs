@@ -50,8 +50,9 @@ namespace Bodu.Security.Cryptography;
 /// length-recoverable padding under a confidentiality-only mode (CBC, ECB). Pick <see cref="Iso7816_4Padding" /> when
 /// interoperating with smartcard / EMV / ISO crypto tooling. Pick <see cref="ZeroPadding" /> only when the plaintext
 /// format itself encodes its length (so the trailing zeros can be discarded by the application layer) - and prefer one
-/// of the self-describing schemes otherwise. <see cref="NoPadding" /> is appropriate when the surrounding mode handles
-/// alignment itself (CTR, CTS, AEAD modes).
+/// of the self-describing schemes otherwise. <see cref="NoPadding" /> is appropriate when the input is already
+/// block-aligned: it rejects any other length, whatever the mode. Modes that accept any length (CTR and CTS driven
+/// directly, the AEAD modes) need no padding strategy at all.
 /// </para>
 /// <para>
 /// Most callers go through <see cref="System.Security.Cryptography.SymmetricAlgorithm.Padding" /> (which dispatches via
@@ -85,8 +86,12 @@ public interface IPaddingStrategy
     /// A new byte array containing the padded data. The byte length of the result will be a multiple of
     /// <paramref name="blockSize" /> / 8.
     /// </returns>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown if <paramref name="blockSize" /> is less than or equal to zero.
+    /// <exception cref="System.Security.Cryptography.CryptographicException">
+    /// Thrown if <paramref name="blockSize" /> is not a positive multiple of 8.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown by a strategy that adds no padding, such as <see cref="NoPadding" />, if the byte length of
+    /// <paramref name="input" /> is not a multiple of <paramref name="blockSize" /> / 8.
     /// </exception>
     byte[] Pad(ReadOnlySpan<byte> input, int blockSize);
 
@@ -101,8 +106,12 @@ public interface IPaddingStrategy
     /// </param>
     /// <returns>A new byte array containing the unpadded data.</returns>
     /// <exception cref="ArgumentException">
-    /// Thrown if the input does not conform to the expected padding scheme or its byte length is not a multiple of
-    /// <paramref name="blockSize" /> / 8.
+    /// Thrown by a strategy that strips padding if <paramref name="input" /> is empty or its byte length is not a
+    /// multiple of <paramref name="blockSize" /> / 8.
+    /// </exception>
+    /// <exception cref="System.Security.Cryptography.CryptographicException">
+    /// Thrown if <paramref name="blockSize" /> is not a positive multiple of 8, or if the padding bytes do not conform
+    /// to the scheme.
     /// </exception>
     byte[] Unpad(ReadOnlySpan<byte> input, int blockSize);
 }

@@ -55,8 +55,11 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <para>
 /// Modes differ in security properties, parallelism, whether they require an initialization vector or nonce, and
-/// whether they provide authentication. Use <see cref="BlockCipherModeFactory.Create" /> to obtain an
-/// <see cref="IBlockCipherModeTransform" /> for a given value.
+/// whether they provide authentication. For ECB, CBC, CFB, OFB, and CTR, use
+/// <see cref="BlockCipherModeFactory.Create" /> (or a block-cipher wrapper's <c>BlockMode</c>) to obtain an
+/// <see cref="IBlockCipherModeTransform" />. CTS and XTS are constructed directly as <see cref="CtsModeTransform" />
+/// and <see cref="XtsModeTransform" />, and OCB, EAX, and SIV name the AEAD transforms, which the factory and
+/// <c>BlockMode</c> reject.
 /// </para>
 /// </remarks>
 /// <seealso cref="CipherMode" /> <seealso href="../guides/cryptography/cipher-modes.html">Cipher block modes (guide
@@ -208,9 +211,9 @@ public enum CipherModeKind
     /// where Δ_i = Δ_{i−1} ⊕ L[ntz(i)] and ntz(i) is the number of trailing zeros of i.
     /// </para>
     /// <para>
-    /// The <see cref="OcbModeTransform" /> implementation provides the encryption/decryption transform component. Full
-    /// AEAD authentication, including associated data processing and tag generation/verification, requires the
-    /// <c>IAeadBlockCipherModeTransform</c> interface extension.
+    /// This value names <see cref="OcbModeTransform" />, an <see cref="IAeadBlockCipherModeTransform" /> that performs
+    /// the full AEAD operation, including associated data and tag generation and verification. It is not accepted by
+    /// <see cref="BlockCipherModeFactory" /> or by a wrapper's <c>BlockMode</c>; construct the transform directly.
     /// </para>
     /// </remarks>
     OCB = 1 << 12,
@@ -233,9 +236,10 @@ public enum CipherModeKind
     /// </list>
     /// </para>
     /// <para>
-    /// The <see cref="EaxModeTransform" /> implementation provides the CTR encryption component using the nonce
-    /// directly as the initial counter. Full AEAD authentication, including OMAC nonce processing, OMAC ciphertext tag,
-    /// and associated data, requires the <c>IAeadBlockCipherModeTransform</c> interface extension.
+    /// This value names <see cref="EaxModeTransform" />, an <see cref="IAeadBlockCipherModeTransform" /> that performs
+    /// the full AEAD operation: it seeds CTR with the OMAC of the nonce and authenticates the nonce, the associated
+    /// data, and the ciphertext. It is not accepted by <see cref="BlockCipherModeFactory" /> or by a wrapper's
+    /// <c>BlockMode</c>; construct the transform directly.
     /// </para>
     /// </remarks>
     EAX = 1 << 13,
@@ -256,9 +260,10 @@ public enum CipherModeKind
     /// and decrypt use only the cipher's encryption primitive (CTR property).
     /// </para>
     /// <para>
-    /// The <see cref="SivModeTransform" /> implementation accepts the pre-computed SIV directly as the IV. Full AEAD
-    /// authentication, including S2V computation from plaintext and associated data, requires the
-    /// <c>IAeadBlockCipherModeTransform</c> interface extension.
+    /// This value names <see cref="SivModeTransform" />, an <see cref="IAeadBlockCipherModeTransform" /> that performs
+    /// the full AEAD operation and derives the synthetic IV itself through S2V over the associated data and plaintext;
+    /// the IV passed to its constructor is not used. It is not accepted by <see cref="BlockCipherModeFactory" /> or by
+    /// a wrapper's <c>BlockMode</c>; construct the transform directly.
     /// </para>
     /// </remarks>
     SIV = 1 << 14,

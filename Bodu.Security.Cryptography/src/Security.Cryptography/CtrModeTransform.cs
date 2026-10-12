@@ -50,7 +50,7 @@ namespace Bodu.Security.Cryptography;
 /// using System.Security.Cryptography;
 /// using Bodu.Security.Cryptography;
 ///
-/// // Most callers should set SymmetricAlgorithm.Mode = CipherBlockMode.CTR instead of using this directly.
+/// // Most callers set BlockMode = CipherModeKind.CTR on a SymmetricAlgorithm wrapper instead of using this directly.
 /// using IBlockCipher cipher = new AesBlockCipher(key);
 ///
 /// // Initial counter is typically `nonce || zero-counter`; the nonce must never repeat under one key.

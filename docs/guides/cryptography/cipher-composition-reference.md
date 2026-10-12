@@ -130,7 +130,7 @@ byte[] key = Convert.FromHexString("000102030405060708090a0b0c0d0e0f");
 byte[] iv  = Convert.FromHexString("101112131415161718191a1b1c1d1e1f");
 byte[] plaintext = "composition reference: 37 bytes long!!"u8.ToArray();
 
-// CTS (CS3 / IEEE 1619 order): no padding, ciphertext length == plaintext length, input >= one block.
+// CTS (CS2 order): no padding, ciphertext length == plaintext length, input >= one block.
 using IBlockCipher cipher = new AesBlockCipher(key);
 using var cts = new CtsModeTransform(cipher, iv);
 byte[] ciphertext = new byte[plaintext.Length];

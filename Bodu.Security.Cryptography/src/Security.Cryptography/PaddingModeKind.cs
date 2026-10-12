@@ -14,7 +14,7 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Values <c>0</c> through <c>4</c> are deliberately aligned with <see cref="PaddingMode" /> so that the mirrored
+/// Values <c>1</c> through <c>5</c> are deliberately aligned with <see cref="PaddingMode" /> so that the mirrored
 /// values can be converted between <see cref="PaddingModeKind" /> and <see cref="PaddingMode" /> by cast. The
 /// <see cref="ISO7816_4" /> value is a Bodu extension and has no framework counterpart.
 /// </para>

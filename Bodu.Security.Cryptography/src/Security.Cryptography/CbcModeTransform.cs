@@ -40,8 +40,9 @@ namespace Bodu.Security.Cryptography;
 /// or an AEAD mode) <b>before</b> depadding, so a padding failure is never observable to an attacker.
 /// </para>
 /// <para>
-/// CBC is sequential - neither encryption nor decryption parallelizes across blocks within a single message. Random
-/// access into the ciphertext is not supported.
+/// CBC encryption is sequential: each block chains on the previous ciphertext block. Decryption is not, because every
+/// chaining value is already in the ciphertext, so runs of blocks are decrypted with one multi-block
+/// <see cref="IBlockCipher.DecryptBlocks" /> call. Random access into the ciphertext is not supported.
 /// </para>
 /// </remarks>
 /// <example>
@@ -50,7 +51,7 @@ namespace Bodu.Security.Cryptography;
 /// using System.Security.Cryptography;
 /// using Bodu.Security.Cryptography;
 ///
-/// // Most callers should set SymmetricAlgorithm.Mode = CipherBlockMode.CBC instead of using this directly.
+/// // Most callers set BlockMode = CipherModeKind.CBC on a SymmetricAlgorithm wrapper instead of using this directly.
 /// using IBlockCipher cipher = new AesBlockCipher(key);
 /// byte[] iv = RandomNumberGenerator.GetBytes(cipher.BlockSize / 8); // unique per message
 /// IBlockCipherModeTransform cbc = new CbcModeTransform(cipher, iv);
@@ -83,6 +84,9 @@ public sealed class CbcModeTransform
     /// </param>
     /// <exception cref="ArgumentNullException">
     /// Thrown if <paramref name="cipher" /> or <paramref name="iv" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown if the length of <paramref name="iv" /> does not equal the block size of <paramref name="cipher" />.
     /// </exception>
     public CbcModeTransform(IBlockCipher cipher, byte[] iv)
     {

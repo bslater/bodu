@@ -137,9 +137,11 @@ public sealed class Serpent128Cipher
 
     /// <inheritdoc />
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
+    /// <exception cref="System.Security.Cryptography.CryptographicException">
+    /// <paramref name="input" /> is not a whole number of blocks.
+    /// </exception>
     /// <exception cref="ArgumentException">
-    /// <paramref name="input" /> is not a whole number of blocks, or <paramref name="output" /> is shorter than
-    /// <paramref name="input" />.
+    /// <paramref name="output" /> is shorter than <paramref name="input" />.
     /// </exception>
     /// <remarks>
     /// Encrypts eight blocks at a time over 256-bit vectors, and four over 128-bit vectors, where the processor offers
@@ -157,9 +159,11 @@ public sealed class Serpent128Cipher
 
     /// <inheritdoc />
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
+    /// <exception cref="System.Security.Cryptography.CryptographicException">
+    /// <paramref name="input" /> is not a whole number of blocks.
+    /// </exception>
     /// <exception cref="ArgumentException">
-    /// <paramref name="input" /> is not a whole number of blocks, or <paramref name="output" /> is shorter than
-    /// <paramref name="input" />.
+    /// <paramref name="output" /> is shorter than <paramref name="input" />.
     /// </exception>
     /// <remarks>
     /// Decrypts eight or four blocks at a time where the processor offers the vectors, as

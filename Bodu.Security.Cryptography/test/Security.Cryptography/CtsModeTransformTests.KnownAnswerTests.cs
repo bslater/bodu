@@ -10,31 +10,33 @@ namespace Bodu.Security.Cryptography;
 
 // No widely-cited single-authority CTS test vectors exist: NIST SP 800-38A Addendum
 // acknowledges three CS variants (CS1/CS2/CS3) without mandating specific test cases.
-// CtsModeTransform implements the CS3 variant (ciphertext swap, CBC-based).
+// CtsModeTransform implements the CS2 variant (CBC-based; the final two ciphertext blocks are
+// swapped only when the final block is partial, so block-aligned input is plain CBC).
 //
 // The inherited Transform_WithRealAesCipher_RandomKey_ShouldRoundTrip test uses
 // block-aligned input (which degenerates to plain CBC). The additional test below
 // specifically exercises the steal path with a non-aligned plaintext.
 public sealed partial class CtsModeTransformTests
 {
-    // ── AES-128 CBC-CS3 known-answer tests ────────────────────────────────────────────────────
+    // ── AES-128 CBC-CS2 known-answer tests ────────────────────────────────────────────────────
     //
     // The SP 800-38A Addendum specifies CBC-CS1/CS2/CS3 but publishes no worked AES vectors, so
-    // these rows are DERIVED: the CBC-CS3 algorithm from the Addendum applied to the official NIST
+    // these rows are DERIVED: the CBC-CS2 algorithm from the Addendum applied to the official NIST
     // AES-128 CBC example inputs from SP 800-38A Appendix F.2.1 (Key 2B7E..., IV 000102...). They
     // are deterministic algorithm-over-standard-input derivations, not pasted NIST ciphertext, and
     // pin the ciphertext-stealing data path (17-, 31-, and 47-byte plaintexts: 1 block + tail,
-    // 2 blocks - tail, 3 blocks - tail). CS3 always swaps the final two ciphertext blocks.
+    // 2 blocks - tail, 3 blocks - tail). Every row ends in a partial block, where CS2 swaps the final two
+    // ciphertext blocks exactly as CS3 does; the two differ only for block-aligned input, which CS2 leaves as CBC.
 
     /// <summary>
     /// Verifies that <see cref="CtsModeTransform" /> encrypting under AES-128 produces exactly the
-    /// CBC-CS3 ciphertext derived from the NIST SP 800-38A F.2.1 inputs, and that decryption recovers
+    /// CBC-CS2 ciphertext derived from the NIST SP 800-38A F.2.1 inputs, and that decryption recovers
     /// the plaintext - pinning the ciphertext-stealing data path a symmetric round-trip cannot.
     /// </summary>
     /// <param name="keyHex">The AES-128 key.</param>
     /// <param name="ivHex">The 16-byte initialization vector.</param>
     /// <param name="plaintextHex">The non-block-aligned plaintext.</param>
-    /// <param name="ciphertextHex">The expected CBC-CS3 ciphertext.</param>
+    /// <param name="ciphertextHex">The expected CBC-CS2 ciphertext.</param>
     [TestMethod]
     [DataRow("2B7E151628AED2A6ABF7158809CF4F3C", "000102030405060708090A0B0C0D0E0F",
         "6BC1BEE22E409F96E93D7E117393172AAE",
@@ -59,13 +61,13 @@ public sealed partial class CtsModeTransformTests
         CreateTransform(cipher, (byte[])iv.Clone()).Transform(plaintext, ciphertext, encrypt: true);
 
         CollectionAssert.AreEqual(expected, ciphertext,
-            "CTS encryption must match the NIST-derived CBC-CS3 ciphertext.");
+            "CTS encryption must match the NIST-derived CBC-CS2 ciphertext.");
 
         byte[] recovered = new byte[plaintext.Length];
         CreateTransform(cipher, (byte[])iv.Clone()).Transform(ciphertext, recovered, encrypt: false);
 
         CollectionAssert.AreEqual(plaintext, recovered,
-            "CTS decryption must recover the plaintext from the CBC-CS3 ciphertext.");
+            "CTS decryption must recover the plaintext from the CBC-CS2 ciphertext.");
     }
 
     /// <summary>

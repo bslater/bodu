@@ -29,14 +29,16 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <para>
 /// <strong>When to use CFB.</strong> Pick CFB only for interoperability with legacy formats - it was the stream-cipher
-/// mode of choice in PGP / OpenPGP and certain disk-encryption layouts. CFB removes the padding requirement that
-/// <see cref="CbcModeTransform" /> imposes, but inherits the same lack of authentication and adds bit-flip propagation
-/// across multiple blocks. For new code prefer <see cref="CtrModeTransform" /> for stream-cipher behavior, or an AEAD
-/// mode (<see cref="GcmModeTransform" />, <see cref="EaxModeTransform" />) for authenticated encryption.
+/// mode of choice in PGP / OpenPGP and certain disk-encryption layouts. This is full-block CFB: its input must be a
+/// whole number of blocks, so it needs padding exactly as <see cref="CbcModeTransform" /> does. It inherits CBC's lack
+/// of authentication and adds bit-flip propagation across multiple blocks. For new code prefer
+/// <see cref="CtrModeTransform" /> for stream-cipher behavior, or an AEAD mode (<see cref="GcmModeTransform" />,
+/// <see cref="EaxModeTransform" />) for authenticated encryption.
 /// </para>
 /// <para>
-/// CFB is sequential at the block level: each ciphertext block must be produced before the next can be computed, so the
-/// mode does not parallelize within a message.
+/// CFB encryption is sequential at the block level: each ciphertext block must be produced before the next can be
+/// computed. Decryption is not, because every feedback input is already in the ciphertext, so runs of blocks are
+/// processed with one multi-block <see cref="IBlockCipher.EncryptBlocks" /> call.
 /// </para>
 /// </remarks>
 /// <example>
@@ -45,12 +47,12 @@ namespace Bodu.Security.Cryptography;
 /// using System.Security.Cryptography;
 /// using Bodu.Security.Cryptography;
 ///
-/// // Most callers should set SymmetricAlgorithm.Mode = CipherBlockMode.CFB instead of using this directly.
+/// // Most callers set BlockMode = CipherModeKind.CFB on a SymmetricAlgorithm wrapper instead of using this directly.
 /// using IBlockCipher cipher = new AesBlockCipher(key);
 /// byte[] iv = RandomNumberGenerator.GetBytes(cipher.BlockSize / 8);
 /// IBlockCipherModeTransform cfb = new CfbModeTransform(cipher, iv);
-/// byte[] ciphertext = new byte[plaintext.Length];
-/// int written = cfb.Transform(plaintext, ciphertext, encrypt: true);
+/// byte[] ciphertext = new byte[paddedPlaintext.Length]; // a whole number of blocks
+/// int written = cfb.Transform(paddedPlaintext, ciphertext, encrypt: true);
 ///]]>
 /// </code>
 /// </example>
@@ -78,6 +80,9 @@ public sealed class CfbModeTransform
     /// </param>
     /// <exception cref="ArgumentNullException">
     /// Thrown if <paramref name="cipher" /> or <paramref name="iv" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown if the length of <paramref name="iv" /> does not equal the block size of <paramref name="cipher" />.
     /// </exception>
     public CfbModeTransform(IBlockCipher cipher, byte[] iv)
     {
