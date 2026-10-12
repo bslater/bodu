@@ -21,7 +21,7 @@ Targets `net8.0` and `net10.0`. All types live in the `Bodu.Text.Encoding` names
 | `Base45` | - | RFC 9285 (QR payloads) |
 | `Base58` | `BitcoinFlickr`, `Ripple` | `Base58Check` adds a checksum for address-style payloads |
 | `Base62` | - | |
-| `Base64` | `Standard` (RFC 4648), `UrlSafe` (§5), `Mime` (RFC 2045) | `Base64Url` wraps the BCL URL-safe helpers |
+| `Base64` | `Standard` (RFC 4648), `UrlSafe` (§5), `Mime` (RFC 2045) | `Base64Url` is `Base64` with `UrlSafe` bound; it accepts input with or without padding |
 | `Base85` | `Ascii85` (Adobe/PDF), `Z85` (ZeroMQ) | |
 | `Bech32` | `Bech32Encoding` checksum variants | |
 
