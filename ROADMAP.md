@@ -1393,18 +1393,23 @@ rather than inventing a fourth shape.
 1. **The `System.Text.Json`-shaped quartet** - a ref-struct
    `Utf8*Reader` / `Utf8*Writer` token surface, a `*Serializer` POCO
    mapper (converters + attribute family + naming policies + callbacks),
-   a mutable `*Node` DOM, and a read-only `*Document` DOM. Proven by
-   `Bodu.Text.Bencode`, `Bodu.Text.Toml`, and `Bodu.Text.Yaml`, and - via
-   the *Active focus* #4 redesign - by `Bodu.Text.Delimited`,
-   `Bodu.Text.DotEnv`, and `Bodu.Text.Ini`. **This is the template for
+   a mutable `*Node` DOM, and a read-only `*Document` DOM, over the
+   shared `Bodu.Text.Serialization` core. Proven by `Bodu.Text.Bencode`,
+   `Bodu.Text.Toml` and `Bodu.Text.Yaml`, and by `Bodu.Text.Delimited`,
+   `Bodu.Text.DotEnv` and `Bodu.Text.Ini`. **This is the template for
    every new structured-text format**; the line formats deviate only
-   where documented (trivia-bearing mutable DOMs for DotEnv/INI, and
-   serializer-local scalar conversion for the string-only wire).
-2. **The container + format-reader split** - a low-level container
-   (`Bodu.IO.Compound` for CFB; a proposed `Bodu.IO.Packaging` for OPC)
-   with format readers layered on top that share a *flattened* value
-   model (`Bodu.Formats.Excel.*`). New office/document readers (`.msg`,
-   `.doc`, `.xlsx`) plug into this split.
+   where their design notes under `Bodu.Text.Formats/docs/` say so
+   (trivia-bearing mutable DOMs for DotEnv / INI, and string-only scalars
+   converted through the shared `InvariantScalarCodec` rather than the
+   recursive converter engine).
+2. **The container + format-reader split** - a low-level container or
+   codec (`Bodu.IO.Compound` for CFB, `Bodu.IO.Biff` for BIFF record
+   streams, `Bodu.IO.Pst` for the MS-PST node database; a proposed
+   `Bodu.IO.Packaging` for OPC) with format readers layered on top that
+   share a *flattened* value model (`Bodu.Formats.Excel`,
+   `Bodu.Formats.Outlook`). The `.xls`, `.msg` and `.pst` readers follow
+   it, and new office or document readers (`.xlsx`, `.doc`) plug into
+   the same split.
 3. **The resilient web-data-provider stack** - an abstract provider base
    (`WebRateProvider`) owning `HttpClient` + Polly resilience and
    single-flight coalescing, a read-through cache decorator, an
@@ -1414,24 +1419,29 @@ rather than inventing a fourth shape.
    Any future networked reference-data source should adopt this shape.
 
 A fourth pattern - the **contract-test base + KAT record** model - is
-already the universal testing convention (see `CLAUDE.md`).
+already the universal testing convention (see `CLAUDE.md`). A
+structured-format reader adds the **release-note fix catalogue** to it:
+`corpus/<area>/fixes/`, read through `Bodu.Test.Corpus`, holds the
+reader to the fixes comparable libraries have shipped (`corpus/README.md`).
 
 ### TFM policy
 
-**Done - every .NET project multi-targets `net8.0;net10.0`.** The matrix
-lives in one property, `$(BoduNetTargets)` in
-`bld/TargetFrameworks.props`; projects reference the property rather than
-naming a framework, so widening or narrowing the matrix is a one-line
-edit. Three projects stay `netstandard2.0` because their hosts demand it:
-the Roslyn generator `Bodu.Text.Formats.Generators`, the MSBuild task
-`Bodu.Globalization.Calendar.Build`, and `docs/doc.csproj`.
+**Done - every .NET project multi-targets `net8.0;net10.0`**, since the
+1.0.0 cut. The matrix lives in one property, `$(BoduNetTargets)` in
+`bld/TargetFrameworks.props`; projects reference the property rather
+than naming a framework, so widening or narrowing the matrix is a
+one-line edit. Three projects stay `netstandard2.0` because their hosts
+demand it: the Roslyn generator `Bodu.Text.Formats.Generators`, the
+MSBuild task `Bodu.Globalization.Calendar.Build`, and `docs/doc.csproj`.
 
 Adding `net10.0` was additive - no consumer notices a new lib folder - so
 it needed no major-version coordination. **Removing `net8.0` is the
-breaking half** and is deliberately deferred: .NET 8 leaves LTS support in
-November 2026, and the floor moves only once there is reason to believe
-consumers have followed. Never multi-target older `netstandard` without a
-concrete consumer ask.
+breaking half** and is deliberately deferred: it would strand every
+consumer still on the .NET 8 LTS runtime, so `bld/TargetFrameworks.props`
+reserves it for a deliberate major-version decision.
+`$(BoduMultiTargetFrameworks)` adds `netstandard2.0` for a library that
+needs downlevel reach, and no library in `bodu.slnx` uses it; never
+multi-target older `netstandard` without a concrete consumer ask.
 
 One consequence to keep in view. Widening to `net10.0` widens the BCL,
 which can make a Bodu extension method newly ambiguous with a framework
@@ -1447,15 +1457,20 @@ declaring types - verified, not assumed).
 which is the only cheap moment for it. The new name is better independent
 of the collision: the past participle says the method returns a new array
 rather than mutating in place like `Array.Reverse`, it matches the BCL's
-`To*` convention for materializing a new collection, and it makes the array
-and span families read alike - `SpanExtensions.ToReversed` already existed
-with the same three-overload shape. An array still binds to the array
-overload, which is an identity match, in preference to the span one, which
-needs a conversion (verified on both legs). All six overloads moved together -
-the three generic `T[]` forms and the three non-generic `Array` forms -
-because a half-renamed family is worse than either name. The break is
-recorded in `Bodu.Core`'s `CompatibilitySuppressions.xml` so package
-validation keeps guarding everything else.
+`To*` convention for materializing a new collection, and it makes the
+array and span families read alike - `SpanExtensions.ToReversed` already
+existed with the same three-overload shape. An array still binds to the
+array overload, which is an identity match, in preference to the span
+one, which needs a conversion (verified on both legs). All six overloads
+moved together - the three generic `T[]` forms and the three non-generic
+`Array` forms - because a half-renamed family is worse than either name.
+The suppressions the rename needed against the 0.7.0 baseline went when
+the Stable baseline moved to 1.0.0, which never had the old names
+(`bld/RELEASING.md`). The same guard pattern keeps
+`IEnumerableExtensions.Index<TSource>` a polyfill compiled only below
+.NET 9, which ships `Enumerable.Index`; its presence on the `net8.0` leg
+alone is a recorded suppression in `Bodu.Core`'s
+`CompatibilitySuppressions.xml`.
 
 Worth noting for the next such case: the tests did not catch this one on
 their own. `ArrayExtensionsTests` is declared *inside* `namespace
@@ -1467,74 +1482,98 @@ that lives in the namespace it tests cannot see this class of break.
 
 ### AOT and trim readiness
 
+Current state:
+
+- **Declared AOT-compatible** (`IsAotCompatible`, so the trim and AOT
+  analyzers run on every build): `Bodu.Core`, `Bodu.Collections`,
+  `Bodu.Collections.Concurrent`, `Bodu.IO.Hashing`,
+  `Bodu.Security.Cryptography`, `Bodu.Numerics`,
+  `Bodu.Numerics.Serialization.Json`,
+  `Bodu.Financial.Serialization.Json`, and
+  `Bodu.Globalization.Recurrence`.
+- **Verified by a NativeAOT smoke app:** `Bodu.Numerics/aot`, published
+  and run by the `numerics-aot-smoke` workflow, the only such app. It
+  surfaced that `Fraction<T>`'s bounded-type probe used
+  `MakeGenericMethod`, which throws under AOT despite the IL3050
+  suppressions, so that path became a reflection-free type matrix over
+  the built-in bounded integer types; for 1.3.0 it also publishes and
+  runs the closed JSON converters on a source-generated context for
+  every serializable type.
+- **Annotated rather than AOT-clean:** the reflection-based
+  serializers. `TomlSerializer` and, for 1.3.0, `BencodeSerializer`
+  declare `[RequiresUnreferencedCode]` and `[RequiresDynamicCode]` on
+  their entry points, `YamlSerializer` declares
+  `[RequiresUnreferencedCode]` only, and the Delimited / DotEnv / INI
+  serializers carry both. The JSON companions' converter factories,
+  which close generic converters with `MakeGenericType`, declare
+  `[RequiresDynamicCode]` (the Financial and Numerics ones for 1.3.0),
+  with the closed converters on a source-generated
+  `JsonSerializerContext` as the AOT path.
+
 Target state:
 
-- **AOT-clean (achievable now):** `Bodu.Core`, `Bodu.Numerics`,
-  `Bodu.IO.Hashing`, `Bodu.IO.Compound`, `Bodu.Text.Encoding`,
-  `Bodu.Security.Cryptography`, and the three `Utf8*` text libraries
-  (`Bodu.Text.Bencode` / `.Toml` / `.Yaml`) - the ref-struct readers are
-  reflection-free on the token path. **`Bodu.Numerics` is now verified**
-  by a NativeAOT smoke app (`Bodu.Numerics/aot`, published + run in the
-  `numerics-aot-smoke` CI workflow): it surfaced that `Fraction<T>`'s
-  bounded-type probe used `MakeGenericMethod` (which throws under AOT
-  despite the IL3050 suppressions), so that path was replaced with a
-  reflection-free type matrix over the built-in bounded integer types.
-  The companion `Bodu.Numerics.Serialization.Json` uses the standard
-  reflection-based `JsonConverterFactory` pattern (annotated), so its
-  consumers pair it with a source-generated `JsonSerializerContext` for AOT.
+- **Declare the AOT-clean packages that do not yet say so:**
+  `Bodu.IO.Compound`, `Bodu.Text.Encoding`, and the token readers and
+  writers of the text libraries, which are reflection-free on the token
+  path.
 - **AOT-clean with work:** the `Bodu.Text.Delimited` / `.Ini`
-  `*Serializer` reflection binders now have a reflection-free escape
-  hatch - the `Bodu.Text.Formats.Generators` factories and the serializer
-  factory overloads - while `.DotEnv` and the non-factory overloads
-  remain reflection-bound; `Bodu.Financial` and
-  `Bodu.Formats.Excel.Binary` (audit the property-mapping paths).
+  `*Serializer` reflection binders have a reflection-free escape hatch
+  in the `Bodu.Text.Formats.Generators` factories and the serializer
+  factory overloads, which reaches NuGet consumers once the generator is
+  packaged, while `.DotEnv` and the non-factory overloads remain
+  reflection-bound; `Bodu.Financial` and `Bodu.Formats.Excel.Binary`
+  need their property-mapping paths audited.
 - **AOT-blocked by design:** the `Bodu.Globalization.Calendar.Plugins`
-  loader - needs the binary-rule-pack format from the Builder roadmap
-  before this changes.
+  loader, which loads assemblies reflectively and is annotated to say
+  so. The `.bcal` binary packs let an AOT application load compiled
+  rule packs without it.
 
 ### API-stability tiers
 
-**Done.** Every packable project queued for or already on nuget.org carries a
-single tier label as a blockquote directly under its README title. The two
-withheld toolchain packages (`Bodu.Globalization.Calendar.Tool` and `.Build`)
-are deliberately untiered: a tier is a promise to consumers, and theirs is not
-owed until the decision to publish them is taken. The assignment:
+**Done.** Every packable package, published or withheld, carries a
+single tier label as a blockquote directly under its README title, and
+`bld/check-release-manifest.sh` holds each label to the version stream
+the package publishes in (see *Release focus*). The assignment, 43
+published Stable packages, 13 published Preview ones, and four withheld:
 
 - **Stable** - the mature core of the solution: `Bodu.Core`,
-  `Bodu.Collections.Concurrent`,
-  `Bodu.Collections` (the specialized collection catalogue split out of
-  `Bodu.Core` with namespaces unchanged; the tranche additions shipped
-  with settled APIs per the implementation plan),
-  `Bodu.IO.Hashing`, `Bodu.IO.Compound`, `Bodu.IO.Biff`,
-  `Bodu.Text.Encoding`, `Bodu.Security.Cryptography`, the text-format and
-  configuration libraries (`Bodu.Text.Serialization` and the serializers
-  built on it - `Bodu.Text.Bencode` / `.Toml` / `.Yaml` / `.Delimited` /
-  `.DotEnv` / `.Ini` / `.Formats` - plus `Bodu.Text.Configuration` /
-  `.Filtering` and `Bodu.Extensions.Configuration.Text`),
+  `Bodu.Collections`, `Bodu.Collections.Concurrent`, `Bodu.IO.Hashing`,
+  `Bodu.IO.Compound`, `Bodu.IO.Biff`, `Bodu.Text.Encoding`,
+  `Bodu.Security.Cryptography`, the text-format and configuration
+  libraries (`Bodu.Text.Serialization` and the serializers built on it -
+  `Bodu.Text.Bencode` / `.Toml` / `.Yaml` / `.Delimited` / `.DotEnv` /
+  `.Ini` / `.Formats` - plus `Bodu.Text.Configuration` / `.Filtering`
+  and `Bodu.Extensions.Configuration.Text`),
   `Bodu.Formats.Excel.Binary`, `Bodu.Numerics` and its
-  `Bodu.Numerics.Serialization.Json` companion, `Bodu.Financial` (+ its DI
-  and JSON packages), `Bodu.Globalization.Recurrence`, the whole
+  `Bodu.Numerics.Serialization.Json` companion, `Bodu.Financial` (+ its
+  DI and JSON packages), `Bodu.Globalization.Recurrence`, the published
   `Bodu.Globalization.Calendar` family (core, Builder, DI, Plugins, the
   five data packs, and the caching trio
-  `…Calendar.Caching{,.Sqlite,.Distributed}`), and the source-independent
-  half of the exchange-rate stack: `Bodu.Financial.ExchangeRates` (the
-  provider base classes and shared fetch machinery), the
-  `…ExchangeRates.DependencyInjection` plumbing, and the caching trio
-  `…ExchangeRates.Caching{,.Sqlite,.Distributed}`.
+  `…Calendar.Caching{,.Sqlite,.Distributed}`), and the
+  source-independent half of the exchange-rate stack:
+  `Bodu.Financial.ExchangeRates` (the provider base classes and shared
+  fetch machinery), the `…ExchangeRates.DependencyInjection` plumbing,
+  and the caching trio `…ExchangeRates.Caching{,.Sqlite,.Distributed}`.
 - **Preview** - the container and mail-store readers whose surfaces are
   still settling (`Bodu.IO.Pst` and the Outlook readers built on it,
-  `Bodu.Formats.Outlook{,.Msg,.Pst}`) and the network-dependent per-source
+  `Bodu.Formats.Outlook{,.Msg,.Pst}`); the network-dependent per-source
   exchange-rate providers
-  `Bodu.Financial.ExchangeRates.{Boe,Ecb,Rba,Yahoo,Ofx,Oanda,Fixer,ExchangeRateHost,Fred,Imf}`.
-  The providers are held at Preview until each has been exercised against
-  its live upstream endpoint across a release cycle: the API they expose is
-  settled - it is the shared base-class contract, which is now Stable - but
-  their behaviour against third-party feeds is not yet battle-tested.
-- **Experimental** - `Bodu.Financial.ExchangeRates.Xe`, which depends on a
-  scraped auth token and can break without notice.
+  `Bodu.Financial.ExchangeRates.{Boe,Ecb,Rba,Yahoo,Ofx,Fixer,ExchangeRateHost,Fred,Imf}`,
+  held at Preview until each has been exercised against its live
+  upstream endpoint across a release cycle (the API they expose is the
+  shared base-class contract, which is Stable); and, withheld,
+  `…ExchangeRates.Oanda` and the calendar toolchain
+  `Bodu.Globalization.Calendar.Tool` / `.Build`, whose command-line and
+  MSBuild surfaces are still being finalized.
+- **Experimental** - `Bodu.Financial.ExchangeRates.Xe` (withheld), which
+  depends on a scraped auth token and can break without notice.
 
-Promote the Preview providers to Stable per package as each proves reliable
-against its endpoint across a release cycle.
+Promote the Preview providers to Stable per package as each proves
+reliable against its endpoint across a release cycle. Promotion is two
+edits, retiering the README banner and deleting the
+`BoduPackageVersionOverride`, and until the package's first Stable
+release is on nuget.org its csproj pins `PackageValidationBaselineVersion`
+to its last preview release (`bld/Versioning.props`).
 
 ### Source generators
 
@@ -1543,7 +1582,11 @@ is generated by the `tools/Generate-CrcCatalog.ps1` script (from
 `crc-specs.json`), and the ISO 4217 `CurrencyCode` enum + registration by
 the `tools/CurrencyCatalogueGenerator` console tool (from
 `currencies.json`). These run out-of-band and check their output into
-source.
+source. The calendar's binary rule packs, the remaining candidate for a
+generator, went the same way: the `bodu-calendar` tool and the
+`CompileNotableDatePack` MSBuild task compile documents to `.bcal`
+packs that load without parsing or validation, which is the trim- and
+AOT-friendly output that candidate was for.
 
 The first true incremental Roslyn generator is
 **`Bodu.Text.Formats.Generators`** (`Bodu.Text.Formats.Generators/`,
@@ -1554,38 +1597,51 @@ with `BTFG00x` diagnostics and analyzer release tracking, and its test
 project consumes it as an analyzer over its own compilation. It sets the
 layout template for future generators: a sibling top-level project with
 the standard `src`/`test` split, referenced by consumers with
-`OutputItemType="Analyzer"`.
-
-Remaining candidates where a generator buys AOT/trim readiness or
-removes runtime reflection:
-
-- Calendar rule packs (Builder roadmap - binary output for trim/AOT).
+`OutputItemType="Analyzer"`. It is not packable yet (see the
+`Bodu.Text.Delimited` family's forward items).
 
 ### Package validation rollout
 
-**Done.** `EnablePackageValidation` is now on by
-default for every shipping, non-test, non-benchmark package. The default
-is set in `Directory.Build.props` (`BoduEnablePackageValidation`, opt-out
-per project or per build) and the gate is applied in
+**Done.** `EnablePackageValidation` is on by default for every shipping,
+non-test, non-benchmark package: the default is set in
+`Directory.Build.props` (`BoduEnablePackageValidation`, opt-out per
+project or per build) and the gate is applied in
 `Directory.Build.targets`, where `IsTestProject` and the benchmark flag
-are resolved. Validation is inert until a `PackageValidationBaselineVersion`
-exists (nothing is published yet), so it costs nothing today; once the
-first packages ship, set each package's baseline so the gate begins
-catching accidental breaking changes at pack time.
+are resolved. Each version stream is compared with its own last
+lock-step release: `BoduPackageValidationBaseline` (Stable, 1.0.0
+today) and `BoduPreviewPackageValidationBaseline` (Preview, 0.7.1
+today) in `bld/Versioning.props`. A baseline applies to a package only
+once it has reached the version that package first shipped at in
+`bld/release-manifest.txt`, so a new wave never asks ApiCompat for a
+predecessor that does not exist, and only to a strong-name-signed
+build, since the published packages are signed. The comparison reports
+removed or changed API and accepts additions (its strict mode stays
+off). A package released out of band pins its own
+`PackageValidationBaselineVersion` until the lock-step stream passes
+it, and 1.3.0 retires the out-of-band overrides. Deliberate breaks are
+recorded, with their reason, in the package's
+`CompatibilitySuppressions.xml`. After each publish the baselines move
+as `bld/RELEASING.md` describes, and any suppression only the old
+baseline needed is deleted.
 
 ### Documentation parity
 
-**Largely achieved.** Every shipping project has a `docs/guides/<project>/`
-entry, and coverage is broad - including the articles the previous roadmap
-listed as owed (`numerics/fraction.md`, `serialization/yaml/`,
-`financial/exchange-rate-caching.md` and the other FX guides). The guides
-are now backed by the **runnable-samples suite** - the `samples/` tree
-(Financial, Calendar, the text libraries, and the IO group, including a
-live FX sample)
-whose snippet-compile guards keep the documented code building. The one
-remaining gap is a dedicated **calendar plugin-loader** guide under
-`docs/guides/calendar/` (the loader is currently covered only implicitly by
-`building-the-service.md` / `dependency-injection.md`).
+**Achieved.** Every packable package - the 60 rows of
+`bld/docs-checks/package-docs-map.txt` - has a landing page under
+`docs/docs/`, guides under `docs/guides/`, and a samples page, and
+`bld/check-docs.py` (`packages`) fails a pull request that loses one. The
+API reference is generated per framework from the compiled Release
+assemblies and merged into one page per API that names the frameworks it
+applies to and the package and version it ships in
+(`bld/docs/build-api-docs.sh`); the site publishes from the `gh-pages`
+branch, with the latest release at the root, each release series under
+`/<series>/`, and master under `/dev/`. The runnable `samples/` tree (21
+sample families, from `Core` to `Globalization.Recurrence`) builds in CI
+with warnings as errors, and snippet-compile guards keep the guide
+snippets building. The gap the previous revision named, a calendar
+plugin-loader guide, is closed: the loader has its introduction
+(`docs/docs/calendar-plugins/index.md`), and the plugin-trust guide covers
+its entry points, registration and unloading.
 
 ## Proposing changes to this file
 
