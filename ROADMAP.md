@@ -306,296 +306,141 @@ The rest of what 1.3.0 carries:
 
 ## Per-project roadmap
 
-### `Bodu.Core` (and `Bodu.Collections`)
+### `Bodu.Core`, `Bodu.Collections` and `Bodu.Collections.Concurrent`
 
-Current state: mature and broad. The collections pillar now ships as
-the separate **`Bodu.Collections`** package (split executed - see the
-first forward-looking item), leaving `Bodu.Core` as the primitive
-layer (buffers, extensions, threading, sequences, functional seam,
-text utilities, `ThrowHelper`, the calendar value sets). Across the pair the
-surface carries:
+Current state: Stable; all three first shipped at 0.5.0. `Bodu.Core` is
+the primitive layer every package builds on: buffers, the extension
+surfaces (the sequence operators, `NaturalStringComparer`, and the date
+and string extensions), the `Threading` primitives (`AsyncLock`,
+`AsyncReaderWriterLock`, `AsyncSemaphore`, the reset-event family,
+`AsyncLazy<T>`, `AsyncDebouncer`, `RateGate`), the `Sequences` and
+`Functional` seams (`Memoizer`, and the railway primitives `Option<T>`,
+`Result` / `Result<T>` and `Either<TLeft,TRight>` with Task-based async
+combinators), text-encoding utilities, `ThrowHelper`, the calendar value
+sets, and the internal vector rotations the cryptography kernels share.
 
-- **`Collections.Generic.Graphs`** - `Graph<T>` (directed/undirected
-  adjacency-list), the read-only graph interfaces, `GraphAlgorithms`
-  (traversal, topological sort, connected components, Dijkstra),
-  `ShortestPathResult<TVertex>`, and `DisjointSet` / `DisjointSet<T>`
-  (union-find).
-- **`Collections.Generic.Trees`** - `Tree<T>` (n-ary), `Trie` and
-  `Trie<TValue>` (prefix trees).
-- **`Threading`** - `AsyncLock`, `AsyncReaderWriterLock`,
-  `AsyncSemaphore`, `AsyncManualResetEvent` / `AsyncAutoResetEvent` /
-  `AsyncCountdownEvent`, `AsyncLazy<T>`, `AsyncDebouncer`, `RateGate`.
-- **`Sequences`** (`SequenceGenerator`) and **`Functional`**
-  (`Memoizer`) seams.
-- A broadened collection catalogue: `SequencedDictionary<,>`
-  (insertion-ordered), `MultiValueDictionary<,>`, `RangeDictionary<,>` /
-  `RangeSet<T>`, `Multiset<T>`, `OrderedSet<T>`, `SegmentedBuffer<T>`,
-  alongside the established `CircularBuffer<T>`, `Deque<T>`,
-  `EvictingDictionary<,>`, `IndexedPriorityQueue<,>`, etc.
+`Bodu.Collections`, split out of Core with its namespaces unchanged,
+holds the collection catalogue: `CircularBuffer<T>`, `Deque<T>` (with
+the `EvictOpposite` overflow policy), `EvictingDictionary<,>` (six
+eviction policies and a `TimeProvider`-driven expiry layer),
+`IndexedPriorityQueue<,>`, `IndexedSet<T>`, `OrderedSet<T>`,
+`SequencedDictionary<,>`, `MultiValueDictionary<,>` (list- or
+set-backed), `Multiset<T>`, `RangeDictionary<,>` / `RangeSet<T>`,
+`SegmentedBuffer<T>`, `BiDictionary<,>`, `Table<,,>`,
+`LayeredDictionary<,>` / `DefaultingDictionary<,>`, `NavigableSet<T>` /
+`NavigableDictionary<,>`, `IntervalTree<T>`, the graphs (`Graph<T>`,
+`GraphAlgorithms`, `DisjointSet`) and trees (`Tree<T>`, `Trie`,
+`RadixTrie`, `AhoCorasickAutomaton`), `BitSet` in
+`Bodu.Collections.Specialized`, and the `Bodu.Collections.Probabilistic`
+sketches (`BloomFilter<T>`, `CountMinSketch<T>`, `HyperLogLog<T>`).
+`Bodu.Collections.Concurrent` holds the thread-safe variants:
+`ConcurrentCircularBuffer<T>`, `ConcurrentHashSet<T>`,
+`ConcurrentEvictingDictionary<,>` (lock-striped, all six policies and
+TTL, single-flight `GetOrAdd`) and, since the previous revision,
+`ConcurrentLruCache<,>`, a read-optimized bounded cache (lock-free reads
+over a segmented pseudo-LRU; no TTL, and a `GetOrAdd` that is not
+single-flight). The decisions behind the split and every tranche are
+recorded in `Bodu.Core/docs/roadmap-implementation-plan.md`.
+
+- **`WeekPattern` became `DayOfWeekSet`, one of six calendar value sets
+  (1.3.0).** `MonthSet`, `DayOfMonthSet`, `HourSet`, `MinuteSet` and
+  `SecondSet` joined it in the root `Bodu` namespace: each a
+  `readonly struct` over one `ulong`, validated by mask in
+  `FromUInt64`, with the `G`, `L` and binary text formats (and a letter
+  mask on `MonthSet`), `ParseExact` / `TryParseExact`, an allocation-free
+  enumerator, and the public `ICalendarValueSet<TSelf, TValue>`. Bit n
+  of a `DayOfWeekSet` is `(DayOfWeek)n`, so Sunday moved from bit 6 to
+  bit 0, while calendar documents keep `workingDays="0111110"` and the
+  `.bcal` packs keep their working-week byte. The replacement is the one
+  deliberate break inside the Stable line in 1.3.0 (see *Release
+  focus*). The sets stay in Core, as the retired `WeekPattern`
+  extraction decided, and `Bodu.Globalization.Recurrence` uses them.
 
 Forward-looking:
 
-- **The `Bodu.Collections` package split has landed.** ✅ The collections
-  pillar (`Collections.Generic` + `.Concurrent` + `.Graphs` + `.Trees`)
-  now ships as the **`Bodu.Collections`** package (referencing Core),
-  leaving Core as the small always-referenced primitive layer.
-  Namespaces did not change - only the assembly/package boundary moved.
-  `ShuffleHelpers` and the internal `SequenceUtility` stayed in Core
-  because the staying `IEnumerableExtensions` partials
-  (`Randomize` / `ContainsAll` / `ContainsAny`) depend on them, and
-  `Bodu.Collections` carries its own `CollectionsResourceStrings` resx
-  per the per-project resource convention. New collection-type work
-  below lands in `Bodu.Collections`; naming stays BCL-style
-  (`MultiValueDictionary`, `RangeDictionary`, `BiDictionary`,
-  `Multiset`, `EvictingDictionary`) rather than the Java-style
-  `MultiMap` / `RangeMap` / `BiMap` / `MultiSet` / `LruCache` synonyms.
-  See `Bodu.Core/docs/roadmap-implementation-plan.md` (T0) for the full
-  decision record.
-- **The concurrent variants now ship as `Bodu.Collections.Concurrent`.** ✅
-  A follow-on split (post-plan decision D5): `ConcurrentCircularBuffer<T>`
-  and `ConcurrentHashSet<T>` moved to their own opt-in package
-  referencing `Bodu.Collections` (namespace unchanged), with the shared
-  contract-test bases promoted to `Bodu.Test.Contracts` per the
-  documented second-consumer rule and the package carrying its own
-  resource strings.
-- **`ConcurrentEvictingDictionary<TKey,TValue>` has landed.** ✅ The
-  thread-safe variant of `EvictingDictionary<,>` in
-  `Bodu.Collections.Concurrent`: lock-striped segments,
-  where each segment runs an exact policy
-  cache over its slice of the capacity - eviction order is exact per
-  segment, approximate globally, while the slices sum to `Capacity`
-  exactly. All six policies plus the TTL layer are supported; concurrent
-  idioms added over the non-concurrent surface are `TryRemove(key, out
-  value)`, single-flight `GetOrAdd` (factory inside the segment lock),
-  and lock-free `ApproximateCount`. Only the post-commit `ItemEvicted`
-  event survives (raised after lock release, handler exceptions
-  suppressed - the `ConcurrentCircularBuffer` precedent); `ItemEvicting`,
-  `PeekEvictionCandidate`, and `TouchOrThrow` are deliberately omitted
-  as unhonorable or trap-prone under concurrency. A differential test
-  suite pins single-segment eviction parity against the non-concurrent
-  oracle.
-- **`WeekPattern` stays in `Bodu.Core` - extraction retired.** With the
-  collections split done, Core *is* the small always-referenced
-  primitive layer the proposed `Bodu.Globalization.WeekPattern`
-  extraction was meant to enable, so the extraction buys nothing while
-  costing a package boundary. Recorded as final before the Wave 1 cut
-  (moving the type after `Bodu.Core/v1.0.0` tags would be breaking);
-  revisit only if an external consumer emerges that cannot reference
-  Core at all.
-- **`WeekPattern` became `DayOfWeekSet`, one of six calendar value
-  sets.** ✅ In 1.3.0 `DayOfWeekSet` replaced `WeekPattern` in place, a
-  deliberate break inside the Stable line that package-validation
-  suppressions carry until the baseline moves past 1.3.0, and
-  `MonthSet`, `DayOfMonthSet`, `HourSet`, `MinuteSet` and `SecondSet`
-  joined it in the root `Bodu` namespace: immutable bit sets with one
-  shape, a canonical text form, and an allocation-free enumerator. Bit
-  n of a `DayOfWeekSet` is `(DayOfWeek)n`, so Sunday moved from bit 6
-  to bit 0; the calendar documents' `workingDays` text and the `.bcal`
-  packs' working-week byte are unchanged. The extraction decision above
-  carries over: the sets stay in Core. `Bodu.Globalization.Recurrence`
-  adopted them in the same release: cron holds its six fields as the
-  sets, an RRULE tests its months, month days and weekdays against sets
-  precomputed from its parts, and `RecurrenceRuleBuilder` takes each set
-  for the part it expresses. Before 1.3.0 shipped, the six sets were
-  aligned: one `ulong` each, validated by mask in `FromUInt64`; the `G`,
-  `L` and binary formats with `ParseExact` / `TryParseExact` on the
-  numeric sets, and a letter mask on `MonthSet`; and the public
-  `ICalendarValueSet<TSelf, TValue>` over all six.
-- **The `Functional` seam has grown - railway primitives shipped.** ✅
-  `Option<T>` (plus the non-generic `Option` companion), `Result` /
-  `Result<T>` / `ResultError`, and `Either<TLeft,TRight>` landed as
-  readonly structs with `Map` / `Bind` / `Match` combinators and
-  Task-based async extensions (`OptionAsyncExtensions` /
-  `ResultAsyncExtensions`) - the most-requested independently-built
-  .NET surface (LanguageExt, CSharpFunctionalExtensions). Present
-  values are strictly non-null (lenient null→`None` lifts are
-  explicit), each type documents its `default` contract (`None` /
-  empty-error failure / uninitialized-throwing `Either`), and
-  `ValueTask` combinator variants are a deferred follow-up. The seam
-  now sits at the `Bodu.Functional` extraction trigger recorded under
-  *New library candidates* - grow it further only alongside that
-  decision.
-- **Probabilistic / sketch data structures have landed.** ✅
-  `BloomFilter<T>` answers approximate membership with no false
-  negatives, sized from an expected item count and design
-  false-positive rate. `CountMinSketch<T>` estimates per-element
-  frequencies and never underestimates - with probability at least
-  `1 − δ` an estimate is at most the true count plus `ε · TotalCount`.
-  `HyperLogLog<T>` estimates distinct-element cardinality at ~`1.04/√m`
-  relative standard error in one byte per register. All three hash via
-  the element's `IEqualityComparer<T>` (SplitMix64-avalanched,
-  Kirsch-Mitzenmacher double hashing), merge parameter-compatible
-  instances, and round-trip state through an opaque version-checked
-  export/import. They ship in the `Bodu.Collections` package under the
-  `Bodu.Collections.Probabilistic` namespace per decision D4 - no
-  separate package.
-- **Sequence-operator extras have landed.** ✅ `CartesianProduct`,
-  `Permutations` / `Combinations`, and `Interleave` (skip-exhausted
-  round-robin) joined the already-shipped `Pairwise` / `Windowed` /
-  `Scan` / `RunLengthEncode` / `ZipLongest` / `SplitWhen` / `ChunkBy` /
-  `Batch` operators, each verified
-  absent from System.Linq against the installed .NET 10 ref assembly
-  before landing (`Chunk`, `CountBy`, `AggregateBy`, `Index`, `Shuffle`
-  remain excluded as BCL-shipped).
-- **The time-based expiry layer for `EvictingDictionary<,>` has
-  landed.** ✅ `EvictingDictionaryExpiration` (default TTL, absolute vs
-  sliding, `TimeProvider`-driven) composes orthogonally with all six
-  capacity policies: per-entry TTL `Add`/`TryAdd` overloads, lazy purge
-  on access plus explicit `RemoveExpired()`, expired entries invisible
-  to reads and preferred as capacity-eviction victims, a documented
-  O(1) raw `Count` contract, and a zero-overhead path when expiry is
-  not configured. No background timers; W-TinyLFU admission remains the
-  recorded stretch follow-up.
-- **The natural-order string comparer has landed.** ✅
-  `NaturalStringComparer` (`Bodu.Extensions`) ships the numeric-aware
-  `file2` < `file10` ordering with StringComparer-shaped statics
-  (Ordinal / OrdinalIgnoreCase / CurrentCulture variants plus
-  `Create(culture, ignoreCase)`), overflow-free digit-run comparison,
-  and an equality/hash contract - scope deliberately excludes sign,
-  decimal, and version-tuple semantics.
-- **The navigable / order-statistic sorted collections have
-  landed.** ✅ `NavigableSet<T>` and `NavigableDictionary<,>` ship
-  floor / ceiling / higher / lower navigation, rank (`IndexOf`) and
-  select (`GetAt`), O(log n) `CountInRange`, and live fail-fast
-  ascending / descending / range views over order-statistic red-black
-  trees with subtree-size augmentation (design note in
-  `Bodu.Collections/docs/navigable-collections-design.md`; the
-  skip-list-based concurrent sorted map remains an explicitly
-  unforeclosed follow-on).
-- **`BiDictionary<TKey,TValue>` has landed.** ✅ A bidirectional
-  one-to-one map over two shared dictionary indexes with O(1) lookups
-  both ways, a live reference-stable `Inverse` view, independent key
-  and value comparers, and a construction-time duplicate-value policy
-  (`Throw` - Guava `BiMap.put` - or `Replace` - `forcePut`).
-- **`Table<TRow,TColumn,TValue>` has landed.** ✅ The two-key map
-  adopted precisely for its projections: live `Row` / `Column`
-  read-only views, `RowKeys` / `ColumnKeys`, and per-row `RowMap()`
-  iteration over row-major nested dictionaries, with the O(rows)
-  column-view cost documented as the v1 trade-off.
-- **The layered and defaulting dictionary utilities have landed.** ✅
-  `LayeredDictionary<,>` is the Python-`ChainMap` first-layer-wins live
-  view (writes to layer 0, documented unshadowing, precedence aligned
-  with `Bodu.Text.Configuration`'s resolver) and
-  `DefaultingDictionary<,>` is the `defaultdict` store-on-indexer-miss
-  wrapper, distinct from the per-call-site `GetOrAdd` extension.
-- **The growable bit set has landed.** ✅ `BitSet` ships Java
-  `BitSet` semantics - auto-grow, single-bit and range `Set` / `Clear`
-  / `Flip`, `NextSetBit` / `NextClearBit`, PopCount `Cardinality`,
-  in-place logical ops over mismatched lengths, value equality
-  insensitive to trailing zero words, and a non-boxing struct
-  enumerator over set-bit indices - closing the fixed-size,
-  query-free, boxing-enumerator gaps of the BCL `BitArray`.
-- **The trie-family extensions have landed.** ✅
-  `AhoCorasickAutomaton` (+ `<TValue>`) provides immutable
-  build-then-match multi-pattern search with a pinned deterministic
-  match order and span-based eager conveniences, and `RadixTrie` /
-  `RadixTrie<TValue>` are member-for-member path-compressed drop-in
-  siblings of `Trie` / `Trie<TValue>`, differentially tested against
-  the uncompressed tries as oracles.
-- **The set-backed `MultiValueDictionary<,>` option has landed.** ✅
-  `MultiValueBacking.Set` deduplicates per-key values through an
-  injectable value comparer (first-occurrence order preserved, the
-  `IReadOnlyList<TValue>` live-view contract intact), closing Guava's
-  `SetMultimap` half as a construction-time option rather than a second
-  type; `List` remains the default with its historical behaviour
-  unchanged.
-- **`IntervalTree<T>` / `IntervalTree<T,TValue>` have landed.** ✅
-  Closed-interval overlap storage with O(log n + k) stabbing and
-  window queries over max-endpoint augmented red-black trees,
-  first-class duplicates, and the family boundary documented: only
-  this type stores overlaps (`RangeSet` / `RangeDictionary` reject
-  them; Numerics' `IntervalSet` normalizes them).
-- **The `Deque<T>` overflow policy has landed.** ✅
-  `DequeOverflowPolicy.EvictOpposite` gives the fixed-capacity deque
-  Python's `deque(maxlen=N)` silently-discard-opposite-end behaviour
-  (default remains `Reject`, preserving the historical throw/false
-  contract), raising the same `ItemEvicting` / `ItemEvicted` pair as
-  `CircularBuffer<T>`'s overwrite mode so the ring family stays
-  consistent.
+- **W-TinyLFU admission for `EvictingDictionary<,>`** - the recorded
+  stretch follow-up, taken up only if benchmarks against
+  BitFaster.Caching show the demand.
+- **A concurrent sorted map** (a `ConcurrentSkipListMap` analog),
+  which the navigable collections' design
+  (`Bodu.Collections/docs/navigable-collections-design.md`) leaves open.
+- **`ValueTask` combinators for the `Functional` seam** - the deferred
+  follow-up. Growing the seam is tied to the `Bodu.Functional`
+  extraction (see *New library candidates*); Core 1.0.0 shipped with the
+  seam inside it, so moving it out is now a breaking change.
 
 ### `Bodu.Security.Cryptography`
 
-Current state: mature; ~255 src / ~615 test files. Block ciphers
-(Threefish 256/512/1024, Skipjack, Blowfish, Twofish, Camellia), the full
-stream-cipher family (ChaCha20, XChaCha20, Salsa20, XSalsa20, Rabbit,
-HC-128 on the shared `IStreamCipher` / `StreamCipherTransform` stack),
-AEAD (Ascon, the extended-nonce XChaCha20-Poly1305 / XSalsa20-Poly1305 on
-`Poly1305AeadTransform`, plus mode transforms EAX/GCM/OCB/CCM/SIV/GCM-SIV),
-keyed/crypto hashes (Skein, BLAKE2/3, Tiger, SipHash, Poly1305, FNV, Adler),
-the asymmetric family (X25519, Ed25519, ML-KEM 512/768/1024, ML-DSA
-44/65/87), the password KDFs (Argon2d/i/id, scrypt) and HKDF, and **HPKE
-(RFC 9180)** with the DH-KEM-X25519 KEM and preset suites.
+Current state: Stable; first shipped at 0.5.0, then out of band at
+1.1.0 and 1.2.0. Block ciphers (AES as a wrapper over the BCL,
+Camellia, Serpent with its wide-block 256/512/1024 variants, Twofish,
+Threefish 256/512/1024, Blowfish, Skipjack) and their modes (CBC, CFB,
+CTR, OFB, CTS, XTS, ECB); the stream ciphers (ChaCha20, XChaCha20,
+Salsa20, XSalsa20, Rabbit, HC-128); AEAD (Ascon-AEAD128,
+XChaCha20-Poly1305, XSalsa20-Poly1305, and the EAX / GCM / OCB / CCM /
+SIV / GCM-SIV mode transforms); hashes, XOFs and MACs (BLAKE2, BLAKE3,
+Skein, the Ascon hashes and XOFs, SHAKE, Poly1305, SipHash, CubeHash,
+Tiger, Whirlpool, Snefru); the asymmetric family (X25519, Ed25519,
+ML-KEM 512/768/1024, ML-DSA 44/65/87), with X25519 and Ed25519 also
+reading and writing the RFC 8410 PKCS#8 / SubjectPublicKeyInfo DER and
+RFC 7468 PEM forms; the KDFs (Argon2d/i/id, scrypt, HKDF); HPKE (RFC
+9180); `Hotp` / `Totp`; and the RFC 6962 `MerkleTree`, with its
+write-time block accumulator, inclusion and consistency proofs, and
+parallel leaf hashing. `SimdCapabilities` gates the vector kernels, and
+the `Bodu.Security.Cryptography.DisableSimd` switch turns them off, as
+the separate `Bodu.Security.Cryptography.Simd.Test` assembly does to
+hold the scalar paths to the same vectors.
 
-Also shipped: **one-time-password codes** - `Hotp` (RFC 4226) and `Totp`
-(RFC 6238) sit in the flat namespace beside the KDFs - and the **RFC 6962
-Merkle tree** - the single `MerkleTree` type (configurable hash algorithm,
-block size, fan-out, and degree of parallelism) with roots over entries,
-fixed-size blocks, or the write-time `MerkleBlockAccumulator`, inclusion and
-consistency proofs, length-bound roots, a `MerkleTreeDiagnostics` inspection
-surface, and a dedicated docs guide (`docs/guides/cryptography/merkle-trees.md`).
+- **The performance plans have been carried out.**
+  `plans/argon2-performance.md` (Argon2 divided across threads, AVX2,
+  SSSE3 and AdvSimd compression kernels, the matrix in pooled native
+  memory) and `plans/crypto-performance.md` (W0-W10, vector kernels and
+  algorithmic fixes across the library) shipped in 1.1.0;
+  `plans/crypto-performance-followups.md` (F1-F13: Poly1305 several
+  blocks at a time, the short AEAD message, ML-DSA and ML-KEM over AVX2
+  with a four-way SHAKE, Ed25519's fixed-base table and verification,
+  Serpent's wide-block variants, counter mode without the counter run,
+  and the ARM64 kernels timed on hosted hardware) shipped in 1.2.0. The
+  later BLAKE2 and BLAKE3 kernel work and Argon2's `VPRORQ` rotation
+  follow in 1.3.0. The tests hold each kernel to the scalar path, and
+  the AdvSimd kernels run on ARM64 in CI.
 
 Forward-looking:
 
-- **PEM key wrapping has landed.** ✅ Ed25519 / X25519 round-trip the
-  RFC 8410 PKCS#8 / SubjectPublicKeyInfo DER containers and, through the
-  inherited `AsymmetricAlgorithm` helpers, RFC 7468 PEM (`ImportFromPem`,
-  `ExportPkcs8PrivateKeyPem`, `ExportSubjectPublicKeyInfoPem`), pinned by
-  exact canonical golden-string vectors so raw → DER → PEM is fully
-  verified. ML-KEM / ML-DSA stay raw-encoding only; XML and encrypted
-  PKCS#8 remain out of scope. This closes the key-encoding interop story.
-- **The AVX-512 capability-detection contract has landed.** ✅
-  `SimdCapabilities` gates the BLAKE2 / BLAKE3 / Threefish / CubeHash fast
-  paths behind the hardware intrinsic plus a process-wide
-  `Bodu.Security.Cryptography.DisableSimd` `AppContext` switch, documented
-  in `docs/guides/cryptography/hardware-acceleration.md` and exercised by a
-  dedicated SIMD-off test assembly. Because the paths are ARX and
-  bit-identical, the switch is for determinism / reproducibility / audit,
-  not leakage.
-- **A faster Argon2 has landed (1.1.0).** ✅ Raised by FallbackPlan's
-  requirements and planned in `plans/argon2-performance.md`: a derivation
-  divides its lanes among threads by default (bounded by the additive
-  `maxDegreeOfParallelism` constructor and `Verify` overload), compresses
-  blocks with AVX2, SSSE3 or AdvSimd kernels behind new `SimdCapabilities`
-  gates, and holds its matrix in pooled, cleared native memory, so it no
-  longer allocates the matrix on the managed heap or provokes a gen2
-  collection. The output is pinned three ways - RFC 9106, the reference
-  implementation's vectors, and a corpus recorded from 1.0.0 - and the
-  AdvSimd kernel runs on ARM64 hardware in CI.
-- **One-time-password codes have landed.** ✅ `Hotp` (RFC 4226) and `Totp`
-  (RFC 6238) ship as static, span-based surfaces over the BCL one-shot
-  HMAC, with constant-time verification, HOTP resync / TOTP drift windows,
-  and **no new dependency** (raw-byte secrets; Base32 / `otpauth://`
-  provisioning left to the consumer). Validated against the RFC 4226
-  Appendix D and RFC 6238 Appendix B vectors.
-- **A side-channel / fault-hardening review pass is in flight.** The first
-  batches replaced the GCM-SIV GF(2^128) multiply with a constant-time
-  implementation and zero the EAX CMAC state on transform fault. Batch 3
-  (2026-08-28) removed the last branch-on-secret from the GF(2^128)
-  doubling paths (the EAX/SIV/OCB `dbl()` now routes through a shared
-  branch-free `GaloisField128.Double`), completed the zero-on-fault
-  contract across all six block-cipher AEADs (any exception escaping
-  `Decrypt` leaves the output's plaintext region zeroed - pinned by a
-  fault-injection sweep over a new `FaultingBlockCipher` test double -
-  with CCM retrofitted from no clearing at all), reset the Ascon sponge
-  state on authentication failure, fault-protected the
-  Twofish/HC-128/Serpent-128 key-schedule scratch and the
-  Ed25519/X25519/Scrypt/Argon2/HOTP secret clears, added the missing
-  `ConstantTimeDifference`/`ConstantTimeSelect` tests, and documented the
-  cache-timing stance on every table-driven cipher and hash (correcting
-  the CCM/OCB remarks that wrongly claimed verify-before-release).
-  Further review batches continue on the same cadence.
+- **What the speed-up plans left for later.** Each item in
+  `plans/crypto-performance-followups.md` §9 records what it left for
+  later, such as a per-machine Argon2 thread threshold and BLAKE2b on
+  Intel's client cores; as the plan sets out, a scratch spike measures
+  the gain before any design is committed to.
+- **Further side-channel / fault-hardening review batches.** Three
+  batches had landed by 2026-08-28: a constant-time GCM-SIV GF(2^128)
+  multiply, branch-free doubling for EAX, SIV and OCB, the zero-on-fault
+  contract across the six block-cipher AEADs, cleared key-schedule and
+  secret scratch, and the cache-timing stance documented on every
+  table-driven cipher and hash. The table-driven algorithms (Blowfish,
+  Twofish, Camellia, Tiger, Whirlpool, Snefru) still index tables by
+  secret-dependent values, as the package README states.
 
 ### `Bodu.IO.Hashing`
 
-Current state: mature; 83 src / ~235 test files. Fletcher 16/32/64, the
-full RevEng CRC catalogue (112 standards), and the check-digit family
-(Luhn, Damm, Verhoeff, Gumm, Code 39 mod 43, Crockford Base32 mod 37, ABA,
-EAN, GTIN, IBAN, ISBN, ISIN, LEI, ISO 7064).
+Current state: Stable; first shipped at 0.5.0. Fletcher 16/32/64, Adler
+(32, 32C, 64), FNV-1 and FNV-1a (32/64), CityHash, MurmurHash3, Pearson
+and the classic string hashes; the full RevEng CRC catalogue (112
+standards behind one parametric `Crc`); and the check-digit family
+(Luhn, Damm, Verhoeff, Gumm, Code 39 mod 43, Crockford Base32 mod 37,
+ABA, CUSIP, SEDOL, EAN, UPC-A, GTIN, IBAN, ISBN, ISIN, LEI, ISO 7064).
 
-- **Unify every algorithm behind the BCL
-  `System.IO.Hashing.NonCryptographicHashAlgorithm` shape.** Some types
-  inherit it, others expose bespoke surfaces - the mix is a documentation
-  hazard. This is the primary consistency debt in the project.
+- **Every hash now derives from
+  `System.IO.Hashing.NonCryptographicHashAlgorithm`.** The consistency
+  debt this item recorded is gone: the hashes and checksums share the
+  BCL's streaming shape (the check-digit family keeps its own
+  `CheckValueAlgorithm` root), and the one remaining difference, the
+  byte order `GetCurrentHash` writes, is documented in the streaming
+  guide. For 1.3.0, `ComputeHashAsync` resets before hashing, as
+  `ComputeHash` does.
+
+Forward-looking:
+
 - **Keep documenting the `System.IO.Hashing` interop story.** xxHash and
   the single-polynomial `Crc32` / `Crc64` (ISO 3309) ship in Microsoft's
   package; the headline value here is the full 112-polynomial catalogue,
@@ -604,7 +449,7 @@ EAN, GTIN, IBAN, ISBN, ISIN, LEI, ISO 7064).
 
 ### `Bodu.Text.Encoding`
 
-Current state: mature; ~72 src / ~156 test files. Standalone encoders
+Current state: Stable; first shipped at 0.5.0. Standalone encoders
 `Base16`, `Base32` (Standard/HexExtended/Crockford/ZBase32), `Base45`
 (RFC 9285), `Base58` / `Base58Check`, `Base62`, `Base64` / `Base64Url`,
 `Base85` (Ascii85 / Z85 / GitCompact), the standalone HRP-carrying
@@ -612,147 +457,193 @@ Current state: mature; ~72 src / ~156 test files. Standalone encoders
 `QuotedPrintable`. Name-resolvable variants are exposed through the
 `BinaryEncodings` / `IBinaryEncoding` registry.
 
+Forward-looking:
+
 - **Audit `Base*.Utf8.cs` writer parity.** Confirm every encoder's UTF-8
-  span surface has full `IUtf8SpanFormattable`-style parity with the char
-  paths - several skew char-first.
+  span surface has full `IUtf8SpanFormattable`-style parity with the
+  char paths: `Base16`, `Base32`, `Base58`, `Base64` and `Base85` carry
+  `Utf8` partials, while `Base45`, `Base62` and `Bech32` have none.
 - **Reversible short-ID encodings (Sqids / the Hashids successor).**
   Heavily used independently-built functionality with no BCL equivalent;
   fits this project's alphabet-transform focus and the check-digit
-  neighbour. See *New library candidates* for the `Bodu.Identifiers`
+  neighbor. See *New library candidates* for the `Bodu.Identifiers`
   option (ULID/Snowflake) that would consume the existing Crockford
   Base32 support.
 
+### `Bodu.Text.Serialization`
+
+Current state: Stable; first shipped at 0.5.0. The shared core of the six
+`System.Text.Json`-shaped text serializers: the compiled attribute family,
+the ignore / creation / unmapped-member / naming enums, the serialization
+callback interfaces and the naming policies, plus the source the format
+packages compile in. `shared/**` (the metadata resolver and converter
+engine) compiles under each format's symbol, and `shared/Flat/`
+(`InvariantScalarCodec`, `FlatMemberDescriptor` / `FlatMemberDiscovery`
+and `Utf8LineCursor`) compiles as-is into the three line formats. For
+1.3.0 the shared binding's handling of `[Include]` and
+`ObjectCreationHandling.Populate` was fixed.
+
+No open items recorded.
+
 ### `Bodu.Text.Bencode`
 
-Current state: new standalone library; ~86 src / ~81 test files. The full
+Current state: Stable; first shipped at 0.5.0. The full
 `System.Text.Json`-shaped quartet - the ref-struct `Utf8BencodeReader` /
-`Utf8BencodeWriter`, the `BencodeSerializer` POCO mapper (converters, the
-full attribute family, naming policies, the string/number enum converters,
-the four serialization callbacks), the read-only `BencodeDocument` /
-`BencodeElement` DOM, and the mutable `BencodeNode` tree.
+`Utf8BencodeWriter`, the `BencodeSerializer` POCO mapper (converters,
+the full attribute family, naming policies, the string/number enum
+converters, the four serialization callbacks), the read-only
+`BencodeDocument` / `BencodeElement` DOM, and the mutable `BencodeNode`
+tree. For 1.3.0 the serializer's entry points declare
+`[RequiresUnreferencedCode]` and `[RequiresDynamicCode]`, as
+`TomlSerializer`'s do.
 
-- **The conformance corpus has landed.** ✅ A Regression-tier BEP-3
-  sweep (`Bep3CorpusTests`) of ~100 valid and ~115 malformed KAT rows
-  adapted from the BEP 3 grammar and the BEP 5/9/10/12/23 wire shapes,
-  and from the test suites of libtorrent, Transmission, bencodepy,
-  bencode-go, and bendy/serde_bencode - pinned reader token sequences,
-  fanned across the read-only document and mutable node surfaces.
-  Bencode has no canonical upstream corpus repository (nothing like
-  `toml-test`), so the cases are inline KAT rows with per-group
-  attribution rather than a vendored file corpus.
-- **The read-only configuration source has landed.** ✅ `AddBencodeFile`
-  / `AddBencodeStream` in `Bodu.Extensions.Configuration.Text`, mirroring
-  the TOML provider shape - strict-canonical parse, dictionary-rooted
-  documents, colon-delimited flattening with list-index segments.
+- **The conformance corpus has landed.** A Regression-tier BEP 3 sweep
+  (`Bep3CorpusTests`) of about 100 valid and 115 malformed KAT rows,
+  adapted from the BEP 3 grammar, the BEP 5/9/10/12/23 wire shapes, and
+  the test suites of libtorrent, Transmission, bencodepy, bencode-go,
+  and bendy/serde_bencode, pins reader token sequences across the
+  read-only document and the mutable node tree. Bencode has no canonical
+  upstream corpus (nothing like `toml-test`), so the cases are inline
+  KAT rows with per-group attribution.
+- **The release-note catalogue has landed (1.3.0).** Seven bencode
+  libraries' fixes, 135 rows (`corpus/bencode/`); among what they found,
+  a null root value gave a different result for each kind of type, and
+  `BencodeSerializer` now throws `BencodeSerializationException` for it.
+- **The read-only configuration source has landed.** `AddBencodeFile` /
+  `AddBencodeStream` in `Bodu.Extensions.Configuration.Text`.
+
+Forward-looking:
+
+- **In progress for 1.3.0:** fixes to the enum and integer converters.
 
 ### `Bodu.Text.Toml`
 
-Current state: new standalone library; ~123 src / ~89 test files. The most
-mature of the three - the `Utf8TomlReader` / `Utf8TomlWriter` +
-`TomlSerializer` + `TomlDocument` (read-only) / `TomlNode` (mutable) DOMs,
-`TomlSpecVersion` (v1.0.0 default / opt-in v1.1.0), `TomlByteArrayHandling`
-/ `TomlDecimalHandling`, validated against the vendored **toml-test
-conformance corpus** (532 valid + 505 invalid cases) in both profiles.
+Current state: Stable; first shipped at 0.5.0. The most mature of the
+structured-text quartets - `Utf8TomlReader` / `Utf8TomlWriter` (with a
+public `TomlReaderState` for resumable reads), `TomlSerializer`, and the
+`TomlDocument` (read-only) / `TomlNode` (mutable) DOMs, with
+`TomlSpecVersion` (v1.0.0 by default, v1.1.0 on request) and
+`TomlByteArrayHandling` / `TomlDecimalHandling`. It is validated in both
+profiles against the vendored **toml-test conformance corpus**, 266
+valid and 505 invalid cases (pinned in its `provenance.json`), and, for
+1.3.0, against 1,119 release-note fix rows from nine TOML projects
+(`corpus/toml/`).
 
 - **Feature-complete for the grammar.** The remaining work is polish -
   benchmark the emitter's allocation profile against `Tomlyn`, and keep
-  the vendored corpus current with upstream `toml-test`.
+  the vendored corpus current with upstream `toml-test`, whose
+  `provenance.json` does not yet record the upstream commit.
+- **In progress for 1.3.0:** fixes to the enum and integer converters.
 
 ### `Bodu.Text.Yaml`
 
-Current state: new; ~55 src / ~60 test files. The YAML 1.2 core-schema
+Current state: Stable; first shipped at 0.5.0. The YAML 1.2 core-schema
 quartet - the `Utf8YamlReader` (over the multi-partial `YamlParser`
-handling anchors/aliases/tags/merge-keys and multi-document streams via
-`YamlDocument.ParseAllDocuments`), the `Utf8YamlWriter`, the symmetric
-read+write `YamlSerializer`, and the `YamlDocument` / `YamlNode` DOMs.
-Validated against the vendored `yaml-test-suite` (353 cases).
+handling anchors, aliases, tags, merge keys and multi-document streams
+through `YamlDocument.ParseAllDocuments`), the `Utf8YamlWriter`, the
+symmetric read+write `YamlSerializer`, and the `YamlDocument` /
+`YamlNode` DOMs; `YamlSpecVersion` defaults to 1.2 and can select YAML
+1.1 scalar resolution. It is validated against the `yaml-test-suite`
+submodule, pinned at one commit (402 cases, each classified and the
+counts pinned in `YamlTestCorpusReader`), and, for 1.3.0, against 1,505
+release-note fix rows from nine YAML libraries (`corpus/yaml/`).
 
-- **Serializer parity with Bencode/Toml has landed.** ✅ The enum tier
-  (wire-name maps honoring `StringEnumMemberNameAttribute` and naming
-  policies; the public `YamlStringEnumConverter` (+ generic) and
-  `YamlNumberEnumConverter<TEnum>` factories), the options surface
-  (`DefaultIgnoreCondition` replacing the pre-release `IgnoreNullValues`;
-  the `YamlSerializerDefaults` General/Web presets), the full fixed-width
-  integer set (`nint`/`nuint`/`Int128`/`UInt128` with invariant-text
-  fallback outside the signed 64-bit writer surface), and the
-  DOM↔serializer bridges (`NodeConverter` adopted under an `#elif YAML`
-  branch, plus `YamlElement`/`YamlDocument` converters over a
-  shared-row-store `ParseValue`). The scalar converter tier deliberately
-  stays format-local - YAML's implicit typing coerces across scalar kinds
-  the token-strict shared converters cannot express - as does the
-  `SerializerEngine` seam (null-root write and empty-document read
-  semantics differ).
-- **The supported-schema boundary is documented.** ✅ The README's *Bodu
+- **Serializer parity with Bencode/Toml has landed.** The enum tier, the
+  options surface (`DefaultIgnoreCondition`, the `YamlSerializerDefaults`
+  presets), the full fixed-width integer set (`nint` / `nuint` /
+  `Int128` / `UInt128`), and the DOM↔serializer bridges. The scalar
+  converters deliberately stay format-local - YAML's implicit typing
+  coerces across scalar kinds the token-strict shared converters cannot
+  express - as does the `SerializerEngine` seam.
+- **The supported-schema boundary is documented.** The README's *Bodu
   YAML Core Tree Profile* section and compliance matrix carry the
   explicit in/out list (tag resolution, complex keys, directives,
-  anchors) so consumers know when to reach for a full YAML engine.
-- Remaining polish: raise the `bld/coverage-thresholds.json` floor toward
-  Toml's 95.0/92.3 after the next coverage collection run.
+  anchors).
+
+Forward-looking:
+
+- **Raise the coverage floor** in `bld/coverage-thresholds.json` (90.7
+  line, 89.3 branch) toward Toml's 95.0/92.3 after the next coverage
+  collection run.
+- **In progress for 1.3.0:** fixes to the enum and integer converters.
 
 ### `Bodu.Text.Delimited` / `Bodu.Text.DotEnv` / `Bodu.Text.Ini` (and the `Bodu.Text.Formats` umbrella)
 
-Current state: new - the ground-up quartet redesign of the retired
-line-oriented trio (see *Active focus* #4). Each is a standalone
-`System.Text.Json`-shaped library: a ref-struct `Utf8*Reader` /
+Current state: Stable; all four first shipped at 0.5.0. Each is a
+standalone `System.Text.Json`-shaped library: a ref-struct `Utf8*Reader` /
 `Utf8*Writer` token surface over UTF-8, a `*Serializer` reflection binder
-over the shared `Bodu.Text.Serialization` attribute/naming/callback layer,
-a mutable `*Node` DOM, and a read-only `*Document` DOM. Delimited adds the
-RFC 4180 dialect policies (field-count / malformed-record /
-duplicate-header) and a **truly incremental** `IAsyncEnumerable<TRecord>`
-streaming surface (records parse and yield as stream segments arrive, and
-the `IAsyncEnumerable` serialize overload writes in bounded batches);
-INI adds the two-reader model (source-order `Utf8IniReader` + normalized
-`IniDocumentReader` applying duplicate-section merge), a
-comment-preserving mutable DOM, and the `GlobalSectionName` mapping; the
-Delimited Regression tier carries a csv-spectrum-derived RFC 4180 corpus
-and the DotEnv Regression tier a python-dotenv/godotenv-derived
-conformance corpus. `Bodu.Text.Formats` is a thin umbrella meta-package
-over the three. Reflection-free binding is in place: `[DelimitedRecord]`
-/ `[IniSection]` partial POCOs get `IDelimitedRecordFactory<TRecord>` /
-`IIniSectionFactory<TSection>` implementations emitted by the
-`Bodu.Text.Formats.Generators` Roslyn source generator, consumed by the
-factory overloads on `DelimitedSerializer` / `IniSerializer` (no
-`RequiresUnreferencedCode`/`RequiresDynamicCode` - trimming- and
-AOT-safe).
+over the shared `Bodu.Text.Serialization` layer, a mutable `*Node` DOM,
+and a read-only `*Document` DOM. The three wire scalars as strings and
+share `InvariantScalarCodec` from `Bodu.Text.Serialization/shared/Flat/`,
+and DotEnv and INI also share its `Utf8LineCursor` and flat member
+discovery. Delimited adds the RFC 4180 dialect policies (field-count /
+malformed-record / duplicate-header) and a **truly incremental**
+`IAsyncEnumerable<TRecord>` streaming surface; INI adds the two-reader
+model (source-order `Utf8IniReader` and the normalized `IniDocumentReader`
+with duplicate-section merge), a comment-preserving mutable DOM, and the
+`GlobalSectionName` mapping. The Delimited Regression tier carries a
+csv-spectrum-derived RFC 4180 corpus and the DotEnv tier a
+python-dotenv/godotenv-derived conformance corpus, and for 1.3.0 each
+library is held to other libraries' release-note fixes: 789 rows from nine
+CSV libraries, 506 from eight dotenv libraries, and 323 from eight INI
+libraries. `Bodu.Text.Formats` is a thin umbrella meta-package over the
+three. Reflection-free binding is in place: the
+`Bodu.Text.Formats.Generators` Roslyn source generator emits
+`IDelimitedRecordFactory<TRecord>` / `IIniSectionFactory<TSection>`
+implementations for `[DelimitedRecord]` / `[IniSection]` partial POCOs,
+consumed by the factory overloads on `DelimitedSerializer` /
+`IniSerializer` without `RequiresUnreferencedCode` or
+`RequiresDynamicCode`.
+
+Forward-looking:
 
 - **Package `Bodu.Text.Formats.Generators`** (analyzer nupkg layout,
-  icon/hero artwork, release-manifest entry) when the Wave-2 release wave
-  picks it up; the project currently builds and tests as an unpackaged
-  Roslyn component.
+  icon/hero artwork, release-manifest entry). Wave 2 shipped without it:
+  the project is still `IsPackable=false`, so its factories reach only
+  consumers who reference the project directly.
 - **Resumable reader states** (`*ReaderState`) as public API, so
-  consumers can drive their own segment loops; the serializers'
-  incremental surfaces currently keep the segment-accumulation logic
-  internal.
+  consumers can drive their own segment loops, as `TomlReaderState`
+  already allows; the serializers' incremental surfaces keep the
+  segment-accumulation logic internal.
 
 ### `Bodu.Text.Configuration`
 
-Current state: mature; 37 src / ~74 test files. A layered
-config-resolution engine (profile, resolver, view getters, diagnostics)
-over its own trivia-preserving INI document model (self-contained since
-the *Active focus* #4 decouple - no format-library dependency).
+Current state: Stable; first shipped at 0.5.0. A layered
+config-resolution engine (parse, resolve and write phases; the `Bodu`,
+`EditorConfigCompatible`, `Strict` and `Relaxed` profiles, the second
+aligned with EditorConfig 0.17.2; typed view getters; diagnostics) over
+its own trivia-preserving INI document model, with no format-library
+dependency. For 1.3.0 it is held to 195 release-note fix rows from six
+EditorConfig cores (`corpus/configuration/`), which found, among other
+defects, a leading byte order mark breaking `Parse`, keys not lowercased
+under `EditorConfigCompatible`, and brace groups without a comma read as
+choices; all are fixed.
 
-- **Stabilise `ConfigurationPattern.Compile`** - the expression-
-  compilation surface needs an API-stability pass before consumers build
-  on it.
+- **`ConfigurationPattern.Compile` is part of the Stable surface.** It
+  shipped at 1.0.0 with the rest of the package, so package validation
+  now holds it; the stability pass this item asked for closed with that
+  release.
+
+Forward-looking:
+
 - **Add JSON-pointer / JMESPath-style resolvers** alongside the existing
   `ConfigurationResolver` to broaden applicability beyond the
   Bodu-specific query syntax.
 
 ### `Bodu.Text.Filtering`
 
-Current state: landed complete 2026-08-02 (#648) - ~25 src / ~24 test
-files, a benchmark project, and a runnable sample. An include/exclude
-filtering engine for lists of text values: glob (wildcard,
-character-class, `{a,b}` brace-alternation) and regex patterns compile
-once into a cost-tiered `TextFilter` that runs the cheapest strategies
-first (MatchAll → Literal → Prefix/Suffix → Contains → general wildcard
-→ Regex - the `globset` idea), with Ant/MSBuild-style include/exclude
-set semantics (`AnyMatch`) or gitignore-style last-match-wins ordered
-rules (`LastMatchWins`), gitignore-convention list parsing, always-on
-match statistics, and an optional per-decision `ITextFilterObserver`.
-Regexes prefer the linear-time non-backtracking engine and always carry
-a match timeout that fails safe on both include and exclude. Core-only
-dependency; ships in Wave 2 (`bld/release-manifest.txt`).
+Current state: Stable; first shipped at 0.5.0, with a benchmark project
+and a runnable sample. An include/exclude filtering engine for lists of
+text values: glob (wildcard, character-class, `{a,b}` brace-alternation)
+and regex patterns compile once into a cost-tiered `TextFilter` that runs
+the cheapest strategies first (MatchAll → Literal → Prefix/Suffix →
+Contains → general wildcard → Regex - the `globset` idea), with
+Ant/MSBuild-style include/exclude set semantics (`AnyMatch`) or
+gitignore-style last-match-wins ordered rules (`LastMatchWins`),
+gitignore-convention list parsing, always-on match statistics, and an
+optional per-decision `ITextFilterObserver`. Regexes prefer the
+linear-time non-backtracking engine and always carry a match timeout that
+fails safe on both include and exclude. Core-only dependency.
 
 - **No open items.** The one demand-driven follow-on candidate recorded
   for completeness: a path-segment (`**`) mode in the
@@ -761,558 +652,482 @@ dependency; ships in Wave 2 (`bld/release-manifest.txt`).
 
 ### `Bodu.Extensions.Configuration.Text`
 
-Current state: bridge layer connecting `Microsoft.Extensions.Configuration`
-to the Bodu text stack. The read-only **TOML and Bencode sources have
-landed** (`AddTomlFile` / `AddTomlStream`, `AddBencodeFile` /
-`AddBencodeStream`).
+Current state: Stable; first shipped at 0.6.0. The bridge connecting
+`Microsoft.Extensions.Configuration` to the Bodu text stack: the Bodu
+configuration source (`AddTextConfigurationFile`,
+`AddTextConfigurationStream`, `AddTextConfigurationDocument`) and the
+read-only TOML and Bencode sources (`AddTomlFile` / `AddTomlStream`,
+`AddBencodeFile` / `AddBencodeStream`).
 
-- **Document precedence semantics** when stacked with the `Json` and
-  `EnvironmentVariables` providers.
+- **Precedence with the `Json` and `EnvironmentVariables` providers is
+  documented.** The configuration-sources guide
+  (`docs/guides/extensions-configuration-text/configuration-sources.md`)
+  states that a Bodu source follows the standard rule, the
+  last-registered source winning, and shows it layered between a JSON
+  baseline and environment variables.
 
-### `Bodu.Numerics`
+No open items recorded.
 
-Current state: new. Ships `Fraction<T>` (exact rationals over
-`IBinaryInteger<T>`), **`BigDecimal`** (arbitrary-precision decimal over a
-`BigInteger` mantissa + scale), the continuous `Interval<T>` (open/closed/unbounded
-endpoints over `INumber<T>`) with full set algebra, the `DiscreteInterval<T>`
-integer-domain interval, the `IntervalPair<T>` / `DiscreteIntervalPair<T>`
-binary-result types, and the N-ary `IntervalSet<T>` - each with JSON
-converters where applicable - plus the **statistics aggregates**:
-`RunningStatistics<T>` / `RunningQuantile<T>` (single-pass stream
-accumulators) and `MovingSum<T>` / `MovingMinMax<T>` (rolling windows).
-Money/currency/FX live in the companion `Bodu.Financial`.
+### `Bodu.Numerics` (and `Bodu.Numerics.Serialization.Json`)
 
-The **Numerics growth wave is complete** (see *Active focus*) - all three
-sequenced steps have shipped:
+Current state: Stable; both first shipped at 0.5.0. `Fraction<T>`
+(exact rationals over `IBinaryInteger<T>`), `BigDecimal`
+(arbitrary-precision decimal over a `BigInteger` mantissa and scale),
+`Complex<T>` (the generic counterpart of the `double`-only
+`System.Numerics.Complex`), the continuous `Interval<T>`, the
+integer-domain `DiscreteInterval<T>`, the `IntervalPair<T>` /
+`DiscreteIntervalPair<T>` result types, the N-ary `IntervalSet<T>`, and
+the statistics aggregates `RunningStatistics<T>` / `RunningQuantile<T>`
+(single-pass accumulators) and `MovingSum<T>` / `MovingMinMax<T>`
+(rolling windows). The package is serialization-agnostic: its
+`System.Text.Json` converters, for `Fraction<T>`, `BigDecimal`,
+`Complex<T>`, `Interval<T>`, `DiscreteInterval<T>` and `IntervalSet<T>`,
+ship in `Bodu.Numerics.Serialization.Json` and register through
+`AddNumericsJsonConverters`. Money, currency and FX live in the
+companion `Bodu.Financial`.
 
-1. **`Interval<T>` extensions - shipped.** ✅ Unbounded / half-bounded
-   endpoints (explicit metadata, not float sentinels), `Difference` /
-   `SymmetricDifference` returning the allocation-free `IntervalPair<T>`
-   (≤2 disjoint pieces), and the `&` / `|` operators (`|` throws on a
-   non-contiguous union). The architecture review's continuous-vs-discrete
-   contradiction was resolved by adding **`DiscreteInterval<T>`** over
-   `IBinaryInteger<T>` - canonical closed-integer form with successor-aware
-   emptiness (`Open(1,2)` is empty) and adjacency (`[1,2] ∪ [3,4] == [1,4]`).
-   Review hardening folded in: NaN-endpoint rejection and a culture-safe
-   endpoint separator, with an exhaustive finite-domain membership-law test
-   harness. The follow-ups have since landed too: `DiscreteInterval<T>`
-   `Difference` / `SymmetricDifference` (via `DiscreteIntervalPair<T>`) and a
-   first-class N-ary `IntervalSet<T>` - a normalized disconnected-range value
-   with N-ary union / intersection / `Except` / `Complement` (taken over the
-   whole line, so the double complement is the identity).
-2. **`BigDecimal` - shipped.** ✅ An arbitrary-precision decimal (a
-   `BigInteger` mantissa plus an `int` scale) with the full
-   `INumber<BigDecimal>` / `INumberBase<BigDecimal>` generic-math surface,
-   span/UTF-8 parse and format, rounding, conversions, and a
-   `BigDecimalJsonConverter` in `Bodu.Numerics.Serialization.Json`
-   registered by `AddNumericsJsonConverters`. No BCL equivalent existed -
-   the highest-leverage gap-filler, now closed.
-3. **Running-statistics aggregates - shipped.** ✅ Online mean / variance
-   (Welford, with the Chan et al. parallel merge exposed as `Combine`),
-   exact min / max / count, and a streaming quantile
-   (`RunningQuantile<T>`, the P² algorithm with an exact empirical
-   warm-up under five samples) as mutable `struct` accumulators over
-   `INumber<T>` - extrema exact in `T`, moments in `double` via
-   `CreateChecked` with an explicit post-widening finiteness guard, and
-   non-finite samples rejected. The **windowed / rolling companion set**
-   shipped alongside: `MovingSum<T>` (last-N sum in `T` + mean, with a
-   periodic exact rebuild bounding floating-point eviction drift) and
-   `MovingMinMax<T>` (monotonic ring deques, amortized O(1)). One
-   deliberate deviation from the plan as originally written: the moving
-   types are sealed classes over a **private internal ring**, not
-   `CircularBuffer<T>` - the collections split made that reuse a brand-new
-   `Bodu.Numerics → Bodu.Collections` package edge, which was judged not
-   worth it, so Numerics keeps its Core-only dependency. A bare
-   `RollingWindow<T>` *collection* is still deliberately not added
-   anywhere: the overwrite-mode `CircularBuffer<T>` in `Bodu.Collections`
-   already is one; the gap was the aggregates, and they live here.
+- **The Numerics growth wave is complete.** The `Interval<T>`
+  extensions (unbounded and half-bounded endpoints, `Difference` /
+  `SymmetricDifference` through the allocation-free pair types, the `&`
+  / `|` operators, `DiscreteInterval<T>` with successor-aware emptiness
+  and adjacency, and the N-ary `IntervalSet<T>`), `BigDecimal` with the
+  full `INumber<BigDecimal>` generic-math surface, and the
+  running-statistics aggregates (Welford with the Chan et al.
+  `Combine`, a P² streaming quantile, and rolling windows over a private
+  ring, which keeps Numerics Core-only). `Complex<T>` followed,
+  reproducing the framework type's behavior and held to it by a
+  differential oracle for `Complex<double>`.
+- **NativeAOT is declared, not assumed (1.3.0).** The five converter
+  factories' constructors and `AddNumericsJsonConverters` declare
+  `[RequiresDynamicCode]`, and the docs give the closed converters on a
+  source-generated context as the native AOT registration, which the
+  `Bodu.Numerics/aot` smoke app publishes and runs.
 
-A generic **`Complex<T>`** has since **landed** ✅ - the natural follow-on
-after this wave. It generalizes the `double`-only `System.Numerics.Complex`
-to any `IFloatingPointIeee754<T>` (`float` / `double` / `Half` / `NFloat`),
-mirroring the framework type's surface: the operators and named arithmetic,
-`Magnitude` / `Phase` / `Conjugate` / `Reciprocal`, the transcendental
-functions (`Sqrt` / `Exp` / `Log` / `Pow` / the trig-hyperbolic family), the
-`<real; imaginary>` format / parse round-trip, and the full
-`INumberBase<Complex<T>>` / `ISignedNumber<Complex<T>>` generic-math surface
-(no total order, so not `INumber`). It reproduces the framework's behaviour
-including its documented quirks (Smith's-algorithm division, naive
-multiplication without infinity recovery, `Reciprocal(0) == 0`), validated by
-a differential oracle against `System.Numerics.Complex` for `Complex<double>`.
-A `ComplexJsonConverter<T>` ships in `Bodu.Numerics.Serialization.Json`
-(registered by `AddNumericsJsonConverters`), writing non-finite components as
-the named literals `"NaN"` / `"Infinity"` / `"-Infinity"`.
+No open items recorded. A bare `RollingWindow<T>` *collection* is still
+deliberately not added: the overwrite-mode `CircularBuffer<T>` in
+`Bodu.Collections` already is one.
 
-### `Bodu.Financial`
+### `Bodu.Financial` (and `Bodu.Financial.Serialization.Json`)
 
-Current state: new and large; ~322 src / ~255 test files. Ships the
-`Money` / `Money<TCurrency>` value types, the deferred-rounding
-`CalculatedMoney`, the multi-currency `MoneyBag`, the ISO 4217 catalogue
-(`CurrencyCode` source-generated enum, `CurrencyRegistry`, ~180
-per-currency `ICurrency` types, `CurrencyLookupService`), formatting /
-parsing (`MoneyFormatter`, `MoneyParseOptions`), rounding / allocation
-policies (`IRoundingStrategy`, `MonetaryContext`, the policy enums), the
-full FX abstraction stack (`ExchangeRate` / `ExchangeRate<TBase,TQuote>`,
+Current state: Stable; both first shipped at 0.6.0. The `Money` /
+`Money<TCurrency>` value types, the deferred-rounding `CalculatedMoney`,
+the multi-currency `MoneyBag`, the ISO 4217 catalogue (`CurrencyCode`
+source-generated enum, `CurrencyRegistry`, ~180 per-currency
+`ICurrency` types, `CurrencyLookupService`), formatting / parsing
+(`MoneyFormatter`, `MoneyParseOptions`), rounding / allocation policies
+(`IRoundingStrategy`, `MonetaryContext`, the policy enums), and the FX
+abstraction stack (`ExchangeRate` / `ExchangeRate<TBase,TQuote>`,
 `IRateProvider` / `IDatedRateProvider` / `IHistoricalRateProvider`,
-`RateBook` / `RateSeries`, `FixedDatedRateProvider`), delineated across
-the `Bodu.Financial` / `.Currencies` / `.ExchangeRates` namespaces. The
-abstract `WebRateProvider` / `PairWebRateProvider<TSeries>` bases the
-provider packages extend now ship from the separate
-`Bodu.Financial.ExchangeRates` package. References `Bodu.Numerics` for
-the `Fraction<BigInteger>` exact-arithmetic escape hatch.
+`RateBook` / `RateSeries`, `FixedDatedRateProvider`), across the
+`Bodu.Financial` / `.Currencies` / `.ExchangeRates` namespaces.
+References `Bodu.Numerics` for the `Fraction<BigInteger>` exact-arithmetic
+escape hatch. `Bodu.Financial.Serialization.Json` holds the
+`System.Text.Json` converters, `FinancialJsonPolicy`,
+`AddFinancialJsonConverters` and the `AddFinancialJson` DI registration;
+it is marked AOT-compatible, and for 1.3.0 its `Money<TCurrency>`
+converter factory and both registrations declare
+`[RequiresDynamicCode]`.
 
-- **The provider → immutable conversion surface has landed.** ✅
-  `WebRateProvider` exposes its accumulated state through
-  `GetLoadedBook()` / `GetLoadedSnapshot()` (the internal immutable book
-  and ready-to-query snapshot, pinned at call time),
-  `FixedDatedRateProvider` exposes its wrapped `Book`, and
-  `RateBook.ToBuilder()` round-trips into the mutable table
-  builder. The `Bodu.Financial.Extensions` companions complete the chain:
-  `IEnumerable<ExchangeRate>.ToBook()` (multi-provider-safe,
-  inversion-normalizing, `FetchedAtUtc`-preserving),
-  `RateBook.ToFixedProvider(…)`, and the fetch-based
-  `IDatedRateProvider.ToFixedProviderAsync(pairs, start, end)`.
-  Deferred follow-ups if demand emerges: book `Merge` / `Slice` helpers,
-  a per-pair-window `ToFixedProviderAsync` overload, and promoting book
-  exposure onto `IPairRateLoader`.
-- **Ship the 1.0 package** (Wave 3) with its DI companion.
-- **A second `IRoundingStrategy`.** The abstraction has a single
-  implementation (`MidpointRoundingStrategy`); a
-  banker's/stochastic/away-from-zero set would validate the seam.
-- Possible v1.1: a **cross-currency Roslyn analyzer** for
-  `Money<T1> + Money<T2>` catching generic-helper mixing the operator
-  signatures cannot; a **`Bodu.Financial.Xml`** child package if XML
-  serialisation is asked for; a **`MoneyBag` mutable builder** if
+- **The provider → immutable conversion surface has landed.**
+  `WebRateProvider.GetLoadedBook()` / `GetLoadedSnapshot()`,
+  `FixedDatedRateProvider.Book`, `RateBook.ToBuilder()`, and the
+  `Bodu.Financial.Extensions` companions `ToBook()`,
+  `ToFixedProvider(…)` and `ToFixedProviderAsync(pairs, start, end)`.
+- **A second `IRoundingStrategy` has landed.**
+  `StochasticRoundingStrategy` rounds up with a probability equal to the
+  fraction discarded, so it is statistically unbiased, beside
+  `MidpointRoundingStrategy`.
+
+Forward-looking:
+
+- **Book helpers, if demand emerges:** `Merge` / `Slice` on a book, a
+  per-pair-window `ToFixedProviderAsync` overload, and book exposure on
+  `IPairRateLoader`.
+- **Possible additions, each demand-driven:** a **cross-currency Roslyn
+  analyzer** for `Money<T1> + Money<T2>` catching generic-helper mixing
+  the operator signatures cannot; a **`Bodu.Financial.Xml`** child package
+  if XML serialization is asked for; a **`MoneyBag` mutable builder** if
   benchmarks show hot-path allocation cost.
 
 ### `Bodu.Financial.DependencyInjection`
 
-Current state: bridge; `IServiceCollection` extensions declared in the
-`Bodu.Financial` namespace - `AddFinancialService`, the
-`IFinancialServiceBuilder` chain, `UseCurrencyResolution`,
-`FinancialOptions`, named monetary contexts.
+Current state: Stable; first shipped at 0.6.0. `IServiceCollection`
+extensions declared in the `Bodu.Financial` namespace -
+`AddFinancialService`, the `IFinancialServiceBuilder` chain,
+`UseCurrencyResolution`, `FinancialOptions`, named monetary contexts.
 
-- **Ship alongside `Bodu.Financial` in Wave 3.**
 - **Add `IOptionsMonitor<FinancialOptions>` rebuild support** so
   rounding/context config changes propagate without a restart.
 
 ### `Bodu.Financial.ExchangeRates.*` *(provider + caching family)*
 
-Current state: new and extensive. Eleven web providers over the shared
-`WebRateProvider` base, split into two architectural families:
-central-bank / single-base whole-file sources (**Boe** IADB CSV, **Ecb**
-eurofxref XML, **Rba** `.xls` eras, **Imf** - keyless USD-anchored daily
-Representative Exchange Rates over a monthly tab-separated report) and
-arbitrary-pair sources over `PairWebRateProvider<TSeries>` (**Yahoo** chart
-JSON, **Ofx**, **Xe** - scrape-token auth, **Oanda** - rolling ~180-day
-window, **Fixer** - fixer.io `access_key` base+quotes, **ExchangeRateHost** -
-exchangerate.host `access_key` source+quotes, **Fred** - St. Louis Fed
-`api_key` per-pair `series_id` map). The
-shared `.DependencyInjection` package owns the `AddWebRateProvider`
-machinery (named `HttpClient` + Polly resilience) each provider's `Add*`
-extension delegates to. The provider-agnostic `.Caching` package supplies
-the `CachingRateProvider` read-through decorator and the
-`AggregatingRateProvider` (priority-fallback / average strategies,
-per-pair routing) over `IRateCache`, with in-memory / TOML / JSON
-backends in-package and durable `Sqlite` + shared `Distributed`
-(`IDistributedCache` / Redis) backends as add-ons.
+Current state: the source-independent packages are Stable and the
+per-source providers Preview, all first shipped at 0.7.0 apart from the
+withheld `Xe` (Experimental) and `Oanda` (Preview).
+`Bodu.Financial.ExchangeRates` holds the `WebRateProvider` /
+`PairWebRateProvider<TSeries>` bases - `WebRateProvider`'s
+`LoadFileFeedAsync<TTable>` runs the coverage check, fetch, failure
+logging and locked publication that the BoE, ECB, RBA and IMF file
+feeds share - and the fetch machinery;
+`Bodu.Financial.ExchangeRates.DependencyInjection` owns the
+`AddWebRateProvider` machinery (named `HttpClient` + Polly resilience)
+each provider's `Add<Source>ExchangeRates` extension delegates to.
+Eleven providers in two families: single-base whole-file sources over
+`WebRateProvider` (**Boe** IADB CSV, **Ecb** eurofxref XML, **Rba**
+`.xls` eras, **Imf** keyless USD-anchored daily rates from a monthly
+tab-separated report) and arbitrary-pair sources over
+`PairWebRateProvider<TSeries>` (**Yahoo** chart JSON, **Ofx**, **Xe** -
+scrape-token auth, **Oanda** - rolling ~180-day window, **Fixer** -
+`access_key` base+quotes, **ExchangeRateHost** - `access_key`
+source+quotes, **Fred** - `api_key` per-pair `series_id` map).
+`Bodu.Financial.ExchangeRates.Caching` supplies the `CachingRateProvider`
+read-through decorator and the `AggregatingRateProvider`
+(priority-fallback / average strategies, per-pair routing) over
+`IRateCache`, with in-memory, TOML and JSON backends, and
+`.Caching.Sqlite` / `.Caching.Distributed` (`IDistributedCache` / Redis)
+add the durable and shared backends.
+`Bodu.Financial.ExchangeRates.Testing`, not packable, holds the
+provider contract-test bases.
 
-- **`HistoryAvailability` is now advertised on every provider - and
-  consumed.** ✅ Declared per source (fixed floors for the central banks
-  and Yahoo, a deliberate Unbounded for OFX, rolling windows for XE and
-  OANDA) and enforced for pair providers by the shared contract test.
-  The caching / aggregation layer now reads it through the
-  `IHistoricalRateProvider` capability interface: the caching
-  decorator skips single-date misses and clamps range fetches to the
-  inner source's advertised earliest date (recording the unavailable
-  prefix as covered-with-no-rows), and the aggregator drops candidates
-  that declared they cannot serve the requested date or window before
-  the strategy runs - both behind `RespectHistoryAvailability` flags
-  that default on.
-- **Yahoo is now structurally identical to the other pair providers.** ✅
-  The dedicated `YahooRateProvider` subclass already existed; the
-  remaining inconsistency - a bespoke `IYahooExchangeRateChartSource`
-  bridged through an internal adapter - has been collapsed:
-  `YahooChartRateSource` implements
-  `IPairRateSource<YahooSeriesInfo>` directly and the parser
-  returns `PairRateData<YahooSeriesInfo>` like its OFX/XE peers.
-- **De-risk the XE provider - Experimental marking done; official
-  endpoint still open.** The package is already labelled Experimental
-  (README tier badge; see *API-stability tiers*) and the scrape-token
-  brittleness is documented in the README, the XML docs, and the
-  providers guide. The remaining open half is replacing the scraped
-  `Authorization: Basic` token with an official-endpoint path, if one
-  ever becomes available.
-- **Broaden provider coverage** - *done for the common free/commercial
-  APIs.* Fixer (`Bodu.Financial.ExchangeRates.Fixer`), exchangerate.host
-  (`.ExchangeRateHost`), FRED (`.Fred`), and IMF (`.Imf`) are now wrapped
-  as pair providers over `PairWebRateProvider<TSeries>`, each a small
-  package following the established provider + DI shape. IMF is a keyless,
-  USD-anchored bulk provider (like ECB) that downloads the IMF's monthly
-  Representative Exchange Rates tab-separated report and serves daily rates;
-  quotation direction (some currencies are USD-per-unit) is normalized on
-  ingest. Further sources can follow the same template on demand.
+- **`HistoryAvailability` is advertised on every provider - and
+  consumed.** All eleven declare it (fixed floors, a deliberate
+  Unbounded, or rolling windows), the pair-provider contract test
+  enforces it, and the caching decorator and the aggregator read it
+  through `IHistoricalRateProvider` behind `RespectHistoryAvailability`
+  flags that default on.
+- **Yahoo is structurally identical to the other pair providers.**
+  `YahooChartRateSource` implements `IPairRateSource<YahooSeriesInfo>`
+  directly.
+- **Provider coverage was broadened.** Fixer, exchangerate.host and FRED
+  are pair providers over `PairWebRateProvider<TSeries>`; IMF is a
+  keyless, USD-anchored bulk provider over `WebRateProvider`, like ECB,
+  that normalizes quotation direction on ingest. Further sources can
+  follow the same template on demand.
+
+Forward-looking:
+
+- **Promote the Preview providers to Stable** one package at a time, as
+  each proves reliable against its live upstream endpoint across a
+  release cycle (see *API-stability tiers*).
+- **De-risk the XE provider.** It is labeled Experimental and withheld
+  from nuget.org, with the scrape-token brittleness documented in the
+  README, the XML docs and the providers guide; the open half is
+  replacing the scraped `Authorization: Basic` token with an official
+  endpoint, if one ever becomes available.
 
 ### `Bodu.IO.Compound`
 
-Current state: ~44 src / ~46 test files. A read + edit + authoring
+Current state: Stable; first shipped at 0.5.0. A read + edit + authoring
 implementation of the OLE2 / Compound File Binary (CFB) container - the
 structured-storage envelope behind legacy Office files (`.xls`, `.doc`,
 `.msg`). `CompoundFile` opens for read (buffered or streaming), edits
 transactionally through BCL-style writable cursors (`OpenStream(name,
 FileMode, FileAccess)` / `CreateStream` / `Delete` / `Rename` staged
 until `Commit`, with `Revert`), and authors from scratch through the
-fluent `CompoundStorageBuilder` / `CompoundStreamBuilder` tree -
+fluent `CompoundStorageBuilder` / `CompoundStreamBuilder` tree,
 including deferred `Func<Stream>` payload sources for streaming-scale
 writes and version 3 **and** 4 emit. Full OLE property-set surface
-(`SummaryInformation`, `DocumentSummaryInformation`, `OlePropertySet` with
-MS-OLEPS read/emit) and a complete exception hierarchy.
+(`SummaryInformation`, `DocumentSummaryInformation`, `OlePropertySet`
+with MS-OLEPS read/emit), tiered validation (`CompoundValidationLevel`),
+and a complete exception hierarchy.
 
-The forward items below are sequenced and scoped in
-[`Bodu.IO.Compound/docs/roadmap-implementation-plan.md`](Bodu.IO.Compound/docs/roadmap-implementation-plan.md)
-(tranches T0-T5, with the audit evidence behind each).
+- **The roadmap implementation plan is complete.**
+  [`Bodu.IO.Compound/docs/roadmap-implementation-plan.md`](Bodu.IO.Compound/docs/roadmap-implementation-plan.md)
+  tranches T0-T5 all landed: writable stream cursors (the BCL
+  `Package.Open`-style model; per-stream transacted commit stays out of
+  scope, decision D2), property-set write-back symmetry, the
+  writable-cursor memory model, entry metadata on the edit surface,
+  true-async commit and streaming reads, and the `.msg`
+  substrate-readiness review that un-gated the `.msg` reader.
+- **The release-note catalogue has landed (1.3.0).** Five compound-file
+  libraries' fixes, 397 rows (`corpus/compound/`). The defects they
+  exposed were fixed under issues #943 to #964: a `Strict` level that
+  checks the header, the allocation tables and each directory entry
+  against MS-CFB, a final sector the file cuts short read as MS-CFB
+  allows, the writer's directory sectors and 2 GB limits, and
+  property-set reading.
 
-- **Writable stream cursors - done.** ✅ Delivered as the BCL
-  `Package.Open`-style model rather than a COM `IStream` clone: a
-  writable, seekable `CompoundStream` over the staging tree, obtained
-  via `OpenStream(name, FileMode, FileAccess)` / `CreateStream(name)`,
-  flushed into the tree on dispose and persisted only by `Commit`. The
-  remaining distance to `IStream` is per-stream transacted commit,
-  which stays out of scope (plan decision D2).
-- **Property-set write-back symmetry - done.** ✅ (plan T1)
-  `PropertySetWriter` now emits every value shape the reader parses,
-  including `VT_VECTOR` values (variant round-trips guarantee value
-  identity, not byte identity), and `CompoundStorage.WritePropertySet` /
-  `CompoundFile.SetSummaryInformation` /
-  `SetDocumentSummaryInformation` are the write counterparts of the
-  `TryGet…` readers.
-- **Writable-cursor memory model - done.** ✅ (plan T2) The writable
-  cursor no longer double-copies on flush (it transfers its buffer to
-  the staging node at dispose and tracks pending writes so an unchanged
-  re-flush is a no-op) and rejects payloads past `int.MaxValue` with a
-  deliberate `NotSupportedException` that routes callers to the deferred
-  stream sources.
-- **Entry metadata on the edit surface - done.** ✅ (plan T3)
-  `CompoundStorage` exposes settable `ClassId` / `CreationTime` /
-  `ModifiedTime` / `StateBits` on a writable file (storages only, per
-  MS-CFB §2.6.1); nothing is auto-stamped, so byte-identical re-saves
-  stay possible.
-- **True-async commit and streaming reads - done.** ✅ (plan T4)
-  `CommitAsync` / `FlushAsync` serialize asynchronously (sharing the
-  synchronous layout, so bytes are identical) and streaming-mode
-  `ReadAsync` reads its sectors with real async I/O; buffered and
-  writable cursors keep synchronous completion.
-- **This project is the substrate for new office-format readers** - see
-  `Bodu.Formats.Excel.Binary` (already built on it) and the `.msg` /
-  `.doc` candidates under *New library candidates*. The `.msg`
-  substrate-readiness review (plan T5) **executed 2026-07-31**: MS-OXMSG
-  maps entirely onto the shipped surface and no new container API is
-  required - findings recorded in the `Bodu.Formats.Outlook` kickoff
-  plan
-  ([`Bodu.Formats.Outlook/docs/msg-reader-implementation-plan.md`](Bodu.Formats.Outlook/docs/msg-reader-implementation-plan.md),
-  §1), which un-gates the `.msg` reader.
+No open items recorded. The package remains the substrate for the
+office-format readers, `Bodu.Formats.Excel.Binary` and
+`Bodu.Formats.Outlook.Msg`.
+
+### `Bodu.IO.Biff`
+
+Current state: Stable; first shipped at 0.5.0, a new package since the
+previous revision, scoped in
+`docs/reviews/biff-codec-brief-assessment.md`. The low-level codec for the
+BIFF5 and BIFF8 record streams inside `.xls` workbooks: the forward-only,
+allocation-free `ref struct` `BiffReader` (resumable across buffers
+through `BiffReaderState`; the version from `BOF` and the code page from
+`CODEPAGE`; every record's identifier and raw payload exposed, an unknown
+record never an error; typed accessors returning `Biff*Record` structs),
+`BiffString`, `BiffSstReader` across `CONTINUE` records, `BiffRk`, and a
+`BiffWriter` over `IBufferWriter<byte>` that emits BIFF5 or BIFF8. It has
+no compound-file dependency and no workbook model: it is the substrate
+beneath `Bodu.Formats.Excel.Binary`, as `Bodu.IO.Pst` is beneath
+`Bodu.Formats.Outlook.Pst`.
+
+- **In progress for 1.3.0:** the release-note fix catalogue for the
+  BIFF / `.xls` readers.
 
 ### `Bodu.Formats.Excel.Binary`
 
-Current state: new; ~34 src / ~41 test files. A narrow, read-only reader
-for the Excel 97-2003 BIFF8 `.xls` format over `Bodu.IO.Compound`.
-Surfaces raw worksheet cell values (text, number, boolean, error, and a
-formula's *cached* result) plus each sheet's used range, via a forward-only
+Current state: Stable; first shipped at 0.5.0. A narrow, read-only
+reader for `.xls` workbooks over `Bodu.IO.Compound` for the container
+and `Bodu.IO.Biff` for the record stream. It surfaces raw worksheet cell
+values (text, number, boolean, error, and a formula's *cached* result)
+plus each sheet's used range, through a forward-only
 `ExcelWorksheetReader` and a buffered `ExcelWorksheet` / `ExcelRow`
-surface. The BIFF8 record layer is internal under `Bodu.Formats.Excel.Biff8`.
-The namespace is deliberately flattened to `Bodu.Formats.Excel` (dropping
-the `.Binary` suffix) **so a future Excel-format reader can share the value
-model** - the same convention as `Bodu.Financial.ExchangeRates`.
+surface. The Excel-specific layer is internal under
+`Bodu.Formats.Excel.Biff`, and codec exceptions are translated at the
+boundary. The namespace is deliberately flattened to
+`Bodu.Formats.Excel` (dropping the `.Binary` suffix) **so a future
+Excel-format reader can share the value model** - the same convention
+as `Bodu.Financial.ExchangeRates`.
+
+- **BIFF5 has landed.** Moving onto `Bodu.IO.Biff` let the reader accept
+  BIFF5 (Excel 5.0/95) as well as BIFF8 (Excel 97-2003); an earlier BIFF
+  version still raises `ExcelBinaryUnsupportedException`.
+
+Forward-looking:
 
 - **`Bodu.Formats.Excel.OpenXml` sharing the value model.** The flattened
   namespace was chosen for exactly this - a read-only `.xlsx` reader over
   an OPC/ZIP container reusing `ExcelCell` / `ExcelWorksheet` /
   `ExcelWorkbookProperties`. See *New library candidates*.
-- **BIFF5 fallback** for the oldest `.xls` variants, if demand appears
-  (currently BIFF8-only; older versions raise
-  `ExcelBinaryUnsupportedException`).
+- **In progress for 1.3.0:** the release-note fix catalogue for the
+  BIFF / `.xls` readers.
 
 ### `Bodu.Formats.Outlook` / `Bodu.Formats.Outlook.Msg`
 
-Current state: **shipped at Preview** (kickoff and full delivery
-2026-07-31; ~30 src / ~55 test files). Two packages executing the kickoff
-plan
+Current state: Preview; both first shipped at 0.5.0 and have been on the
+Preview stream since 1.0.0. The kickoff plan
 ([`Bodu.Formats.Outlook/docs/msg-reader-implementation-plan.md`](Bodu.Formats.Outlook/docs/msg-reader-implementation-plan.md),
-now marked executed with its recorded deviations): the container-free
-shared MAPI value model (`Bodu.Formats.Outlook`) and the read-only
-`.msg` reader over `Bodu.IO.Compound` (`Bodu.Formats.Outlook.Msg`),
-both in the flattened `Bodu.Formats.Outlook` namespace so the future
-`.pst` reader shares the model. The reader covers the full property
-surface (fixed/variable/multi-valued, Unicode + code-page strings with
-two-pass resolution), recipients/attachments/nested messages,
-named-property resolution, and the text/HTML/compressed-RTF bodies
-(MS-OXRTFCP decoder pinned to the specification example vector), with a
-DocFX guide section and compile-guarded snippets.
+executed) delivered the container-free shared MAPI value model
+(`Bodu.Formats.Outlook`) and the read-only `.msg` reader over
+`Bodu.IO.Compound` (`Bodu.Formats.Outlook.Msg`), both in the flattened
+`Bodu.Formats.Outlook` namespace that `Bodu.Formats.Outlook.Pst` shares.
+The reader covers the full property surface (fixed, variable and
+multi-valued values; Unicode and code-page strings with two-pass
+resolution), recipients, attachments and nested messages, named-property
+resolution, and the text / HTML / compressed-RTF bodies (the MS-OXRTFCP
+decoder pinned to the specification's example vector). The Outlook
+hardening pass
+([`Bodu.Formats.Outlook/docs/outlook-hardening-plan.md`](Bodu.Formats.Outlook/docs/outlook-hardening-plan.md))
+bounded hostile input (`MaxEmbeddedMessageDepth`,
+`MaxDecompressedRtfBytes`), closed the exception leaks, and added
+`MaxInlineAttachmentBytes`, above which an attachment's payload is left
+in the container and served only through `OpenContentStream`.
 
-- **Real-world `.msg` reference corpus - done.** ✅ (2026-07-31) 41
-  Apache POI `test-data/hsmf` files (Apache-2.0; provenance `NOTICE.md`
-  + carried license text per the `Bodu.IO.Compound` pattern) under
-  `Bodu.Formats.Outlook.Msg/test/Fixtures/Reference/`, with a
-  cross-implementation expectations manifest generated by olefile and a
-  Regression sweep: the 39 well-formed files decode matching the
-  independent oracle (code pages 950-65001, HTML/RTF bodies, a
-  1,321-recipient message), the 2 fuzzer-minimized malformed containers
-  are rejected. A companion pstsdk seed corpus (2 Unicode + 2 ANSI
-  PSTs, Apache-2.0, `lspst`-generated oracle) landed under
-  `Bodu.IO.Pst/test/Fixtures/Reference/`, resolving the `.pst`
-  exploration's fixture-acquisition risk (R2).
-- **Package icons - done.** ✅ (2026-07-31)
-  `bld/icons/Bodu.Formats.Outlook{,.Msg}.png` plus the hero banners.
+- **Real-world `.msg` reference corpus - done.** 41 Apache POI
+  `test-data/hsmf` files (Apache-2.0, with a provenance `NOTICE.md` and
+  the license text carried, as `Bodu.IO.Compound` does) under
+  `Bodu.Formats.Outlook.Msg/test/Fixtures/Reference/`, with an
+  expectations manifest generated by olefile and a Regression sweep: the
+  39 well-formed files decode as the independent oracle does, and the 2
+  fuzzer-minimized malformed containers are rejected.
+
+Forward-looking:
+
+- **In progress for 1.3.0:** the `.msg` release-note fix catalogue.
 - **`.msg` authoring** and **TNEF** remain demand-driven candidates; see
   the kickoff plan's out-of-scope list.
 
-### `Bodu.IO.Pst`
+### `Bodu.IO.Pst` / `Bodu.Formats.Outlook.Pst`
 
-Current state: shipping (P0 spike landed 2026-07-31; **P1 - the LTP
-layer - landed 2026-08-19** per
-[`docs/ltp-implementation-plan.md`](Bodu.IO.Pst/docs/ltp-implementation-plan.md);
-**P2 - the `Bodu.Formats.Outlook.Pst` messaging reader and the
-container hardening pass - landed 2026-08-31** per
-[`Bodu.Formats.Outlook.Pst/docs/pst-reader-implementation-plan.md`](Bodu.Formats.Outlook.Pst/docs/pst-reader-implementation-plan.md)).
-The NDB (node database) read layer of MS-PST for the Unicode format -
-header parse with the §5.3 CRC, NBT/BBT B-tree walks, block reads with
-trailer validation and the permute/cyclic content encodings decoded,
-XBLOCK/XXBLOCK data trees, and SLBLOCK/SIBLOCK subnode trees - plus the
-LTP layer over it: the heap-on-node (`bSig 0xEC`) over ordered block
-segments, BTree-on-heap, and the public `PstNode.ReadPropertyContext()`
-/ `ReadTableContext()` surfaces (`PstPropertyContext` /
-`PstPropertyValue` / `PstTableContext` / `PstTableRow`, wire-typed and
-MAPI-free, values resolved on access, row matrices streamed
-block-at-a-time), behind the `PstFile` / `PstNode` session surface with
-tiered validation (`Compatible` / `Strict` / `Minimal`), validated
-against the pstsdk reference corpus and the `lspst` oracle (folder
-names, subjects, senders, contents-table rows, and a no-dangling-HNID
-every-node sweep). Ships at **Preview**; ANSI and OST variants are
-recognized and rejected.
+Current state: Preview; both first shipped at 0.5.0 (wave 3) and have
+been on the Preview stream since 1.0.0. `Bodu.IO.Pst` reads the MS-PST
+container for Unicode and ANSI stores: header parse with the §5.3 CRC,
+NBT/BBT B-tree walks, block reads with trailer validation and the
+permute/cyclic content encodings decoded, XBLOCK/XXBLOCK data trees,
+SLBLOCK/SIBLOCK subnode trees, and the LTP layer over them (heap-on-node,
+BTree-on-heap, and the public property-context and table-context views
+on `PstNode`), behind the `PstFile` / `PstNode` session with tiered
+validation (`Compatible` / `Strict` / `Minimal`). Only the 4 KiB-page
+OST variant is recognized and rejected. `Bodu.Formats.Outlook.Pst` is
+the mail-store reader over it (`OutlookMailStore` /
+`OutlookMailFolder` / `OutlookMailMessage` / `OutlookMailAttachment`),
+sharing the `Bodu.Formats.Outlook` value model and its decode layer.
+Both are validated against the pstsdk reference corpus (two Unicode and
+two ANSI stores, Apache-2.0) and its `lspst` oracle listings, a
+synthetic fixture builder, and bit-flip and truncation sweeps at both
+levels.
 
-- **P2 - `Bodu.Formats.Outlook.Pst` - landed** ✅ (2026-08-31, per
+Landed since the previous revision:
+
+- **P2 - the mail-store reader and the container hardening pass**
+  (2026-08-31, per
   [`Bodu.Formats.Outlook.Pst/docs/pst-reader-implementation-plan.md`](Bodu.Formats.Outlook.Pst/docs/pst-reader-implementation-plan.md)):
-  the messaging layer - `OutlookMailStore` / `OutlookMailFolder` /
-  `OutlookMailMessage` / `OutlookMailAttachment` over the shared
-  `Bodu.Formats.Outlook` MAPI value model (recipients via the shared
-  `OutlookRecipient`, embedded messages, store-wide named-property
-  resolution from the name-to-id map node, and the text/HTML/
-  compressed-RTF bodies via the new `Bodu.Formats.Outlook/shared/**`
-  decode layer) - plus the container hardening pass (`BlockCacheSize`
-  decoded-block LRU, streaming `OpenDataStream` with a memory-ceiling
-  Regression, `PstNode.DataLength`, the `PstFileError` /
-  `PstNodeNotFoundException` exception taxonomy, and bit-flip/truncation
-  malformed sweeps at both the container and messaging levels).
-  `Bodu.IO.Pst` and `Bodu.Formats.Outlook.Pst` joined the release
-  manifest as wave 3 at `BoduBaseVersion` 0.4.0, with the docs-site
-  debut and `samples/IO.Pst/` scenario project.
-- **Outlook hardening pass - landed** ✅ (2026-09-03, per
-  [`Bodu.Formats.Outlook/docs/outlook-hardening-plan.md`](Bodu.Formats.Outlook/docs/outlook-hardening-plan.md)):
-  a tests-first (68 red tests committed before any fix) security,
-  exception-contract, and performance sweep of `Bodu.IO.Pst`,
-  `Bodu.Formats.Outlook`, `.Msg`, and `.Pst`. Bounded every hostile-input
-  hole (NBT/BBT descent depth and level checks, BTH index-level cap and
-  descent-path check, data-tree materialization and fan-out limits via
-  the new `PstFileOptions.MaxNodeDataLength` / `MaxDataTreeLeaves`,
-  `CompressedRtf` expansion bounds, and `MaxEmbeddedMessageDepth` /
-  `MaxDecompressedRtfBytes` on both reader option types - a limit
-  violation is a format failure at every validation level, reported as
-  `PstFileError.LimitExceeded` at the container); closed the exception
-  leaks (`.msg` container faults translate to `OutlookMsgFormatException`
-  via `MsgContainer`, the shared `MapiNamedPropertyRecords` parser, the
-  page/block cache split, UTC-anchored FILETIME decoding, nested-session
-  and view disposal guards, strict size cross-checks); removed the
-  silent wrong answers (unordered property contexts, narrow inline cells,
-  1200/1201 code pages, `PT_NULL` / zero-FILETIME as present-with-null,
-  folder code-page inheritance, missing store object); and cut the
-  copies (`CompoundStorage` child index - the one `Bodu.IO.Compound`
-  change - cached bodies, zero-copy attachment streams, in-place row-id
-  enumeration, span-based variable-value decoding).
-- **Streaming attachment payloads - landed** ✅ (2026-09-04, the
-  follow-on the hardening pass recorded): `PstPropertyContext` /
-  `PstTableRow` gain value-length and value-stream accessors that serve
-  subnode-resident values block by block without materializing them, and
-  both readers gain `MaxInlineAttachmentBytes` (1 MiB) - a larger
-  `PidTagAttachDataBinary` stays a present-but-null property and
-  `OpenContentStream` streams it from the container, so an attachment of
-  any size can be enumerated, sized, and copied without ever being held
-  in memory in full.
-- **ANSI format - landed** ✅ (2026-09-04): `wVer` 14/15 stores are read
-  through the same NDB readers as Unicode, driven by an internal
-  `PstLayout` descriptor (32-bit identifiers and offsets, the 12-byte
-  trailers with the block identifier before the checksum, the unpadded
-  subnode block header, the 8,180-byte row-matrix payload, the two-byte
-  row-index number). Validated against the two ANSI corpus fixtures and
-  their `lspst` oracle listings, the synthetic fixture builder in ANSI
-  mode, and the malformed sweeps at both levels; `OutlookMailStore`
-  walks an ANSI store unchanged. Only the 4 KiB-page OST variant remains
-  rejected.
-- **Follow-on closure - landed** ✅ (2026-09-04): `PstDataStream` gained
-  a real lifecycle (disposal, session binding, synchronous-completing
-  async reads); `.msg` value streams are read with a single allocation
-  (a pre-sized compound chain read plus a zero-copy hand-off from a
-  read-only cursor); the dead storage-name formatters are gone; and the
-  `CompressedRtf` tests are linked into the PST test project under the
-  `OUTLOOK_PST` namespace switch.
+  the messaging layer, a decoded-block cache (`BlockCacheSize`),
+  streaming `OpenDataStream`, and the `PstFileError` /
+  `PstNodeNotFoundException` exception taxonomy.
+- **The Outlook hardening pass** (2026-09-03): descent-depth, data-tree
+  and fan-out limits, compressed-RTF expansion bounds, and embedded
+  message depth limits, with a limit violation reported as a format
+  failure at every validation level.
+- **Streaming attachment payloads** (2026-09-04): value-length and
+  value-stream accessors that serve subnode-resident values block by
+  block, and `MaxInlineAttachmentBytes` (1 MiB) on both readers.
+- **ANSI stores** (2026-09-04): `wVer` 14/15 files read through the same
+  NDB readers, driven by an internal `PstLayout` descriptor.
+
+Forward-looking:
+
+- **In progress for 1.3.0:** the `.pst` release-note fix catalogue.
+- **OST** - the 4 KiB-page variant stays rejected; a demand-driven
+  follow-on.
 - **Scale-tier corpus**: the EDRM Enron PSTs (CC-BY) remain the
   multi-megabyte stress option recorded in the fixture NOTICE.
 
 ### `Bodu.Globalization.Calendar`
 
-Current state: mature; ~150 src / ~219 test files. Easter (Western and
-Orthodox), lunar/solar festivals, rule providers, observed-date
-adjustments, `NotableDateService`, and the working-day extensions. Hebrew,
-tabular Hijri, Umm al-Qura, and Persian observances ship as XML resources
-resolved against the BCL calendars plus the `sweepCalendarYears` resolver.
+Current state: Stable; first shipped at 0.6.0, then out of band at
+1.0.1, which stopped working-day lookups overflowing the stack. Easter
+(Western and Orthodox), lunar/solar festivals, rule providers,
+observed-date adjustments, `NotableDateService`, the working-day
+extensions, and the sealed `.bcal` binary rule packs
+(`NotableDateResourceLoader.LoadBinary`). Hebrew, tabular Hijri, Umm
+al-Qura, and Persian observances ship as XML resources resolved against
+the BCL calendars plus the `sweepCalendarYears` resolver. For 1.3.0 the
+working week is a `DayOfWeekSet`, and `NotableDateBinaryFormat` keeps
+the `.bcal` packs' working-week byte unchanged.
 
-- **Add observation-based algorithm variants** for the four lunar /
-  solar-Hijri families where the BCL's tabular calculation can diverge
-  from the announced civil date by a day (Saudi crescent sighting, Tehran
-  vernal-equinox boundaries). Opt-in alternatives to the tabular
+- **The deep vector corpus is delivered.** Fifty-year vector tables
+  pin the catalogues, most of them to independent implementations:
+  `global-jewish` (650 rows, 1990-2039), `global-islamic-umm-al-qura`
+  and `global-islamic` (517 rows each), `global-persian` (150),
+  `global-zoroastrian` (300), `global-hindu` (700, an engine-pinned
+  freeze braced by an independent check), and the Bahá'í holy days
+  (450 rows, from the Universal House of Justice table for 172-221
+  B.E.), with the Saudi announced dates as a 171-row sweep. The Umm
+  al-Qura table is further reconciled against the KFUPM print,
+  ummulqura.org.sa exports, van Gent's table and ICU. Provenance and the
+  cross-check counts are in `NotableDateCatalogueVerification.md`; the
+  one residual is a periodic recheck for official KACST publications
+  from 1451 AH, none of which exists yet.
+- **`IAsyncEnumerable<NotableDate>` projections are delivered**
+  (`NotableDateServiceAsyncExtensions.ResolveAsync`).
+
+Forward-looking:
+
+- **Add observation-based algorithm variants** for the lunar / solar-Hijri
+  families where the BCL's tabular calculation can diverge from the
+  announced civil date by a day. Opt-in alternatives to the tabular
   resources, not replacements. The Tehran side is delivered
-  (`tehran-nowruz`); for the Saudi side the acceptance baseline now
-  exists in-repo: the embedded gazetted-announcements table
-  (`SaudiAnnouncedObservances-1422-1448.csv`) shows the announcements
-  moved seventeen month starts by exactly one day in both directions
-  across 1422-1448 AH, so a sighting variant must reproduce those
-  seventeen ±1 shifts against the KACST table. The Bahá'í acceptance
-  data is also now in-repo (`corpus/bahai/uhj-holy-days-172-221-be.csv`,
-  the official UHJ 50-year table): a Tehran-sunset equinox variant for
-  Naw-Rúz must flip exactly the twenty official-21-March boundary years
-  the current UT model runs one day early on, and the Twin Birthday
-  columns are the verification set for the pending
-  eighth-new-moon-after-Naw-Rúz algorithm (whose counting convention -
-  after the *day* of Naw-Rúz, Tehran sunset epoch - is pinned by the
-  2023/2034 boundary years and documented in
-  `tools/verify-bahai-poya-vectors.py`).
-- ~~**Extend the Hebcal-aligned regression catalogue**~~ - delivered
-  across all three families: the 13 `global-jewish` observances are
-  pinned across Gregorian 1990-2039 by an embedded vector table
-  generated from an independent Dershowitz-Reingold implementation
-  (`tools/generate-hebrew-observance-vectors.py`); the 10
-  `global-islamic-umm-al-qura` observances by a KACST-table projection
-  whose every underlying month start is astronomically cross-checked
-  against an independent Meeus lunar-conjunction implementation
-  (`tools/verify-islamic-observance-vectors.py`, 517/517 within the
-  expected +1..+2-day window, double-occurrence years asserted as full
-  lists - a sweep that surfaced and fixed the `OffsetFromRule`
-  multi-occurrence defect); and the 3 `global-persian` observances by an
-  independent Meeus equinox implementation of the official Solar Hijri
-  new-year rule (`tools/generate-persian-observance-vectors.py`,
-  150/150 against the BCL projection). The Umm al-Qura table is
-  externally reconciled three ways: against the KFUPM Research
-  Institute *Comparison Calendar 1356-1411 AH* print (24/24 month
-  starts, 17/17 derivable vector rows for 1990 / early 1991), against
-  ummulqura.org.sa full-year exports sampled across the range
-  (1420/1430/1446/1448 AH: 48/48 month starts, 1,418/1,418 day rows,
-  40/40 derivable vector rows; the site's retrospective 1410 table
-  diverges from the contemporaneous print by a day - the vectors
-  follow the print), and against van Gent's computed comparison table
-  for 1422-1448 AH (216/216 derivable vector rows). The same table's
-  **announced** column - the High Judiciary Council's gazetted dates -
-  is embedded as its own 171-row sweep asserting the measured one-day
-  bound. Three further fifty-year tables complete the deep corpus:
-  `global-islamic` (tabular Hijri, astronomically braced 517/517),
-  `global-zoroastrian` (independent Meeus derivation, 300/300 vs the
-  BCL), and `global-hindu` (engine-pinned regression freeze braced by
-  an independent tithi-proximity check, 700 rows - whose generation
-  surfaced and fixed the lost-Magha-month ingress-day defect).
-  ICU cross-vendor tables (committed under `corpus/`) reconcile every
-  month of UAQ 1410-1462 (1420-1450 exact 372/372; the pre-1420
-  retrospective-table and post-1450 vendor-extension divergences are
-  classified and documented) and confirm all 50 Persian Nowruz dates
-  and leap flags, closing the Persian civil-confirmation residual.
-  Provenance and cross-check counts live in
-  `NotableDateCatalogueVerification.md`. Remaining residual: reconcile
-  future official KACST publications for 1451 AH onward as they
-  appear - a targeted check (Aug 2026) confirmed none exists yet: the
-  relaunched official ummulqura.org.sa is an interactive service with
-  no fixed post-1450 publication table, so this stays a periodic
-  recheck, not an open action. An eighth fifty-year table is now also
-  in place: the Universal House of Justice Badí table 172-221 B.E.
-  (2015-2064) sweeps all nine catalogue-modelled Bahá'í holy days at
-  the measured signed bound (exact in every official-20-March year,
-  one day early in every official-21-March boundary year).
-- ~~**Add `IAsyncEnumerable<NotableDate>` projections**~~ - delivered:
-  `NotableDateServiceAsyncExtensions.ResolveAsync` streams a range's
-  occurrences one civil year at a time with cooperative cancellation,
-  element-for-element identical to the synchronous overloads.
+  (`tehran-nowruz`). A Saudi crescent-sighting variant must reproduce the
+  seventeen one-day shifts the gazetted announcements made to month starts
+  across 1422-1448 AH (`SaudiAnnouncedObservances-1422-1448.csv`). For the
+  Bahá'í calendar, a Tehran-sunset equinox variant for Naw-Rúz must flip
+  exactly the twenty official-21-March boundary years the current UT model
+  runs one day early on, and the Twin Holy Birthdays stay out of
+  `global-bahai.xml` until the eighth-new-moon-after-Naw-Rúz algorithm
+  lands; the official table in `corpus/bahai/` is their verification set.
 
 ### `Bodu.Globalization.Calendar.Builder`
 
-Current state: thin; fluent `NotableDateDocumentBuilder` authoring API
-with XML + JSON-subset serialization and a loader that materializes a
-`NotableDateResource`.
+Current state: Stable; first shipped at 0.6.0. The fluent
+`NotableDateDocumentBuilder` authoring API, with XML and JSON-subset
+serialization and parsing, materializing a `NotableDateResource` through
+the canonical loader. `Validate()` / `TryBuild(...)` and the loader's
+`TryLoad` / `TryLoadJson` collect every `BODU-CAL-*` diagnostic without
+throwing, `SaveBinary` writes the sealed `.bcal` form, and the round-trip
+guarantees between builder output, the loader and the JSON subset are
+documented in `docs/guides/calendar/round-trip-guarantees.md`, each pinned
+by a named test.
 
-- ~~**Add fluent rule-validation lint**~~ - delivered:
-  `NotableDateDocumentBuilder.Validate()` / `TryBuild(...)` and
-  `NotableDateResourceLoader.TryLoad` / `TryLoadJson` collect every
-  diagnostic (stable `BODU-CAL-*` codes) without throwing, documented in
-  the validation-diagnostics guide; the throwing overloads are
-  unchanged. Remaining nicety: source locations on diagnostics.
-- ~~**Ship an MSBuild task and `dotnet` tool**~~ - delivered end to end:
-  the sealed `.bcal` format (`NotableDateBinaryResource.Write`/`Read`,
-  `NotableDateResourceLoader.LoadBinary`, `SaveBinary` on the builder,
-  documented in the binary-rule-packs guide) round-trips every bundled
-  catalogue byte-stably with integrity digests; the
-  `Bodu.Globalization.Calendar.Tool` package ships the `bodu-calendar`
-  tool (`lint` / `compile` / `info` over the stable `BODU-CAL-*`
-  diagnostics); and `Bodu.Globalization.Calendar.Build` wires
-  `NotableDatePack` items to incremental build-time compilation via a
-  `ToolTask` over the same tool. Neither package is in a shipping wave
-  yet - they join `bld/release-manifest.txt` with the calendar wave.
-- **Document round-trip guarantees** between builder output and the JSON
-  resource rule provider.
+Forward-looking:
+
+- **Source locations on diagnostics** - the remaining nicety from the
+  lint item: `NotableDateValidationDiagnostic` carries a severity, a
+  code and a message, but no position.
+
+### `Bodu.Globalization.Calendar.Tool` / `Bodu.Globalization.Calendar.Build`
+
+Current state: Preview, and withheld from nuget.org (see *Release
+focus*). `Tool` is the `bodu-calendar` command-line compiler and lint
+(`lint` / `compile` / `info`, over the stable `BODU-CAL-*`
+diagnostics), turning XML / JSON documents into the sealed `.bcal`
+packs that `NotableDateResourceLoader.LoadBinary` loads without parsing
+or validation. `Build` wires `NotableDatePack` items to incremental
+build-time compilation through the `CompileNotableDatePack` task over
+the same tool. Both, with the `RulePackToolchain` sample that runs
+them, build only in the Release solution configuration.
+
+Forward-looking:
+
+- **Decide whether to publish them.** `bld/release-manifest.txt`
+  withholds both because a toolchain package's consumer contract
+  differs from a library's; removing their entries is that decision.
 
 ### `Bodu.Globalization.Calendar.DependencyInjection`
 
-Current state: bridge; `AddNotableDateService` /
-`AddReloadableNotableDateService` (declared in the `Bodu.Globalization.Calendar`
-namespace).
+Current state: Stable; first shipped at 0.6.0. `AddNotableDateService`
+/ `AddReloadableNotableDateService`, declared in the
+`Bodu.Globalization.Calendar` namespace: keyed overloads
+(`AddNotableDateService(serviceKey, resource | factory)`) register
+per-jurisdiction singletons through the keyed-service surface, with
+`NotableDateServiceOptions` overloads and idempotent `TryAdd`
+registration; `AddReloadableNotableDateService<TOptions>` rebuilds the
+resource on every `IOptionsMonitor<TOptions>` change, keeping the
+previous resource serving if the factory fails. Cache warm-up is the
+`Bodu.Globalization.Calendar.Caching` package's
+`AddNotableDateCacheWarmup`.
 
-- ~~**Add key-aware `AddNotableDateService("AU")`**~~ - delivered:
-  keyed overloads (`AddNotableDateService(serviceKey, resource | factory)`)
-  register per-jurisdiction singletons resolvable through the .NET 8
-  keyed-service surface, alongside `NotableDateServiceOptions` overloads
-  and `TryAdd` idempotent registration.
-- ~~**Add `IHostedService` cache warm-up**~~ - delivered by the
-  `Bodu.Globalization.Calendar.Caching` package
-  (`AddNotableDateCacheWarmup` registers the hosted
-  `NotableDateCacheWarmupService`, which drives
-  `CachingNotableDateService.Warm` over a configurable rolling
-  territory/year window). Remaining first-request cost for non-caching
-  setups is the uncached document parse in the core loader - tracked as
-  a core-package item, not a DI one.
-- ~~**Add `IOptionsMonitor<NotableDateOptions>` rebuild support**~~ -
-  delivered: `AddReloadableNotableDateService<TOptions>` binds the
-  reloadable service to `IOptionsMonitor<TOptions>`, rebuilding the
-  resource through the registration's factory on every options change;
-  a factory failure is logged and keeps the previous resource serving.
+No open items recorded. The remaining first-request cost for
+non-caching setups is the uncached document parse in the core loader -
+a core-package matter, not a DI one.
 
 ### `Bodu.Globalization.Calendar.Plugins`
 
-Current state: new; trust-gated external plugin loader for assemblies
-contributing custom `INotableDateAlgorithm` implementations.
+Current state: Stable; first shipped at 0.6.0. The trust-gated external
+plugin loader for assemblies contributing custom `INotableDateAlgorithm`
+implementations. It is the AOT-blocked component: loading assemblies is
+reflective, and the public surface carries `[RequiresUnreferencedCode]`
+/ `[RequiresDynamicCode]` so trimmed and AOT consumers get an analyzer
+signal. The binary-rule-pack format it waited on has landed, so an AOT
+application can load compiled `.bcal` packs through `LoadBinary`
+without the loader. The trust-gate contract is documented in the
+plugin-trust guide (`docs/guides/calendar/plugin-trust.md`): what each
+policy validates, the admission-check-not-sandbox boundary, entry-point
+strength, registration collisions, and unloading.
 
-- **This is the AOT-blocking component** (reflective assembly load). Its
-  path to AOT-compatibility is the binary-rule-pack format from the
-  Builder roadmap; until then it is correctly marked AOT-incompatible -
-  the loader's public surface now carries `[RequiresUnreferencedCode]` /
-  `[RequiresDynamicCode]` so trimmed and AOT consumers get an analyzer
-  signal instead of a runtime surprise.
-- ~~**Document the trust-gate contract**~~ - delivered: the calendar
-  plugin-trust guide states what each policy validates, the
-  admission-check-not-sandbox boundary, entry-point strength
-  (path overloads vs the weak already-loaded overload), registration
-  collision policy, and unloading; the README and apidoc now position
-  `StrongNamePluginTrustPolicy` as an identity label, not integrity.
+No open items recorded.
+
+### `Bodu.Globalization.Calendar.Caching` (and `.Sqlite` / `.Distributed`)
+
+Current state: Stable; all three first shipped at 0.6.0.
+`CachingNotableDateService` is a read-through decorator over any
+`INotableDateService` that caches whole civil years per territory
+behind the `INotableDateCache` contract (in memory, or one TOML or JSON
+file per territory), refreshed by a time-to-live and by a
+resource-version token, with concurrent cold misses for a year
+coalescing into one computation. The core package carries the
+`AddCachedNotableDateService` and `AddNotableDateCacheWarmup` (the
+hosted `NotableDateCacheWarmupService`) registrations; `.Sqlite`
+(`SqliteNotableDateCache`) and `.Distributed`
+(`DistributedNotableDateCache`, with `AddRedisNotableDateCache`) add the
+durable and shared backends. Since the previous revision a single-flight
+stampede race in `CachingNotableDateService` was fixed.
+
+No open items recorded.
 
 ### `Bodu.Globalization.Calendar.Data.*` *(regional packs)*
 
-Current state: five packs shipping in Wave 3 - Americas, AsiaPacific,
-Europe, MiddleEast, Africa (country sets in the release table). Each is a
-self-contained embedded pack importing the shared catalogues through a
-`<region>-common` hub.
+Current state: Stable; the five packs first shipped at 0.6.0 (wave 4).
+Each is a self-contained embedded pack behind a `<Region>CalendarData`
+factory; the Americas, Europe, Middle East and Africa packs import the
+shared catalogues through a `<region>-common` hub, and the Asia-Pacific
+territories import them directly. Country sets:
+
+| Data pack | Countries |
+| --- | --- |
+| `.Americas` | AR, BR, CA, CL, CO, MX, PE, US |
+| `.AsiaPacific` | AU, CN, HK, ID, IN, JP, KR, MY, NZ, PH, SG, TH, TW, VN |
+| `.Europe` | 28 EU/EEA (AT, BE, BG, CY, CZ, DE, DK, EE, ES, FI, FR, GB, GR, HR, HU, IE, IT, LT, LU, LV, MT, NL, PL, PT, RO, SE, SI, SK); Orthodox-Easter overrides for GR, CY, BG, RO |
+| `.MiddleEast` | AE, IL, JO, QA, SA, TR |
+| `.Africa` | EG, ET, GH, KE, MA, NG, ZA |
+
+Forward-looking:
 
 - **Subdivision-level data is the common open gap** across every pack.
   US states, Canadian provinces, AU states, German *Länder*, and the UK
@@ -1321,20 +1136,13 @@ self-contained embedded pack importing the shared catalogues through a
   subdivisions, Spanish autonomous communities, Swiss cantons) is
   subdivision-specific.
 - **Document holiday-source citations** per country so consumers can
-  audit each rule pack against authoritative sources. The first
-  territory-layer official sweeps now exist as the pattern to extend:
-  the US pack carries the 210-row OPM federal-holiday vector table
-  (2011-2030, `UsFederalHolidays-2011-2030.csv` - statutory Sat→Fri /
-  Sun→Mon substitution, three cross-year 31 December in-lieu New Year's
-  Days, Juneteenth from 2021), and the NZ pack pins the Employment New
-  Zealand 2026-2027 dates including the conflict-aware Boxing Day 2027
-  Tuesday-28-December substitution chain, and the GB pack is swept
-  against the official GOV.UK `bank-holidays.json` feed (264 rows,
-  2019-2028, exact dates and substitute flags per home nation -
-  delivered 2026-08 and archived at `corpus/uk/`; the sweep surfaced
-  and fixed the Scottish 2 January chained-substitution defect). Next
-  candidates: TH from the Bank of Thailand corpus table, and LK once
-  the pack-existence decision is made.
+  audit each rule pack against authoritative sources. The territory
+  sweeps that set the pattern: the US pack's 210-row OPM federal-holiday
+  table (2011-2030), the NZ pack's Employment New Zealand 2026-2027
+  dates, and the GB pack's 264-row sweep of the GOV.UK bank-holiday
+  feed (2019-2028, archived at `corpus/uk/`). Next candidates: TH from
+  the Bank of Thailand table in `corpus/thailand/`, and LK once the
+  pack-existence decision is made.
 - **Targeted country additions**: Iran (IR) via `global-persian.xml` in
   MiddleEast (in the original v1 set, not yet shipped); Switzerland (CH)
   in Europe alongside its canton data. **Verify Ethiopia's Ge'ez-calendar
@@ -1345,11 +1153,62 @@ self-contained embedded pack importing the shared catalogues through a
   AsiaPacific (today the rule fires for the single primary date), and
   wire Saudi-sighting subdivisions to `global-islamic-umm-al-qura.xml`.
 
+### `Bodu.Globalization.Recurrence`
+
+Current state: Stable since 1.0.0, after first shipping at 0.6.0 as
+Preview. Recurrence-rule evaluation in its own Core-only package, pure
+in its arguments (a metadata-scan `PurityTests` guard bans wall-clock
+and machine-time-zone APIs): `RecurrenceRule` (RFC 5545 `RRULE` at every
+frequency from `SECONDLY` to `YEARLY`), `RecurrenceRuleBuilder`,
+`RecurrenceSet` (`RDATE` / `EXDATE` composition with a canonical
+property-block round-trip), `CronExpression` (Vixie five-field,
+optional-seconds six-field, the `@` macros, and the Quartz day tokens),
+and `AnchoredInterval` (instant-anchored intervals in the RFC 5545
+duration grammar). Every form answers next and previous occurrences
+over `DateTime` and `DateTimeOffset` and offers a defect-naming
+`TryParse`. The work is planned and tracked in
+`plans/recurrence-scheduling.md`, whose Phases 0-11 are implemented;
+five of them landed for 1.3.0:
+
+- **Point queries from the period that holds them** (REC-N-009, Phase
+  7). The point queries and windows of `RecurrenceRule` and
+  `RecurrenceSet` begin at the frequency period that holds the query
+  instead of at `DTSTART`, so a distant anchor no longer costs time per
+  elapsed period; a rule with `COUNT` still enumerates from its start.
+- **Sub-daily frequencies** (Phase 8). `HOURLY`, `MINUTELY` and
+  `SECONDLY` rules enumerate, held to RFC 5545's examples, libical's
+  counts, python-dateutil's output for 200 generated rules
+  (`corpus/recurrence/dateutil/`), and a reference model that visits
+  every period.
+- **Quartz day tokens** (Phase 9). Cron accepts `L`, `L-n`, `nW`, `LW`,
+  `dL`, `d#k` and `?` in the shapes Cronos accepts, keeping Vixie's
+  weekday numbering and union rule; Cronos's table (1,354 rows, 1,074
+  in scope, the 319 token rows among them) matches.
+- **Calendar value sets** (Phase 10). Cron holds its six fields as the
+  Bodu.Core sets, an RRULE tests its months, month days and weekdays
+  against sets precomputed from its parts, and `RecurrenceRuleBuilder`
+  gains an overload per part that takes the set expressing it.
+- **Cron corpora** (Phase 11). The test suites and release-note fixes
+  of 21 cron libraries (see *Active focus*), and the two defects they
+  found fixed: a search near either end of the calendar threw rather
+  than answering `null`, and a search gave up after twelve years. It
+  now scans 400 years, one whole Gregorian cycle, so `null` means
+  "never".
+
+Forward-looking:
+
+- **A read-only `.ics` (iCalendar) reader** - the deferred follow-on.
+- **A purity analyzer.** The `PurityTests` guard is a repository test;
+  an analyzer remains a compatible follow-on, potentially in
+  `Bodu.CodeStyle` (`plans/recurrence-scheduling.md` §7).
+
 ### `Bodu.Test` *(shared test infrastructure)*
 
-Current state: infrastructure project; shared assertions, stream mocks,
-the `IKat` marker, the generic KAT primitives, and the one multi-consumer
-contract base. Not published.
+Current state: infrastructure project, not packable; shared assertions,
+stream mocks, the `IKat` marker, the generic KAT primitives, the
+multi-consumer contract bases, and `Bodu.Test.Corpus`, which reads,
+checks and governs the release-note fix catalogues under
+`corpus/<area>/fixes/` for every area's test project.
 
 - **Promote `Bodu.Test.Kat` as a public NuGet** so downstream consumers
   can plug into the same testing model.
@@ -1360,17 +1219,22 @@ contract base. Not published.
 ### `Bodu.CodeStyle` *(separate solution)*
 
 Current state: independent analyzer / code-fix / XML-doc-formatter
-solution, not in `bodu.slnx`.
+solution, not in `bodu.slnx`, with its own `global.json`. Its README
+lists the `BODU1xxx` XML-documentation diagnostics as shipping, and
+member ordering, a CLI and a VSIX as deferred milestones.
 
 - **Document each analyzer code** under `docs/codestyle/` (rule,
   rationale, examples, suppression guidance).
 - **Add code-fix coverage** for every rule that currently only diagnoses.
-- **Publish a JSON-schema** for `bodu.xmldocstyle.json`.
+- **Publish a JSON-schema** for `bodu.xmldocstyle.json`, whose `$schema`
+  already names a `Bodu.CodeStyle/schema/bodu.xmldocstyle.schema.json`
+  that does not exist in the tree.
 
-### `bc-csharp` *(vendored)*
+### `bc-csharp` *(local reference, git-ignored)*
 
-Bouncy Castle source vendored as a crypto KAT reference. Non-goal: do not
-redistribute, do not extend.
+Not part of the repository: `.gitignore` lists `/bc-csharp/` among its
+local and experimental folders, and no project, test or script refers
+to it. Non-goal: do not redistribute, do not extend.
 
 ## New library candidates
 
