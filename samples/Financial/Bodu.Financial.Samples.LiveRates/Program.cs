@@ -31,9 +31,10 @@ public static class Program
         // --- Choosing a date that is virtually certain to have a published rate ------------------
         // 1. Start from today (UTC) minus a 5-day buffer, so publication lag, time zones, and the
         //    current in-progress week can never make the target date "too fresh".
-        // 2. Walk back to the Wednesday on or before that anchor. A Wednesday is never a weekend,
-        //    and mid-week public holidays are rare - and the lookups below still carry a
-        //    PreviousWithin(5) tolerance so even a holiday Wednesday resolves to the prior fixing.
+        // 2. Walk back to the last Wednesday before that anchor (never the anchor itself). A
+        //    Wednesday is never a weekend, and mid-week public holidays are rare - and the lookups
+        //    below still carry a PreviousWithin(5) tolerance so even a holiday Wednesday resolves
+        //    to the prior fixing.
         // 3. The week window is the 7 days ending on that Wednesday: it always spans at least four
         //    business days, and stays comfortably inside every provider's history window
         //    (including OANDA's rolling ~180 days).
@@ -65,19 +66,19 @@ public static class Program
         //     var fromIso = "GBP"; var toIso = "USD";
         //
         // Yahoo Finance (any pair, per-ticker chart JSON, since 2003; sends a browser User-Agent):
-        //     using var provider = new YahooRateProvider(new YahooRateProviderOptions { EnableDiskCache = false });
+        //     using var provider = new YahooRateProvider(new YahooRateProviderOptions());
         //     var fromIso = "EUR"; var toIso = "USD";
         //
         // OFX (any pair, spot-rate history JSON, unbounded history):
-        //     using var provider = new OfxRateProvider(new OfxRateProviderOptions { EnableDiskCache = false });
+        //     using var provider = new OfxRateProvider(new OfxRateProviderOptions());
         //     var fromIso = "EUR"; var toIso = "USD";
         //
         // OANDA (any pair, rolling ~180-day anonymous window - the buffer above stays inside it):
-        //     using var provider = new OandaRateProvider(new OandaRateProviderOptions { EnableDiskCache = false });
+        //     using var provider = new OandaRateProvider(new OandaRateProviderOptions());
         //     var fromIso = "EUR"; var toIso = "USD";
         //
         // XE.com (any pair, rolling ~10-year window; experimental - scrapes an auth token):
-        //     using var provider = new XeRateProvider(new XeRateProviderOptions { EnableDiskCache = false });
+        //     using var provider = new XeRateProvider(new XeRateProviderOptions());
         //     var fromIso = "EUR"; var toIso = "USD";
         //
         // Fixer (fixer.io, any pair; requires an access_key - free plan is EUR-base only):

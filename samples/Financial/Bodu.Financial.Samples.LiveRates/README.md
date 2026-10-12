@@ -23,8 +23,8 @@ The sample never asks for "yesterday" - freshness is where date-based lookups go
 
 1. **Buffer:** start from today (UTC) minus 5 days, so publication lag, time zones, and the
    in-progress week can never make the target too fresh.
-2. **Weekday:** walk back to the Wednesday on or before that anchor - a Wednesday is never a
-   weekend.
+2. **Weekday:** walk back to the last Wednesday before that anchor (never the anchor itself) -
+   a Wednesday is never a weekend.
 3. **Tolerance:** the single-date lookup still carries `PreviousWithin(5)`, so even if that
    Wednesday was a mid-week market holiday, the most recent prior fixing answers - visibly,
    via the result's resolution metadata, never silently.
