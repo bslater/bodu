@@ -93,6 +93,35 @@ public partial class DotEnvSerializerTests
     }
 
     /// <summary>
+    /// A POCO with a key <c>HOST</c> and no public parameterless constructor, which deserialization cannot create.
+    /// </summary>
+    public sealed class ConstructedConfig
+    {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ConstructedConfig" /> class.
+        /// </summary>
+        /// <param name="host">The host name.</param>
+        public ConstructedConfig(string host) =>
+            Host = host;
+
+        /// <summary>Gets or sets the host name.</summary>
+        /// <value>The host.</value>
+        [PropertyName("HOST")]
+        public string Host { get; set; }
+    }
+
+    /// <summary>
+    /// An abstract POCO with a key <c>HOST</c>, which deserialization cannot create.
+    /// </summary>
+    public abstract class AbstractConfig
+    {
+        /// <summary>Gets or sets the host name.</summary>
+        /// <value>The host.</value>
+        [PropertyName("HOST")]
+        public string Host { get; set; } = string.Empty;
+    }
+
+    /// <summary>
     /// Gets scalar root values, each of which serialization must reject with <see cref="DotEnvSerializationException" /> naming its type.
     /// </summary>
     /// <value>The rows, each a named scalar value and the exception it raises.</value>

@@ -237,4 +237,51 @@ public partial class IniSerializerTests
 
         Assert.IsTrue(ex.Message.Contains(kat.MessageContains!, StringComparison.Ordinal), ex.Message);
     }
+
+    /// <summary>
+    /// Verifies that a root type without a public parameterless constructor throws
+    /// <see cref="IniSerializationException" /> naming the type, rather than the runtime's
+    /// <see cref="MissingMethodException" />.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenTheRootTypeHasNoParameterlessConstructor_ShouldThrowIniSerializationException()
+    {
+        var ex = Assert.ThrowsExactly<IniSerializationException>(() =>
+        {
+            _ = IniSerializer.Deserialize<ConstructedConfig>("Name=web\n");
+        });
+
+        Assert.IsTrue(ex.Message.Contains(nameof(ConstructedConfig), StringComparison.Ordinal), ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that an abstract root type throws <see cref="IniSerializationException" /> naming the type, rather than
+    /// the runtime's <see cref="MissingMethodException" />.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenTheRootTypeIsAbstract_ShouldThrowIniSerializationException()
+    {
+        var ex = Assert.ThrowsExactly<IniSerializationException>(() =>
+        {
+            _ = IniSerializer.Deserialize<AbstractConfig>("Name=web\n");
+        });
+
+        Assert.IsTrue(ex.Message.Contains(nameof(AbstractConfig), StringComparison.Ordinal), ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that a section type without a public parameterless constructor throws
+    /// <see cref="IniSerializationException" /> naming the type, rather than the runtime's
+    /// <see cref="MissingMethodException" />.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenASectionTypeHasNoParameterlessConstructor_ShouldThrowIniSerializationException()
+    {
+        var ex = Assert.ThrowsExactly<IniSerializationException>(() =>
+        {
+            _ = IniSerializer.Deserialize<ConstructedSectionConfig>("[Database]\nHost=db\n");
+        });
+
+        Assert.IsTrue(ex.Message.Contains(nameof(ConstructedSection), StringComparison.Ordinal), ex.Message);
+    }
 }

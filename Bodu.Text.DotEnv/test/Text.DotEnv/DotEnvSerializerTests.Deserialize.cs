@@ -145,4 +145,35 @@ public partial class DotEnvSerializerTests
 
         Assert.IsTrue(ex.Message.Contains(kat.MessageContains!, StringComparison.Ordinal), ex.Message);
     }
+
+    /// <summary>
+    /// Verifies that a POCO without a public parameterless constructor throws
+    /// <see cref="DotEnvSerializationException" /> naming the type, rather than the runtime's
+    /// <see cref="MissingMethodException" />.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenTheTypeHasNoParameterlessConstructor_ShouldThrowDotEnvSerializationException()
+    {
+        var ex = Assert.ThrowsExactly<DotEnvSerializationException>(() =>
+        {
+            _ = DotEnvSerializer.Deserialize<ConstructedConfig>("HOST=localhost\n");
+        });
+
+        Assert.IsTrue(ex.Message.Contains(nameof(ConstructedConfig), StringComparison.Ordinal), ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that an abstract POCO throws <see cref="DotEnvSerializationException" /> naming the type, rather than
+    /// the runtime's <see cref="MissingMethodException" />.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenTheTypeIsAbstract_ShouldThrowDotEnvSerializationException()
+    {
+        var ex = Assert.ThrowsExactly<DotEnvSerializationException>(() =>
+        {
+            _ = DotEnvSerializer.Deserialize<AbstractConfig>("HOST=localhost\n");
+        });
+
+        Assert.IsTrue(ex.Message.Contains(nameof(AbstractConfig), StringComparison.Ordinal), ex.Message);
+    }
 }

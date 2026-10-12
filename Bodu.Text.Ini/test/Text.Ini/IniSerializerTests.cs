@@ -111,6 +111,57 @@ public partial class IniSerializerTests
     }
 
     /// <summary>
+    /// A root model with a global key <c>Name</c> and no public parameterless constructor, which deserialization cannot
+    /// create.
+    /// </summary>
+    private sealed class ConstructedConfig
+    {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ConstructedConfig" /> class.
+        /// </summary>
+        /// <param name="name">The server name.</param>
+        public ConstructedConfig(string name) =>
+            Name = name;
+
+        /// <summary>Gets or sets the server name (a global key).</summary>
+        public string Name { get; set; }
+    }
+
+    /// <summary>
+    /// An abstract root model with a global key <c>Name</c>, which deserialization cannot create.
+    /// </summary>
+    private abstract class AbstractConfig
+    {
+        /// <summary>Gets or sets the server name (a global key).</summary>
+        public string? Name { get; set; }
+    }
+
+    /// <summary>
+    /// A root model whose section has no public parameterless constructor.
+    /// </summary>
+    private sealed class ConstructedSectionConfig
+    {
+        /// <summary>Gets or sets the database section, which deserialization cannot create.</summary>
+        public ConstructedSection? Database { get; set; }
+    }
+
+    /// <summary>
+    /// A section model with no public parameterless constructor.
+    /// </summary>
+    private sealed class ConstructedSection
+    {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ConstructedSection" /> class.
+        /// </summary>
+        /// <param name="host">The host name.</param>
+        public ConstructedSection(string host) =>
+            Host = host;
+
+        /// <summary>Gets or sets the host name.</summary>
+        public string Host { get; set; }
+    }
+
+    /// <summary>
     /// A hand-written <see cref="IIniSectionFactory{TSection}" /> for <see cref="DatabaseSection" />, standing in for
     /// the generated factory in the reflection-free section-overload tests.
     /// </summary>
