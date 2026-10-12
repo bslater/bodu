@@ -59,7 +59,7 @@ namespace Bodu.Security.Cryptography;
 /// </item>
 /// <item>
 /// <term>Two-pass alternatives</term>
-/// <description><see cref="EaxModeTransform" /> - flexible nonce length, OMAC-based authentication.</description>
+/// <description><see cref="EaxModeTransform" /> - one-block nonce, OMAC-based authentication.</description>
 /// </item>
 /// <item>
 /// <term>Misuse-resistant</term>
@@ -97,7 +97,7 @@ namespace Bodu.Security.Cryptography;
 /// </item>
 /// <item>
 /// <term>Two-pass alternatives</term>
-/// <description><see cref="EaxModeTransform" /> - flexible nonce length, OMAC-based authentication.</description>
+/// <description><see cref="EaxModeTransform" /> - one-block nonce, OMAC-based authentication.</description>
 /// </item>
 /// <item>
 /// <term>Misuse-resistant</term>
@@ -125,9 +125,15 @@ public interface IAeadBlockCipherModeTransform
     : IAeadTransform
 {
     /// <summary>
-    /// Processes associated data (AAD) that will be authenticated but not encrypted. Must be called before
+    /// Processes associated data (AAD) that will be authenticated but not encrypted. Call it at most once, before
     /// <see cref="Encrypt" /> or <see cref="Decrypt" />.
     /// </summary>
+    /// <remarks>
+    /// The call is optional for most implementations: when it is omitted, the message is authenticated with empty
+    /// associated data. <see cref="AsconAead128" /> is the exception - it requires the call, with an empty span when
+    /// there is no associated data, and its <see cref="Encrypt" /> and <see cref="Decrypt" /> throw
+    /// <see cref="InvalidOperationException" /> without it.
+    /// </remarks>
     /// <param name="associatedData">The bytes to authenticate. May be empty to indicate no associated data.</param>
     /// <exception cref="InvalidOperationException">
     /// Associated data has already been processed on this instance, or the instance has already completed an
@@ -181,7 +187,7 @@ public interface IAeadBlockCipherModeTransform
     /// <item>
     /// <description>
     /// <em>Verify-before-release.</em> The tag is compared in constant time before any plaintext byte is written to
-    /// <paramref name="output" />. Used by GCM, CCM, EAX, and OCB.
+    /// <paramref name="output" />. Used by GCM and EAX.
     /// </description>
     /// </item>
     /// <item>
@@ -189,8 +195,8 @@ public interface IAeadBlockCipherModeTransform
     /// <em>Write-then-clear.</em> The candidate plaintext is streamed into <paramref name="output" /> first because the
     /// algorithm's structure requires the transform to complete before the tag can be computed. The tag is then
     /// compared in constant time; on mismatch <paramref name="output" /> is zeroed via
-    /// <see cref="CryptographicOperations.ZeroMemory" /> before the exception is thrown. Used by Ascon-AEAD-128 and
-    /// GCM-SIV.
+    /// <see cref="CryptographicOperations.ZeroMemory" /> before the exception is thrown. Used by CCM, OCB, SIV,
+    /// GCM-SIV, and Ascon-AEAD-128.
     /// </description>
     /// </item>
     /// </list>

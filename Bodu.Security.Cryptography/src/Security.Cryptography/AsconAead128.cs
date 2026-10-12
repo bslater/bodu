@@ -34,7 +34,8 @@ namespace Bodu.Security.Cryptography;
 /// <item>
 /// <description>
 /// <b>Associated-data processing</b>: each 16-byte block is absorbed with Ascon-p8 between blocks. A domain-separation
-/// constant (XOR of 1 into state word 4) is always applied after the AD phase, even when AD is empty.
+/// constant (XOR of <c>0x80</c> into the most significant byte of state word 4, SP 800-232's DSEP) is always applied
+/// after the AD phase, even when AD is empty.
 /// </description>
 /// </item>
 /// <item>
