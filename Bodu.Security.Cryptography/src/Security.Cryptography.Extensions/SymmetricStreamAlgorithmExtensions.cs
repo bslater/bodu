@@ -36,7 +36,10 @@ namespace Bodu.Security.Cryptography.Extensions;
 /// chacha.GenerateNonce();
 ///
 /// byte[] ciphertext = chacha.Encrypt(plaintext);
-/// byte[] roundTrip  = chacha.Decrypt(ciphertext);
+///
+/// // A nonce backs one parameterless transform, so decrypt with a second instance given the same key and nonce.
+/// using var decryptor = new ChaCha20 { Key = chacha.Key, Nonce = chacha.Nonce };
+/// byte[] roundTrip = decryptor.Decrypt(ciphertext);
 ///]]>
 /// </code>
 /// </example>

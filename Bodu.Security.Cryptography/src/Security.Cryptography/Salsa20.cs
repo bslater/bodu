@@ -55,7 +55,10 @@ namespace Bodu.Security.Cryptography;
 /// salsa.GenerateKey(); // 256-bit
 /// salsa.GenerateNonce(); // 64-bit nonce
 /// byte[] ciphertext = salsa.Encrypt(plaintext);
-/// byte[] roundTrip  = salsa.Decrypt(ciphertext);
+///
+/// // A nonce backs one parameterless transform, so decrypt with a second instance given the same key and nonce.
+/// using var decryptor = new Salsa20 { Key = salsa.Key, Nonce = salsa.Nonce };
+/// byte[] roundTrip = decryptor.Decrypt(ciphertext);
 ///]]>
 /// </code>
 /// </example>

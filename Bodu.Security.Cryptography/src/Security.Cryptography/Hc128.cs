@@ -51,7 +51,10 @@ namespace Bodu.Security.Cryptography;
 /// hc128.GenerateKey(); // 128-bit
 /// hc128.GenerateNonce(); // 128-bit IV
 /// byte[] ciphertext = hc128.Encrypt(plaintext);
-/// byte[] roundTrip  = hc128.Decrypt(ciphertext);
+///
+/// // A nonce backs one parameterless transform, so decrypt with a second instance given the same key and nonce.
+/// using var decryptor = new Hc128 { Key = hc128.Key, Nonce = hc128.Nonce };
+/// byte[] roundTrip = decryptor.Decrypt(ciphertext);
 ///]]>
 /// </code>
 /// </example>

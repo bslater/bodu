@@ -55,7 +55,10 @@ namespace Bodu.Security.Cryptography;
 /// xsalsa.GenerateKey(); // 256-bit
 /// xsalsa.GenerateNonce(); // 192-bit nonce - safe to choose at random
 /// byte[] ciphertext = xsalsa.Encrypt(plaintext);
-/// byte[] roundTrip  = xsalsa.Decrypt(ciphertext);
+///
+/// // A nonce backs one parameterless transform, so decrypt with a second instance given the same key and nonce.
+/// using var decryptor = new XSalsa20 { Key = xsalsa.Key, Nonce = xsalsa.Nonce };
+/// byte[] roundTrip = decryptor.Decrypt(ciphertext);
 ///]]>
 /// </code>
 /// </example>

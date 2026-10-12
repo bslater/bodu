@@ -55,7 +55,10 @@ namespace Bodu.Security.Cryptography;
 /// xchacha.GenerateKey(); // 256-bit
 /// xchacha.GenerateNonce(); // 192-bit nonce - safe to choose at random
 /// byte[] ciphertext = xchacha.Encrypt(plaintext);
-/// byte[] roundTrip  = xchacha.Decrypt(ciphertext);
+///
+/// // A nonce backs one parameterless transform, so decrypt with a second instance given the same key and nonce.
+/// using var decryptor = new XChaCha20 { Key = xchacha.Key, Nonce = xchacha.Nonce };
+/// byte[] roundTrip = decryptor.Decrypt(ciphertext);
 ///]]>
 /// </code>
 /// </example>

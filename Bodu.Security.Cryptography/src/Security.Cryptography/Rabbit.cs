@@ -48,7 +48,10 @@ namespace Bodu.Security.Cryptography;
 /// rabbit.GenerateKey(); // 128-bit
 /// rabbit.GenerateNonce(); // 64-bit IV
 /// byte[] ciphertext = rabbit.Encrypt(plaintext);
-/// byte[] roundTrip  = rabbit.Decrypt(ciphertext);
+///
+/// // A nonce backs one parameterless transform, so decrypt with a second instance given the same key and nonce.
+/// using var decryptor = new Rabbit { Key = rabbit.Key, Nonce = rabbit.Nonce };
+/// byte[] roundTrip = decryptor.Decrypt(ciphertext);
 ///]]>
 /// </code>
 /// </example>
