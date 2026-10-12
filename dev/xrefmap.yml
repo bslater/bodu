@@ -65836,6 +65836,12 @@ references:
   commentId: F:Bodu.Formats.Outlook.OutlookAttachmentMethod.ByValue
   fullName: Bodu.Formats.Outlook.OutlookAttachmentMethod.ByValue
   nameWithType: OutlookAttachmentMethod.ByValue
+- uid: Bodu.Formats.Outlook.OutlookAttachmentMethod.ByWebReference
+  name: ByWebReference
+  href: api/Bodu.Formats.Outlook.OutlookAttachmentMethod.html#Bodu_Formats_Outlook_OutlookAttachmentMethod_ByWebReference
+  commentId: F:Bodu.Formats.Outlook.OutlookAttachmentMethod.ByWebReference
+  fullName: Bodu.Formats.Outlook.OutlookAttachmentMethod.ByWebReference
+  nameWithType: OutlookAttachmentMethod.ByWebReference
 - uid: Bodu.Formats.Outlook.OutlookAttachmentMethod.EmbeddedMessage
   name: EmbeddedMessage
   href: api/Bodu.Formats.Outlook.OutlookAttachmentMethod.html#Bodu_Formats_Outlook_OutlookAttachmentMethod_EmbeddedMessage

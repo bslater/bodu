@@ -250,8 +250,8 @@
 <td><code>OpenMessage()</code></td>
 </tr>
 <tr>
-<td><code>ByReference</code> / <code>ByReferenceResolve</code> / <code>ByReferenceOnly</code></td>
-<td>The file holds a path to the content, not the content.</td>
+<td><code>ByReference</code> / <code>ByReferenceResolve</code> / <code>ByReferenceOnly</code> / <code>ByWebReference</code></td>
+<td>The file holds a path to the content, or for <code>ByWebReference</code> a URL to a web service that holds it, not the content.</td>
 <td>Neither - no payload in the file</td>
 </tr>
 <tr>
@@ -271,7 +271,7 @@
 <h2 id="subject-normalization">Subject normalization</h2>
 <p>Outlook stores a subject that carries a prefix (<code>RE:</code>, <code>FW:</code>, …) as U+0001, then a character whose code is the prefix length plus one, then the full subject text (MS-PST §2.4.5.1.2; the same encoding appears in <code>.msg</code> files). The <code>Subject</code> convenience on both message types strips the marker pair and returns the full text, prefix included; <code>Properties.GetString(MapiPropertyIds.Subject)</code> always surfaces the value as stored.</p>
 <h2 id="code-page">Code page</h2>
-<p>A <code>String8</code> property is bytes in some character set; the readers resolve which one from the object's own properties - <code>PidTagMessageCodepage</code> first, then <code>PidTagInternetCodepage</code>, then Windows-1252, the historical default for objects that declare nothing. Child objects inherit: in a <code>.msg</code> file, recipients and attachments inherit the message's encoding; in a <code>.pst</code> file, a folder inherits from its parent (the root from the store), a message from its folder, an attachment from its message, and an embedded message from its attachment - each level overriding only when it declares a code page of its own. The <code>BodyHtml</code> convenience decodes <code>PidTagHtml</code> with the internet code page first, falling back to the message code page, or returns the value verbatim when the writer stored it as a string. The Windows code pages that dominate real-world mail (Windows-1252, Shift-JIS, …) are available on every platform because the readers register <code>CodePagesEncodingProvider</code>; the <code>System.Text.Encoding.CodePages</code> package dependency exists for this.</p>
+<p>A <code>String8</code> property is bytes in some character set; the readers resolve which one from the object's own properties - <code>PidTagMessageCodepage</code> first, then <code>PidTagInternetCodepage</code>, then Windows-1252, the historical default for objects that declare nothing. A declared code page that does not resolve, or that cannot decode <code>String8</code> bytes at all (the UTF-16 code pages 1200 and 1201, and the UTF-32 code pages 12000 and 12001), is skipped and the next candidate tried. Child objects inherit: in a <code>.msg</code> file, recipients and attachments inherit the message's encoding; in a <code>.pst</code> file, a folder inherits from its parent (the root from the store), a message from its folder, an attachment from its message, and an embedded message from its attachment - each level overriding only when it declares a code page of its own. The <code>BodyHtml</code> convenience decodes <code>PidTagHtml</code> with the internet code page first, falling back to the message code page; an HTML body is bytes in whatever character set that code page names, so any code page .NET serves is used for it, UTF-16 and UTF-32 included, and a byte order mark of that code page at the start of the body is dropped, the UTF-7 signature included. When the writer stored the body as a string, <code>BodyHtml</code> returns the value verbatim. The Windows code pages that dominate real-world mail (Windows-1252, Shift-JIS, …) are available on every platform because the readers register <code>CodePagesEncodingProvider</code>; the <code>System.Text.Encoding.CodePages</code> package dependency exists for this. A declared code page of 65000 decodes as UTF-7 (RFC 2152): .NET serves that code page only behind an opt-in switch, so the readers construct the decoder themselves rather than fall back to Windows-1252, and the text reads as written.</p>
 <h2 id="bodies-and-compressed-rtf">Bodies and compressed RTF</h2>
 <p>Three conveniences cover the body forms a message stores, on both message types:</p>
 <ul>
@@ -279,7 +279,7 @@
 <li><code>BodyHtml</code> - the <code>PidTagHtml</code> payload, decoded as above; decoded once and cached.</li>
 <li><code>BodyRtf</code> - the <code>PidTagRtfCompressed</code> payload decompressed per MS-OXRTFCP, decompressed once and cached.</li>
 </ul>
-<p>Compressed RTF (LZFu) is an LZ77 variant over a 4096-byte dictionary preseeded with a standard RTF prologue, behind a 16-byte header that declares the compressed and uncompressed sizes, a magic (LZFu compressed, MELA raw), and a CRC. The declared uncompressed size sits <em>outside</em> the checksum, so it is bounded rather than trusted: a payload whose declared or produced size exceeds <code>MaxDecompressedRtfBytes</code> is rejected before allocation. Set <code>DecompressRtf</code> to <code>false</code> on either options type to skip decompression entirely - <code>BodyRtf</code> then returns <code>null</code> and the raw payload stays reachable through <code>Properties.GetBinary(MapiPropertyIds.RtfCompressed)</code>.</p>
+<p>Compressed RTF (LZFu) is an LZ77 variant over a 4096-byte dictionary preseeded with a standard RTF prologue, behind a 16-byte header that declares the compressed and uncompressed sizes, a magic (LZFu compressed, MELA raw), and a CRC. An uncompressed (MELA) body is every byte after the header, read whatever its declared sizes and CRC say, as MS-OXRTFCP 2.2.3.1 requires. The declared uncompressed size of a compressed body sits <em>outside</em> the checksum, so it is bounded rather than trusted: a compressed payload whose declared or produced size exceeds <code>MaxDecompressedRtfBytes</code>, or an uncompressed one longer than it, is rejected before allocation. Set <code>DecompressRtf</code> to <code>false</code> on either options type to skip decompression entirely - <code>BodyRtf</code> then returns <code>null</code> and the raw payload stays reachable through <code>Properties.GetBinary(MapiPropertyIds.RtfCompressed)</code>.</p>
 <h2 id="validation-level">Validation level</h2>
 <p>Each reader reuses its container's level rather than defining its own:</p>
 <table>
@@ -387,7 +387,7 @@
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 229f846 · Built: 2026-10-12 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.1</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: fa2e19e · Built: 2026-10-12 (UTC)</span>
         </div>
       </div>
     </footer>
