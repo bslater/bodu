@@ -12,7 +12,6 @@ The readers are `ref struct` cursors over `ReadOnlySpan<byte>`: `Read()` advance
 
 ## Pattern 1 - walk delimited records one at a time
 
-<!-- compile -->
 ```csharp
 using Bodu.Text.Delimited;
 using Bodu.Text.Delimited.Reader;
@@ -43,7 +42,6 @@ while (reader.Read())
 
 For typed rows, skip the token loop:
 
-<!-- compile -->
 ```csharp
 await foreach (Trade trade in DelimitedSerializer.DeserializeAsyncEnumerableAsync<Trade>(stream))
 {
@@ -55,7 +53,6 @@ await DelimitedSerializer.SerializeAsync(output, ProduceTradesAsync());  // IAsy
 
 ## Pattern 3 - scan a DotEnv source
 
-<!-- compile -->
 ```csharp
 using Bodu.Text.DotEnv;
 using Bodu.Text.DotEnv.Reader;
@@ -74,7 +71,6 @@ while (reader.Read())
 
 ## Pattern 4 - stream INI tokens as authored
 
-<!-- compile -->
 ```csharp
 using Bodu.Text.Ini;
 using Bodu.Text.Ini.Reader;
@@ -97,7 +93,6 @@ Use the normalized `IniDocumentReader` when you want the logical object shape (g
 
 ## Pattern 5 - write tokens progressively
 
-<!-- compile -->
 ```csharp
 using System.Buffers;
 using Bodu.Text.Delimited.Writer;
@@ -119,7 +114,7 @@ The DotEnv and INI writers are line-oriented (`WritePropertyName` + `WriteString
 
 ## Async facades
 
-The `*Serializer` stream overloads (`SerializeAsync` / `DeserializeAsync`) buffer the document in full - only the stream copy is asynchronous. The exception is Delimited's record streaming (Pattern 2), which is genuinely incremental in both directions: `DeserializeAsyncEnumerableAsync` reads the stream in segments and yields each record as soon as its terminating line ending is observed (memory is bounded by the longest record, not the document - a record split across segments, even inside a quoted field, is retried as more data arrives), and the `IAsyncEnumerable` `SerializeAsync` overload encodes each record as it is produced and flushes to the destination in bounded batches.
+The `*Serializer` stream overloads (`SerializeAsync`, and for DotEnv and INI `DeserializeAsync`) buffer the document in full - only the stream copy is asynchronous. Delimited has no buffered `DeserializeAsync`; its asynchronous read is the record streaming (Pattern 2), which, with the `IAsyncEnumerable` `SerializeAsync` overload, is genuinely incremental in both directions: `DeserializeAsyncEnumerableAsync` reads the stream in segments and yields each record as soon as its terminating line ending is observed (memory is bounded by the longest record, not the document - a record split across segments, even inside a quoted field, is retried as more data arrives), and the `IAsyncEnumerable` `SerializeAsync` overload encodes each record as it is produced and flushes to the destination in bounded batches.
 
 ## Mid-stream errors
 

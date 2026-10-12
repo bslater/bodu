@@ -44,7 +44,6 @@ A field is quoted when the reader would otherwise read it back differently: when
 
 Records written as objects (`WriteStartObject` / `WritePropertyName` / `WriteString`) emit a header from the first record's property names unless `NoHeader` is set. A tab-separated, header-less file with single-quote quoting:
 
-<!-- compile -->
 ```csharp
 using System.Buffers;
 using Bodu.Text.Delimited.Writer;
@@ -61,12 +60,14 @@ writer.Flush();
 // MSFT\t'tab\there'\r\n
 ```
 
-The value containing a tab is quoted with `'` because the tab is now the delimiter. The same records with the default options produce a header and RFC 4180 double-quote doubling:
+The value containing a tab is quoted with `'` because the tab is now the delimiter. The same record with the default options produces a header row, and the tab, now ordinary text, is written bare:
 
 ```text
-symbol,note
-MSFT,"say ""hi"", now"
+symbol,note\r\n
+MSFT,tab\there\r\n
 ```
+
+A field holding the default quote is quoted with its quotes doubled, as RFC 4180 requires: `say "hi", now` is written `"say ""hi"", now"`.
 
 Records end with `\r\n` in both dialects. `DelimitedSerializerOptions` exposes the same four members and forwards them to this struct (and to the reader options) on your behalf.
 
@@ -78,7 +79,6 @@ Records end with `\r\n` in both dialects. `DelimitedSerializerOptions` exposes t
 
 The option sets the default for the one-argument `WritePropertyName`; the two-argument overload `WritePropertyName(name, export)` decides per key and ignores the option:
 
-<!-- compile -->
 ```csharp
 using Bodu.Text.DotEnv.Writer;
 
@@ -105,7 +105,6 @@ A key cannot be quoted, so the writer accepts only the keys the reader reads, wh
 |---|---|---|---|
 | `CommentPrefix` | `char` | `'\0'` → `;` | The character `WriteComment` (and the DOM's comment trivia) is emitted with. |
 
-<!-- compile -->
 ```csharp
 using Bodu.Text.Ini.Writer;
 
@@ -133,7 +132,6 @@ Both `;` and `#` are comment starters on the read side by default, so either pre
 
 A Bencode document is single-valued; the writer enforces that unless told otherwise:
 
-<!-- compile -->
 ```csharp
 using Bodu.Text.Bencode.Writer;
 
@@ -144,7 +142,6 @@ writer.WriteInteger(2);
 // → throws InvalidOperationException: A complete root value has already been written; a Bencode document is single-valued unless AllowMultipleRootValues is set.
 ```
 
-<!-- compile -->
 ```csharp
 var writer = new Utf8BencodeWriter(buffer, new BencodeWriterOptions { AllowMultipleRootValues = true });
 writer.WriteInteger(1);
@@ -154,7 +151,6 @@ writer.WriteString("two");
 
 Multiple roots are how a stream of bencoded messages (a DHT or peer-wire log, for example) is written to one buffer. The depth guard is the same family of error the serializer raises:
 
-<!-- compile -->
 ```csharp
 var writer = new Utf8BencodeWriter(buffer, new BencodeWriterOptions { MaxDepth = 1 });
 writer.WriteStartList();
@@ -169,7 +165,6 @@ writer.WriteStartList();
 | `MaxDepth` | `int` | `0` → 64 | Deepest table/array nesting; larger values are clamped to the library's absolute limit. Exceeding it throws `TomlSerializationException`. |
 | `SpecVersion` | `TomlSpecVersion` | - | **Obsolete.** The writer emits output valid under both TOML v1.0.0 and v1.1.0, so the member has no effect and will be removed. |
 
-<!-- compile -->
 ```csharp
 using Bodu.Text.Toml.Writer;
 
@@ -185,7 +180,6 @@ writer.WriteStartTable();
 
 With `MaxDepth = 2` the same two-level document renders - note that the TOML writer delivers its bytes when the *root table closes*, because it must decide between inline and header-defined tables with the whole document in hand:
 
-<!-- compile -->
 ```csharp
 var writer = new Utf8TomlWriter(buffer, new TomlWriterOptions { MaxDepth = 2 });
 writer.WriteStartTable();
@@ -206,7 +200,6 @@ writer.WriteEndTable();
 | `NewLine` | `string?` | `null` → `"\n"` | The line terminator; only `"\n"` and `"\r\n"` are accepted. |
 | `MaxDepth` | `int` | `0` → 64 | Deepest mapping/sequence nesting; larger values are clamped to the absolute limit. |
 
-<!-- compile -->
 ```csharp
 using Bodu.Text.Yaml.Writer;
 
@@ -231,7 +224,6 @@ writer.WriteEndMapping();
 
 The default options render the same document at two spaces with `\n`. Unlike the other writer structs, `YamlWriterOptions` is **validated at construction** rather than at the point of use:
 
-<!-- compile -->
 ```csharp
 new Utf8YamlWriter(buffer, new YamlWriterOptions { NewLine = "\r" });
 // → throws ArgumentException: The writer newline must be null, a line feed, or a carriage-return line feed. (Parameter 'NewLine')
@@ -253,7 +245,6 @@ Opening a container past `MaxDepth` throws `InvalidOperationException` (*The max
 
 The node options govern *lookup*; the document options govern *parsing*, and `BencodeNode.Parse` has an overload that takes both so a mutable tree can be built from lenient input:
 
-<!-- compile -->
 ```csharp
 using Bodu.Text.Bencode.Document;
 using Bodu.Text.Bencode.Nodes;
@@ -289,7 +280,6 @@ long viaNode = BencodeNode.Parse("d1:bi1e1:ai2ee"u8, default, new BencodeDocumen
 | `TomlDocumentOptions` | `SpecVersion` | `V1_0` | Parse under TOML v1.0.0 or v1.1.0 (v1.1.0 adds multi-line inline tables, trailing commas, and second-precision omission). |
 | `TomlDocumentOptions` | `MaxDepth` | `0` → 64 | Deepest nesting the parser accepts; exceeding it throws `TomlFormatException`. |
 
-<!-- compile -->
 ```csharp
 using Bodu.Text.Toml;
 using Bodu.Text.Toml.Document;
@@ -319,7 +309,6 @@ long inner = d.RootElement.GetProperty("x").GetProperty("a").GetInt64();   // 1
 | `SpecVersion` | `V1_2` | `V1_2` · `V1_1` | The core schema: under 1.2 only `true` / `false` are booleans; 1.1 restores `yes` / `no` / `on` / `off`. |
 | `MaxDepth` | `0` → 64 | | Deepest nesting of sequences and mappings the parser accepts, flow or block; a scalar at the deepest level does not count. Exceeding it throws `YamlFormatException`. |
 
-<!-- compile -->
 ```csharp
 using Bodu.Text.Yaml;
 using Bodu.Text.Yaml.Document;
@@ -358,7 +347,6 @@ YamlDocument.Parse("a:\n  b: 1", new YamlDocumentOptions { MaxDepth = 1 });
 
 The `Parse` overloads on both INI DOMs take the reader options and the document options together:
 
-<!-- compile -->
 ```csharp
 using Bodu.Text.Ini;
 using Bodu.Text.Ini.Nodes;

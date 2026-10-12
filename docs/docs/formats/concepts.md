@@ -20,7 +20,7 @@ Delimited and DotEnv are pure source-order token streams. INI has **two** reader
 
 ## Serializer
 
-Each `*Serializer` is a static facade shaped after `JsonSerializer`: `Serialize` / `Deserialize` over strings, UTF-8 spans, buffer writers, and streams, with buffered `SerializeAsync` / `DeserializeAsync` overloads (only the stream copy is asynchronous). Binding honours the shared `Bodu.Text.Serialization` layer - the attribute family (`[PropertyName]`, `[Ignore]`, `[Required]`, `[PropertyOrder]`), `NamingPolicy` (camelCase, snake_case, SCREAMING_SNAKE_CASE, kebab-case), and the `IOnSerializing` / `IOnSerialized` / `IOnDeserializing` / `IOnDeserialized` callbacks.
+Each `*Serializer` is a static facade shaped after `JsonSerializer`: `Serialize` / `Deserialize` over strings, UTF-8 spans, buffer writers, and streams, with buffered `SerializeAsync` overloads and, for DotEnv and INI, buffered `DeserializeAsync` overloads (only the stream copy is asynchronous); Delimited's asynchronous read is the incremental `DeserializeAsyncEnumerableAsync` below. Binding honours the shared `Bodu.Text.Serialization` layer - the attribute family (`[PropertyName]`, `[Ignore]`, `[Required]`, `[PropertyOrder]`), `NamingPolicy` (camelCase, snake_case, SCREAMING_SNAKE_CASE, kebab-case), and the `IOnSerializing` / `IOnSerialized` / `IOnDeserializing` / `IOnDeserialized` callbacks - except that Delimited reads neither `[Required]` nor a conditional `[Ignore]`: a missing column leaves its member at its default, and only `[Ignore]` with `IgnoreCondition.Always` excludes a member.
 
 Because the wire is string-only, scalar conversion is serializer-local: values parse and format with `InvariantCulture` over one scalar set in all three formats - strings, numbers (the primitive ones, `decimal`, `Int128`, `UInt128`, `Half` and `BigInteger`), booleans, enums, `Guid`, `DateTime` / `DateTimeOffset` / `DateOnly` / `TimeOnly` / `TimeSpan`, `Uri`, and their nullables - and a member of any of them maps to one value (in INI a key, never a section). Delimited writes the temporal values in their round-trip forms (`O`, and `c` for `TimeSpan`); DotEnv and INI write them in the invariant general form, except `TimeOnly`, which they too write in its round-trip form, since its general form holds only hours and minutes.
 
@@ -45,7 +45,7 @@ Real-world files break the specs, so strictness is configurable per format - fie
 
 ## Format exceptions
 
-Malformed input throws the format's `*FormatException` carrying the source position (line / offset). Binding failures - an unmappable root, a missing `[Required]` member, a value that cannot convert - throw the format's `*SerializationException`.
+Malformed input throws the format's `*FormatException` carrying the source position (line / offset). Binding failures - an unmappable root, a missing `[Required]` member (DotEnv and INI), a value that cannot convert - throw the format's `*SerializationException`.
 
 ## Where to go next
 

@@ -24,7 +24,7 @@ Targets `net8.0` and `net10.0`. Depends on `Bodu.Text.Serialization` and `Bodu.C
 
 | Type | Purpose |
 |---|---|
-| <xref:Bodu.Text.Delimited.Reader.Utf8DelimitedReader> / <xref:Bodu.Text.Delimited.Writer.Utf8DelimitedWriter> | Forward-only, allocation-free token machines, configured by <xref:Bodu.Text.Delimited.Reader.DelimitedReaderOptions> / <xref:Bodu.Text.Delimited.Writer.DelimitedWriterOptions>. |
+| <xref:Bodu.Text.Delimited.Reader.Utf8DelimitedReader> / <xref:Bodu.Text.Delimited.Writer.Utf8DelimitedWriter> | Forward-only `ref struct` token reader and writer, configured by <xref:Bodu.Text.Delimited.Reader.DelimitedReaderOptions> / <xref:Bodu.Text.Delimited.Writer.DelimitedWriterOptions>. |
 | <xref:Bodu.Text.Delimited.DelimitedSerializer> | Records ↔ text: `Serialize` / `Deserialize<TRecord>` over strings, UTF-8 spans, buffer writers, and streams; the incremental `DeserializeAsyncEnumerableAsync<TRecord>` / `SerializeAsync(Stream, IAsyncEnumerable<TRecord>)` pair; and the reflection-free overloads over <xref:Bodu.Text.Delimited.IDelimitedRecordFactory`1>. |
 | <xref:Bodu.Text.Delimited.DelimitedSerializerOptions> / <xref:Bodu.Text.Delimited.DelimitedSerializerDefaults> | Naming policy, case sensitivity, `IncludeFields`, `Delimiter`, `Quote`, `NoHeader`; `General` / `Web` presets. |
 | <xref:Bodu.Text.Delimited.DelimitedFieldCountBehavior> / <xref:Bodu.Text.Delimited.DelimitedMalformedRecordBehavior> / <xref:Bodu.Text.Delimited.DelimitedDuplicateHeaderBehavior> | The dialect policies. |

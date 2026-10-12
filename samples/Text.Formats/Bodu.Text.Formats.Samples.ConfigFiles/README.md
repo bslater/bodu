@@ -70,8 +70,9 @@ counts the comment lines that survived.
            sibling formats use - and comments are addressable, so a tool can also explain the entry it just added
            rather than leaving an unexplained value.
   Expect : Every comment from the source file is still in the emitted text, plus the one authored here above the new
-           entry. The edited value and the added section appear in place, with the untouched parts of the file
-           unchanged - an edit should be a diff of what was asked for, not a reformat.
+           entry. The edited value and the added section appear in place. The layout is canonicalized - key=value
+           without padding, and no blank lines - so the untouched entries keep their keys, values and comments, not
+           their spacing.
 
   edited document:
   | ; Application configuration (sample data).

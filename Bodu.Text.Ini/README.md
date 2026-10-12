@@ -30,7 +30,7 @@ using Bodu.Text.Ini.Nodes;
 
 IniObject root = IniNode.Parse(File.ReadAllBytes("app.ini"));
 root["server"].AsObject()["port"].AsValue().Value = "9090";
-File.WriteAllBytes("app.ini", root.ToUtf8Bytes());   // comments survive
+File.WriteAllBytes("app.ini", root.ToUtf8Bytes());   // comments kept, each written with ';'
 ```
 
 The dialect is deliberately conservative: `=` only, keys and values trimmed of the spaces and tabs around them and values otherwise literal to end of line (inline `;`/`#` is content), `;` and `#` full-line comments, BOM and mixed line endings handled.
