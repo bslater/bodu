@@ -97,6 +97,19 @@ When the target is a solution, the script drops projects that don't exercise the
 
 The analyzer is always packed in **Release** (the configuration committed to `local-packages/` and used by CI); `-Configuration` governs only the consumer restore/build. Packing runs under the SDK 8 pin in `Bodu.CodeStyle/global.json` while the consumer build runs under the repo-root SDK 10 pin - each `dotnet` invocation resolves its own SDK from its working directory. After a successful run, commit the regenerated `local-packages/Bodu.CodeStyle.XmlDocumentation.1.0.0.nupkg` alongside your source changes. See `Bodu.CodeStyle/README.md` for the full analyzer-authoring workflow.
 
+## Solution views (Python 3)
+
+| Path | Purpose |
+| --- | --- |
+| `solutions/generate-solutions.py` | Writes the generated solutions at the repository root (`bodu.libraries.slnx`, `bodu.tests.slnx`, `bodu.core.slnx`, and the rest) from `bodu.slnx` and the classification in `solutions/solutions.json`, and with `--check` verifies them without writing. The Policy Gate runs the check. |
+
+```bash
+# After adding a project to bodu.slnx
+python3 tools/solutions/generate-solutions.py
+```
+
+See [`solutions/README.md`](solutions/README.md) for the views, the classification, and what the check enforces.
+
 ## Remote branch cleanup (PowerShell 7+)
 
 | Script | Purpose |

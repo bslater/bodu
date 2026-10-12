@@ -76,6 +76,25 @@ If you restore and build as separate steps, pass the same configuration to both
 (`dotnet restore bodu.slnx -p:Configuration=Release`): a few projects, such as the benchmarks, are
 excluded from the Debug configuration and are otherwise skipped by the restore.
 
+### Smaller solutions
+
+`bodu.slnx` holds every project. For day-to-day work, the repository root also has narrower solutions,
+generated from it, that select projects and nothing else: by domain (`bodu.core.slnx`,
+`bodu.security.slnx`, `bodu.globalization.slnx`, `bodu.financial.slnx`, `bodu.text.slnx`,
+`bodu.formats.slnx`) and by purpose (`bodu.libraries.slnx`, `bodu.tests.slnx`, `bodu.benchmarks.slnx`,
+`bodu.samples.slnx`, `bodu.tooling.slnx`). Each also holds every project its own projects reference, so it
+builds in Visual Studio as well as from the command line, and a project builds the same way in each.
+
+```bash
+dotnet build bodu.core.slnx
+dotnet test  bodu.core.slnx --settings bvt.runsettings
+dotnet test  bodu.tests.slnx -c Release --settings test.runsettings   # every test project CI runs
+```
+
+They carry no Debug exclusions, so every project in one builds in Debug too. Do not edit them by hand:
+add a project to `bodu.slnx` and run `python3 tools/solutions/generate-solutions.py`, which classifies it
+or tells you how. See [`tools/solutions/README.md`](tools/solutions/README.md).
+
 ## Making a change
 
 [`CLAUDE.md`](CLAUDE.md) is the complete convention guide for this repository, for human and AI
