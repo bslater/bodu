@@ -268,7 +268,7 @@ header, whatever its CRC and declared sizes say, holding only its length to the 
 
 **Strict accepted a named-property storage without its entry stream** (extract-msg v0.48.0 case 2, #977). MS-OXMSG
 2.2.3.1 says the GUID, entry and string streams MUST be present. Under `Strict` a `__nameid_version1.0` storage missing
-any of them now throws `OutlookMsgFormatException`, and `docs/guides/outlook/reader-options-and-limits.md:95` lists it
+any of them now throws `OutlookMsgFormatException`, and `docs/guides/outlook/reader-options-and-limits.md:100` lists it
 among the `Strict` failures.
 
 **A string was not cut at its terminator** (kenjiuno-msgreader 1.23.0-beta1 #56 case 3, #978). A `PtypString` stream
@@ -293,7 +293,7 @@ the shared resolver constructs itself with SYSLIB0001 suppressed at that one sit
 All three are fixed.
 
 - A recipient or attachment storage without a `__properties_version1.0` stream threw at every level, against
-  `docs/guides/outlook/reader-options-and-limits.md:87` (#981). `Compatible` and `Minimal` now omit that recipient or
+  `docs/guides/outlook/reader-options-and-limits.md:92` (#981). `Compatible` and `Minimal` now omit that recipient or
   attachment and read the rest of the message, `Strict` still throws, and line 94 of that guide lists the condition. The
   extract-msg v0.41.0 #357 row keeps its `reject` expectation, now under `ValidationLevel=Strict` and citing that line,
   and the test of the `Dispose_WhenAttachmentsFailToLoad_ShouldReleaseTheFile` unit row now fails the load with a

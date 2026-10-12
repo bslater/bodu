@@ -126,6 +126,7 @@ using Bodu.IO.Pst;
 var options = new PstFileOptions
 {
     ValidationLevel = PstValidationLevel.Strict,   // every CRC and trailer signature enforced
+    OmitUnresolvableValues = false,                // fail a context whose value reference does not resolve
     BlockCacheSize = 512,                          // decoded pages/blocks kept (0 disables the cache)
     MaxNodeDataLength = 64L * 1024 * 1024,         // refuse to materialize a node payload above 64 MiB
     MaxDataTreeLeaves = 16_384,                    // refuse a data tree fanning out to more leaf blocks
@@ -138,11 +139,12 @@ Console.WriteLine(file.Format);
 | Property | Default | Effect | When it trips |
 |---|---|---|---|
 | `ValidationLevel` | `Compatible` | How much cross-checking each read performs - see the next section. | Depends on the level. |
+| `OmitUnresolvableValues` | `false` | Whether a property value or table cell whose value reference does not resolve is left out of its context, and listed in `OmittedPropertyIds`, instead of failing the read - see [Omitting values that do not resolve](#omitting-values-that-do-not-resolve). Independent of `ValidationLevel`. | Not a limit. |
 | `BlockCacheSize` | `256` | The least-recently-used cache of decoded pages and block payloads, in entries. Each entry is at most one 8 KiB block, so the default bounds the cache near 2 MB per session. Repeated structural reads - B-tree walks, the same node's contexts read twice - are served from it instead of re-reading and re-decoding the source. `0` disables caching; negative values throw <xref:System.ArgumentOutOfRangeException>. | Not a limit. |
 | `MaxNodeDataLength` | 256 MiB | The largest node payload the session **materializes**: it governs `ReadAllBytes`, the heap-on-node parse behind `ReadPropertyContext` / `ReadTableContext`, and subnode-resident property values read whole. The *declared* size is what is bounded - a crafted tree can reference the same physical block thousands of times, so the file size proves nothing. `OpenDataStream` and the `TryOpen*Stream` members are unaffected by design. Zero or negative values throw. | <xref:Bodu.IO.Pst.PstFileFormatException> with `Error == PstFileError.LimitExceeded`, at every validation level. |
 | `MaxDataTreeLeaves` | 65,536 | The most leaf data blocks one node's data tree may reference (about 512 MiB of 8 KiB blocks). Enforced while the tree's internal blocks are walked, before any leaf is read, for streaming and buffered reads alike - the leaf list itself is the allocation it bounds. Zero or negative values throw. | <xref:Bodu.IO.Pst.PstFileFormatException> with `Error == PstFileError.LimitExceeded`, at every validation level. |
 
-The mail-store reader forwards the first three from <xref:Bodu.Formats.Outlook.OutlookMailStoreReaderOptions> and leaves `MaxDataTreeLeaves` at its default; open the file with `PstFile` when you need to change it.
+The mail-store reader forwards every option but `MaxDataTreeLeaves` from <xref:Bodu.Formats.Outlook.OutlookMailStoreReaderOptions> and leaves that one at its default; open the file with `PstFile` when you need to change it.
 
 ## What each validation level checks
 
@@ -163,6 +165,25 @@ The mail-store reader forwards the first three from <xref:Bodu.Formats.Outlook.O
 | Row matrix holding more rows than the row index declares | tolerated | tolerated | rejected (`InvalidTableContext`) |
 
 `Compatible` is the choice for real-world files - writers have shipped stores with stale trailer CRCs that Outlook reads happily. `Strict` is for validating a corpus or refusing tampered input. `Minimal` is for salvage: it still walks structure safely but will follow a checksum-failed page as far as the geometry allows.
+
+### Omitting values that do not resolve
+
+At every level, a value whose reference does not resolve fails the whole context it belongs to: a heap identifier the heap does not hold (`InvalidHeap`), a fixed-width value shorter than its type (`InvalidPropertyContext`), or a subnode the node does not hold or whose data tree cannot be resolved (`InvalidSubnodeTree` and the data-tree categories). One bad value then hides every other property of the object. Set <xref:Bodu.IO.Pst.PstFileOptions.OmitUnresolvableValues> to leave such a value out instead: <xref:Bodu.IO.Pst.PstNode.ReadPropertyContext> checks each value's reference as it reads the context, an unresolvable value is absent from every member of <xref:Bodu.IO.Pst.PstPropertyContext>, and its identifier is listed in <xref:Bodu.IO.Pst.PstPropertyContext.OmittedPropertyIds>. A table row does the same for its cells (<xref:Bodu.IO.Pst.PstTableRow.OmittedPropertyIds>).
+
+<!-- compile -->
+```csharp
+using Bodu.IO.Pst;
+
+var options = new PstFileOptions { ValidationLevel = PstValidationLevel.Minimal, OmitUnresolvableValues = true };
+using PstFile file = PstFile.Open(File.OpenRead("damaged.pst"), options);
+
+PstPropertyContext context = file.GetNode(PstNodeId.MessageStore).ReadPropertyContext();
+Console.WriteLine($"{context.Count} properties read");
+foreach (ushort propertyId in context.OmittedPropertyIds)
+    Console.WriteLine($"0x{propertyId:X4} left out: its value does not resolve");
+```
+
+The option covers individual values only. A fault in the heap itself (its header, page map or B-tree), in a table's column descriptions or row matrix, or in the node's subnode tree still fails the read, and a value whose reference resolves but whose data blocks fail their checks still throws when it is read.
 
 ## Pattern 2 - open under `Strict` and handle a truncated file
 
@@ -276,9 +297,9 @@ Every failure surfaces through <xref:Bodu.IO.Pst.PstFileException> or a subclass
 | `InvalidPage` | <xref:Bodu.IO.Pst.PstFileFormatException> | A B-tree page's trailer type does not match what was expected; a page's entry stride, entry count, depth, or level is out of range; a page holds a key outside the range its parent entry gives it (at or above that entry's key and below the next entry's), as a page two entries reference does; a node identifier in a page exceeds 32 bits; or, under `Strict`, the page's CRC, signature, or recorded block identifier disagrees. |
 | `InvalidBlock` | <xref:Bodu.IO.Pst.PstFileFormatException> | A block's declared length is zero or its on-disk size exceeds the 8 KiB maximum; the trailer's length field disagrees; a read at the block's offset escapes the end of the stream; or, under `Strict`, the block's CRC, signature, or recorded block identifier disagrees. |
 | `InvalidDataTree` | <xref:Bodu.IO.Pst.PstFileFormatException> | An `XBLOCK` / `XXBLOCK` header has the wrong type or level, its entry count overruns the block, a child is not at the level the parent implies, or a referenced block is missing from the block B-tree. |
-| `InvalidSubnodeTree` | <xref:Bodu.IO.Pst.PstFileFormatException> | An `SLBLOCK` / `SIBLOCK` is malformed, or a value reference names a subnode the owning node's subnode tree does not contain. |
-| `InvalidHeap` | <xref:Bodu.IO.Pst.PstFileFormatException> | A heap-on-node header or page map is malformed (including a page map or an allocation that starts inside its page's header, an allocation that runs past the page map, and allocations out of order), a heap identifier does not resolve to an item, or a BTree-on-heap is malformed (including, under `Strict`, keys out of order). |
-| `InvalidPropertyContext` | <xref:Bodu.IO.Pst.PstFileFormatException> | The node's heap does not carry a property context, a record is malformed, or a fixed-width value's payload is shorter than its declared width. |
+| `InvalidSubnodeTree` | <xref:Bodu.IO.Pst.PstFileFormatException> | An `SLBLOCK` / `SIBLOCK` is malformed, or a value reference names a subnode the owning node's subnode tree does not contain (that value is omitted instead under `OmitUnresolvableValues`). |
+| `InvalidHeap` | <xref:Bodu.IO.Pst.PstFileFormatException> | A heap-on-node header or page map is malformed (including a page map or an allocation that starts inside its page's header, an allocation that runs past the page map, and allocations out of order), a heap identifier does not resolve to an item (a value's reference is omitted instead under `OmitUnresolvableValues`), or a BTree-on-heap is malformed (including, under `Strict`, keys out of order). |
+| `InvalidPropertyContext` | <xref:Bodu.IO.Pst.PstFileFormatException> | The node's heap does not carry a property context, a record is malformed, or a fixed-width value's payload is shorter than its declared width (that value is omitted instead under `OmitUnresolvableValues`). |
 | `InvalidTableContext` | <xref:Bodu.IO.Pst.PstFileFormatException> | The node's heap does not carry a table context, the `TCINFO` header is malformed, the row matrix does not resolve or holds fewer rows than the row index records, the row index names a row the matrix does not hold, or, under `Strict`, the matrix holds more rows than the index records. |
 | `InvalidPropertyValue` | <xref:Bodu.IO.Pst.PstFileFormatException> | Under `Strict`, a property-context record carries a wire type the reader does not know (the tolerant levels keep it as a raw dword). |
 | `NodeNotFound` | <xref:Bodu.IO.Pst.PstNodeNotFoundException> | `PstFile.GetNode` was asked for an identifier the node B-tree does not contain. Use `TryGetNode` to avoid the exception. |

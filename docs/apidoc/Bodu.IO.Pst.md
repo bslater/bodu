@@ -33,7 +33,7 @@ A PST file is a node-oriented database in a single file. <xref:Bodu.IO.Pst.PstFi
 
 **Options and formats**
 
-- <xref:Bodu.IO.Pst.PstFileOptions> - `ValidationLevel` (<xref:Bodu.IO.Pst.PstValidationLevel>: `Compatible` / `Strict` / `Minimal`) and the decoded-block LRU `BlockCacheSize` (default 256 entries; `0` disables).
+- <xref:Bodu.IO.Pst.PstFileOptions> - `ValidationLevel` (<xref:Bodu.IO.Pst.PstValidationLevel>: `Compatible` / `Strict` / `Minimal`), `OmitUnresolvableValues` (default `false`; leaves a value whose reference does not resolve out of its property context or table row, listed in `OmittedPropertyIds`), and the decoded-block LRU `BlockCacheSize` (default 256 entries; `0` disables).
 - <xref:Bodu.IO.Pst.PstFileFormat> / <xref:Bodu.IO.Pst.PstCryptMethod> - the header's declared variant (both `Unicode` and `Ansi` are read; the OST variant is rejected) and content encoding.
 
 **Errors**
