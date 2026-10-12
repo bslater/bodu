@@ -251,4 +251,109 @@ public partial class NumericExtensionsTests
         CollectionAssert.AreEqual(new byte[] { 6, 5, 5, 3, 5 }, ushort.MaxValue.ToDigitArray());
     }
 
+    /// <summary>
+    /// Verifies that <see cref="NumericExtensions.ReverseDigits(ushort)" /> throws <see cref="OverflowException" />
+    /// when the digit-reversed value does not fit in a <see cref="ushort" />.
+    /// </summary>
+    /// <param name="value">A value whose reversal exceeds <see cref="ushort.MaxValue" />.</param>
+    [TestMethod]
+    [DataRow((ushort)60009)]   // 90006
+    [DataRow((ushort)19999)]   // 99991
+    public void ReverseDigits_UShort_WhenReversedValueExceedsType_ShouldThrowOverflowException(ushort value)
+    {
+        Assert.ThrowsExactly<OverflowException>(() =>
+        {
+            _ = value.ReverseDigits();
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="NumericExtensions.ReverseDigits(uint)" /> throws <see cref="OverflowException" />
+    /// when the digit-reversed value does not fit in a <see cref="uint" />.
+    /// </summary>
+    /// <param name="value">A value whose reversal exceeds <see cref="uint.MaxValue" />.</param>
+    [TestMethod]
+    [DataRow(4_000_000_009u)]   // 9,000,000,004
+    [DataRow(1_000_000_009u)]   // 9,000,000,001
+    public void ReverseDigits_UInt_WhenReversedValueExceedsType_ShouldThrowOverflowException(uint value)
+    {
+        Assert.ThrowsExactly<OverflowException>(() =>
+        {
+            _ = value.ReverseDigits();
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="NumericExtensions.ReverseDigits(ulong)" /> throws <see cref="OverflowException" />
+    /// when the digit-reversed value does not fit in a <see cref="ulong" />.
+    /// </summary>
+    [TestMethod]
+    public void ReverseDigits_ULong_WhenReversedValueExceedsType_ShouldThrowOverflowException()
+    {
+        Assert.ThrowsExactly<OverflowException>(() =>
+        {
+            _ = 10_000_000_000_000_000_009UL.ReverseDigits();   // 90,000,000,000,000,000,001
+        });
+    }
+
+    /// <summary>
+    /// Verifies that the <see cref="ushort" /> digit rotations throw <see cref="OverflowException" /> when the
+    /// rotated value does not fit in a <see cref="ushort" />.
+    /// </summary>
+    [TestMethod]
+    public void RotateDigitsRight_UShort_WhenRotatedValueExceedsType_ShouldThrowOverflowException()
+    {
+        ushort value = 60009;   // rotated one place to the right: 96000
+
+        Assert.ThrowsExactly<OverflowException>(() =>
+        {
+            _ = value.RotateDigitsRight();
+        });
+
+        Assert.ThrowsExactly<OverflowException>(() =>
+        {
+            _ = value.RotateDigitsLeft(4);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that the <see cref="uint" /> digit rotations throw <see cref="OverflowException" /> when the rotated
+    /// value does not fit in a <see cref="uint" />.
+    /// </summary>
+    [TestMethod]
+    public void RotateDigitsRight_UInt_WhenRotatedValueExceedsType_ShouldThrowOverflowException()
+    {
+        uint value = 4_000_000_009u;   // rotated one place to the right: 9,400,000,000
+
+        Assert.ThrowsExactly<OverflowException>(() =>
+        {
+            _ = value.RotateDigitsRight();
+        });
+
+        Assert.ThrowsExactly<OverflowException>(() =>
+        {
+            _ = value.RotateDigitsLeft(9);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that the <see cref="ulong" /> digit rotations throw <see cref="OverflowException" /> when the rotated
+    /// value does not fit in a <see cref="ulong" />.
+    /// </summary>
+    [TestMethod]
+    public void RotateDigitsRight_ULong_WhenRotatedValueExceedsType_ShouldThrowOverflowException()
+    {
+        ulong value = ulong.MaxValue;   // rotated one place to the right: 51,844,674,407,370,955,161
+
+        Assert.ThrowsExactly<OverflowException>(() =>
+        {
+            _ = value.RotateDigitsRight();
+        });
+
+        Assert.ThrowsExactly<OverflowException>(() =>
+        {
+            _ = value.RotateDigitsLeft(19);
+        });
+    }
+
 }
