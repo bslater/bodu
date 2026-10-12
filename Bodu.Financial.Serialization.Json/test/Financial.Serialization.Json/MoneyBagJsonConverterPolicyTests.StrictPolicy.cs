@@ -24,4 +24,34 @@ public partial class MoneyBagJsonConverterPolicyTests
 
         Assert.AreEqual("{\"balances\":{\"AUD\":12.34}}", json);
     }
+
+    /// <summary>
+    /// Verifies that the strict policy rejects a balances map that repeats an ISO code with
+    /// <see cref="JsonException" /> rather than summing the repeated balances.
+    /// </summary>
+    [TestMethod]
+    public void Read_WhenStrictPolicyAndIsoCodeRepeated_ShouldThrowJsonException()
+    {
+        string json = "{\"balances\":{\"USD\":1,\"USD\":2}}";
+
+        _ = Assert.ThrowsExactly<JsonException>(() =>
+        {
+            _ = JsonSerializer.Deserialize<MoneyBag>(json, Options(FinancialJsonPolicy.Strict));
+        });
+    }
+
+    /// <summary>
+    /// Verifies that the strict policy rejects a repeated <c>"balances"</c> property with <see cref="JsonException" />
+    /// rather than merging the two maps.
+    /// </summary>
+    [TestMethod]
+    public void Read_WhenStrictPolicyAndBalancesPropertyRepeated_ShouldThrowJsonException()
+    {
+        string json = "{\"balances\":{\"USD\":1},\"Balances\":{\"EUR\":2}}";
+
+        _ = Assert.ThrowsExactly<JsonException>(() =>
+        {
+            _ = JsonSerializer.Deserialize<MoneyBag>(json, Options(FinancialJsonPolicy.Strict));
+        });
+    }
 }
