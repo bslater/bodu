@@ -115,7 +115,7 @@ string? formatCode = workbook.GetNumberFormatCode(cell.FormatIndex);
 
 <xref:Bodu.Formats.Excel.ExcelBinaryWorkbook.GetDateTime(Bodu.Formats.Excel.ExcelCell)> converts a numeric cell using the workbook's date system and returns `null` for any non-numeric cell, so it is safe to call on any cell. It applies the conversion to *every* numeric cell, not only date-formatted ones - inspect <xref:Bodu.Formats.Excel.ExcelCell.IsDateFormatted> first when only date-formatted cells should be treated as dates, otherwise a plain count or amount comes back as a meaningless calendar value.
 
-`GetNumberFormatCode` resolves a cell's <xref:Bodu.Formats.Excel.ExcelCell.FormatIndex> to its format-code string (built-in or custom), or `null` when the index is unknown. A cell whose record carries no explicit format reports `FormatIndex` `0`, the General format. The format code is the same raw string Excel stores (for example `"0.00"` or `"yyyy-mm-dd"`); this reader does not render values through it.
+`GetNumberFormatCode` resolves a cell's <xref:Bodu.Formats.Excel.ExcelCell.FormatIndex> to its format-code string (built-in or custom), or `null` when the index is unknown. A `FORMAT` record in the workbook decides an index's code, built-in index or not, and when the workbook defines an index more than once the last record applies; the built-in codes fill in only the indexes that no `FORMAT` record defines, and the same code decides `IsDateFormatted`. A cell whose record carries no explicit format reports `FormatIndex` `0`, the General format. The format code is the same raw string Excel stores (for example `"0.00"` or `"yyyy-mm-dd"`); this reader does not render values through it.
 
 ## Pattern 6 - convert coordinates to and from A1
 

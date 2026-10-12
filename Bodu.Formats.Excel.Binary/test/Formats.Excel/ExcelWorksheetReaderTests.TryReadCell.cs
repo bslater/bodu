@@ -326,6 +326,44 @@ public partial class ExcelWorksheetReaderTests
     }
 
     /// <summary>
+    /// Verifies that a number whose XF record selects a Thai built-in date or time format, which no FORMAT record
+    /// defines, is date formatted.
+    /// </summary>
+    /// <param name="formatIndex">The built-in number-format index.</param>
+    [TestMethod]
+    [DataRow((ushort)71)]
+    [DataRow((ushort)79)]
+    [DataRow((ushort)81)]
+    public void TryReadCell_WhenXfSelectsAThaiBuiltInDateFormat_ShouldReportDateFormatted(ushort formatIndex)
+    {
+        ExcelWorksheetInfo info = new("Sheet", 0, ExcelSheetVisibility.Visible, ExcelSheetType.Worksheet, default);
+        var formats = new BiffFormatTable([formatIndex], new Dictionary<ushort, string>(), detectDateFormats: true);
+        byte[] substream = Biff8TestWorkbook.WorksheetSubstream(Biff8TestWorkbook.Number(0, 0, 44211.0));
+        using var reader = new ExcelWorksheetReader(info, substream, [], formats, new BiffReaderOptions { Version = BiffVersion.Biff8 });
+
+        Assert.IsTrue(reader.TryReadCell(out ExcelCell cell));
+        Assert.AreEqual(formatIndex, cell.FormatIndex);
+        Assert.IsTrue(cell.IsDateFormatted);
+    }
+
+    /// <summary>
+    /// Verifies that a number whose XF record selects an index in a built-in date range that a FORMAT record defines
+    /// with a number code, as Gnumeric writes its formats from index 50, is not date formatted.
+    /// </summary>
+    [TestMethod]
+    public void TryReadCell_WhenFormatRecordDefinesBuiltInDateIndex_ShouldClassifyByItsCode()
+    {
+        ExcelWorksheetInfo info = new("Sheet", 0, ExcelSheetVisibility.Visible, ExcelSheetType.Worksheet, default);
+        var formats = new BiffFormatTable([50], new Dictionary<ushort, string> { [50] = "0.00" }, detectDateFormats: true);
+        byte[] substream = Biff8TestWorkbook.WorksheetSubstream(Biff8TestWorkbook.Number(0, 0, 1.5));
+        using var reader = new ExcelWorksheetReader(info, substream, [], formats, new BiffReaderOptions { Version = BiffVersion.Biff8 });
+
+        Assert.IsTrue(reader.TryReadCell(out ExcelCell cell));
+        Assert.AreEqual(50, cell.FormatIndex);
+        Assert.IsFalse(cell.IsDateFormatted);
+    }
+
+    /// <summary>
     /// Opens a streaming reader over a BIFF5 worksheet substream written through a BIFF5 writer.
     /// </summary>
     /// <param name="codePage">The code page the writer encodes text in and the reader decodes with.</param>
@@ -341,5 +379,229 @@ public partial class ExcelWorksheetReaderTests
 
         ExcelWorksheetInfo info = new("Sheet", 0, ExcelSheetVisibility.Visible, ExcelSheetType.Worksheet, default);
         return new ExcelWorksheetReader(info, output.WrittenSpan.ToArray(), [], BiffFormatTable.Empty, new BiffReaderOptions { Version = BiffVersion.Biff5, CodePage = codePage });
+    }
+
+    /// <summary>
+    /// Verifies that a worksheet whose BOF declares a BIFF version other than BIFF5 or BIFF8 is reported as
+    /// <see cref="ExcelBinaryUnsupportedException" />, with the codec's exception, carrying the raw version, as its inner
+    /// exception.
+    /// </summary>
+    [TestMethod]
+    public void TryReadCell_WhenSheetBofDeclaresUnsupportedVersion_ShouldThrowExcelBinaryUnsupportedException()
+    {
+        using ExcelWorksheetReader reader = Biff8TestWorkbook.OpenWorksheetReaderRaw(Biff4Substream());
+
+        var ex = Assert.ThrowsExactly<ExcelBinaryUnsupportedException>(() =>
+        {
+            _ = reader.TryReadCell(out _);
+        });
+
+        Assert.IsInstanceOfType<BiffUnsupportedVersionException>(ex.InnerException);
+        Assert.AreEqual((ushort)0x0400, ((BiffUnsupportedVersionException)ex.InnerException).RawVersion);
+    }
+
+    /// <summary>
+    /// Verifies that a formula's text result whose STRING record is continued in a CONTINUE record is read whole, and
+    /// that the cell after it is still read.
+    /// </summary>
+    [TestMethod]
+    public void TryReadCell_WhenFormulaStringContinues_ShouldReadTheWholeText()
+    {
+        using ExcelWorksheetReader reader = Biff8TestWorkbook.OpenWorksheetReader(
+            Biff8TestWorkbook.Formula(0, 0, [0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF, 0xFF]),
+            Biff8TestWorkbook.Record(0x0207, [0x06, 0x00, 0x00, (byte)'a', (byte)'b', (byte)'c']),
+            Biff8TestWorkbook.Record(0x003C, [0x00, (byte)'d', (byte)'e', (byte)'f']),
+            Biff8TestWorkbook.Number(1, 0, 5.0));
+
+        List<ExcelCell> cells = reader.ReadCells().ToList();
+
+        Assert.HasCount(2, cells);
+        Assert.AreEqual("abcdef", cells[0].StringValue);
+        Assert.AreEqual(5.0, cells[1].NumberValue);
+    }
+
+    /// <summary>
+    /// Verifies that each continued segment of a formula's text result is decoded by its own flags byte, so a
+    /// compressed first part and a 16-bit second part, or the reverse, read as one text.
+    /// </summary>
+    [TestMethod]
+    public void TryReadCell_WhenFormulaStringContinuationChangesWidth_ShouldDecodeEachSegmentByItsFlags()
+    {
+        using ExcelWorksheetReader reader = Biff8TestWorkbook.OpenWorksheetReader(
+            Biff8TestWorkbook.Formula(0, 0, [0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF, 0xFF]),
+            Biff8TestWorkbook.Record(0x0207, [0x06, 0x00, 0x00, (byte)'a', (byte)'b', (byte)'c']),
+            Biff8TestWorkbook.Record(0x003C, [0x01, (byte)'d', 0x00, 0xE9, 0x00, (byte)'f', 0x00]),
+            Biff8TestWorkbook.Formula(1, 0, [0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF, 0xFF]),
+            Biff8TestWorkbook.Record(0x0207, [0x03, 0x00, 0x01, 0xE5, 0x65]),
+            Biff8TestWorkbook.Record(0x003C, [0x00, (byte)'x', (byte)'y']));
+
+        List<ExcelCell> cells = reader.ReadCells().ToList();
+
+        Assert.HasCount(2, cells);
+        Assert.AreEqual("abcdéf", cells[0].StringValue);
+        Assert.AreEqual("日xy", cells[1].StringValue);
+    }
+
+    /// <summary>
+    /// Verifies that a CONTINUE record holding only the flags byte of a formula's continued text contributes no
+    /// characters, and the text goes on in the next CONTINUE record.
+    /// </summary>
+    [TestMethod]
+    public void TryReadCell_WhenFormulaStringContinuationHoldsOnlyItsFlags_ShouldContinueInTheNextRecord()
+    {
+        using ExcelWorksheetReader reader = Biff8TestWorkbook.OpenWorksheetReader(
+            Biff8TestWorkbook.Formula(0, 0, [0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF, 0xFF]),
+            Biff8TestWorkbook.Record(0x0207, [0x04, 0x00, 0x00, (byte)'a', (byte)'b']),
+            Biff8TestWorkbook.Record(0x003C, [0x01]),
+            Biff8TestWorkbook.Record(0x003C, [0x00, (byte)'c', (byte)'d']));
+
+        Assert.IsTrue(reader.TryReadCell(out ExcelCell cell));
+        Assert.AreEqual("abcd", cell.StringValue);
+        Assert.IsFalse(reader.TryReadCell(out _));
+    }
+
+    /// <summary>
+    /// Verifies that a formula's text result longer than one record holds, 10,000 compressed characters split over the
+    /// STRING record and two CONTINUE records, is read whole.
+    /// </summary>
+    [TestMethod]
+    public void TryReadCell_WhenFormulaStringSpansSeveralRecords_ShouldReadTheWholeText()
+    {
+        string text = string.Concat(Enumerable.Range(0, 10_000).Select(i => (char)('a' + (i % 26))));
+        byte[] characters = [.. text.Select(c => (byte)c)];
+        using ExcelWorksheetReader reader = Biff8TestWorkbook.OpenWorksheetReader(
+            Biff8TestWorkbook.Formula(0, 0, [0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF, 0xFF]),
+            Biff8TestWorkbook.Record(0x0207, [0x10, 0x27, 0x00, .. characters.AsSpan(0, 4_000)]),
+            Biff8TestWorkbook.Record(0x003C, [0x00, .. characters.AsSpan(4_000, 4_000)]),
+            Biff8TestWorkbook.Record(0x003C, [0x00, .. characters.AsSpan(8_000)]));
+
+        Assert.IsTrue(reader.TryReadCell(out ExcelCell cell));
+        Assert.AreEqual(text, cell.StringValue);
+    }
+
+    /// <summary>
+    /// Verifies that a formula's text result is read from the STRING record that follows the ARRAY, TABLE or SHRFMLA
+    /// record [MS-XLS] 2.1.7.20.6 puts between the FORMULA record and its STRING record, and that the cell after them is
+    /// still read.
+    /// </summary>
+    /// <param name="recordId">The identifier of the record between the FORMULA and STRING records.</param>
+    /// <param name="length">The payload length of that record.</param>
+    [TestMethod]
+    [DataRow((ushort)0x0221, 14)]
+    [DataRow((ushort)0x0236, 16)]
+    [DataRow((ushort)0x04BC, 10)]
+    public void TryReadCell_WhenArrayTableOrSharedFormulaRecordPrecedesTheString_ShouldReadTheText(ushort recordId, int length)
+    {
+        using ExcelWorksheetReader reader = Biff8TestWorkbook.OpenWorksheetReader(
+            Biff8TestWorkbook.Formula(0, 0, [0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF, 0xFF]),
+            Biff8TestWorkbook.Record(recordId, new byte[length]),
+            Biff8TestWorkbook.CompressedString("abc"),
+            Biff8TestWorkbook.Number(1, 0, 5.0));
+
+        List<ExcelCell> cells = reader.ReadCells().ToList();
+
+        Assert.HasCount(2, cells);
+        Assert.AreEqual("abc", cells[0].StringValue);
+        Assert.AreEqual(5.0, cells[1].NumberValue);
+    }
+
+    /// <summary>
+    /// Verifies that the CONTINUE records of an ARRAY record between a formula and its STRING record are passed over
+    /// with it, so the text is still read from the STRING record.
+    /// </summary>
+    [TestMethod]
+    public void TryReadCell_WhenRecordBeforeTheStringContinues_ShouldSkipItsContinuation()
+    {
+        using ExcelWorksheetReader reader = Biff8TestWorkbook.OpenWorksheetReader(
+            Biff8TestWorkbook.Formula(0, 0, [0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF, 0xFF]),
+            Biff8TestWorkbook.Record(0x0221, new byte[14]),
+            Biff8TestWorkbook.Record(0x003C, new byte[4]),
+            Biff8TestWorkbook.CompressedString("abc"));
+
+        Assert.IsTrue(reader.TryReadCell(out ExcelCell cell));
+        Assert.AreEqual("abc", cell.StringValue);
+        Assert.IsFalse(reader.TryReadCell(out _));
+    }
+
+    /// <summary>
+    /// Verifies that a sheet whose type is not <see cref="ExcelSheetType.Worksheet" /> yields no cells, even when its
+    /// substream holds NUMBER and LABEL records, as a chart's data cache does.
+    /// </summary>
+    /// <param name="type">The sheet type.</param>
+    [TestMethod]
+    [DataRow(ExcelSheetType.MacroSheet)]
+    [DataRow(ExcelSheetType.Chart)]
+    [DataRow(ExcelSheetType.VbaModule)]
+    [DataRow(ExcelSheetType.Unknown)]
+    public void TryReadCell_WhenSheetIsNotAWorksheet_ShouldReturnFalse(ExcelSheetType type)
+    {
+        ExcelWorksheetInfo info = new("Chart1", 0, ExcelSheetVisibility.Visible, type, default);
+        byte[] substream = Biff8TestWorkbook.WorksheetSubstream(Biff8TestWorkbook.Number(0, 0, 40.0), Biff8TestWorkbook.Label(1, 0, "Q1"));
+        using var reader = new ExcelWorksheetReader(info, substream, [], BiffFormatTable.Empty, new BiffReaderOptions { Version = BiffVersion.Biff8 });
+
+        Assert.IsFalse(reader.TryReadCell(out ExcelCell cell));
+        Assert.AreEqual(default, cell);
+    }
+
+    /// <summary>
+    /// Verifies that the records of each chart substream nested in the worksheet, from its BOF to its matching EOF,
+    /// are not read as cells, and that the cells after the charts are.
+    /// </summary>
+    /// <param name="charts">The number of embedded charts between the two cells.</param>
+    [TestMethod]
+    [DataRow(1)]
+    [DataRow(2)]
+    public void TryReadCell_WhenWorksheetEmbedsCharts_ShouldSkipTheirSubstreams(int charts)
+    {
+        List<byte[]> body = [Biff8TestWorkbook.Number(0, 0, 1.0)];
+        for (int i = 1; i <= charts; i++)
+            body.Add(Biff8TestWorkbook.EmbeddedChart((ushort)i, 10.0 * i, 20.0 * i));
+
+        body.Add(Biff8TestWorkbook.Number(1, 0, 2.0));
+        using ExcelWorksheetReader reader = Biff8TestWorkbook.OpenWorksheetReader([.. body]);
+
+        List<double?> values = [];
+        while (reader.TryReadCell(out ExcelCell cell))
+            values.Add(cell.NumberValue);
+
+        CollectionAssert.AreEqual(new double?[] { 1.0, 2.0 }, values);
+    }
+
+    /// <summary>
+    /// Verifies that a substream nested in a nested substream ends at its own EOF and leaves the outer one open, so the
+    /// worksheet's cells resume only after the outer substream's matching EOF.
+    /// </summary>
+    [TestMethod]
+    public void TryReadCell_WhenNestedSubstreamNestsAnother_ShouldSkipToItsMatchingEof()
+    {
+        using ExcelWorksheetReader reader = Biff8TestWorkbook.OpenWorksheetReader(
+            Biff8TestWorkbook.Number(0, 0, 1.0),
+            Biff8TestWorkbook.Bof((ushort)BiffSubstreamType.Chart),
+            Biff8TestWorkbook.EmbeddedChart(1, 10.0),
+            Biff8TestWorkbook.Number(1, 0, 20.0),
+            Biff8TestWorkbook.Eof(),
+            Biff8TestWorkbook.Number(1, 0, 2.0));
+
+        List<double?> values = [];
+        while (reader.TryReadCell(out ExcelCell cell))
+            values.Add(cell.NumberValue);
+
+        CollectionAssert.AreEqual(new double?[] { 1.0, 2.0 }, values);
+    }
+
+    /// <summary>
+    /// Verifies that a formula's text result whose surrogate pair is split between its STRING record and the CONTINUE
+    /// record after it is read as the character.
+    /// </summary>
+    [TestMethod]
+    public void TryReadCell_WhenFormulaStringSplitsASurrogatePair_ShouldReadTheCharacter()
+    {
+        using ExcelWorksheetReader reader = Biff8TestWorkbook.OpenWorksheetReader(
+            Biff8TestWorkbook.Formula(0, 0, [0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF, 0xFF]),
+            Biff8TestWorkbook.Record(0x0207, [0x02, 0x00, 0x01, 0x3D, 0xD8]),
+            Biff8TestWorkbook.Record(0x003C, [0x01, 0x00, 0xDE]));
+
+        Assert.IsTrue(reader.TryReadCell(out ExcelCell cell));
+        Assert.AreEqual("\uD83D\uDE00", cell.StringValue);
     }
 }

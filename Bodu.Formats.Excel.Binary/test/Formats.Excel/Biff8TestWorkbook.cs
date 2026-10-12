@@ -70,6 +70,19 @@ internal static class Biff8TestWorkbook
     public static byte[] FilePass() =>
         Record(0x002F, new byte[6]);
 
+    /// <summary>Builds a FORMAT record.</summary>
+    /// <param name="formatIndex">The number-format index the record defines.</param>
+    /// <param name="code">The format code.</param>
+    /// <returns>The framed record.</returns>
+    public static byte[] Format(ushort formatIndex, string code) =>
+        Emit((ref BiffWriter w) => w.WriteFormat(formatIndex, code));
+
+    /// <summary>Builds an XF record that selects a number format.</summary>
+    /// <param name="formatIndex">The number-format index.</param>
+    /// <returns>The framed record.</returns>
+    public static byte[] Xf(ushort formatIndex) =>
+        Emit((ref BiffWriter w) => w.WriteXf(new BiffXfRecord(0, formatIndex, 0)));
+
     /// <summary>Builds a NUMBER cell.</summary>
     /// <param name="row">The row.</param>
     /// <param name="column">The column.</param>
@@ -158,6 +171,39 @@ internal static class Biff8TestWorkbook
     /// <returns>The framed record.</returns>
     public static byte[] Dimensions(int firstRow, int rowMac, int firstColumn, int columnMac) =>
         Emit((ref BiffWriter w) => w.WriteDimensions(new BiffDimensionsRecord(firstRow, rowMac, firstColumn, columnMac)));
+
+    /// <summary>
+    /// Builds a chart embedded in a worksheet: its OBJ record, then a whole chart substream, BOF to EOF, whose NUMBER
+    /// records are the chart's data cache ([MS-XLS] 2.1.7.20.6 and 2.2.3.2).
+    /// </summary>
+    /// <param name="objectId">The object identifier of the chart.</param>
+    /// <param name="cache">The values of the data cache, one NUMBER record each, in column A from row 1.</param>
+    /// <returns>The concatenated records.</returns>
+    public static byte[] EmbeddedChart(ushort objectId, params double[] cache)
+    {
+        // FtCmo (ft, cb, ot = 5 for a chart, id, flags, 12 reserved bytes), then FtEnd.
+        byte[] obj = new byte[26];
+        BinaryPrimitives.WriteUInt16LittleEndian(obj, 0x0015);
+        BinaryPrimitives.WriteUInt16LittleEndian(obj.AsSpan(2), 18);
+        BinaryPrimitives.WriteUInt16LittleEndian(obj.AsSpan(4), 5);
+        BinaryPrimitives.WriteUInt16LittleEndian(obj.AsSpan(6), objectId);
+        BinaryPrimitives.WriteUInt16LittleEndian(obj.AsSpan(8), 0x6011);
+
+        List<byte[]> records =
+        [
+            Record((ushort)BiffRecordType.Obj, obj),
+            Bof((ushort)BiffSubstreamType.Chart),
+            Record(0x1001, [0x00, 0x00]),
+            Dimensions(0, cache.Length, 0, 1),
+            Record(0x1065, [0x01, 0x00]),
+        ];
+        for (int row = 0; row < cache.Length; row++)
+            records.Add(Number(row, 0, cache[row]));
+
+        records.Add(Record(0x1065, [0x02, 0x00]));
+        records.Add(Eof());
+        return Concat([.. records]);
+    }
 
     /// <summary>Builds a shared string table from the given strings.</summary>
     /// <param name="strings">The unique strings.</param>
@@ -257,6 +303,41 @@ internal static class Biff8TestWorkbook
             workbook.Write(BoundSheet(offset, sheets[i].Type, sheets[i].Visibility, sheets[i].Name));
             offset += substreams[i].Length;
         }
+
+        workbook.Write(Eof());
+        foreach (byte[] substream in substreams)
+            workbook.Write(substream);
+
+        return workbook.ToArray();
+    }
+
+    /// <summary>
+    /// Builds a workbook stream from sheet substreams written exactly as given, so a substream may lack its BOF or EOF
+    /// record, with a sheet directory whose order may differ from the order of the substreams.
+    /// </summary>
+    /// <param name="substreams">The substreams, in stream order.</param>
+    /// <param name="directory">
+    /// The name of each worksheet and the index of the substream its BOUNDSHEET record points at, in directory order.
+    /// </param>
+    /// <returns>The workbook stream bytes.</returns>
+    public static byte[] BuildRawWorkbookStream(IReadOnlyList<byte[]> substreams, params (string Name, int Substream)[] directory)
+    {
+        int globalsLength = Bof(BofGlobals).Length + Eof().Length;
+        foreach ((string name, _) in directory)
+            globalsLength += BoundSheet(0, 0, 0, name).Length;
+
+        long[] offsets = new long[substreams.Count];
+        long offset = globalsLength;
+        for (int i = 0; i < substreams.Count; i++)
+        {
+            offsets[i] = offset;
+            offset += substreams[i].Length;
+        }
+
+        using MemoryStream workbook = new();
+        workbook.Write(Bof(BofGlobals));
+        foreach ((string name, int substream) in directory)
+            workbook.Write(BoundSheet(offsets[substream], 0, 0, name));
 
         workbook.Write(Eof());
         foreach (byte[] substream in substreams)

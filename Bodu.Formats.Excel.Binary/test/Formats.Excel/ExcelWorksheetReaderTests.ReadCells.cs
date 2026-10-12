@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.IO.Biff;
+
 namespace Bodu.Formats.Excel;
 
 public partial class ExcelWorksheetReaderTests
@@ -84,5 +86,22 @@ public partial class ExcelWorksheetReaderTests
 
         Assert.HasCount(1, reader.ReadCells().ToList());
         Assert.IsEmpty(reader.ReadCells());
+    }
+
+    /// <summary>
+    /// Verifies that enumerating the cells of a worksheet whose BOF declares a BIFF version other than BIFF5 or BIFF8
+    /// throws <see cref="ExcelBinaryUnsupportedException" />, with the codec's exception as its inner exception.
+    /// </summary>
+    [TestMethod]
+    public void ReadCells_WhenSheetBofDeclaresUnsupportedVersion_ShouldThrowExcelBinaryUnsupportedException()
+    {
+        using ExcelWorksheetReader reader = Biff8TestWorkbook.OpenWorksheetReaderRaw(Biff4Substream());
+
+        var ex = Assert.ThrowsExactly<ExcelBinaryUnsupportedException>(() =>
+        {
+            _ = reader.ReadCells().ToList();
+        });
+
+        Assert.IsInstanceOfType<BiffUnsupportedVersionException>(ex.InnerException);
     }
 }

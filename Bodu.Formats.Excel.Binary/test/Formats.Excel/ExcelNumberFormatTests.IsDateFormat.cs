@@ -24,6 +24,45 @@ public partial class ExcelNumberFormatTests
     }
 
     /// <summary>
+    /// Verifies that a Thai built-in date or time format index, 71 to 81, is recognized as a date format without a code.
+    /// </summary>
+    /// <param name="formatIndex">The built-in number-format index.</param>
+    [TestMethod]
+    [DataRow((ushort)71)]
+    [DataRow((ushort)72)]
+    [DataRow((ushort)73)]
+    [DataRow((ushort)74)]
+    [DataRow((ushort)75)]
+    [DataRow((ushort)76)]
+    [DataRow((ushort)77)]
+    [DataRow((ushort)78)]
+    [DataRow((ushort)79)]
+    [DataRow((ushort)80)]
+    [DataRow((ushort)81)]
+    public void IsDateFormat_WhenThaiBuiltInDateIndex_ShouldReturnTrue(ushort formatIndex)
+    {
+        Assert.IsTrue(ExcelNumberFormat.IsDateFormat(formatIndex, null));
+    }
+
+    /// <summary>
+    /// Verifies that a Thai built-in number format index, 59 to 62 or 67 to 70, is not recognized as a date format.
+    /// </summary>
+    /// <param name="formatIndex">The built-in number-format index.</param>
+    [TestMethod]
+    [DataRow((ushort)59)]
+    [DataRow((ushort)60)]
+    [DataRow((ushort)61)]
+    [DataRow((ushort)62)]
+    [DataRow((ushort)67)]
+    [DataRow((ushort)68)]
+    [DataRow((ushort)69)]
+    [DataRow((ushort)70)]
+    public void IsDateFormat_WhenThaiBuiltInNumberIndex_ShouldReturnFalse(ushort formatIndex)
+    {
+        Assert.IsFalse(ExcelNumberFormat.IsDateFormat(formatIndex, null));
+    }
+
+    /// <summary>
     /// Verifies that a built-in numeric format index is not recognized as a date format.
     /// </summary>
     /// <param name="formatIndex">The built-in number-format index.</param>
@@ -35,6 +74,39 @@ public partial class ExcelNumberFormatTests
     public void IsDateFormat_WhenBuiltInNumericIndex_ShouldReturnFalse(ushort formatIndex)
     {
         Assert.IsFalse(ExcelNumberFormat.IsDateFormat(formatIndex, null));
+    }
+
+    /// <summary>
+    /// Verifies that a format code defined for an index in a built-in date or time range decides the classification:
+    /// a code without date or time fields there is not a date format.
+    /// </summary>
+    /// <param name="formatIndex">The built-in date or time format index the code is defined for.</param>
+    /// <param name="formatCode">The format code defined for the index.</param>
+    [TestMethod]
+    [DataRow((ushort)14, "0.00")]
+    [DataRow((ushort)22, "#,##0")]
+    [DataRow((ushort)47, "0")]
+    [DataRow((ushort)50, "0.00")]
+    [DataRow((ushort)58, "@")]
+    [DataRow((ushort)71, "0.00%")]
+    public void IsDateFormat_WhenNumberCodeIsDefinedForBuiltInDateIndex_ShouldReturnFalse(ushort formatIndex, string formatCode)
+    {
+        Assert.IsFalse(ExcelNumberFormat.IsDateFormat(formatIndex, formatCode));
+    }
+
+    /// <summary>
+    /// Verifies that a format code defined for a built-in number format index decides the classification: a code with
+    /// date or time fields there is a date format.
+    /// </summary>
+    /// <param name="formatIndex">The built-in number format index the code is defined for.</param>
+    /// <param name="formatCode">The format code defined for the index.</param>
+    [TestMethod]
+    [DataRow((ushort)1, "yyyy")]
+    [DataRow((ushort)9, "d/m/yyyy")]
+    [DataRow((ushort)49, "h:mm")]
+    public void IsDateFormat_WhenDateCodeIsDefinedForBuiltInNumberIndex_ShouldReturnTrue(ushort formatIndex, string formatCode)
+    {
+        Assert.IsTrue(ExcelNumberFormat.IsDateFormat(formatIndex, formatCode));
     }
 
     /// <summary>

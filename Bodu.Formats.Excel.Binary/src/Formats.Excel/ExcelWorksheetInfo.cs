@@ -73,5 +73,10 @@ public sealed class ExcelWorksheetInfo
     /// The half-open span of rows and columns that bounds the populated cells; the default value (zero counts) when the
     /// sheet declares no <c>DIMENSIONS</c> record.
     /// </value>
+    /// <remarks>
+    /// Only the sheet's own record, before its first cell or row record, declares the range: the <c>DIMENSIONS</c>
+    /// record of a chart embedded in the sheet, or of the next sheet's substream when the sheet has lost its
+    /// end-of-file record, does not.
+    /// </remarks>
     public ExcelWorksheetDimensions Dimensions { get; }
 }

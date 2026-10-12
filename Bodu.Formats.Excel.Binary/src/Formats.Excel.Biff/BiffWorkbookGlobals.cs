@@ -19,6 +19,9 @@ namespace Bodu.Formats.Excel.Biff;
 /// </remarks>
 internal sealed class BiffWorkbookGlobals
 {
+    /// <summary>Each sheet's nearest later sheet offset, or <see cref="long.MaxValue" /> when none.</summary>
+    private readonly long[] _substreamEnds;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="BiffWorkbookGlobals" /> class.
     /// </summary>
@@ -42,6 +45,7 @@ internal sealed class BiffWorkbookGlobals
         SharedStrings = sharedStrings;
         Formats = formats;
         DateSystem = dateSystem;
+        _substreamEnds = FindSubstreamEnds(sheets);
     }
 
     /// <summary>
@@ -86,6 +90,17 @@ internal sealed class BiffWorkbookGlobals
     /// </summary>
     /// <value>The options seeding a <see cref="BiffReader" />.</value>
     public BiffReaderOptions ReaderOptions => new() { Version = Version, CodePage = CodePage };
+
+    /// <summary>
+    /// Gets the offset at which the substream of the sheet at the specified index ends when it has no end-of-file
+    /// record of its own: the nearest <c>lbPlyPos</c> offset past the sheet's own, whatever the order of the sheet
+    /// directory, or the end of the workbook stream when no sheet's substream begins after it.
+    /// </summary>
+    /// <param name="sheetIndex">The zero-based sheet index.</param>
+    /// <param name="streamLength">The length of the workbook stream.</param>
+    /// <returns>The offset at which the sheet's substream ends at the latest.</returns>
+    public long GetSubstreamLimit(int sheetIndex, long streamLength) =>
+        Math.Min(_substreamEnds[sheetIndex], streamLength);
 
     /// <summary>
     /// Parses the globals substream.
@@ -162,6 +177,7 @@ internal sealed class BiffWorkbookGlobals
                     xfFormatIndex.Add(reader.GetXf().FormatIndex);
                     break;
 
+                // A later FORMAT record for an index replaces an earlier one: the last record applies.
                 case BiffRecordType.Format:
                     BiffFormatRecord format = reader.GetFormat();
                     formatCodes[format.FormatIndex] = format.Code.GetString();
@@ -178,6 +194,57 @@ internal sealed class BiffWorkbookGlobals
 
         var formats = new BiffFormatTable([.. xfFormatIndex], formatCodes, options.DetectDateFormats);
         return new BiffWorkbookGlobals(reader.Version, reader.CodePage, sheets, sharedStrings, formats, dateSystem);
+    }
+
+    /// <summary>
+    /// Finds, for each sheet, the nearest offset past its own at which another sheet's substream begins.
+    /// </summary>
+    /// <param name="sheets">The bound sheets, in workbook order.</param>
+    /// <returns>
+    /// The offsets, in workbook order; <see cref="long.MaxValue" /> for a sheet that no sheet's substream follows.
+    /// </returns>
+    /// <remarks>
+    /// The sheet directory need not list the substreams in stream order, so the offsets are sorted once and each
+    /// sheet's end is searched for, which keeps a directory of many sheets from costing a pass over it per sheet.
+    /// </remarks>
+    private static long[] FindSubstreamEnds(IReadOnlyList<BiffSheetDirectoryEntry> sheets)
+    {
+        long[] offsets = new long[sheets.Count];
+        for (int i = 0; i < offsets.Length; i++)
+            offsets[i] = sheets[i].StreamOffset;
+
+        Array.Sort(offsets);
+
+        long[] ends = new long[offsets.Length];
+        for (int i = 0; i < ends.Length; i++)
+        {
+            int next = FindFirstGreater(offsets, sheets[i].StreamOffset);
+            ends[i] = next < offsets.Length ? offsets[next] : long.MaxValue;
+        }
+
+        return ends;
+    }
+
+    /// <summary>
+    /// Finds the index of the first element of a sorted array that is greater than a value.
+    /// </summary>
+    /// <param name="sorted">The array, in ascending order.</param>
+    /// <param name="value">The value to compare with.</param>
+    /// <returns>The index of the first greater element, or the array's length when no element is greater.</returns>
+    private static int FindFirstGreater(long[] sorted, long value)
+    {
+        int low = 0;
+        int high = sorted.Length;
+        while (low < high)
+        {
+            int middle = (low + high) >>> 1;
+            if (sorted[middle] <= value)
+                low = middle + 1;
+            else
+                high = middle;
+        }
+
+        return low;
     }
 
     /// <summary>

@@ -57,6 +57,10 @@ public readonly ref struct BiffBoundSheetRecord
     /// Gets the sheet name.
     /// </summary>
     /// <value>The name as a span-backed view.</value>
+    /// <remarks>
+    /// In BIFF8 the name is a <c>ShortXLUnicodeString</c>: only bit 0 of its flags byte, which selects 16-bit
+    /// characters, is read, and the other bits are ignored, so the view carries no rich-text runs or extended data.
+    /// </remarks>
     public BiffString Name { get; }
 
     /// <summary>

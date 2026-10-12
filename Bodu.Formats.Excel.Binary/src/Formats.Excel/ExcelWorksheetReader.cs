@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Globalization;
+
 using Bodu.Formats.Excel.Biff;
 using Bodu.IO.Biff;
 
@@ -19,6 +21,15 @@ namespace Bodu.Formats.Excel;
 /// position-keyed map. Only value-bearing records are surfaced (text, number, boolean, and error cells, including the
 /// cached result of a formula cell); blank cells and uninterpreted records are skipped, so the sequence is sparse and
 /// in record order.
+/// </para>
+/// <para>
+/// Only a sheet whose <see cref="ExcelWorksheetInfo.Type" /> is <see cref="ExcelSheetType.Worksheet" /> yields cells. A
+/// chart, macro sheet, Visual Basic module or sheet of unknown type yields none, as <see cref="ExcelSheetType" />
+/// states: the <c>NUMBER</c> and <c>LABEL</c> records of a chart substream are its data cache ([MS-XLS] 2.2.3.2), not
+/// cells. For the same reason, a substream nested in the worksheet, such as a chart embedded after its <c>OBJ</c>
+/// record ([MS-XLS] 2.1.7.20.6), is skipped from its <c>BOF</c> record to the <c>EOF</c> record that matches it, and
+/// the worksheet's cells after it are read as usual. Only the <c>EOF</c> record that matches the worksheet's own
+/// <c>BOF</c> record ends the worksheet; a worksheet without one ends where the next sheet's substream begins.
 /// </para>
 /// <para>
 /// For random access by position, materialize the worksheet instead with
@@ -50,7 +61,7 @@ namespace Bodu.Formats.Excel;
 public sealed class ExcelWorksheetReader
     : IDisposable
 {
-    /// <summary>The worksheet substream bytes, from its BOF record through its EOF record.</summary>
+    /// <summary>The worksheet substream bytes, from its BOF record to its end.</summary>
     private readonly byte[] _data;
 
     /// <summary>The workbook shared string table.</summary>
@@ -71,7 +82,10 @@ public sealed class ExcelWorksheetReader
     /// <summary>The codec state carried between reads: the version and code page of the stream.</summary>
     private BiffReaderState _state;
 
-    /// <summary>Whether the reader has reached the worksheet's end-of-file record.</summary>
+    /// <summary>The number of substreams open at the current position, the worksheet's own included.</summary>
+    private int _depth;
+
+    /// <summary>Whether no cells remain: the end-of-file record was reached, or the sheet is not a worksheet.</summary>
     private bool _ended;
 
     /// <summary>Whether this reader has been disposed.</summary>
@@ -81,7 +95,7 @@ public sealed class ExcelWorksheetReader
     /// Initializes a new instance of the <see cref="ExcelWorksheetReader" /> class.
     /// </summary>
     /// <param name="worksheet">The descriptor of the worksheet being read.</param>
-    /// <param name="substream">The worksheet substream bytes, from its BOF record through its EOF record.</param>
+    /// <param name="substream">The worksheet substream bytes, from its BOF record to its end.</param>
     /// <param name="sharedStrings">The workbook shared string table.</param>
     /// <param name="formats">The workbook format table.</param>
     /// <param name="options">
@@ -94,6 +108,9 @@ public sealed class ExcelWorksheetReader
         _sharedStrings = sharedStrings;
         _formats = formats;
         _state = new BiffReaderState(options);
+
+        // Only a worksheet carries cells; the cell records of any other sheet, such as a chart's data cache, are not.
+        _ended = worksheet.Type != ExcelSheetType.Worksheet;
     }
 
     /// <summary>
@@ -107,9 +124,13 @@ public sealed class ExcelWorksheetReader
     /// </summary>
     /// <param name="cell">When this method returns, the next populated cell when one is available.</param>
     /// <returns>
-    /// <see langword="true" /> when a cell was read; <see langword="false" /> at the end of the worksheet.
+    /// <see langword="true" /> when a cell was read; <see langword="false" /> at the end of the worksheet, and at once
+    /// for a sheet that is not a worksheet.
     /// </returns>
     /// <exception cref="ExcelBinaryFormatException">Thrown when a cell record is malformed.</exception>
+    /// <exception cref="ExcelBinaryUnsupportedException">
+    /// Thrown when the worksheet's beginning-of-file record declares a BIFF version other than BIFF5 or BIFF8.
+    /// </exception>
     /// <exception cref="ObjectDisposedException">Thrown when the reader has been disposed.</exception>
     public bool TryReadCell(out ExcelCell cell)
     {
@@ -125,6 +146,12 @@ public sealed class ExcelWorksheetReader
         {
             return TryReadCellCore(out cell);
         }
+        catch (BiffUnsupportedVersionException ex)
+        {
+            throw new ExcelBinaryUnsupportedException(
+                string.Format(CultureInfo.CurrentCulture, ExcelBinaryResourceStrings.Op_NotSupported_Biff8Version, ex.RawVersion ?? 0),
+                ex);
+        }
         catch (BiffFormatException ex)
         {
             throw new ExcelBinaryFormatException(ex.Message, ex);
@@ -136,6 +163,9 @@ public sealed class ExcelWorksheetReader
     /// </summary>
     /// <returns>A lazy sequence of the worksheet's populated cells.</returns>
     /// <exception cref="ExcelBinaryFormatException">Thrown when a cell record is malformed.</exception>
+    /// <exception cref="ExcelBinaryUnsupportedException">
+    /// Thrown when the worksheet's beginning-of-file record declares a BIFF version other than BIFF5 or BIFF8.
+    /// </exception>
     /// <exception cref="ObjectDisposedException">Thrown when the reader has been disposed.</exception>
     public IEnumerable<ExcelCell> ReadCells()
     {
@@ -148,6 +178,9 @@ public sealed class ExcelWorksheetReader
     /// </summary>
     /// <returns>A lazy sequence of the worksheet's populated rows, in the order their cells appear.</returns>
     /// <exception cref="ExcelBinaryFormatException">Thrown when a cell record is malformed.</exception>
+    /// <exception cref="ExcelBinaryUnsupportedException">
+    /// Thrown when the worksheet's beginning-of-file record declares a BIFF version other than BIFF5 or BIFF8.
+    /// </exception>
     /// <exception cref="ObjectDisposedException">Thrown when the reader has been disposed.</exception>
     /// <remarks>
     /// Cells are grouped into a row while their row index does not change; a new row is started when the row index
@@ -197,12 +230,27 @@ public sealed class ExcelWorksheetReader
             _position += reader.BytesConsumed;
             _state = reader.CurrentState;
 
+            // Each BOF opens a substream and each EOF closes the innermost one open. The records of a substream nested
+            // in the worksheet, such as an embedded chart's data cache, are not cells, and only the EOF that matches
+            // the worksheet's own BOF ends it.
+            if (reader.RecordType == BiffRecordType.Bof)
+            {
+                _depth++;
+                continue;
+            }
+
+            if (reader.RecordType == BiffRecordType.Eof)
+            {
+                _depth--;
+                _ended = _depth <= 0;
+                continue;
+            }
+
+            if (_depth > 1)
+                continue;
+
             switch (reader.RecordType)
             {
-                case BiffRecordType.Eof:
-                    _ended = true;
-                    break;
-
                 case BiffRecordType.LabelSst:
                     cell = ExcelCellMapper.FromLabelSst(reader.GetLabelSst(), _sharedStrings, _formats);
                     return true;
@@ -253,27 +301,61 @@ public sealed class ExcelWorksheetReader
     }
 
     /// <summary>
-    /// Maps a formula cell, consuming a following <c>STRING</c> record when the cached result is text.
+    /// Maps a formula cell, consuming a following <c>STRING</c> record, and any <c>CONTINUE</c> records that carry the
+    /// rest of its text, when the cached result is text.
     /// </summary>
     /// <param name="formula">The decoded formula record.</param>
     /// <returns>The cell carrying the cached result.</returns>
-    /// <exception cref="BiffFormatException">Thrown when the string record is malformed.</exception>
+    /// <exception cref="BiffFormatException">
+    /// Thrown when the string record or its continuation is malformed.
+    /// </exception>
+    /// <remarks>
+    /// [MS-XLS] 2.1.7.20.6 puts the <c>ARRAY</c>, <c>TABLE</c> or <c>SHRFMLA</c> record of an array, table or shared
+    /// formula between the <c>FORMULA</c> record and its <c>STRING</c> record, so one such record, with any
+    /// <c>CONTINUE</c> records of its own, is passed over before the <c>STRING</c> record is looked for. No other
+    /// record is passed over: when the record that follows is not the <c>STRING</c> record, nothing is consumed and the
+    /// cell holds the empty string.
+    /// </remarks>
     private ExcelCell ReadFormula(in BiffFormulaRecord formula)
     {
         ExcelCell cell = ExcelCellMapper.FromFormula(formula, _formats, out bool expectsString);
         if (!expectsString)
             return cell;
 
-        // Peek at the next record; consume it only when it is the expected STRING result.
+        // Peek ahead; consume the records only when the expected STRING result is found.
         var probe = new BiffReader(_data.AsSpan(_position), isFinalBlock: true, _state);
-        if (probe.Read() && probe.RecordType == BiffRecordType.String)
+        if (!probe.Read())
+            return cell;
+
+        if (probe.RecordType is BiffRecordType.Array or BiffRecordType.Table or BiffRecordType.ShrFmla)
         {
-            string text = probe.GetString().Text.GetString();
+            SkipContinuations(ref probe);
+            if (!probe.Read())
+                return cell;
+        }
+
+        if (probe.RecordType == BiffRecordType.String)
+        {
+            string text = BiffStringRecord.ReadContinuedText(ref probe);
             _position += probe.BytesConsumed;
             _state = probe.CurrentState;
             return ExcelCell.Text(cell.RowIndex, cell.ColumnIndex, text, cell.FormatIndex);
         }
 
         return cell;
+    }
+
+    /// <summary>
+    /// Consumes the <c>CONTINUE</c> records that follow a reader's current record.
+    /// </summary>
+    /// <param name="reader">The reader, positioned on the record whose continuations are passed over.</param>
+    /// <exception cref="BiffFormatException">
+    /// Thrown when a continuation record runs past the end of the data.
+    /// </exception>
+    private static void SkipContinuations(ref BiffReader reader)
+    {
+        bool consumed = reader.TryReadContinuation(out _);
+        while (consumed)
+            consumed = reader.TryReadContinuation(out _);
     }
 }

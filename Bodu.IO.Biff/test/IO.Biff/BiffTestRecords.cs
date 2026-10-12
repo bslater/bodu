@@ -550,6 +550,26 @@ internal static class BiffTestRecords
     }
 
     /// <summary>
+    /// Encodes a BIFF8 <c>XLUnicodeString</c> or <c>ShortXLUnicodeString</c> whose flags byte is written as given.
+    /// </summary>
+    /// <param name="text">The text.</param>
+    /// <param name="flags">The flags byte; bit 0 selects 16-bit characters, and the other bits are written unchanged.</param>
+    /// <param name="wideLength">Whether the length prefix is 16 bits.</param>
+    /// <returns>The encoded bytes: the length, the flags byte, then the characters and nothing after them.</returns>
+    public static byte[] FlaggedString(string text, byte flags, bool wideLength = true)
+    {
+        var bytes = new List<byte>();
+        if (wideLength)
+            bytes.AddRange(UInt16((ushort)text.Length));
+        else
+            bytes.Add((byte)text.Length);
+
+        bytes.Add(flags);
+        bytes.AddRange((flags & 0x01) != 0 ? Encoding.Unicode.GetBytes(text) : text.Select(c => (byte)c));
+        return [.. bytes];
+    }
+
+    /// <summary>
     /// Encodes a 16-bit little-endian value.
     /// </summary>
     /// <param name="value">The value.</param>

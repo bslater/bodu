@@ -317,6 +317,9 @@ public sealed class ExcelBinaryWorkbook
     /// Thrown when <paramref name="worksheetIndex" /> is out of range.
     /// </exception>
     /// <exception cref="ExcelBinaryFormatException">Thrown when the sheet substream is malformed.</exception>
+    /// <exception cref="ExcelBinaryUnsupportedException">
+    /// Thrown when the sheet's beginning-of-file record declares a BIFF version other than BIFF5 or BIFF8.
+    /// </exception>
     /// <exception cref="ObjectDisposedException">Thrown when the workbook has been disposed.</exception>
     /// <example>
     /// <code language="csharp">
@@ -345,6 +348,10 @@ public sealed class ExcelBinaryWorkbook
     /// Thrown when <paramref name="worksheetName" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="KeyNotFoundException">Thrown when no sheet with the given name exists.</exception>
+    /// <exception cref="ExcelBinaryFormatException">Thrown when the sheet substream is malformed.</exception>
+    /// <exception cref="ExcelBinaryUnsupportedException">
+    /// Thrown when the sheet's beginning-of-file record declares a BIFF version other than BIFF5 or BIFF8.
+    /// </exception>
     /// <exception cref="ObjectDisposedException">Thrown when the workbook has been disposed.</exception>
     public ExcelWorksheet ReadWorksheet(string worksheetName) =>
         ReadWorksheet(IndexOf(worksheetName));
@@ -354,6 +361,11 @@ public sealed class ExcelBinaryWorkbook
     /// </summary>
     /// <param name="formatIndex">The number-format index, as carried by <see cref="ExcelCell.FormatIndex" />.</param>
     /// <returns>The format code, or <see langword="null" /> when none is known for the index.</returns>
+    /// <remarks>
+    /// A <c>FORMAT</c> record in the workbook decides its index's code, built-in index or not, and when the workbook
+    /// defines an index more than once, the last record applies. The built-in codes apply only to the indexes that no
+    /// <c>FORMAT</c> record defines. The same code decides <see cref="ExcelCell.IsDateFormatted" />.
+    /// </remarks>
     public string? GetNumberFormatCode(ushort formatIndex) =>
         _globals.Formats.GetFormatCode(formatIndex);
 
@@ -455,7 +467,7 @@ public sealed class ExcelBinaryWorkbook
     private static byte[] ReadGlobalsSubstream(CompoundStorage root, string streamName)
     {
         using CompoundStream stream = root.OpenStream(streamName);
-        return BiffSubstreamLoader.ReadSubstream(stream);
+        return BiffSubstreamLoader.ReadGlobalsSubstream(stream);
     }
 
     /// <summary>
@@ -476,8 +488,9 @@ public sealed class ExcelBinaryWorkbook
         for (int i = 0; i < entries.Count; i++)
         {
             BiffSheetDirectoryEntry entry = entries[i];
+            long limit = globals.GetSubstreamLimit(i, stream.Length);
             ExcelWorksheetDimensions dimensions = entry.Type == ExcelSheetType.Worksheet
-                ? BiffDimensionsScanner.Read(stream, entry.StreamOffset, globals.Version)
+                ? BiffDimensionsScanner.Read(stream, entry.StreamOffset, limit, globals.Version)
                 : default;
 
             worksheets[i] = new ExcelWorksheetInfo(entry.Name, i, entry.Visibility, entry.Type, dimensions);
@@ -535,14 +548,18 @@ public sealed class ExcelBinaryWorkbook
     /// Reads the substream of the sheet at the specified index from the workbook stream.
     /// </summary>
     /// <param name="worksheetIndex">The zero-based sheet index.</param>
-    /// <returns>The sheet substream bytes, from its BOF record through its EOF record.</returns>
+    /// <returns>
+    /// The sheet substream bytes, from its BOF record through the EOF record that matches it or, when it has none, up
+    /// to where another sheet's substream begins.
+    /// </returns>
     private byte[] ReadSheetSubstream(int worksheetIndex)
     {
         long offset = _globals.Sheets[worksheetIndex].StreamOffset;
         using CompoundStream stream = _root.OpenStream(_streamName);
+        long limit = _globals.GetSubstreamLimit(worksheetIndex, stream.Length);
         stream.Seek(offset, SeekOrigin.Begin);
 
-        return BiffSubstreamLoader.ReadSubstream(stream);
+        return BiffSubstreamLoader.ReadSubstream(stream, limit);
     }
 
     /// <summary>

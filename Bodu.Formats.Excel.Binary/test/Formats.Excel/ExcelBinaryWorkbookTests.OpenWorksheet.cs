@@ -184,4 +184,89 @@ public partial class ExcelBinaryWorkbookTests
             _ = workbook.OpenWorksheet(0);
         });
     }
+
+    /// <summary>
+    /// Verifies that, in a workbook whose sheets <c>DATA</c> and <c>data</c> differ only in case, each name opens the
+    /// sheet it matches ordinally.
+    /// </summary>
+    [TestMethod]
+    public void OpenWorksheet_WhenNamesDifferOnlyInCase_ShouldOpenTheOrdinalMatch()
+    {
+        using MemoryStream xls = BuildCaseVariantWorkbook();
+        using var workbook = ExcelBinaryWorkbook.OpenRead(xls);
+
+        using ExcelWorksheetReader lower = workbook.OpenWorksheet("data");
+        using ExcelWorksheetReader upper = workbook.OpenWorksheet("DATA");
+
+        Assert.AreEqual(1, lower.Worksheet.Index);
+        Assert.AreEqual(2.0, lower.ReadCells().Single().NumberValue!.Value, 0.0);
+        Assert.AreEqual(0, upper.Worksheet.Index);
+        Assert.AreEqual(1.0, upper.ReadCells().Single().NumberValue!.Value, 0.0);
+    }
+
+    /// <summary>
+    /// Verifies that opening <c>SHEET1</c> in a workbook whose only sheet is named <c>Sheet1</c> throws
+    /// <see cref="KeyNotFoundException" />, because sheet names are compared ordinally.
+    /// </summary>
+    [TestMethod]
+    public void OpenWorksheet_WhenNameDiffersInCase_ShouldThrowKeyNotFoundException()
+    {
+        using MemoryStream xls = Biff8TestWorkbook.BuildWorkbook(
+            [],
+            new Biff8TestWorkbook.SheetSpec("Sheet1", 0, 0, [Biff8TestWorkbook.Number(0, 0, 1)]));
+        using var workbook = ExcelBinaryWorkbook.OpenRead(xls);
+
+        _ = Assert.ThrowsExactly<KeyNotFoundException>(() =>
+        {
+            _ = workbook.OpenWorksheet("SHEET1");
+        });
+    }
+
+    /// <summary>
+    /// Verifies that opening <c>Data</c> in a workbook whose sheets are <c>DATA</c> and <c>data</c> throws
+    /// <see cref="KeyNotFoundException" />, because no sheet name matches it ordinally.
+    /// </summary>
+    [TestMethod]
+    public void OpenWorksheet_WhenNameMatchesOnlyIgnoringCase_ShouldThrowKeyNotFoundException()
+    {
+        using MemoryStream xls = BuildCaseVariantWorkbook();
+        using var workbook = ExcelBinaryWorkbook.OpenRead(xls);
+
+        _ = Assert.ThrowsExactly<KeyNotFoundException>(() =>
+        {
+            _ = workbook.OpenWorksheet("Data");
+        });
+    }
+
+    /// <summary>
+    /// Verifies that opening a one-sheet workbook's sheet at index 1 or at index -1 throws
+    /// <see cref="ArgumentOutOfRangeException" />.
+    /// </summary>
+    [TestMethod]
+    public void OpenWorksheet_WhenIndexIsOutOfRange_ShouldThrowArgumentOutOfRangeException()
+    {
+        using MemoryStream xls = Biff8TestWorkbook.BuildWorkbook(
+            [],
+            new Biff8TestWorkbook.SheetSpec("Sheet1", 0, 0, [Biff8TestWorkbook.Number(0, 0, 1)]));
+        using var workbook = ExcelBinaryWorkbook.OpenRead(xls);
+
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = workbook.OpenWorksheet(1);
+        });
+        _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = workbook.OpenWorksheet(-1);
+        });
+    }
+
+    /// <summary>
+    /// Builds a workbook whose two sheets are named <c>DATA</c> (A1 = 1) and <c>data</c> (A1 = 2).
+    /// </summary>
+    /// <returns>The compound file bytes, positioned at the start.</returns>
+    private static MemoryStream BuildCaseVariantWorkbook() =>
+        Biff8TestWorkbook.BuildWorkbook(
+            [],
+            new Biff8TestWorkbook.SheetSpec("DATA", 0, 0, [Biff8TestWorkbook.Number(0, 0, 1)]),
+            new Biff8TestWorkbook.SheetSpec("data", 0, 0, [Biff8TestWorkbook.Number(0, 0, 2)]));
 }

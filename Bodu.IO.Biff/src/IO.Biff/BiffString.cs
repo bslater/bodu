@@ -17,10 +17,11 @@ namespace Bodu.IO.Biff;
 /// <remarks>
 /// <para>
 /// BIFF8 stores text as UTF-16LE code units or, when every character has a zero high byte, as one low byte per
-/// character; a flags byte preceding the characters selects the form (<see cref="IsHighByte" />) and announces the
-/// optional formatting-run and phonetic (extended) trailers. BIFF5 stores text as bytes in the code page declared by
-/// the stream's <c>CODEPAGE</c> record; the view carries that code page so <see cref="GetString()" /> needs no
-/// argument.
+/// character; a flags byte preceding the characters selects the form (<see cref="IsHighByte" />). In the shared string
+/// table the flags byte also announces the optional formatting-run and phonetic (extended) trailers; in every other
+/// record (<c>BOUNDSHEET</c>, <c>FONT</c>, <c>FORMAT</c>, <c>LABEL</c> and <c>STRING</c>) its other bits are reserved
+/// and ignored, and the view carries no trailers. BIFF5 stores text as bytes in the code page declared by the stream's
+/// <c>CODEPAGE</c> record; the view carries that code page so <see cref="GetString()" /> needs no argument.
 /// </para>
 /// <para>
 /// The view is a <see langword="ref struct" /> over the record payload and must not outlive the buffer it was read
@@ -131,7 +132,10 @@ public readonly ref struct BiffString
     /// <summary>
     /// Gets a value indicating whether the string carries rich-text formatting runs.
     /// </summary>
-    /// <value><see langword="true" /> when the header's rich-text flag is set.</value>
+    /// <value>
+    /// <see langword="true" /> when the string is from the shared string table and its header declares at least one
+    /// run; always <see langword="false" /> for the text of other records, whose flags byte has no rich-text bit.
+    /// </value>
     public bool HasRichRuns => _richRunCount > 0;
 
     /// <summary>
@@ -150,7 +154,10 @@ public readonly ref struct BiffString
     /// <summary>
     /// Gets a value indicating whether the string carries extended (phonetic) data.
     /// </summary>
-    /// <value><see langword="true" /> when the header's extended-data flag is set.</value>
+    /// <value>
+    /// <see langword="true" /> when the string is from the shared string table and its header's extended-data flag is
+    /// set; always <see langword="false" /> for the text of other records, whose flags byte has no extended-data bit.
+    /// </value>
     public bool HasExtendedData => _hasExtendedData;
 
     /// <summary>
@@ -247,16 +254,21 @@ public readonly ref struct BiffString
             : ReadByteString(payload, offset, wideLength, codePage, type);
 
     /// <summary>
-    /// Reads a BIFF8 Unicode string.
+    /// Reads a BIFF8 <c>XLUnicodeString</c> (16-bit length) or <c>ShortXLUnicodeString</c> (8-bit length).
     /// </summary>
     /// <param name="payload">The record payload.</param>
     /// <param name="offset">The byte offset at which the length prefix begins.</param>
     /// <param name="wideLength">Whether the length prefix is 16 bits (<see langword="true" />) or 8 bits.</param>
     /// <param name="type">The record type, used to compose the failure message.</param>
-    /// <returns>The string view.</returns>
+    /// <returns>The string view, which carries no rich-text runs or extended data.</returns>
     /// <exception cref="BiffFormatException">
-    /// Thrown when the string header, characters, or trailers run past the payload.
+    /// Thrown when the string header or characters run past the payload.
     /// </exception>
+    /// <remarks>
+    /// Only bit 0 of the flags byte, which selects 16-bit characters, is read. [MS-XLS] 2.5.240 and 2.5.294 reserve the
+    /// other seven bits and require them to be ignored, so the characters follow the flags byte directly; only the
+    /// shared string table's strings, which <see cref="BiffSstReader" /> reads, give bits 2 and 3 a meaning.
+    /// </remarks>
     internal static BiffString ReadUnicode(ReadOnlySpan<byte> payload, int offset, bool wideLength, BiffRecordType type)
     {
         int cursor = offset;
@@ -272,42 +284,15 @@ public readonly ref struct BiffString
             cursor += 1;
         }
 
-        byte flags = BiffPayload.ReadByte(payload, cursor, type);
+        // Bits 1 to 7 are reserved and ignored: a reserved bit never announces a run count or an extended size.
+        bool highByte = (BiffPayload.ReadByte(payload, cursor, type) & 0x01) != 0;
         cursor += 1;
-
-        bool highByte = (flags & 0x01) != 0;
-        bool hasExtended = (flags & 0x04) != 0;
-        bool hasRich = (flags & 0x08) != 0;
-
-        int runCount = 0;
-        if (hasRich)
-        {
-            runCount = BiffPayload.ReadUInt16(payload, cursor, type);
-            cursor += 2;
-        }
-
-        int extendedLength = 0;
-        if (hasExtended)
-        {
-            uint declared = BiffPayload.ReadUInt32(payload, cursor, type);
-            if (declared > int.MaxValue)
-                throw BiffPayload.Malformed(type);
-
-            extendedLength = (int)declared;
-            cursor += 4;
-        }
 
         int byteCount = highByte ? length * 2 : length;
         ReadOnlySpan<byte> characters = Slice(payload, cursor, byteCount, type);
         cursor += byteCount;
 
-        ReadOnlySpan<byte> runs = Slice(payload, cursor, runCount * 4, type);
-        cursor += runCount * 4;
-
-        ReadOnlySpan<byte> extended = Slice(payload, cursor, extendedLength, type);
-        cursor += extendedLength;
-
-        return new BiffString(characters, length, isUnicode: true, highByte, runs, runCount, extended, hasExtended, BiffLimits.UnicodeCodePage, cursor - offset);
+        return new BiffString(characters, length, isUnicode: true, highByte, default, 0, default, hasExtendedData: false, BiffLimits.UnicodeCodePage, cursor - offset);
     }
 
     /// <summary>

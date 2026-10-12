@@ -359,4 +359,137 @@ public sealed partial class BiffSstReaderTests
         Assert.AreEqual($"s{count - 1}", strings[^1]);
         Assert.AreEqual(BiffTestRecords.Bof8().Length + records.Sum(r => r.Length), consumed);
     }
+
+    /// <summary>
+    /// Verifies that a CONTINUE record holding only a continued string's flags byte contributes no characters, and that
+    /// the string goes on in the next CONTINUE record, whose own flags byte applies, with the next string still aligned.
+    /// </summary>
+    [TestMethod]
+    public void Read_WhenContinuationHoldsOnlyTheFlagsByte_ShouldContinueInTheNextRecord()
+    {
+        byte[] stream = Table(
+            BiffTestRecords.Sst(2, 2, [0x06, 0x00, Compressed, (byte)'a', (byte)'b', (byte)'c']),
+            BiffTestRecords.Continue(Wide),
+            BiffTestRecords.Continue([Compressed, (byte)'d', (byte)'e', (byte)'f', .. BiffTestRecords.UnicodeString("next")]));
+
+        CollectionAssert.AreEqual(new[] { "abcdef", "next" }, ReadAll(stream, out _));
+    }
+
+    /// <summary>
+    /// Verifies that several CONTINUE records in a row that each hold only a flags byte are passed over, and the
+    /// string's characters resume in the first record that holds any, read by that record's flags byte.
+    /// </summary>
+    [TestMethod]
+    public void Read_WhenSeveralContinuationsHoldOnlyFlagsBytes_ShouldContinueAfterThemAll()
+    {
+        byte[] stream = Table(
+            BiffTestRecords.Sst(1, 1, [0x04, 0x00, Compressed, (byte)'a', (byte)'b']),
+            BiffTestRecords.Continue(Compressed),
+            BiffTestRecords.Continue(Wide),
+            BiffTestRecords.Continue(Wide, 0x63, 0x00, 0x64, 0x00));
+
+        CollectionAssert.AreEqual(new[] { "abcd" }, ReadAll(stream, out _));
+    }
+
+    /// <summary>
+    /// Verifies that a string whose header ends the SST record, and whose first CONTINUE record holds only a flags byte,
+    /// reads all its characters from the CONTINUE record after it.
+    /// </summary>
+    [TestMethod]
+    public void Read_WhenCharactersBeginAfterAFlagsOnlyContinuation_ShouldReadThemFromTheNextRecord()
+    {
+        byte[] stream = Table(
+            BiffTestRecords.Sst(1, 1, [0x02, 0x00, Compressed]),
+            BiffTestRecords.Continue(Wide),
+            BiffTestRecords.Continue(Compressed, (byte)'x', (byte)'y'));
+
+        CollectionAssert.AreEqual(new[] { "xy" }, ReadAll(stream, out _));
+    }
+
+    /// <summary>
+    /// Verifies that a table whose records end at a string boundary before the declared number of strings is read as the
+    /// strings it holds: <c>Read</c> returns <see langword="false" /> once its last record is exhausted, and the parent
+    /// reader is left on that record, so its next record is read normally.
+    /// </summary>
+    [TestMethod]
+    public void Read_WhenTableEndsBeforeTheDeclaredCount_ShouldStopAtItsLastString()
+    {
+        byte[] stream = Table(BiffTestRecords.Sst(4, 4, BiffTestRecords.UnicodeString("a"), BiffTestRecords.UnicodeString("b")));
+
+        List<string> strings = ReadAll(stream, out int consumed);
+
+        CollectionAssert.AreEqual(new[] { "a", "b" }, strings);
+        Assert.AreEqual(stream.Length - BiffTestRecords.Eof().Length, consumed);
+    }
+
+    /// <summary>
+    /// Verifies that a table continued in CONTINUE records whose records end before the declared number of strings is
+    /// read as every string its SST and CONTINUE records hold.
+    /// </summary>
+    [TestMethod]
+    public void Read_WhenContinuedTableEndsBeforeTheDeclaredCount_ShouldReadEveryStringItHolds()
+    {
+        byte[] stream = Table(BiffTestRecords.Sst(5, 5, BiffTestRecords.UnicodeString("a")), BiffTestRecords.Continue(BiffTestRecords.UnicodeString("b")));
+
+        CollectionAssert.AreEqual(new[] { "a", "b" }, ReadAll(stream, out _));
+    }
+
+    /// <summary>
+    /// Verifies that a table whose total count is zero and whose unique count holds an arbitrary number, as some files
+    /// written by Excel leave it, reads no strings.
+    /// </summary>
+    [TestMethod]
+    public void Read_WhenTableHoldsNoStringsButDeclaresSome_ShouldReadNone()
+    {
+        byte[] stream = Table(BiffTestRecords.Sst(0, 1742));
+
+        Assert.IsEmpty(ReadAll(stream, out _));
+    }
+
+    /// <summary>
+    /// Verifies that a surrogate pair whose high surrogate ends the SST record and whose low surrogate opens the
+    /// CONTINUE record after it decodes to its character, as the same code units in one record do.
+    /// </summary>
+    [TestMethod]
+    public void Read_WhenSurrogatePairStraddlesTheSstBoundary_ShouldDecodeTheCharacter()
+    {
+        byte[] stream = Table(
+            BiffTestRecords.Sst(1, 1, [0x02, 0x00, Wide, 0x3D, 0xD8]),
+            BiffTestRecords.Continue(Wide, 0x00, 0xDE));
+
+        CollectionAssert.AreEqual(new[] { "\uD83D\uDE00" }, ReadAll(stream, out _));
+    }
+
+    /// <summary>
+    /// Verifies that a surrogate pair split between two CONTINUE records decodes to its character, after the characters
+    /// the SST record holds.
+    /// </summary>
+    [TestMethod]
+    public void Read_WhenSurrogatePairStraddlesTwoContinuations_ShouldDecodeTheCharacter()
+    {
+        byte[] stream = Table(
+            BiffTestRecords.Sst(1, 1, [0x04, 0x00, Compressed, (byte)'a']),
+            BiffTestRecords.Continue(Wide, (byte)'b', 0x00, 0x3D, 0xD8),
+            BiffTestRecords.Continue(Wide, 0x00, 0xDE));
+
+        CollectionAssert.AreEqual(new[] { "ab\uD83D\uDE00" }, ReadAll(stream, out _));
+    }
+
+    /// <summary>
+    /// Verifies that a high surrogate that ends a segment without its low surrogate decodes to U+FFFD, followed by the
+    /// character that opens the next segment, whether that segment holds 16-bit or 8-bit characters.
+    /// </summary>
+    /// <param name="nextIsWide">Whether the CONTINUE record after the lone surrogate holds 16-bit characters.</param>
+    [TestMethod]
+    [DataRow(true)]
+    [DataRow(false)]
+    public void Read_WhenLoneHighSurrogateEndsASegment_ShouldDecodeItAsReplacementCharacter(bool nextIsWide)
+    {
+        byte[] next = nextIsWide ? [Wide, 0x41, 0x00] : [Compressed, 0x41];
+        byte[] stream = Table(
+            BiffTestRecords.Sst(1, 1, [0x02, 0x00, Wide, 0x3D, 0xD8]),
+            BiffTestRecords.Continue(next));
+
+        CollectionAssert.AreEqual(new[] { "\uFFFDA" }, ReadAll(stream, out _));
+    }
 }

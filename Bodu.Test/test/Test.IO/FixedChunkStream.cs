@@ -38,7 +38,26 @@ public sealed class FixedChunkStream
     /// <paramref name="chunkSize" /> is less than or equal to zero.
     /// </exception>
     public FixedChunkStream(byte[] data, int chunkSize)
-        : base(data ?? throw new ArgumentNullException(nameof(data)))
+        : this(data, chunkSize, writable: true)
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of <see cref="FixedChunkStream" /> backed by <paramref name="data" /> with the given
+    /// maximum read chunk size, writable or read-only.
+    /// </summary>
+    /// <param name="data">The byte array to expose as a stream.</param>
+    /// <param name="chunkSize">The maximum number of bytes returned per read call. Must be greater than zero.</param>
+    /// <param name="writable">
+    /// Whether the stream supports writing; when <see langword="false" />, <see cref="CanWrite" /> is
+    /// <see langword="false" /> and the stream is read-only, as a <see cref="MemoryStream" /> created read-only is.
+    /// </param>
+    /// <exception cref="ArgumentNullException"><paramref name="data" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="chunkSize" /> is less than or equal to zero.
+    /// </exception>
+    public FixedChunkStream(byte[] data, int chunkSize, bool writable)
+        : base(data ?? throw new ArgumentNullException(nameof(data)), writable)
     {
         if (chunkSize <= 0)
             throw new ArgumentOutOfRangeException(nameof(chunkSize), "Chunk size must be greater than zero.");

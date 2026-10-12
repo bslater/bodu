@@ -101,6 +101,8 @@ while (reader.Read())
 
 `GetString()` works for every string. When a string lies within one record, `strings.Current` is a span-backed <xref:Bodu.IO.Biff.BiffString> you can inspect without allocating; when it straddles a `CONTINUE` boundary, `IsFragmented` is `true` and `Current` is unavailable.
 
+`UniqueCount` is the count the table declares, not a promise: `Read` stops where the table's records end, so a table that declares more strings than it holds yields only the strings it holds.
+
 ## Work with text without allocating
 
 <xref:Bodu.IO.Biff.BiffString> is a view over the record. It knows whether it is a BIFF8 Unicode string (16-bit or compressed) or a BIFF5 byte string, and which code page the latter is in:

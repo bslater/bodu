@@ -87,4 +87,30 @@ public sealed partial class BiffReaderTests
 
         Assert.AreEqual(code, reader.GetBoolErr().ErrorCode);
     }
+
+    /// <summary>
+    /// Verifies that a nine-byte BOOLERR, the layout OpenOffice.org wrote, is read in that layout: the value is the
+    /// 16-bit integer at offset 6 and the error flag is the byte at offset 8.
+    /// </summary>
+    /// <param name="value">The 16-bit value.</param>
+    /// <param name="flag">The error flag byte.</param>
+    /// <param name="isError">Whether the cell is an error.</param>
+    [TestMethod]
+    [DataRow((ushort)0x0007, (byte)0x01, true)]
+    [DataRow((ushort)0x002A, (byte)0x01, true)]
+    [DataRow((ushort)0x0001, (byte)0x00, false)]
+    [DataRow((ushort)0x0000, (byte)0x00, false)]
+    public void GetBoolErr_WhenPayloadIsNineBytes_ShouldReadTheOpenOfficeLayout(ushort value, byte flag, bool isError)
+    {
+        byte[] payload = [0x02, 0x00, 0x03, 0x00, 0x04, 0x00, (byte)value, (byte)(value >> 8), flag];
+        BiffReader reader = ReadTo8(BiffTestRecords.Record(BiffRecordType.BoolErr, payload), BiffRecordType.BoolErr);
+
+        BiffBoolErrRecord cell = reader.GetBoolErr();
+
+        Assert.AreEqual(2, cell.Row);
+        Assert.AreEqual(3, cell.Column);
+        Assert.AreEqual(4, cell.XfIndex);
+        Assert.AreEqual((byte)value, cell.RawValue);
+        Assert.AreEqual(isError, cell.IsError);
+    }
 }

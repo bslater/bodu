@@ -81,20 +81,21 @@ public sealed partial class BiffReaderTests
     }
 
     /// <summary>
-    /// Verifies that a BIFF8 label whose Unicode string carries rich-text runs exposes the runs and decodes only the
+    /// Verifies that a BIFF8 label laid out as a rich string exposes no runs: its text is an <c>XLUnicodeString</c>, whose
+    /// flags byte has no rich-text bit, so the bytes after the flags byte, the would-be run count included, are its
     /// characters.
     /// </summary>
     [TestMethod]
-    public void GetLabel_WhenBiff8StringHasRichRuns_ShouldDecodeCharactersAndExposeRuns()
+    public void GetLabel_WhenBiff8StringDeclaresRichRuns_ShouldExposeNoRuns()
     {
         byte[] head = new byte[6];
         BiffReader reader = ReadTo8(BiffTestRecords.Record(BiffRecordType.Label, [.. head, .. BiffTestRecords.UnicodeString("rich", richRuns: 2)]), BiffRecordType.Label);
 
         BiffLabelRecord label = reader.GetLabel();
 
-        Assert.AreEqual("rich", label.Text.GetString());
-        Assert.AreEqual(2, label.Text.RichRunCount);
-        Assert.AreEqual(8, label.Text.RichRuns.Length);
+        Assert.AreEqual("\u0002\0ri", label.Text.GetString());
+        Assert.AreEqual(0, label.Text.RichRunCount);
+        Assert.IsTrue(label.Text.RichRuns.IsEmpty);
     }
 
     /// <summary>
@@ -127,5 +128,30 @@ public sealed partial class BiffReaderTests
         Assert.AreEqual(65535, label.Row);
         Assert.AreEqual(65535, label.Column);
         Assert.AreEqual(0xFFFF, label.XfIndex);
+    }
+
+    /// <summary>
+    /// Verifies that BIFF8 label text, an <c>XLUnicodeString</c>, reads only bit 0 of its flags byte and ignores the
+    /// reserved bits, so its characters follow the flags byte directly.
+    /// </summary>
+    /// <param name="flags">The flags byte of the text.</param>
+    [TestMethod]
+    [DataRow((byte)0x04)]
+    [DataRow((byte)0x08)]
+    [DataRow((byte)0x0C)]
+    [DataRow((byte)0xFE)]
+    [DataRow((byte)0xFF)]
+    public void GetLabel_WhenTextFlagsSetReservedBits_ShouldIgnoreThem(byte flags)
+    {
+        byte[] head = new byte[6];
+        byte[] record = BiffTestRecords.Record(BiffRecordType.Label, [.. head, .. BiffTestRecords.FlaggedString("text", flags)]);
+        BiffReader reader = ReadTo8(record, BiffRecordType.Label);
+
+        BiffLabelRecord label = reader.GetLabel();
+
+        Assert.AreEqual("text", label.Text.GetString());
+        Assert.AreEqual((flags & 0x01) != 0, label.Text.IsHighByte);
+        Assert.IsFalse(label.Text.HasRichRuns);
+        Assert.IsFalse(label.Text.HasExtendedData);
     }
 }

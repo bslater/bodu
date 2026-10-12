@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.IO.Biff;
+
 namespace Bodu.Formats.Excel;
 
 public partial class ExcelBinaryWorkbookTests
@@ -121,6 +123,64 @@ public partial class ExcelBinaryWorkbookTests
         Assert.AreEqual(5, dimensions.RowCount);
         Assert.AreEqual(1, dimensions.FirstColumnIndex);
         Assert.AreEqual(3, dimensions.ColumnCount);
+    }
+
+    /// <summary>
+    /// Verifies that a worksheet with no DIMENSIONS record and no cells of its own reports the default dimensions, not
+    /// those of a chart embedded in it, whose substream is skipped through its matching EOF.
+    /// </summary>
+    [TestMethod]
+    public void Worksheets_WhenOnlyAnEmbeddedChartDeclaresDimensions_ShouldReportDefaultDimensions()
+    {
+        using MemoryStream xls = Biff8TestWorkbook.BuildWorkbook(
+            [],
+            new Biff8TestWorkbook.SheetSpec(
+                "Sheet1",
+                0,
+                0,
+                [
+                    Biff8TestWorkbook.Bof((ushort)BiffSubstreamType.Chart),
+                    Biff8TestWorkbook.Dimensions(0, 10, 0, 4),
+                    Biff8TestWorkbook.Eof(),
+                ]));
+
+        using var workbook = ExcelBinaryWorkbook.OpenRead(xls);
+
+        Assert.AreEqual(default, workbook.Worksheets[0].Dimensions);
+    }
+
+    /// <summary>
+    /// Verifies that a worksheet with no DIMENSIONS record, no cells and no EOF record reports the default dimensions,
+    /// its scan ending where the next sheet's substream begins, an embedded chart's notwithstanding, and that the next
+    /// sheet reports its own.
+    /// </summary>
+    /// <param name="embedsChart">Whether the worksheet without an EOF record holds an embedded chart.</param>
+    [TestMethod]
+    [DataRow(false)]
+    [DataRow(true)]
+    public void Worksheets_WhenWorksheetLacksEofAndDimensions_ShouldReportDefaultDimensions(bool embedsChart)
+    {
+        List<byte[]> records = [Biff8TestWorkbook.Bof(Biff8TestWorkbook.BofWorksheet)];
+        if (embedsChart)
+        {
+            records.Add(Biff8TestWorkbook.Bof((ushort)BiffSubstreamType.Chart));
+            records.Add(Biff8TestWorkbook.Dimensions(0, 10, 0, 4));
+            records.Add(Biff8TestWorkbook.Eof());
+        }
+
+        byte[] stream = Biff8TestWorkbook.BuildRawWorkbookStream(
+            [
+                Biff8TestWorkbook.Concat([.. records]),
+                Biff8TestWorkbook.WorksheetSubstream(Biff8TestWorkbook.Dimensions(0, 5, 0, 1), Biff8TestWorkbook.Number(0, 0, 2.0)),
+            ],
+            ("Sheet1", 0),
+            ("Sheet2", 1));
+        using MemoryStream xls = Biff8TestWorkbook.WrapInCompoundFile(stream, "Workbook");
+
+        using var workbook = ExcelBinaryWorkbook.OpenRead(xls);
+
+        Assert.AreEqual(default, workbook.Worksheets[0].Dimensions);
+        Assert.AreEqual(5, workbook.Worksheets[1].Dimensions.RowCount);
     }
 
     /// <summary>

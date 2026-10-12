@@ -46,12 +46,12 @@ Every cell record opens with the six-byte cell prefix. The layouts are identical
 | `MULRK` | `0x00BD` | No prefix: the row and first column, then six bytes per cell (XF index and RK value), then the declared last column. Cells are exposed by index as <xref:Bodu.IO.Biff.BiffRkCell> values. | <xref:Bodu.IO.Biff.BiffMulRkRecord> | <xref:Bodu.IO.Biff.BiffReader.GetMulRk> | <xref:Bodu.IO.Biff.BiffWriter.WriteMulRk*> |
 | `BLANK` | `0x0201` | Nothing (6 bytes total): a formatted cell with no value. | <xref:Bodu.IO.Biff.BiffBlankRecord> | <xref:Bodu.IO.Biff.BiffReader.GetBlank> | <xref:Bodu.IO.Biff.BiffWriter.WriteBlank*> |
 | `MULBLANK` | `0x00BE` | No prefix: the row and first column, then a 16-bit XF index per cell, then the declared last column. | <xref:Bodu.IO.Biff.BiffMulBlankRecord> | <xref:Bodu.IO.Biff.BiffReader.GetMulBlank> | <xref:Bodu.IO.Biff.BiffWriter.WriteMulBlank*> |
-| `BOOLERR` | `0x0205` | A value byte and a kind byte (8 bytes total): kind zero is a boolean, non-zero an error code. | <xref:Bodu.IO.Biff.BiffBoolErrRecord> | <xref:Bodu.IO.Biff.BiffReader.GetBoolErr> | <xref:Bodu.IO.Biff.BiffWriter.WriteBoolean*>, <xref:Bodu.IO.Biff.BiffWriter.WriteError*>, <xref:Bodu.IO.Biff.BiffWriter.WriteBoolErr*> |
+| `BOOLERR` | `0x0205` | A value byte and a kind byte (8 bytes total): kind zero is a boolean, non-zero an error code. A 9-byte payload is the layout OpenOffice.org wrote, read as such: the value as a 16-bit integer (its low byte is the value), then the kind byte. | <xref:Bodu.IO.Biff.BiffBoolErrRecord> | <xref:Bodu.IO.Biff.BiffReader.GetBoolErr> | <xref:Bodu.IO.Biff.BiffWriter.WriteBoolean*>, <xref:Bodu.IO.Biff.BiffWriter.WriteError*>, <xref:Bodu.IO.Biff.BiffWriter.WriteBoolErr*> |
 | `LABEL` | `0x0204` | An inline 16-bit-length string; bytes after the string are ignored. | <xref:Bodu.IO.Biff.BiffLabelRecord> | <xref:Bodu.IO.Biff.BiffReader.GetLabel> | <xref:Bodu.IO.Biff.BiffWriter.WriteLabel*> |
 | `LABELSST` | `0x00FD` | **BIFF8 only.** A 32-bit index into the shared string table (10 bytes total). The writer rejects it under BIFF5. | <xref:Bodu.IO.Biff.BiffLabelSstRecord> | <xref:Bodu.IO.Biff.BiffReader.GetLabelSst> | <xref:Bodu.IO.Biff.BiffWriter.WriteLabelSst*> |
 | `RSTRING` | `0x00D6` | **BIFF5** rich text: a 16-bit-length byte string, then a run count byte and two-byte runs (character index, font index). Decoded as a byte string in either version. | <xref:Bodu.IO.Biff.BiffRStringRecord> | <xref:Bodu.IO.Biff.BiffReader.GetRString> | `WriteRecord` (raw) |
 | `FORMULA` | `0x0006` | The eight-byte cached result, the option flags, a reserved 32-bit field, the token length, and the parsed-expression tokens (22 bytes plus tokens). A record shorter than 22 bytes decodes with empty tokens. | <xref:Bodu.IO.Biff.BiffFormulaRecord> (with <xref:Bodu.IO.Biff.BiffCachedResultKind>) | <xref:Bodu.IO.Biff.BiffReader.GetFormula> | <xref:Bodu.IO.Biff.BiffWriter.WriteFormula*> (numeric and special-result overloads) |
-| `STRING` | `0x0207` | No prefix: a 16-bit-length string holding the cached text of the `FORMULA` immediately before it. | <xref:Bodu.IO.Biff.BiffStringRecord> | <xref:Bodu.IO.Biff.BiffReader.GetString> | <xref:Bodu.IO.Biff.BiffWriter.WriteString*> |
+| `STRING` | `0x0207` | No prefix: a 16-bit-length string holding the cached text of the `FORMULA` before it, which it follows directly or after the `ARRAY`, `TABLE` or `SHRFMLA` record of an array, table or shared formula. A long text continues in `CONTINUE` records ([MS-XLS] 2.1.7.20.6), each opening with its own flags byte as in the shared string table, and its runs are decoded as one, so a surrogate pair split between two records keeps its character; `GetString` decodes the `STRING` record alone. | <xref:Bodu.IO.Biff.BiffStringRecord> | <xref:Bodu.IO.Biff.BiffReader.GetString> | <xref:Bodu.IO.Biff.BiffWriter.WriteString*> |
 
 ### The cached result of a formula
 
@@ -73,9 +73,9 @@ The version selects how every text field is stored; <xref:Bodu.IO.Biff.BiffStrin
 | | BIFF8 Unicode string | BIFF5 byte string |
 |---|---|---|
 | Length prefix | 8-bit in `BOUNDSHEET` and `FONT`, 16-bit elsewhere - a **character** count. | 8-bit in `BOUNDSHEET`, `FONT`, and `FORMAT`, 16-bit elsewhere - a **byte** count. |
-| Flags byte | Follows the length: bit 0 selects 16-bit code units over compressed 8-bit characters, bit 2 announces extended (phonetic) data, bit 3 announces rich-text runs. | None. |
+| Flags byte | Follows the length: bit 0 selects 16-bit code units over compressed 8-bit characters. In the shared string table, bit 2 announces extended (phonetic) data and bit 3 rich-text runs; in `BOUNDSHEET`, `FONT`, `FORMAT`, `LABEL` and `STRING` the other seven bits are reserved and ignored ([MS-XLS] 2.5.240 and 2.5.294), so the characters follow the flags byte directly. | None. |
 | Characters | UTF-16LE code units, or one low byte per character when every character fits (`IsHighByte` tells which). | Bytes in the code page the stream's `CODEPAGE` record declared (Windows-1252 when none has been read). |
-| Trailers | A 16-bit run count before the characters and four bytes per run after them; a 32-bit extended size before the characters and that many bytes after the runs. | None; `RSTRING` carries its own run table after the string. |
+| Trailers | Shared strings only: a 16-bit run count before the characters and four bytes per run after them; a 32-bit extended size before the characters and that many bytes after the runs. | None; `RSTRING` carries its own run table after the string. |
 | Writer | Chooses the compressed form when every character fits a byte, 16-bit code units otherwise. | Encodes with the writer's code page; a character the code page cannot represent becomes its replacement character. |
 
 ## Shared string table
@@ -83,9 +83,10 @@ The version selects how every text field is stored; <xref:Bodu.IO.Biff.BiffStrin
 The BIFF8 `SST` record is the canonical continued structure. <xref:Bodu.IO.Biff.BiffSstReader> reads it by these rules, and <xref:Bodu.IO.Biff.BiffWriter.WriteSst*> writes it by the same:
 
 - A string's header - length, flags, and any run count or extended size - never straddles a record boundary; when fewer than three bytes remain, the header opens the next `CONTINUE` record.
-- A string's characters may straddle a boundary, but only at a character boundary - a 16-bit code unit is never split.
-- Each continued run of characters restarts with its own flags byte, which may change the character width mid-string.
+- A string's characters may straddle a boundary, but only at a character boundary - a 16-bit code unit is never split. The boundary may fall between the two code units of a surrogate pair: the reader gathers the code units of every run before decoding them, so the pair decodes to its character, and a surrogate without its partner decodes to U+FFFD, exactly as the same code units in one record do.
+- Each continued run of characters restarts with its own flags byte, which may change the character width mid-string. A `CONTINUE` record that holds only the flags byte contributes no characters, and the string goes on in the next `CONTINUE` record; one that holds no bytes at all is malformed.
 - Rich-run and extended-data trailers may straddle a boundary without a flags byte; the reader skips them and reports them as empty when they do.
+- The table ends where its records end. Some producers declare more unique strings (`cstUnique`) than the table holds, so when the `SST` record, or the last `CONTINUE` record after it, is exhausted between two strings and the next record is not a `CONTINUE`, `Read` returns `false` even before <xref:Bodu.IO.Biff.BiffSstHeader.UniqueCount> strings have been read. A string cut off inside its header or its characters is malformed.
 
 A string that lies within one record is exposed as a span-backed <xref:Bodu.IO.Biff.BiffSstReader.Current> view; one that straddles a boundary has <xref:Bodu.IO.Biff.BiffSstReader.IsFragmented> set and is served through <xref:Bodu.IO.Biff.BiffSstReader.GetString> and <xref:Bodu.IO.Biff.BiffSstReader.CopyTo*> from a reusable scratch buffer.
 
@@ -101,7 +102,7 @@ A string that lies within one record is exposed as a span-backed <xref:Bodu.IO.B
 | `XF` payload | 16 bytes | 20 bytes |
 | `FILEPASS` | XOR key and hash | Type word, then XOR pair or RC4 header |
 | Shared strings | None - every text cell is a `LABEL` or `RSTRING` | `SST` in the globals, `LABELSST` cells |
-| Rich text | `RSTRING` cells | Runs inside the Unicode string |
+| Rich text | `RSTRING` cells | Runs inside the shared string |
 | Compound-file stream name | `Book` | `Workbook` |
 
 The reader establishes the version from the first `BOF` it reads, or from <xref:Bodu.IO.Biff.BiffReaderOptions.Version>; the writer is created with it. The version-dependent accessors - `GetBoundSheet`, `GetDimensions`, `GetLabel`, `GetString`, `GetFormat`, `GetFont`, `GetFilePass` - refuse to decode until it is known.

@@ -35,19 +35,19 @@ The record stream is a sequence of **substreams**, each bracketed by a `BOF` and
 When a logical structure exceeds one record, the format carries the overflow in one or more **`CONTINUE`** records that immediately follow. The reader is deliberately physical: `Read()` yields the `CONTINUE` record like any other, and <xref:Bodu.IO.Biff.BiffReader.IsContinuation> flags it. Two facilities handle the logical view:
 
 - <xref:Bodu.IO.Biff.BiffReader.TryReadContinuation*> consumes the next record *only if* it is a `CONTINUE`, for structures whose continuation is a plain byte split (drawing and text objects, for example).
-- <xref:Bodu.IO.Biff.BiffSstReader> handles the one structure with its own continuation rules - the shared string table - where a string's header never straddles a boundary, its characters may, and every continued run restarts with a flags byte selecting 8-bit or 16-bit characters.
+- <xref:Bodu.IO.Biff.BiffSstReader> handles the one structure with its own continuation rules - the shared string table - where a string's header never straddles a boundary, its characters may, and every continued run restarts with a flags byte selecting 8-bit or 16-bit characters. The code units of all the runs are decoded together, so a surrogate pair split across a boundary keeps its character.
 
 The writer mirrors both: `WriteContinuedRecord` splits at the maximum length, and `WriteSst` splits at string and character boundaries with the flags byte the reader expects.
 
 ## Strings and code pages
 
-BIFF8 stores text as a **Unicode string**: a length prefix (8-bit in `BOUNDSHEET` and `FONT`, 16-bit elsewhere), a flags byte, and the characters as UTF-16LE code units or - when every character fits a byte - one low byte per character ("compressed"). Optional trailers carry rich-text formatting runs and phonetic (extended) data. BIFF5 stores text as a **byte string**: a length prefix and bytes in the code page the stream's `CODEPAGE` record declares (Windows-1252 when absent).
+BIFF8 stores text as a **Unicode string**: a length prefix (8-bit in `BOUNDSHEET` and `FONT`, 16-bit elsewhere), a flags byte, and the characters as UTF-16LE code units or - when every character fits a byte - one low byte per character ("compressed"). In the shared string table, optional trailers carry rich-text formatting runs and phonetic (extended) data; in every other record the flags byte selects only the character width, and its other bits are ignored. BIFF5 stores text as a **byte string**: a length prefix and bytes in the code page the stream's `CODEPAGE` record declares (Windows-1252 when absent).
 
 <xref:Bodu.IO.Biff.BiffString> is the one view over both: <xref:Bodu.IO.Biff.BiffString.IsUnicode> and <xref:Bodu.IO.Biff.BiffString.IsHighByte> tell you the form, <xref:Bodu.IO.Biff.BiffString.RawCharacters> exposes the bytes, and `GetString()` / `CopyTo` decode - for a byte string with the code page the reader tracked, which is why the accessor takes no argument. The `CODEPAGE` value is normalized on the way in: the format's private markers for Apple Roman (`0x8000`) and the pre-BIFF5 ANSI page (`0x8001`) become Windows code page numbers.
 
 ## Shared string table
 
-BIFF8 pools cell text in the workbook globals: the `SST` record declares a total reference count and a unique string count, then the strings; each `LABELSST` cell carries an index into it. The table routinely exceeds one record, so it is the canonical continued structure. <xref:Bodu.IO.Biff.BiffSstReader> reads it one string at a time: a string that lies within one record is exposed as a span-backed `Current` view; a string whose characters straddle a `CONTINUE` boundary is stitched into a scratch buffer and served through `GetString()` - the only allocation forward traversal ever makes.
+BIFF8 pools cell text in the workbook globals: the `SST` record declares a total reference count and a unique string count, then the strings; each `LABELSST` cell carries an index into it. The table ends where its records end: some producers declare more unique strings than they write, and the reader stops at the last string the table holds. The table routinely exceeds one record, so it is the canonical continued structure. <xref:Bodu.IO.Biff.BiffSstReader> reads it one string at a time: a string that lies within one record is exposed as a span-backed `Current` view; a string whose characters straddle a `CONTINUE` boundary is stitched into a scratch buffer and served through `GetString()` - the only allocation forward traversal ever makes.
 
 ## Cell records
 

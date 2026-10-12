@@ -5,7 +5,6 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Buffers.Binary;
-using System.Text;
 
 namespace Bodu.IO.Biff;
 
@@ -21,14 +20,24 @@ namespace Bodu.IO.Biff;
 /// <see cref="BiffReader.Read" /> resumes after the table. A <see langword="ref struct" /> cannot hold a reference to
 /// another, which is why the parent is supplied per call rather than captured. It follows the BIFF continuation rules
 /// for strings: a string's header never straddles a boundary, character data may, and a continued run restarts with its
-/// own option-flags byte selecting 8-bit or 16-bit characters.
+/// own option-flags byte selecting 8-bit or 16-bit characters. A continuation record that holds only that flags byte
+/// contributes no characters, and the string goes on in the next continuation record, whose own flags byte applies.
+/// </para>
+/// <para>
+/// The table ends where its records end. Some producers declare more unique strings than the table holds, so when the
+/// last of its records is exhausted at a string boundary and no <c>CONTINUE</c> record follows,
+/// <see cref="Read(ref BiffReader)" /> returns <see langword="false" /> even before
+/// <see cref="BiffSstHeader.UniqueCount" /> strings have been read. A string cut off inside its header or its
+/// characters is malformed.
 /// </para>
 /// <para>
 /// A string whose characters lie within one record is exposed as a span-backed <see cref="Current" /> view. A string
 /// whose characters straddle a boundary (<see cref="IsFragmented" />) has no single span; it is decoded into a reusable
 /// scratch buffer during <see cref="Read(ref BiffReader)" />, and <see cref="GetString" /> and <see cref="CopyTo" />
-/// serve both kinds uniformly. Formatting-run and extended-data trailers that straddle a boundary are skipped and
-/// reported as empty.
+/// serve both kinds uniformly. Its code units are gathered from every segment before they are decoded, so a surrogate
+/// pair split between two segments decodes to its character, and a surrogate without its partner to U+FFFD, exactly as
+/// the same code units in one record do. Formatting-run and extended-data trailers that straddle a boundary are skipped
+/// and reported as empty.
 /// </para>
 /// <example>
 /// <code language="csharp">
@@ -219,22 +228,33 @@ public ref struct BiffSstReader
     /// <param name="reader">The parent reader the table was created from.</param>
     /// <returns>
     /// <see langword="true" /> when a string was read; <see langword="false" /> once every declared string has been
-    /// read.
+    /// read, or once the table's records end at a string boundary before then.
     /// </returns>
     /// <exception cref="BiffFormatException">
-    /// Thrown when the table ends before the declared strings do, a string header or its characters are truncated, or a
-    /// continuation record is empty where character data was expected.
+    /// Thrown when a string header or its characters are truncated, including by the end of the table's records, or a
+    /// continuation record is empty (holds no bytes, not even a flags byte) where character data was expected.
     /// </exception>
+    /// <remarks>
+    /// <para>
+    /// A string's characters may continue across several <c>CONTINUE</c> records, each opening with a flags byte that
+    /// selects the width of the characters it holds. A continuation record that holds only that flags byte contributes
+    /// no characters, and the string goes on in the next one.
+    /// </para>
+    /// <para>
+    /// The table ends where its records end: when the cursor reaches the end of the <c>SST</c> record or of its last
+    /// <c>CONTINUE</c> record between two strings, and the parent's next record is not a <c>CONTINUE</c>, the method
+    /// returns <see langword="false" /> and leaves the parent on the table's last record, even when fewer strings than
+    /// <see cref="BiffSstHeader.UniqueCount" /> have been read.
+    /// </para>
+    /// </remarks>
     public bool Read(scoped ref BiffReader reader)
     {
-        if (_read >= _header.UniqueCount)
+        if (_read >= _header.UniqueCount || !TryAdvancePastBlockEnd(ref reader))
         {
             _hasCurrent = false;
             _current = default;
             return false;
         }
-
-        AdvancePastBlockEnd(ref reader);
 
         int headerStart = _offset;
         int length = ReadUInt16();
@@ -348,14 +368,26 @@ public ref struct BiffSstReader
     }
 
     /// <summary>
-    /// Moves the cursor into the next continuation record when it has reached the end of the current block.
+    /// Moves the cursor into the next continuation record when it has reached the end of the current block, at a string
+    /// boundary.
     /// </summary>
     /// <param name="reader">The parent reader.</param>
-    /// <exception cref="BiffFormatException">Thrown when no continuation record follows.</exception>
-    private void AdvancePastBlockEnd(scoped ref BiffReader reader)
+    /// <returns>
+    /// <see langword="true" /> when the cursor is within a block; <see langword="false" /> when the table's records are
+    /// exhausted, because no continuation record follows the last block.
+    /// </returns>
+    private bool TryAdvancePastBlockEnd(scoped ref BiffReader reader)
     {
         while (_offset >= _block.Length)
-            NextBlock(ref reader);
+        {
+            if (!reader.TryReadContinuation(out ReadOnlySpan<byte> next))
+                return false;
+
+            _block = next;
+            _offset = 0;
+        }
+
+        return true;
     }
 
     /// <summary>
@@ -416,15 +448,26 @@ public ref struct BiffSstReader
     }
 
     /// <summary>
-    /// Decodes characters that straddle one or more continuation boundaries into the scratch buffer, re-reading the
-    /// option-flags byte at the start of each continued segment.
+    /// Assembles the code units of characters that straddle one or more continuation boundaries in the scratch buffer,
+    /// re-reading the option-flags byte at the start of each continued segment, and decodes them as one run.
     /// </summary>
     /// <param name="reader">The parent reader.</param>
     /// <param name="length">The number of characters to decode.</param>
     /// <param name="highByte">Whether the first segment uses 16-bit characters.</param>
     /// <exception cref="BiffFormatException">
-    /// Thrown when the data runs out, or a continued segment is empty.
+    /// Thrown when the data runs out, a continuation record is empty, or a 16-bit segment holds half a code unit.
     /// </exception>
+    /// <remarks>
+    /// <para>
+    /// A continuation record that holds only its flags byte is a segment of no characters: the loop moves on to the
+    /// next continuation record.
+    /// </para>
+    /// <para>
+    /// No segment is decoded on its own: a boundary may fall between the two code units of a surrogate pair, so the
+    /// code units are copied as they are, and only the surrogates left without a partner in the assembled string are
+    /// replaced with U+FFFD.
+    /// </para>
+    /// </remarks>
     private void ReadFragmentedCharacters(scoped ref BiffReader reader, int length, bool highByte)
     {
         if (_scratch is null || _scratch.Length < length)
@@ -438,13 +481,15 @@ public ref struct BiffSstReader
         {
             if (_offset >= _block.Length)
             {
-                // A continued run restarts with its own flags byte; an empty continuation cannot carry one.
+                // A continued run restarts with its own flags byte; an empty continuation cannot carry one. A
+                // continuation holding only the flags byte carries no characters, so the loop moves on to the next.
                 NextBlock(ref reader);
                 if (_block.IsEmpty)
                     throw Malformed();
 
                 high = (_block[0] & 0x01) != 0;
                 _offset = 1;
+                continue;
             }
 
             int remaining = length - written;
@@ -455,7 +500,7 @@ public ref struct BiffSstReader
                 if (take <= 0)
                     throw Malformed();
 
-                Encoding.Unicode.GetChars(_block.Slice(_offset, take * 2), output.Slice(written, take));
+                BiffContinuedText.CopyCodeUnits(_block.Slice(_offset, take * 2), output.Slice(written, take));
                 _offset += take * 2;
                 written += take;
             }
@@ -466,13 +511,13 @@ public ref struct BiffSstReader
                 if (take <= 0)
                     throw Malformed();
 
-                for (int i = 0; i < take; i++)
-                    output[written + i] = (char)_block[_offset + i];
-
+                BiffContinuedText.Widen(_block.Slice(_offset, take), output.Slice(written, take));
                 _offset += take;
                 written += take;
             }
         }
+
+        BiffContinuedText.ReplaceUnpairedSurrogates(output);
     }
 
     /// <summary>

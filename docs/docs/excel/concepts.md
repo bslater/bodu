@@ -20,15 +20,21 @@ This page is the vocabulary the rest of the documentation assumes. Read it once 
 The records before the first sheet form the **workbook globals**, parsed once when the workbook is opened:
 
 - the **date system** (1900 or 1904), from the `DATEMODE` record;
-- the **shared string table** (SST), the deduplicated pool of strings that text cells reference by index;
+- the **shared string table** (SST), the deduplicated pool of strings that text cells reference by index, read as the strings its records hold even when it declares more, so that a cell referencing past them is an out-of-range shared-string index;
 - the **number-format table** (`FORMAT` / `XF`), used to resolve each cell's format and to classify date formatting;
 - the **sheet directory** (`BOUNDSHEET`), naming each sheet, recording its type and visibility, and pointing at the byte offset of its substream.
+
+The globals end at their own `EOF` record. They never hold a nested substream, so when a producer has left that record out they end where the first sheet's `BOF` record begins, and the sheets open as usual.
 
 Because the globals are parsed up front, a single sheet can then be read on demand by seeking to its recorded offset, without parsing the others.
 
 ## Worksheet substream
 
 Each sheet is its own **substream** - a `BOF` record, an optional `DIMENSIONS` record, the cell records, and an `EOF`. <xref:Bodu.Formats.Excel.ExcelBinaryWorkbook.OpenWorksheet(System.Int32)> seeks to the substream and returns a reader over it; the whole workbook is never materialized at once.
+
+A worksheet's substream can hold whole substreams of its own: a chart embedded in the worksheet is a chart substream, `BOF` to `EOF`, after the chart's `OBJ` record ([MS-XLS] 2.1.7.20.6). The `BOF` and `EOF` records are counted in pairs, so a sheet ends at the `EOF` that matches its own `BOF`, and a nested substream is skipped from its `BOF` to the `EOF` that matches it: its `NUMBER` and `LABEL` records are the chart's data cache ([MS-XLS] 2.2.3.2), not cells, and the worksheet's cells after it are read as usual.
+
+A sheet whose substream has no `EOF` record of its own ends where another sheet's substream begins, at the nearest `BOUNDSHEET` offset after its own, whatever the order of the sheet directory, or at the end of the workbook stream when no sheet's substream follows it. A record that the end of the stream cuts short is still malformed.
 
 ## Cell and cell kind
 
@@ -41,13 +47,13 @@ A populated cell is surfaced as an immutable <xref:Bodu.Formats.Excel.ExcelCell>
 | `String` | `LABELSST`, `LABEL` | `LABELSST` references the shared string table by index; `LABEL` carries an inline string. |
 | `Number` | `NUMBER`, `RK`, `MULRK` | `RK` is a compact encoding for integers and short decimals; `MULRK` packs a run of adjacent numeric cells into one record, which the reader expands to one cell per value. |
 | `Boolean` / `Error` | `BOOLERR` | A single record type carries either a boolean or an error, distinguished by a flag. |
-| `Number` / `String` / `Boolean` / `Error` | `FORMULA` (+ trailing `STRING`) | A formula cell is surfaced as whichever kind its cached result holds; see below. |
+| `Number` / `String` / `Boolean` / `Error` | `FORMULA` (+ trailing `STRING`, and the `CONTINUE` records of a long text) | A formula cell is surfaced as whichever kind its cached result holds; see below. |
 
 Every cell also carries a <xref:Bodu.Formats.Excel.ExcelCell.FormatIndex> - the number-format index referenced by its record (`0`, the General format, when none is recorded) - and an <xref:Bodu.Formats.Excel.ExcelCell.IsDateFormatted> flag described under [Number format and serial dates](#number-format-and-serial-dates).
 
 ## Formula cached result
 
-The reader does **not** evaluate formulas. A `FORMULA` record carries the **cached result** Excel last computed and stored - a number, boolean, error, or string - and that cached value is what the matching <xref:Bodu.Formats.Excel.ExcelCell> exposes. There is no separate "formula" cell kind: a formula cell is indistinguishable from a literal cell of the same kind, by design. A string-valued formula result is encoded as a `FORMULA` record immediately followed by a `STRING` record holding the text; the reader consumes both transparently and emits a single `String` cell.
+The reader does **not** evaluate formulas. A `FORMULA` record carries the **cached result** Excel last computed and stored - a number, boolean, error, or string - and that cached value is what the matching <xref:Bodu.Formats.Excel.ExcelCell> exposes. There is no separate "formula" cell kind: a formula cell is indistinguishable from a literal cell of the same kind, by design. A string-valued formula result is encoded as a `FORMULA` record followed by a `STRING` record holding the text - for an array, table or shared formula, after its `ARRAY`, `TABLE` or `SHRFMLA` record - and a long text continues in `CONTINUE` records; the reader consumes them transparently and emits a single `String` cell.
 
 > [!IMPORTANT]
 > The cached result is the value Excel stored at its last save, not a recomputation. If a workbook was edited by a tool that did not refresh cached results, the value read here can be stale relative to the formula. The reader has no formula engine and cannot detect or correct this.
@@ -55,6 +61,10 @@ The reader does **not** evaluate formulas. A `FORMULA` record carries the **cach
 ## Number format and serial dates
 
 Excel stores dates and times as floating-point **serial numbers**, so a date cell is just a `Number` cell whose *format* renders it as a date. The integer part is the day count from the date system's epoch; the fractional part is the time of day. The reader never assumes a number is a date, but it inspects each numeric cell's number format and sets <xref:Bodu.Formats.Excel.ExcelCell.IsDateFormatted> when the format is a date or time format (unless `DetectDateFormats` is cleared, which leaves the flag always `false`). <xref:Bodu.Formats.Excel.ExcelSerialDate> converts a serial number to a <xref:System.DateOnly> or <xref:System.DateTime> using a <xref:Bodu.Formats.Excel.ExcelDateSystem>.
+
+A number format is a date or time format when its code holds a date or time field (`y`, `m`, `d`, `h` or `s`, or an elapsed-time token such as `[h]`) outside quoted literals, escapes and bracketed conditions. A `FORMAT` record decides its index's code and its date classification, built-in index or not: a number code that a workbook defines at an index in a built-in date range, as Gnumeric writes its formats from index 50, is a number format, and a date code that it defines at a built-in number index is a date format. When a workbook defines an index more than once, the last `FORMAT` record applies, both to the code <xref:Bodu.Formats.Excel.ExcelBinaryWorkbook.GetNumberFormatCode(System.UInt16)> returns and to `IsDateFormatted`.
+
+An index that no `FORMAT` record defines takes its built-in code, and is a date or time format when it is a built-in date or time format: 14-22, 27-36, 45-47, 50-58 (27-36 and 50-58 are the East Asian date formats), or the Thai date and time formats 71-81. The Thai built-in formats 59-62 and 67-70 are number formats.
 
 A <xref:Bodu.Formats.Excel.ExcelDateSystem> names the epoch a serial number is measured from:
 
@@ -78,7 +88,7 @@ A sheet's **visibility** distinguishes three states rather than a single hidden 
 
 ## Used range (dimensions)
 
-A sheet's `DIMENSIONS` record declares its **used range** - the half-open span of rows `[FirstRowIndex, FirstRowIndex + RowCount)` and columns `[FirstColumnIndex, FirstColumnIndex + ColumnCount)` that bounds its populated cells, surfaced as <xref:Bodu.Formats.Excel.ExcelWorksheetDimensions>. Excel records the extent it allocated, which may be larger than the region that actually holds values, so the range is an **upper bound**, not a tight fit. A sheet with no `DIMENSIONS` record yields the default value, whose counts are zero. The used range is a *declared* hint for sizing buffers and reporting; the authoritative populated cells are still the sparse sequence the reader yields.
+A sheet's `DIMENSIONS` record declares its **used range** - the half-open span of rows `[FirstRowIndex, FirstRowIndex + RowCount)` and columns `[FirstColumnIndex, FirstColumnIndex + ColumnCount)` that bounds its populated cells, surfaced as <xref:Bodu.Formats.Excel.ExcelWorksheetDimensions>. Excel records the extent it allocated, which may be larger than the region that actually holds values, so the range is an **upper bound**, not a tight fit. A sheet with no `DIMENSIONS` record yields the default value, whose counts are zero. Only the sheet's own record counts, found before its first cell or row record by the substream rules its cells are read by: the `DIMENSIONS` record of a chart embedded in the sheet is skipped with the chart's substream, and the search ends at the sheet's own `EOF` record or where the next sheet's substream begins, so a sheet without a record of its own reports the default rather than another substream's range. The used range is a *declared* hint for sizing buffers and reporting; the authoritative populated cells are still the sparse sequence the reader yields.
 
 ## A1 references
 
@@ -115,13 +125,13 @@ The workbook's authored metadata is flattened into <xref:Bodu.Formats.Excel.Exce
 |---|---|
 | <xref:Bodu.Formats.Excel.ExcelBinaryFormatException> | A BIFF record is malformed - a truncated record, an inconsistent length, trailing bytes, or an out-of-range shared-string index. |
 | <xref:Bodu.Formats.Excel.ExcelBinaryWorkbookStreamNotFoundException> | The compound file has no `Workbook` (or legacy `Book`) stream - it is a valid container but not a spreadsheet. |
-| <xref:Bodu.Formats.Excel.ExcelBinaryUnsupportedException> | The workbook declares a BIFF version this reader does not support (it targets BIFF8 and BIFF5). |
+| <xref:Bodu.Formats.Excel.ExcelBinaryUnsupportedException> | The workbook declares a BIFF version this reader does not support (it targets BIFF8 and BIFF5); a sheet whose own `BOF` record declares one raises it when the sheet is read. |
 | <xref:Bodu.Formats.Excel.ExcelBinaryEncryptedWorkbookException> | The workbook is password-protected (a `FILEPASS` record is present); this reader does not decrypt. |
 
 The first three open-time failures all derive from familiar base types, so a caller can catch them by base where convenient: `ExcelBinaryFormatException` is a <xref:System.FormatException>, `ExcelBinaryWorkbookStreamNotFoundException` a <xref:System.Collections.Generic.KeyNotFoundException>, and both `ExcelBinaryUnsupportedException` and `ExcelBinaryEncryptedWorkbookException` are <xref:System.NotSupportedException>. Addressing a sheet by an unknown name throws a plain <xref:System.Collections.Generic.KeyNotFoundException>; an out-of-range index throws <xref:System.ArgumentOutOfRangeException>. Using a workbook or reader after disposal throws <xref:System.ObjectDisposedException>.
 
 > [!NOTE]
-> `ExcelBinaryFormatException` is the only one of these raised *during reading* rather than at open - a record can be found malformed only when the reader reaches it. The other three are detected while parsing the globals at open time.
+> `ExcelBinaryFormatException` is raised where the reader meets the malformed record. The workbook globals, the shared string table, the `FORMAT` and `XF` records and the sheet directory among them, are parsed at open, so a malformed record there fails the open; one in a sheet fails only when that sheet is opened or read. `ExcelBinaryUnsupportedException` is likewise raised at open for the workbook's own version, and when a sheet is read for a sheet whose own `BOF` record declares a version the reader does not support. The other failures are detected while parsing the globals at open time.
 
 ## Where to go next
 
