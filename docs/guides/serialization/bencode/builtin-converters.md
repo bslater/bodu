@@ -19,7 +19,7 @@ Bencode (BEP 3) has exactly two scalar forms - integers and byte strings - and t
 | `Memory<byte>` / `ReadOnlyMemory<byte>` | byte string | byte string | |
 | `sbyte` `byte` `short` `ushort` `int` `uint` `long` `nint` `nuint` | integer (`i…e`) | integer | Checked conversions through the signed 64-bit surface; a value outside the target type's range throws <xref:Bodu.Text.Bencode.BencodeSerializationException> on read, with the integer's offset as its `BytesOffset`. |
 | `ulong` | integer | integer | Dedicated converter on the unsigned surface - the full `[0, ulong.MaxValue]` range round-trips; a negative integer throws <xref:Bodu.Text.Bencode.BencodeSerializationException> on read, with its offset as the `BytesOffset`. |
-| `Int128` | integer | integer | Confined by checked conversion to the signed 64-bit surface. |
+| `Int128` | integer | integer | Confined by checked conversion to the signed 64-bit surface; an integer beyond it throws <xref:Bodu.Text.Bencode.BencodeSerializationException> on read, as for the narrower types. |
 | `UInt128` | integer | integer | Rides the unsigned surface like `ulong`; values above `ulong.MaxValue` throw on write, and a negative integer throws on read, with its offset as the `BytesOffset`. |
 | `enum` (any) | byte string, the member name | byte string (case-insensitive) or integer | The default enum handling - no converter needed; per-member names via `[StringEnumMemberName]`. The explicit string and number enum converters below override it.|
 

@@ -23,8 +23,10 @@ namespace Bodu.Text.Toml.Serialization.Converters;
 /// The format's integer-converter factory decides which integer types route here; a format with a wider native surface
 /// may route some widths to dedicated converters instead. An integer outside the target type's range on read throws
 /// through <see cref="SerializationThrowHelper.IntegerOutOfRange" />, with the checked conversion's
-/// <see cref="OverflowException" /> as the inner exception: Bencode's exception carries the integer token's start
-/// offset, and TOML's takes its position and path from the converter that encloses the member.
+/// <see cref="OverflowException" /> as the inner exception. So does a Bencode integer above
+/// <see cref="long.MaxValue" />, which the reader accepts as well-formed but which lies beyond the signed 64-bit
+/// surface, with no inner exception, since no conversion is attempted. Bencode's exception carries the integer token's
+/// start offset, and TOML's takes its position and path from the converter that encloses the member.
 /// </remarks>
 internal sealed class IntegerConverter<T>
     : SharedConverter<T>
@@ -36,7 +38,15 @@ internal sealed class IntegerConverter<T>
         if (reader.TokenType != FormatToken.Integer)
             throw SerializationThrowHelper.ExpectedInteger(ref reader);
 
+#if BENCODE
+        // A Bencode integer reaches ulong.MaxValue, so one beyond the signed 64-bit surface this converter reads
+        // through is well-formed: it is a value outside the target's range rather than malformed bytes.
+        if (!reader.TryGetInt64(out long value))
+            throw SerializationThrowHelper.IntegerOutOfRange(ref reader, reader.GetUInt64(), typeof(T));
+#else
         long value = reader.GetInt64();
+#endif
+
         try
         {
             return T.CreateChecked(value);
