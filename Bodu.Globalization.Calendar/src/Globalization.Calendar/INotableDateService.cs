@@ -23,9 +23,10 @@ namespace Bodu.Globalization.Calendar;
 /// with the most specific rule winning for a shared concept.
 /// </para>
 /// <para>
-/// <strong>Inclusion by emitted date.</strong> An occurrence is included when its emitted (observed) date falls on the
-/// requested day or within the requested range, so a single-day query and a range query covering the same dates return
-/// consistent results.
+/// <strong>Inclusion by emitted span.</strong> An occurrence is included when its emitted (observed) span, from
+/// <see cref="NotableDate.Date" /> through <see cref="NotableDate.EndDate" />, covers the requested day or intersects
+/// the requested range, so a single-day query and a range query covering the same dates return consistent results and a
+/// multi-day occurrence is returned for every day it covers.
 /// </para>
 /// <para>
 /// <strong>When to use.</strong> Resolve a service from a data pack (for example the <c>AmericasCalendarData</c>
@@ -65,7 +66,7 @@ public interface INotableDateService
     /// <param name="date">The day to resolve.</param>
     /// <param name="territory">The requested territory code.</param>
     /// <returns>
-    /// The occurrences whose emitted date equals <paramref name="date" />; empty when there are none.
+    /// The occurrences whose emitted span covers <paramref name="date" />; empty when there are none.
     /// </returns>
     IReadOnlyList<NotableDate> Resolve(DateOnly date, string territory);
 
@@ -74,7 +75,7 @@ public interface INotableDateService
     /// </summary>
     /// <param name="range">The inclusive range of days to resolve.</param>
     /// <param name="territory">The requested territory code.</param>
-    /// <returns>The occurrences whose emitted date falls within the range, ordered by date then identity.</returns>
+    /// <returns>The occurrences whose emitted span intersects the range, ordered by date then identity.</returns>
     IReadOnlyList<NotableDate> Resolve(DateRange range, string territory);
 
     /// <summary>

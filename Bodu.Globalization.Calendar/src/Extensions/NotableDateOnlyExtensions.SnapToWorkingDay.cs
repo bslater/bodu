@@ -19,13 +19,17 @@ public static partial class NotableDateOnlyExtensions
     /// <exception cref="ArgumentNullException">
     /// <paramref name="service" /> or <paramref name="territory" /> is <see langword="null" />.
     /// </exception>
+    /// <exception cref="InvalidOperationException">
+    /// No working day is found within 4,000 days of the date (for example, when the working week has no working days).
+    /// </exception>
     /// <example>
     /// <code language="csharp">
     ///<![CDATA[
     /// INotableDateService service = AmericasCalendarData.CreateService("US");
     ///
     /// // Roll a scheduled due date forward to the next working day when it lands on a holiday.
-    /// DateOnly due = new DateOnly(2026, 7, 4).SnapToWorkingDay(service, "US");
+    /// // Friday 3 July 2026 is the observed Independence Day, then a weekend: due is Monday 6 July 2026.
+    /// DateOnly due = new DateOnly(2026, 7, 3).SnapToWorkingDay(service, "US");
     ///]]>
     /// </code>
     /// </example>

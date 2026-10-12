@@ -22,6 +22,9 @@ public static partial class NotableDateTimeExtensions
     /// <exception cref="ArgumentNullException">
     /// <paramref name="service" /> or <paramref name="territory" /> is <see langword="null" />.
     /// </exception>
+    /// <exception cref="InvalidOperationException">
+    /// No working day is found within 4,000 days of the date (for example, when the working week has no working days).
+    /// </exception>
     public static DateTime AddWorkingDays(this DateTime date, int count, INotableDateService service, string territory, DayOfWeekSet? workingWeek = null) =>
         WithTimeOf(date, DateOnly.FromDateTime(date).AddWorkingDays(count, service, territory, workingWeek));
 }

@@ -46,6 +46,11 @@ public static partial class NotableDateBinaryResource
     /// <exception cref="ArgumentNullException">
     /// <paramref name="resource" /> or <paramref name="stream" /> is <see langword="null" />.
     /// </exception>
+    /// <exception cref="NotSupportedException">
+    /// A rule uses a calculation strategy, recurrence strategy, or duration definition outside the sealed set the
+    /// format enumerates, such as a custom <see cref="IDateCalculationStrategy" /> in a resource assembled in code; the
+    /// message names the unsupported type.
+    /// </exception>
     public static void Write(NotableDateResource resource, Stream stream)
     {
         ThrowHelper.ThrowIfNull(resource);

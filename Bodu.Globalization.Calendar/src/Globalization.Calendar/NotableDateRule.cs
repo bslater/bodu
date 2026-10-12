@@ -18,9 +18,10 @@ namespace Bodu.Globalization.Calendar;
 /// when <see langword="null" /> the parent value applies.
 /// </para>
 /// <para>
-/// A rule declares exactly one occurrence source: either a single-date <see cref="Strategy" /> that yields at most one
-/// occurrence per year, or a <see cref="Recurrence" /> strategy that yields many occurrences within a window. Exactly
-/// one of the two is non-<see langword="null" />.
+/// A rule declares exactly one occurrence source: either a single-date <see cref="Strategy" /> that yields one
+/// occurrence per year (at most two for a non-Gregorian fixed date whose short lunar year lets it recur within one
+/// Gregorian year), or a <see cref="Recurrence" /> strategy that yields many occurrences within a window. Exactly one
+/// of the two is non-<see langword="null" />.
 /// </para>
 /// </remarks>
 /// <seealso cref="NotableDateDefinition" /> <seealso href="../guides/calendar/rule-reference.html">NotableDateRule and

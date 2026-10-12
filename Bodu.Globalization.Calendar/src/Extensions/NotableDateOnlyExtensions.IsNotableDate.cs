@@ -26,7 +26,7 @@ public static partial class NotableDateOnlyExtensions
     ///<![CDATA[
     /// INotableDateService service = AmericasCalendarData.CreateService("US");
     ///
-    /// bool isHoliday = new DateOnly(2026, 7, 4).IsNotableDate(service, "US"); // true (Independence Day)
+    /// bool isHoliday = new DateOnly(2025, 7, 4).IsNotableDate(service, "US"); // true (Independence Day, a Friday)
     ///]]>
     /// </code>
     /// </example>

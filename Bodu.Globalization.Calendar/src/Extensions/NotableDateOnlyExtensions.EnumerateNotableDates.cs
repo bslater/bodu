@@ -20,6 +20,9 @@ public static partial class NotableDateOnlyExtensions
     /// <exception cref="ArgumentNullException">
     /// <paramref name="service" /> or <paramref name="territory" /> is <see langword="null" />.
     /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="end" /> is earlier than <paramref name="start" />; the service rejects the inverted range.
+    /// </exception>
     /// <example>
     /// <code language="csharp">
     ///<![CDATA[

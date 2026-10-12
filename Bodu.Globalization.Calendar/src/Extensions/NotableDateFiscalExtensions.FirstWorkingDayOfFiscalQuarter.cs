@@ -23,6 +23,9 @@ public static partial class NotableDateFiscalExtensions
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="fiscalYearStartMonth" /> is not between 1 and 12.
     /// </exception>
+    /// <exception cref="InvalidOperationException">
+    /// No working day is found within 4,000 days of the date (for example, when the working week has no working days).
+    /// </exception>
     public static DateOnly FirstWorkingDayOfFiscalQuarter(this DateOnly date, int fiscalYearStartMonth, INotableDateService service, string territory, DayOfWeekSet? workingWeek = null)
     {
         ThrowHelper.ThrowIfNull(service);

@@ -19,6 +19,9 @@ public static partial class NotableDateTimeExtensions
     /// <exception cref="ArgumentNullException">
     /// <paramref name="service" /> or <paramref name="territory" /> is <see langword="null" />.
     /// </exception>
+    /// <exception cref="InvalidOperationException">
+    /// No working day is found within 4,000 days of the date (for example, when the working week has no working days).
+    /// </exception>
     public static DateTime NextWorkingDay(this DateTime date, INotableDateService service, string territory, DayOfWeekSet? workingWeek = null) =>
         WithTimeOf(date, DateOnly.FromDateTime(date).NextWorkingDay(service, territory, workingWeek));
 }

@@ -14,7 +14,7 @@ namespace Bodu.Globalization.Calendar;
 /// <para>
 /// A provider returns finished <see cref="NotableDate" /> occurrences - date and all metadata - for a requested window
 /// and territory, complementing the resource-authored rules. It is the code-first counterpart to authoring a rule, and
-/// is registered with the service through the provider-aware constructor.
+/// is registered with the service through <see cref="NotableDateServiceOptions.Providers" />.
 /// </para>
 /// <para>
 /// Provider occurrences are <b>terminal</b>: the service emits them as supplied (after intersecting them with the
@@ -53,10 +53,11 @@ namespace Bodu.Globalization.Calendar;
 ///     }
 /// }
 ///
-/// // Register the provider through the collaborator-aware constructor.
-/// NotableDateService service = new(
-///     resource, algorithms: null, collisionResolver: null, handlers: null,
-///     triggerHandlers: null, providers: new[] { new FoundingDayProvider() });
+/// // Register the provider through the service options.
+/// NotableDateService service = new(resource, new NotableDateServiceOptions
+/// {
+///     Providers = new[] { new FoundingDayProvider() },
+/// });
 ///]]>
 /// </code>
 /// </example>
