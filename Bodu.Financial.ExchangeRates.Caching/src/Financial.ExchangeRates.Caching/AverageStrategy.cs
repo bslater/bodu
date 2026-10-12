@@ -22,7 +22,9 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// <para>
 /// Averaging is most meaningful with <see cref="RateLookupOptions.Exact" />, where every contributor shares the
 /// requested date; under fallback resolutions the contributors may have resolved different dates. The range overload
-/// averages only the dates present in <em>every</em> contributing candidate (an inner join by date).
+/// averages only the dates present in <em>every</em> contributing candidate (an inner join by date); a candidate whose
+/// range read throws <see cref="RateSeriesNotFoundException" />, because it can never carry the pair, does not
+/// contribute.
 /// </para>
 /// <para>
 /// The synthesized mean is an <em>analytical, composite</em> value, not an authoritative observation: it can differ
@@ -141,8 +143,16 @@ public sealed class AverageStrategy
         List<Dictionary<DateOnly, decimal>> perCandidate = new(candidates.Count);
         foreach (NamedDatedRateProvider candidate in candidates)
         {
-            IEnumerable<ExchangeRate> rates =
-                await candidate.Provider.GetRatesAsync(fromIsoCode, toIsoCode, startDate, endDate, cancellationToken).ConfigureAwait(false);
+            IEnumerable<ExchangeRate> rates;
+            try
+            {
+                rates = await candidate.Provider.GetRatesAsync(fromIsoCode, toIsoCode, startDate, endDate, cancellationToken).ConfigureAwait(false);
+            }
+            catch (RateSeriesNotFoundException)
+            {
+                // A child that can never carry the pair (a single-base feed asked for a cross pair) does not contribute.
+                continue;
+            }
 
             Dictionary<DateOnly, decimal> byDate = new();
             foreach (ExchangeRate rate in rates)
@@ -155,7 +165,7 @@ public sealed class AverageStrategy
             perCandidate.Add(byDate);
         }
 
-        return JoinAverage(fromIsoCode, toIsoCode, perCandidate);
+        return perCandidate.Count == 0 ? Array.Empty<ExchangeRate>() : JoinAverage(fromIsoCode, toIsoCode, perCandidate);
     }
 
     /// <inheritdoc />
@@ -175,7 +185,16 @@ public sealed class AverageStrategy
         List<Dictionary<DateOnly, decimal>> perCandidate = new(candidates.Count);
         foreach (NamedDatedRateProvider candidate in candidates)
         {
-            IReadOnlyList<ExchangeRate> rates = candidate.Provider.GetRates(fromIsoCode, toIsoCode, startDate, endDate);
+            IReadOnlyList<ExchangeRate> rates;
+            try
+            {
+                rates = candidate.Provider.GetRates(fromIsoCode, toIsoCode, startDate, endDate);
+            }
+            catch (RateSeriesNotFoundException)
+            {
+                // A child that can never carry the pair (a single-base feed asked for a cross pair) does not contribute.
+                continue;
+            }
 
             Dictionary<DateOnly, decimal> byDate = new();
             foreach (ExchangeRate rate in rates)
@@ -188,7 +207,7 @@ public sealed class AverageStrategy
             perCandidate.Add(byDate);
         }
 
-        return JoinAverage(fromIsoCode, toIsoCode, perCandidate);
+        return perCandidate.Count == 0 ? Array.Empty<ExchangeRate>() : JoinAverage(fromIsoCode, toIsoCode, perCandidate);
     }
 
     /// <summary>

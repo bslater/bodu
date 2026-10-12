@@ -12,7 +12,9 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// </summary>
 /// <remarks>
 /// On every lookup the candidates are consulted in order and the first to satisfy the request wins, so a preferred
-/// provider's fallback-date hit beats a lower-priority provider's exact-date hit. This is the default strategy and the
+/// provider's fallback-date hit beats a lower-priority provider's exact-date hit. A range read takes the first
+/// candidate that returns any observations, passing over a candidate that returns none or that throws
+/// <see cref="RateSeriesNotFoundException" /> because it can never carry the pair. This is the default strategy and the
 /// successor to the former <c>CompositeDatedRateProvider</c>.
 /// <example>
 /// <code language="csharp">
@@ -85,8 +87,16 @@ public sealed class PriorityFallbackStrategy
 
         for (int i = 0; i < candidates.Count; i++)
         {
-            IReadOnlyList<ExchangeRate> rates =
-                [.. await candidates[i].Provider.GetRatesAsync(fromIsoCode, toIsoCode, startDate, endDate, cancellationToken).ConfigureAwait(false)];
+            IReadOnlyList<ExchangeRate> rates;
+            try
+            {
+                rates = [.. await candidates[i].Provider.GetRatesAsync(fromIsoCode, toIsoCode, startDate, endDate, cancellationToken).ConfigureAwait(false)];
+            }
+            catch (RateSeriesNotFoundException)
+            {
+                // A child that can never carry the pair (a single-base feed asked for a cross pair) does not resolve.
+                continue;
+            }
 
             if (rates.Count > 0)
                 return rates;
@@ -107,8 +117,16 @@ public sealed class PriorityFallbackStrategy
 
         for (int i = 0; i < candidates.Count; i++)
         {
-            IReadOnlyList<ExchangeRate> rates =
-                [.. candidates[i].Provider.GetRates(fromIsoCode, toIsoCode, startDate, endDate)];
+            IReadOnlyList<ExchangeRate> rates;
+            try
+            {
+                rates = [.. candidates[i].Provider.GetRates(fromIsoCode, toIsoCode, startDate, endDate)];
+            }
+            catch (RateSeriesNotFoundException)
+            {
+                // A child that can never carry the pair (a single-base feed asked for a cross pair) does not resolve.
+                continue;
+            }
 
             if (rates.Count > 0)
                 return rates;
