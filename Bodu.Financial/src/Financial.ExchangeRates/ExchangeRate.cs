@@ -68,7 +68,7 @@ public readonly record struct ExchangeRate
         string provider,
         bool isInverted = false,
         DateTimeOffset? fetchedAtUtc = null)
-        : this(from, to, date, rate, isInverted ? 1m / rate : rate, provider, isInverted, fetchedAtUtc)
+        : this(from, to, date, rate, ObservedRateFor(rate, isInverted), provider, isInverted, fetchedAtUtc)
     {
     }
 
@@ -111,6 +111,21 @@ public readonly record struct ExchangeRate
         ObservedRate = observedRate;
         FetchedAtUtc = fetchedAtUtc;
     }
+
+    /// <summary>
+    /// Returns the observed rate that backs a public rate multiplier: the reciprocal of <paramref name="rate" /> for an
+    /// inverted rate, and <paramref name="rate" /> itself otherwise.
+    /// </summary>
+    /// <param name="rate">The public rate multiplier.</param>
+    /// <param name="isInverted"><see langword="true" /> when the rate was derived from the reverse pair.</param>
+    /// <returns>The observed rate.</returns>
+    /// <remarks>
+    /// A rate that is not positive is returned unchanged so that the constructor it is passed to rejects it with
+    /// <see cref="ArgumentOutOfRangeException" />, rather than the reciprocal failing first with
+    /// <see cref="DivideByZeroException" />.
+    /// </remarks>
+    internal static decimal ObservedRateFor(decimal rate, bool isInverted) =>
+        isInverted && rate > 0m ? 1m / rate : rate;
 
     /// <summary>
     /// Creates an <see cref="ExchangeRate" /> from an originally observed rate, deriving the public <see cref="Rate" />
