@@ -44,8 +44,8 @@ The wire-type codes:
 | `0x000B` | `Boolean` | `bool` |
 | `0x000D` | `Object` | an embedded object (attachment storages) |
 | `0x0014` | `Int64` | `long` |
-| `0x001E` | `String8` | `string`, decoded through the object's code page |
-| `0x001F` | `Unicode` | `string` (UTF-16) |
+| `0x001E` | `String8` | `string`, decoded through the object's code page and ending at its first zero byte |
+| `0x001F` | `Unicode` | `string` (UTF-16), ending at its first zero code unit |
 | `0x0040` | `SystemTime` | `DateTimeOffset` (FILETIME) |
 | `0x0048` | `Guid` | `Guid` |
 | `0x0102` | `Binary` | `byte[]` |
