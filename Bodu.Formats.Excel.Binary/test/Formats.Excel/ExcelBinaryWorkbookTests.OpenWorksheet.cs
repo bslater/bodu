@@ -9,7 +9,7 @@ namespace Bodu.Formats.Excel;
 public partial class ExcelBinaryWorkbookTests
 {
     /// <summary>
-    /// Verifies that a shared-string cell (the USD series identifier on the Series ID row) decodes to its text value.
+    /// Verifies that a shared-string cell (the first series identifier on the Series ID row) decodes to its text value.
     /// </summary>
     [TestMethod]
     public void OpenWorksheet_WhenDataSheet_ShouldDecodeSharedStringCell()
@@ -20,11 +20,11 @@ public partial class ExcelBinaryWorkbookTests
 
         ExcelCell seriesId = grid[(10, 1)];
         Assert.AreEqual(ExcelCellKind.String, seriesId.Kind);
-        Assert.AreEqual("FXRUSD", seriesId.StringValue);
+        Assert.AreEqual("SER-A", seriesId.StringValue);
     }
 
     /// <summary>
-    /// Verifies that the header title cell, which uses an inline label, decodes to its text value.
+    /// Verifies that the cells that use an inline label, the title and a series unit, decode to their text values.
     /// </summary>
     [TestMethod]
     public void OpenWorksheet_WhenDataSheet_ShouldDecodeTitleCell()
@@ -33,8 +33,8 @@ public partial class ExcelBinaryWorkbookTests
 
         Dictionary<(int Row, int Column), ExcelCell> grid = ReadCellGrid(workbook, "Data");
 
-        Assert.AreEqual("A$1=USD", grid[(1, 1)].StringValue);
-        Assert.AreEqual("USD", grid[(5, 1)].StringValue);
+        Assert.AreEqual("Sample daily values", grid[(0, 0)].StringValue);
+        Assert.AreEqual("Points", grid[(5, 1)].StringValue);
     }
 
     /// <summary>
@@ -49,14 +49,14 @@ public partial class ExcelBinaryWorkbookTests
 
         ExcelCell date = grid[(11, 0)];
         Assert.AreEqual(ExcelCellKind.Number, date.Kind);
-        Assert.AreEqual(44929.0, date.NumberValue!.Value, 0.0);
-        Assert.AreEqual(new DateOnly(2023, 1, 3), ExcelSerialDate.FromSerialDate(date.NumberValue.Value));
+        Assert.AreEqual(45292.0, date.NumberValue!.Value, 0.0);
+        Assert.AreEqual(new DateOnly(2024, 1, 1), ExcelSerialDate.FromSerialDate(date.NumberValue.Value));
 
-        Assert.AreEqual(0.6828, grid[(11, 1)].NumberValue!.Value, 1e-10);
+        Assert.AreEqual(1.2345678, grid[(11, 1)].NumberValue!.Value, 1e-10);
     }
 
     /// <summary>
-    /// Verifies that the final data row decodes the most recent USD and JPY rates (covering the MULRK expansion).
+    /// Verifies that the final data row decodes its date and values (covering the MULRK expansion).
     /// </summary>
     [TestMethod]
     public void OpenWorksheet_WhenDataSheet_ShouldDecodeFinalDataRowNumbers()
@@ -65,11 +65,11 @@ public partial class ExcelBinaryWorkbookTests
 
         Dictionary<(int Row, int Column), ExcelCell> grid = ReadCellGrid(workbook, "Data");
 
-        ExcelCell lastDate = grid[(874, 0)];
-        Assert.AreEqual(new DateOnly(2026, 6, 12), ExcelSerialDate.FromSerialDate(lastDate.NumberValue!.Value));
+        ExcelCell lastDate = grid[(110, 0)];
+        Assert.AreEqual(new DateOnly(2024, 4, 9), ExcelSerialDate.FromSerialDate(lastDate.NumberValue!.Value));
 
-        Assert.AreEqual(0.7029, grid[(874, 1)].NumberValue!.Value, 1e-10);
-        Assert.AreEqual(112.71, grid[(874, 4)].NumberValue!.Value, 1e-10);
+        Assert.AreEqual(0.75, grid[(110, 1)].NumberValue!.Value, 1e-10);
+        Assert.AreEqual(112.71, grid[(110, 4)].NumberValue!.Value, 1e-10);
     }
 
     /// <summary>
@@ -134,7 +134,7 @@ public partial class ExcelBinaryWorkbookTests
     public void OpenWorksheet_WhenDateDetectionDisabled_ShouldNotFlagDateColumn()
     {
         using var workbook = ExcelBinaryWorkbook.Open(
-            ExcelBinaryFixtures.OpenStream(ExcelBinaryFixtures.SampleBiff8),
+            ExcelBinaryFixtures.OpenSample(),
             new ExcelBinaryReaderOptions { DetectDateFormats = false });
 
         Dictionary<(int Row, int Column), ExcelCell> grid = ReadCellGrid(workbook, "Data");

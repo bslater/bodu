@@ -52,4 +52,37 @@ public partial class CompoundStorageBuilderSerializationTests
         // Version 4 must declare the number of directory sectors (offset 40); version 3 leaves it zero.
         Assert.IsTrue(BinaryPrimitives.ReadUInt32LittleEndian(bytes.AsSpan(40)) >= 1);
     }
+
+    /// <summary>
+    /// Verifies that a version-3 file records zero directory sectors in its header, as [MS-CFB] requires of version 3,
+    /// even when its directory spans several sectors.
+    /// </summary>
+    [TestMethod]
+    public void ToArray_WhenVersion3_ShouldWriteZeroDirectorySectors()
+    {
+        var builder = CompoundStorageBuilder.CreateRoot();
+        for (int i = 0; i < 10; i++)
+            _ = builder.AddStream($"Stream{i}", CompoundContainerBytes.Pattern(100));
+
+        byte[] bytes = builder.ToArray(new CompoundBuildOptions { Version = CompoundFileVersion.V3 });
+
+        Assert.HasCount(12, CompoundContainerBytes.DirectoryEntryOffsets(bytes));
+        Assert.AreEqual(0u, BinaryPrimitives.ReadUInt32LittleEndian(bytes.AsSpan(0x28)));
+    }
+
+    /// <summary>
+    /// Verifies that a version-4 file records in its header the number of sectors its directory spans.
+    /// </summary>
+    [TestMethod]
+    public void ToArray_WhenVersion4DirectorySpansSectors_ShouldCountThemInTheHeader()
+    {
+        var builder = CompoundStorageBuilder.CreateRoot();
+        for (int i = 0; i < 40; i++)
+            _ = builder.AddStream($"Stream{i}", CompoundContainerBytes.Pattern(100));
+
+        byte[] bytes = builder.ToArray(new CompoundBuildOptions { Version = CompoundFileVersion.V4 });
+
+        Assert.HasCount(64, CompoundContainerBytes.DirectoryEntryOffsets(bytes));
+        Assert.AreEqual(2u, BinaryPrimitives.ReadUInt32LittleEndian(bytes.AsSpan(0x28)));
+    }
 }

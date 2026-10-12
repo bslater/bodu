@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.IO.Compound.Builders;
+
 namespace Bodu.IO.Compound;
 
 /// <summary>
@@ -257,5 +259,28 @@ public partial class CompoundStorageTests
         {
             _ = file.RootStorage.TryOpenStream("Stream 1", FileMode.Open, FileAccess.Write, out _);
         });
+    }
+
+    /// <summary>
+    /// Verifies that looking up a name absent from a directory whose sibling links form a cycle returns
+    /// <see langword="false" /> at <see cref="CompoundValidationLevel.Minimal" />, which prunes the cyclic link, and that
+    /// the storage still lists the entries the cycle joins.
+    /// </summary>
+    [TestMethod]
+    public void TryOpenStream_WhenSiblingLinksCycleAroundAMissingName_ShouldReturnFalse()
+    {
+        var builder = CompoundStorageBuilder.CreateRoot();
+        _ = builder.AddStream("A", new byte[10]);
+        _ = builder.AddStream("C", new byte[10]);
+        byte[] container = builder.ToArray();
+        int c = CompoundContainerBytes.FindEntryOffset(container, "C");
+        uint a = CompoundContainerBytes.FindStreamId(container, "A");
+        CompoundContainerBytes.WriteUInt32(container, c + CompoundContainerBytes.LeftSiblingOffset, a);
+        var options = new CompoundFileOptions { ValidationLevel = CompoundValidationLevel.Minimal };
+
+        using var file = CompoundFile.Open(new MemoryStream(container), options);
+
+        Assert.IsFalse(file.RootStorage.TryOpenStream("B", out _));
+        CollectionAssert.AreEqual(new[] { "A", "C" }, file.RootStorage.EnumerateEntries().Select(static e => e.Name).ToArray());
     }
 }

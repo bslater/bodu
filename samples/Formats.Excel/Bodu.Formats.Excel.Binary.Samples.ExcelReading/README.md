@@ -1,11 +1,12 @@
 # Bodu.Formats.Excel.Binary.Samples.ExcelReading
 
-The read-only BIFF8 workbook reader in `Bodu.Formats.Excel.Binary`: opening a real `.xls`
-and listing its sheets, the forward-only cell reader (the primary surface), the materialized
+The read-only BIFF8 workbook reader in `Bodu.Formats.Excel.Binary`: opening an `.xls` and
+listing its sheets, the forward-only cell reader (the primary surface), the materialized
 convenience surface, and decoding cell kinds - including BIFF8's classic importer trap, dates
-stored as format-classified numbers. All scenarios run offline against the committed
-`Data/sample-biff8.xls` (464 KB, copied from the library's test fixtures - a genuine
-exchange-rates workbook with two sheets and ~18,000 cells).
+stored as format-classified numbers. All scenarios run offline against a workbook the sample
+writes first, to a temporary file it deletes at the end: `SampleWorkbook` builds a two-sheet
+BIFF8 workbook of synthetic daily readings (about 2,400 cells) with the codec's `BiffWriter`
+and the container's `CompoundStorageBuilder`, so the sample carries no data file.
 
 > Scope notes: this package reads the Excel **97-2003 binary** format (`.xls`) only - not
 > `.xlsx` - and is read-only. Formula cells surface their *cached results*; encrypted
@@ -22,22 +23,22 @@ exposes everything needed to decide *what* to read before reading any cells - th
 directory (name, type, visibility, declared used range), the flattened document properties,
 and the workbook's declared date system.
 
-**What it does.** Opens the fixture and prints the date system, the summary properties, and
+**What it does.** Opens the workbook and prints the date system, the summary properties, and
 each sheet's `ExcelWorksheetInfo` with its used range rendered in A1 notation via
 `ExcelCellReference`.
 
-**What to expect.** Two visible worksheets; note the *declared* used range (`A1:BP2186`) is
-the sheet's claim, not a promise of populated cells - Scenario 2 shows actual content stops
-at row 874:
+**What to expect.** Two visible worksheets. The used range is the one each sheet *declares*,
+read without loading a cell; a real workbook's declaration can reach past its last populated
+cell, which is why it is the sheet's claim rather than a promise:
 
 ```text
 --- Opening a workbook - sheets, visibility, and used ranges ---
 
   date system : Excel1900
-  properties  : title='', author='', app='Microsoft Excel'
+  properties  : title='Daily readings', author='Bodu samples', app='Bodu sample generator'
   worksheets  : 2
-  [0] 'Data' (Worksheet, Visible) used range A1:BP2186 (2186 rows x 68 cols)
-  [1] 'Notes' (Worksheet, Visible) used range A1:L28 (28 rows x 12 cols)
+  [0] 'Data' (Worksheet, Visible) used range A1:F404 (404 rows x 6 cols)
+  [1] 'Notes' (Worksheet, Visible) used range A1:B5 (5 rows x 2 cols)
 ```
 
 **APIs demonstrated.** `ExcelBinaryWorkbook.OpenRead(path)` (+ `IDisposable`), `.Worksheets`
@@ -48,7 +49,7 @@ at row 874:
 
 **Intent.** Show the primary surface: `ExcelWorksheetReader` streams cells forward-only in
 file order - constant memory regardless of sheet size, the right shape for import pipelines
-that transform data as it arrives rather than loading 18,000 cells to look at each once.
+that transform data as it arrives rather than loading every cell to look at each once.
 
 **What it does.** Drives the lowest-level `TryReadCell` loop over the `Data` sheet, counting
 and classifying every cell without buffering any; then reopens the sheet and uses `ReadRows`
@@ -60,11 +61,11 @@ and classifying every cell without buffering any; then reopens the sheet and use
 --- The forward-only worksheet reader ---
 
   streaming 'Data'...
-  cells read  : 17937 across rows 0..874
-  kinds       : String=170, Number=17767
-  row 0: A1='F11.1  EXCHANGE RATES '
-  row 1: A2='Title' | B2='A$1=USD' | C2='Trade-weighted Index May 1970 = 100' | D2='A$1=CNY'
-  row 2: A3='Description' | B3='AUD/USD Exchange Rate; see notes for further detail.' | C3='Australian Dollar Trade-weighted Index' | D3='AUD/CNY Exchange Rate'
+  cells read  : 2417 across rows 0..403
+  kinds       : String=417, Number=2000
+  row 0: A1='Daily readings, four stations'
+  row 1: A2='Station' | B2='North' | C2='South' | D2='East'
+  row 2: A3='Units' | B3='mm' | C3='mm' | D3='mm'
 ```
 
 **APIs demonstrated.** `ExcelBinaryWorkbook.OpenWorksheet(index)`,
@@ -87,10 +88,10 @@ cells).
 ```text
 --- The materialized worksheet ---
 
-  'Data': 873 rows, 17937 cells materialized
-  A1 = 'F11.1  EXCHANGE RATES ' (String)
-  numeric cells: 16880, sum = 2.46213E+07, max = 19126
-  widest row   : row 1 with 24 cells
+  'Data': 404 rows, 2417 cells materialized
+  A1 = 'Daily readings, four stations' (String)
+  numeric cells: 1600, sum = 41592, max = 41.99
+  widest row   : row 3 with 6 cells
 ```
 
 **APIs demonstrated.** `ExcelBinaryWorkbook.ReadWorksheet(index)`, `ExcelWorksheet.Rows` /
@@ -104,24 +105,24 @@ whose *format* is a date format. `ExcelCell.IsDateFormatted` surfaces the classi
 and `ExcelSerialDate` + the workbook's `ExcelDateSystem` turn the serial into a real
 `DateTime` - get the system wrong and every date shifts by 1,462 days.
 
-**What it does.** Surveys both sheets' kind distributions (the `Data` sheet has 887
+**What it does.** Surveys both sheets' kind distributions (the `Data` sheet has 400
 date-formatted numbers), decodes three of them via `ExcelSerialDate.ToDateTime(serial,
 workbook.DateSystem)` cross-checked against the `workbook.GetDateTime(cell)` convenience,
-and scans for error cells (this workbook has none; a `#DIV/0!` would surface as
-`ExcelCellKind.Error` + `ExcelErrorCode`, not an exception).
+and scans for error cells (the `Notes` sheet's `#DIV/0!` surfaces as `ExcelCellKind.Error` +
+`ExcelErrorCode`, not an exception; its formula surfaces as the number it cached).
 
 **What to expect.**
 
 ```text
 --- Cell kinds, spreadsheet errors, and serial dates ---
 
-  'Data': String=170, Number=17767, date-formatted=887
-  'Notes': String=45, Number=18
+  'Data': String=417, Number=2000, date-formatted=400
+  'Notes': String=5, Number=1, Boolean=1, Error=1
   date decoding (Excel1900):
-  B10: serial 46185 -> 2026-06-12 00:00 (via workbook.GetDateTime: 2026-06-12)
-  C10: serial 46185 -> 2026-06-12 00:00 (via workbook.GetDateTime: 2026-06-12)
-  D10: serial 46185 -> 2026-06-12 00:00 (via workbook.GetDateTime: 2026-06-12)
-error cells  : none in this workbook
+  A5: serial 45292 -> 2024-01-01 00:00 (via workbook.GetDateTime: 2024-01-01)
+  A6: serial 45293 -> 2024-01-02 00:00 (via workbook.GetDateTime: 2024-01-02)
+  A7: serial 45294 -> 2024-01-03 00:00 (via workbook.GetDateTime: 2024-01-03)
+error cells  : B4=#DivideByZero
 ```
 
 **APIs demonstrated.** `ExcelCellKind`, `ExcelCell.IsDateFormatted` / `.NumberValue` /
@@ -132,9 +133,9 @@ error cells  : none in this workbook
 
 ```text
 Bodu.Formats.Excel.Binary.Samples.ExcelReading/
-  Program.cs                        # runs the scenarios in order
+  Program.cs                        # writes the workbook, then runs the scenarios in order
   SampleConsole.cs                  # the What / Why / Expect scenario banner
-  Data/sample-biff8.xls             # committed 464 KB BIFF8 fixture (2 sheets, ~18k cells)
+  SampleWorkbook.cs                 # builds the BIFF8 workbook the scenarios read
   Scenarios/WorkbookAndSheets.cs
   Scenarios/ForwardOnlyReader.cs
   Scenarios/MaterializedWorksheet.cs

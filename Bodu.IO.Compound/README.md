@@ -73,7 +73,7 @@ if (file.TryGetSummaryInformation(out var summary))
   `CompoundStorageBuilder` / `CompoundStreamBuilder` children with `CompoundStorageBuilder.CreateRoot()`
   (or `CompoundStorageBuilder.Load` an existing file into one), then `WriteTo` / `Save` / `ToArray`
   to a conforming container (v3 or v4). Output is verified byte-for-byte and cross-checked
-  against the independent `olefile` and OpenMcdf parsers. (For live read/write use `CompoundFile`.)
+  against the independent `olefile` parser. (For live read/write use `CompoundFile`.)
 - **Bounded-memory streaming writes**: `CompoundStorageBuilder.WriteTo(Stream)` emits one sector
   at a time and large payloads can be sourced on demand via
   `CompoundStreamBuilder.CreateFromFile(name, path)` or `Create(name, Func<Stream>, length)` (and

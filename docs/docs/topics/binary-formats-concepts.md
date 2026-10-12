@@ -12,7 +12,7 @@ A **container** describes *how named blobs are packed into one file* without kno
 
 ## Compound file, storage, stream
 
-A **compound file** (OLE2 / CFB) is a single file that embeds a small hierarchical file system. A **storage** is a named container of children (a folder, the COM `IStorage`); a **stream** is a named byte payload (a file, the COM `IStream`). Navigation starts at the **root storage** and is scoped to each storage's direct children, matched with ordinal (case-sensitive) names. See the [Bodu.IO.Compound concepts](../io-compound/concepts.md) for the full container model - sectors, the FAT, the mini-stream, and property sets.
+A **compound file** (OLE2 / CFB) is a single file that embeds a small hierarchical file system. A **storage** is a named container of children (a folder, the COM `IStorage`); a **stream** is a named byte payload (a file, the COM `IStream`). Navigation starts at the **root storage** and is scoped to each storage's direct children, whose names are matched case-insensitively, as [MS-CFB] 2.6.4 compares sibling names (each UTF-16 code point converted to uppercase by simple case folding): `Workbook` and `workbook` name the same stream. See the [Bodu.IO.Compound concepts](../io-compound/concepts.md) for the full container model - sectors, the FAT, the mini-stream, and property sets.
 
 ## Sector chain
 

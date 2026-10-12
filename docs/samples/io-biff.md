@@ -7,10 +7,11 @@ title: Runnable samples
 The repository ships a runnable, self-contained sample project for `Bodu.IO.Biff`, the BIFF
 record codec beneath the Excel reader, under
 [`samples/IO.Biff/`](https://github.com/bslater/bodu/tree/master/samples/IO.Biff).
-It is **offline and deterministic**: it reads the committed `Data/sample-biff8.xls` (the BIFF8
-fixture the Excel reader's tests use), extracting the `Workbook` stream with `Bodu.IO.Compound`
-since the codec itself has no container dependency, and it authors its own BIFF8 stream with
-`BiffWriter` for the round-trip scenario. It is a member of `bodu.slnx`, built and executed by
+It is **offline and deterministic**: it reads a workbook it writes first, a two-sheet BIFF8
+workbook of synthetic daily readings built with `BiffWriter` and `Bodu.IO.Compound`'s
+`CompoundStorageBuilder`, extracting the `Workbook` stream with `Bodu.IO.Compound` since the
+codec itself has no container dependency, and it authors its own BIFF8 stream with `BiffWriter`
+for the round-trip scenario. It is a member of `bodu.slnx`, built and executed by
 CI. The README documents every scenario individually.
 
 Run it from the repository root:
@@ -25,7 +26,7 @@ dotnet run --project samples/IO.Biff/Bodu.IO.Biff.Samples.BiffBasics
 
 The codec from the physical record view to authoring:
 
-- **RecordCensus** - <xref:Bodu.IO.Biff.BiffReader> over a real workbook stream: every physical
+- **RecordCensus** - <xref:Bodu.IO.Biff.BiffReader> over a workbook stream: every physical
   record framed, the `BOF` records marking each substream and establishing
   <xref:Bodu.IO.Biff.BiffVersion>, and a tally by identifier that includes records the codec does
   not name.
@@ -45,4 +46,4 @@ The codec from the physical record view to authoring:
 
 - **[Bodu.IO.Biff introduction](../docs/io-biff/index.md)** - the package at a glance.
 - **[Getting started](../docs/io-biff/getting-started.md)** - install and minimal samples.
-- **[Bodu.Formats.Excel.Binary samples](excel.md)** - the same fixture read as a workbook.
+- **[Bodu.Formats.Excel.Binary samples](excel.md)** - the same kind of workbook read through the Excel reader.

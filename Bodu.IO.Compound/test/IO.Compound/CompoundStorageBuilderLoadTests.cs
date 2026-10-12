@@ -35,6 +35,28 @@ public class CompoundStorageBuilderLoadTests
     }
 
     /// <summary>
+    /// Verifies that loading a <see cref="MemoryStream" /> positioned after a prefix reads the container from that
+    /// position.
+    /// </summary>
+    [TestMethod]
+    public void Load_WhenStreamIsPositionedAfterAPrefix_ShouldLoadFromThePosition()
+    {
+        byte[] payload = CompoundContainerBytes.Pattern(5000);
+        var tree = CompoundStorageBuilder.CreateRoot();
+        _ = tree.AddStream("A", payload);
+        byte[] container = tree.ToArray();
+        using var source = new MemoryStream(new byte[8 + container.Length]);
+        source.Position = 8;
+        source.Write(container);
+        source.Position = 8;
+
+        var root = CompoundStorageBuilder.Load(source);
+
+        Assert.IsTrue(root.TryGetStream("A", out CompoundStreamBuilder? stream));
+        CollectionAssert.AreEqual(payload, stream.Content.ToArray());
+    }
+
+    /// <summary>
     /// Verifies that, for every valid reference fixture, the loaded object model exposes the same set of stream paths
     /// and identical stream content (by SHA-256) as the read-only reader.
     /// </summary>

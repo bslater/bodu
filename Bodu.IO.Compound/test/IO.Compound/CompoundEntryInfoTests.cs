@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.IO.Compound.Builders;
+
 namespace Bodu.IO.Compound;
 
 /// <summary>
@@ -56,5 +58,38 @@ public class CompoundEntryInfoTests
         // value.
         if (info.LastModifiedTime is { } modified)
             Assert.IsTrue(modified.Year is >= 1601 and <= 9999);
+    }
+
+    /// <summary>
+    /// Verifies that the creation and modification times of directory entries are decoded as UTC instants, and that a
+    /// time of zero is surfaced as <see langword="null" />.
+    /// </summary>
+    [TestMethod]
+    public void Stat_WhenEntryRecordsFileTimes_ShouldDecodeUtcInstants()
+    {
+        const long unixEpoch = 116444736000000000;
+        const long storageTime = 0x01D0000000000000;
+        var builder = CompoundStorageBuilder.CreateRoot();
+        _ = builder.AddStorage("S").AddStream("A", CompoundContainerBytes.Pattern(100));
+        byte[] container = builder.ToArray();
+        int root = CompoundContainerBytes.FindEntryOffset(container, "Root Entry");
+        int storage = CompoundContainerBytes.FindEntryOffset(container, "S");
+        CompoundContainerBytes.WriteInt64(container, root + CompoundContainerBytes.CreationTimeOffset, unixEpoch);
+        CompoundContainerBytes.WriteInt64(container, root + CompoundContainerBytes.ModifiedTimeOffset, 0);
+        CompoundContainerBytes.WriteInt64(container, storage + CompoundContainerBytes.CreationTimeOffset, storageTime);
+        CompoundContainerBytes.WriteInt64(container, storage + CompoundContainerBytes.ModifiedTimeOffset, storageTime);
+
+        using var file = CompoundFile.Open(new MemoryStream(container));
+        CompoundEntryInfo rootInfo = file.RootStorage.Stat;
+        CompoundEntryInfo storageInfo = file.RootStorage.OpenStorage("S").Stat;
+
+        var expected = new DateTimeOffset(DateTime.FromFileTimeUtc(storageTime));
+        Assert.AreEqual(new DateTimeOffset(1970, 1, 1, 0, 0, 0, TimeSpan.Zero), rootInfo.CreationTime);
+        Assert.AreEqual(TimeSpan.Zero, rootInfo.CreationTime!.Value.Offset);
+        Assert.IsNull(rootInfo.LastModifiedTime);
+        Assert.AreEqual(expected, storageInfo.CreationTime);
+        Assert.AreEqual(TimeSpan.Zero, storageInfo.CreationTime!.Value.Offset);
+        Assert.AreEqual(expected, storageInfo.LastModifiedTime);
+        Assert.AreEqual(TimeSpan.Zero, storageInfo.LastModifiedTime!.Value.Offset);
     }
 }

@@ -77,7 +77,7 @@ public partial class ExcelBinaryWorkbookTests
     public void OpenRead_WhenPath_ShouldReadWorkbook()
     {
         string path = Path.Combine(Path.GetTempPath(), $"bodu-xls-{Guid.NewGuid():N}.xls");
-        using (MemoryStream source = ExcelBinaryFixtures.OpenStream(ExcelBinaryFixtures.SampleBiff8))
+        using (MemoryStream source = ExcelBinaryFixtures.OpenSample())
             File.WriteAllBytes(path, source.ToArray());
 
         try
@@ -97,7 +97,7 @@ public partial class ExcelBinaryWorkbookTests
     [TestMethod]
     public void OpenRead_WhenLeaveOpenTrue_ShouldNotDisposeSourceStream()
     {
-        MemoryStream source = ExcelBinaryFixtures.OpenStream(ExcelBinaryFixtures.SampleBiff8);
+        MemoryStream source = ExcelBinaryFixtures.OpenSample();
 
         using (var workbook = ExcelBinaryWorkbook.OpenRead(source, leaveOpen: true))
             Assert.HasCount(2, workbook.Worksheets);
@@ -113,7 +113,7 @@ public partial class ExcelBinaryWorkbookTests
     [TestMethod]
     public void OpenRead_WhenLeaveOpenFalse_ShouldDisposeSourceStream()
     {
-        MemoryStream source = ExcelBinaryFixtures.OpenStream(ExcelBinaryFixtures.SampleBiff8);
+        MemoryStream source = ExcelBinaryFixtures.OpenSample();
 
         using (var workbook = ExcelBinaryWorkbook.OpenRead(source))
             Assert.HasCount(2, workbook.Worksheets);

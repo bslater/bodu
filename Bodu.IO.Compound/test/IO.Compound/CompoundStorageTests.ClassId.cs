@@ -78,4 +78,28 @@ public partial class CompoundStorageTests
 
         Assert.IsTrue(file.IsDirty);
     }
+
+    /// <summary>
+    /// Verifies that a storage whose class identifier is never set is committed with an all-zero class identifier, as
+    /// [MS-CFB] requires of a storage created without one.
+    /// </summary>
+    [TestMethod]
+    public void ClassId_WhenNeverSet_ShouldRemainEmptyAfterCommit()
+    {
+        var destination = new MemoryStream();
+        using (var file = CompoundFile.Create(destination, leaveOpen: true))
+        {
+            CompoundStorage storage = file.RootStorage.CreateStorage("S");
+            storage.CreateStream("A", new byte[] { 1, 2, 3 });
+            file.Commit();
+        }
+
+        byte[] committed = destination.ToArray();
+        int entry = CompoundContainerBytes.FindEntryOffset(committed, "S");
+        destination.Position = 0;
+        using var reopened = CompoundFile.Open(destination);
+
+        Assert.AreEqual(Guid.Empty, reopened.RootStorage.OpenStorage("S").ClassId);
+        CollectionAssert.AreEqual(new byte[16], committed.AsSpan(entry + CompoundContainerBytes.ClassIdOffset, 16).ToArray());
+    }
 }

@@ -45,4 +45,26 @@ public partial class CompoundStreamTests
         using CompoundStream read = reopened.RootStorage.OpenStream("Data");
         CollectionAssert.AreEqual(new byte[] { 1, 2 }, read.ReadAllBytes());
     }
+
+    /// <summary>
+    /// Verifies that changing the length of a cursor keeps its position unless the new length cuts the stream short
+    /// before it.
+    /// </summary>
+    [TestMethod]
+    public void SetLength_WhenGrowing_ShouldKeepThePosition()
+    {
+        using var file = CompoundFile.Create(new MemoryStream());
+        using CompoundStream cursor = file.RootStorage.CreateStream("Data");
+        cursor.Write(CompoundContainerBytes.Pattern(10000));
+        cursor.Seek(6000, SeekOrigin.Begin);
+
+        cursor.SetLength(7000);
+        Assert.AreEqual(6000, cursor.Position);
+
+        cursor.SetLength(20000);
+        Assert.AreEqual(6000, cursor.Position);
+
+        cursor.SetLength(5000);
+        Assert.IsLessThanOrEqualTo(5000L, cursor.Position);
+    }
 }

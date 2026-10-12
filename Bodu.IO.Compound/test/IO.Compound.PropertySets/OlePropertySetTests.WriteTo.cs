@@ -166,4 +166,41 @@ public partial class OlePropertySetTests
             builder.WriteTo((Stream)null!);
         });
     }
+
+    /// <summary>
+    /// Verifies that a parsed set written with <see cref="OlePropertySet.WriteTo(Stream)" /> keeps the format identifier
+    /// of its section, including one the library does not know.
+    /// </summary>
+    [TestMethod]
+    public void WriteTo_WhenParsedSetIsReEmitted_ShouldKeepItsFormatIds()
+    {
+        var formatId = new Guid("9DA3A4F0-8A5D-4B2F-9C1E-0123456789AB");
+        OlePropertySet parsed = OlePropertySet.Parse(PropertySetBytes.Single(
+            formatId,
+            (1, PropertySetBytes.CodePage(1252)),
+            (2, PropertySetBytes.Int32(5))));
+        using var destination = new MemoryStream();
+
+        parsed.WriteTo(destination);
+        OlePropertySet reread = OlePropertySet.Parse(destination.ToArray());
+
+        Assert.AreEqual(formatId, reread.Sections[0].FormatId);
+        Assert.AreEqual(formatId, reread.FormatId);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="OlePropertySet.WriteTo(Stream)" /> leaves its destination stream open, still writable
+    /// and seekable.
+    /// </summary>
+    [TestMethod]
+    public void WriteTo_WhenSinkIsStream_ShouldLeaveItOpen()
+    {
+        OlePropertySet set = Authored();
+        using var destination = new MemoryStream();
+
+        set.WriteTo(destination);
+
+        Assert.IsTrue(destination.CanWrite);
+        Assert.IsTrue(destination.CanSeek);
+    }
 }

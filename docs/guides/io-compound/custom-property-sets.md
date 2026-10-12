@@ -6,7 +6,7 @@ title: Authoring custom property sets
 
 [Reading property sets](property-sets.md) covers the two standard metadata streams and their typed views. This guide is the write side, and the part the typed builders do not reach: the raw <xref:Bodu.IO.Compound.PropertySets.OlePropertySet> model, user-defined named properties in a document's second section, and property-set streams of your own on any storage.
 
-An OLE property set (MS-OLEPS) is the serialized form of the COM `IPropertyStorage` interface. It begins with a header declaring a class identifier and one or two **sections**; each section is identified by a format identifier (FMTID), carries a code page, and maps integer property identifiers (PIDs) to typed values. The first section holds the well-known properties; an optional second section - the *user-defined* section, FMTID `D5CDD505-2E9C-101B-9397-08002B2CF9AE` - holds custom properties whose human-readable names live in the section's dictionary. Office shows those names on the *Custom* tab of a document's properties.
+An OLE property set (MS-OLEPS) is the serialized form of the COM `IPropertyStorage` interface. It begins with a header declaring a class identifier and one or two **sections**; each section is identified by a format identifier (FMTID), carries a code page, and maps property identifiers (PIDs) to typed values. A PID is an unsigned 32-bit value, keyed by its `int` value: one at or above `0x80000000`, such as the `PID_LOCALE` (`0x80000000`) Office writes in a user-defined section, is `unchecked((int)0x80000000)`. The first section holds the well-known properties; an optional second section - the *user-defined* section, FMTID `D5CDD505-2E9C-101B-9397-08002B2CF9AE` - holds custom properties whose human-readable names live in the section's dictionary. Office shows those names on the *Custom* tab of a document's properties.
 
 The samples run against `sample1.doc` from the [runnable compound-file sample](../../samples/io-compound.md), a Word 2000 document copied as `report.doc`; the quoted output is what they print.
 
@@ -278,7 +278,7 @@ Console.WriteLine(root.ToArray().Length);
 | `Variant` | 12 | `VARIANT` | element type inferred from the CLR value (vectors only) | - |
 | `Empty` / `Null` | 0 / 1 | `EMPTY` / `NULL` | `null` | - |
 
-A **vector** (`VT_VECTOR`) is an `OlePropertyValue` with `IsVector = true` and an `object?[]` of element values; the writer rejects an empty-typed or null-typed vector, and any type outside the table above, with <xref:Bodu.IO.Compound.CompoundFileSerializationException>:
+A **vector** (`VT_VECTOR`) is an `OlePropertyValue` with `IsVector = true` and an `object?[]` of element values; the writer rejects an empty-typed or null-typed vector, and any type outside the table above, with <xref:Bodu.IO.Compound.CompoundFileSerializationException>. As [MS-OLEPS] 2.15 lays a vector out, its strings, blobs and variants are each padded to a multiple of four bytes, while its elements of a fixed size, the 1- and 2-byte values among them, are packed one after another, with padding only after the last; the reader and the writer both use that layout:
 
 ```csharp
 using Bodu.IO.Compound;

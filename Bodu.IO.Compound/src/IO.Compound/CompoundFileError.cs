@@ -46,22 +46,27 @@ public enum CompoundFileError
     TruncatedFile,
 
     /// <summary>
-    /// The double-indirect file-allocation table (DIFAT) is malformed.
+    /// The double-indirect file-allocation table (DIFAT) is malformed; at <see cref="CompoundValidationLevel.Strict" />,
+    /// also a header FAT or DIFAT sector count that disagrees with the tables, a FAT or DIFAT sector that the FAT does
+    /// not mark as one, or a DIFAT chain that does not end in ENDOFCHAIN.
     /// </summary>
     InvalidDifat,
 
     /// <summary>
-    /// A sector chain references a sector outside the file.
+    /// A sector chain references a sector outside the file; at <see cref="CompoundValidationLevel.Strict" />, also a
+    /// FAT entry that allocates a sector past the end of the file.
     /// </summary>
     SectorOutOfRange,
 
     /// <summary>
-    /// A regular file-allocation table (FAT) chain forms a cycle.
+    /// A regular file-allocation table (FAT) chain forms a cycle; at <see cref="CompoundValidationLevel.Strict" />,
+    /// also a sector that two chains share.
     /// </summary>
     FatCycle,
 
     /// <summary>
-    /// A mini-FAT chain is malformed or references an out-of-range mini sector.
+    /// A mini-FAT chain is malformed or references an out-of-range mini sector; at
+    /// <see cref="CompoundValidationLevel.Strict" />, also a mini sector that two mini chains share.
     /// </summary>
     InvalidMiniFat,
 

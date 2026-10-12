@@ -177,6 +177,30 @@ public sealed class OlePropertySet
     /// <exception cref="CompoundFileFormatException">
     /// Thrown when the data is not a well-formed property set.
     /// </exception>
+    /// <remarks>
+    /// <para>
+    /// The strings, blobs and variants of a vector read whether each is padded to a multiple of four bytes, as
+    /// [MS-OLEPS] specifies, or follows the one before it unpadded, as [MS-OSHARED] stores the strings of a document
+    /// summary's document parts and heading pairs: the reader skips the bytes up to an element's next four-byte
+    /// boundary only while they are zero.
+    /// </para>
+    /// <para>
+    /// A <c>VT_LPWSTR</c> two bytes past a four-byte boundary whose writer put its length on the next boundary, rather
+    /// than where [MS-OLEPS] puts it, is read from there when the expected place frames no null-terminated string and
+    /// the next boundary does.
+    /// </para>
+    /// <para>
+    /// A property whose type the reader does not implement is dropped, as is one whose type word carries
+    /// <c>VT_ARRAY</c>, <c>VT_BYREF</c> or <c>VT_RESERVED</c>, rather than being read as a value of its base type; the
+    /// section's other properties still read.
+    /// </para>
+    /// <para>
+    /// Every 32-bit field is read unsigned. A property identifier keeps all 32 bits (see
+    /// <see cref="OlePropertySection" />). A length, offset or count that exceeds the bytes present, one too large for
+    /// an <see cref="int" /> included, is malformed: the property that holds it is dropped, a dictionary that holds it
+    /// names no further properties, and a section header or locator that holds it fails the set.
+    /// </para>
+    /// </remarks>
     public static OlePropertySet Parse(ReadOnlyMemory<byte> data) =>
         PropertySetReader.Read(data.Span);
 
@@ -191,6 +215,9 @@ public sealed class OlePropertySet
     /// <exception cref="CompoundFileFormatException">
     /// Thrown when the data is not a well-formed property set.
     /// </exception>
+    /// <remarks>
+    /// The bytes are parsed as <see cref="Parse(ReadOnlyMemory{byte})" /> parses them.
+    /// </remarks>
     public static OlePropertySet Read(Stream stream)
     {
         ThrowHelper.ThrowIfNull(stream);

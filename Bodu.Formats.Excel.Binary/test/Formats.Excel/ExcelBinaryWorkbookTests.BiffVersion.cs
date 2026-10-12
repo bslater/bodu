@@ -35,7 +35,7 @@ public partial class ExcelBinaryWorkbookTests
     }
 
     /// <summary>
-    /// Verifies that the real-world sample fixture is BIFF8.
+    /// Verifies that the sample workbook is BIFF8.
     /// </summary>
     [TestMethod]
     public void BiffVersion_WhenSampleWorkbook_ShouldBeBiff8()

@@ -19,7 +19,8 @@ public static class MaterializedWorksheet
     /// <summary>
     /// Materializes the first worksheet and accesses it randomly.
     /// </summary>
-    public static void Run()
+    /// <param name="path">The path of the sample workbook.</param>
+    public static void Run(string path)
     {
         SampleConsole.Scenario(
             "The materialized worksheet",
@@ -33,7 +34,7 @@ public static class MaterializedWorksheet
             expect: "The same values the streaming reader produced, now addressable by index. Empty cells are "
                 + "represented rather than silently collapsing the row, so positions stay meaningful.");
 
-        using var workbook = ExcelBinaryWorkbook.OpenRead(Path.Combine(AppContext.BaseDirectory, "Data", "sample-biff8.xls"));
+        using var workbook = ExcelBinaryWorkbook.OpenRead(path);
         var sheet = workbook.ReadWorksheet(0);
 
         Console.WriteLine($"  '{sheet.Name}': {sheet.Rows.Count} rows, {sheet.Cells.Count} cells materialized");

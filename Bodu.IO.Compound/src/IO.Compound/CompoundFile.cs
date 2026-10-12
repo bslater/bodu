@@ -132,14 +132,20 @@ public sealed class CompoundFile
         int headLength = (int)Math.Min(HeaderLength, dataSource.Length);
         Span<byte> head = stackalloc byte[HeaderLength];
         dataSource.Read(0, head.Slice(0, headLength));
-        _header = CfbHeader.Parse(head.Slice(0, headLength));
+        _header = CfbHeader.Parse(head.Slice(0, headLength), level);
         _sectors = new CfbSectorReader(dataSource, _header, level);
 
-        byte[] directoryBytes = _sectors.ReadChainToEnd(_header.FirstDirectorySector);
-        _directory = new CfbDirectory(directoryBytes, _header, level);
+        byte[] directoryBytes = _sectors.ReadChainToEnd(_header.FirstDirectorySector, out long missingStart, out int missingLength);
+        if (level == CompoundValidationLevel.Strict)
+            _header.ValidateDirectorySectorCount(_sectors.GetSectorChain(_header.FirstDirectorySector).Length);
+
+        _directory = new CfbDirectory(directoryBytes, _header, level, missingStart, missingLength);
 
         if (_directory.Root.Size > 0)
             _sectors.InitializeMiniStream(_directory.Root.StartSector, _directory.Root.Size);
+
+        if (level == CompoundValidationLevel.Strict)
+            _sectors.ValidateAllocation(_directory);
 
         RootStorage = new CompoundStorage(this, _directory.Root, null);
     }
@@ -366,6 +372,10 @@ public sealed class CompoundFile
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="destination" /> is <see langword="null" />.
     /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when the <see cref="CompoundBuildOptions.Version" /> of <paramref name="options" /> is neither the
+    /// default nor a defined <see cref="CompoundFileVersion" />.
+    /// </exception>
     /// <remarks>
     /// Edits made through <see cref="RootStorage" /> are staged in memory; nothing is written to
     /// <paramref name="destination" /> until <see cref="Commit" /> is called. Disposing the file without committing
@@ -385,6 +395,7 @@ public sealed class CompoundFile
     public static CompoundFile Create(Stream destination, bool leaveOpen = false, CompoundBuildOptions options = default)
     {
         ThrowHelper.ThrowIfNull(destination);
+        CompoundThrowHelper.ThrowIfVersionUndefined(options);
 
         return CreateCore(destination, leaveOpen, FileAccess.ReadWrite, options);
     }
@@ -399,6 +410,10 @@ public sealed class CompoundFile
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="path" /> is <see langword="null" />.
     /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when the <see cref="CompoundBuildOptions.Version" /> of <paramref name="options" /> is neither the
+    /// default nor a defined <see cref="CompoundFileVersion" />; the file is not created.
+    /// </exception>
     /// <remarks>
     /// The returned instance owns the created file and closes it when disposed. Edits are staged in memory until
     /// <see cref="Commit" /> is called; disposing without committing leaves the file empty.
@@ -406,6 +421,7 @@ public sealed class CompoundFile
     public static CompoundFile Create(string path, CompoundBuildOptions options = default)
     {
         ThrowHelper.ThrowIfNull(path);
+        CompoundThrowHelper.ThrowIfVersionUndefined(options);
 
         FileStream stream = File.Create(path);
         try
@@ -767,20 +783,24 @@ public sealed class CompoundFile
     /// </exception>
     /// <remarks>
     /// The destination is truncated and the whole container is rewritten from the staging tree. When the destination is
-    /// not seekable, the committed bytes are appended at the current position.
+    /// not seekable, the committed bytes are appended at the current position. The container is planned before the
+    /// destination is touched, so a staging tree that cannot be represented leaves the destination as it was. A failure
+    /// while the bytes are written, such as a deferred source shorter than it declared, leaves the destination
+    /// partially written and the file dirty.
     /// </remarks>
     public void Commit()
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
         RequireWritable();
 
+        CompoundContainerLayout.PlannedContainer container = CompoundContainerLayout.Plan(_staging!, _buildOptions);
         if (_destination!.CanSeek)
         {
             _destination.Position = 0;
             _destination.SetLength(0);
         }
 
-        CompoundContainerLayout.WriteTo(_destination, _staging!, _buildOptions);
+        container.WriteTo(_destination);
         _destination.Flush();
         _dirty = false;
     }
@@ -813,10 +833,12 @@ public sealed class CompoundFile
     /// Thrown when <paramref name="cancellationToken" /> is canceled.
     /// </exception>
     /// <remarks>
-    /// The asynchronous counterpart of <see cref="Commit" />, sharing the same layout computation. Cancellation is
-    /// observed before any destination mutation and again during the write; a cancellation or failure mid-write leaves
-    /// the destination partially written and the file dirty - the same surface a synchronous <see cref="Commit" />
-    /// fault presents - so call <see cref="CommitAsync" /> (or <see cref="Commit" />) again, or <see cref="Revert" />.
+    /// The asynchronous counterpart of <see cref="Commit" />, sharing the same layout computation. The container is
+    /// planned before the destination is touched, so a staging tree that cannot be represented leaves the destination
+    /// as it was. Cancellation is observed before any destination mutation and again during the write; a cancellation
+    /// or failure mid-write leaves the destination partially written and the file dirty - the same surface a
+    /// synchronous <see cref="Commit" /> fault presents - so call <see cref="CommitAsync" /> (or <see cref="Commit" />)
+    /// again, or <see cref="Revert" />.
     /// </remarks>
     public async Task CommitAsync(CancellationToken cancellationToken = default)
     {
@@ -824,13 +846,14 @@ public sealed class CompoundFile
         RequireWritable();
         cancellationToken.ThrowIfCancellationRequested();
 
+        CompoundContainerLayout.PlannedContainer container = CompoundContainerLayout.Plan(_staging!, _buildOptions);
         if (_destination!.CanSeek)
         {
             _destination.Position = 0;
             _destination.SetLength(0);
         }
 
-        await CompoundContainerLayout.WriteToAsync(_destination, _staging!, _buildOptions, cancellationToken).ConfigureAwait(false);
+        await container.WriteToAsync(_destination, cancellationToken).ConfigureAwait(false);
         await _destination.FlushAsync(cancellationToken).ConfigureAwait(false);
         _dirty = false;
     }
@@ -911,16 +934,19 @@ public sealed class CompoundFile
     /// <param name="parent">The storage that owns the returned cursor.</param>
     /// <returns>A <see cref="CompoundStream" /> positioned at the start of the payload.</returns>
     /// <exception cref="ObjectDisposedException">Thrown when the file has been disposed.</exception>
-    /// <exception cref="CompoundFileFormatException">Thrown when the stream's sector chain is malformed.</exception>
+    /// <exception cref="CompoundFileFormatException">
+    /// Thrown when the stream's sector chain is malformed, or, at a level stricter than
+    /// <see cref="CompoundValidationLevel.Minimal" />, holds fewer bytes than the stream declares.
+    /// </exception>
     internal CompoundStream OpenStream(CfbDirectoryEntry entry, CompoundStorage parent)
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
 
         CompoundEntryInfo info = entry.ToEntryInfo();
-        if (!_streaming || entry.Size < _header.MiniStreamCutoff)
+        if (!_streaming || entry.Size < CfbHeader.MiniStreamCutoff)
             return new CompoundStream(info, Materialize(entry), parent);
 
-        uint[] chain = _sectors.GetSectorChain(entry.StartSector);
+        uint[] chain = _sectors.GetStreamChain(entry.StartSector, entry.Size);
         return new CompoundStream(info, _sectors, chain, entry.Size, _header.SectorSize, parent);
     }
 
@@ -943,20 +969,26 @@ public sealed class CompoundFile
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
 
-        return entry.Size < _header.MiniStreamCutoff
+        return entry.Size < CfbHeader.MiniStreamCutoff
             ? _sectors.ReadMiniChain(entry.StartSector, entry.Size)
             : _sectors.ReadChain(entry.StartSector, entry.Size);
     }
 
     /// <summary>
-    /// Reads the full content of a stream into a byte array.
+    /// Reads the content of a stream from its current position to the end into a byte array.
     /// </summary>
     /// <param name="stream">The stream to read from its current position to the end.</param>
     /// <returns>The buffered bytes.</returns>
     private static byte[] ReadAllBytes(Stream stream)
     {
+        // A memory stream knows its remaining length, so it is read into an array of that length at once; like any
+        // other stream, it is read from its position, not from the start of its buffer.
         if (stream is MemoryStream existing)
-            return existing.ToArray();
+        {
+            byte[] remaining = new byte[Math.Max(0, existing.Length - existing.Position)];
+            existing.ReadExactly(remaining);
+            return remaining;
+        }
 
         using MemoryStream buffer = new();
         stream.CopyTo(buffer);

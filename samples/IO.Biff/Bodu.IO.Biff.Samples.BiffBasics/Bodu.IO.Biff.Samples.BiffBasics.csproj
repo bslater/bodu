@@ -13,10 +13,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="Data\**" CopyToOutputDirectory="PreserveNewest" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\..\..\Bodu.IO.Biff\src\Bodu.IO.Biff.csproj" />
     <ProjectReference Include="..\..\..\Bodu.IO.Compound\src\Bodu.IO.Compound.csproj" />
   </ItemGroup>

@@ -65,10 +65,15 @@ public sealed partial class CompoundStorageBuilder
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="destination" /> is <see langword="null" />.
     /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when the <see cref="CompoundBuildOptions.Version" /> of <paramref name="options" /> is neither the
+    /// default nor a defined <see cref="CompoundFileVersion" />.
+    /// </exception>
     /// <exception cref="CompoundFileSerializationException">Thrown when the tree cannot be represented.</exception>
     public void WriteTo(Stream destination, CompoundBuildOptions options = default)
     {
         ThrowHelper.ThrowIfNull(destination);
+        CompoundThrowHelper.ThrowIfVersionUndefined(options);
 
         CompoundContainerLayout.WriteTo(destination, this, options);
     }
@@ -81,10 +86,15 @@ public sealed partial class CompoundStorageBuilder
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="output" /> is <see langword="null" />.
     /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when the <see cref="CompoundBuildOptions.Version" /> of <paramref name="options" /> is neither the
+    /// default nor a defined <see cref="CompoundFileVersion" />.
+    /// </exception>
     /// <exception cref="CompoundFileSerializationException">Thrown when the tree cannot be represented.</exception>
     public void WriteTo(IBufferWriter<byte> output, CompoundBuildOptions options = default)
     {
         ThrowHelper.ThrowIfNull(output);
+        CompoundThrowHelper.ThrowIfVersionUndefined(options);
 
         output.Write(CompoundContainerLayout.Write(this, options));
     }
@@ -97,10 +107,15 @@ public sealed partial class CompoundStorageBuilder
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="path" /> is <see langword="null" />.
     /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when the <see cref="CompoundBuildOptions.Version" /> of <paramref name="options" /> is neither the
+    /// default nor a defined <see cref="CompoundFileVersion" />; the file is not created.
+    /// </exception>
     /// <exception cref="CompoundFileSerializationException">Thrown when the tree cannot be represented.</exception>
     public void Save(string path, CompoundBuildOptions options = default)
     {
         ThrowHelper.ThrowIfNull(path);
+        CompoundThrowHelper.ThrowIfVersionUndefined(options);
 
         using FileStream stream = File.Create(path);
         WriteTo(stream, options);
@@ -111,9 +126,17 @@ public sealed partial class CompoundStorageBuilder
     /// </summary>
     /// <param name="options">The options controlling the output layout.</param>
     /// <returns>The complete compound-file content.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when the <see cref="CompoundBuildOptions.Version" /> of <paramref name="options" /> is neither the
+    /// default nor a defined <see cref="CompoundFileVersion" />.
+    /// </exception>
     /// <exception cref="CompoundFileSerializationException">Thrown when the tree cannot be represented.</exception>
-    public byte[] ToArray(CompoundBuildOptions options = default) =>
-        CompoundContainerLayout.Write(this, options);
+    public byte[] ToArray(CompoundBuildOptions options = default)
+    {
+        CompoundThrowHelper.ThrowIfVersionUndefined(options);
+
+        return CompoundContainerLayout.Write(this, options);
+    }
 
     /// <summary>
     /// Recursively copies the streams and child storages of a read-only storage into a mutable storage node.

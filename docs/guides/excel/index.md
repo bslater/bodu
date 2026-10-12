@@ -55,7 +55,7 @@ A sheet is surfaced through one of two cell surfaces: the forward-only, low-allo
 
 ## Where to go next
 
-- [Runnable samples](../../samples/excel.md) - the offline ExcelReading sample under `samples/Formats.Excel/`: the workbook session, forward-only streaming, materialized worksheets, and serial-date decoding over a real ~18,000-cell fixture.
+- [Runnable samples](../../samples/excel.md) - the offline ExcelReading sample under `samples/Formats.Excel/`: the workbook session, forward-only streaming, materialized worksheets, and serial-date decoding over a workbook the sample generates.
 - [Bodu.Formats.Excel API reference](xref:Bodu.Formats.Excel) - every type and member.
 - [Bodu.IO.Compound](../io-compound/index.md) - the container reader beneath this package.
 - [Bodu.IO.Biff](../../docs/io-biff/index.md) - the BIFF5 / BIFF8 record codec beneath this package.

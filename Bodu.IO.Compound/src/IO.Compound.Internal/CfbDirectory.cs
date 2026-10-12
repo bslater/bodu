@@ -27,11 +27,20 @@ internal sealed class CfbDirectory
     /// <summary>The stream identifier of the root storage entry.</summary>
     private const int RootSid = 0;
 
+    /// <summary>The name [MS-CFB] requires of the root storage entry.</summary>
+    private const string RootEntryName = "Root Entry";
+
     /// <summary>The parsed entries indexed by stream identifier; unallocated slots are <see langword="null" />.</summary>
     private readonly CfbDirectoryEntry?[] _entries;
 
     /// <summary>The validation level governing how malformed entries and cyclic links are handled.</summary>
     private readonly CompoundValidationLevel _level;
+
+    /// <summary>The slots left empty because the file, cut short inside its final sector, does not hold all of them.</summary>
+    private readonly bool[] _truncated;
+
+    /// <summary>The slots left empty because their entry is malformed, so a link that reaches one is pruned.</summary>
+    private readonly bool[] _skipped;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="CfbDirectory" /> class by parsing the directory bytes and building
@@ -40,14 +49,42 @@ internal sealed class CfbDirectory
     /// <param name="directory">The full byte content of the directory chain.</param>
     /// <param name="header">The parsed compound-file header.</param>
     /// <param name="level">The validation level governing malformed entries and cyclic links.</param>
+    /// <param name="missingStart">
+    /// The offset, in <paramref name="directory" />, of the bytes the file does not hold because it ends inside the
+    /// directory's final sector.
+    /// </param>
+    /// <param name="missingLength">
+    /// The number of those bytes, which read as zero; zero when the file holds them all.
+    /// </param>
     /// <exception cref="CompoundFileFormatException">
-    /// Thrown when the directory is malformed, lacks a root storage, or contains cyclic or out-of-range tree links.
+    /// Thrown when the directory is malformed, lacks a root storage, or contains cyclic or out-of-range tree links, or,
+    /// at a level stricter than <see cref="CompoundValidationLevel.Minimal" />, when the tree reaches an entry the file
+    /// does not hold whole.
     /// </exception>
-    internal CfbDirectory(byte[] directory, CfbHeader header, CompoundValidationLevel level)
+    /// <remarks>
+    /// An entry the file does not hold whole is ignored unless a link reaches it. At
+    /// <see cref="CompoundValidationLevel.Minimal" /> its missing bytes read as zero instead.
+    /// </remarks>
+    internal CfbDirectory(byte[] directory, CfbHeader header, CompoundValidationLevel level, long missingStart = 0, int missingLength = 0)
     {
         _level = level;
-        _entries = ParseEntries(directory, header, level);
+        _truncated = new bool[directory.Length / DirectoryEntrySize];
+        if (missingLength > 0 && level != CompoundValidationLevel.Minimal)
+        {
+            for (long sid = missingStart / DirectoryEntrySize; sid < _truncated.Length; sid++)
+            {
+                if (sid * DirectoryEntrySize < missingStart + missingLength)
+                    _truncated[sid] = true;
+            }
+        }
 
+        _skipped = new bool[_truncated.Length];
+        _entries = ParseEntries(directory, header, level, _truncated, _skipped);
+
+        CompoundThrowHelper.ThrowFormatIf(
+            _truncated.Length > 0 && _truncated[RootSid],
+            CompoundResourceStrings.Format_Invalid_CompoundTruncated,
+            CompoundFileError.TruncatedFile);
         CompoundThrowHelper.ThrowFormatIf(
             _entries.Length == 0 || _entries[RootSid] is not { Type: CompoundEntryType.RootStorage },
             CompoundResourceStrings.Format_Invalid_CompoundDirectory,
@@ -62,6 +99,12 @@ internal sealed class CfbDirectory
     /// </summary>
     /// <value>The root storage entry.</value>
     internal CfbDirectoryEntry Root { get; }
+
+    /// <summary>
+    /// Gets the allocated entries, in stream identifier order.
+    /// </summary>
+    /// <value>Every entry the parser read, whether or not the storage hierarchy reaches it.</value>
+    internal IEnumerable<CfbDirectoryEntry> AllocatedEntries => _entries.OfType<CfbDirectoryEntry>();
 
     /// <summary>
     /// Gets the entry with the specified stream identifier.
@@ -82,11 +125,14 @@ internal sealed class CfbDirectory
     /// The validation level; <see cref="CompoundValidationLevel.Strict" /> rejects malformed entries that other levels
     /// skip.
     /// </param>
+    /// <param name="truncated">The slots the file does not hold whole, which are left empty.</param>
+    /// <param name="skipped">Receives the slots left empty because their entry is malformed.</param>
     /// <returns>The parsed entries indexed by stream identifier.</returns>
     /// <exception cref="CompoundFileFormatException">
-    /// Thrown at <see cref="CompoundValidationLevel.Strict" /> when an entry has an invalid name length or entry type.
+    /// Thrown at <see cref="CompoundValidationLevel.Strict" /> when an entry has an invalid name length or entry type,
+    /// or breaks another requirement [MS-CFB] 2.6 places on a single entry.
     /// </exception>
-    private static CfbDirectoryEntry?[] ParseEntries(byte[] directory, CfbHeader header, CompoundValidationLevel level)
+    private static CfbDirectoryEntry?[] ParseEntries(byte[] directory, CfbHeader header, CompoundValidationLevel level, bool[] truncated, bool[] skipped)
     {
         int count = directory.Length / DirectoryEntrySize;
         var entries = new CfbDirectoryEntry?[count];
@@ -94,6 +140,9 @@ internal sealed class CfbDirectory
 
         for (int sid = 0; sid < count; sid++)
         {
+            if (truncated[sid])
+                continue;
+
             ReadOnlySpan<byte> record = directory.AsSpan(sid * DirectoryEntrySize, DirectoryEntrySize);
 
             int nameLength = BinaryPrimitives.ReadUInt16LittleEndian(record.Slice(64));
@@ -102,9 +151,11 @@ internal sealed class CfbDirectory
             if (nameLength == 0)
                 continue;
 
-            if (nameLength > 64)
+            // MS-CFB 2.6.1: the length counts the bytes of the name and its terminator, so it is even and at most 64.
+            if (nameLength > 64 || nameLength % 2 != 0)
             {
                 CompoundThrowHelper.ThrowFormatIf(strict, CompoundResourceStrings.Format_Invalid_CompoundDirectory, CompoundFileError.InvalidDirectory);
+                skipped[sid] = true;
                 continue;
             }
 
@@ -114,6 +165,7 @@ internal sealed class CfbDirectory
                 and not CompoundEntryType.RootStorage)
             {
                 CompoundThrowHelper.ThrowFormatIf(strict, CompoundResourceStrings.Format_Invalid_CompoundDirectory, CompoundFileError.InvalidDirectory);
+                skipped[sid] = true;
                 continue;
             }
 
@@ -139,6 +191,7 @@ internal sealed class CfbDirectory
                 // MS-CFB §2.6.1: the color flag is 0 (red) or 1 (black), and a storage object's stream size is zero.
                 CompoundThrowHelper.ThrowFormatIf(record[67] > (byte)CompoundEntryColor.Black, CompoundResourceStrings.Format_Invalid_CompoundDirectory, CompoundFileError.InvalidDirectory);
                 CompoundThrowHelper.ThrowFormatIf(type == CompoundEntryType.Storage && size != 0, CompoundResourceStrings.Format_Invalid_CompoundDirectory, CompoundFileError.InvalidDirectory);
+                ValidateEntry(record, sid, name, type, classId, creationFileTime, modifiedFileTime, startSector);
             }
 
             entries[sid] = new CfbDirectoryEntry(
@@ -146,6 +199,41 @@ internal sealed class CfbDirectory
         }
 
         return entries;
+    }
+
+    /// <summary>
+    /// Verifies the requirements [MS-CFB] 2.6 places on a single directory entry beyond its name length, type, color
+    /// and storage size.
+    /// </summary>
+    /// <param name="record">The entry's 128 bytes.</param>
+    /// <param name="sid">The entry's stream identifier.</param>
+    /// <param name="name">The entry's name, without its terminator.</param>
+    /// <param name="type">The entry's object type.</param>
+    /// <param name="classId">The entry's class identifier.</param>
+    /// <param name="creationFileTime">The entry's creation time.</param>
+    /// <param name="modifiedFileTime">The entry's modified time.</param>
+    /// <param name="startSector">The entry's starting sector.</param>
+    /// <exception cref="CompoundFileFormatException">
+    /// Thrown when the name lacks its terminating null, the root is not named <c>Root Entry</c> or records a creation
+    /// time, a stream records a class identifier or a time, or a storage records a starting sector.
+    /// </exception>
+    private static void ValidateEntry(
+        ReadOnlySpan<byte> record,
+        int sid,
+        string name,
+        CompoundEntryType type,
+        Guid classId,
+        long creationFileTime,
+        long modifiedFileTime,
+        uint startSector)
+    {
+        int nameLength = BinaryPrimitives.ReadUInt16LittleEndian(record.Slice(64));
+        bool conformant = BinaryPrimitives.ReadUInt16LittleEndian(record.Slice(nameLength - 2)) == 0
+            && (sid != RootSid || (name == RootEntryName && creationFileTime == 0))
+            && (type != CompoundEntryType.Stream || (classId == Guid.Empty && creationFileTime == 0 && modifiedFileTime == 0))
+            && (type != CompoundEntryType.Storage || startSector == 0);
+
+        CompoundThrowHelper.ThrowFormatIf(!conformant, CompoundResourceStrings.Format_Invalid_CompoundDirectory, CompoundFileError.InvalidDirectory);
     }
 
     /// <summary>
@@ -184,7 +272,10 @@ internal sealed class CfbDirectory
             CollectChildren(storage.ChildId, storage.Children, visited);
 
             if (_level == CompoundValidationLevel.Strict)
+            {
                 ValidateSiblingOrder(storage.Children);
+                ValidateColors(storage.Children);
+            }
 
             // Walk backwards so a pruned entry does not shift the indices still to be examined.
             for (int i = storage.Children.Count - 1; i >= 0; i--)
@@ -234,6 +325,35 @@ internal sealed class CfbDirectory
     }
 
     /// <summary>
+    /// Verifies that no red node of a storage's child tree has a red sibling link, as [MS-CFB] 2.6.4 requires: two
+    /// consecutive nodes must not both be red.
+    /// </summary>
+    /// <param name="children">
+    /// The child stream identifiers of a single storage, every one of them a node of its tree.
+    /// </param>
+    /// <exception cref="CompoundFileFormatException">Thrown when a red node links to a red node.</exception>
+    private void ValidateColors(List<int> children)
+    {
+        foreach (int sid in children)
+        {
+            CfbDirectoryEntry node = _entries[sid]!;
+            bool redPair = node.Color == CompoundEntryColor.Red
+                && (IsRed(node.LeftSiblingId) || IsRed(node.RightSiblingId));
+            CompoundThrowHelper.ThrowFormatIf(redPair, CompoundResourceStrings.Format_Invalid_CompoundDirectoryTree, CompoundFileError.InvalidDirectory);
+        }
+    }
+
+    /// <summary>
+    /// Determines whether a sibling link reaches a red entry.
+    /// </summary>
+    /// <param name="sid">The stream identifier the link holds, or <see cref="CfbHeader.NoStream" />.</param>
+    /// <returns>
+    /// <see langword="true" /> when the link reaches an allocated red entry; otherwise <see langword="false" />.
+    /// </returns>
+    private bool IsRed(uint sid) =>
+        sid < (uint)_entries.Length && _entries[sid] is { Color: CompoundEntryColor.Red };
+
+    /// <summary>
     /// Performs an in-order traversal of a child red-black tree, appending each node's stream identifier to
     /// <paramref name="children" /> in canonical order.
     /// </summary>
@@ -243,6 +363,10 @@ internal sealed class CfbDirectory
     /// <exception cref="CompoundFileFormatException">
     /// Thrown when a link is out of range, references an unallocated entry, or revisits an entry.
     /// </exception>
+    /// <remarks>
+    /// A link to an entry the parser skipped as malformed is pruned, with the subtree beneath it, at every level that
+    /// skips such an entry; <see cref="CompoundValidationLevel.Minimal" /> prunes every offending link.
+    /// </remarks>
     private void CollectChildren(uint sid, List<int> children, bool[] visited)
     {
         // Iterative in-order traversal with an explicit stack. A crafted directory can chain sibling links
@@ -258,10 +382,17 @@ internal sealed class CfbDirectory
             // Descend the left spine, pushing each node so it can be emitted in order on the way back up.
             while (current != CfbHeader.NoStream)
             {
+                // A link to an entry the file does not hold whole needs bytes the file lacks.
+                CompoundThrowHelper.ThrowFormatIf(
+                    current < (uint)_truncated.Length && _truncated[current],
+                    CompoundResourceStrings.Format_Invalid_CompoundTruncated,
+                    CompoundFileError.TruncatedFile);
+
                 if (current >= (uint)_entries.Length || _entries[current] is null || visited[current])
                 {
-                    // A tolerant level prunes the offending subtree instead of rejecting the whole directory.
-                    if (_level == CompoundValidationLevel.Minimal)
+                    // A tolerant level prunes the offending subtree instead of rejecting the whole directory: Minimal
+                    // any offending link, and Compatible a link to an entry it skipped as malformed.
+                    if (_level == CompoundValidationLevel.Minimal || (current < (uint)_skipped.Length && _skipped[current]))
                     {
                         current = CfbHeader.NoStream;
                         break;

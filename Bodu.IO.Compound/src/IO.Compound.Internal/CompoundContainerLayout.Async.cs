@@ -30,13 +30,28 @@ internal static partial class CompoundContainerLayout
     /// <exception cref="OperationCanceledException">
     /// Thrown when <paramref name="cancellationToken" /> is canceled.
     /// </exception>
-    internal static async Task WriteToAsync(Stream destination, CompoundStorageBuilder root, CompoundBuildOptions options, CancellationToken cancellationToken)
+    internal static Task WriteToAsync(Stream destination, CompoundStorageBuilder root, CompoundBuildOptions options, CancellationToken cancellationToken) =>
+        EmitAsync(destination, PreparePlan(root, options), cancellationToken);
+
+    /// <summary>
+    /// Asynchronously emits a planned container to a destination stream, one sector at a time.
+    /// </summary>
+    /// <param name="destination">The stream that receives the compound-file content.</param>
+    /// <param name="plan">The emission plan.</param>
+    /// <param name="cancellationToken">A token that cancels the write.</param>
+    /// <returns>A task that completes when the container has been written.</returns>
+    /// <exception cref="CompoundFileSerializationException">
+    /// Thrown when a deferred source is shorter than its declared length.
+    /// </exception>
+    /// <exception cref="OperationCanceledException">
+    /// Thrown when <paramref name="cancellationToken" /> is canceled.
+    /// </exception>
+    private static async Task EmitAsync(Stream destination, EmissionPlan plan, CancellationToken cancellationToken)
     {
-        EmissionPlan plan = PreparePlan(root, options);
-        var writer = new SectorWriter(destination, plan.SectorSize);
+        var writer = new SectorWriter(destination, plan, HeaderSector);
 
         await EmitHeaderAsync(writer, plan, cancellationToken).ConfigureAwait(false);
-        await EmitDirectoryAsync(writer, plan.Entries, cancellationToken).ConfigureAwait(false);
+        await EmitDirectoryAsync(writer, plan, cancellationToken).ConfigureAwait(false);
         if (plan.MiniFatSectors > 0)
             await EmitMiniFatAsync(writer, plan, cancellationToken).ConfigureAwait(false);
 
@@ -57,6 +72,29 @@ internal static partial class CompoundContainerLayout
 
         await EmitFatAsync(writer, plan, cancellationToken).ConfigureAwait(false);
 
+        if (plan.DifatSectors > 0)
+            await EmitDifatAsync(writer, plan, cancellationToken).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Asynchronously writes the allocation tables a tree's container ends with, from its first FAT sector to the end
+    /// of the file, without writing the header, the directory or any stream.
+    /// </summary>
+    /// <param name="destination">The stream that receives the FAT and DIFAT sectors.</param>
+    /// <param name="root">The root storage whose container is planned.</param>
+    /// <param name="options">The options controlling the output layout.</param>
+    /// <param name="cancellationToken">A token that cancels the write.</param>
+    /// <returns>A task that completes when the tables have been written.</returns>
+    /// <remarks>
+    /// A seam for tests: it shows the tables of a container too large to write in a test.
+    /// </remarks>
+    /// <exception cref="CompoundFileSerializationException">Thrown when the model cannot be represented.</exception>
+    internal static async Task WriteAllocationTablesAsync(Stream destination, CompoundStorageBuilder root, CompoundBuildOptions options, CancellationToken cancellationToken)
+    {
+        EmissionPlan plan = PreparePlan(root, options);
+        var writer = new SectorWriter(destination, plan, plan.ToFileSector(plan.FatStart));
+
+        await EmitFatAsync(writer, plan, cancellationToken).ConfigureAwait(false);
         if (plan.DifatSectors > 0)
             await EmitDifatAsync(writer, plan, cancellationToken).ConfigureAwait(false);
     }
@@ -84,25 +122,28 @@ internal static partial class CompoundContainerLayout
     }
 
     /// <summary>
-    /// Asynchronously emits the directory sectors, encoding each entry and padding the final sector with zero.
+    /// Asynchronously emits the directory sectors, encoding each entry and filling the rest of the final sector with
+    /// free entries.
     /// </summary>
     /// <param name="writer">The destination sector writer.</param>
-    /// <param name="entries">The directory entries, in stream-identifier order.</param>
+    /// <param name="plan">The emission plan, whose entries are in stream-identifier order.</param>
     /// <param name="cancellationToken">A token that cancels the write.</param>
     /// <returns>A task that completes when the directory has been emitted.</returns>
-    private static async Task EmitDirectoryAsync(SectorWriter writer, List<Entry> entries, CancellationToken cancellationToken)
+    private static async Task EmitDirectoryAsync(SectorWriter writer, EmissionPlan plan, CancellationToken cancellationToken)
     {
         byte[] rented = ArrayPool<byte>.Shared.Rent(DirectoryEntrySize);
         try
         {
-            foreach (Entry entry in entries)
+            foreach (Entry entry in plan.Entries)
             {
                 Array.Clear(rented, 0, DirectoryEntrySize);
-                entry.Encode(rented.AsSpan(0, DirectoryEntrySize));
+                entry.Encode(rented.AsSpan(0, DirectoryEntrySize), plan);
                 await writer.WriteBytesAsync(rented.AsMemory(0, DirectoryEntrySize), cancellationToken).ConfigureAwait(false);
             }
 
-            await writer.PadToSectorAsync(cancellationToken).ConfigureAwait(false);
+            EncodeFreeEntry(rented.AsSpan(0, DirectoryEntrySize));
+            for (long slot = plan.Entries.Count; slot < DirectorySlots(plan); slot++)
+                await writer.WriteBytesAsync(rented.AsMemory(0, DirectoryEntrySize), cancellationToken).ConfigureAwait(false);
         }
         finally
         {
@@ -148,8 +189,8 @@ internal static partial class CompoundContainerLayout
     }
 
     /// <summary>
-    /// Asynchronously emits the FAT sectors, chaining every sector run, marking the FAT and DIFAT sectors, and padding
-    /// with free markers.
+    /// Asynchronously emits the FAT sectors, chaining every sector run, marking the FAT and DIFAT sectors and any range
+    /// lock sector, and padding with free markers.
     /// </summary>
     /// <param name="writer">The destination sector writer.</param>
     /// <param name="plan">The emission plan.</param>
@@ -157,27 +198,8 @@ internal static partial class CompoundContainerLayout
     /// <returns>A task that completes when the FAT has been emitted.</returns>
     private static async Task EmitFatAsync(SectorWriter writer, EmissionPlan plan, CancellationToken cancellationToken)
     {
-        await WriteChainAsync(writer, (uint)plan.DirectoryStart, plan.DirectorySectors, cancellationToken).ConfigureAwait(false);
-        if (plan.MiniFatSectors > 0)
-            await WriteChainAsync(writer, plan.MiniFatStart, plan.MiniFatSectors, cancellationToken).ConfigureAwait(false);
-
-        if (plan.MiniStreamSectors > 0)
-            await WriteChainAsync(writer, plan.MiniStreamStart, plan.MiniStreamSectors, cancellationToken).ConfigureAwait(false);
-
-        foreach (Entry entry in plan.Entries)
-        {
-            if (entry.IsRegularStream)
-                await WriteChainAsync(writer, entry.StartSector, CeilDiv(entry.Size, plan.SectorSize), cancellationToken).ConfigureAwait(false);
-        }
-
-        for (long i = 0; i < plan.FatSectors; i++)
-            await writer.WriteUInt32Async(CfbHeader.FatSector, cancellationToken).ConfigureAwait(false);
-
-        for (long i = 0; i < plan.DifatSectors; i++)
-            await writer.WriteUInt32Async(CfbHeader.DifatSector, cancellationToken).ConfigureAwait(false);
-
-        long totalSectors = plan.DataSectorCount + plan.FatSectors + plan.DifatSectors;
-        await WriteFreeAsync(writer, (plan.FatSectors * plan.EntriesPerSector) - totalSectors, cancellationToken).ConfigureAwait(false);
+        foreach (uint entry in EnumerateFat(plan))
+            await writer.WriteUInt32Async(entry, cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -189,26 +211,16 @@ internal static partial class CompoundContainerLayout
     /// <returns>A task that completes when the DIFAT has been emitted.</returns>
     private static async Task EmitDifatAsync(SectorWriter writer, EmissionPlan plan, CancellationToken cancellationToken)
     {
-        int slotsPerSector = plan.EntriesPerSector - 1;
-        long fatIndex = CfbHeader.HeaderDifatCount;
-        for (long s = 0; s < plan.DifatSectors; s++)
-        {
-            for (int j = 0; j < slotsPerSector; j++)
-            {
-                await writer.WriteUInt32Async(fatIndex < plan.FatSectors ? (uint)(plan.FatStart + fatIndex) : CfbHeader.FreeSector, cancellationToken).ConfigureAwait(false);
-                fatIndex++;
-            }
-
-            await writer.WriteUInt32Async(s == plan.DifatSectors - 1 ? CfbHeader.EndOfChain : (uint)(plan.DifatStart + s + 1), cancellationToken).ConfigureAwait(false);
-        }
+        foreach (uint entry in EnumerateDifat(plan))
+            await writer.WriteUInt32Async(entry, cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>
-    /// Asynchronously writes a sequential sector chain to the FAT, terminating with the end-of-chain marker.
+    /// Asynchronously writes a sequential mini sector chain to the mini FAT, terminating with the end-of-chain marker.
     /// </summary>
     /// <param name="writer">The destination sector writer.</param>
-    /// <param name="start">The first sector of the run.</param>
-    /// <param name="count">The number of sectors in the run.</param>
+    /// <param name="start">The first mini sector of the run.</param>
+    /// <param name="count">The number of mini sectors in the run.</param>
     /// <param name="cancellationToken">A token that cancels the write.</param>
     /// <returns>A task that completes when the chain has been written.</returns>
     private static async Task WriteChainAsync(SectorWriter writer, uint start, long count, CancellationToken cancellationToken)
@@ -347,14 +359,19 @@ internal static partial class CompoundContainerLayout
         }
 
         /// <summary>
-        /// Asynchronously writes the active sector buffer to the destination and resets the position.
+        /// Asynchronously writes the active sector buffer to the destination and resets the position, writing the range
+        /// lock sector first when the active sector would take its place.
         /// </summary>
         /// <param name="cancellationToken">A token that cancels the write.</param>
         /// <returns>A task that completes when the sector has been written.</returns>
         private async ValueTask FlushSectorAsync(CancellationToken cancellationToken)
         {
+            if (TakeRangeLockSector())
+                await _destination.WriteAsync(new byte[_buffer.Length], cancellationToken).ConfigureAwait(false);
+
             await _destination.WriteAsync(_buffer.AsMemory(0, _buffer.Length), cancellationToken).ConfigureAwait(false);
             _position = 0;
+            _sector++;
         }
     }
 }

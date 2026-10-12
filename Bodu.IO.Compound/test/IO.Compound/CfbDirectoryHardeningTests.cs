@@ -72,7 +72,7 @@ public class CfbDirectoryHardeningTests
         byte[] directory = new byte[2 * DirectoryEntrySize];
 
         // The root's child tree consists of the root itself, so walking its children re-visits the root forever.
-        WriteEntry(directory, sid: 0, name: "Root", type: CompoundEntryType.RootStorage, left: NoStream, right: NoStream, child: 0u);
+        WriteEntry(directory, sid: 0, name: "Root Entry", type: CompoundEntryType.RootStorage, left: NoStream, right: NoStream, child: 0u);
         WriteEntry(directory, sid: 1, name: "Stream 1", type: CompoundEntryType.Stream, left: NoStream, right: NoStream, child: NoStream);
 
         CfbHeader header = ParseReferenceHeader();
@@ -103,7 +103,7 @@ public class CfbDirectoryHardeningTests
     {
         byte[] directory = new byte[3 * DirectoryEntrySize];
 
-        WriteEntry(directory, sid: 0, name: "Root", type: CompoundEntryType.RootStorage, left: NoStream, right: NoStream, child: 1u);
+        WriteEntry(directory, sid: 0, name: "Root Entry", type: CompoundEntryType.RootStorage, left: NoStream, right: NoStream, child: 1u);
         WriteEntry(directory, sid: 1, name: "A", type: CompoundEntryType.Storage, left: NoStream, right: NoStream, child: 2u);
         WriteEntry(directory, sid: 2, name: "B", type: CompoundEntryType.Storage, left: NoStream, right: NoStream, child: 1u);
 
@@ -133,7 +133,7 @@ public class CfbDirectoryHardeningTests
         byte[] directory = new byte[count * DirectoryEntrySize];
 
         // SID 0: the root storage, whose child link anchors the spine at SID 1.
-        WriteEntry(directory, sid: 0, name: "Root", type: CompoundEntryType.RootStorage, left: NoStream, right: NoStream, child: depth >= 1 ? 1u : NoStream);
+        WriteEntry(directory, sid: 0, name: "Root Entry", type: CompoundEntryType.RootStorage, left: NoStream, right: NoStream, child: depth >= 1 ? 1u : NoStream);
 
         for (int sid = 1; sid <= depth; sid++)
         {

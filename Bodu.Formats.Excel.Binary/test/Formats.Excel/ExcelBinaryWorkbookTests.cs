@@ -7,18 +7,18 @@
 namespace Bodu.Formats.Excel;
 
 /// <summary>
-/// Verifies the behavior of <see cref="ExcelBinaryWorkbook" /> against a real-world BIFF8 workbook and synthetic
-/// fixtures.
+/// Verifies the behavior of <see cref="ExcelBinaryWorkbook" /> against the sample workbook the tests build and other
+/// synthetic workbooks.
 /// </summary>
 [TestClass]
 public partial class ExcelBinaryWorkbookTests
 {
     /// <summary>
-    /// Opens the embedded sample workbook.
+    /// Opens the sample workbook the tests build.
     /// </summary>
-    /// <returns>An open <see cref="ExcelBinaryWorkbook" /> over the sample fixture.</returns>
+    /// <returns>An open <see cref="ExcelBinaryWorkbook" /> over the sample.</returns>
     private static ExcelBinaryWorkbook OpenSample() =>
-        ExcelBinaryWorkbook.OpenRead(ExcelBinaryFixtures.OpenStream(ExcelBinaryFixtures.SampleBiff8));
+        ExcelBinaryWorkbook.OpenRead(ExcelBinaryFixtures.OpenSample());
 
     /// <summary>
     /// Reads every populated cell of the named sheet into a position-keyed dictionary.

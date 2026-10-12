@@ -13,7 +13,7 @@ namespace Bodu.Formats.Excel.Binary.Samples.ExcelReading;
 /// in <c>Bodu.Formats.Excel.Binary</c> - opening a workbook and listing its sheets, the
 /// forward-only cell reader (the primary surface), the materialized convenience surface, and
 /// decoding cell kinds including date-formatted serial numbers. Everything runs offline against
-/// the committed <c>Data/sample-biff8.xls</c> fixture.
+/// a workbook the sample writes first (<see cref="SampleWorkbook" />), whose values are synthetic.
 /// </summary>
 public static class Program
 {
@@ -26,10 +26,21 @@ public static class Program
         Console.WriteLine("==============================================");
         Console.WriteLine();
 
-        WorkbookAndSheets.Run();
-        ForwardOnlyReader.Run();
-        MaterializedWorksheet.Run();
-        CellKindsAndDates.Run();
+        // The scenarios read an .xls file from disk, as an application would, so the sample writes its workbook to a
+        // temporary file first and deletes it at the end.
+        string path = Path.Combine(Path.GetTempPath(), $"bodu-excel-sample-{Guid.NewGuid():N}.xls");
+        SampleWorkbook.Write(path);
+        try
+        {
+            WorkbookAndSheets.Run(path);
+            ForwardOnlyReader.Run(path);
+            MaterializedWorksheet.Run(path);
+            CellKindsAndDates.Run(path);
+        }
+        finally
+        {
+            File.Delete(path);
+        }
 
         Console.WriteLine("Done.");
     }

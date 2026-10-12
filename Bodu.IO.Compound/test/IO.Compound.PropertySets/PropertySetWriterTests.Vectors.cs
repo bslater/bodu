@@ -25,7 +25,7 @@ public partial class PropertySetWriterTests
     }
 
     /// <summary>
-    /// Verifies that a vector of 16-bit integers round-trips, exercising per-element alignment padding.
+    /// Verifies that a vector of 16-bit integers, whose elements are packed, round-trips.
     /// </summary>
     [TestMethod]
     public void Write_WhenVectorOfInt16_ShouldRoundTrip() =>
@@ -60,8 +60,7 @@ public partial class PropertySetWriterTests
         AssertVectorRoundTrip(OlePropertyType.UInt64, [0UL, ulong.MaxValue]);
 
     /// <summary>
-    /// Verifies that a vector of signed 8-bit integers round-trips, exercising one-byte elements padded to
-    /// four-byte boundaries.
+    /// Verifies that a vector of signed 8-bit integers, whose one-byte elements are packed, round-trips.
     /// </summary>
     [TestMethod]
     public void Write_WhenVectorOfInt8_ShouldRoundTrip() =>
@@ -224,5 +223,40 @@ public partial class PropertySetWriterTests
         {
             _ = set.ToArray();
         });
+    }
+
+    /// <summary>
+    /// Verifies that a vector of 1- or 2-byte values is written as [MS-OLEPS] 2.15 requires: the elements packed one
+    /// after another and zero padding only after the last, to a multiple of four bytes.
+    /// </summary>
+    /// <param name="typeName">The name of the element type: <c>Int16</c>, <c>UInt16</c>, <c>Boolean</c>, <c>Int8</c> or <c>UInt8</c>.</param>
+    [TestMethod]
+    [DataRow("Int16")]
+    [DataRow("UInt16")]
+    [DataRow("Boolean")]
+    [DataRow("Int8")]
+    [DataRow("UInt8")]
+    public void Write_WhenVectorOfSmallScalars_ShouldPackElements(string typeName)
+    {
+        (OlePropertyType type, object?[] items, byte[] elements) = typeName switch
+        {
+            "Int16" => (OlePropertyType.Int16, new object?[] { (short)1, (short)-2, (short)3 }, new byte[] { 0x01, 0x00, 0xFE, 0xFF, 0x03, 0x00, 0x00, 0x00 }),
+            "UInt16" => (OlePropertyType.UInt16, new object?[] { (ushort)1, (ushort)2, (ushort)65535 }, new byte[] { 0x01, 0x00, 0x02, 0x00, 0xFF, 0xFF, 0x00, 0x00 }),
+            "Boolean" => (OlePropertyType.Boolean, new object?[] { true, false, true }, new byte[] { 0xFF, 0xFF, 0x00, 0x00, 0xFF, 0xFF, 0x00, 0x00 }),
+            "Int8" => (OlePropertyType.Int8, new object?[] { (sbyte)-1, (sbyte)2, (sbyte)-3 }, new byte[] { 0xFF, 0x02, 0xFD, 0x00 }),
+            _ => (OlePropertyType.UInt8, new object?[] { (byte)0, (byte)128, (byte)255 }, new byte[] { 0x00, 0x80, 0xFF, 0x00 }),
+        };
+        var section = new OlePropertySection(TestFormatId, 1252);
+        section.Set(10, new OlePropertyValue { Type = type, IsVector = true, Value = items });
+        section.Set(11, OlePropertyValue.Create(7));
+        var set = new OlePropertySet(TestFormatId, Guid.Empty, 1252);
+        set.AddSection(section);
+
+        byte[] bytes = set.ToArray();
+
+        Dictionary<int, int> offsets = FindPropertyOffsets(bytes, 0);
+        byte[] expected = [(byte)type, 0x10, 0x00, 0x00, 0x03, 0x00, 0x00, 0x00, .. elements];
+        CollectionAssert.AreEqual(expected, bytes.AsSpan(offsets[10], expected.Length).ToArray(), typeName);
+        Assert.AreEqual(offsets[10] + expected.Length, offsets[11], typeName);
     }
 }

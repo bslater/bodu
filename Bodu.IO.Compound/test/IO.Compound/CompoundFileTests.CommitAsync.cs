@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Buffers.Binary;
+using Bodu.IO.Compound.Builders;
 using Bodu.Test;
 
 namespace Bodu.IO.Compound;
@@ -196,5 +198,98 @@ public partial class CompoundFileTests
 
             base.Dispose(disposing);
         }
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="CompoundFile.CommitAsync" /> writes the directory slots it leaves unused as free entries,
+    /// as the synchronous commit does.
+    /// </summary>
+    /// <returns>A task that completes when the assertion has run.</returns>
+    [TestMethod]
+    public async Task CommitAsync_WhenDirectoryHasUnusedSlots_ShouldWriteThemAsFreeEntries()
+    {
+        var destination = new MemoryStream();
+        using var file = CompoundFile.Create(destination, leaveOpen: true);
+        file.RootStorage.CreateStream("A", CompoundContainerBytes.Pattern(100));
+
+        await file.CommitAsync();
+
+        AssertFreeEntries(destination.ToArray(), expectedFree: 2);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="CompoundFile.CommitAsync" /> throws <see cref="CompoundFileSerializationException" />
+    /// when a version-3 container would exceed the 2 GB that [MS-CFB] allows a file of 512-byte sectors.
+    /// </summary>
+    /// <returns>A task that completes when the assertion has run.</returns>
+    [TestMethod]
+    public async Task CommitAsync_WhenVersion3ContainerWouldExceedTwoGigabytes_ShouldThrowCompoundFileSerializationException()
+    {
+        using var file = CompoundFile.Create(new MemoryStream());
+        using var first = new UnbackedMemoryManager(1_100_000_000);
+        using var second = new UnbackedMemoryManager(1_100_000_000);
+        file.RootStorage.CreateStream("Large1", first.Memory);
+        file.RootStorage.CreateStream("Large2", second.Memory);
+
+        await Assert.ThrowsExactlyAsync<CompoundFileSerializationException>(async () =>
+        {
+            await file.CommitAsync();
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="CompoundFile.CommitAsync" /> of a version-4 container that passes 2 GB keeps the range
+    /// lock sector (0x7FFFE) out of every chain: the stream whose sectors would cover it continues after it, so the
+    /// stream written next starts one sector later.
+    /// </summary>
+    /// <remarks>
+    /// The two large streams are <see cref="UnbackedMemoryManager" /> payloads, so the commit fails when it copies the
+    /// first of them, after it has written the header and the directory.
+    /// </remarks>
+    /// <returns>A task that completes when the assertion has run.</returns>
+    [TestMethod]
+    public async Task CommitAsync_WhenVersion4ContainerExceedsTwoGigabytes_ShouldReserveRangeLockSector()
+    {
+        var destination = new MemoryStream();
+        using var file = CompoundFile.Create(destination, leaveOpen: true, new CompoundBuildOptions { Version = CompoundFileVersion.V4 });
+        using var first = new UnbackedMemoryManager(1_200_000_000);
+        using var second = new UnbackedMemoryManager(1_200_000_000);
+        file.RootStorage.CreateStream("A", first.Memory);
+        file.RootStorage.CreateStream("B", second.Memory);
+        file.RootStorage.CreateStream("C", CompoundContainerBytes.Pattern(4096));
+
+        await Assert.ThrowsExactlyAsync<ArgumentOutOfRangeException>(async () =>
+        {
+            await file.CommitAsync();
+        });
+
+        byte[] written = destination.ToArray();
+        int entry = CompoundContainerBytes.FindEntryOffset(written, "C");
+        uint start = BinaryPrimitives.ReadUInt32LittleEndian(written.AsSpan(entry + CompoundContainerBytes.StartSectorOffset));
+        Assert.AreEqual(1u + 292_969u + 292_969u + 1u, start);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="CompoundFile.CommitAsync" /> in update mode, when its staged tree cannot be written, throws
+    /// <see cref="CompoundFileSerializationException" /> and leaves the container it opened unchanged.
+    /// </summary>
+    /// <returns>A task that completes when the assertion has run.</returns>
+    [TestMethod]
+    public async Task CommitAsync_WhenStagedTreeCannotBeWritten_ShouldLeaveTheDestinationUnchanged()
+    {
+        MemoryStream destination = CreateContainer(("A", CompoundContainerBytes.Pattern(100)));
+        byte[] original = destination.ToArray();
+
+        using var file = CompoundFile.Open(destination, FileMode.Open, FileAccess.ReadWrite, leaveOpen: true);
+        CompoundStorage storage = file.RootStorage;
+        for (int depth = 0; depth < 70; depth++)
+            storage = storage.CreateStorage("S");
+
+        await Assert.ThrowsExactlyAsync<CompoundFileSerializationException>(async () =>
+        {
+            await file.CommitAsync();
+        });
+
+        CollectionAssert.AreEqual(original, destination.ToArray());
     }
 }

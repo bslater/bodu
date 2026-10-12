@@ -266,5 +266,41 @@ namespace Bodu.IO.Compound {
                 return ResourceManager.GetString("Op_Invalid_CompoundBuilderTooLarge", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The compound file ends before the end of a structure it declares..
+        /// </summary>
+        internal static string Format_Invalid_CompoundTruncated {
+            get {
+                return ResourceManager.GetString("Format_Invalid_CompoundTruncated", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The storage already contains a child named '{0}'..
+        /// </summary>
+        internal static string Arg_Invalid_CompoundChildNameTaken {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_CompoundChildNameTaken", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The storage contains no child named '{0}'..
+        /// </summary>
+        internal static string IO_KeyNotFound_CompoundChild {
+            get {
+                return ResourceManager.GetString("IO_KeyNotFound_CompoundChild", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The compound file would exceed the 2 GB maximum size of a version-3 file; write a version-4 file instead..
+        /// </summary>
+        internal static string Op_Invalid_CompoundV3FileTooLarge {
+            get {
+                return ResourceManager.GetString("Op_Invalid_CompoundV3FileTooLarge", resourceCulture);
+            }
+        }
     }
 }

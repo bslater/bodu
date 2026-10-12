@@ -86,4 +86,29 @@ public partial class CompoundStreamTests
             File.Delete(path);
         }
     }
+
+    /// <summary>
+    /// Verifies that every synchronous write overload of a cursor opened for reading throws
+    /// <see cref="NotSupportedException" />.
+    /// </summary>
+    [TestMethod]
+    public void Write_WhenCursorIsReadOnly_ShouldThrowNotSupportedException()
+    {
+        byte[] container = BuildContainer(out _);
+        using var file = CompoundFile.Open(new MemoryStream(container));
+        using CompoundStream stream = file.RootStorage.OpenStream("Data");
+
+        Assert.ThrowsExactly<NotSupportedException>(() =>
+        {
+            stream.WriteByte(1);
+        });
+        Assert.ThrowsExactly<NotSupportedException>(() =>
+        {
+            stream.Write(new byte[] { 1 }, 0, 1);
+        });
+        Assert.ThrowsExactly<NotSupportedException>(() =>
+        {
+            stream.Write((ReadOnlySpan<byte>)new byte[] { 1 });
+        });
+    }
 }

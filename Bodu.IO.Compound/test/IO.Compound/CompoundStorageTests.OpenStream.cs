@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.IO.Compound.Builders;
+
 namespace Bodu.IO.Compound;
 
 /// <summary>
@@ -116,5 +118,165 @@ public partial class CompoundStorageTests
         Assert.HasCount(1, streams);
         Assert.AreEqual("Stream 1", streams[0].Name);
         Assert.AreEqual(3L, streams[0].Length);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="CompoundValidationLevel.Minimal" /> reads as zeros the bytes of a stream whose sector
+    /// lies wholly past the end of the file, and returns the stream at its declared size, through either read strategy.
+    /// </summary>
+    /// <param name="strategy">The read strategy the file is opened with.</param>
+    [TestMethod]
+    [DataRow(CompoundReadStrategy.Buffered)]
+    [DataRow(CompoundReadStrategy.Streaming)]
+    public void OpenStream_WhenSectorLiesPastTheEndOfTheFileAtMinimal_ShouldReadItAsZeros(CompoundReadStrategy strategy)
+    {
+        byte[] container = BuildStreamPastTheEnd(out byte[] expected);
+        var options = new CompoundFileOptions { ValidationLevel = CompoundValidationLevel.Minimal, ReadStrategy = strategy };
+
+        using var file = CompoundFile.Open(new MemoryStream(container), options);
+        using CompoundStream stream = file.RootStorage.OpenStream("A");
+
+        CollectionAssert.AreEqual(expected, stream.ReadAllBytes());
+        CollectionAssert.AreEqual(expected, ReadInChunks(stream));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="CompoundValidationLevel.Strict" /> and <see cref="CompoundValidationLevel.Compatible" />
+    /// reject a stream whose sector lies wholly past the end of the file with
+    /// <see cref="CompoundFileError.SectorOutOfRange" />, through either read strategy.
+    /// </summary>
+    /// <param name="strategy">The read strategy the file is opened with.</param>
+    [TestMethod]
+    [DataRow(CompoundReadStrategy.Buffered)]
+    [DataRow(CompoundReadStrategy.Streaming)]
+    public void OpenStream_WhenSectorLiesPastTheEndOfTheFile_ShouldThrowSectorOutOfRange(CompoundReadStrategy strategy)
+    {
+        byte[] container = BuildStreamPastTheEnd(out _);
+
+        foreach (CompoundValidationLevel level in new[] { CompoundValidationLevel.Strict, CompoundValidationLevel.Compatible })
+        {
+            var options = new CompoundFileOptions { ValidationLevel = level, ReadStrategy = strategy };
+
+            // Strict rejects the FAT entry that allocates the sector past the end of the file as the file opens.
+            CompoundFileFormatException ex = Assert.ThrowsExactly<CompoundFileFormatException>(() =>
+            {
+                using var file = CompoundFile.Open(new MemoryStream(container), options);
+                using CompoundStream stream = file.RootStorage.OpenStream("A");
+                _ = ReadInChunks(stream);
+            }, $"{level}");
+
+            Assert.AreEqual(CompoundFileError.SectorOutOfRange, ex.Category, $"{level}");
+        }
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="CompoundValidationLevel.Strict" /> and <see cref="CompoundValidationLevel.Compatible" />
+    /// reject, when it is opened, a stream whose declared size exceeds what its sector chain holds, with
+    /// <see cref="CompoundFileError.StreamChainTooShort" />, through either read strategy.
+    /// </summary>
+    /// <param name="strategy">The read strategy the file is opened with.</param>
+    [TestMethod]
+    [DataRow(CompoundReadStrategy.Buffered)]
+    [DataRow(CompoundReadStrategy.Streaming)]
+    public void OpenStream_WhenDeclaredSizeExceedsTheChain_ShouldThrowStreamChainTooShort(CompoundReadStrategy strategy)
+    {
+        byte[] container = BuildOverDeclaredStream(out _);
+
+        foreach (CompoundValidationLevel level in new[] { CompoundValidationLevel.Strict, CompoundValidationLevel.Compatible })
+        {
+            var options = new CompoundFileOptions { ValidationLevel = level, ReadStrategy = strategy };
+            using var file = CompoundFile.Open(new MemoryStream(container), options);
+
+            CompoundFileFormatException ex = Assert.ThrowsExactly<CompoundFileFormatException>(() =>
+            {
+                using CompoundStream stream = file.RootStorage.OpenStream("A");
+            }, $"{level}");
+
+            Assert.AreEqual(CompoundFileError.StreamChainTooShort, ex.Category, $"{level}");
+        }
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="CompoundValidationLevel.Minimal" /> zero-pads a stream whose declared size exceeds what
+    /// its sector chain holds to that size, through either read strategy.
+    /// </summary>
+    /// <param name="strategy">The read strategy the file is opened with.</param>
+    /// <param name="emptyChain">Whether the stream's starting sector lies outside the FAT, so its chain holds nothing.</param>
+    [TestMethod]
+    [DataRow(CompoundReadStrategy.Buffered, false)]
+    [DataRow(CompoundReadStrategy.Streaming, false)]
+    [DataRow(CompoundReadStrategy.Buffered, true)]
+    [DataRow(CompoundReadStrategy.Streaming, true)]
+    public void OpenStream_WhenDeclaredSizeExceedsTheChainAtMinimal_ShouldZeroPadTheStream(CompoundReadStrategy strategy, bool emptyChain)
+    {
+        byte[] container = BuildOverDeclaredStream(out byte[] expected);
+        if (emptyChain)
+        {
+            CompoundContainerBytes.WriteUInt32(container, CompoundContainerBytes.FindEntryOffset(container, "A") + CompoundContainerBytes.StartSectorOffset, 0x00FFFFFF);
+            expected = new byte[expected.Length];
+        }
+
+        var options = new CompoundFileOptions { ValidationLevel = CompoundValidationLevel.Minimal, ReadStrategy = strategy };
+
+        using var file = CompoundFile.Open(new MemoryStream(container), options);
+        using CompoundStream stream = file.RootStorage.OpenStream("A");
+
+        Assert.AreEqual(expected.Length, stream.Length);
+        CollectionAssert.AreEqual(expected, stream.ReadAllBytes());
+        CollectionAssert.AreEqual(expected, ReadInChunks(stream));
+    }
+
+    /// <summary>
+    /// Builds a container whose 5000-byte stream <c>A</c> has its last sector moved to the end of the file and then cut
+    /// off, so that sector lies wholly past the end of the file.
+    /// </summary>
+    /// <param name="expected">Receives A's content with the bytes of that sector read as zeros.</param>
+    /// <returns>The container.</returns>
+    private static byte[] BuildStreamPastTheEnd(out byte[] expected)
+    {
+        var builder = CompoundStorageBuilder.CreateRoot();
+        _ = builder.AddStream("A", CompoundContainerBytes.Pattern(5000));
+        byte[] container = builder.ToArray();
+        int entry = CompoundContainerBytes.FindEntryOffset(container, "A");
+
+        expected = CompoundContainerBytes.Pattern(5000);
+        expected.AsSpan(4608).Clear();
+        return CompoundContainerBytes.MoveLastSector(container, entry + CompoundContainerBytes.StartSectorOffset)[..container.Length];
+    }
+
+    /// <summary>
+    /// Builds a container whose stream <c>A</c>, 5000 bytes in ten sectors, declares a size of 9000.
+    /// </summary>
+    /// <param name="expected">Receives A's content zero-padded to 9000 bytes.</param>
+    /// <returns>The container.</returns>
+    private static byte[] BuildOverDeclaredStream(out byte[] expected)
+    {
+        var builder = CompoundStorageBuilder.CreateRoot();
+        _ = builder.AddStream("A", CompoundContainerBytes.Pattern(5000));
+        byte[] container = builder.ToArray();
+        int entry = CompoundContainerBytes.FindEntryOffset(container, "A");
+        CompoundContainerBytes.WriteInt64(container, entry + CompoundContainerBytes.SizeOffset, 9000);
+
+        // The chain's ten sectors hold 5120 bytes: the 5000 written and the zeros that pad the last sector.
+        expected = new byte[9000];
+        CompoundContainerBytes.Pattern(5000).CopyTo(expected, 0);
+        return container;
+    }
+
+    /// <summary>
+    /// Reads a stream from its start through <see cref="Stream.Read(Span{byte})" />, 1000 bytes at a time.
+    /// </summary>
+    /// <param name="stream">The stream to read.</param>
+    /// <returns>The bytes read.</returns>
+    private static byte[] ReadInChunks(Stream stream)
+    {
+        stream.Position = 0;
+        using var copy = new MemoryStream();
+        byte[] buffer = new byte[1000];
+        int read;
+        while ((read = stream.Read(buffer.AsSpan())) > 0)
+            copy.Write(buffer, 0, read);
+
+        return copy.ToArray();
     }
 }
