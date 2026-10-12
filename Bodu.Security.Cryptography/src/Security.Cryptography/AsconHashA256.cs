@@ -47,9 +47,9 @@ namespace Bodu.Security.Cryptography;
 /// </item>
 /// </list>
 /// <para>
-/// <strong>When to choose ASCON-HASHA256.</strong> Pick this when interop with the Ascon v1.2 Hasha variant is
-/// required and message throughput matters more than the extra round-count margin of <see cref="AsconHash256" /> - typical for IoT gateways
-/// and lightweight protocols that hash sustained streams of telemetry. For maximum margin use
+/// <strong>When to choose ASCON-HASHA256.</strong> Pick this when interop with the Ascon v1.2 Hasha variant is required
+/// and message throughput matters more than the extra round-count margin of <see cref="AsconHash256" /> - typical for
+/// IoT gateways and lightweight protocols that hash sustained streams of telemetry. For maximum margin use
 /// <see cref="AsconHash256" />; for non-ASCON throughput-sensitive hashing on commodity hardware <see cref="Blake3" />
 /// is faster still.
 /// </para>
