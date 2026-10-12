@@ -134,23 +134,58 @@ public static partial class DelimitedSerializer
     /// stream, as <see cref="Deserialize{TRecord}(Stream, DelimitedSerializerOptions?)" /> does, whichever read held
     /// the error; an offset greater than <see cref="int.MaxValue" /> is reported as <see langword="null" />.
     /// </para>
+    /// <para>
+    /// The arguments, the dialect and <typeparamref name="TRecord" /> are validated when the method is called, so an
+    /// <see cref="ArgumentNullException" />, an <see cref="ArgumentException" />, or a
+    /// <see cref="DelimitedSerializationException" /> for an unusable record type is thrown before the sequence is
+    /// enumerated. A <see cref="DelimitedFormatException" />, and a <see cref="DelimitedSerializationException" /> for
+    /// a record that cannot be mapped, are thrown while it is enumerated.
+    /// </para>
     /// </remarks>
     [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
     [RequiresDynamicCode(RequiresDynamicCodeMessage)]
-    public static async IAsyncEnumerable<TRecord> DeserializeAsyncEnumerableAsync<TRecord>(Stream source, DelimitedSerializerOptions? options = null, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+    public static IAsyncEnumerable<TRecord> DeserializeAsyncEnumerableAsync<TRecord>(Stream source, DelimitedSerializerOptions? options = null, CancellationToken cancellationToken = default)
     {
         ThrowHelper.ThrowIfNull(source);
 
         DelimitedSerializerOptions effective = options ?? DelimitedSerializerOptions.Default;
         effective.MakeReadOnly();
 
-        // Validate before the first read, so that unusable options fail without consuming the stream.
+        // Validate before the sequence is returned, so that unusable options fail at the call and without consuming the
+        // stream.
         DelimitedReaderOptions readerOptions = effective.ToReaderOptions();
         DelimitedThrowHelper.ThrowIfUnusableDialect(readerOptions, nameof(options));
 
         bool isStringArray = typeof(TRecord) == typeof(string[]);
         Member[] members = isStringArray ? [] : GetRecordMembers(typeof(TRecord), effective, reading: true);
 
+        return DeserializeAsyncEnumerableCoreAsync<TRecord>(source, effective, readerOptions, isStringArray, members, cancellationToken);
+    }
+
+    /// <summary>
+    /// Reads the records of an already validated incremental deserialization, yielding each record as soon as its
+    /// terminating line ending has been read.
+    /// </summary>
+    /// <typeparam name="TRecord">The record type.</typeparam>
+    /// <param name="source">The source stream.</param>
+    /// <param name="effective">The read-only serializer options.</param>
+    /// <param name="readerOptions">The validated reader options.</param>
+    /// <param name="isStringArray">Whether the record type is a positional <see cref="string" /> array.</param>
+    /// <param name="members">The mapped members of the POCO record type.</param>
+    /// <param name="cancellationToken">A token that cancels the operation.</param>
+    /// <returns>An asynchronous sequence of records.</returns>
+    /// <exception cref="DelimitedFormatException">Thrown when the content is not valid delimited data.</exception>
+    /// <exception cref="DelimitedSerializationException">Thrown when a record cannot be mapped.</exception>
+    [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
+    [RequiresDynamicCode(RequiresDynamicCodeMessage)]
+    private static async IAsyncEnumerable<TRecord> DeserializeAsyncEnumerableCoreAsync<TRecord>(
+        Stream source,
+        DelimitedSerializerOptions effective,
+        DelimitedReaderOptions readerOptions,
+        bool isStringArray,
+        Member[] members,
+        [EnumeratorCancellation] CancellationToken cancellationToken)
+    {
         byte[] buffer = ArrayPool<byte>.Shared.Rent(StreamReadChunkSize);
         try
         {
