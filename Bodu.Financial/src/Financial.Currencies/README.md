@@ -21,15 +21,21 @@ changes to `currencies.json` produces no diff.
 
 ## `currencies.json` format
 
-Each row is `{ "iso": "USD", "numeric": 840, "minorUnits": 2, "name": "US Dollar" }`.
+Each row is `{ "iso": "USD", "numeric": 840, "minorUnits": 2, "name": "US Dollar" }`, plus the
+optional fields below.
 
 - `iso` - three-letter uppercase ISO 4217 alphabetic code.
 - `numeric` - ISO 4217 numeric code (000-999).
 - `minorUnits` - the currency's fractional-digit precision (0, 2, or 3 for active currencies).
 - `name` - short English name in singular Title Case. Feeds `ICurrency.EnglishName`, `CurrencyInfo.EnglishName`, the generated XML doc comment, and the `L` format specifier on `Money` and `Money<TCurrency>` (e.g. `"1,234.56 US Dollar"`).
 - `cashRoundingIncrement` *(optional)* - smallest physical cash denomination in the major unit (e.g. `0.05` for CHF/AUD/CAD).
+- `isHistoric`, `demonetizedOn`, `successorIsoCode` *(optional, historic currencies)* - mark a demonetized currency,
+  its withdrawal date (`yyyy-MM-dd`), and the ISO code of the currency that replaced it. They feed
+  `ICurrency.IsHistoric` / `DemonetizedOn` / `SuccessorIsoCode` and the `[CurrencyStatus(Historic)]` tag on the
+  `CurrencyCode` member.
 
-The shipped catalogue covers active ISO 4217 currencies. Special-purpose
+The shipped catalogue covers the active ISO 4217 currencies plus 29 historic ones; every row, active or
+historic, has a `CurrencyCode` member. Fund codes (such as `BOV`, `CHE`, `CLF`, `USN`) and special-purpose
 codes (precious metals such as `XAU`/`XAG`, `XDR`, testing codes such as
 `XTS`, the no-currency code `XXX`) are intentionally excluded; add them
 to `currencies.json` if your scenario requires them.

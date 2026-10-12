@@ -218,6 +218,9 @@ public sealed partial class MoneyBag
     /// </summary>
     /// <param name="amount">The amount to subtract.</param>
     /// <returns>The updated bag.</returns>
+    /// <exception cref="InvalidOperationException">
+    /// <paramref name="amount" /> is a default-initialised, currency-less <see cref="Money" />.
+    /// </exception>
     public MoneyBag Subtract(Money amount) =>
         Add(-amount);
 
@@ -346,6 +349,10 @@ public sealed partial class MoneyBag
     /// <param name="left">The bag.</param>
     /// <param name="right">The amount to subtract.</param>
     /// <returns>The updated bag.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="left" /> is <see langword="null" />.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// <paramref name="right" /> is a default-initialised, currency-less <see cref="Money" />.
+    /// </exception>
     public static MoneyBag operator -(MoneyBag left, Money right)
     {
         ThrowHelper.ThrowIfNull(left);

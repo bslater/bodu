@@ -46,6 +46,7 @@ public readonly partial struct Money
     /// <code language="csharp">
     ///<![CDATA[
     /// using Bodu.Financial;
+    /// using Bodu.Financial.Currencies;
     ///
     /// // A share price quoted to six decimal places in two-decimal USD.
     /// Money price = Money.FromExplicitScale(145.678912m, CurrencyCode.USD, 6);
@@ -96,6 +97,7 @@ public readonly partial struct Money
     /// <code language="csharp">
     ///<![CDATA[
     /// using Bodu.Financial;
+    /// using Bodu.Financial.Currencies;
     ///
     /// Money price = Money.FromExplicitScale(145.678912m, CurrencyCode.USD, 6);
     ///

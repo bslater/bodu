@@ -78,8 +78,10 @@ public readonly partial struct Money
     /// <exception cref="ArgumentNullException">
     /// <paramref name="targetIsoCode" /> is <see langword="null" />.
     /// </exception>
-    /// <exception cref="ArgumentException"><paramref name="targetIsoCode" /> is empty or whitespace.</exception>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="exchangeRate" /> is negative.</exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="targetIsoCode" /> is not the uppercase ISO code of a shipped currency.
+    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="exchangeRate" /> is zero or negative.</exception>
     /// <exception cref="InvalidOperationException">
     /// This value is a default-initialised, currency-less <see cref="Money" />.
     /// </exception>
@@ -149,8 +151,10 @@ public readonly partial struct Money
     /// <exception cref="ArgumentNullException">
     /// <paramref name="targetIsoCode" /> is <see langword="null" />.
     /// </exception>
-    /// <exception cref="ArgumentException"><paramref name="targetIsoCode" /> is empty or whitespace.</exception>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="exchangeRate" /> is negative.</exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="targetIsoCode" /> is not the uppercase ISO code of a shipped currency.
+    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="exchangeRate" /> is zero or negative.</exception>
     /// <exception cref="InvalidOperationException">
     /// This value is a default-initialised, currency-less <see cref="Money" />.
     /// </exception>
@@ -168,7 +172,7 @@ public readonly partial struct Money
     /// <typeparam name="TTarget">The destination currency type.</typeparam>
     /// <param name="exchangeRate">The rate, expressed as units of the destination per unit of the source.</param>
     /// <returns>The converted typed monetary value.</returns>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="exchangeRate" /> is negative.</exception>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="exchangeRate" /> is zero or negative.</exception>
     /// <exception cref="InvalidOperationException">
     /// This value is a default-initialised, currency-less <see cref="Money" />.
     /// </exception>
@@ -184,7 +188,7 @@ public readonly partial struct Money
     /// <param name="exchangeRate">The rate, expressed as units of the destination per unit of the source.</param>
     /// <param name="rounding">The midpoint-rounding rule.</param>
     /// <returns>The converted typed monetary value.</returns>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="exchangeRate" /> is negative.</exception>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="exchangeRate" /> is zero or negative.</exception>
     /// <exception cref="InvalidOperationException">
     /// This value is a default-initialised, currency-less <see cref="Money" />.
     /// </exception>

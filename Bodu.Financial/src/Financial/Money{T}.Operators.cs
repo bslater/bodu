@@ -46,9 +46,6 @@ public readonly partial struct Money<TCurrency>
     /// </summary>
     /// <param name="value">The amount to negate.</param>
     /// <returns>A <see cref="Money{TCurrency}" /> whose amount is the negation of <paramref name="value" />.</returns>
-    /// <exception cref="OverflowException">
-    /// The negated value falls outside the range of <see cref="decimal" />.
-    /// </exception>
     public static Money<TCurrency> operator -(Money<TCurrency> value)
     {
         return Money<TCurrency>.FromNormalizedAmount(-value._amount);

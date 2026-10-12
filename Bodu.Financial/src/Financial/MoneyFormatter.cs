@@ -30,6 +30,10 @@ public sealed class MoneyFormatter
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="options" />.<see cref="MoneyFormatOptions.CurrencyDisplay" /> is not a defined value.
     /// </exception>
+    /// <remarks>
+    /// <see cref="MoneyFormatOptions.MinorUnitsOverride" /> is not checked here: a value below 0 or above 28 is
+    /// accepted, and makes every <c>Format</c> call throw <see cref="FormatException" />.
+    /// </remarks>
     public MoneyFormatter(MoneyFormatOptions options)
     {
         ThrowHelper.ThrowIfNull(options);
@@ -43,6 +47,9 @@ public sealed class MoneyFormatter
     /// </summary>
     /// <param name="money">The value to format.</param>
     /// <returns>The formatted string.</returns>
+    /// <exception cref="FormatException">
+    /// The options' <see cref="MoneyFormatOptions.MinorUnitsOverride" /> is below 0 or above 28.
+    /// </exception>
     public string Format(Money money) =>
         money.ToString(_format, _options.FormatProvider ?? CultureInfo.CurrentCulture);
 
@@ -52,6 +59,9 @@ public sealed class MoneyFormatter
     /// <typeparam name="TCurrency">The currency type.</typeparam>
     /// <param name="money">The value to format.</param>
     /// <returns>The formatted string.</returns>
+    /// <exception cref="FormatException">
+    /// The options' <see cref="MoneyFormatOptions.MinorUnitsOverride" /> is below 0 or above 28.
+    /// </exception>
     public string Format<TCurrency>(Money<TCurrency> money)
         where TCurrency : ICurrency =>
         money.ToString(_format, _options.FormatProvider ?? CultureInfo.CurrentCulture);

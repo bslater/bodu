@@ -134,8 +134,8 @@ public readonly partial struct Money<TCurrency>
     /// </exception>
     /// <remarks>
     /// Use this to coarsen below the currency's natural precision - for example, rounding USD to whole dollars before
-    /// display. Rounding above <see cref="MinorUnits" /> has no effect because the stored amount is already limited to
-    /// the minor-unit precision.
+    /// display. Requesting more digits than <see cref="MinorUnits" /> throws <see cref="ArgumentOutOfRangeException" />,
+    /// because the stored amount is already limited to the minor-unit precision.
     /// </remarks>
     public Money<TCurrency> Round(int decimals, MidpointRounding rounding = MidpointRounding.ToEven)
     {

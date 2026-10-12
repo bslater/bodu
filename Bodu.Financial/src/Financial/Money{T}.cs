@@ -33,8 +33,11 @@ namespace Bodu.Financial;
 /// <para>
 /// Arithmetic between two <see cref="Money{TCurrency}" /> instances is permitted only when both operands share the same
 /// <typeparamref name="TCurrency" />. Cross-currency addition, subtraction, and comparison are compile errors, not
-/// runtime exceptions; cross-currency conversion is available exclusively through the explicit
-/// <see cref="Convert{TTarget}(decimal, MidpointRounding)" /> method.
+/// runtime exceptions; cross-currency conversion is available only through explicit calls - the
+/// <see cref="Convert{TTarget}(decimal, MidpointRounding)" /> method with a decimal rate, the
+/// <see cref="Convert{TQuote}(ExchangeRates.ExchangeRate{TCurrency, TQuote}, MidpointRounding)" /> method with a typed
+/// rate, and the dated-provider <c>ConvertTo</c> and <c>ConvertToWithRate</c> extensions in
+/// <see cref="Extensions.MoneyOfTCurrencyExchangeRateExtensions" />.
 /// </para>
 /// <para>
 /// Scalar multiplication and division round their result to <c>TCurrency.MinorUnits</c>. For chains where rounding at

@@ -20,6 +20,9 @@ public readonly partial struct Money
     /// <exception cref="ArgumentNullException">
     /// <paramref name="s" /> or <paramref name="options" /> is <see langword="null" />.
     /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="options" />.<see cref="MoneyParseOptions.Mode" /> is not a defined value.
+    /// </exception>
     /// <exception cref="FormatException">The input is not valid under <paramref name="options" />.</exception>
     /// <remarks>
     /// In every mode, text carrying more fractional digits than the currency's registered minor units parses to a value

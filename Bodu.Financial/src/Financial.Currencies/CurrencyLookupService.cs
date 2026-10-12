@@ -10,11 +10,19 @@ namespace Bodu.Financial.Currencies;
 
 /// <summary>
 /// Default <see cref="ICurrencyLookup" /> backed by <see cref="CurrencyRegistry" />. Reverse indexes for numeric code,
-/// symbol, and region are built lazily from a snapshot of the registry taken on first use.
+/// symbol, and region are built lazily from the registry on first use.
 /// </summary>
 /// <remarks>
-/// The reverse indexes reflect the registry contents at the time of first access. Construct a new instance after
-/// registering custom currencies that must participate in symbol, numeric, or region lookups.
+/// <para>
+/// The registry is a closed catalogue with no registration seam, so the indexes never change after they are built. On a
+/// numeric-code collision, the active currency wins over a historic one.
+/// </para>
+/// <para>
+/// The shipped catalogue carries no symbol or region data, so <see cref="TryBySymbol" /> and <see cref="TryByRegion" />
+/// resolve nothing with this lookup. Implement <see cref="ICurrencyLookup" /> over <see cref="CurrencyInfo" /> records
+/// that carry that data when symbol or region resolution is needed, for example for
+/// <see cref="MoneyParseMode.CultureAware" /> parsing.
+/// </para>
 /// </remarks>
 public sealed class CurrencyLookupService
     : ICurrencyLookup

@@ -17,6 +17,7 @@ namespace Bodu.Financial;
 /// <code language="csharp">
 ///<![CDATA[
 /// using Bodu.Financial;
+/// using Bodu.Financial.Currencies;
 ///
 /// // RoundTripOnly pairs with the "R" format specifier for storage and wire formats.
 /// var wire = Money.From(1234.56m, CurrencyCode.USD).ToString("R");   // "USD 1234.56"
@@ -55,5 +56,10 @@ public sealed record MoneyParseOptions
     /// <see langword="null" /> to use a default <see cref="CurrencyLookupService" />.
     /// </summary>
     /// <value>The configured lookup, or <see langword="null" />.</value>
+    /// <remarks>
+    /// The default <see cref="CurrencyLookupService" /> resolves no symbols, because the shipped catalogue carries
+    /// none; supply a lookup whose <see cref="CurrencyInfo" /> records carry <see cref="CurrencyInfo.Symbol" /> or
+    /// <see cref="CurrencyInfo.AlternativeSymbols" /> data to parse symbol text.
+    /// </remarks>
     public ICurrencyLookup? CurrencyLookup { get; init; }
 }

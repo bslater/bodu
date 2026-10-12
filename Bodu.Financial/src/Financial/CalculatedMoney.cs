@@ -40,6 +40,7 @@ namespace Bodu.Financial;
 /// <code language="csharp">
 ///<![CDATA[
 /// using Bodu.Financial;
+/// using Bodu.Financial.Currencies;
 ///
 /// // Carry full decimal precision through the calculation chain - no rounding per step.
 /// var principal = new CalculatedMoney(1000m, CurrencyCode.USD);
