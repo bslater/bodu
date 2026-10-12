@@ -3,7 +3,9 @@
 > **API stability - Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
 
 A narrow, read-only reader for the **Excel binary workbook format** (`.xls`): BIFF8, as
-written by Excel 97-2003, and BIFF5, as written by Excel 5.0/95. It exposes the raw cell
+written by Excel 97-2003, and BIFF5, the Excel 5.0/95 format. BIFF5 is read from the
+format's documented record layouts and tested against synthesized workbooks; no workbook
+written by Excel 5.0/95 itself is among the test fixtures. The reader exposes the raw cell
 values of each worksheet - strings, numbers, booleans, and errors - and nothing more. There
 is no formula evaluation, styling, charting, or date inference; turning a numeric cell into
 a date or a column into a record is the caller's job.
