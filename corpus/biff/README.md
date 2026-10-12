@@ -222,9 +222,9 @@ line `#sst<TAB><index><TAB><text>` per string, read with `BiffSstReader` across 
 ### Status
 
 The catalogue runs in `Bodu.Formats.Excel.Binary.Test` as `ExcelBinaryReleaseNoteCorpusTests`, with the same results on
-net8.0 and net10.0: of the 395 runnable rows, 391 pass and 4 fail, and the tests the 18 `unit` rows name all pass.
-Before the fixes below, a harness outside the repository found 373 passing and 22 failing at 378a6099db. A failing row
-stays as it is and is listed here; a row changed class only where the decision on its issue said so, as recorded below.
+net8.0 and net10.0: all 395 runnable rows pass, and the tests the 18 `unit` rows name all exist and pass. Before the
+fixes below, a harness outside the repository found 373 passing and 22 failing at 378a6099db. A row changed class only
+where the decision on its issue said so, as recorded below.
 
 Fixed, each after a commit of its regression tests:
 
@@ -265,10 +265,11 @@ Fixed, each after a commit of its regression tests:
 - **Documentation (#938).** The guides say that a malformed record in the workbook globals fails the open and one in a
   sheet fails when the sheet is read, and the package README lists RSTRING.
 
-Still failing:
+Fixed in `Bodu.IO.Compound`:
 
-- **Compound file tolerance, pending.** xlrd 1.0.0 #85 (a DIFAT chain ending in DIFSECT), xlrd 0.7.2 7404fa2117 case 1
-  (a header whose first DIFAT sector is 0 with a count of 0), exceldatareader 3.4.0 #312 case 1 (a leaf directory entry
-  with a name length of 200, rejected as a cyclic link although `CompoundValidationLevel.Compatible` documents skipping
-  such an entry) and xlrd 0.9.0 14b25cb1d7 (a stream that declares 1,000,000 bytes in a small file is not rejected) fail
-  in `Bodu.IO.Compound`. The compound branch fixes them under #944, #947, #950 and #951, and they pass once it merges.
+- **Compound file tolerance (#944, #947, #950, #951).** xlrd 1.0.0 #85 (a DIFAT chain ending in DIFSECT), xlrd 0.7.2
+  7404fa2117 case 1 (a header whose first DIFAT sector is 0 with a count of 0) and exceldatareader 3.4.0 #312 case 1 (a
+  leaf directory entry with a name length of 200, which `CompoundValidationLevel.Compatible` documents skipping) now
+  open and read their cell, and xlrd 0.9.0 14b25cb1d7 (a stream that declares 1,000,000 bytes in a small file) is now
+  rejected as a malformed compound file. All four had failed in `Bodu.IO.Compound`; they pass since the compound fixes
+  merged (#1009).
