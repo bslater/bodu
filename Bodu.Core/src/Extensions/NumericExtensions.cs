@@ -8,8 +8,8 @@ namespace Bodu.Extensions;
 
 /// <summary>
 /// Provides bit-level and byte-level transformations over the integral primitive types - endian conversion, byte and
-/// word swaps, bit reversal and rotation, and unchecked arithmetic helpers - for hashing, serialization, and protocol
-/// code.
+/// word swaps, bit reversal and rotation - for hashing, serialization, and protocol code, together with decimal-digit
+/// and number-theory helpers.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -22,10 +22,12 @@ namespace Bodu.Extensions;
 /// </para>
 /// <para>
 /// The API surface is grouped into: byte-order conversion (<c>GetBytes</c>, <c>ReverseBytes</c>), within-value
-/// rearrangement (<c>ReverseWords</c>, <c>ReverseBits</c>), bit rotation (<c>RotateBitsLeft</c>, <c>RotateBitsRight</c>
-/// ), and unchecked arithmetic helpers under <c>Unchecked</c>. <c>ReverseBits</c> additionally accepts a
-/// <c>bitLength</c> overload for callers reversing only the low-order portion of a value, and <c>GetBytes</c> accepts a
-/// flag to control endianness explicitly rather than depending on host order.
+/// rearrangement (<c>ReverseWords</c>, <c>ReverseBits</c>), bit rotation (<c>RotateBitsLeft</c>, <c>RotateBitsRight</c>),
+/// decimal-digit operations (<c>ReverseDigits</c>, <c>RotateDigitsLeft</c>, <c>RotateDigitsRight</c>,
+/// <c>ToDigitArray</c>), and number theory and rounding (<c>GreatestCommonDivisor</c>, <c>LeastCommonMultiple</c>,
+/// <c>IsPrime</c>, <c>RoundToSignificantDigits</c>). <c>ReverseBits</c> additionally accepts a <c>bitLength</c>
+/// overload for callers reversing only the low-order portion of a value, and <c>GetBytes</c> accepts a flag to control
+/// endianness explicitly rather than depending on host order.
 /// </para>
 /// <para>
 /// All operations are pure, branch-light, allocation-free for the value-typed overloads, and deterministic. Where a

@@ -21,6 +21,12 @@ public static partial class StreamExtensions
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="stream" /> is <see langword="null" />.
     /// </exception>
+    /// <exception cref="NotSupportedException">
+    /// <paramref name="stream" /> does not support reading. The exception is stored in the returned task.
+    /// </exception>
+    /// <exception cref="OperationCanceledException">
+    /// <paramref name="cancellationToken" /> was canceled. The exception is stored in the returned task.
+    /// </exception>
     /// <remarks>
     /// Argument validation runs synchronously, so a <see langword="null" /> <paramref name="stream" /> faults at the
     /// call site rather than on the returned task. See <see cref="ReadAllBytes(Stream)" /> for the buffering strategy.

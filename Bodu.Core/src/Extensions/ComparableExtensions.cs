@@ -23,21 +23,25 @@ namespace Bodu.Extensions;
 /// The API surface is split into three groups: comparison predicates (<c>IsLessThan</c>, <c>IsLessThanOrEqual</c>,
 /// <c>IsGreaterThan</c>, <c>IsGreaterThanOrEqual</c>, <c>IsEqualTo</c>), windowed predicates (<c>IsBetween</c>,
 /// <c>IsOutside</c>), and value-shaping helpers that produce a result rather than a boolean (<c>AtLeast</c>,
-/// <c>AtMost</c>, <c>Clamp</c>, <c>Min</c>, <c>Max</c>). Each method is offered with a default overload that uses the
-/// type's natural ordering and a paired overload that accepts an explicit <see cref="IComparer{T}" />, so callers can
-/// opt into culture-aware string comparisons or domain-specific orderings without rewriting the call.
+/// <c>AtMost</c>, <c>Clamp</c>, <c>Min</c>, <c>Max</c>). Every method except <c>IsEqualTo</c> has a default overload
+/// that uses the type's natural ordering, and every method has an overload that accepts an explicit
+/// <see cref="IComparer{T}" />, so callers can opt into culture-aware string comparisons or domain-specific orderings
+/// without rewriting the call; <c>IsEqualTo</c> has only the comparer form.
 /// </para>
 /// <para>
-/// All methods are pure, allocation-free, and deterministic. The default-comparer overloads use
-/// <see cref="Comparer{T}.Default" />, which itself defers to <see cref="IComparable{T}" /> when implemented; if the
-/// type is not orderable an <see cref="InvalidOperationException" /> bubbles up from the underlying comparer. Boundary
-/// inclusivity follows the inclusive convention: <c>IsBetween</c> includes both endpoints, and <c>Clamp</c> returns the
-/// boundary value rather than throwing when the input is outside.
+/// All methods are pure, allocation-free, and deterministic. The default overloads require
+/// <see cref="IComparable{T}" /> and call <see cref="IComparable{T}.CompareTo(T)" /> on the receiver, so a
+/// <see langword="null" /> receiver of a reference type throws <see cref="NullReferenceException" />; a
+/// <see langword="null" /> bound or operand is handled as each member documents (the predicates return
+/// <see langword="false" />). Boundary inclusivity follows the inclusive convention: <c>IsBetween</c> includes both
+/// endpoints, and <c>Clamp</c> returns the boundary value rather than throwing when the input is outside.
 /// </para>
 /// <para>
-/// The comparer-accepting overloads of the range predicates ( <c>IsBetween</c>, <c>IsOutside</c>) and <c>Clamp</c> are
-/// constrained to value types; for reference-type operands use the default-comparer overloads, or the two-operand
-/// ordering helpers on <see cref="ComparableHelper" />.
+/// The default <c>Clamp</c> overload and the comparer-accepting overloads of the comparison predicates (<c>IsLessThan</c>,
+/// <c>IsLessThanOrEqual</c>, <c>IsGreaterThan</c>, <c>IsGreaterThanOrEqual</c>), the range predicates (<c>IsBetween</c>,
+/// <c>IsOutside</c>), and <c>Clamp</c> are constrained to value types, whose bounds are <see cref="Nullable{T}" />. For
+/// reference-type operands use the other default overloads, the comparer overloads of <c>IsEqualTo</c>, <c>AtLeast</c>,
+/// <c>AtMost</c>, <c>Min</c>, and <c>Max</c>, or the two-operand ordering helpers on <see cref="ComparableHelper" />.
 /// </para>
 /// <example>
 /// <code language="csharp">

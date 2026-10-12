@@ -14,11 +14,13 @@ namespace Bodu.Xml.Linq;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Working with <see cref="System.Xml.Linq" /> documents that carry a default namespace requires every element and
-/// attribute access to be qualified with that namespace; otherwise <see cref="XContainer.Element(XName)" /> returns
-/// <see langword="null" /> even when the named element is present. <see cref="XmlNamespaceResolver" /> captures the
-/// namespace once from the document's root element and exposes <see cref="Element" />, <see cref="Elements" />, and
-/// <see cref="Name" /> helpers that pre-qualify lookups, allowing call-sites to reference elements by local name only.
+/// Working with <see cref="System.Xml.Linq" /> documents that carry a default namespace requires every element access
+/// to be qualified with that namespace; otherwise <see cref="XContainer.Element(XName)" /> returns
+/// <see langword="null" /> even when the named element is present. Unprefixed attributes are different: they belong to
+/// no namespace even under a default namespace, so look them up by plain local name rather than through
+/// <see cref="Name" />. <see cref="XmlNamespaceResolver" /> captures the namespace once from the document's root
+/// element and exposes <see cref="Element" />, <see cref="Elements" />, and <see cref="Name" /> helpers that
+/// pre-qualify lookups, allowing call-sites to reference elements by local name only.
 /// </para>
 /// <para>
 /// The captured namespace is fixed for the lifetime of the instance - it is not refreshed if the underlying document
@@ -79,7 +81,11 @@ public sealed class XmlNamespaceResolver
     /// <param name="localName">The local name of the child element.</param>
     /// <returns>The matching child XElement, or null if not found.</returns>
     /// <exception cref="ArgumentNullException">
-    /// Thrown when <paramref name="parent" /> is <see langword="null" />.
+    /// Thrown when <paramref name="parent" /> or <paramref name="localName" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="localName" /> is empty.</exception>
+    /// <exception cref="System.Xml.XmlException">
+    /// Thrown when <paramref name="localName" /> is not a valid XML local name.
     /// </exception>
     public XElement? Element(XElement parent, string localName)
     {
@@ -94,7 +100,11 @@ public sealed class XmlNamespaceResolver
     /// <param name="localName">The local name of the child elements.</param>
     /// <returns>An enumerable of matching XElement objects.</returns>
     /// <exception cref="ArgumentNullException">
-    /// Thrown when <paramref name="parent" /> is <see langword="null" />.
+    /// Thrown when <paramref name="parent" /> or <paramref name="localName" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="localName" /> is empty.</exception>
+    /// <exception cref="System.Xml.XmlException">
+    /// Thrown when <paramref name="localName" /> is not a valid XML local name.
     /// </exception>
     public IEnumerable<XElement> Elements(XElement parent, string localName)
     {
@@ -105,7 +115,18 @@ public sealed class XmlNamespaceResolver
     /// <summary>
     /// Gets the fully qualified XName for the given local name in the current namespace.
     /// </summary>
-    /// <param name="localName">The local (unqualified) element or attribute name.</param>
+    /// <param name="localName">The local (unqualified) element name.</param>
     /// <returns>The namespaced XName.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="localName" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="localName" /> is empty.</exception>
+    /// <exception cref="System.Xml.XmlException">
+    /// Thrown when <paramref name="localName" /> is not a valid XML local name.
+    /// </exception>
+    /// <remarks>
+    /// Use the result for element names, and for attribute names only where the attribute is explicitly qualified with
+    /// the captured namespace; an unprefixed attribute belongs to no namespace.
+    /// </remarks>
     public XName Name(string localName) => _xNamespace + localName;
 }

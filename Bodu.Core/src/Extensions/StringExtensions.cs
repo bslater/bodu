@@ -24,9 +24,10 @@ namespace Bodu.Extensions;
 /// </para>
 /// <para>
 /// Casing methods use <see cref="System.Globalization.CultureInfo.InvariantCulture" /> by default so output is
-/// deterministic across machines; cultural variants are not provided to discourage accidental
-/// <see cref="System.Globalization.CultureInfo.CurrentCulture" /> coupling. Comparison helpers default to
-/// <see cref="System.StringComparison.Ordinal" /> for the same reason.
+/// deterministic across machines and never coupled to <see cref="System.Globalization.CultureInfo.CurrentCulture" /> by
+/// accident; pass a <see cref="WordCasingOptions" /> with a <see cref="WordCasingOptions.Culture" /> to opt into
+/// culture-specific casing. Comparison helpers default to <see cref="System.StringComparison.Ordinal" /> for the same
+/// reason.
 /// </para>
 /// </remarks>
 /// <example>
