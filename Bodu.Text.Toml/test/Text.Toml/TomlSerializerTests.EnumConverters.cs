@@ -221,6 +221,100 @@ public partial class TomlSerializerTests
     }
 
     /// <summary>
+    /// Verifies that a <see cref="TomlStringEnumConverter" /> configured to reject integer values throws
+    /// <see cref="TomlSerializationException" /> at the string, with its line, column, offset and path, when the string
+    /// holds an integer, alone or as one of its comma-separated parts, rather than binding the integer it holds.
+    /// </summary>
+    /// <param name="literal">The string, as the document spells it.</param>
+    [TestMethod]
+    [DataRow("\"2\"", DisplayName = "the digits of a defined value")]
+    [DataRow("\"99\"", DisplayName = "the digits of an undefined value")]
+    [DataRow("\" +2 \"", DisplayName = "a signed integer between spaces")]
+    [DataRow("'-1'", DisplayName = "a negative integer in a literal string")]
+    [DataRow("\"2\\u0000\"", DisplayName = "an integer followed by a null character")]
+    [DataRow("\"1, 2\"", DisplayName = "a list of integers")]
+    [DataRow("\"Read, 2\"", DisplayName = "a member name and an integer")]
+    public void Deserialize_WhenStringEnumConverterDisallowsIntegersAndTextHoldsInteger_ShouldThrowTomlSerializationException(
+        string literal)
+    {
+        var options = new TomlSerializerOptions();
+        options.Converters.Add(new TomlStringEnumConverter(namingPolicy: null, allowIntegerValues: false));
+        string document = $"Flags = {literal}\n";
+
+        TomlSerializationException ex = Assert.ThrowsExactly<TomlSerializationException>(() =>
+        {
+            _ = TomlSerializer.Deserialize<FlagsModel>(document, options);
+        });
+
+        // The string begins after "Flags = ", at the zero-based offset 8 and the one-based column 9.
+        Assert.AreEqual(1, ex.LineNumber, "LineNumber");
+        Assert.AreEqual(9, ex.ColumnNumber, "ColumnNumber");
+        Assert.AreEqual(8, ex.Offset, "Offset");
+        Assert.AreEqual("Flags", ex.Path, "Path");
+        Assert.IsTrue(ex.Message.Contains("integer values are not allowed", StringComparison.Ordinal), ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that a <see cref="TomlStringEnumConverter{TEnum}" /> configured to reject integer values throws
+    /// <see cref="TomlSerializationException" /> when the string holds an integer, as the converter the non-generic
+    /// factory produces does.
+    /// </summary>
+    /// <param name="literal">The string, as the document spells it.</param>
+    [TestMethod]
+    [DataRow("\"2\"", DisplayName = "the digits of a defined value")]
+    [DataRow("\"Read, 2\"", DisplayName = "a member name and an integer")]
+    public void Deserialize_WhenGenericStringEnumConverterDisallowsIntegersAndTextHoldsInteger_ShouldThrowTomlSerializationException(
+        string literal)
+    {
+        var options = new TomlSerializerOptions();
+        options.Converters.Add(new TomlStringEnumConverter<PermissionFlags>(namingPolicy: null, allowIntegerValues: false));
+        string document = $"Flags = {literal}\n";
+
+        TomlSerializationException ex = Assert.ThrowsExactly<TomlSerializationException>(() =>
+        {
+            _ = TomlSerializer.Deserialize<FlagsModel>(document, options);
+        });
+
+        Assert.IsTrue(ex.Message.Contains("integer values are not allowed", StringComparison.Ordinal), ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that a <see cref="TomlStringEnumConverter" /> configured to reject integer values still binds a string
+    /// that is a member's wire name when that name is an integer's text, because the wire names are matched before the
+    /// text is checked for an integer.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenStringEnumConverterDisallowsIntegersAndWireNameIsInteger_ShouldBindMember()
+    {
+        var options = new TomlSerializerOptions();
+        options.Converters.Add(new TomlStringEnumConverter(namingPolicy: null, allowIntegerValues: false));
+
+        MedalModel model = TomlSerializer.Deserialize<MedalModel>("Medal = \"1\"\n", options);
+
+        Assert.AreEqual(Medal.Gold, model.Medal);
+    }
+
+    /// <summary>
+    /// Verifies that a <see cref="TomlStringEnumConverter" /> configured to allow integer values binds a string that
+    /// holds an integer as the value it holds, as the default handling does.
+    /// </summary>
+    /// <param name="literal">The string, as the document spells it.</param>
+    /// <param name="expected">The underlying value the string holds.</param>
+    [TestMethod]
+    [DataRow("\"2\"", 2, DisplayName = "the digits of a defined value")]
+    [DataRow("\"99\"", 99, DisplayName = "the digits of an undefined value")]
+    [DataRow("\" +2 \"", 2, DisplayName = "a signed integer between spaces")]
+    public void Deserialize_WhenStringEnumConverterAllowsIntegersAndTextHoldsInteger_ShouldBindValue(string literal, int expected)
+    {
+        var options = new TomlSerializerOptions();
+        options.Converters.Add(new TomlStringEnumConverter(namingPolicy: null, allowIntegerValues: true));
+
+        FlagsModel model = TomlSerializer.Deserialize<FlagsModel>($"Flags = {literal}\n", options);
+
+        Assert.AreEqual((PermissionFlags)expected, model.Flags);
+    }
+
+    /// <summary>
     /// Verifies that the generic <see cref="TomlStringEnumConverter{TEnum}" /> registered with a camel-case naming
     /// policy on the options writes a Pascal-case member as its camel-cased name and round-trips.
     /// </summary>
@@ -687,6 +781,35 @@ public partial class TomlSerializerTests
         /// </summary>
         /// <value>The flags.</value>
         public PermissionFlags Flags { get; set; }
+    }
+
+    /// <summary>
+    /// An enumeration one of whose members is written under a name that is an integer's text.
+    /// </summary>
+    private enum Medal
+    {
+        /// <summary>
+        /// The gold medal, written under the name <c>1</c>, with underlying value <c>5</c>.
+        /// </summary>
+        [StringEnumMemberName("1")]
+        Gold = 5,
+
+        /// <summary>
+        /// The silver medal, with underlying value <c>6</c>.
+        /// </summary>
+        Silver = 6,
+    }
+
+    /// <summary>
+    /// A model carrying a <see cref="Medal" /> value.
+    /// </summary>
+    private sealed class MedalModel
+    {
+        /// <summary>
+        /// Gets or sets the medal.
+        /// </summary>
+        /// <value>The medal.</value>
+        public Medal Medal { get; set; }
     }
 
     /// <summary>
