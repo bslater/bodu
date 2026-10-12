@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Text_Yaml_Serialization_YamlStringEnumConverter" data-uid="Bodu.Text.Yaml.Serialization.YamlStringEnumConverter" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 YamlStringEnumConverter Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/cb77d92ef0ec11e7775696e4688f811c0f579cc1/Bodu.Text.Yaml/src/Text.Yaml.Serialization/YamlStringEnumConverter.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/187ea1c95fdbc6a5f8be7c78078621a6d691e3f3/Bodu.Text.Yaml/src/Text.Yaml.Serialization/YamlStringEnumConverter.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -104,7 +104,7 @@ YamlStringEnumConverter Class
   <dl><dt>Assembly</dt><dd>Bodu.Text.Yaml.dll</dd></dl>
   <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Text.Yaml">Bodu.Text.Yaml</a> <span class="bodu-package-version">1.3.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/cb77d92ef0ec11e7775696e4688f811c0f579cc1/Bodu.Text.Yaml/src/Text.Yaml.Serialization/YamlStringEnumConverter.cs">YamlStringEnumConverter.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/187ea1c95fdbc6a5f8be7c78078621a6d691e3f3/Bodu.Text.Yaml/src/Text.Yaml.Serialization/YamlStringEnumConverter.cs">YamlStringEnumConverter.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Produces a converter that serializes any enumeration as a YAML string holding its member name, applying an optional
@@ -197,16 +197,24 @@ must lie within the range of the enumeration's underlying type; one outside it t
 <a class="xref" href="Bodu.Text.Yaml.YamlSerializationException.html">YamlSerializationException</a> rather than being narrowed into that type.
 </p>
 <p>
+Names are matched as System.Text.Json's <code>JsonStringEnumConverter</code> matches them. A member's wire name, from
+<a class="xref" href="Bodu.Text.Serialization.StringEnumMemberNameAttribute.html">StringEnumMemberNameAttribute</a> or the naming policy, binds only in its own case; the CLR name of a
+member the attribute does not rename also binds, in any case, while a renamed member's CLR name does not. A
+combination of flags is written as the comma-separated wire names of its flags, in the order
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.enum.tostring#system-enum-tostring">ToString()</a> lists them, and is read from a list of names in any order, with a trailing comma
+tolerated; an integer binds, where integers are allowed, only as the whole text. A float scalar, even an integral
+one such as <code>2.0</code>, never binds.
+</p>
+<p>
 A converter that does not allow integers throws <a class="xref" href="Bodu.Text.Yaml.YamlSerializationException.html">YamlSerializationException</a> on an integer scalar, and
 at any other scalar that is not a member's wire name and whose text has an integer in any of its comma-separated
 parts: a quoted <code>"2"</code> or <code>" +2 "</code>, <code>!!str 2</code>, a plain integer beyond the 64-bit range, which YAML
-resolves as a string, an integral float such as <code>2.0</code>, or a list such as <code>Read, 2</code>. Each is rejected
-rather than bound as the integer, as System.Text.Json's <code>JsonStringEnumConverter</code> rejects a numeric string from
-.NET 9. The wire names are matched first, so a member named <code>1</code> through
-<a class="xref" href="Bodu.Text.Serialization.StringEnumMemberNameAttribute.html">StringEnumMemberNameAttribute</a> still reads from a string scalar. Such a converter also refuses to
-write a value that is neither a member nor a combination of defined flags, such as an undefined value or a flags
-value with an undefined bit, and throws <a class="xref" href="Bodu.Text.Yaml.YamlSerializationException.html">YamlSerializationException</a> rather than writing the decimal
-text it would reject on read.
+resolves as a string, or a list such as <code>Read, 2</code>. Each is rejected rather than bound as the integer, as
+System.Text.Json's <code>JsonStringEnumConverter</code> rejects a numeric string from .NET 9. The wire names are matched
+first, so a member named <code>1</code> through <a class="xref" href="Bodu.Text.Serialization.StringEnumMemberNameAttribute.html">StringEnumMemberNameAttribute</a> still reads from a string
+scalar. Such a converter also refuses to write a value that is neither a member nor a combination of defined flags,
+such as an undefined value or a flags value with an undefined bit, and throws
+<a class="xref" href="Bodu.Text.Yaml.YamlSerializationException.html">YamlSerializationException</a> rather than writing the decimal text it would reject on read.
 </p>
 </div>
 
@@ -220,7 +228,7 @@ text it would reject on read.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Yaml_Serialization_YamlStringEnumConverter__ctor" data-uid="Bodu.Text.Yaml.Serialization.YamlStringEnumConverter.#ctor">
   YamlStringEnumConverter()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/cb77d92ef0ec11e7775696e4688f811c0f579cc1/Bodu.Text.Yaml/src/Text.Yaml.Serialization/YamlStringEnumConverter.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/187ea1c95fdbc6a5f8be7c78078621a6d691e3f3/Bodu.Text.Yaml/src/Text.Yaml.Serialization/YamlStringEnumConverter.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -252,7 +260,7 @@ accepts integers on read.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Yaml_Serialization_YamlStringEnumConverter__ctor_Bodu_Text_Serialization_NamingPolicy_System_Boolean_" data-uid="Bodu.Text.Yaml.Serialization.YamlStringEnumConverter.#ctor(Bodu.Text.Serialization.NamingPolicy,System.Boolean)">
   YamlStringEnumConverter(NamingPolicy?, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/cb77d92ef0ec11e7775696e4688f811c0f579cc1/Bodu.Text.Yaml/src/Text.Yaml.Serialization/YamlStringEnumConverter.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/187ea1c95fdbc6a5f8be7c78078621a6d691e3f3/Bodu.Text.Yaml/src/Text.Yaml.Serialization/YamlStringEnumConverter.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -298,7 +306,7 @@ written as the decimal text of a value that is neither a member nor a combinatio
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Yaml_Serialization_YamlStringEnumConverter_CanConvert_System_Type_" data-uid="Bodu.Text.Yaml.Serialization.YamlStringEnumConverter.CanConvert(System.Type)">
   CanConvert(Type)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/cb77d92ef0ec11e7775696e4688f811c0f579cc1/Bodu.Text.Yaml/src/Text.Yaml.Serialization/YamlStringEnumConverter.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/187ea1c95fdbc6a5f8be7c78078621a6d691e3f3/Bodu.Text.Yaml/src/Text.Yaml.Serialization/YamlStringEnumConverter.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -341,7 +349,7 @@ written as the decimal text of a value that is neither a member nor a combinatio
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Yaml_Serialization_YamlStringEnumConverter_CreateConverter_System_Type_Bodu_Text_Yaml_YamlSerializerOptions_" data-uid="Bodu.Text.Yaml.Serialization.YamlStringEnumConverter.CreateConverter(System.Type,Bodu.Text.Yaml.YamlSerializerOptions)">
   CreateConverter(Type, YamlSerializerOptions)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/cb77d92ef0ec11e7775696e4688f811c0f579cc1/Bodu.Text.Yaml/src/Text.Yaml.Serialization/YamlStringEnumConverter.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/187ea1c95fdbc6a5f8be7c78078621a6d691e3f3/Bodu.Text.Yaml/src/Text.Yaml.Serialization/YamlStringEnumConverter.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -409,7 +417,7 @@ written as the decimal text of a value that is neither a member nor a combinatio
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: cb77d92 · Built: 2026-10-12 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 187ea1c · Built: 2026-10-12 (UTC)</span>
         </div>
       </div>
     </footer>
