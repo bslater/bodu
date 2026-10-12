@@ -5,7 +5,7 @@
 (template-establishing format); the package shipped in 1.0.0, first published
 in 0.5.0. Where the shipped code differs from this design, an **As built**
 paragraph after the claim records what the code does, as of master
-`dd6d435742`.
+`849e280436`.
 **Relates to:** [`line-formats-quartet-redesign-assessment.md`](./line-formats-quartet-redesign-assessment.md).
 
 DotEnv is the flattest of the three line formats - a single ordered object of
