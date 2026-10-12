@@ -99,7 +99,7 @@ PKCS#7, ANSI X9.23, ISO 7816-4, ISO 10126, zero-padding, and `None`. All are exe
 | BLAKE2b / BLAKE2s | hash + optional MAC | RFC 7693 | 8-512 / 8-256 | Recommended | Keyed mode is a one-step HMAC alternative |
 | BLAKE3 | hash + XOF | BLAKE3 reference | 256 (extendable) | Recommended | Tree hashing; optionally [multithreaded](#multithreading) for large inputs |
 | Skein 256 / 512 / 1024 | hash with UBI tweak | Skein 1.3 | up to state size | Recommended for tweakable use | SHA-3 candidate |
-| Ascon-Hash256 / Ascon-HashA256 | hash | NIST SP 800-232 | 256 | Recommended for lightweight | Conservative (Ascon-p12) vs. fast (Ascon-p8) variants |
+| Ascon-Hash256 / Ascon-HashA256 | hash | NIST SP 800-232 (Hash256); Ascon v1.2 (HashA256, non-standard) | 256 | Recommended for lightweight | Conservative (Ascon-p12) vs. fast (Ascon-p8) variants |
 | Ascon-XOF128 / Ascon-CXOF128 | XOF / customisable XOF | NIST SP 800-232 | extendable | Recommended for lightweight | Sponge-mode streaming output |
 | SHAKE128 / SHAKE256 | XOF | NIST FIPS 202 | extendable | Recommended | |
 | Poly1305 | one-time MAC | RFC 8439 | 128 | Recommended (one-time key only) | Reuse with same key is rejected at runtime |

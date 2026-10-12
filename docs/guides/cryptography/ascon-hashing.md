@@ -5,7 +5,9 @@ title: ASCON hashing - AsconHash256 and AsconHashA256
 # ASCON hashing - AsconHash256 and AsconHashA256
 
 `ASCON-HASH256` and `ASCON-HASHA256` are the two fixed-output hash algorithms in the ASCON
-family, standardized in NIST SP 800-232. Both are sponge constructions built on a 320-bit
+family. `ASCON-HASH256` is standardized in NIST SP 800-232; `ASCON-HASHA256` is not - it is the
+round-reduced Hasha variant of the Ascon v1.2 submission, which SP 800-232 did not adopt, with
+digests matching the ascon-c reference implementation. Both are sponge constructions built on a 320-bit
 internal state with an 8-byte (64-bit) absorption rate, and both produce a **256-bit (32-byte)
 digest**. The family was designed for constrained hardware - but the same properties that make
 it attractive there (compact state, simple round function, well-studied security margin) make it
@@ -16,7 +18,7 @@ a sound choice in software as well.
 | Type | Algorithm name | Absorption rounds | Squeeze rounds | Characteristics |
 |---|---|---|---|---|
 | <xref:Bodu.Security.Cryptography.AsconHash256> | `ASCON-HASH256` | 12 (Ascon-p12) | 12 | Maximum security margin - the conservative default. |
-| <xref:Bodu.Security.Cryptography.AsconHashA256> | `ASCON-HASHA256` | 8 (Ascon-p8) | 12 | Higher throughput - reduced, but still substantial, absorption-phase margin. |
+| <xref:Bodu.Security.Cryptography.AsconHashA256> | `ASCON-HASHA256` | 8 (Ascon-p8) | 8 (Ascon-p12 only at the absorb-to-squeeze transition) | Higher throughput - reduced, but still substantial, margin. Not part of SP 800-232. |
 
 Both derive from <xref:Bodu.Security.Cryptography.AsconHash>, which sits on <xref:Bodu.Security.Cryptography.BlockHashAlgorithm> and, through it, on
 <xref:System.Security.Cryptography.HashAlgorithm?displayProperty=nameWithType>, so they slot
@@ -30,7 +32,7 @@ into any API that accepts a standard .NET hash algorithm.
 | Rate (absorption block) | 64 bits (8 bytes) | Bytes consumed per permutation call. |
 | Output | 256 bits (32 bytes) | Fixed; no truncation variants. |
 | Absorption rounds - `AsconHash256` | 12 per block | Conservative margin throughout. |
-| Absorption rounds - `AsconHashA256` | 8 per block | Reduced absorption work; squeeze unchanged. |
+| Absorption rounds - `AsconHashA256` | 8 per block | Reduced absorption work; also 8 between squeezed output blocks. |
 
 ## Pattern 1 - one-shot hash with ASCON-HASH256
 
@@ -92,9 +94,10 @@ Console.WriteLine(performance.AlgorithmName);     // "ASCON-HASHA256"
 ```
 
 The 12-round variant applies 50 % more permutation work per absorbed block, giving deeper
-cryptanalytic margin. The 8-round variant reduces absorption work in exchange for higher
-throughput; the squeeze phase retains 12 rounds in both cases, so finalization is equally strong
-in both variants.
+cryptanalytic margin. The 8-round variant reduces that work in exchange for higher throughput:
+it permutes with 8 rounds while absorbing and between squeezed output blocks, and with 12 only
+at the transition from absorbing to squeezing, so its finalization carries less margin than
+`AsconHash256`'s, which uses 12 rounds everywhere.
 
 When in doubt, use `AsconHash256`. Switch to `AsconHashA256` only when profiling shows the
 difference is measurable in your workload.
@@ -176,7 +179,7 @@ comparison result drives an authentication or integrity decision.
 
 ## Pattern 7 - reading the algorithm name at runtime
 
-Both types report their canonical NIST algorithm identifier through the `AlgorithmName` property:
+Both types report their algorithm identifier (the SP 800-232 name for `AsconHash256`, the ascon-c name for `AsconHashA256`) through the `AlgorithmName` property:
 
 <!-- compile -->
 ```csharp

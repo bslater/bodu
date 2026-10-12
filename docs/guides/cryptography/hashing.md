@@ -17,7 +17,7 @@ This page is the cross-cutting overview - what guarantee a cryptographic hash ac
 - [Using BLAKE2 and BLAKE3](blake.md) - BLAKE2b / BLAKE2s (keyed, configurable width) and the tree-structured BLAKE3.
 - [Using Skein](skein.md) - Threefish-based UBI digests with a MAC mode.
 - [Using SHAKE](shake.md) - Keccak extendable-output function (FIPS 202).
-- [Using ASCON-HASH256 and ASCON-HASHA256](ascon.md) - NIST SP 800-232 sponge digests; two variants trading margin for throughput.
+- [Using ASCON-HASH256 and ASCON-HASHA256](ascon.md) - sponge digests: the NIST SP 800-232 ASCON-HASH256 and the non-standard, faster Ascon v1.2 ASCON-HASHA256.
 - [Merkle trees and proofs](merkle-trees.md) - the RFC 6962 tree over any inner `HashAlgorithm`: roots over entries, blocks, or a write-time accumulator; inclusion and consistency proofs; length-bound roots.
 
 > **Looking for CRC, Fletcher, Adler, FNV, CityHash, Pearson, Bernstein, BKDR, SDBM, JSHash, Elf64, ApHash, or Pjw32?** Those non-cryptographic families live in the companion <xref:Bodu.IO.Hashing> package, built on <xref:System.IO.Hashing.NonCryptographicHashAlgorithm?displayProperty=nameWithType>. See the [Bodu.IO.Hashing guides](../io-hashing/index.md).
@@ -66,7 +66,7 @@ The <xref:Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions> helpers
 | A fast non-cryptographic fingerprint for hash tables, bucketing, caches | <xref:Bodu.IO.Hashing.Checksums.Adler32>, <xref:Bodu.IO.Hashing.Fnv1a32>, <xref:Bodu.IO.Hashing.Fnv1a64>, <xref:Bodu.IO.Hashing.CityHash64> | Cheap, well-spread, **not** cryptographic. |
 | A hash-table key or short fingerprint, resistant to collision-DoS | <xref:Bodu.Security.Cryptography.SipHash64>, <xref:Bodu.Security.Cryptography.SipHash128> | Keyed, collision-resistant for short inputs. |
 | A cryptographic digest for signatures, fingerprints, or content addressing | <xref:Bodu.Security.Cryptography.Tiger>, or `System.Security.Cryptography.SHA256` (BCL) | Collision-resistant against active attackers. |
-| A NIST-standardized 256-bit digest with a small state footprint (SP 800-232) | <xref:Bodu.Security.Cryptography.AsconHash256>, <xref:Bodu.Security.Cryptography.AsconHashA256> | Two variants: max margin (`ASCON-HASH256`) or higher throughput (`ASCON-HASHA256`). |
+| A NIST-standardized 256-bit digest with a small state footprint (SP 800-232) | <xref:Bodu.Security.Cryptography.AsconHash256> | The standardized variant, with maximum margin. <xref:Bodu.Security.Cryptography.AsconHashA256> trades margin for throughput but is the Ascon v1.2 Hasha variant, not part of SP 800-232. |
 | A rolling integrity check over a long stream with partial re-verification | <xref:Bodu.Security.Cryptography.MerkleTree> | Per-block inclusion proofs without rehashing the whole input. |
 | An on-the-wire CRC (zlib, PNG, Modbus, iSCSI, …) or a Fletcher checksum | <xref:Bodu.IO.Hashing.Checksums.Crc>, <xref:Bodu.IO.Hashing.Checksums.Fletcher32> | Non-cryptographic, `System.IO.Hashing` contract - see the [Bodu.IO.Hashing guides](../io-hashing/index.md). |
 

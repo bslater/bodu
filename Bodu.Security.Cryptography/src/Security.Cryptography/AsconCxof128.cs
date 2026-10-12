@@ -10,15 +10,15 @@ namespace Bodu.Security.Cryptography;
 
 /// <summary>
 /// Computes a variable-length output using the <c>Ascon-CXOF128</c> customizable extendable output function (CXOF) as
-/// defined in NIST SP 800-232. Supports an optional customization string that domain-separates outputs from
-/// <see cref="AsconXof128" />. This class cannot be inherited.
+/// defined in NIST SP 800-232. Absorbs a customization string that domain-separates its outputs from one another and
+/// from <see cref="AsconXof128" />. This class cannot be inherited.
 /// </summary>
 /// <remarks>
 /// <para>
 /// Ascon-CXOF128 extends <see cref="AsconXof128" /> with a customization phase. The customization string <c>Z</c> is
-/// absorbed before any message data, using a dedicated domain-separation constant to ensure that different
-/// customization strings produce independent output functions. An empty customization string does <b>not</b> produce
-/// the same output as <see cref="AsconXof128" />.
+/// absorbed before any message data, prefixed with its bit length, so that different customization strings produce
+/// independent output functions. Ascon-CXOF128 starts from its own initialization vector, so its output never equals
+/// that of <see cref="AsconXof128" />, whatever the customization string.
 /// </para>
 /// <para>
 /// If no customization string is required, prefer <see cref="AsconXof128" /> directly. Use Ascon-CXOF128 when you need
@@ -31,7 +31,9 @@ namespace Bodu.Security.Cryptography;
 /// <list type="number">
 /// <item>
 /// <description>
-/// Optionally call <see cref="Customize" /> (before any <see cref="AsconXof{T}.Absorb" /> call).
+/// Call <see cref="Customize" /> (before any <see cref="AsconXof{T}.Absorb" /> call). SP 800-232 always absorbs the
+/// customization string, so pass an empty span for the empty string; an instance on which <see cref="Customize" /> is
+/// never called absorbs no customization block, and its output matches no standard Ascon-CXOF128 output.
 /// </description>
 /// </item>
 /// <item>
@@ -53,7 +55,7 @@ namespace Bodu.Security.Cryptography;
 /// </item>
 /// <item>
 /// <description>
-/// Customization string: optional bytes absorbed before message data, domain-separates outputs.
+/// Customization string: bytes absorbed, with their bit length, before message data; domain-separates outputs.
 /// </description>
 /// </item>
 /// <item>
@@ -140,8 +142,8 @@ public sealed class AsconCxof128
     /// </remarks>
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
     /// <exception cref="InvalidOperationException">
-    /// <see cref="Customize" /> has already been called on this instance. Call <see cref="AsconXof{T}.Initialize" /> to
-    /// reset.
+    /// <see cref="Customize" /> has already been called on this instance, or <see cref="AsconXof{T}.Absorb" /> has been
+    /// called. Call <see cref="AsconXof{T}.Initialize" /> to reset.
     /// </exception>
     public void Customize(ReadOnlySpan<byte> customization)
     {
