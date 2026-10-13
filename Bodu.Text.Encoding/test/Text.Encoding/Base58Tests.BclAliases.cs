@@ -132,4 +132,63 @@ public sealed partial class Base58Tests
         Assert.AreEqual("9Ajdvzr", System.Text.Encoding.ASCII.GetString(destination, 0, bytesWritten));
     }
 
+    /// <summary>
+    /// Verifies that <see cref="Base58.FromBase58String(ReadOnlySpan{byte})" /> decodes UTF-8 input made only of
+    /// <c>'1'</c> characters, at every length to 64, as the string overload does.
+    /// </summary>
+    [TestMethod]
+    public void FromBase58String_ForUtf8Source_WhenEveryCharacterIsALeadingZero_ShouldDecodeAZeroBytePerCharacter()
+    {
+        for (int length = 1; length <= 64; length++)
+        {
+            byte[] utf8 = Ascii(LeadingZeroCharacters(Base58Variant.BitcoinFlickr, length));
+
+            byte[] actual = Base58.FromBase58String(utf8);
+
+            CollectionAssert.AreEqual(new byte[length], actual, $"Length {length}.");
+        }
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Base58.FromBase58String(ReadOnlySpan{char}, Span{byte}, out int, out int)" /> decodes
+    /// input made only of <c>'1'</c> characters, at every length to 64, into a destination of
+    /// <see cref="Base58.GetMaxDecodedLength(int)" /> bytes.
+    /// </summary>
+    [TestMethod]
+    public void FromBase58String_ForCharSpan_OperationStatus_WhenEveryCharacterIsALeadingZero_ShouldReturnDone()
+    {
+        for (int length = 1; length <= 64; length++)
+        {
+            string source = LeadingZeroCharacters(Base58Variant.BitcoinFlickr, length);
+            byte[] destination = new byte[Base58.GetMaxDecodedLength(length)];
+
+            OperationStatus status = Base58.FromBase58String(source, destination, out int charsConsumed, out int bytesWritten);
+
+            Assert.AreEqual(OperationStatus.Done, status, $"Status at length {length}.");
+            Assert.AreEqual(length, charsConsumed, $"Characters consumed at length {length}.");
+            Assert.AreEqual(length, bytesWritten, $"Bytes written at length {length}.");
+        }
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Base58.FromBase58String(ReadOnlySpan{byte}, Span{byte}, out int, out int)" /> decodes
+    /// UTF-8 input made only of <c>'1'</c> characters, at every length to 64, into a destination of
+    /// <see cref="Base58.GetMaxDecodedLength(int)" /> bytes.
+    /// </summary>
+    [TestMethod]
+    public void FromBase58String_ForUtf8Span_OperationStatus_WhenEveryCharacterIsALeadingZero_ShouldReturnDone()
+    {
+        for (int length = 1; length <= 64; length++)
+        {
+            byte[] utf8 = Ascii(LeadingZeroCharacters(Base58Variant.BitcoinFlickr, length));
+            byte[] destination = new byte[Base58.GetMaxDecodedLength(length)];
+
+            OperationStatus status = Base58.FromBase58String(utf8, destination, out int bytesConsumed, out int bytesWritten);
+
+            Assert.AreEqual(OperationStatus.Done, status, $"Status at length {length}.");
+            Assert.AreEqual(length, bytesConsumed, $"Bytes consumed at length {length}.");
+            Assert.AreEqual(length, bytesWritten, $"Bytes written at length {length}.");
+        }
+    }
+
 }
