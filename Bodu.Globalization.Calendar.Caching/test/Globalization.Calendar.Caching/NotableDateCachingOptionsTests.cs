@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Microsoft.Extensions.Logging;
+
 namespace Bodu.Globalization.Calendar.Caching;
 
 /// <summary>
@@ -65,5 +67,41 @@ public sealed class NotableDateCachingOptionsTests
         Assert.AreEqual(nameof(NotableDateCachingOptions.TtlJitter), ex.ParamName);
         Assert.IsFalse(options.TryValidate(out string? error));
         Assert.IsNotNull(error);
+    }
+
+    /// <summary>
+    /// Verifies that an undefined <see cref="NotableDateCachingOptions.CacheHitLogLevel" /> is rejected with that
+    /// option's name, and that <see cref="NotableDateCachingOptions.TryValidate" /> agrees.
+    /// </summary>
+    [TestMethod]
+    public void Validate_WhenCacheHitLogLevelUndefined_ShouldThrowArgumentExceptionNamingIt()
+    {
+        var options = new NotableDateCachingOptions { CacheHitLogLevel = (LogLevel)99 };
+
+        var ex = Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            options.Validate();
+        });
+
+        Assert.AreEqual(nameof(NotableDateCachingOptions.CacheHitLogLevel), ex.ParamName);
+        Assert.IsFalse(options.TryValidate(out _));
+    }
+
+    /// <summary>
+    /// Verifies that an undefined <see cref="NotableDateCachingOptions.CacheMissLogLevel" /> is rejected with that
+    /// option's name, not the hit level's, and that <see cref="NotableDateCachingOptions.TryValidate" /> agrees.
+    /// </summary>
+    [TestMethod]
+    public void Validate_WhenCacheMissLogLevelUndefined_ShouldThrowArgumentExceptionNamingIt()
+    {
+        var options = new NotableDateCachingOptions { CacheMissLogLevel = (LogLevel)99 };
+
+        var ex = Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            options.Validate();
+        });
+
+        Assert.AreEqual(nameof(NotableDateCachingOptions.CacheMissLogLevel), ex.ParamName);
+        Assert.IsFalse(options.TryValidate(out _));
     }
 }
