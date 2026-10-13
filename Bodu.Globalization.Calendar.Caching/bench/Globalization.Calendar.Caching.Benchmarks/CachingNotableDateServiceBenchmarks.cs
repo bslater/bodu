@@ -60,7 +60,7 @@ public class CachingNotableDateServiceBenchmarks
         _service.Resolve(new DateRange(new DateOnly(2026, 1, 1), new DateOnly(2026, 12, 31)), "US");
 
     /// <summary>
-    /// Benchmarks a one-month sub-range resolve, which clips the cached year by emitted date.
+    /// Benchmarks a one-month sub-range resolve, which clips the cached year by each occurrence's span.
     /// </summary>
     /// <returns>The served occurrences.</returns>
     [Benchmark]

@@ -37,19 +37,20 @@ internal static class NotableDateDocumentReader
         return new ParsedNotableDateDocument(
             root.Scalar("resourceId") ?? string.Empty,
             root.Scalar("schemaVersion") ?? string.Empty,
-            ReadResolutionPolicy(root.Child("resolutionPolicy")),
-            ReadAdjustmentPolicies(root),
+            ReadResolutionPolicy(root.Child("resolutionPolicy"), diagnostics),
+            ReadAdjustmentPolicies(root, diagnostics),
             ReadNotableDates(root, diagnostics),
             ReadOverrides(root, diagnostics),
-            ReadImports(root));
+            ReadImports(root, diagnostics));
     }
 
     /// <summary>
     /// Reads the resource-level resolution policy, falling back to the recommended defaults when absent.
     /// </summary>
     /// <param name="node">The resolution-policy node, or <see langword="null" />.</param>
+    /// <param name="diagnostics">The collection that receives semantic diagnostics.</param>
     /// <returns>The parsed <see cref="ResolutionPolicy" />.</returns>
-    private static ResolutionPolicy ReadResolutionPolicy(IDocumentNode? node)
+    private static ResolutionPolicy ReadResolutionPolicy(IDocumentNode? node, ICollection<NotableDateValidationDiagnostic> diagnostics)
     {
         if (node is null)
             return ResolutionPolicy.Default;
@@ -57,21 +58,22 @@ internal static class NotableDateDocumentReader
         IReadOnlyList<string>? precedence = node.OptionalScalarList("CategoryPrecedence", "Category", "value", "categoryPrecedence");
 
         return new ResolutionPolicy(
-            ParseEnum(node.Scalar("duplicatePolicy"), DuplicatePolicy.Error),
-            ParseEnum(node.Scalar("sameDayCollisionPolicy"), CollisionPolicy.KeepAll),
-            ParseEnum(node.Scalar("spanCollisionPolicy"), CollisionPolicy.KeepAll),
-            ParseEnum(node.Scalar("priorityDirection"), PriorityDirection.HigherWins),
-            ParseEnum(node.Scalar("observedDateRangePolicy"), ObservedDateRangePolicy.ObservedOccurrenceControlsInclusion),
-            ParseWorkingWeek(node.Scalar("workingDays")),
-            precedence is null ? null : [.. precedence.Select(c => ParseEnum(c, NotableDateCategory.None))]);
+            ParseEnum(node.Scalar("duplicatePolicy"), DuplicatePolicy.Error, "duplicatePolicy", diagnostics),
+            ParseEnum(node.Scalar("sameDayCollisionPolicy"), CollisionPolicy.KeepAll, "sameDayCollisionPolicy", diagnostics),
+            ParseEnum(node.Scalar("spanCollisionPolicy"), CollisionPolicy.KeepAll, "spanCollisionPolicy", diagnostics),
+            ParseEnum(node.Scalar("priorityDirection"), PriorityDirection.HigherWins, "priorityDirection", diagnostics),
+            ParseEnum(node.Scalar("observedDateRangePolicy"), ObservedDateRangePolicy.ObservedOccurrenceControlsInclusion, "observedDateRangePolicy", diagnostics),
+            ParseWorkingWeek(node.Scalar("workingDays"), diagnostics),
+            precedence is null ? null : ParseEnumList(precedence, NotableDateCategory.None, "categoryPrecedence", diagnostics));
     }
 
     /// <summary>
     /// Reads the reusable adjustment policies declared by the resource.
     /// </summary>
     /// <param name="root">The root document node.</param>
+    /// <param name="diagnostics">The collection that receives semantic diagnostics.</param>
     /// <returns>The parsed adjustment policies.</returns>
-    private static List<AdjustmentPolicy> ReadAdjustmentPolicies(IDocumentNode root)
+    private static List<AdjustmentPolicy> ReadAdjustmentPolicies(IDocumentNode root, ICollection<NotableDateValidationDiagnostic> diagnostics)
     {
         List<AdjustmentPolicy> policies = new();
 
@@ -83,26 +85,26 @@ internal static class NotableDateDocumentReader
 
             IEnumerable<DayOfWeek> weekdays = trigger is null
                 ? []
-                : trigger.ScalarList(null, "Weekday", "value", "weekdays").Select(w => ParseEnum(w, DayOfWeek.Monday));
+                : ParseEnumList(trigger.ScalarList(null, "Weekday", "value", "weekdays"), DayOfWeek.Monday, "trigger weekdays", diagnostics);
 
             policies.Add(new AdjustmentPolicy(
                 policy.Scalar("id") ?? string.Empty,
                 ParseInt(policy.Scalar("priority"), 0),
-                ReadScope(policy.Child("scope")),
-                ParseEnum(trigger?.Scalar("type"), AdjustmentTrigger.Always),
+                ReadScope(policy.Child("scope"), diagnostics),
+                ParseEnum(trigger?.Scalar("type"), AdjustmentTrigger.Always, "trigger type", diagnostics),
                 weekdays,
-                ParseEnum(action?.Scalar("type"), AdjustmentAction.None),
-                ParseNullableEnum<DayOfWeek>(action?.Scalar("dayOfWeek")),
+                ParseEnum(action?.Scalar("type"), AdjustmentAction.None, "action type", diagnostics),
+                ParseNullableEnum<DayOfWeek>(action?.Scalar("dayOfWeek"), "action dayOfWeek", diagnostics),
                 ParseInt(action?.Scalar("days"), 0),
                 ParseNullableInt(action?.Scalar("maxSearchDays")),
                 ParseBool(action?.Scalar("skipWeekends"), true),
                 ParseBool(action?.Scalar("skipNonWorkingDates"), false),
-                ParseEnum(emission?.Scalar("mode"), EmissionMode.ActualOnly),
+                ParseEnum(emission?.Scalar("mode"), EmissionMode.ActualOnly, "emission mode", diagnostics),
                 emission?.Scalar("reason"),
                 ParseNullableBool(emission?.Scalar("nonWorking")),
                 ParseTriggerMonth(trigger?.Scalar("month")),
                 ParseNullableInt(trigger?.Scalar("day")),
-                ParseNullableEnum<WeekOrdinal>(trigger?.Scalar("weekOrdinal")),
+                ParseNullableEnum<WeekOrdinal>(trigger?.Scalar("weekOrdinal"), "trigger weekOrdinal", diagnostics),
                 action?.Scalar("notableDateRef"),
                 action?.Scalar("ruleRef"),
                 action?.Scalar("handlerKey"),
@@ -134,16 +136,17 @@ internal static class NotableDateDocumentReader
     /// Reads an adjustment policy scope, falling back to a global scope when absent.
     /// </summary>
     /// <param name="node">The scope node, or <see langword="null" />.</param>
+    /// <param name="diagnostics">The collection that receives semantic diagnostics.</param>
     /// <returns>The parsed <see cref="AdjustmentScope" />.</returns>
-    private static AdjustmentScope ReadScope(IDocumentNode? node)
+    private static AdjustmentScope ReadScope(IDocumentNode? node, ICollection<NotableDateValidationDiagnostic> diagnostics)
     {
         if (node is null)
             return AdjustmentScope.Global;
 
         return new AdjustmentScope(
             node.ScalarList(null, "Territory", "code", "territories"),
-            node.ScalarList(null, "Calendar", "name", "calendars").Select(c => ParseEnum(c, CalendarSystem.Gregorian)),
-            node.ScalarList(null, "Category", "value", "categories").Select(c => ParseEnum(c, NotableDateCategory.None)),
+            ParseEnumList(node.ScalarList(null, "Calendar", "name", "calendars"), CalendarSystem.Gregorian, "scope calendars", diagnostics),
+            ParseEnumList(node.ScalarList(null, "Category", "value", "categories"), NotableDateCategory.None, "scope categories", diagnostics),
             node.ScalarList(null, "NotableDate", "ref", "notableDateRefs"),
             node.QualifiedReferenceList(null, "Rule", "notableDateRef", "ruleRef", "ruleRefs")
                 .Select(reference => AdjustmentScope.QualifyRuleRef(reference.Qualifier, reference.Name)),
@@ -170,7 +173,7 @@ internal static class NotableDateDocumentReader
             definitions.Add(new NotableDateDefinition(
                 id,
                 notableDate.Scalar("displayName") ?? string.Empty,
-                ParseEnum(notableDate.Scalar("category"), NotableDateCategory.None),
+                ParseEnum(notableDate.Scalar("category"), NotableDateCategory.None, "category", diagnostics),
                 ParseBool(notableDate.Scalar("defaultNonWorkingDay"), false),
                 ParseInt(notableDate.Scalar("defaultDurationDays"), 1),
                 notableDate.ScalarList("Tags", "Tag", "value", "tags"),
@@ -211,7 +214,7 @@ internal static class NotableDateDocumentReader
         IDocumentNode? recurrenceNode = node.Child("recurrence");
         ValidateOccurrenceSource(strategyNode, recurrenceNode, notableDateId, id, diagnostics);
 
-        RuleApplicability applicability = ReadApplicability(node.Child("applicability"));
+        RuleApplicability applicability = ReadApplicability(node.Child("applicability"), diagnostics);
         NotableDateDurationDefinition? duration = ReadDuration(node, applicability.Calendar, notableDateId, id, diagnostics);
         IDateRecurrenceStrategy? recurrence = ReadRecurrence(recurrenceNode, notableDateId, id, diagnostics);
 
@@ -222,7 +225,7 @@ internal static class NotableDateDocumentReader
             ? new NotableDateRule(
                 id,
                 ParseInt(node.Scalar("priority"), 0),
-                ParseNullableEnum<NotableDateCategory>(node.Scalar("category")),
+                ParseNullableEnum<NotableDateCategory>(node.Scalar("category"), "category", diagnostics),
                 ParseNullableBool(node.Scalar("nonWorking")),
                 duration,
                 applicability,
@@ -232,7 +235,7 @@ internal static class NotableDateDocumentReader
             : new NotableDateRule(
                 id,
                 ParseInt(node.Scalar("priority"), 0),
-                ParseNullableEnum<NotableDateCategory>(node.Scalar("category")),
+                ParseNullableEnum<NotableDateCategory>(node.Scalar("category"), "category", diagnostics),
                 ParseNullableBool(node.Scalar("nonWorking")),
                 duration,
                 applicability,
@@ -250,19 +253,28 @@ internal static class NotableDateDocumentReader
     /// <param name="notableDateId">The identifier of the owning concept, used in diagnostics.</param>
     /// <param name="ruleId">The identifier of the rule, used in diagnostics.</param>
     /// <param name="diagnostics">The collection that receives semantic diagnostics.</param>
+    /// <param name="patch">
+    /// <see langword="true" /> when the nodes belong to a <c>PatchRule</c> override rather than a rule, selecting the
+    /// override's wording.
+    /// </param>
     /// <remarks>
-    /// The XSD already enforces this for XML; the check exists for JSON, which is not schema-validated, and reports the
-    /// same condition for both formats so a rule never falls back to a placeholder date or silently drops a source.
+    /// The XSD already enforces this for a rule in XML; the check exists for JSON, which is not schema-validated, and
+    /// for a <c>PatchRule</c> override, whose schema permits both a strategy and a recurrence. It reports the same
+    /// condition for both formats so a rule never falls back to a placeholder date or silently drops a source.
     /// </remarks>
-    private static void ValidateOccurrenceSource(IDocumentNode? strategy, IDocumentNode? recurrence, string notableDateId, string ruleId, ICollection<NotableDateValidationDiagnostic> diagnostics)
+    private static void ValidateOccurrenceSource(IDocumentNode? strategy, IDocumentNode? recurrence, string notableDateId, string ruleId, ICollection<NotableDateValidationDiagnostic> diagnostics, bool patch = false)
     {
         int sources = CountKinds(strategy, s_strategyKinds) + CountKinds(recurrence, s_recurrenceKinds);
         if (sources == 1)
             return;
 
-        string format = sources == 0
-            ? CalendarResourceStrings.Validation_OccurrenceSourceMissing
-            : CalendarResourceStrings.Validation_OccurrenceSourceConflict;
+        string format = (sources == 0, patch) switch
+        {
+            (true, false) => CalendarResourceStrings.Validation_OccurrenceSourceMissing,
+            (false, false) => CalendarResourceStrings.Validation_OccurrenceSourceConflict,
+            (true, true) => CalendarResourceStrings.Validation_PatchOccurrenceSourceMissing,
+            (false, true) => CalendarResourceStrings.Validation_PatchOccurrenceSourceConflict,
+        };
 
         diagnostics.Add(new NotableDateValidationDiagnostic(
             NotableDateValidationSeverity.Error,
@@ -283,14 +295,15 @@ internal static class NotableDateDocumentReader
     /// Reads a rule's applicability, falling back to a global Gregorian applicability when absent.
     /// </summary>
     /// <param name="node">The applicability node, or <see langword="null" />.</param>
+    /// <param name="diagnostics">The collection that receives semantic diagnostics.</param>
     /// <returns>The parsed <see cref="RuleApplicability" />.</returns>
-    private static RuleApplicability ReadApplicability(IDocumentNode? node)
+    private static RuleApplicability ReadApplicability(IDocumentNode? node, ICollection<NotableDateValidationDiagnostic> diagnostics)
     {
         if (node is null)
             return new RuleApplicability(CalendarSystem.Gregorian, null, null, [], [], []);
 
         return new RuleApplicability(
-            ParseEnum(node.Scalar("calendar"), CalendarSystem.Gregorian),
+            ParseEnum(node.Scalar("calendar"), CalendarSystem.Gregorian, "calendar", diagnostics),
             ParseNullableInt(node.Scalar("fromYear")),
             ParseNullableInt(node.Scalar("toYear")),
             node.ScalarList(null, "Territory", "code", "territories"),
@@ -371,8 +384,8 @@ internal static class NotableDateDocumentReader
         {
             return new DayOfWeekInMonthStrategy(
                 ParseMonth(dayOfWeekInMonth.Scalar("month"), notableDateId, ruleId, diagnostics),
-                ParseEnum(dayOfWeekInMonth.Scalar("dayOfWeek"), DayOfWeek.Monday),
-                ParseEnum(dayOfWeekInMonth.Scalar("weekOrdinal"), WeekOrdinal.First));
+                ParseEnum(dayOfWeekInMonth.Scalar("dayOfWeek"), DayOfWeek.Monday, "dayOfWeekInMonth dayOfWeek", diagnostics),
+                ParseEnum(dayOfWeekInMonth.Scalar("weekOrdinal"), WeekOrdinal.First, "dayOfWeekInMonth weekOrdinal", diagnostics));
         }
 
         if (node.Child("weekdayNearDate") is IDocumentNode weekdayNearDate)
@@ -380,18 +393,18 @@ internal static class NotableDateDocumentReader
             return new WeekdayNearDateStrategy(
                 ParseMonth(weekdayNearDate.Scalar("month"), notableDateId, ruleId, diagnostics),
                 Math.Clamp(ParseInt(weekdayNearDate.Scalar("day"), 1), 1, 31),
-                ParseEnum(weekdayNearDate.Scalar("dayOfWeek"), DayOfWeek.Monday),
-                ParseEnum(weekdayNearDate.Scalar("direction"), WeekdayProximity.OnOrAfter));
+                ParseEnum(weekdayNearDate.Scalar("dayOfWeek"), DayOfWeek.Monday, "weekdayNearDate dayOfWeek", diagnostics),
+                ParseEnum(weekdayNearDate.Scalar("direction"), WeekdayProximity.OnOrAfter, "weekdayNearDate direction", diagnostics));
         }
 
         if (node.Child("relativeWeekdayInMonth") is IDocumentNode relativeWeekdayInMonth)
         {
             return new RelativeWeekdayInMonthStrategy(
                 ParseMonth(relativeWeekdayInMonth.Scalar("month"), notableDateId, ruleId, diagnostics),
-                ParseEnum(relativeWeekdayInMonth.Scalar("dayOfWeek"), DayOfWeek.Monday),
-                ParseEnum(relativeWeekdayInMonth.Scalar("weekOrdinal"), WeekOrdinal.First),
-                ParseEnum(relativeWeekdayInMonth.Scalar("relativeDayOfWeek"), DayOfWeek.Monday),
-                ParseEnum(relativeWeekdayInMonth.Scalar("direction"), WeekdayProximity.After));
+                ParseEnum(relativeWeekdayInMonth.Scalar("dayOfWeek"), DayOfWeek.Monday, "relativeWeekdayInMonth dayOfWeek", diagnostics),
+                ParseEnum(relativeWeekdayInMonth.Scalar("weekOrdinal"), WeekOrdinal.First, "relativeWeekdayInMonth weekOrdinal", diagnostics),
+                ParseEnum(relativeWeekdayInMonth.Scalar("relativeDayOfWeek"), DayOfWeek.Monday, "relativeWeekdayInMonth relativeDayOfWeek", diagnostics),
+                ParseEnum(relativeWeekdayInMonth.Scalar("direction"), WeekdayProximity.After, "relativeWeekdayInMonth direction", diagnostics));
         }
 
         if (node.Child("offsetFromRule") is IDocumentNode offsetFromRule)
@@ -412,8 +425,8 @@ internal static class NotableDateDocumentReader
             return new WeekdayNearRuleStrategy(
                 weekdayNearRule.Scalar("notableDateRef") ?? string.Empty,
                 string.IsNullOrEmpty(ruleRef) ? null : ruleRef,
-                ParseEnum(weekdayNearRule.Scalar("dayOfWeek"), DayOfWeek.Monday),
-                ParseEnum(weekdayNearRule.Scalar("direction"), WeekdayProximity.OnOrAfter),
+                ParseEnum(weekdayNearRule.Scalar("dayOfWeek"), DayOfWeek.Monday, "weekdayNearRule dayOfWeek", diagnostics),
+                ParseEnum(weekdayNearRule.Scalar("direction"), WeekdayProximity.OnOrAfter, "weekdayNearRule direction", diagnostics),
                 ParseInt(weekdayNearRule.Scalar("referenceYearOffset"), 0));
         }
 
@@ -423,7 +436,7 @@ internal static class NotableDateDocumentReader
             return new NthWeekdayFromRuleStrategy(
                 nthWeekdayFromRule.Scalar("notableDateRef") ?? string.Empty,
                 string.IsNullOrEmpty(ruleRef) ? null : ruleRef,
-                ParseEnum(nthWeekdayFromRule.Scalar("dayOfWeek"), DayOfWeek.Monday),
+                ParseEnum(nthWeekdayFromRule.Scalar("dayOfWeek"), DayOfWeek.Monday, "nthWeekdayFromRule dayOfWeek", diagnostics),
                 ParseInt(nthWeekdayFromRule.Scalar("ordinal"), 1),
                 ParseInt(nthWeekdayFromRule.Scalar("referenceYearOffset"), 0));
         }
@@ -456,7 +469,7 @@ internal static class NotableDateDocumentReader
         {
             return new IsoWeekDateStrategy(
                 ParseInt(isoWeekDate.Scalar("week"), 1),
-                ParseEnum(isoWeekDate.Scalar("dayOfWeek"), DayOfWeek.Monday));
+                ParseEnum(isoWeekDate.Scalar("dayOfWeek"), DayOfWeek.Monday, "isoWeekDate dayOfWeek", diagnostics));
         }
 
         if (node.Child("dayOfYear") is IDocumentNode dayOfYear)
@@ -502,11 +515,28 @@ internal static class NotableDateDocumentReader
                 return null;
             }
 
+            // The schema holds an XML end strategy to one kind; a JSON one is checked here, as a rule's start strategy
+            // is, so the end never falls back to a placeholder 1 January or silently drops a kind.
+            int endKinds = CountKinds(endStrategyNode, s_strategyKinds);
+            if (endKinds != 1)
+            {
+                diagnostics.Add(endKinds == 0
+                    ? new NotableDateValidationDiagnostic(
+                        NotableDateValidationSeverity.Error,
+                        "BODU-CAL-DURATION-NOEND",
+                        string.Format(System.Globalization.CultureInfo.CurrentCulture, CalendarResourceStrings.Validation_DurationEndStrategyKindMissing, notableDateId, ruleId))
+                    : new NotableDateValidationDiagnostic(
+                        NotableDateValidationSeverity.Error,
+                        "BODU-CAL-DURATION-CONFLICT",
+                        string.Format(System.Globalization.CultureInfo.CurrentCulture, CalendarResourceStrings.Validation_DurationEndStrategyConflict, notableDateId, ruleId)));
+                return null;
+            }
+
             return new CalculatedEndDateDurationDefinition(
                 ReadStrategy(endStrategyNode, calendar, notableDateId, ruleId, diagnostics),
-                ParseEnum(untilDate.Scalar("startBoundary"), DateBoundary.Inclusive),
-                ParseEnum(untilDate.Scalar("endBoundary"), DateBoundary.Inclusive),
-                ParseEnum(untilDate.Scalar("selection"), EndDateSelection.FirstOnOrAfterStart));
+                ParseEnum(untilDate.Scalar("startBoundary"), DateBoundary.Inclusive, "untilDate startBoundary", diagnostics),
+                ParseEnum(untilDate.Scalar("endBoundary"), DateBoundary.Inclusive, "untilDate endBoundary", diagnostics),
+                ParseEnum(untilDate.Scalar("selection"), EndDateSelection.FirstOnOrAfterStart, "untilDate selection", diagnostics));
         }
 
         return durationDays is int fixedDays ? new FixedDurationDefinition(fixedDays) : null;
@@ -539,9 +569,7 @@ internal static class NotableDateDocumentReader
 
             if (node.Child("weekly") is IDocumentNode weekly)
             {
-                var days = weekly.ScalarList(null, "Day", "dayOfWeek", "days")
-                    .Select(value => ParseEnum(value, DayOfWeek.Monday))
-                    .ToList();
+                List<DayOfWeek> days = ParseEnumList(weekly.ScalarList(null, "Day", "dayOfWeek", "days"), DayOfWeek.Monday, "weekly days", diagnostics);
                 return new WeeklyRecurrenceStrategy(
                     days,
                     ParseInt(weekly.Scalar("intervalWeeks"), 1),
@@ -554,14 +582,14 @@ internal static class NotableDateDocumentReader
                     ParseInt(monthlyDay.Scalar("dayOfMonth"), 1),
                     ParseInt(monthlyDay.Scalar("intervalMonths"), 1),
                     ParseDate(monthlyDay.Scalar("anchorDate")),
-                    ParseEnum(monthlyDay.Scalar("invalidDayBehavior"), InvalidDayOfMonthBehavior.Skip));
+                    ParseEnum(monthlyDay.Scalar("invalidDayBehavior"), InvalidDayOfMonthBehavior.Skip, "monthlyDay invalidDayBehavior", diagnostics));
             }
 
             if (node.Child("monthlyWeekday") is IDocumentNode monthlyWeekday)
             {
                 return new MonthlyWeekdayRecurrenceStrategy(
-                    ParseEnum(monthlyWeekday.Scalar("dayOfWeek"), DayOfWeek.Monday),
-                    ParseEnum(monthlyWeekday.Scalar("weekOrdinal"), WeekOrdinal.First),
+                    ParseEnum(monthlyWeekday.Scalar("dayOfWeek"), DayOfWeek.Monday, "monthlyWeekday dayOfWeek", diagnostics),
+                    ParseEnum(monthlyWeekday.Scalar("weekOrdinal"), WeekOrdinal.First, "monthlyWeekday weekOrdinal", diagnostics),
                     ParseInt(monthlyWeekday.Scalar("intervalMonths"), 1),
                     ParseDate(monthlyWeekday.Scalar("anchorDate")));
             }
@@ -637,7 +665,14 @@ internal static class NotableDateDocumentReader
 
         IDocumentNode? applicabilityNode = operation.Child("applicability");
         IDocumentNode? strategyNode = operation.Child("strategy");
-        RuleApplicability? applicability = applicabilityNode is null ? null : ReadApplicability(applicabilityNode);
+        IDocumentNode? recurrenceNode = operation.Child("recurrence");
+
+        // A patch that carries neither a strategy nor a recurrence leaves the rule's occurrence source unchanged; one
+        // that carries either replaces it, so it must name exactly one source, as a rule must.
+        if (strategyNode is not null || recurrenceNode is not null)
+            ValidateOccurrenceSource(strategyNode, recurrenceNode, notableDateRef, ruleRef, diagnostics, patch: true);
+
+        RuleApplicability? applicability = applicabilityNode is null ? null : ReadApplicability(applicabilityNode, diagnostics);
         CalendarSystem calendar = applicability?.Calendar ?? CalendarSystem.Gregorian;
 
         IReadOnlyList<string>? adjustments = operation.OptionalScalarList("Adjustments", "Adjustment", "policyRef", "adjustments");
@@ -653,12 +688,12 @@ internal static class NotableDateDocumentReader
             notableDateRef,
             ruleRef,
             ParseNullableInt(operation.Scalar("priority")),
-            ParseNullableEnum<NotableDateCategory>(operation.Scalar("category")),
+            ParseNullableEnum<NotableDateCategory>(operation.Scalar("category"), "category", diagnostics),
             ParseNullableBool(operation.Scalar("nonWorking")),
             duration,
             applicability,
             strategyNode is null ? null : ReadStrategy(strategyNode, calendar, notableDateRef, ruleRef, diagnostics),
-            ReadRecurrence(operation.Child("recurrence"), notableDateRef, ruleRef, diagnostics),
+            ReadRecurrence(recurrenceNode, notableDateRef, ruleRef, diagnostics),
             adjustments is null ? null : [.. adjustments],
             tags is null ? null : [.. tags]);
     }
@@ -667,8 +702,9 @@ internal static class NotableDateDocumentReader
     /// Reads the import directives declared by the resource.
     /// </summary>
     /// <param name="root">The root document node.</param>
+    /// <param name="diagnostics">The collection that receives semantic diagnostics.</param>
     /// <returns>The parsed import directives.</returns>
-    private static List<NotableDateImport> ReadImports(IDocumentNode root)
+    private static List<NotableDateImport> ReadImports(IDocumentNode root, ICollection<NotableDateValidationDiagnostic> diagnostics)
     {
         List<NotableDateImport> imports = new();
 
@@ -681,7 +717,7 @@ internal static class NotableDateDocumentReader
                     use.Scalar("notableDateRef") ?? string.Empty,
                     use.Scalar("as"),
                     use.Scalar("territory"),
-                    ParseNullableEnum<NotableDateCategory>(use.Scalar("category")),
+                    ParseNullableEnum<NotableDateCategory>(use.Scalar("category"), "import use category", diagnostics),
                     ParseNullableBool(use.Scalar("nonWorking")),
                     use.OptionalScalarList("Adjustments", "Adjustment", "policyRef", "adjustments")));
             }

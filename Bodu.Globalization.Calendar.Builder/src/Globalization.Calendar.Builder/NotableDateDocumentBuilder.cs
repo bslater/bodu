@@ -331,6 +331,9 @@ public sealed partial class NotableDateDocumentBuilder
     /// <exception cref="NotableDateValidationException">
     /// A <c>.bcal</c> target is requested and the document produced one or more error diagnostics.
     /// </exception>
+    /// <remarks>
+    /// XML and JSON are written as UTF-8 without a byte order mark, and the XML declaration names that encoding.
+    /// </remarks>
     /// <example>
     /// <code language="csharp">
     ///<![CDATA[
@@ -369,6 +372,9 @@ public sealed partial class NotableDateDocumentBuilder
     /// <exception cref="NotableDateValidationException">
     /// A binary target is requested and the document produced one or more error diagnostics.
     /// </exception>
+    /// <remarks>
+    /// XML and JSON are written as UTF-8 without a byte order mark, and the XML declaration names that encoding.
+    /// </remarks>
     public void Save(string path, NotableDateDocumentFormat format)
     {
         ThrowHelper.ThrowIfNullOrWhiteSpace(path);

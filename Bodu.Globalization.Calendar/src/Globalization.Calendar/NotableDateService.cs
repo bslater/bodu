@@ -23,6 +23,12 @@ namespace Bodu.Globalization.Calendar;
 /// observed date falls inside it, the service scans one civil year either side of the window.
 /// </para>
 /// <para>
+/// The same-day collision policy settles each day over every occurrence emitted on it, including one whose span ends
+/// before the window, so a multi-day occurrence that loses its emitted day's collision is absent from every window it
+/// reaches into. A window's result is therefore a wider resolution's result restricted to the window, whatever the
+/// window and the policy.
+/// </para>
+/// <para>
 /// <strong>Thread safety.</strong> The service is immutable once constructed and holds no per-query mutable state, so a
 /// single instance is safe to share across threads. Prefer reusing one instance per resource rather than reconstructing
 /// it per query, since each query re-scans the resource.
@@ -137,11 +143,20 @@ public sealed class NotableDateService
 
         candidates.Sort(CompareForPlacement);
 
+        // A same-day collision is settled over every occurrence emitted on the day, including one whose span ends
+        // before the window, so the occurrences are collected from the earliest day an occurrence reaching into the
+        // window can be emitted on, settled, and only then restricted to the window. Whether an occurrence survives
+        // therefore never depends on the window asked for. KeepAll settles nothing, so the window alone is collected.
+        bool settles = _resource.ResolutionPolicy.SameDayCollisionPolicy != CollisionPolicy.KeepAll;
+        int reach = settles ? LongestSpan(candidates) : 1;
+        List<NotableDate> provided = GatherProviderOccurrences(range, territory, settles, ref reach);
+        DateRange collection = new(EarliestEmittedDate(range, reach), range.EndDate);
+
         List<NotableDate> results = new();
         foreach (ResolutionCandidate candidate in candidates)
-            EmitCandidate(results, candidate, territory, occupied, range, context);
+            EmitCandidate(results, candidate, territory, occupied, collection, context);
 
-        AddProviderOccurrences(results, range, territory);
+        results.AddRange(provided);
 
         var ordered = results
             .OrderBy(r => r.Date)
@@ -149,7 +164,7 @@ public sealed class NotableDateService
             .ThenBy(r => r.RuleId, StringComparer.Ordinal)
             .ToList();
 
-        return ApplySameDayCollisionPolicy(ordered);
+        return ApplySameDayCollisionPolicy(ordered, range);
     }
 
     /// <inheritdoc />
@@ -460,9 +475,9 @@ public sealed class NotableDateService
     }
 
     /// <summary>
-    /// Determines whether a provider occurrence's inclusive span intersects the requested window.
+    /// Determines whether an occurrence's inclusive span intersects a window.
     /// </summary>
-    /// <param name="occurrence">The provider occurrence.</param>
+    /// <param name="occurrence">The occurrence.</param>
     /// <param name="range">The inclusive range.</param>
     /// <returns>
     /// <see langword="true" /> when the span intersects the range; otherwise <see langword="false" />.
@@ -476,14 +491,22 @@ public sealed class NotableDateService
     /// <summary>
     /// Applies the resource's same-day collision policy to occurrences sharing an emitted date, keeping all of them,
     /// the highest-priority occurrence(s), the highest-category-then-priority occurrence(s), or whatever a custom
-    /// resolver selects.
+    /// resolver selects, and returns the survivors whose span intersects the requested window.
     /// </summary>
-    /// <param name="ordered">The date-ordered occurrences.</param>
-    /// <returns>The occurrences surviving the policy, preserving order.</returns>
-    private List<NotableDate> ApplySameDayCollisionPolicy(List<NotableDate> ordered)
+    /// <param name="ordered">
+    /// The date-ordered occurrences, holding every occurrence emitted on each day that an occurrence reaching into the
+    /// window is emitted on.
+    /// </param>
+    /// <param name="range">The requested window the survivors are restricted to.</param>
+    /// <returns>The occurrences surviving the policy that intersect the window, preserving order.</returns>
+    /// <remarks>
+    /// A day none of whose occurrences reaches into the window is skipped without being settled, so a custom resolver
+    /// is consulted only for days that can contribute to the result.
+    /// </remarks>
+    private List<NotableDate> ApplySameDayCollisionPolicy(List<NotableDate> ordered, DateRange range)
     {
         CollisionPolicy policy = _resource.ResolutionPolicy.SameDayCollisionPolicy;
-        if (policy == CollisionPolicy.KeepAll || ordered.Count < 2)
+        if (policy == CollisionPolicy.KeepAll)
             return ordered;
 
         bool higherWins = _resource.ResolutionPolicy.PriorityDirection == PriorityDirection.HigherWins;
@@ -494,16 +517,24 @@ public sealed class NotableDateService
         {
             DateOnly date = ordered[index].Date;
             int end = index;
+            bool reachesWindow = false;
             while (end < ordered.Count && ordered[end].Date == date)
+            {
+                reachesWindow |= SpanIntersects(ordered[end], range);
                 end++;
-
-            if (end - index == 1)
-            {
-                kept.Add(ordered[index]);
             }
-            else
+
+            if (reachesWindow)
             {
-                kept.AddRange(ResolveCollision(date, ordered.GetRange(index, end - index), policy, higherWins));
+                IReadOnlyList<NotableDate> survivors = end - index == 1
+                    ? [ordered[index]]
+                    : ResolveCollision(date, ordered.GetRange(index, end - index), policy, higherWins);
+
+                foreach (NotableDate survivor in survivors)
+                {
+                    if (SpanIntersects(survivor, range))
+                        kept.Add(survivor);
+                }
             }
 
             index = end;
@@ -864,25 +895,82 @@ public sealed class NotableDateService
     }
 
     /// <summary>
-    /// Appends the occurrences contributed by any registered code-first providers whose span intersects the requested
-    /// window. Provider occurrences are emitted as supplied and bypass the adjustment, override, and specificity
-    /// pipeline; they take part only in the subsequent ordering and same-day collision policy.
+    /// Returns the longest span, in days, of the candidates, which bounds how long before the window an occurrence
+    /// reaching into it can be emitted.
     /// </summary>
-    /// <param name="results">The accumulating result list.</param>
-    /// <param name="range">The inclusive range that controls inclusion.</param>
-    /// <param name="territory">The requested territory code.</param>
-    private void AddProviderOccurrences(List<NotableDate> results, DateRange range, string territory)
+    /// <param name="candidates">The resolution candidates.</param>
+    /// <returns>The longest candidate span; one when there are no candidates.</returns>
+    private static int LongestSpan(List<ResolutionCandidate> candidates)
     {
-        if (_providers is null)
-            return;
+        int longest = 1;
+        foreach (ResolutionCandidate candidate in candidates)
+            longest = Math.Max(longest, candidate.DurationDays);
 
-        foreach (INotableDateProvider provider in _providers)
+        return longest;
+    }
+
+    /// <summary>
+    /// Returns the earliest day an occurrence no longer than the supplied reach can be emitted on and still reach into
+    /// the window, clamped to <see cref="DateOnly.MinValue" />.
+    /// </summary>
+    /// <param name="range">The requested window.</param>
+    /// <param name="reach">The longest span, in days, an occurrence can have.</param>
+    /// <returns>The first day of the collection window.</returns>
+    private static DateOnly EarliestEmittedDate(DateRange range, int reach) =>
+        DateOnly.FromDayNumber((int)Math.Max(DateOnly.MinValue.DayNumber, (long)range.StartDate.DayNumber - (reach - 1)));
+
+    /// <summary>
+    /// Collects the occurrences contributed by any registered code-first providers whose span intersects the collection
+    /// window, widening the window, and the reach, until no provider occurrence reaching into the requested window is
+    /// longer than the reach. Provider occurrences are emitted as supplied and bypass the adjustment, override, and
+    /// specificity pipeline; they take part only in the subsequent ordering and same-day collision policy.
+    /// </summary>
+    /// <param name="range">The requested window.</param>
+    /// <param name="territory">The requested territory code.</param>
+    /// <param name="settles">
+    /// Whether the same-day collision policy settles collisions, so the providers are asked for the days before the
+    /// window that an occurrence reaching into it can be emitted on.
+    /// </param>
+    /// <param name="reach">
+    /// The longest span, in days, an occurrence can have; on return, at least the span of every provider occurrence
+    /// that reaches into the window.
+    /// </param>
+    /// <returns>The provider occurrences whose span intersects the final collection window.</returns>
+    /// <remarks>
+    /// A provider occurrence that reaches into the window but starts before the collection window takes part in the
+    /// collision of the day it is emitted on, so that day's other occurrences must be collected too: the providers are
+    /// asked again from that earlier day. The reach only grows, so the loop ends once the providers return nothing
+    /// longer.
+    /// </remarks>
+    private List<NotableDate> GatherProviderOccurrences(DateRange range, string territory, bool settles, ref int reach)
+    {
+        List<NotableDate> occurrences = new();
+        if (_providers is null)
+            return occurrences;
+
+        while (true)
         {
-            foreach (NotableDate occurrence in provider.GetNotableDates(range, territory))
+            DateRange collection = new(EarliestEmittedDate(range, reach), range.EndDate);
+            int longest = reach;
+            occurrences.Clear();
+
+            foreach (INotableDateProvider provider in _providers)
             {
-                if (occurrence is not null && SpanIntersects(occurrence, range))
-                    results.Add(occurrence);
+                foreach (NotableDate occurrence in provider.GetNotableDates(collection, territory))
+                {
+                    if (occurrence is null || !SpanIntersects(occurrence, collection))
+                        continue;
+
+                    occurrences.Add(occurrence);
+                    if (settles && SpanIntersects(occurrence, range))
+                        longest = Math.Max(longest, occurrence.DurationDays);
+                }
             }
+
+            if (longest <= reach)
+                return occurrences;
+
+            reach = longest;
         }
     }
 }

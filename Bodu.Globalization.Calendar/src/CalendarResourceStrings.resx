@@ -84,6 +84,9 @@
   <data name="Op_Invalid_NoNonWorkingDayFound" xml:space="preserve">
     <value>No non-working day was found within the search limit.</value>
   </data>
+  <data name="Op_NotSupported_BinaryPackType" xml:space="preserve">
+    <value>The binary rule-pack format cannot encode '{0}'; it supports only the built-in calculation strategies, recurrence strategies, and duration definitions.</value>
+  </data>
   <data name="Validation_DuplicateAdjustmentPolicyId" xml:space="preserve">
     <value>Duplicate adjustment-policy identifier '{0}'.</value>
   </data>
@@ -105,8 +108,11 @@
   <data name="Validation_InvalidMonthValue" xml:space="preserve">
     <value>Notable date '{0}', rule '{1}': '{2}' is not a valid month value. Expected a full English month name or an integer between 1 and 12.</value>
   </data>
-  <data name="Validation_InvalidTerritoryCode" xml:space="preserve">
-    <value>Notable date '{0}', rule '{1}': '{2}' is not a valid territory code.</value>
+  <data name="Validation_InvalidWorkingDays" xml:space="preserve">
+    <value>Resolution policy: workingDays '{0}' is not a seven-character, Sunday-first binary working-week pattern such as 0111110.</value>
+  </data>
+  <data name="Validation_InvalidEnumValue" xml:space="preserve">
+    <value>The {0} value '{1}' is not recognized; expected one of: {2}.</value>
   </data>
   <data name="Validation_OverrideNotableDateNotFound" xml:space="preserve">
     <value>Override operation targets notable date '{0}', which does not exist in the resolved resource.</value>
@@ -174,6 +180,12 @@
   <data name="Validation_DurationEndStrategyMissing" xml:space="preserve">
     <value>Notable date '{0}', rule '{1}': the calculated end-date duration is missing an end strategy.</value>
   </data>
+  <data name="Validation_DurationEndStrategyKindMissing" xml:space="preserve">
+    <value>Notable date '{0}', rule '{1}': the calculated end-date duration's end strategy names no recognized strategy kind.</value>
+  </data>
+  <data name="Validation_DurationEndStrategyConflict" xml:space="preserve">
+    <value>Notable date '{0}', rule '{1}': the calculated end-date duration's end strategy names more than one strategy kind; exactly one is required.</value>
+  </data>
   <data name="Validation_DurationOffsetReferenceNotFound" xml:space="preserve">
     <value>Notable date '{0}', rule '{1}': the calculated end-date duration references '{2}', which resolves to no rule.</value>
   </data>
@@ -198,11 +210,11 @@
   <data name="Validation_OccurrenceSourceConflict" xml:space="preserve">
     <value>Notable date '{0}', rule '{1}': the rule declares more than one strategy or recurrence; exactly one is required.</value>
   </data>
-  <data name="Validation_InvalidOrdinalValue" xml:space="preserve">
-    <value>Notable date '{0}', rule '{1}': ordinal '{2}' is invalid.</value>
+  <data name="Validation_PatchOccurrenceSourceMissing" xml:space="preserve">
+    <value>Notable date '{0}', rule '{1}': the PatchRule override declares a strategy or recurrence that names no recognized kind; a patched occurrence source must name exactly one.</value>
   </data>
-  <data name="Validation_InvalidWeekValue" xml:space="preserve">
-    <value>Notable date '{0}', rule '{1}': ISO week '{2}' is out of range.</value>
+  <data name="Validation_PatchOccurrenceSourceConflict" xml:space="preserve">
+    <value>Notable date '{0}', rule '{1}': the PatchRule override declares more than one strategy or recurrence; a patched occurrence source must name exactly one.</value>
   </data>
   <data name="Validation_ReferenceIsRecurring" xml:space="preserve">
     <value>Notable date '{0}', rule '{1}': referenced rule '{2}' is a recurrence and cannot be used as a singular reference.</value>

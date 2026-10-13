@@ -91,4 +91,10 @@
   <data name="Op_Invalid_ServiceNotRegistered" xml:space="preserve">
     <value>No INotableDateService is registered; register one (for example with AddNotableDateService or a calendar data-pack registration) before calling AddCachedNotableDateService.</value>
   </data>
+  <data name="Op_Invalid_CachingOptions" xml:space="preserve">
+    <value>The notable-date caching options are invalid.</value>
+  </data>
+  <data name="Op_Invalid_WarmupOptions" xml:space="preserve">
+    <value>The notable-date cache warm-up options are invalid.</value>
+  </data>
 </root>

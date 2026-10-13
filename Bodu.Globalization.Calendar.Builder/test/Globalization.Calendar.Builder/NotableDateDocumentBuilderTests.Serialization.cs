@@ -29,6 +29,20 @@ public partial class NotableDateDocumentBuilderTests
     }
 
     /// <summary>
+    /// Verifies that the emitted XML declares the UTF-8 encoding <see cref="NotableDateDocumentBuilder.ToXDocument()" />
+    /// declares, rather than the encoding of the in-memory string it is written to.
+    /// </summary>
+    [TestMethod]
+    public void ToXml_WhenSerialized_ShouldDeclareUtf8Encoding()
+    {
+        string xml = SampleDocument().ToXml();
+
+        XDocument document = XDocument.Parse(xml);
+
+        Assert.AreEqual("utf-8", document.Declaration?.Encoding);
+    }
+
+    /// <summary>
     /// Verifies that the emitted XML is accepted by the canonical loader and assembles into a resource matching the
     /// directly built one.
     /// </summary>

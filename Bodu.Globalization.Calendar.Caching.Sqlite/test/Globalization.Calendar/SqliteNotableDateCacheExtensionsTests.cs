@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Globalization;
 using Bodu.Globalization.Calendar.Caching;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -166,6 +167,23 @@ public sealed class SqliteNotableDateCacheExtensionsTests
         {
             _ = provider.GetRequiredService<INotableDateCache>();
         });
+    }
+
+    /// <summary>
+    /// Verifies that invalid SQLite cache options fail validation with the package's resource message.
+    /// </summary>
+    [TestMethod]
+    public void AddSqliteNotableDateCache_WhenOptionsInvalid_ShouldFailWithResourceMessage()
+    {
+        using ServiceProvider provider = BuildProvider(services => services.AddSqliteNotableDateCache());
+        string? expected = CalendarCachingSqliteResourceStrings.ResourceManager.GetString("Op_Invalid_CacheOptions", CultureInfo.CurrentCulture);
+
+        OptionsValidationException ex = Assert.ThrowsExactly<OptionsValidationException>(() =>
+        {
+            _ = provider.GetRequiredService<IOptions<SqliteNotableDateCacheOptions>>().Value;
+        });
+
+        Assert.AreEqual(expected, ex.Failures.Single());
     }
 
     /// <summary>

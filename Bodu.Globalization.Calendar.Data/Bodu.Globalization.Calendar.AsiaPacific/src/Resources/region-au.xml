@@ -32,9 +32,9 @@
 <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.au">
 
   <!--
-    Resolution policy. duplicatePolicy="Error" rejects two rules that resolve to the same identity; KeepAll keeps
-    every distinct occurrence that lands on a shared day (Australia layers observances and public holidays freely,
-    so same-day collisions are expected, not pruned).
+    Resolution policy. duplicatePolicy is reserved and has no effect: a duplicate notable-date, rule, or policy
+    identifier is a load error whatever its value. KeepAll keeps every distinct occurrence that lands on a shared day
+    (Australia layers observances and public holidays freely, so same-day collisions are expected, not pruned).
   -->
   <ResolutionPolicy duplicatePolicy="Error" sameDayCollisionPolicy="KeepAll" priorityDirection="HigherWins" />
 

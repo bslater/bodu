@@ -56,21 +56,28 @@ public sealed partial class NotableDateDocumentBuilder
     /// </summary>
     /// <returns>The serialized XML.</returns>
     /// <exception cref="InvalidOperationException">The document is incomplete.</exception>
+    /// <remarks>
+    /// The XML declaration names the UTF-8 encoding, so the text can be written to a file as UTF-8, as
+    /// <see cref="Save(string)" /> writes it, and read back by any XML reader.
+    /// </remarks>
     public string ToXml()
     {
         XDocument document = ToXDocument();
+        var encoding = new System.Text.UTF8Encoding(false);
         XmlWriterSettings settings = new()
         {
             Indent = true,
-            Encoding = new System.Text.UTF8Encoding(false),
+            Encoding = encoding,
             OmitXmlDeclaration = false,
         };
 
-        using var stringWriter = new System.IO.StringWriter(CultureInfo.InvariantCulture);
-        using (var writer = XmlWriter.Create(stringWriter, settings))
+        // An XmlWriter over a TextWriter declares the writer's encoding, which for a StringWriter is UTF-16, so the
+        // document is written as UTF-8 bytes and decoded: the declaration then names the encoding a file holds.
+        using var stream = new System.IO.MemoryStream();
+        using (var writer = XmlWriter.Create(stream, settings))
             document.Save(writer);
 
-        return stringWriter.ToString();
+        return encoding.GetString(stream.GetBuffer(), 0, (int)stream.Length);
     }
 
     /// <summary>

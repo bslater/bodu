@@ -202,6 +202,28 @@ public sealed partial class NotableDateResourceLoaderTests
     }
 
     /// <summary>
+    /// Verifies that a malformed resolution-policy <c>workingDays</c> is reported as a <c>BODU-CAL-WORKING-DAYS</c> error
+    /// diagnostic through both collect-mode entry points, rather than escaping as a <see cref="FormatException" />.
+    /// </summary>
+    [TestMethod]
+    public void TryLoad_WhenWorkingDaysMalformed_ShouldReportWorkingDaysDiagnostic()
+    {
+        const string xml = """
+            <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="test.trylad.working-days">
+              <ResolutionPolicy workingDays="MTWTF" />
+            </NotableDateResource>
+            """;
+        const string json = """{ "schemaVersion": "1.0", "resourceId": "test.trylad.working-days-json", "resolutionPolicy": { "workingDays": "MTWTF" } }""";
+
+        bool loadedXml = NotableDateResourceLoader.TryLoad(xml, _ => null, out _, out IReadOnlyList<NotableDateValidationDiagnostic> xmlDiagnostics);
+        bool loadedJson = NotableDateResourceLoader.TryLoadJson(json, _ => null, out _, out IReadOnlyList<NotableDateValidationDiagnostic> jsonDiagnostics);
+
+        Assert.AreEqual((false, false), (loadedXml, loadedJson));
+        Assert.Contains(d => d.Code == "BODU-CAL-WORKING-DAYS" && d.Severity == NotableDateValidationSeverity.Error, xmlDiagnostics, "XML");
+        Assert.Contains(d => d.Code == "BODU-CAL-WORKING-DAYS" && d.Severity == NotableDateValidationSeverity.Error, jsonDiagnostics, "JSON");
+    }
+
+    /// <summary>
     /// Verifies that <see langword="null" /> arguments are rejected - the <c>Try</c> contract covers data errors, not
     /// usage errors.
     /// </summary>

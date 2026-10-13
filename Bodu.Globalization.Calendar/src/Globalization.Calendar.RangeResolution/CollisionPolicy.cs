@@ -20,6 +20,11 @@ namespace Bodu.Globalization.Calendar.RangeResolution;
 /// an emitted date. <see cref="ResolutionPolicy.SpanCollisionPolicy" />, meant for overlapping multi-day spans, is
 /// reserved: it is stored but not applied, so overlapping spans are never reconciled (<see href="https://github.com/bslater/bodu/issues/1119">issue #1119</see>).
 /// </para>
+/// <para>
+/// A collision is settled once per emitted date, over every occurrence emitted on that date, whatever range is queried:
+/// a multi-day occurrence takes part only in the collision of its emitted date, and when it loses there it is absent
+/// from every query its span reaches into, including one whose window starts after the emitted date.
+/// </para>
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[

@@ -65,7 +65,7 @@ public static class DistributedNotableDateCacheExtensions
         if (configure is not null)
             optionsBuilder.Configure(configure);
         optionsBuilder
-            .Validate(static options => options.TryValidate(out _), "Distributed notable-date cache options are invalid.")
+            .Validate(static options => options.TryValidate(out _), CalendarCachingDistributedResourceStrings.Op_Invalid_CacheOptions)
             .ValidateOnStart();
 
         services.TryAddEnumerable(ServiceDescriptor.Singleton<IValidateOptions<DistributedNotableDateCacheOptions>, DistributedCacheStorageStartupValidator>());

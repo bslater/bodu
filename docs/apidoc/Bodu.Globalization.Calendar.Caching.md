@@ -108,7 +108,7 @@ using var calendar = new CachingNotableDateService(
 
 // The first query computes and caches all of 2026; the next two are cache hits.
 IReadOnlyList<NotableDate> year = calendar.Resolve(2026, "US");
-IReadOnlyList<NotableDate> day = calendar.Resolve(new DateOnly(2026, 7, 4), "US");
+IReadOnlyList<NotableDate> day = calendar.Resolve(new DateOnly(2026, 7, 3), "US");   // observed Independence Day
 IReadOnlyList<NotableDate> closures = calendar.Resolve(2026, "US-CA", NotableDateFilter.IsNonWorkingDay());
 
 // Pre-pay the computations for next year as well.

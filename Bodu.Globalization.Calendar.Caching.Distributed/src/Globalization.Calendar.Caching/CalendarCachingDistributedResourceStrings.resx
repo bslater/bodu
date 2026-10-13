@@ -67,4 +67,7 @@
   <data name="Op_Invalid_StorageProbeFailed" xml:space="preserve">
     <value>The distributed notable-date cache could not be reached at startup: {0}.</value>
   </data>
+  <data name="Op_Invalid_CacheOptions" xml:space="preserve">
+    <value>The distributed notable-date cache options are invalid.</value>
+  </data>
 </root>

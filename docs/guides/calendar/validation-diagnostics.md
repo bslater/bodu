@@ -61,10 +61,12 @@ Codes are stable identifiers: they are safe to match on, suppress by, or documen
 | `BODU-CAL-DUP-POLICY` | Error | Two adjustment policies share an identifier. |
 | `BODU-CAL-MONTH` | Error | A strategy's month is outside the valid range for its calendar. |
 | `BODU-CAL-DAY` | Error | A strategy's day is outside the valid range for its month/calendar. |
+| `BODU-CAL-ENUM` | Error | A field that takes one of a fixed set of names (a category, a collision or duplicate policy, a trigger, action or emission mode, a weekday, a week ordinal, a direction, a boundary, a calendar, …) holds a value that names none of them, such as a misspelling or a number. Names are matched ignoring case; an absent value keeps the field's default. In XML the schema reports it too. |
+| `BODU-CAL-WORKING-DAYS` | Error | The resolution policy's `workingDays` is not the seven-character, Sunday-first binary pattern (`0111110`); a letter mask such as `_MTWTF_` is rejected too. In XML the schema reports it too. |
 | `BODU-CAL-YEARS` | Error | A rule's or adjustment scope's `fromYear` is after its `toYear`. |
 | `BODU-CAL-RECURRENCE` | Error | A recurrence declaration is invalid. |
 | `BODU-CAL-STRATEGY` | Error | A strategy value lies outside the strategy's range (for example an `<OrdinalDayOfMonth>` ordinal beyond 31, ISO week 54, or a zero ordinal). In XML the schema reports most of these too. |
-| `BODU-CAL-RULE-SOURCE` | Error | A rule declares no recognized strategy or recurrence, or more than one (a strategy and a recurrence, or two strategy kinds). XML documents also fail the schema for the same rule; the code exists for JSON, which is not schema-validated. |
+| `BODU-CAL-RULE-SOURCE` | Error | A rule declares no recognized strategy or recurrence, or more than one (a strategy and a recurrence, or two strategy kinds); or a `PatchRule` override that replaces the occurrence source names no recognized kind, or more than one. XML documents also fail the schema for the same rule; the code exists for JSON, which is not schema-validated, and for a `PatchRule` carrying both a `<Strategy>` and a `<Recurrence>`, which the schema permits. |
 
 ### Cross-references
 
@@ -84,8 +86,8 @@ Codes are stable identifiers: they are safe to match on, suppress by, or documen
 
 | Code | Severity | Condition |
 |---|---|---|
-| `BODU-CAL-DURATION-CONFLICT` | Error | A rule declares conflicting duration sources. |
-| `BODU-CAL-DURATION-NOEND` | Error | A duration end declaration is incomplete. |
+| `BODU-CAL-DURATION-CONFLICT` | Error | A rule declares conflicting duration sources: both a `durationDays` and an `untilDate`, or an `untilDate` end strategy naming more than one strategy kind. |
+| `BODU-CAL-DURATION-NOEND` | Error | A duration end declaration is incomplete: an `untilDate` has no end strategy, or its end strategy names no recognized strategy kind. |
 | `BODU-CAL-DURATION-ALGORITHM` | Error | A duration end strategy references an unknown algorithm key. |
 | `BODU-CAL-DURATION-OFFSET-MISSING` | Error | A duration end `OffsetFromRule` reference does not resolve. |
 | `BODU-CAL-DURATION-OFFSET-AMBIGUOUS` | Error | A duration end `OffsetFromRule` reference resolves to more than one rule. |

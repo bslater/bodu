@@ -158,5 +158,23 @@ namespace Bodu.Globalization.Calendar.Caching {
                 return ResourceManager.GetString("Op_Invalid_ServiceNotRegistered", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The notable-date caching options are invalid..
+        /// </summary>
+        internal static string Op_Invalid_CachingOptions {
+            get {
+                return ResourceManager.GetString("Op_Invalid_CachingOptions", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The notable-date cache warm-up options are invalid..
+        /// </summary>
+        internal static string Op_Invalid_WarmupOptions {
+            get {
+                return ResourceManager.GetString("Op_Invalid_WarmupOptions", resourceCulture);
+            }
+        }
     }
 }

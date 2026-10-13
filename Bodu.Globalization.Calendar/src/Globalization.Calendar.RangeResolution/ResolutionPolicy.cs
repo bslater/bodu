@@ -118,6 +118,10 @@ public sealed class ResolutionPolicy
     /// Gets the policy applied when distinct notable dates resolve to the same day.
     /// </summary>
     /// <value>The configured same-day <see cref="CollisionPolicy" />.</value>
+    /// <remarks>
+    /// The policy settles each emitted date over every occurrence emitted on it, independent of the queried range, so a
+    /// multi-day occurrence that loses on its emitted date is absent from every range its span reaches into.
+    /// </remarks>
     public CollisionPolicy SameDayCollisionPolicy { get; }
 
     /// <summary>

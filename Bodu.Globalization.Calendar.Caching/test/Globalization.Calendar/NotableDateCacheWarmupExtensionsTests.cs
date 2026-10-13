@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Globalization;
 using Bodu.Globalization.Calendar.Caching;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -72,6 +73,25 @@ public sealed class NotableDateCacheWarmupExtensionsTests
         {
             _ = provider.GetRequiredService<IHostedService>();
         });
+    }
+
+    /// <summary>
+    /// Verifies that invalid warm-up options fail validation with the package's resource message.
+    /// </summary>
+    [TestMethod]
+    public void AddNotableDateCacheWarmup_WhenOptionsInvalid_ShouldFailWithResourceMessage()
+    {
+        var services = new ServiceCollection();
+        services.AddNotableDateCacheWarmup();
+        using ServiceProvider provider = services.BuildServiceProvider();
+        string? expected = CalendarCachingResourceStrings.ResourceManager.GetString("Op_Invalid_WarmupOptions", CultureInfo.CurrentCulture);
+
+        OptionsValidationException ex = Assert.ThrowsExactly<OptionsValidationException>(() =>
+        {
+            _ = provider.GetRequiredService<IOptions<NotableDateCacheWarmupOptions>>().Value;
+        });
+
+        Assert.AreEqual(expected, ex.Failures.Single());
     }
 
     /// <summary>

@@ -115,6 +115,15 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The binary rule-pack format cannot encode &apos;{0}&apos;; it supports only the built-in calculation strategies, recurrence strategies, and duration definitions..
+        /// </summary>
+        internal static string Op_NotSupported_BinaryPackType {
+            get {
+                return ResourceManager.GetString("Op_NotSupported_BinaryPackType", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The notable-date document failed validation with {0} error diagnostic(s). Inspect the Diagnostics collection for details..
         /// </summary>
         internal static string Op_Invalid_DocumentValidationFailed {
@@ -187,11 +196,20 @@ namespace Bodu {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Notable date '{0}', rule '{1}': '{2}' is not a valid territory code..
+        ///   Looks up a localized string similar to Resolution policy: workingDays &apos;{0}&apos; is not a seven-character, Sunday-first binary working-week pattern such as 0111110..
         /// </summary>
-        internal static string Validation_InvalidTerritoryCode {
+        internal static string Validation_InvalidWorkingDays {
             get {
-                return ResourceManager.GetString("Validation_InvalidTerritoryCode", resourceCulture);
+                return ResourceManager.GetString("Validation_InvalidWorkingDays", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The {0} value &apos;{1}&apos; is not recognized; expected one of: {2}..
+        /// </summary>
+        internal static string Validation_InvalidEnumValue {
+            get {
+                return ResourceManager.GetString("Validation_InvalidEnumValue", resourceCulture);
             }
         }
 
@@ -394,6 +412,24 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Notable date &apos;{0}&apos;, rule &apos;{1}&apos;: the calculated end-date duration&apos;s end strategy names no recognized strategy kind..
+        /// </summary>
+        internal static string Validation_DurationEndStrategyKindMissing {
+            get {
+                return ResourceManager.GetString("Validation_DurationEndStrategyKindMissing", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Notable date &apos;{0}&apos;, rule &apos;{1}&apos;: the calculated end-date duration&apos;s end strategy names more than one strategy kind; exactly one is required..
+        /// </summary>
+        internal static string Validation_DurationEndStrategyConflict {
+            get {
+                return ResourceManager.GetString("Validation_DurationEndStrategyConflict", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to the calculated end-date duration references '{2}', which resolves to no rule..
         /// </summary>
         internal static string Validation_DurationOffsetReferenceNotFound {
@@ -466,20 +502,20 @@ namespace Bodu {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to ordinal '{2}' is invalid..
+        ///   Looks up a localized string similar to Notable date &apos;{0}&apos;, rule &apos;{1}&apos;: the PatchRule override declares a strategy or recurrence that names no recognized kind; a patched occurrence source must name exactly one..
         /// </summary>
-        internal static string Validation_InvalidOrdinalValue {
+        internal static string Validation_PatchOccurrenceSourceMissing {
             get {
-                return ResourceManager.GetString("Validation_InvalidOrdinalValue", resourceCulture);
+                return ResourceManager.GetString("Validation_PatchOccurrenceSourceMissing", resourceCulture);
             }
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to ISO week '{2}' is out of range..
+        ///   Looks up a localized string similar to Notable date &apos;{0}&apos;, rule &apos;{1}&apos;: the PatchRule override declares more than one strategy or recurrence; a patched occurrence source must name exactly one..
         /// </summary>
-        internal static string Validation_InvalidWeekValue {
+        internal static string Validation_PatchOccurrenceSourceConflict {
             get {
-                return ResourceManager.GetString("Validation_InvalidWeekValue", resourceCulture);
+                return ResourceManager.GetString("Validation_PatchOccurrenceSourceConflict", resourceCulture);
             }
         }
 

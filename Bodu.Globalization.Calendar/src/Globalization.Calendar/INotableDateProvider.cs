@@ -23,6 +23,14 @@ namespace Bodu.Globalization.Calendar;
 /// part in the final date ordering and the resource's same-day collision policy alongside resource occurrences. A
 /// provider that needs observed-date shifting must compute it itself.
 /// </para>
+/// <para>
+/// Under a same-day collision policy other than <see cref="RangeResolution.CollisionPolicy.KeepAll" />, the service
+/// asks for a range that starts before the queried window, early enough to hold every day an occurrence reaching into
+/// the window can be emitted on, so that a provider occurrence on such a day takes part in that day's collision even
+/// when its own span ends before the window. When a provider occurrence reaching into the window is longer than any the
+/// range allowed for, the service asks again from an earlier start. Occurrences that do not reach into the window take
+/// part only in collisions and are not returned.
+/// </para>
 /// </remarks>
 /// <example>
 /// <code language="csharp">

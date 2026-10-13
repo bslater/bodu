@@ -4,8 +4,10 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Globalization;
 using Bodu.Globalization.Calendar.Caching;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace Bodu.Globalization.Calendar;
 
@@ -50,6 +52,26 @@ public sealed class NotableDateCachingExtensionsTests
 
         Assert.IsTrue(newYear.Count > 0);
         Assert.AreEqual(newYear.Count, cached.Count);
+    }
+
+    /// <summary>
+    /// Verifies that invalid caching options fail validation with the package's resource message.
+    /// </summary>
+    [TestMethod]
+    public void AddCachedNotableDateService_WhenOptionsInvalid_ShouldFailWithResourceMessage()
+    {
+        var services = new ServiceCollection();
+        services.AddNotableDateService(AmericasCalendarData.LoadResource("US"));
+        services.AddCachedNotableDateService(configure: o => o.Ttl = TimeSpan.Zero, cacheFactory: _ => new InMemoryNotableDateCache());
+        using ServiceProvider provider = services.BuildServiceProvider();
+        string? expected = CalendarCachingResourceStrings.ResourceManager.GetString("Op_Invalid_CachingOptions", CultureInfo.CurrentCulture);
+
+        OptionsValidationException ex = Assert.ThrowsExactly<OptionsValidationException>(() =>
+        {
+            _ = provider.GetRequiredService<IOptions<NotableDateCachingOptions>>().Value;
+        });
+
+        Assert.AreEqual(expected, ex.Failures.Single());
     }
 
     /// <summary>

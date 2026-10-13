@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Buffers.Binary;
+using System.Globalization;
 using System.Security.Cryptography;
 using Bodu.Globalization.Calendar.Algorithms;
 
@@ -228,6 +229,9 @@ public static partial class NotableDateBinaryResource
     /// </summary>
     /// <param name="writer">The payload writer.</param>
     /// <param name="duration">The duration to encode, or <see langword="null" />.</param>
+    /// <exception cref="NotSupportedException">
+    /// <paramref name="duration" /> is a duration definition outside the sealed set the format enumerates.
+    /// </exception>
     private static void WriteDuration(PayloadWriter writer, NotableDateDurationDefinition? duration)
     {
         switch (duration)
@@ -250,7 +254,7 @@ public static partial class NotableDateBinaryResource
                 break;
 
             default:
-                throw new NotSupportedException(duration.GetType().Name);
+                throw UnsupportedType(duration);
         }
     }
 
@@ -259,6 +263,9 @@ public static partial class NotableDateBinaryResource
     /// </summary>
     /// <param name="writer">The payload writer.</param>
     /// <param name="strategy">The strategy to encode.</param>
+    /// <exception cref="NotSupportedException">
+    /// <paramref name="strategy" /> is a calculation strategy outside the sealed set the format enumerates.
+    /// </exception>
     private static void WriteStrategy(PayloadWriter writer, IDateCalculationStrategy strategy)
     {
         switch (strategy)
@@ -359,7 +366,7 @@ public static partial class NotableDateBinaryResource
                 break;
 
             default:
-                throw new NotSupportedException(strategy.GetType().Name);
+                throw UnsupportedType(strategy);
         }
     }
 
@@ -368,6 +375,9 @@ public static partial class NotableDateBinaryResource
     /// </summary>
     /// <param name="writer">The payload writer.</param>
     /// <param name="recurrence">The recurrence to encode.</param>
+    /// <exception cref="NotSupportedException">
+    /// <paramref name="recurrence" /> is a recurrence strategy outside the sealed set the format enumerates.
+    /// </exception>
     private static void WriteRecurrence(PayloadWriter writer, IDateRecurrenceStrategy recurrence)
     {
         switch (recurrence)
@@ -402,7 +412,16 @@ public static partial class NotableDateBinaryResource
                 break;
 
             default:
-                throw new NotSupportedException(recurrence.GetType().Name);
+                throw UnsupportedType(recurrence);
         }
     }
+
+    /// <summary>
+    /// Creates the exception thrown for a strategy, recurrence, or duration type outside the sealed set the format
+    /// enumerates.
+    /// </summary>
+    /// <param name="value">The value whose type the format cannot encode.</param>
+    /// <returns>A <see cref="NotSupportedException" /> whose message names the type.</returns>
+    private static NotSupportedException UnsupportedType(object value) =>
+        new(string.Format(CultureInfo.CurrentCulture, CalendarResourceStrings.Op_NotSupported_BinaryPackType, value.GetType().Name));
 }

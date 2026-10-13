@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Xml.Linq;
+
 namespace Bodu.Globalization.Calendar.Builder;
 
 public partial class NotableDateDocumentBuilderTests
@@ -45,6 +47,28 @@ public partial class NotableDateDocumentBuilderTests
             var loaded = NotableDateDocumentBuilder.Load(path);
 
             CollectionAssert.AreEqual(ResolvedSample(SampleDocument().Build()), ResolvedSample(loaded.Build()));
+        }
+        finally
+        {
+            File.Delete(path);
+        }
+    }
+
+    /// <summary>
+    /// Verifies that a document saved to a <c>.xml</c> file declares the encoding it is written in, so
+    /// <see cref="XDocument.Load(string)" /> reads it.
+    /// </summary>
+    [TestMethod]
+    public void Save_WhenXmlFile_ShouldLoadWithXDocument()
+    {
+        string path = Path.Combine(Path.GetTempPath(), $"bodu-builder-{Guid.NewGuid():N}.xml");
+        try
+        {
+            SampleDocument().Save(path);
+
+            XDocument document = XDocument.Load(path);
+
+            Assert.AreEqual("demo.sample", (string?)document.Root?.Attribute("resourceId"));
         }
         finally
         {

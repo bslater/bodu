@@ -17,6 +17,12 @@ namespace Bodu.Globalization.Calendar.RangeResolution;
 /// implementation to the collaborator-aware <see cref="NotableDateService" /> constructor, and set the resource's
 /// same-day collision policy to <see cref="CollisionPolicy.Custom" /> so the resolver is invoked.
 /// </para>
+/// <para>
+/// The group holds every occurrence emitted on the date, including one whose span ends before the queried range, so the
+/// resolver sees the same group whatever range is queried and its decision does not depend on the range. The service
+/// consults it only for a date at least one of whose occurrences reaches into the queried range, and returns the kept
+/// occurrences that reach into the range.
+/// </para>
 /// </remarks>
 /// <example>
 /// <code language="csharp">

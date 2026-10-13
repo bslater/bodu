@@ -157,6 +157,117 @@ public sealed partial class ParserValidationTests
     }
 
     /// <summary>
+    /// Verifies that a <c>PatchRule</c> override declaring both a <c>Strategy</c> and a <c>Recurrence</c>, which the
+    /// schema permits, is rejected with the <c>BODU-CAL-RULE-SOURCE</c> diagnostic rather than silently patching in the
+    /// recurrence.
+    /// </summary>
+    [TestMethod]
+    public void Load_WhenPatchRuleHasStrategyAndRecurrence_ShouldThrowRuleSourceDiagnostic()
+    {
+        const string xml = """
+            <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="test.bad">
+              <NotableDates>
+                <NotableDate id="x" displayName="X" category="PublicHoliday">
+                  <Rules>
+                    <Rule id="r"><Strategy><Fixed month="March" day="1" /></Strategy></Rule>
+                  </Rules>
+                </NotableDate>
+              </NotableDates>
+              <Overrides>
+                <PatchRule notableDateRef="x" ruleRef="r">
+                  <Strategy><Fixed month="April" day="1" /></Strategy>
+                  <Recurrence><Weekly><Day dayOfWeek="Monday" /></Weekly></Recurrence>
+                </PatchRule>
+              </Overrides>
+            </NotableDateResource>
+            """;
+
+        NotableDateValidationException ex = Assert.ThrowsExactly<NotableDateValidationException>(() =>
+        {
+            _ = NotableDateResourceLoader.Load(xml);
+        });
+
+        Assert.Contains(d => d.Code == "BODU-CAL-RULE-SOURCE" && d.Severity == NotableDateValidationSeverity.Error, ex.Diagnostics, "BODU-CAL-RULE-SOURCE");
+    }
+
+    /// <summary>
+    /// Verifies that a resolution policy whose <c>workingDays</c> is not a seven-character working-week pattern is
+    /// reported with the <c>BODU-CAL-WORKING-DAYS</c> diagnostic rather than escaping as a
+    /// <see cref="FormatException" />.
+    /// </summary>
+    [TestMethod]
+    public void Load_WhenWorkingDaysMalformed_ShouldThrowWorkingDaysDiagnostic()
+    {
+        const string xml = """
+            <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="test.bad">
+              <ResolutionPolicy workingDays="MTWTF" />
+              <NotableDates>
+                <NotableDate id="x" displayName="X" category="PublicHoliday">
+                  <Rules><Rule id="r"><Strategy><Fixed month="March" day="1" /></Strategy></Rule></Rules>
+                </NotableDate>
+              </NotableDates>
+            </NotableDateResource>
+            """;
+
+        NotableDateValidationException ex = Assert.ThrowsExactly<NotableDateValidationException>(() =>
+        {
+            _ = NotableDateResourceLoader.Load(xml);
+        });
+
+        Assert.Contains(d => d.Code == "BODU-CAL-WORKING-DAYS" && d.Severity == NotableDateValidationSeverity.Error, ex.Diagnostics, "BODU-CAL-WORKING-DAYS");
+    }
+
+    /// <summary>
+    /// Verifies that a resolution policy whose <c>workingDays</c> is a letter mask, which <see cref="DayOfWeekSet" />
+    /// reads but the schema's binary pattern rejects, is reported with the <c>BODU-CAL-WORKING-DAYS</c> diagnostic that
+    /// the JSON path shares, alongside the schema diagnostic.
+    /// </summary>
+    /// <param name="workingDays">The letter mask.</param>
+    [TestMethod]
+    [DataRow("_MTWTF_")]
+    [DataRow("MTWTF__")]
+    public void Load_WhenWorkingDaysIsLetterMask_ShouldThrowWorkingDaysDiagnostic(string workingDays)
+    {
+        string xml = WorkingDaysXml(workingDays);
+
+        NotableDateValidationException ex = Assert.ThrowsExactly<NotableDateValidationException>(() =>
+        {
+            _ = NotableDateResourceLoader.Load(xml);
+        });
+
+        Assert.Contains(d => d.Code == "BODU-CAL-WORKING-DAYS" && d.Severity == NotableDateValidationSeverity.Error, ex.Diagnostics, "BODU-CAL-WORKING-DAYS");
+    }
+
+    /// <summary>
+    /// Verifies that a resolution policy whose <c>workingDays</c> is the documented Sunday-first binary pattern loads as
+    /// that working week.
+    /// </summary>
+    [TestMethod]
+    public void Load_WhenWorkingDaysIsBinary_ShouldLoadTheWorkingWeek()
+    {
+        NotableDateResource resource = NotableDateResourceLoader.Load(WorkingDaysXml("1111100"));
+
+        Assert.AreEqual(DayOfWeekSet.SundayToThursday, resource.ResolutionPolicy.WorkingWeek);
+    }
+
+    /// <summary>
+    /// Builds an XML document with one fixed rule whose resolution policy declares the supplied working week.
+    /// </summary>
+    /// <param name="workingDays">The <c>workingDays</c> value.</param>
+    /// <returns>The XML document.</returns>
+    private static string WorkingDaysXml(string workingDays) =>
+        """
+        <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="test.working-days">
+          <ResolutionPolicy workingDays="__DAYS__" />
+          <NotableDates>
+            <NotableDate id="x" displayName="X" category="PublicHoliday">
+              <Rules><Rule id="r"><Strategy><Fixed month="March" day="1" /></Strategy></Rule></Rules>
+            </NotableDate>
+          </NotableDates>
+        </NotableDateResource>
+        """.Replace("__DAYS__", workingDays, StringComparison.Ordinal);
+
+    /// <summary>
     /// Verifies that the v1 <c>Holiday</c> category token, renamed to <c>PublicHoliday</c> in v2, is rejected with a
     /// schema diagnostic.
     /// </summary>
