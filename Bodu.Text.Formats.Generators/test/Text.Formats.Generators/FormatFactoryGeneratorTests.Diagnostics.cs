@@ -161,4 +161,84 @@ public partial class FormatFactoryGeneratorTests
             .Select(static path => (MetadataReference)MetadataReference.CreateFromFile(path))
             .ToList();
     }
+
+    /// <summary>
+    /// Verifies that a member of a scalar type the reflection binders convert, alone or in nullable form, is mapped
+    /// rather than skipped with <c>BTFG002</c>, and that the factory generated for it compiles.
+    /// </summary>
+    /// <param name="attribute">The marker attribute that requests the factory.</param>
+    /// <param name="memberType">The member's type, as written in source.</param>
+    [TestMethod]
+    [DataRow("DelimitedRecord", "System.DateOnly")]
+    [DataRow("DelimitedRecord", "System.TimeOnly")]
+    [DataRow("DelimitedRecord", "System.Uri")]
+    [DataRow("DelimitedRecord", "System.Uri?")]
+    [DataRow("DelimitedRecord", "System.Int128")]
+    [DataRow("DelimitedRecord", "System.UInt128")]
+    [DataRow("DelimitedRecord", "System.Half")]
+    [DataRow("DelimitedRecord", "System.Numerics.BigInteger")]
+    [DataRow("DelimitedRecord", "nint")]
+    [DataRow("DelimitedRecord", "nuint")]
+    [DataRow("DelimitedRecord", "System.DateOnly?")]
+    [DataRow("DelimitedRecord", "System.Int128?")]
+    [DataRow("DelimitedRecord", "nint?")]
+    [DataRow("IniSection", "System.DateOnly")]
+    [DataRow("IniSection", "System.TimeOnly")]
+    [DataRow("IniSection", "System.Uri")]
+    [DataRow("IniSection", "System.Uri?")]
+    [DataRow("IniSection", "System.Int128")]
+    [DataRow("IniSection", "System.UInt128")]
+    [DataRow("IniSection", "System.Half")]
+    [DataRow("IniSection", "System.Numerics.BigInteger")]
+    [DataRow("IniSection", "nint")]
+    [DataRow("IniSection", "nuint")]
+    [DataRow("IniSection", "System.DateOnly?")]
+    [DataRow("IniSection", "System.Int128?")]
+    [DataRow("IniSection", "nint?")]
+    public void Generator_WhenMemberTypeIsAScalarTheReflectionBindersConvert_ShouldMapIt(string attribute, string memberType)
+    {
+        string source = $$"""
+            #nullable enable
+            using Bodu.Text.Delimited;
+            using Bodu.Text.Ini;
+
+            namespace Sample;
+
+            [{{attribute}}]
+            public sealed partial class Holder
+            {
+                public string Name { get; set; } = string.Empty;
+
+                public {{memberType}} Value { get; set; } = default!;
+            }
+            """;
+
+        (GeneratorDriverRunResult result, IReadOnlyList<Diagnostic> errors) = RunGeneratorAndCompile(source);
+
+        Assert.IsFalse(result.Diagnostics.Any(static d => d.Id == "BTFG002"), string.Join(Environment.NewLine, result.Diagnostics));
+        Assert.AreEqual(1, result.GeneratedTrees.Length);
+        Assert.IsTrue(result.GeneratedTrees[0].ToString().Contains("\"Value\"", StringComparison.Ordinal));
+        Assert.AreEqual(0, errors.Count, string.Join(Environment.NewLine, errors));
+    }
+
+    /// <summary>
+    /// Runs the generator over the supplied snippet and compiles the snippet with the generated source.
+    /// </summary>
+    /// <param name="source">The snippet source.</param>
+    /// <returns>The generator run result, and the errors of the compilation that includes the generated source.</returns>
+    private static (GeneratorDriverRunResult Result, IReadOnlyList<Diagnostic> Errors) RunGeneratorAndCompile(string source)
+    {
+        SyntaxTree tree = CSharpSyntaxTree.ParseText(source, new CSharpParseOptions(LanguageVersion.Latest));
+        var compilation = CSharpCompilation.Create(
+            "Bodu.GeneratorTests.Snippets",
+            new[] { tree },
+            LoadTrustedPlatformReferences(),
+            new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary, nullableContextOptions: NullableContextOptions.Enable));
+
+        GeneratorDriver driver = CSharpGeneratorDriver.Create(new FormatFactoryGenerator());
+        driver = driver.RunGeneratorsAndUpdateCompilation(compilation, out Compilation output, out _);
+
+        Diagnostic[] errors = [.. output.GetDiagnostics().Where(static d => d.Severity == DiagnosticSeverity.Error)];
+        return (driver.GetRunResult(), errors);
+    }
 }
