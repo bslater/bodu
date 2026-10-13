@@ -96,4 +96,42 @@ public sealed partial class AsyncReaderWriterLockTests
         {
         }
     }
+
+    /// <summary>
+    /// Verifies that a write acquisition that must queue, with a token that cannot be canceled, allocates no more than
+    /// its queued waiter: no cancellation registration, no cancellation callback and no asynchronous state machine.
+    /// </summary>
+    [TestMethod]
+    public async Task WriterAsync_WhenQueuedWithoutCancellationToken_ShouldAllocateOnlyTheWaiter()
+    {
+        var sut = new AsyncReaderWriterLock();
+        AsyncReaderWriterLock.Releaser holder = await sut.WriterAsync();
+
+        (long bytes, Task<AsyncReaderWriterLock.Releaser>[] pending) = ContendedWaitAllocation.BytesPerQueuedCall(() => sut.WriterAsync().AsTask());
+
+        holder.Dispose();
+        foreach (Task<AsyncReaderWriterLock.Releaser> waiter in pending)
+            (await waiter.WaitAsync(TimeSpan.FromSeconds(30))).Dispose();
+
+        Assert.IsLessThanOrEqualTo(ContendedWaitAllocation.QueuedWaiterBytes, bytes, $"A queued write acquisition allocated {bytes} bytes.");
+    }
+
+    /// <summary>
+    /// Verifies that a write acquisition that must queue with a cancellable token does not allocate a new delegate for
+    /// the lock's after-cancellation callback on every call.
+    /// </summary>
+    [TestMethod]
+    public async Task WriterAsync_WhenQueuedWithCancellationToken_ShouldNotAllocateACancellationCallback()
+    {
+        var sut = new AsyncReaderWriterLock();
+        AsyncReaderWriterLock.Releaser holder = await sut.WriterAsync();
+        using var cts = new CancellationTokenSource();
+
+        (long bytes, Task<AsyncReaderWriterLock.Releaser>[] pending) = ContendedWaitAllocation.BytesPerQueuedCall(() => sut.WriterAsync(cts.Token).AsTask());
+
+        await cts.CancelAsync();
+        holder.Dispose();
+        await Assert.ThrowsExactlyAsync<TaskCanceledException>(async () => await Task.WhenAll(pending).WaitAsync(TimeSpan.FromSeconds(30)));
+        Assert.IsLessThanOrEqualTo(ContendedWaitAllocation.CancellableQueuedWriterBytes, bytes, $"A queued write acquisition allocated {bytes} bytes.");
+    }
 }
