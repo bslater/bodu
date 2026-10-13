@@ -228,7 +228,7 @@ Bodu.Financial.ExchangeRates.Caching   CachingRateProvider / AggregatingRateProv
 <h2 id="the-core-fx-types-not-re-documented-here">The core FX types (not re-documented here)</h2>
 <p>The contracts and value objects a provider implements ship in the core <code>Bodu.Financial</code> package and are documented in the <a href="../financial/index.html">Bodu.Financial introduction</a> and the <a href="../../guides/financial/exchange-rates.html">exchange-rate guides</a>: <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.IRateProvider.html">IRateProvider</a> / <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.IDatedRateProvider.html">IDatedRateProvider</a>, <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.ExchangeRate.html">ExchangeRate</a>, <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.CurrencyPair.html">CurrencyPair</a>, <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.RateSeries.html">RateSeries</a> / <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.RateBook.html">RateBook</a>, <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.RateLookupOptions.html">RateLookupOptions</a> / <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.RateLookupResult.html">RateLookupResult</a> / <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.RateRangeResult.html">RateRangeResult</a>, and the in-memory <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.FixedRateTable.html">FixedRateTable</a> / <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.FixedDatedRateProvider.html">FixedDatedRateProvider</a>. See the <a href="../../guides/financial/exchange-types.html">exchange-rate types catalogue</a> for a scenario-by-scenario map.</p>
 <h2 id="the-provider-family">The provider family</h2>
-<p>Each per-source package ships its provider, its options type, and its own <code>Add&lt;Source&gt;ExchangeRates</code> DI registration; there is no per-provider <code>*.DependencyInjection</code> package. Status is as stated in the <a href="../package-matrix.html">package matrix</a>.</p>
+<p>Each per-source package ships its provider, its options type, and its own <code>Add&lt;Source&gt;ExchangeRates</code> DI registration; there is no per-provider <code>*.DependencyInjection</code> package. Status is as stated in the <a href="../package-matrix.html">package matrix</a>; the XE and OANDA packages are <a href="../package-matrix.html#not-published-to-nugetorg">not published to nuget.org</a>, so build them from a clone.</p>
 <table>
 <thead>
 <tr>
@@ -302,7 +302,7 @@ Bodu.Financial.ExchangeRates.Caching   CachingRateProvider / AggregatingRateProv
 <td>Any pair</td>
 <td>No (token scraped)</td>
 <td><code>PairWebRateProvider&lt;TSeries&gt;</code></td>
-<td>Experimental</td>
+<td>Experimental (not on nuget.org)</td>
 <td><code>AddXeExchangeRates</code></td>
 </tr>
 <tr>
@@ -311,7 +311,7 @@ Bodu.Financial.ExchangeRates.Caching   CachingRateProvider / AggregatingRateProv
 <td>Any pair, rolling ~180 days</td>
 <td>No</td>
 <td><code>PairWebRateProvider&lt;TSeries&gt;</code></td>
-<td>Preview</td>
+<td>Preview (not on nuget.org)</td>
 <td><code>AddOandaExchangeRates</code></td>
 </tr>
 <tr>
@@ -343,7 +343,7 @@ Bodu.Financial.ExchangeRates.Caching   CachingRateProvider / AggregatingRateProv
 </tr>
 </tbody>
 </table>
-<p>The shared <strong><code>Bodu.Financial.ExchangeRates.DependencyInjection</code></strong> package (Stable) supplies <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.WebRateProviderExtensions.html">WebRateProviderExtensions</a> - the generic <code>AddWebRateProvider&lt;TProvider, TOptions&gt;</code> on <a class="xref" href="../../api/Bodu.Financial.IFinancialServiceBuilder.html">IFinancialServiceBuilder</a> that every <code>Add&lt;Source&gt;ExchangeRates</code> delegates to. It binds and validates the options (<code>ValidateOnStart</code>), registers a named <code>HttpClient</code> fitted with the standard Polly resilience handler, constructs the provider as a singleton, and exposes it as both <code>IDatedRateProvider</code> and <code>IRateProvider</code>. Consumers do not normally call it directly; it is the seam for <a href="../../guides/financial/testing-providers.html">writing your own web provider</a>.</p>
+<p>The shared <strong><code>Bodu.Financial.ExchangeRates.DependencyInjection</code></strong> package (Stable) supplies <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.WebRateProviderExtensions.html">WebRateProviderExtensions</a> - the generic <code>AddWebRateProvider&lt;TProvider, TOptions&gt;</code> on <a class="xref" href="../../api/Bodu.Financial.IFinancialServiceBuilder.html">IFinancialServiceBuilder</a> that every <code>Add&lt;Source&gt;ExchangeRates</code> delegates to. It binds and validates the options (<code>ValidateOnStart</code>), registers a named <code>HttpClient</code> fitted with the standard Polly resilience handler, constructs the provider as a singleton, and exposes it as both <code>IDatedRateProvider</code> and <code>IRateProvider</code>. Consumers do not normally call it directly; it is the seam for <a href="../../guides/financial/custom-web-provider.html">writing your own web provider</a>.</p>
 <h2 id="which-provider">Which provider?</h2>
 <table>
 <thead>
@@ -463,7 +463,7 @@ Bodu.Financial.ExchangeRates.Caching   CachingRateProvider / AggregatingRateProv
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: d88c698 · Built: 2026-10-13 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 66a6179 · Built: 2026-10-13 (UTC)</span>
         </div>
       </div>
     </footer>

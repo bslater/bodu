@@ -119,7 +119,7 @@
 </tr>
 <tr>
 <td><a class="xref" href="../../api/Bodu.Financial.MoneyConversionResult-2.html">MoneyConversionResult&lt;TSource, TTarget&gt;</a></td>
-<td>Audit record returned by extension methods that convert through a dated provider - pairs source and target amount with the full lookup result.</td>
+<td>Audit record returned by <code>ConvertToWithRate&lt;TSource, TTarget&gt;</code>, which converts a <code>Money&lt;TSource&gt;</code> through a dated provider - pairs source and target amount with the full lookup result.</td>
 </tr>
 </tbody>
 </table>
@@ -185,7 +185,7 @@
 <h3 id="bodufinancialserializationjson-companion-package"><code>Bodu.Financial.Serialization.Json</code> (companion package)</h3>
 <p><code>System.Text.Json</code> converters and the <a class="xref" href="../../api/Bodu.Financial.Serialization.Json.FinancialJsonPolicy.html">FinancialJsonPolicy</a> enum (<code>Strict = 0</code>, <code>Lenient = 1</code>, <code>Compact = 2</code>), shipped in the companion <code>Bodu.Financial.Serialization.Json</code> package - the core library is serialization-agnostic and its types carry no <code>[JsonConverter]</code> attribute. <code>FinancialJsonSerializerOptionsExtensions.AddFinancialJsonConverters(options, policy)</code> registers all six converters at once - for <code>Money&lt;TCurrency&gt;</code> (via a <code>JsonConverterFactory</code>), <code>Money</code>, <a class="xref" href="../../api/Bodu.Financial.CalculatedMoney.html">CalculatedMoney</a>, <code>MoneyBag</code>, <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.ExchangeRate.html">ExchangeRate</a>, and <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.CurrencyPair.html">CurrencyPair</a> - under the chosen policy, and returns the same <code>JsonSerializerOptions</code> for chaining. Each converter also has a parameterless constructor that defaults to <code>Strict</code>.</p>
 <h2 id="exchange-rate-providers-and-caching">Exchange-rate providers and caching</h2>
-<p>The exchange-rate core (<code>IRateProvider</code> / <code>IDatedRateProvider</code>, <code>ExchangeRate</code>, the in-memory tables) lives in the <code>Bodu.Financial.ExchangeRates</code> namespace, shipped in the core <code>Bodu.Financial</code> package. The web/HTTP machinery - the abstract <code>WebRateProvider</code> and <code>PairWebRateProvider&lt;TSeries&gt;</code> bases, <code>WebRateProviderOptions</code>, and the single-flight and response-cache plumbing - is factored into the separate <strong><code>Bodu.Financial.ExchangeRates</code></strong> package, so the core package carries no HTTP machinery (and no logging dependency). Live feeds ship as per-source packages over that base, each isolating one feed's HTTP and parsing dependencies (a named <code>HttpClient</code> plus Polly resilience, registered through the generic <code>AddWebRateProvider</code> machinery). Every provider type and its DI registration extension share the single flattened <code>Bodu.Financial.ExchangeRates</code> namespace.</p>
+<p>The exchange-rate core (<code>IRateProvider</code> / <code>IDatedRateProvider</code>, <code>ExchangeRate</code>, the in-memory tables) lives in the <code>Bodu.Financial.ExchangeRates</code> namespace, shipped in the core <code>Bodu.Financial</code> package. The web/HTTP machinery - the abstract <code>WebRateProvider</code> and <code>PairWebRateProvider&lt;TSeries&gt;</code> bases, <code>WebRateProviderOptions</code>, and the single-flight and response-cache plumbing - is factored into the separate <strong><code>Bodu.Financial.ExchangeRates</code></strong> package, so the core package carries no HTTP machinery (and no logging dependency). Live feeds come as per-source packages over that base (all published to nuget.org except XE and OANDA, which are withheld - see the <a href="../package-matrix.html#not-published-to-nugetorg">package matrix</a>), each isolating one feed's HTTP and parsing dependencies (a named <code>HttpClient</code> plus Polly resilience, registered through the generic <code>AddWebRateProvider</code> machinery). Every provider type and its DI registration extension share the single flattened <code>Bodu.Financial.ExchangeRates</code> namespace.</p>
 <table>
 <thead>
 <tr>
@@ -227,13 +227,13 @@
 <td><code>AddOfxExchangeRates()</code></td>
 </tr>
 <tr>
-<td>XE (<code>…ExchangeRates.Xe</code>)</td>
+<td>XE (<code>…ExchangeRates.Xe</code>, not published to nuget.org)</td>
 <td><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.XeRateProvider.html">XeRateProvider</a></td>
 <td>any pair</td>
 <td><code>AddXeExchangeRates()</code></td>
 </tr>
 <tr>
-<td>OANDA (<code>…ExchangeRates.Oanda</code>)</td>
+<td>OANDA (<code>…ExchangeRates.Oanda</code>, not published to nuget.org)</td>
 <td><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.OandaRateProvider.html">OandaRateProvider</a></td>
 <td>any pair, rolling ~180 days</td>
 <td><code>AddOandaExchangeRates()</code></td>
@@ -359,7 +359,7 @@ string json = JsonSerializer.Serialize(new Money&lt;USD&gt;(19.99m), options);  
 </tr>
 <tr>
 <td>A generic amount in a unit outside the shipped catalogue</td>
-<td>your own <code>ICurrency</code> tag + <code>Money&lt;TCurrency&gt;</code> (generic only; cannot bridge to runtime <code>Money</code>)</td>
+<td>your own <code>ICurrency</code> tag + <code>Money&lt;TCurrency&gt;</code> (generic only; converting to runtime <code>Money</code> compiles but throws <code>InvalidOperationException</code>)</td>
 </tr>
 <tr>
 <td>Dated FX lookup with audit-grade provenance metadata</td>
@@ -394,7 +394,7 @@ string json = JsonSerializer.Serialize(new Money&lt;USD&gt;(19.99m), options);  
 <p>The companion <strong><code>Bodu.Financial.DependencyInjection</code></strong> package - a separate, Stable package - wires the stack into a <code>Microsoft.Extensions.DependencyInjection</code> container:</p>
 <pre><code class="lang-bash">dotnet add package Bodu.Financial.DependencyInjection
 </code></pre>
-<p>The entry point is <code>AddFinancialService(...)</code>, an <code>IServiceCollection</code> extension method in the <code>Bodu.Financial</code> namespace. Both overloads register the default <a class="xref" href="../../api/Bodu.Financial.Currencies.ICurrency.html">ICurrency</a> lookup and return a fluent <a class="xref" href="../../api/Bodu.Financial.IFinancialServiceBuilder.html">IFinancialServiceBuilder</a> on which you compose the rest of the stack: a replacement currency lookup, named monetary contexts, and timeless and dated exchange-rate providers. Passing an <code>IConfiguration</code> additionally binds <a class="xref" href="../../api/Bodu.Financial.FinancialOptions.html">FinancialOptions</a> from a configuration section (default <code>&quot;Financial&quot;</code>). Financial JSON registration (<code>services.AddFinancialJson(policy)</code>) ships in the companion <code>Bodu.Financial.Serialization.Json</code> package.</p>
+<p>The entry point is <code>AddFinancialService(...)</code>, an <code>IServiceCollection</code> extension method in the <code>Bodu.Financial</code> namespace. Both overloads register the default <a class="xref" href="../../api/Bodu.Financial.Currencies.ICurrencyLookup.html">ICurrencyLookup</a> and return a fluent <a class="xref" href="../../api/Bodu.Financial.IFinancialServiceBuilder.html">IFinancialServiceBuilder</a> on which you compose the rest of the stack: a replacement currency lookup, named monetary contexts, and timeless and dated exchange-rate providers. Passing an <code>IConfiguration</code> additionally binds <a class="xref" href="../../api/Bodu.Financial.FinancialOptions.html">FinancialOptions</a> from a configuration section (default <code>&quot;Financial&quot;</code>). Financial JSON registration (<code>services.AddFinancialJson(policy)</code>) ships in the companion <code>Bodu.Financial.Serialization.Json</code> package.</p>
 <pre><code class="lang-csharp">using Bodu.Financial;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -438,7 +438,7 @@ builder.Services.AddFinancialService(configure: financial =&gt;
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: d88c698 · Built: 2026-10-13 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 66a6179 · Built: 2026-10-13 (UTC)</span>
         </div>
       </div>
     </footer>

@@ -2151,7 +2151,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Financial.AllocationPolicy",
-      "Summary": "<p sourcefile=\"api/Bodu.Financial.AllocationPolicy.yml\" sourcestartlinenumber=\"1\">Specifies the algorithm a <xref href=\"Bodu.Financial.MonetaryContext\" data-throw-if-not-resolved=\"false\"></xref> uses to distribute residual minor units when allocating a\nmonetary amount across shares.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Financial.AllocationPolicy.yml\" sourcestartlinenumber=\"1\">Specifies the algorithm for distributing residual minor units when allocating a monetary amount across shares.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -2193,7 +2193,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Financial.ConversionRoundingPolicy",
-      "Summary": "<p sourcefile=\"api/Bodu.Financial.ConversionRoundingPolicy.yml\" sourcestartlinenumber=\"1\">Specifies when a <xref href=\"Bodu.Financial.MonetaryContext\" data-throw-if-not-resolved=\"false\"></xref> rounds the result of a currency conversion.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Financial.ConversionRoundingPolicy.yml\" sourcestartlinenumber=\"1\">Specifies when the result of a currency conversion is rounded.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -2795,7 +2795,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Financial.Currencies.CurrencyLookupService",
-      "Summary": "<p sourcefile=\"api/Bodu.Financial.Currencies.CurrencyLookupService.yml\" sourcestartlinenumber=\"1\">Default <xref href=\"Bodu.Financial.Currencies.ICurrencyLookup\" data-throw-if-not-resolved=\"false\"></xref> backed by <xref href=\"Bodu.Financial.Currencies.CurrencyRegistry\" data-throw-if-not-resolved=\"false\"></xref>. Reverse indexes for numeric code,\nsymbol, and region are built lazily from a snapshot of the registry taken on first use.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Financial.Currencies.CurrencyLookupService.yml\" sourcestartlinenumber=\"1\">Default <xref href=\"Bodu.Financial.Currencies.ICurrencyLookup\" data-throw-if-not-resolved=\"false\"></xref> backed by <xref href=\"Bodu.Financial.Currencies.CurrencyRegistry\" data-throw-if-not-resolved=\"false\"></xref>. Reverse indexes for numeric code,\nsymbol, and region are built lazily from the registry on first use.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -5091,7 +5091,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Financial.ExchangeRates.Caching.CachingRateOptions",
-      "Summary": "<p sourcefile=\"api/Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.yml\" sourcestartlinenumber=\"1\">Configures a <xref href=\"Bodu.Financial.ExchangeRates.Caching.CachingRateProvider\" data-throw-if-not-resolved=\"false\"></xref>: the on-disk cache location, the default time a cached rate stays\nfresh, and per-provider overrides of that default.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.yml\" sourcestartlinenumber=\"1\">Configures a <xref href=\"Bodu.Financial.ExchangeRates.Caching.CachingRateProvider\" data-throw-if-not-resolved=\"false\"></xref>: the default time a cached rate stays fresh, per-provider overrides\nof that default, and the on-disk location of the default cache the dependency-injection registration builds.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -7233,7 +7233,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Financial.MonetaryContext",
-      "Summary": "<p sourcefile=\"api/Bodu.Financial.MonetaryContext.yml\" sourcestartlinenumber=\"1\">Carries the rounding and scaling policy applied at a monetary operation boundary - multiplication, division,\nconversion, allocation, and the conversion of a high-precision calculation back to a settlement value.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Financial.MonetaryContext.yml\" sourcestartlinenumber=\"1\">Carries the rounding and scaling policy applied at the monetary operations that accept one - typed multiplication,\nruntime conversion through an <xref href=\"Bodu.Financial.ExchangeRates.ExchangeRate\" data-throw-if-not-resolved=\"false\"></xref>, and the conversion of a high-precision\ncalculation back to a settlement value.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -7611,7 +7611,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Financial.ServiceProviderExtensions",
-      "Summary": "<p sourcefile=\"api/Bodu.Financial.ServiceProviderExtensions.yml\" sourcestartlinenumber=\"1\">Provides the connector that promotes the container-registered <xref href=\"Bodu.Financial.Currencies.ICurrencyLookup\" data-throw-if-not-resolved=\"false\"></xref> to the ambient\n<xref href=\"Bodu.Financial.Currencies.CurrencyResolution\" data-throw-if-not-resolved=\"false\"></xref> default, so the runtime-tagged <xref href=\"Bodu.Financial.Money\" data-throw-if-not-resolved=\"false\"></xref> resolves currencies through\nthe application's configured catalogue.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Financial.ServiceProviderExtensions.yml\" sourcestartlinenumber=\"1\">Provides the connector that promotes the container-registered <xref href=\"Bodu.Financial.Currencies.ICurrencyLookup\" data-throw-if-not-resolved=\"false\"></xref> to the ambient\n<xref href=\"Bodu.Financial.Currencies.CurrencyResolution\" data-throw-if-not-resolved=\"false\"></xref> default, so the runtime-tagged <xref href=\"Bodu.Financial.Money\" data-throw-if-not-resolved=\"false\"></xref> reads currency metadata\nthrough the application's configured catalogue.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -12987,7 +12987,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.IO.Pst.PstUnsupportedFormatException",
-      "Summary": "<p sourcefile=\"api/Bodu.IO.Pst.PstUnsupportedFormatException.yml\" sourcestartlinenumber=\"1\">Represents an error raised when a PST file is recognized but uses a format variant or content encoding the library\ndoes not read (the 4\u00A0KiB-page OST variant or Windows Information Protection encryption).</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.IO.Pst.PstUnsupportedFormatException.yml\" sourcestartlinenumber=\"1\">Represents an error raised when a PST file is recognized but uses a format variant or content encoding the library\ndoes not read (an OST file of any version, the 4\u00A0KiB-page variant among them, or a content encoding other than\nnone, permute, or cyclic, such as Windows Information Protection encryption).</p>\n"
     },
     {
       "type": "ManagedReference",

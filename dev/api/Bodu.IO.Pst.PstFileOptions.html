@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_IO_Pst_PstFileOptions" data-uid="Bodu.IO.Pst.PstFileOptions" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 PstFileOptions Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/d88c6989893134111dd36b26d8b1745c4dee5e57/Bodu.IO.Pst/src/IO.Pst/PstFileOptions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/66a6179fdd4c466a0919b24669809b8619ef9423/Bodu.IO.Pst/src/IO.Pst/PstFileOptions.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -104,7 +104,7 @@ PstFileOptions Class
   <dl><dt>Assembly</dt><dd>Bodu.IO.Pst.dll</dd></dl>
   <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.IO.Pst">Bodu.IO.Pst</a> <span class="bodu-package-version">0.7.2</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/d88c6989893134111dd36b26d8b1745c4dee5e57/Bodu.IO.Pst/src/IO.Pst/PstFileOptions.cs">PstFileOptions.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/66a6179fdd4c466a0919b24669809b8619ef9423/Bodu.IO.Pst/src/IO.Pst/PstFileOptions.cs">PstFileOptions.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Controls how a <a class="xref" href="Bodu.IO.Pst.PstFile.html">PstFile</a> is opened and validated.</p>
@@ -188,7 +188,7 @@ PstFileOptions Class
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Pst_PstFileOptions__ctor" data-uid="Bodu.IO.Pst.PstFileOptions.#ctor">
   PstFileOptions()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/d88c6989893134111dd36b26d8b1745c4dee5e57/Bodu.IO.Pst/src/IO.Pst/PstFileOptions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/66a6179fdd4c466a0919b24669809b8619ef9423/Bodu.IO.Pst/src/IO.Pst/PstFileOptions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -222,11 +222,12 @@ PstFileOptions Class
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Pst_PstFileOptions_BlockCacheSize" data-uid="Bodu.IO.Pst.PstFileOptions.BlockCacheSize">
   BlockCacheSize
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/d88c6989893134111dd36b26d8b1745c4dee5e57/Bodu.IO.Pst/src/IO.Pst/PstFileOptions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/66a6179fdd4c466a0919b24669809b8619ef9423/Bodu.IO.Pst/src/IO.Pst/PstFileOptions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
-  <div class="markdown level1 summary"><p>Gets the maximum number of decoded pages and block payloads the session keeps in its least-recently-used cache.</p>
+  <div class="markdown level1 summary"><p>Gets the maximum number of decoded pages, and separately of decoded block payloads, the session keeps in its
+least-recently-used caches.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -241,7 +242,7 @@ PstFileOptions Class
   <h4 class="section">Property Value</h4>
   <dl class="parameters">
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
-    <dd><p>The cache entry budget; <code>256</code> by default. <code>0</code> disables caching entirely.</p>
+    <dd><p>The entry budget of each cache; <code>256</code> by default. <code>0</code> disables caching entirely.</p>
 </dd>
   </dl>
 
@@ -249,9 +250,10 @@ PstFileOptions Class
 
 
   <h4 class="section" id="Bodu_IO_Pst_PstFileOptions_BlockCacheSize_remarks">Remarks</h4>
-  <div class="markdown level1 remarks"><p>Every cached entry is at most one block (8,192 bytes), so the default budget bounds the cache at roughly 2 MB
-per open session. Repeated structural reads - B-tree walks, property-context and table-context access over the
-same nodes - are served from the cache instead of re-reading and re-decoding from the source stream.</p>
+  <div class="markdown level1 remarks"><p>Pages and blocks are cached separately, each cache holding up to this many entries. A cached page is 512 bytes
+and a cached block at most 8,192 bytes, so the default budget bounds the two caches at roughly 2.2 MB per open
+session. Repeated structural reads - B-tree walks, property-context and table-context access over the same
+nodes - are served from the cache instead of re-reading and re-decoding from the source stream.</p>
 </div>
 
   <h4 class="section">Exceptions</h4>
@@ -270,7 +272,7 @@ same nodes - are served from the cache instead of re-reading and re-decoding fro
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Pst_PstFileOptions_MaxDataTreeLeaves" data-uid="Bodu.IO.Pst.PstFileOptions.MaxDataTreeLeaves">
   MaxDataTreeLeaves
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/d88c6989893134111dd36b26d8b1745c4dee5e57/Bodu.IO.Pst/src/IO.Pst/PstFileOptions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/66a6179fdd4c466a0919b24669809b8619ef9423/Bodu.IO.Pst/src/IO.Pst/PstFileOptions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -318,7 +320,7 @@ refused with <a class="xref" href="Bodu.IO.Pst.PstFileFormatException.html">PstF
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Pst_PstFileOptions_MaxNodeDataLength" data-uid="Bodu.IO.Pst.PstFileOptions.MaxNodeDataLength">
   MaxNodeDataLength
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/d88c6989893134111dd36b26d8b1745c4dee5e57/Bodu.IO.Pst/src/IO.Pst/PstFileOptions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/66a6179fdd4c466a0919b24669809b8619ef9423/Bodu.IO.Pst/src/IO.Pst/PstFileOptions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -374,7 +376,7 @@ allocation.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Pst_PstFileOptions_OmitUnresolvableValues" data-uid="Bodu.IO.Pst.PstFileOptions.OmitUnresolvableValues">
   OmitUnresolvableValues
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/d88c6989893134111dd36b26d8b1745c4dee5e57/Bodu.IO.Pst/src/IO.Pst/PstFileOptions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/66a6179fdd4c466a0919b24669809b8619ef9423/Bodu.IO.Pst/src/IO.Pst/PstFileOptions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -429,7 +431,7 @@ still fails the read, and a value whose reference resolves but whose data blocks
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Pst_PstFileOptions_ValidationLevel" data-uid="Bodu.IO.Pst.PstFileOptions.ValidationLevel">
   ValidationLevel
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/d88c6989893134111dd36b26d8b1745c4dee5e57/Bodu.IO.Pst/src/IO.Pst/PstFileOptions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/66a6179fdd4c466a0919b24669809b8619ef9423/Bodu.IO.Pst/src/IO.Pst/PstFileOptions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -488,7 +490,7 @@ still fails the read, and a value whose reference resolves but whose data blocks
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: d88c698 · Built: 2026-10-13 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 66a6179 · Built: 2026-10-13 (UTC)</span>
         </div>
       </div>
     </footer>

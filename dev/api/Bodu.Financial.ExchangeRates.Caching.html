@@ -124,7 +124,7 @@
 <p><strong>Storage (a cache is bound to one provider)</strong></p>
 <ul>
 <li><a class="xref" href="Bodu.Financial.ExchangeRates.Caching.IRateCache.html">IRateCache</a> - the single-provider cache contract: a bound <code>Provider</code>, and <code>GetRates</code>/<code>Store</code> keyed by currency pair.</li>
-<li><a class="xref" href="Bodu.Financial.ExchangeRates.Caching.RateCacheBase-1.html">RateCacheBase&lt;TOptions&gt;</a> - the storage-agnostic core behind the in-box caches: read-time freshness filtering and write-time merge-and-prune, prescribing no physical layout. Its storage seam is <code>internal</code>, so it is not a public subclassing point - to back the cache with a store of your own, implement <code>IRateCache</code> directly and delegate the freshness, merge, and coverage rules to <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.RateCacheRules.html">RateCacheRules</a>, as the SQLite and distributed backends do.</li>
+<li><a class="xref" href="Bodu.Financial.ExchangeRates.Caching.RateCacheBase-1.html">RateCacheBase&lt;TOptions&gt;</a> - the storage-agnostic core behind the in-box caches: read-time freshness filtering and write-time merge-and-prune, prescribing no physical layout. Its storage seam is <code>internal</code>, so it is not a public subclassing point - to back the cache with a store of your own, implement <code>IRateCache</code> directly and delegate the freshness, merge, and coverage rules to <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.RateCacheRules.html">RateCacheRules</a>, as the SQLite backend does (the distributed backend derives from this base, which only an assembly granted access to its internals can do).</li>
 <li><a class="xref" href="Bodu.Financial.ExchangeRates.Caching.IFileRateCache.html">IFileRateCache</a>, <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.FileRateCacheBase-1.html">FileRateCacheBase&lt;TOptions&gt;</a> - the file-storage seam and the plumbing behind the TOML and JSON leaves: layout-driven directory and file-name resolution, optional date partitioning, and best-effort IO. The base exposes <code>ResolveFilePath</code>, <code>ResolveDirectory</code>, and <code>ResolvePartitionPath</code>, but its serialization seam is likewise not public - a new file format is another <code>IRateCache</code> implementation.</li>
 <li><a class="xref" href="Bodu.Financial.ExchangeRates.Caching.RateCacheRules.html">RateCacheRules</a> - the shared, public freshness, validity, merge, and coverage rules every backend applies, so a custom <code>IRateCache</code> stays behaviourally identical to the in-box caches.</li>
 <li><a class="xref" href="Bodu.Financial.ExchangeRates.Caching.TomlFileRateCache.html">TomlFileRateCache</a> - the sealed TOML leaf (<code>&lt;directory&gt;/&lt;provider&gt;/&lt;from&gt;&lt;to&gt;.toml</code> by default; decimals quoted for lossless round-trips; a self-describing <code>Provider</code>/<code>From</code>/<code>To</code> header).</li>
@@ -147,7 +147,7 @@
 <ul>
 <li><a class="xref" href="Bodu.Financial.ExchangeRates.Caching.CachingRateProvider.html">CachingRateProvider</a> - wraps one inner source over one cache; implements both the dated and timeless surfaces.</li>
 <li><a class="xref" href="Bodu.Financial.ExchangeRates.Caching.CachingRateProviderBase.html">CachingRateProviderBase</a> - the abstract base holding the read-through, staleness, and range logic; derived types supply the wrapped inner provider.</li>
-<li><a class="xref" href="Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.html">CachingRateOptions</a> - cache location (<code>CacheDirectory</code>), <code>DefaultExpiry</code>, the per-provider <code>ProviderExpiry</code> overrides, the per-event log levels, and <code>DefaultLookupOptions</code> for the timeless surface.</li>
+<li><a class="xref" href="Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.html">CachingRateOptions</a> - cache location (<code>CacheDirectory</code>, used by the default TOML cache the dependency-injection registration builds), <code>DefaultExpiry</code>, the per-provider <code>ProviderExpiry</code> overrides, the per-event log levels, and <code>DefaultLookupOptions</code> for the undated lookups and the timeless surface.</li>
 <li><a class="xref" href="Bodu.Financial.ExchangeRates.Caching.RateCacheWarmupOptions.html">RateCacheWarmupOptions</a>, <a class="xref" href="Bodu.Financial.ExchangeRates.RateCacheWarmupExtensions.html">RateCacheWarmupExtensions</a> - the startup warm-up: the pairs (<code>&quot;XXX/YYY&quot;</code>), <code>LookbackDays</code> or explicit <code>StartDate</code> / <code>EndDate</code> window, and optional provider filter, registered on the <code>IFinancialServiceBuilder</code> with <code>AddRateCacheWarmup(...)</code> (default configuration section <code>Financial:RateCacheWarmup</code>) as a hosted service that pre-fetches through every registered caching provider.</li>
 </ul>
 <p><strong>Aggregation (group many providers)</strong></p>
@@ -162,6 +162,8 @@
 </ul>
 <h2 id="minimal-sample">Minimal sample</h2>
 <pre><code class="lang-csharp">using Bodu.Financial;
+using Bodu.Financial.Currencies;
+using Bodu.Financial.ExchangeRates;
 using Bodu.Financial.ExchangeRates.Caching;
 
 var options = new CachingRateOptions
@@ -213,8 +215,8 @@ request, tagged with a synthetic provider label.</p>
     </dl>
     <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Financial.ExchangeRates.Caching.CachingRateOptions.html">CachingRateOptions</a></dt>
-      <dd><p>Configures a <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.CachingRateProvider.html">CachingRateProvider</a>: the on-disk cache location, the default time a cached rate stays
-fresh, and per-provider overrides of that default.</p>
+      <dd><p>Configures a <a class="xref" href="Bodu.Financial.ExchangeRates.Caching.CachingRateProvider.html">CachingRateProvider</a>: the default time a cached rate stays fresh, per-provider overrides
+of that default, and the on-disk location of the default cache the dependency-injection registration builds.</p>
 </dd>
     </dl>
     <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
@@ -451,7 +453,7 @@ write, distinguishing a durable success from a swallowed storage failure and fro
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: d88c698 · Built: 2026-10-13 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 66a6179 · Built: 2026-10-13 (UTC)</span>
         </div>
       </div>
     </footer>

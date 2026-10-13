@@ -91,7 +91,7 @@
 <p>The core <code>Bodu.Financial</code> library is deliberately <strong>serialization-agnostic</strong> - the value types carry no <code>[JsonConverter]</code> attribute and take no dependency on <code>System.Text.Json</code>. JSON support is opt-in through this package, so a consumer of just <code>Money&lt;TCurrency&gt;</code> pays nothing for the serializer. Install it alongside the core package:</p>
 <pre><code class="lang-shell">dotnet add package Bodu.Financial.Serialization.Json
 </code></pre>
-<p>This guide consolidates the JSON material that was previously spread across the <a href="money.html#json-wire-shape">money</a>, <a href="monetary-precision.html#json-wire-shapes">monetary precision</a>, <a href="dependency-injection.html#consuming-the-financial-json-options">dependency injection</a>, and package landing pages; those sections remain as short pointers.</p>
+<p>This guide consolidates the JSON material that was previously spread across the <a href="money.html#json">money</a>, <a href="monetary-precision.html#json-wire-shapes">monetary precision</a>, <a href="dependency-injection.html#consuming-the-financial-json-options">dependency injection</a>, and package landing pages; those sections remain as short pointers.</p>
 <h2 id="registration">Registration</h2>
 <p>Register the converters once per <code>JsonSerializerOptions</code> with <code>AddFinancialJsonConverters</code>, then serialize as normal:</p>
 <pre><code class="lang-csharp">using System.Text.Json;
@@ -107,7 +107,7 @@ string json = JsonSerializer.Serialize(new Money&lt;USD&gt;(19.99m), options);
 Money&lt;USD&gt; value = JsonSerializer.Deserialize&lt;Money&lt;USD&gt;&gt;(json, options);
 // → USD 19.99
 </code></pre>
-<p><code>AddFinancialJsonConverters</code> registers a coherent converter set for all six types from one policy value and returns the same options instance for chaining. Without it, <code>JsonSerializer</code> silently falls back to reflection-shaped output for these types - it does not throw - so register before the first use of an options instance.</p>
+<p><code>AddFinancialJsonConverters</code> registers a coherent converter set for all six types from one policy value and returns the same options instance for chaining. Without it, <code>JsonSerializer</code> does not throw for most of these types - it silently writes reflection-shaped output and reads money back as zero or currency-less values - and it cannot deserialize a <code>MoneyBag</code> at all, so register before the first use of an options instance.</p>
 <h2 id="choosing-a-policy">Choosing a policy</h2>
 <p>Pass a <a class="xref" href="../../api/Bodu.Financial.Serialization.Json.FinancialJsonPolicy.html">FinancialJsonPolicy</a> to select the wire shape:</p>
 <!-- compile -->
@@ -127,7 +127,7 @@ Money&lt;USD&gt; value = JsonSerializer.Deserialize&lt;Money&lt;USD&gt;&gt;(json
 <tr>
 <td><code>Strict</code> (default)</td>
 <td>object <code>{ &quot;amount&quot;: 19.99, &quot;currency&quot;: &quot;USD&quot; }</code></td>
-<td>wrapped <code>{ &quot;balances&quot;: { &quot;USD&quot;: 100.00 } }</code></td>
+<td>wrapped <code>{ &quot;balances&quot;: { &quot;USD&quot;: 100 } }</code></td>
 <td>Canonical persistence, ledgers, audit.</td>
 </tr>
 <tr>
@@ -139,7 +139,7 @@ Money&lt;USD&gt; value = JsonSerializer.Deserialize&lt;Money&lt;USD&gt;&gt;(json
 <tr>
 <td><code>Compact</code></td>
 <td>string <code>&quot;19.99 USD&quot;</code></td>
-<td>flat <code>{ &quot;USD&quot;: 100.00 }</code></td>
+<td>flat <code>{ &quot;USD&quot;: 100 }</code></td>
 <td>Compact payloads and readable log lines.</td>
 </tr>
 </tbody>
@@ -166,10 +166,10 @@ JsonSerializer.Serialize(running, compact);   // → &quot;12.500000 USD&quot;
 <h3 id="moneybag"><code>MoneyBag</code></h3>
 <pre><code class="lang-csharp">MoneyBag wallet = MoneyBag.Empty.Add(new Money&lt;USD&gt;(100m)).Add(new Money&lt;EUR&gt;(50m));
 
-JsonSerializer.Serialize(wallet, options);   // → {&quot;balances&quot;:{&quot;EUR&quot;:50.00,&quot;USD&quot;:100.00}}
-JsonSerializer.Serialize(wallet, compact);   // → {&quot;EUR&quot;:50.00,&quot;USD&quot;:100.00}
+JsonSerializer.Serialize(wallet, options);   // → {&quot;balances&quot;:{&quot;EUR&quot;:50,&quot;USD&quot;:100}}
+JsonSerializer.Serialize(wallet, compact);   // → {&quot;EUR&quot;:50,&quot;USD&quot;:100}
 </code></pre>
-<p>Balances are written in lexicographic ISO order and read as numbers or numeric strings. Zero balances are pruned on every bag operation, so the deserialized bag matches the canonical form, not the verbatim wire shape.</p>
+<p>Balances are written in lexicographic ISO order, each amount as the bag stores it (so <code>100m</code> writes <code>100</code> and <code>100.00m</code> writes <code>100.00</code>), and read as numbers or numeric strings. Under <code>Strict</code> and <code>Lenient</code> a repeated <code>balances</code> property, or a map that names a currency twice, is rejected; <code>Lenient</code> trims and upper-cases each ISO code key first. Zero balances are pruned on every bag operation, so the deserialized bag matches the canonical form, not the verbatim wire shape.</p>
 <h3 id="exchangerate"><code>ExchangeRate</code></h3>
 <pre><code class="lang-csharp">var observation = new ExchangeRate(CurrencyCode.EUR, CurrencyCode.USD, new DateOnly(2024, 1, 3), 1.0956m, &quot;ECB&quot;);
 
@@ -312,7 +312,7 @@ aotOptions.Converters.Add(new CurrencyPairJsonConverter(FinancialJsonPolicy.Stri
 <td><code>JsonException</code> naming the property.</td>
 </tr>
 <tr>
-<td>Compact string <code>TryParse</code> rejects (e.g. <code>&quot;19.99&quot;</code>, <code>&quot;USD/&quot;</code>, <code>&quot;USD/JPY/EUR&quot;</code>)</td>
+<td>Compact string <code>TryParse</code> rejects (e.g. <code>&quot;USD/&quot;</code>, <code>&quot;USD/JPY/EUR&quot;</code>, or a bare <code>&quot;19.99&quot;</code> for <code>Money</code> and <code>CalculatedMoney</code>; <code>Money&lt;TCurrency&gt;</code> accepts a bare amount)</td>
 <td><code>Compact</code></td>
 <td><code>JsonException</code> carrying the offending text.</td>
 </tr>
@@ -320,6 +320,11 @@ aotOptions.Converters.Add(new CurrencyPairJsonConverter(FinancialJsonPolicy.Stri
 <td><code>&quot;balances&quot;</code> not an object; a balance neither a number nor a numeric string</td>
 <td><code>Strict</code>, <code>Lenient</code></td>
 <td><code>JsonException</code>.</td>
+</tr>
+<tr>
+<td>A repeated <code>&quot;balances&quot;</code> property, or a balances map naming a currency twice</td>
+<td><code>Strict</code>, <code>Lenient</code></td>
+<td><code>JsonException</code> - duplicates are rejected.</td>
 </tr>
 <tr>
 <td>Truncated document</td>
@@ -368,7 +373,7 @@ aotOptions.Converters.Add(new CurrencyPairJsonConverter(FinancialJsonPolicy.Stri
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: d88c698 · Built: 2026-10-13 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 66a6179 · Built: 2026-10-13 (UTC)</span>
         </div>
       </div>
     </footer>

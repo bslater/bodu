@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Financial_FinancialServiceBuilderExtensions" data-uid="Bodu.Financial.FinancialServiceBuilderExtensions" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 FinancialServiceBuilderExtensions Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/d88c6989893134111dd36b26d8b1745c4dee5e57/Bodu.Financial.DependencyInjection/src/Financial/FinancialServiceBuilderExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/66a6179fdd4c466a0919b24669809b8619ef9423/Bodu.Financial.DependencyInjection/src/Financial/FinancialServiceBuilderExtensions.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -104,7 +104,7 @@ FinancialServiceBuilderExtensions Class
   <dl><dt>Assembly</dt><dd>Bodu.Financial.DependencyInjection.dll</dd></dl>
   <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Financial.DependencyInjection">Bodu.Financial.DependencyInjection</a> <span class="bodu-package-version">1.3.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/d88c6989893134111dd36b26d8b1745c4dee5e57/Bodu.Financial.DependencyInjection/src/Financial/FinancialServiceBuilderExtensions.cs">FinancialServiceBuilderExtensions.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/66a6179fdd4c466a0919b24669809b8619ef9423/Bodu.Financial.DependencyInjection/src/Financial/FinancialServiceBuilderExtensions.cs">FinancialServiceBuilderExtensions.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Provides the fluent registration surface for <a class="xref" href="Bodu.Financial.IFinancialServiceBuilder.html">IFinancialServiceBuilder</a>: currency lookup, named
@@ -167,7 +167,7 @@ monetary contexts, and exchange-rate providers.</p>
 
 services.AddFinancialService(builder =&gt; builder
     .AddCurrencyLookup&lt;MyCurrencyLookup&gt;()
-    .AddMonetaryContext("payroll", new MonetaryContext(CurrencyCode.EUR))
+    .AddMonetaryContext("payroll", new MonetaryContext { Rounding = MidpointRoundingStrategy.AwayFromZero })
     .AddExchangeRateProvider&lt;MyRateProvider&gt;());</code></pre>
 </example>
 </div>
@@ -182,7 +182,7 @@ services.AddFinancialService(builder =&gt; builder
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_FinancialServiceBuilderExtensions_AddCurrencyLookup__1_Bodu_Financial_IFinancialServiceBuilder_" data-uid="Bodu.Financial.FinancialServiceBuilderExtensions.AddCurrencyLookup``1(Bodu.Financial.IFinancialServiceBuilder)">
   AddCurrencyLookup&lt;TLookup&gt;(IFinancialServiceBuilder)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/d88c6989893134111dd36b26d8b1745c4dee5e57/Bodu.Financial.DependencyInjection/src/Financial/FinancialServiceBuilderExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/66a6179fdd4c466a0919b24669809b8619ef9423/Bodu.Financial.DependencyInjection/src/Financial/FinancialServiceBuilderExtensions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -237,11 +237,12 @@ services.AddFinancialService(builder =&gt; builder
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_FinancialServiceBuilderExtensions_AddDatedExchangeRateProvider_Bodu_Financial_IFinancialServiceBuilder_Bodu_Financial_ExchangeRates_IDatedRateProvider_" data-uid="Bodu.Financial.FinancialServiceBuilderExtensions.AddDatedExchangeRateProvider(Bodu.Financial.IFinancialServiceBuilder,Bodu.Financial.ExchangeRates.IDatedRateProvider)">
   AddDatedExchangeRateProvider(IFinancialServiceBuilder, IDatedRateProvider)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/d88c6989893134111dd36b26d8b1745c4dee5e57/Bodu.Financial.DependencyInjection/src/Financial/FinancialServiceBuilderExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/66a6179fdd4c466a0919b24669809b8619ef9423/Bodu.Financial.DependencyInjection/src/Financial/FinancialServiceBuilderExtensions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
-  <div class="markdown level1 summary"><p>Registers an <a class="xref" href="Bodu.Financial.ExchangeRates.IDatedRateProvider.html">IDatedRateProvider</a> instance as a singleton.</p>
+  <div class="markdown level1 summary"><p>Registers an <a class="xref" href="Bodu.Financial.ExchangeRates.IDatedRateProvider.html">IDatedRateProvider</a> instance as a singleton, unless an
+<a class="xref" href="Bodu.Financial.ExchangeRates.IDatedRateProvider.html">IDatedRateProvider</a> is already registered.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -272,6 +273,10 @@ services.AddFinancialService(builder =&gt; builder
 
 
 
+  <h4 class="section" id="Bodu_Financial_FinancialServiceBuilderExtensions_AddDatedExchangeRateProvider_Bodu_Financial_IFinancialServiceBuilder_Bodu_Financial_ExchangeRates_IDatedRateProvider__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The registration uses <code>TryAddSingleton</code>, so the first <a class="xref" href="Bodu.Financial.ExchangeRates.IDatedRateProvider.html">IDatedRateProvider</a> registration wins
+and later calls are ignored.</p>
+</div>
 
   <h4 class="section">Exceptions</h4>
   <dl class="parameters">
@@ -289,11 +294,12 @@ services.AddFinancialService(builder =&gt; builder
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_FinancialServiceBuilderExtensions_AddDatedExchangeRateProvider__1_Bodu_Financial_IFinancialServiceBuilder_" data-uid="Bodu.Financial.FinancialServiceBuilderExtensions.AddDatedExchangeRateProvider``1(Bodu.Financial.IFinancialServiceBuilder)">
   AddDatedExchangeRateProvider&lt;TProvider&gt;(IFinancialServiceBuilder)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/d88c6989893134111dd36b26d8b1745c4dee5e57/Bodu.Financial.DependencyInjection/src/Financial/FinancialServiceBuilderExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/66a6179fdd4c466a0919b24669809b8619ef9423/Bodu.Financial.DependencyInjection/src/Financial/FinancialServiceBuilderExtensions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
-  <div class="markdown level1 summary"><p>Registers an <a class="xref" href="Bodu.Financial.ExchangeRates.IDatedRateProvider.html">IDatedRateProvider</a> implementation as a singleton.</p>
+  <div class="markdown level1 summary"><p>Registers an <a class="xref" href="Bodu.Financial.ExchangeRates.IDatedRateProvider.html">IDatedRateProvider</a> implementation as a singleton, unless an
+<a class="xref" href="Bodu.Financial.ExchangeRates.IDatedRateProvider.html">IDatedRateProvider</a> is already registered.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -327,6 +333,10 @@ services.AddFinancialService(builder =&gt; builder
 
 
 
+  <h4 class="section" id="Bodu_Financial_FinancialServiceBuilderExtensions_AddDatedExchangeRateProvider__1_Bodu_Financial_IFinancialServiceBuilder__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The registration uses <code>TryAddSingleton</code>, so the first <a class="xref" href="Bodu.Financial.ExchangeRates.IDatedRateProvider.html">IDatedRateProvider</a> registration wins
+and later calls are ignored.</p>
+</div>
 
   <h4 class="section">Exceptions</h4>
   <dl class="parameters">
@@ -344,11 +354,12 @@ services.AddFinancialService(builder =&gt; builder
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_FinancialServiceBuilderExtensions_AddExchangeRateProvider_Bodu_Financial_IFinancialServiceBuilder_Bodu_Financial_ExchangeRates_IRateProvider_" data-uid="Bodu.Financial.FinancialServiceBuilderExtensions.AddExchangeRateProvider(Bodu.Financial.IFinancialServiceBuilder,Bodu.Financial.ExchangeRates.IRateProvider)">
   AddExchangeRateProvider(IFinancialServiceBuilder, IRateProvider)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/d88c6989893134111dd36b26d8b1745c4dee5e57/Bodu.Financial.DependencyInjection/src/Financial/FinancialServiceBuilderExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/66a6179fdd4c466a0919b24669809b8619ef9423/Bodu.Financial.DependencyInjection/src/Financial/FinancialServiceBuilderExtensions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
-  <div class="markdown level1 summary"><p>Registers an <a class="xref" href="Bodu.Financial.ExchangeRates.IRateProvider.html">IRateProvider</a> instance as a singleton.</p>
+  <div class="markdown level1 summary"><p>Registers an <a class="xref" href="Bodu.Financial.ExchangeRates.IRateProvider.html">IRateProvider</a> instance as a singleton, unless an <a class="xref" href="Bodu.Financial.ExchangeRates.IRateProvider.html">IRateProvider</a> is
+already registered.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -379,6 +390,10 @@ services.AddFinancialService(builder =&gt; builder
 
 
 
+  <h4 class="section" id="Bodu_Financial_FinancialServiceBuilderExtensions_AddExchangeRateProvider_Bodu_Financial_IFinancialServiceBuilder_Bodu_Financial_ExchangeRates_IRateProvider__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The registration uses <code>TryAddSingleton</code>, so the first <a class="xref" href="Bodu.Financial.ExchangeRates.IRateProvider.html">IRateProvider</a> registration wins and
+later calls are ignored.</p>
+</div>
 
   <h4 class="section">Exceptions</h4>
   <dl class="parameters">
@@ -396,11 +411,12 @@ services.AddFinancialService(builder =&gt; builder
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_FinancialServiceBuilderExtensions_AddExchangeRateProvider__1_Bodu_Financial_IFinancialServiceBuilder_" data-uid="Bodu.Financial.FinancialServiceBuilderExtensions.AddExchangeRateProvider``1(Bodu.Financial.IFinancialServiceBuilder)">
   AddExchangeRateProvider&lt;TProvider&gt;(IFinancialServiceBuilder)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/d88c6989893134111dd36b26d8b1745c4dee5e57/Bodu.Financial.DependencyInjection/src/Financial/FinancialServiceBuilderExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/66a6179fdd4c466a0919b24669809b8619ef9423/Bodu.Financial.DependencyInjection/src/Financial/FinancialServiceBuilderExtensions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
-  <div class="markdown level1 summary"><p>Registers an <a class="xref" href="Bodu.Financial.ExchangeRates.IRateProvider.html">IRateProvider</a> implementation as a singleton.</p>
+  <div class="markdown level1 summary"><p>Registers an <a class="xref" href="Bodu.Financial.ExchangeRates.IRateProvider.html">IRateProvider</a> implementation as a singleton, unless an <a class="xref" href="Bodu.Financial.ExchangeRates.IRateProvider.html">IRateProvider</a>
+is already registered.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -434,6 +450,10 @@ services.AddFinancialService(builder =&gt; builder
 
 
 
+  <h4 class="section" id="Bodu_Financial_FinancialServiceBuilderExtensions_AddExchangeRateProvider__1_Bodu_Financial_IFinancialServiceBuilder__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The registration uses <code>TryAddSingleton</code>, so the first <a class="xref" href="Bodu.Financial.ExchangeRates.IRateProvider.html">IRateProvider</a> registration wins and
+later calls are ignored.</p>
+</div>
 
   <h4 class="section">Exceptions</h4>
   <dl class="parameters">
@@ -451,7 +471,7 @@ services.AddFinancialService(builder =&gt; builder
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_FinancialServiceBuilderExtensions_AddMonetaryContext_Bodu_Financial_IFinancialServiceBuilder_System_String_Bodu_Financial_MonetaryContext_" data-uid="Bodu.Financial.FinancialServiceBuilderExtensions.AddMonetaryContext(Bodu.Financial.IFinancialServiceBuilder,System.String,Bodu.Financial.MonetaryContext)">
   AddMonetaryContext(IFinancialServiceBuilder, string, MonetaryContext)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/d88c6989893134111dd36b26d8b1745c4dee5e57/Bodu.Financial.DependencyInjection/src/Financial/FinancialServiceBuilderExtensions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/66a6179fdd4c466a0919b24669809b8619ef9423/Bodu.Financial.DependencyInjection/src/Financial/FinancialServiceBuilderExtensions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -531,7 +551,7 @@ services.AddFinancialService(builder =&gt; builder
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: d88c698 · Built: 2026-10-13 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 66a6179 · Built: 2026-10-13 (UTC)</span>
         </div>
       </div>
     </footer>

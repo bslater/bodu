@@ -165,8 +165,8 @@ SQLite path does not have to repeat the policy, and switching backends changes o
       &quot;SkipInverseRangeProbeWhenDirectCovered&quot;: false,
       &quot;ExpiryJitter&quot;: 0.0,
       &quot;RefreshAheadFraction&quot;: 0.0,
-      &quot;CacheHitLogLevel&quot;: &quot;Information&quot;,
-      &quot;CacheMissLogLevel&quot;: &quot;Information&quot;,
+      &quot;CacheHitLogLevel&quot;: &quot;Trace&quot;,
+      &quot;CacheMissLogLevel&quot;: &quot;Trace&quot;,
       &quot;CacheRangeHitLogLevel&quot;: &quot;Debug&quot;,
       &quot;CacheRangeRefetchLogLevel&quot;: &quot;Debug&quot;,
       &quot;HistoryClampLogLevel&quot;: &quot;Debug&quot;,
@@ -226,10 +226,11 @@ SQLite path does not have to repeat the policy, and switching backends changes o
 </tr>
 </tbody>
 </table>
-<p><code>DefaultLookupOptions</code> - the <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.RateLookupOptions.html">RateLookupOptions</a> the
-<em>timeless</em> surface applies - is not configuration-bindable (its members are read-only) and
-stays at <code>RateLookupOptions.Exact</code> whatever the section says. Set it, like anything the binder
-cannot express, in the <code>configure</code> callback:</p>
+<p><code>DefaultLookupOptions</code> - the <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.RateLookupOptions.html">RateLookupOptions</a> the undated
+lookups and the <em>timeless</em> surface apply - is not configuration-bindable (its members are
+read-only) and keeps its default, <code>RateLookupOptions.PreviousWithin(100_000)</code> (the most recent
+rate on or before today), whatever the section says. Set it, like anything the binder cannot
+express, in the <code>configure</code> callback:</p>
 <pre><code class="lang-csharp">builder.Services
     .AddFinancialService(builder.Configuration)
     .AddRbaExchangeRates(builder.Configuration)
@@ -407,13 +408,14 @@ builder.Services
 </tr>
 </tbody>
 </table>
-<div class="IMPORTANT">
-<h5>Important</h5>
-<p><code>AddDistributedRateCache</code> registers a <strong>single</strong> <code>DistributedRateCache</code> instance per host:
-the first call creates it (bound to that call's provider name), and later calls for other
-names only add keyed aliases to the same instance. Register it for one cached provider, or use
-it as the shared L1 tier of a <a href="exchange-rate-caching.html#stacking-providers-tiered-read-through">stack</a>;
-give each source its own SQLite or file cache when you need one cache per provider.</p>
+<div class="NOTE">
+<h5>Note</h5>
+<p><code>AddDistributedRateCache</code> registers one <code>DistributedRateCache</code> per provider name, keyed by that
+name, so several providers can share one <code>IDistributedCache</code>: each cache writes under keys that
+carry its own provider name. The first registration also backs the unkeyed <code>IRateCache</code>
+resolution, so resolve each provider's cache by its key, for example with
+<code>cacheFactory: (sp, name) =&gt; sp.GetRequiredKeyedService&lt;IRateCache&gt;(name)</code>. A distributed cache
+can also serve as the shared L1 tier of a <a href="exchange-rate-caching.html#stacking-providers-tiered-read-through">stack</a>.</p>
 </div>
 <h2 id="pattern-4---warming-the-cache-at-startup">Pattern 4 - warming the cache at startup</h2>
 <p><code>AddRateCacheWarmup</code> binds <code>Financial:RateCacheWarmup</code> and registers a hosted service that runs
@@ -489,7 +491,7 @@ the <code>configuration</code> it accepts is for the children's shared <code>Fin
         builder.Configuration);                                              // Financial:RateCache for the children
 </code></pre>
 <p>The DI builder sets only <code>DefaultStrategy</code> and <code>Routes</code>. The remaining members - the default
-provider order, <code>RespectHistoryAvailability</code>, the timeless surface's <code>DefaultLookupOptions</code>, and
+provider order, <code>RespectHistoryAvailability</code>, the undated lookups' <code>DefaultLookupOptions</code>, and
 the three log levels - keep their defaults under DI. To tune them, construct the aggregator
 yourself and register the instance with <code>AddDatedExchangeRateProvider</code>:</p>
 <pre><code class="lang-csharp">var options = new RateAggregationOptions
@@ -497,7 +499,7 @@ yourself and register the instance with <code>AddDatedExchangeRateProvider</code
     DefaultStrategy = PriorityFallbackStrategy.Instance,
     DefaultProviderOrder = new[] { &quot;RBA&quot;, &quot;ECB&quot; },
     RespectHistoryAvailability = true,
-    DefaultLookupOptions = RateLookupOptions.PreviousWithin(3),   // the timeless surface's policy
+    DefaultLookupOptions = RateLookupOptions.PreviousWithin(3),   // the undated lookups' policy
     RouteSelectedLogLevel = LogLevel.Debug,                        // default Information
     ResolvedLogLevel = LogLevel.Debug,                             // default Information
     UnresolvedLogLevel = LogLevel.Warning,                         // default Debug
@@ -541,8 +543,8 @@ return new AggregatingRateProvider(
 </tr>
 <tr>
 <td><code>DefaultLookupOptions</code></td>
-<td><code>Exact</code></td>
-<td>The policy the timeless <code>IRateProvider</code> surface applies.</td>
+<td><code>PreviousWithin(100_000)</code></td>
+<td>The policy the undated lookups and the timeless <code>IRateProvider</code> surface apply: by default the most recent rate on or before today.</td>
 </tr>
 <tr>
 <td><code>RouteSelectedLogLevel</code></td>
@@ -624,8 +626,8 @@ host's lifetime:</p>
 </tr>
 <tr>
 <td><code>AddDistributedRateCache(name)</code> / <code>AddRedisRateCache</code></td>
-<td><code>DistributedRateCache</code>, <code>IRateCache</code>, keyed <code>IRateCache</code></td>
-<td>one instance per host (see the note in Pattern 3)</td>
+<td>keyed <code>DistributedRateCache</code> / <code>IRateCache</code> per name; default <code>DistributedRateCache</code> and <code>IRateCache</code></td>
+<td>one instance per provider name over the shared <code>IDistributedCache</code>; the first registered is also the unkeyed default (see the note in Pattern 3)</td>
 </tr>
 <tr>
 <td><code>AddRateCacheWarmup</code></td>
@@ -715,7 +717,7 @@ read-merge-write cycle is atomic per process but last-write-wins <em>across</em>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: d88c698 · Built: 2026-10-13 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 66a6179 · Built: 2026-10-13 (UTC)</span>
         </div>
       </div>
     </footer>

@@ -90,7 +90,7 @@
 <p>This page is the vocabulary the rest of the documentation assumes. Read it once before the <a href="getting-started.html">getting-started samples</a> or the <a href="../../guides/financial/json-serialization.html">financial JSON guide</a>, and refer back whenever a term feels imprecise.</p>
 <p>Part of the <strong><a href="../topics/numerics-and-financial.html">Numerics &amp; Financial</a></strong> topic. For the high-level shape of the package, start with the <a href="index.html">introduction</a>; the money vocabulary - minor units, <code>Money&lt;TCurrency&gt;</code> vs <code>Money</code>, <code>CalculatedMoney</code>, <code>MoneyBag</code> - lives in the <a href="../financial/concepts.html">Bodu.Financial concepts</a> page.</p>
 <h2 id="serialization-agnostic-core">Serialization-agnostic core</h2>
-<p><code>Bodu.Financial</code> carries no <code>[JsonConverter]</code> attribute and no reference to <code>System.Text.Json</code>; this package supplies both. The consequence worth remembering: <strong>registration is required</strong>. Serializing a <code>Money&lt;USD&gt;</code> with a <code>JsonSerializerOptions</code> that has not had <code>AddFinancialJsonConverters</code> called on it does not throw - <code>JsonSerializer</code> falls back to its reflection-based object shape, which does not round-trip. Configure the options before first use; once an options instance has been used, its <code>Converters</code> collection is read-only and <code>AddFinancialJsonConverters</code> throws <code>InvalidOperationException</code>.</p>
+<p><code>Bodu.Financial</code> carries no <code>[JsonConverter]</code> attribute and no reference to <code>System.Text.Json</code>; this package supplies both. The consequence worth remembering: <strong>registration is required</strong>. Serializing a <code>Money&lt;USD&gt;</code> with a <code>JsonSerializerOptions</code> that has not had <code>AddFinancialJsonConverters</code> called on it does not throw - <code>JsonSerializer</code> falls back to its reflection-based object shape, which does not round-trip: reading it back yields a zero <code>Money&lt;USD&gt;</code> or a currency-less <code>Money</code>, and a <code>MoneyBag</code> cannot be deserialized at all. Configure the options before first use; once an options instance has been used, its <code>Converters</code> collection is read-only and <code>AddFinancialJsonConverters</code> throws <code>InvalidOperationException</code>.</p>
 <h2 id="policy">Policy</h2>
 <p>A <a class="xref" href="../../api/Bodu.Financial.Serialization.Json.FinancialJsonPolicy.html">FinancialJsonPolicy</a> is passed once - to <code>AddFinancialJsonConverters</code>, to <code>AddFinancialJson</code>, or to a converter's constructor - and fixes the wire shape and parsing strictness for every financial type serialized with that options instance:</p>
 <table>
@@ -105,7 +105,7 @@
 <tr>
 <td><code>Strict</code> (<code>0</code>, default)</td>
 <td>The canonical object shapes.</td>
-<td>The canonical shapes only. Property names compare case-insensitively; duplicate properties are rejected; unknown properties are ignored; <code>Money&lt;TCurrency&gt;</code> requires <code>currency == TCurrency.IsoCode</code>.</td>
+<td>The canonical shapes, plus the compact <code>pair</code> shape for an <code>ExchangeRate</code>. Property names compare case-insensitively; duplicate properties are rejected; unknown properties are ignored; <code>Money&lt;TCurrency&gt;</code> requires <code>currency == TCurrency.IsoCode</code>.</td>
 </tr>
 <tr>
 <td><code>Lenient</code> (<code>1</code>)</td>
@@ -141,8 +141,8 @@
 <p><a class="xref" href="../../api/Bodu.Financial.CalculatedMoney.html">CalculatedMoney</a> is the unrounded, deferred-arithmetic tier, so its converter writes the full <code>decimal</code> amount exactly as stored - every significant digit and any trailing zeros - with no scale metadata, because the decimal itself carries the precision: <code>{ &quot;amount&quot;: 0.0325125, &quot;currency&quot;: &quot;USD&quot; }</code> or <code>&quot;0.0325125 USD&quot;</code>. Settle after transport with <code>RoundToMoney()</code>.</p>
 <h2 id="bag-shapes">Bag shapes</h2>
 <p>A <a class="xref" href="../../api/Bodu.Financial.MoneyBag.html">MoneyBag</a> is a wrapped ISO-keyed map under <code>Strict</code> / <code>Lenient</code> and a flat map under <code>Compact</code>:</p>
-<pre><code class="lang-json">{ &quot;balances&quot;: { &quot;EUR&quot;: 50.00, &quot;USD&quot;: 100.00 } }
-{ &quot;EUR&quot;: 50.00, &quot;USD&quot;: 100.00 }
+<pre><code class="lang-json">{ &quot;balances&quot;: { &quot;EUR&quot;: 50, &quot;USD&quot;: 100 } }
+{ &quot;EUR&quot;: 50, &quot;USD&quot;: 100 }
 </code></pre>
 <p>Balances are written in lexicographic ISO order and may be read as numbers or numeric strings. Because the bag prunes zero balances on every operation, a bag deserializes to its canonical form - a <code>&quot;JPY&quot;: 0</code> entry on the wire does not survive the round trip.</p>
 <h2 id="rate-and-pair-shapes">Rate and pair shapes</h2>
@@ -173,7 +173,7 @@
 <td><code>JsonException</code> naming the missing property.</td>
 </tr>
 <tr>
-<td>Duplicate <code>amount</code>, <code>currency</code>, <code>scale</code>, or any <code>ExchangeRate</code> property</td>
+<td>Duplicate <code>amount</code>, <code>currency</code>, <code>scale</code>, or any <code>ExchangeRate</code> property; a repeated <code>balances</code> property or a currency named twice in it (<code>Strict</code> / <code>Lenient</code>)</td>
 <td><code>JsonException</code> - duplicates are rejected.</td>
 </tr>
 <tr>
@@ -193,7 +193,7 @@
 <td><code>JsonException</code>.</td>
 </tr>
 <tr>
-<td>A compact string <code>TryParse</code> rejects (<code>&quot;19.99&quot;</code>, <code>&quot;USD/&quot;</code>)</td>
+<td>A compact string <code>TryParse</code> rejects (<code>&quot;USD/&quot;</code>, or a bare <code>&quot;19.99&quot;</code> for <code>Money</code> and <code>CalculatedMoney</code>; <code>Money&lt;TCurrency&gt;</code> accepts a bare amount)</td>
 <td><code>JsonException</code> carrying the offending text.</td>
 </tr>
 <tr>
@@ -233,7 +233,7 @@
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: d88c698 · Built: 2026-10-13 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 66a6179 · Built: 2026-10-13 (UTC)</span>
         </div>
       </div>
     </footer>
