@@ -143,4 +143,21 @@ public partial class CompoundStorageTests
 
         Assert.AreEqual("propertySet", ex.ParamName);
     }
+
+    /// <summary>
+    /// Verifies that writing a property set into a storage after its writable file has been disposed throws
+    /// <see cref="ObjectDisposedException" /> and stages nothing.
+    /// </summary>
+    [TestMethod]
+    public void WritePropertySet_WhenFileIsDisposed_ShouldThrowObjectDisposedException()
+    {
+        CompoundStorage root = CreateDisposedWritableRoot();
+
+        _ = Assert.ThrowsExactly<ObjectDisposedException>(() =>
+        {
+            root.WritePropertySet("Custom", CreatePropertySet("x"));
+        });
+
+        AssertDisposedRootUnchanged(root);
+    }
 }

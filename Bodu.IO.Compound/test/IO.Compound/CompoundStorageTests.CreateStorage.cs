@@ -31,4 +31,21 @@ public partial class CompoundStorageTests
         Assert.AreEqual("name", ex.ParamName);
         AssertChildUnchanged(file, existing, existingIsStorage);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="CompoundStorage.CreateStorage(string)" /> throws <see cref="ObjectDisposedException" />
+    /// once the writable file has been disposed, and stages nothing.
+    /// </summary>
+    [TestMethod]
+    public void CreateStorage_WhenFileIsDisposed_ShouldThrowObjectDisposedException()
+    {
+        CompoundStorage root = CreateDisposedWritableRoot();
+
+        _ = Assert.ThrowsExactly<ObjectDisposedException>(() =>
+        {
+            _ = root.CreateStorage("New");
+        });
+
+        AssertDisposedRootUnchanged(root);
+    }
 }

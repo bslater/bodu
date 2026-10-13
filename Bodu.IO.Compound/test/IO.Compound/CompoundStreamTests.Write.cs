@@ -111,4 +111,51 @@ public partial class CompoundStreamTests
             stream.Write((ReadOnlySpan<byte>)new byte[] { 1 });
         });
     }
+
+    /// <summary>
+    /// Verifies that every synchronous write overload of a writable cursor throws <see cref="ObjectDisposedException" />
+    /// naming the compound file once the file that owns the cursor has been disposed, since the bytes could never be
+    /// committed, and leaves the cursor's bytes as they were.
+    /// </summary>
+    [TestMethod]
+    public void Write_WhenOwningFileIsDisposed_ShouldThrowObjectDisposedException()
+    {
+        using CompoundStream cursor = OpenCursorOverDisposedFile();
+
+        ObjectDisposedException ex = Assert.ThrowsExactly<ObjectDisposedException>(() =>
+        {
+            cursor.Write((ReadOnlySpan<byte>)new byte[] { 4 });
+        });
+        Assert.ThrowsExactly<ObjectDisposedException>(() =>
+        {
+            cursor.Write(new byte[] { 4 }, 0, 1);
+        });
+        Assert.ThrowsExactly<ObjectDisposedException>(() =>
+        {
+            cursor.WriteByte(4);
+        });
+
+        Assert.AreEqual(typeof(CompoundFile).FullName, ex.ObjectName);
+        CollectionAssert.AreEqual(new byte[] { 1, 2, 3 }, cursor.ReadAllBytes());
+    }
+
+    /// <summary>
+    /// Verifies that an asynchronous write to a writable cursor throws <see cref="ObjectDisposedException" /> once the
+    /// file that owns the cursor has been disposed.
+    /// </summary>
+    /// <returns>A task that completes when the assertion has run.</returns>
+    [TestMethod]
+    public async Task WriteAsync_WhenOwningFileIsDisposed_ShouldThrowObjectDisposedException()
+    {
+        using CompoundStream cursor = OpenCursorOverDisposedFile();
+
+        await Assert.ThrowsExactlyAsync<ObjectDisposedException>(async () =>
+        {
+            await cursor.WriteAsync(new byte[] { 4 }, 0, 1);
+        });
+        await Assert.ThrowsExactlyAsync<ObjectDisposedException>(async () =>
+        {
+            await cursor.WriteAsync(new ReadOnlyMemory<byte>(new byte[] { 4 }));
+        });
+    }
 }

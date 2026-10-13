@@ -122,4 +122,25 @@ public partial class CompoundStreamTests
 
         Assert.IsEmpty(ReadCommitted(destination, "Data"));
     }
+
+    /// <summary>
+    /// Verifies that <see cref="CompoundStream.Flush" /> and <see cref="Stream.FlushAsync()" /> on a writable cursor
+    /// throw <see cref="ObjectDisposedException" /> once the file that owns the cursor has been disposed, since the
+    /// staging tree they flush into can no longer be committed.
+    /// </summary>
+    /// <returns>A task that completes when the assertions have run.</returns>
+    [TestMethod]
+    public async Task Flush_WhenOwningFileIsDisposed_ShouldThrowObjectDisposedException()
+    {
+        using CompoundStream cursor = OpenCursorOverDisposedFile();
+
+        _ = Assert.ThrowsExactly<ObjectDisposedException>(() =>
+        {
+            cursor.Flush();
+        });
+        await Assert.ThrowsExactlyAsync<ObjectDisposedException>(async () =>
+        {
+            await cursor.FlushAsync();
+        });
+    }
 }

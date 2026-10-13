@@ -74,4 +74,21 @@ public partial class CompoundStorageTests
             file.RootStorage.ModifiedTime = DateTimeOffset.UnixEpoch;
         });
     }
+
+    /// <summary>
+    /// Verifies that setting the modification time of a storage after its writable file has been disposed throws
+    /// <see cref="ObjectDisposedException" /> and stages nothing, since the edit could never be committed.
+    /// </summary>
+    [TestMethod]
+    public void ModifiedTime_WhenSetAfterFileIsDisposed_ShouldThrowObjectDisposedException()
+    {
+        CompoundStorage root = CreateDisposedWritableRoot();
+
+        _ = Assert.ThrowsExactly<ObjectDisposedException>(() =>
+        {
+            root.ModifiedTime = DateTimeOffset.UnixEpoch;
+        });
+
+        Assert.IsNull(root.ModifiedTime);
+    }
 }

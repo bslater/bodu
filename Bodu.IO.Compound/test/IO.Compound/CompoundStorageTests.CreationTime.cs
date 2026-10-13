@@ -72,4 +72,21 @@ public partial class CompoundStorageTests
             file.RootStorage.CreationTime = DateTimeOffset.UnixEpoch;
         });
     }
+
+    /// <summary>
+    /// Verifies that setting the creation time of a storage after its writable file has been disposed throws
+    /// <see cref="ObjectDisposedException" /> and stages nothing, since the edit could never be committed.
+    /// </summary>
+    [TestMethod]
+    public void CreationTime_WhenSetAfterFileIsDisposed_ShouldThrowObjectDisposedException()
+    {
+        CompoundStorage root = CreateDisposedWritableRoot();
+
+        _ = Assert.ThrowsExactly<ObjectDisposedException>(() =>
+        {
+            root.CreationTime = DateTimeOffset.UnixEpoch;
+        });
+
+        Assert.IsNull(root.CreationTime);
+    }
 }

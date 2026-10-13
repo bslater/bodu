@@ -76,6 +76,41 @@ public partial class CompoundStorageTests
     }
 
     /// <summary>
+    /// Verifies that <see cref="CompoundStorage.CreateStream(string)" /> throws <see cref="ObjectDisposedException" />
+    /// once the writable file has been disposed, rather than handing out a cursor whose writes could never be
+    /// committed.
+    /// </summary>
+    [TestMethod]
+    public void CreateStream_WhenFileIsDisposed_ShouldThrowObjectDisposedException()
+    {
+        CompoundStorage root = CreateDisposedWritableRoot();
+
+        _ = Assert.ThrowsExactly<ObjectDisposedException>(() =>
+        {
+            using CompoundStream cursor = root.CreateStream("New");
+        });
+
+        AssertDisposedRootUnchanged(root);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="CompoundStorage.CreateStream(string, ReadOnlyMemory{byte})" /> throws
+    /// <see cref="ObjectDisposedException" /> once the writable file has been disposed, and stages nothing.
+    /// </summary>
+    [TestMethod]
+    public void CreateStream_WhenFileIsDisposed_ForContent_ShouldThrowObjectDisposedException()
+    {
+        CompoundStorage root = CreateDisposedWritableRoot();
+
+        _ = Assert.ThrowsExactly<ObjectDisposedException>(() =>
+        {
+            root.CreateStream("New", new byte[] { 1, 2, 3 });
+        });
+
+        AssertDisposedRootUnchanged(root);
+    }
+
+    /// <summary>
     /// Creates a writable file whose root holds one child, a stream of the bytes 1, 2 and 3 or an empty storage.
     /// </summary>
     /// <param name="name">The name of the child.</param>

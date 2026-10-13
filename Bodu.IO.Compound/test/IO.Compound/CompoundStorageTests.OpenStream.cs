@@ -227,6 +227,46 @@ public partial class CompoundStorageTests
     }
 
     /// <summary>
+    /// Verifies that <see cref="CompoundStorage.OpenStream(string)" /> throws <see cref="ObjectDisposedException" />
+    /// once a writable file has been disposed, as it does for a read-only file.
+    /// </summary>
+    [TestMethod]
+    public void OpenStream_WhenWritableFileIsDisposed_ShouldThrowObjectDisposedException()
+    {
+        CompoundStorage root = CreateDisposedWritableRoot();
+
+        _ = Assert.ThrowsExactly<ObjectDisposedException>(() =>
+        {
+            using CompoundStream stream = root.OpenStream("A");
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="CompoundStorage.OpenStream(string, FileMode, FileAccess)" /> throws
+    /// <see cref="ObjectDisposedException" /> once a writable file has been disposed, whether the call reads, opens for
+    /// writing, or creates, and stages nothing.
+    /// </summary>
+    /// <param name="name">The stream name passed to the call.</param>
+    /// <param name="mode">The file mode passed to the call.</param>
+    /// <param name="access">The access passed to the call.</param>
+    [TestMethod]
+    [DataRow("A", FileMode.Open, FileAccess.Read)]
+    [DataRow("A", FileMode.Open, FileAccess.ReadWrite)]
+    [DataRow("New", FileMode.Create, FileAccess.Write)]
+    [DataRow("New", FileMode.Append, FileAccess.Write)]
+    public void OpenStream_WhenWritableFileIsDisposed_ForFileMode_ShouldThrowObjectDisposedException(string name, FileMode mode, FileAccess access)
+    {
+        CompoundStorage root = CreateDisposedWritableRoot();
+
+        _ = Assert.ThrowsExactly<ObjectDisposedException>(() =>
+        {
+            using CompoundStream stream = root.OpenStream(name, mode, access);
+        });
+
+        AssertDisposedRootUnchanged(root);
+    }
+
+    /// <summary>
     /// Builds a container whose 5000-byte stream <c>A</c> has its last sector moved to the end of the file and then cut
     /// off, so that sector lies wholly past the end of the file.
     /// </summary>
