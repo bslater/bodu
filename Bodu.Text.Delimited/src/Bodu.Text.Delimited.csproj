@@ -44,6 +44,7 @@
     <!-- Shared-source scalar and flat-member primitives: remain internal in each serializer assembly. -->
     <ItemGroup>
         <Compile Include="..\..\Bodu.Text.Serialization\shared\Flat\InvariantScalarCodec.cs" Link="Shared\InvariantScalarCodec.cs" />
+        <Compile Include="..\..\Bodu.Text.Serialization\shared\Flat\FlatScalarKind.cs" Link="Shared\FlatScalarKind.cs" />
         <Compile Include="..\..\Bodu.Text.Serialization\shared\Flat\FlatMemberDescriptor.cs" Link="Shared\FlatMemberDescriptor.cs" />
         <Compile Include="..\..\Bodu.Text.Serialization\shared\Flat\FlatMemberDiscovery.cs" Link="Shared\FlatMemberDiscovery.cs" />
     </ItemGroup>

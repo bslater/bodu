@@ -271,7 +271,7 @@ public static partial class DelimitedSerializer
         DelimitedSerializerOptions options,
         bool reading)
     {
-        if (IsScalarType(recordType) || typeof(IEnumerable).IsAssignableFrom(recordType))
+        if (InvariantScalarCodec.IsScalar(recordType) || typeof(IEnumerable).IsAssignableFrom(recordType))
         {
             throw new DelimitedSerializationException(
                 string.Format(CultureInfo.CurrentCulture, DelimitedResourceStrings.Op_Invalid_DelimitedRecordTypeNotSupported, recordType));
@@ -284,27 +284,6 @@ public static partial class DelimitedSerializer
         }
 
         return GetMembers(recordType, options);
-    }
-
-    /// <summary>
-    /// Determines whether a type is a scalar, which converts as one field rather than mapping to columns.
-    /// </summary>
-    /// <param name="type">The type to examine.</param>
-    /// <returns>
-    /// <see langword="true" /> for a primitive, an enumeration, <see cref="string" />, <see cref="decimal" />,
-    /// <see cref="Guid" />, a date or time type, <see cref="Uri" />, a 128-bit or half-precision number,
-    /// <see cref="System.Numerics.BigInteger" />, or the nullable form of any of them; otherwise
-    /// <see langword="false" />.
-    /// </returns>
-    private static bool IsScalarType(Type type)
-    {
-        Type underlying = Nullable.GetUnderlyingType(type) ?? type;
-
-        return underlying.IsPrimitive || underlying.IsEnum || underlying == typeof(string) || underlying == typeof(decimal) ||
-            underlying == typeof(Guid) || underlying == typeof(DateTime) || underlying == typeof(DateTimeOffset) ||
-            underlying == typeof(DateOnly) || underlying == typeof(TimeOnly) || underlying == typeof(TimeSpan) ||
-            underlying == typeof(Uri) || underlying == typeof(Int128) || underlying == typeof(UInt128) ||
-            underlying == typeof(Half) || underlying == typeof(System.Numerics.BigInteger);
     }
 
     /// <summary>

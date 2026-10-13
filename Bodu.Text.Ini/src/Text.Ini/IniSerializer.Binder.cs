@@ -7,7 +7,6 @@
 using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-using System.Numerics;
 using System.Reflection;
 
 using Bodu.Text.Ini.Reader;
@@ -115,7 +114,7 @@ public static partial class IniSerializer
 
         foreach (Member member in members)
         {
-            if (IsScalarType(member.MemberType))
+            if (InvariantScalarCodec.IsScalar(member.MemberType))
             {
                 object? memberValue = member.GetValue(value);
                 if (ShouldSkipOnWrite(memberValue, member, options))
@@ -133,7 +132,7 @@ public static partial class IniSerializer
 
         foreach (Member member in members)
         {
-            if (IsScalarType(member.MemberType) || IsGlobalName(member.Name, options))
+            if (InvariantScalarCodec.IsScalar(member.MemberType) || IsGlobalName(member.Name, options))
                 continue;
 
             if (IsUnsupportedEnumerable(member.MemberType))
@@ -183,7 +182,7 @@ public static partial class IniSerializer
             if (!member.CanRead)
                 continue;
 
-            if (!IsScalarType(member.MemberType))
+            if (!InvariantScalarCodec.IsScalar(member.MemberType))
                 throw new IniSerializationException(string.Format(CultureInfo.CurrentCulture, IniResourceStrings.Op_Invalid_IniDepthExceeded, member.Name));
 
             object? memberValue = member.GetValue(body);
@@ -370,7 +369,7 @@ public static partial class IniSerializer
             if (!member.CanWrite)
                 continue;
 
-            if (IsScalarType(member.MemberType))
+            if (InvariantScalarCodec.IsScalar(member.MemberType))
             {
                 int found = IndexOfEntry(document.GlobalEntries, member.Name, comparison);
                 if (found >= 0)
@@ -436,7 +435,7 @@ public static partial class IniSerializer
             if (!member.CanWrite)
                 continue;
 
-            if (!IsScalarType(member.MemberType))
+            if (!InvariantScalarCodec.IsScalar(member.MemberType))
                 throw new IniSerializationException(string.Format(CultureInfo.CurrentCulture, IniResourceStrings.Op_Invalid_IniDepthExceeded, member.Name));
 
             int found = IndexOfEntry(entries, member.Name, comparison);
@@ -627,42 +626,12 @@ public static partial class IniSerializer
     }
 
     /// <summary>
-    /// Determines whether a type maps to a single INI value rather than a section.
-    /// </summary>
-    /// <param name="type">The type to test.</param>
-    /// <returns>
-    /// <see langword="true" /> for <see cref="string" />, a primitive, an enumeration, <see cref="decimal" />,
-    /// <see cref="Guid" />, a date or time type, <see cref="Uri" />, a 128-bit or half-precision number,
-    /// <see cref="BigInteger" />, or the nullable form of any of them; otherwise <see langword="false" />.
-    /// </returns>
-    private static bool IsScalarType(Type type)
-    {
-        Type underlying = Nullable.GetUnderlyingType(type) ?? type;
-
-        return underlying == typeof(string)
-            || underlying.IsPrimitive
-            || underlying.IsEnum
-            || underlying == typeof(decimal)
-            || underlying == typeof(DateTime)
-            || underlying == typeof(DateTimeOffset)
-            || underlying == typeof(DateOnly)
-            || underlying == typeof(TimeOnly)
-            || underlying == typeof(TimeSpan)
-            || underlying == typeof(Guid)
-            || underlying == typeof(Uri)
-            || underlying == typeof(Int128)
-            || underlying == typeof(UInt128)
-            || underlying == typeof(Half)
-            || underlying == typeof(BigInteger);
-    }
-
-    /// <summary>
     /// Determines whether a type is a scalar or a non-dictionary enumerable that cannot be an INI root.
     /// </summary>
     /// <param name="type">The type to test.</param>
     /// <returns><see langword="true" /> when the type cannot be an INI document root.</returns>
     private static bool IsScalarOrEnumerable(Type type) =>
-        IsScalarType(type) || IsUnsupportedEnumerable(type);
+        InvariantScalarCodec.IsScalar(type) || IsUnsupportedEnumerable(type);
 
     /// <summary>
     /// Determines whether a type is a non-dictionary enumerable, which INI cannot represent at any level.

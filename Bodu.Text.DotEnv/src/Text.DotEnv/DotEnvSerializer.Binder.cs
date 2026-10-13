@@ -7,7 +7,6 @@
 using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-using System.Numerics;
 using System.Reflection;
 
 using Bodu.Text.DotEnv.Writer;
@@ -300,33 +299,16 @@ public static partial class DotEnvSerializer
     /// </summary>
     /// <param name="type">The type to test.</param>
     /// <returns><see langword="true" /> when the type cannot be a DotEnv object root.</returns>
+    /// <remarks>
+    /// A scalar cannot be a DotEnv root, although many scalars have public properties that would otherwise be bound as
+    /// keys; <see cref="InvariantScalarCodec.IsScalar(Type)" /> lists the scalars.
+    /// </remarks>
     private static bool IsScalarOrEnumerable(Type type)
     {
-        if (IsScalarType(type))
+        if (InvariantScalarCodec.IsScalar(type))
             return true;
 
         return typeof(IEnumerable).IsAssignableFrom(type) && !typeof(IDictionary).IsAssignableFrom(type);
-    }
-
-    /// <summary>
-    /// Determines whether a type is a scalar, which a DotEnv root cannot be, although many scalars have public
-    /// properties that would otherwise be bound as keys.
-    /// </summary>
-    /// <param name="type">The type to test.</param>
-    /// <returns>
-    /// <see langword="true" /> for <see cref="string" />, a primitive, an enumeration, <see cref="decimal" />,
-    /// <see cref="Guid" />, a date or time type, <see cref="Uri" />, a 128-bit or half-precision number,
-    /// <see cref="BigInteger" />, or the nullable form of any of them; otherwise <see langword="false" />.
-    /// </returns>
-    private static bool IsScalarType(Type type)
-    {
-        Type underlying = Nullable.GetUnderlyingType(type) ?? type;
-
-        return underlying == typeof(string) || underlying.IsPrimitive || underlying.IsEnum || underlying == typeof(decimal) ||
-            underlying == typeof(Guid) || underlying == typeof(DateTime) || underlying == typeof(DateTimeOffset) ||
-            underlying == typeof(DateOnly) || underlying == typeof(TimeOnly) || underlying == typeof(TimeSpan) ||
-            underlying == typeof(Uri) || underlying == typeof(Int128) || underlying == typeof(UInt128) ||
-            underlying == typeof(Half) || underlying == typeof(BigInteger);
     }
 
     /// <summary>
