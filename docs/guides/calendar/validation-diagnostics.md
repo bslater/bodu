@@ -56,8 +56,8 @@ Codes are stable identifiers: they are safe to match on, suppress by, or documen
 
 | Code | Severity | Condition |
 |---|---|---|
-| `BODU-CAL-DUP-ND` | Error | Two notable-date concepts share an identifier. |
-| `BODU-CAL-DUP-RULE` | Error | Two rules within one concept share an identifier. |
+| `BODU-CAL-DUP-ND` | Error | Two notable-date concepts share an identifier and the document's `duplicatePolicy` is `Error`, the default; `KeepFirst`, `KeepLast` and `Merge` settle the document's own duplicate concepts instead. |
+| `BODU-CAL-DUP-RULE` | Error | Two rules within one concept share an identifier and the document's `duplicatePolicy` is `Error` or `Merge`; `KeepFirst` and `KeepLast` settle the document's own duplicate rules instead. An `<AddRule>` override that repeats a rule identifier, and two rules sharing one in an imported concept, are reported under every policy. |
 | `BODU-CAL-DUP-POLICY` | Error | Two adjustment policies share an identifier. |
 | `BODU-CAL-MONTH` | Error | A strategy's month is outside the valid range for its calendar. |
 | `BODU-CAL-DAY` | Error | A strategy's day is outside the valid range for its month/calendar. |

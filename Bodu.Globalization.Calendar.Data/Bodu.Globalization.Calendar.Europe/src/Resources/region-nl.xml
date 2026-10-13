@@ -22,8 +22,8 @@
 <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.nl">
 
   <!--
-    Resolution policy. duplicatePolicy is reserved and has no effect: a duplicate notable-date, rule, or policy
-    identifier is a load error whatever its value. KeepAll keeps every distinct occurrence that lands on a shared day.
+    Resolution policy. duplicatePolicy Error makes a duplicate notable-date or rule identifier a load error, as a
+    duplicate policy identifier always is. KeepAll keeps every distinct occurrence that lands on a shared day.
   -->
   <ResolutionPolicy duplicatePolicy="Error" sameDayCollisionPolicy="KeepAll" priorityDirection="HigherWins" />
 

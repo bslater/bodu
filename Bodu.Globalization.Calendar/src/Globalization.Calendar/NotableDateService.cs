@@ -18,15 +18,18 @@ namespace Bodu.Globalization.Calendar;
 /// in to <see cref="AdjustmentPolicy.SkipNonWorkingDates" /> advances past days already claimed by other holidays.
 /// </para>
 /// <para>
-/// Inclusion is decided by the emitted (observed) date, so a single-day query and a range query covering the same dates
-/// return consistent results. To capture occurrences whose actual date lies just outside the requested window but whose
-/// observed date falls inside it, the service scans one civil year either side of the window.
+/// Inclusion is decided by the span the resource's <see cref="ResolutionPolicy.ObservedDateRangePolicy" /> names, the
+/// emitted (observed) span by default, so a single-day query and a range query covering the same dates return
+/// consistent results. To capture occurrences whose actual date lies just outside the requested window but whose
+/// observed date falls inside it, or the reverse, the service scans one civil year either side of the window.
 /// </para>
 /// <para>
 /// The same-day collision policy settles each day over every occurrence emitted on it, including one whose span ends
 /// before the window, so a multi-day occurrence that loses its emitted day's collision is absent from every window it
-/// reaches into. A window's result is therefore a wider resolution's result restricted to the window, whatever the
-/// window and the policy.
+/// reaches into. The span collision policy then settles each chain of overlapping occurrences whole, gathering further
+/// civil years, up to ten beyond the one-year margin, while a chain that reaches the window stays open. A window's
+/// result is therefore a wider resolution's result restricted to the window, whatever the window and the policies,
+/// except for a chain that never ends, which is settled over what was gathered.
 /// </para>
 /// <para>
 /// <strong>Thread safety.</strong> The service is immutable once constructed and holds no per-query mutable state, so a
@@ -66,7 +69,7 @@ public sealed partial class NotableDateService
     /// <summary>The custom algorithm registry, or <see langword="null" /> when only built-in algorithms are available.</summary>
     private readonly INotableDateAlgorithmRegistry? _algorithms;
 
-    /// <summary>The custom same-day collision resolver, consulted when the policy is <see cref="CollisionPolicy.Custom" />.</summary>
+    /// <summary>The custom collision resolver, consulted when the same-day or span collision policy is <see cref="CollisionPolicy.Custom" />.</summary>
     private readonly INotableDateCollisionResolver? _collisionResolver;
 
     /// <summary>The custom adjustment-handler registry, consulted when an action is <see cref="AdjustmentAction.Custom" />.</summary>

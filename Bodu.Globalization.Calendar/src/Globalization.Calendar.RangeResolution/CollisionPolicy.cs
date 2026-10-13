@@ -17,8 +17,9 @@ namespace Bodu.Globalization.Calendar.RangeResolution;
 /// </para>
 /// <para>
 /// The service applies the resource's <see cref="ResolutionPolicy.SameDayCollisionPolicy" /> to occurrences that share
-/// an emitted date. <see cref="ResolutionPolicy.SpanCollisionPolicy" />, meant for overlapping multi-day spans, is
-/// reserved: it is stored but not applied, so overlapping spans are never reconciled (<see href="https://github.com/bslater/bodu/issues/1119">issue #1119</see>).
+/// an emitted date, and then its <see cref="ResolutionPolicy.SpanCollisionPolicy" /> to every chain of surviving
+/// occurrences connected through overlapping emitted spans that holds a multi-day occurrence. A chain is ranked as a
+/// same-day group is, and a <see cref="Custom" /> resolver receives the chain's earliest emitted date.
 /// </para>
 /// <para>
 /// A collision is settled once per emitted date, over every occurrence emitted on that date, whatever range is queried:

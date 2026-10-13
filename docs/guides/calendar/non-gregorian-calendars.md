@@ -206,7 +206,7 @@ The two can produce Gregorian dates differing by zero or one day for the same Hi
 
 Several non-Gregorian observances are multi-day (Ramadan 30 days, Hanukkah 8 days, Sukkot 7 days, Nowruz up to 13 days). A span can straddle the Gregorian year boundary - a Hanukkah occurrence anchored on 25 Kislev can begin on 26 December and end on 2 January.
 
-A range query includes any occurrence whose emitted span intersects the window (the resource's <xref:Bodu.Globalization.Calendar.RangeResolution.ObservedDateRangePolicy> is reserved and does not change this):
+A range query includes any occurrence whose emitted span intersects the window (under the default <xref:Bodu.Globalization.Calendar.RangeResolution.ObservedDateRangePolicy>; the resource can name the actual span, or either, instead):
 
 ```csharp
 using Bodu.Globalization.Calendar;

@@ -270,7 +270,7 @@ NotableDate week = service.Resolve(new DateOnly(2026, 5, 30), "AU")
 Console.WriteLine($"{week.Date} - {week.EndDate} ({week.DurationDays} days)");
 ```
 
-A multi-day occurrence is included in a range query when its emitted span intersects the window. The resource's <xref:Bodu.Globalization.Calendar.RangeResolution.ObservedDateRangePolicy> is reserved and does not change this.
+A multi-day occurrence is included in a range query when its emitted span intersects the window, or, under the resource's <xref:Bodu.Globalization.Calendar.RangeResolution.ObservedDateRangePolicy>, its actual span or either span.
 
 ---
 
