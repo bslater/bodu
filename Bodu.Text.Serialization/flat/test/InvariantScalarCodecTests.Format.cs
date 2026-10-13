@@ -111,4 +111,20 @@ public sealed partial class InvariantScalarCodecTests
         [new ValidKat<(object? Value, bool Delimited), string>($"{name}, configuration", (value, false), configuration)],
         [new ValidKat<(object? Value, bool Delimited), string>($"{name}, delimited", (value, true), delimited)],
     ];
+
+    /// <summary>
+    /// Verifies that a value whose member is declared with a scalar type is formatted as that scalar, and that a value
+    /// whose member's declared type is not a scalar, such as <see cref="object" />, is formatted by its own type.
+    /// </summary>
+    [TestMethod]
+    public void Format_WhenTheDeclaredKindIsGiven_ShouldFormatAsItOrElseByTheValuesType()
+    {
+        string declared = InvariantScalarCodec.Format(s_instant, FlatScalarKind.DateTime, InvariantScalarCodec.Policy.Configuration);
+        string undeclared = InvariantScalarCodec.Format(s_instant, FlatScalarKind.None, InvariantScalarCodec.Policy.Configuration);
+        string missing = InvariantScalarCodec.Format(null, FlatScalarKind.DateTime, InvariantScalarCodec.Policy.Configuration);
+
+        Assert.AreEqual(s_instant.ToString("O", CultureInfo.InvariantCulture), declared);
+        Assert.AreEqual(declared, undeclared);
+        Assert.AreEqual(string.Empty, missing);
+    }
 }

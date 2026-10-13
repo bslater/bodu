@@ -52,4 +52,32 @@ public sealed partial class FlatMemberDiscoveryTests
             new[] { nameof(MemberSample.Count) },
             members.Select(static member => member.Name).ToArray());
     }
+
+    /// <summary>
+    /// Verifies that the descriptors are ordered by the property-order attribute, members of equal order keeping the
+    /// order discovery returned them in.
+    /// </summary>
+    [TestMethod]
+    public void Describe_WhenMembersHaveOrders_ShouldOrderThemByOrderAndThenByDiscovery()
+    {
+        FlatMemberDescriptor[] members = FlatMemberDiscovery.Describe(typeof(OrderedSample), includeFields: false, namingPolicy: null);
+
+        CollectionAssert.AreEqual(
+            new[] { nameof(OrderedSample.First), nameof(OrderedSample.Second), nameof(OrderedSample.Last) },
+            members.Select(static member => member.Name).ToArray());
+    }
+
+    /// <summary>
+    /// Verifies that two members mapped to one name are found, by the name, and that distinct names, even ones that
+    /// differ only in case, are not.
+    /// </summary>
+    [TestMethod]
+    public void FindDuplicateName_WhenTwoMembersShareAName_ShouldReturnIt()
+    {
+        FlatMemberDescriptor[] duplicated = FlatMemberDiscovery.Describe(typeof(DuplicateSample), includeFields: false, namingPolicy: null);
+        FlatMemberDescriptor[] distinct = FlatMemberDiscovery.Describe(typeof(OrderedSample), includeFields: false, namingPolicy: NamingPolicy.CamelCase);
+
+        Assert.AreEqual("X", FlatMemberDiscovery.FindDuplicateName(duplicated));
+        Assert.IsNull(FlatMemberDiscovery.FindDuplicateName(distinct));
+    }
 }

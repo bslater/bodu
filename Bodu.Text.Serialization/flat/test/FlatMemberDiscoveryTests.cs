@@ -70,4 +70,45 @@ public sealed partial class FlatMemberDiscoveryTests
         /// </summary>
         public new int Port { get; set; }
     }
+
+    /// <summary>
+    /// A record whose property-order attributes put its last-declared property first.
+    /// </summary>
+    private sealed class OrderedSample
+    {
+        /// <summary>
+        /// Gets or sets a property of the default order, written after the first.
+        /// </summary>
+        public int Second { get; set; }
+
+        /// <summary>
+        /// Gets or sets a property ordered last.
+        /// </summary>
+        [PropertyOrder(1)]
+        public int Last { get; set; }
+
+        /// <summary>
+        /// Gets or sets a property ordered first.
+        /// </summary>
+        [PropertyOrder(-1)]
+        public int First { get; set; }
+    }
+
+    /// <summary>
+    /// A record whose two properties are mapped to one name.
+    /// </summary>
+    private sealed class DuplicateSample
+    {
+        /// <summary>
+        /// Gets or sets the first property mapped to <c>X</c>.
+        /// </summary>
+        [PropertyName("X")]
+        public int First { get; set; }
+
+        /// <summary>
+        /// Gets or sets the second property mapped to <c>X</c>.
+        /// </summary>
+        [PropertyName("X")]
+        public int Second { get; set; }
+    }
 }

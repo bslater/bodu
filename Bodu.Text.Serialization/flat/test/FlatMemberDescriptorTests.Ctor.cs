@@ -57,4 +57,33 @@ public sealed partial class FlatMemberDescriptorTests
 
         Assert.AreEqual(2, descriptor.Order);
     }
+
+    /// <summary>
+    /// Verifies that a naming policy converts a member's name, and that a member's own
+    /// <see cref="PropertyNameAttribute" /> name is kept as it is instead.
+    /// </summary>
+    [TestMethod]
+    public void Ctor_WhenANamingPolicyIsGiven_ShouldConvertTheNameUnlessTheMemberNamesItself()
+    {
+        var converted = new FlatMemberDescriptor(typeof(MemberSample).GetProperty(nameof(MemberSample.MaybeDay))!, NamingPolicy.SnakeCaseUpper);
+        var named = new FlatMemberDescriptor(typeof(MemberSample).GetProperty(nameof(MemberSample.Count))!, NamingPolicy.SnakeCaseUpper);
+
+        Assert.AreEqual("MAYBE_DAY", converted.Name);
+        Assert.AreEqual("CUSTOM_KEY", named.Name);
+    }
+
+    /// <summary>
+    /// Verifies that a member of a nullable scalar type is described by the scalar it makes nullable.
+    /// </summary>
+    [TestMethod]
+    public void Ctor_WhenMemberTypeIsANullableScalar_ShouldDescribeTheScalarItMakesNullable()
+    {
+        var descriptor = new FlatMemberDescriptor(typeof(MemberSample).GetProperty(nameof(MemberSample.MaybeDay))!, namingPolicy: null);
+
+        Assert.AreEqual(typeof(DateOnly?), descriptor.MemberType);
+        Assert.AreEqual(typeof(DateOnly), descriptor.ScalarType);
+        Assert.IsTrue(descriptor.IsNullable);
+        Assert.AreEqual(FlatScalarKind.DateOnly, descriptor.ScalarKind);
+        Assert.IsTrue(descriptor.IsScalar);
+    }
 }

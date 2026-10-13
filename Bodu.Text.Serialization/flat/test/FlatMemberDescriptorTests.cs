@@ -33,6 +33,11 @@ public sealed partial class FlatMemberDescriptorTests
         /// </summary>
         [PropertyOrder(2)]
         public int Number { get; set; }
+
+        /// <summary>
+        /// Gets or sets an optional date, written under the naming policy's name.
+        /// </summary>
+        public DateOnly? MaybeDay { get; set; }
     }
 
     /// <summary>

@@ -216,4 +216,20 @@ public sealed partial class InvariantScalarCodecTests
             Assert.AreEqual(value, parsed, text);
         }
     }
+
+    /// <summary>
+    /// Verifies that converting for a member whose scalar kind is already known gives what converting for its declared
+    /// type gives, a missing nullable value included.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenTheScalarKindIsKnown_ShouldConvertAsForTheDeclaredType()
+    {
+        object? known = InvariantScalarCodec.Parse("Tuesday", FlatScalarKind.Enum, typeof(DayOfWeek), nullable: false, InvariantScalarCodec.Policy.Configuration);
+        object? declared = InvariantScalarCodec.Parse("Tuesday", typeof(DayOfWeek), InvariantScalarCodec.Policy.Configuration);
+        object? missing = InvariantScalarCodec.Parse(" ", FlatScalarKind.ConvertibleNumber, typeof(int), nullable: true, InvariantScalarCodec.Policy.Delimited);
+
+        Assert.AreEqual(DayOfWeek.Tuesday, known);
+        Assert.AreEqual(declared, known);
+        Assert.IsNull(missing);
+    }
 }
