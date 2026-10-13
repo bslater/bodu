@@ -9,10 +9,10 @@ namespace Bodu.Financial.ExchangeRates;
 using Microsoft.Extensions.Logging;
 
 /// <summary>
-/// Provides the configuration common to every pair-based web exchange-rate source: the endpoint base address, the HTTP
-/// contract (user agent and timeout), the synchronous-access, look-back and refresh behavior, the currency-alias map,
-/// and the per-concern diagnostic log levels. A concrete source derives from this type to add its own endpoint members
-/// and validation.
+/// Provides the configuration common to every pair-based web exchange-rate source and to the IMF provider: the endpoint
+/// base address, the HTTP contract (user agent and timeout), the synchronous-access, look-back and refresh behavior,
+/// the currency-alias map, and the per-concern diagnostic log levels. A concrete source derives from this type to add
+/// its own endpoint members and validation.
 /// </summary>
 /// <remarks>
 /// <para>
