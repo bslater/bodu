@@ -494,7 +494,8 @@ packages compile in. `shared/**` (the metadata resolver and converter
 engine) compiles into Bencode, TOML and YAML under their format symbols;
 the line formats compile every file of `flat/src/` as-is
 (`InvariantScalarCodec`, `FlatScalarKind`, `FlatMemberDescriptor`,
-`FlatMemberDiscovery` and `Utf8LineCursor`), and their test projects one
+`FlatMemberDiscovery`, `FlatMemberCache`, `FlatBinding`, `Utf8LineCursor`
+and `Utf8OutputSink`), and their test projects one
 copy of `flat/test/`. For
 1.3.0 the shared binding's handling of `[Include]` and
 `ObjectCreationHandling.Populate` was fixed.
@@ -602,8 +603,8 @@ standalone `System.Text.Json`-shaped library: a ref-struct `Utf8*Reader` /
 `Utf8*Writer` token surface over UTF-8, a `*Serializer` reflection binder
 over the shared `Bodu.Text.Serialization` layer, a mutable `*Node` DOM,
 and a read-only `*Document` DOM. The three wire scalars as strings and
-share `InvariantScalarCodec`, `Utf8LineCursor` and the flat member
-discovery from `Bodu.Text.Serialization/flat/src/`. Delimited adds the RFC 4180 dialect policies (field-count /
+share `InvariantScalarCodec`, `Utf8LineCursor`, `Utf8OutputSink` and the
+flat member discovery from `Bodu.Text.Serialization/flat/src/`. Delimited adds the RFC 4180 dialect policies (field-count /
 malformed-record / duplicate-header) and a **truly incremental**
 `IAsyncEnumerable<TRecord>` streaming surface; INI adds the two-reader
 model (source-order `Utf8IniReader` and the normalized `IniDocumentReader`

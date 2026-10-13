@@ -7,6 +7,7 @@
 using System.Buffers;
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
+using Bodu.Text.Serialization;
 
 namespace Bodu.Text.DotEnv.Writer;
 
@@ -30,20 +31,11 @@ namespace Bodu.Text.DotEnv.Writer;
 /// </remarks>
 public ref struct Utf8DotEnvWriter
 {
-    /// <summary>The destination buffer writer in direct mode, or the internal scratch buffer in stream mode.</summary>
-    private readonly IBufferWriter<byte> _output;
-
-    /// <summary>The destination stream in stream mode; otherwise <see langword="null" />.</summary>
-    private readonly Stream? _stream;
-
-    /// <summary>The scratch buffer backing the stream in stream mode; otherwise <see langword="null" />.</summary>
-    private readonly ArrayBufferWriter<byte>? _scratch;
-
     /// <summary>The writer options.</summary>
     private readonly DotEnvWriterOptions _options;
 
-    /// <summary>The number of bytes flushed to the destination.</summary>
-    private long _bytesCommitted;
+    /// <summary>The destination, which the writer writes its bytes and text through.</summary>
+    private Utf8OutputSink _sink;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Utf8DotEnvWriter" /> struct that writes to the supplied buffer.
@@ -70,9 +62,7 @@ public ref struct Utf8DotEnvWriter
     {
         ThrowHelper.ThrowIfNull(output);
 
-        _output = output;
-        _stream = null;
-        _scratch = null;
+        _sink = new Utf8OutputSink(output);
         _options = options;
     }
 
@@ -101,9 +91,7 @@ public ref struct Utf8DotEnvWriter
     {
         ThrowHelper.ThrowIfNull(stream);
 
-        _scratch = new ArrayBufferWriter<byte>();
-        _output = _scratch;
-        _stream = stream;
+        _sink = new Utf8OutputSink(stream);
         _options = options;
     }
 
@@ -111,13 +99,13 @@ public ref struct Utf8DotEnvWriter
     /// Gets the number of bytes flushed to the destination.
     /// </summary>
     /// <value>The committed byte count.</value>
-    public readonly long BytesCommitted => _bytesCommitted;
+    public readonly long BytesCommitted => _sink.BytesCommitted;
 
     /// <summary>
     /// Gets the number of bytes written but not yet flushed to the destination.
     /// </summary>
     /// <value>The pending byte count; always zero in direct buffer-writer mode.</value>
-    public readonly long BytesPending => _scratch?.WrittenCount ?? 0;
+    public readonly long BytesPending => _sink.BytesPending;
 
     /// <summary>
     /// Writes the document object start. DotEnv has no object delimiter, so this method emits no bytes; it exists to
@@ -179,10 +167,10 @@ public ref struct Utf8DotEnvWriter
         if (!IsKey(name)) throw new ArgumentException(DotEnvResourceStrings.Arg_Invalid_DotEnvKeyName, nameof(name));
 
         if (export)
-            WriteRaw("export "u8);
+            _sink.WriteRaw("export "u8);
 
-        WriteText(name);
-        WriteRaw("="u8);
+        _sink.WriteText(name);
+        _sink.WriteRaw("="u8);
     }
 
     /// <summary>
@@ -199,9 +187,9 @@ public ref struct Utf8DotEnvWriter
         if (NeedsQuoting(value))
             WriteQuoted(value);
         else
-            WriteText(value);
+            _sink.WriteText(value);
 
-        WriteRaw("\n"u8);
+        _sink.WriteRaw("\n"u8);
     }
 
     /// <summary>
@@ -240,18 +228,8 @@ public ref struct Utf8DotEnvWriter
     /// <summary>
     /// Flushes any buffered bytes to the destination stream. This method is a no-op in direct buffer-writer mode.
     /// </summary>
-    public void Flush()
-    {
-        if (_stream is null || _scratch is null)
-            return;
-
-        if (_scratch.WrittenCount > 0)
-        {
-            _stream.Write(_scratch.WrittenSpan);
-            _bytesCommitted += _scratch.WrittenCount;
-            _scratch.Clear();
-        }
-    }
+    public void Flush() =>
+        _sink.Flush();
 
     /// <summary>
     /// Flushes any buffered bytes and releases the writer.
@@ -284,22 +262,9 @@ public ref struct Utf8DotEnvWriter
     /// <param name="line">The text of the line, which holds no line break.</param>
     private void WriteCommentLine(ReadOnlySpan<char> line)
     {
-        WriteRaw("#"u8);
-        WriteText(line);
-        WriteRaw("\n"u8);
-    }
-
-    /// <summary>
-    /// Writes the supplied text as UTF-8 bytes verbatim.
-    /// </summary>
-    /// <param name="text">The text to write.</param>
-    private void WriteText(scoped ReadOnlySpan<char> text)
-    {
-        int byteCount = Encoding.UTF8.GetByteCount(text);
-        Span<byte> destination = _output.GetSpan(byteCount);
-        int written = Encoding.UTF8.GetBytes(text, destination);
-        _output.Advance(written);
-        AccountDirect(written);
+        _sink.WriteRaw("#"u8);
+        _sink.WriteText(line);
+        _sink.WriteRaw("\n"u8);
     }
 
     /// <summary>
@@ -325,30 +290,7 @@ public ref struct Utf8DotEnvWriter
         }
 
         sb.Append('"');
-        WriteText(sb.ToString());
-    }
-
-    /// <summary>
-    /// Writes the supplied UTF-8 bytes verbatim.
-    /// </summary>
-    /// <param name="bytes">The bytes to write.</param>
-    private void WriteRaw(ReadOnlySpan<byte> bytes)
-    {
-        Span<byte> destination = _output.GetSpan(bytes.Length);
-        bytes.CopyTo(destination);
-        _output.Advance(bytes.Length);
-        AccountDirect(bytes.Length);
-    }
-
-    /// <summary>
-    /// Attributes written bytes to the committed count in direct buffer-writer mode, where there is no flush step. In
-    /// stream mode the committed count is tracked at flush time instead.
-    /// </summary>
-    /// <param name="count">The number of bytes written.</param>
-    private void AccountDirect(int count)
-    {
-        if (_stream is null)
-            _bytesCommitted += count;
+        _sink.WriteText(sb.ToString());
     }
 
     /// <summary>
