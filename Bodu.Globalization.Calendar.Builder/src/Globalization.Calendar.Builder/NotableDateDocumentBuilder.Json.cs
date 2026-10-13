@@ -130,7 +130,8 @@ public sealed partial class NotableDateDocumentBuilder
     /// <exception cref="FormatException">
     /// <paramref name="json" /> is not well-formed or is not a notable-date document, an enumeration, integer, Boolean,
     /// trigger-month or <c>workingDays</c> value does not parse, a property that holds a value holds an object or an
-    /// array, or an item of a list of identifiers, territory codes or tags is not a string.
+    /// array, an item of a list of identifiers, territory codes or tags is not a string, or a <c>PatchRule</c>
+    /// override's <c>strategy</c> or <c>recurrence</c> names no recognized kind or more than one.
     /// </exception>
     /// <exception cref="NotSupportedException">
     /// <paramref name="json" /> declares a field the builder's document model cannot hold: an empty <c>tags</c> or
@@ -169,7 +170,10 @@ public sealed partial class NotableDateDocumentBuilder
     /// <see cref="ToJson()" /> writes (imports, the trigger and action refinements, handler parameters, scope rule
     /// references and year bounds, and a <c>PatchRule</c> override's applicability, strategy, recurrence, duration,
     /// tags and adjustments), so the builder and the loader read the same document into the same resource. The few
-    /// fields the builder's model cannot hold throw a <see cref="NotSupportedException" /> rather than being dropped.
+    /// fields the builder's model cannot hold throw a <see cref="NotSupportedException" /> rather than being dropped. A
+    /// <c>PatchRule</c> override that carries a <c>strategy</c> or a <c>recurrence</c> must name exactly one recognized
+    /// kind between them, matched ignoring case as the loader matches it, or it throws a <see cref="FormatException" />
+    /// carrying the message of the loader's <c>BODU-CAL-RULE-SOURCE</c> diagnostic.
     /// </para>
     /// <para>
     /// Parsing does not otherwise validate the document: a document the loader would reject for a reason other than a
@@ -220,8 +224,9 @@ public sealed partial class NotableDateDocumentBuilder
     /// <exception cref="ArgumentNullException"><paramref name="json" /> is <see langword="null" />.</exception>
     /// <exception cref="FormatException">
     /// An enumeration, integer, Boolean, trigger-month or <c>workingDays</c> value does not parse, a property that
-    /// holds a value holds an object or an array, or an item of a list of identifiers, territory codes or tags is not a
-    /// string.
+    /// holds a value holds an object or an array, an item of a list of identifiers, territory codes or tags is not a
+    /// string, or a <c>PatchRule</c> override's <c>strategy</c> or <c>recurrence</c> names no recognized kind or more
+    /// than one.
     /// </exception>
     /// <exception cref="NotSupportedException">
     /// <paramref name="json" /> declares a field the builder's document model cannot hold; see

@@ -18,8 +18,8 @@ namespace Bodu.Globalization.Calendar.Builder;
 /// </summary>
 public sealed partial class NotableDateDocumentBuilder
 {
-    /// <summary>Maps each JSON strategy property name to the corresponding XML strategy element local name.</summary>
-    private static readonly Dictionary<string, string> s_jsonStrategyElementNames = new(StringComparer.Ordinal)
+    /// <summary>Maps each JSON strategy property name, matched ignoring case as the loader matches it, to the corresponding XML strategy element local name.</summary>
+    private static readonly Dictionary<string, string> s_jsonStrategyElementNames = new(StringComparer.OrdinalIgnoreCase)
     {
         ["fixed"] = "Fixed",
         ["dayOfWeekInMonth"] = "DayOfWeekInMonth",
@@ -36,8 +36,8 @@ public sealed partial class NotableDateDocumentBuilder
         ["dayOfYear"] = "DayOfYear",
     };
 
-    /// <summary>Maps each JSON recurrence property name to the corresponding XML recurrence element local name.</summary>
-    private static readonly Dictionary<string, string> s_jsonRecurrenceElementNames = new(StringComparer.Ordinal)
+    /// <summary>Maps each JSON recurrence property name, matched ignoring case as the loader matches it, to the corresponding XML recurrence element local name.</summary>
+    private static readonly Dictionary<string, string> s_jsonRecurrenceElementNames = new(StringComparer.OrdinalIgnoreCase)
     {
         ["dailyInterval"] = "DailyInterval",
         ["weekly"] = "Weekly",
@@ -415,9 +415,17 @@ public sealed partial class NotableDateDocumentBuilder
     /// <param name="overrideJson">The override object.</param>
     /// <param name="notableDateRef">The identifier of the targeted concept.</param>
     /// <returns>The reconstructed patch override entry.</returns>
+    /// <exception cref="FormatException">
+    /// The override carries a <c>strategy</c> or a <c>recurrence</c>, and the two name no recognized kind or more than
+    /// one.
+    /// </exception>
     private static OverrideEntry ReadPatchOverrideJson(JsonObject overrideJson, string notableDateRef)
     {
         string ruleRef = ScalarText(overrideJson["ruleRef"]) ?? string.Empty;
+        var strategyJson = overrideJson["strategy"] as JsonObject;
+        var recurrenceJson = overrideJson["recurrence"] as JsonObject;
+        ThrowIfPatchOccurrenceSourceInvalid(strategyJson, recurrenceJson, notableDateRef, ruleRef);
+
         NotableDateRuleBuilder rule = new(ruleRef);
         var applicability = overrideJson["applicability"] as JsonObject;
 
@@ -442,9 +450,9 @@ public sealed partial class NotableDateDocumentBuilder
             ReadPatchListJson(overrideJson["tags"] as JsonArray, "patch tags", "an empty tags list on a PatchRule override"),
             ReadPatchListJson(overrideJson["adjustments"] as JsonArray, "patch adjustments", "an empty adjustments list on a PatchRule override"));
 
-        rule.SetParsedStrategy(BuildStrategyElement(overrideJson["strategy"] as JsonObject));
+        rule.SetParsedStrategy(BuildStrategyElement(strategyJson));
 
-        if (BuildRecurrenceElement(overrideJson["recurrence"] as JsonObject) is XElement recurrence)
+        if (BuildRecurrenceElement(recurrenceJson) is XElement recurrence)
             rule.SetParsedRecurrence(recurrence);
 
         if ((overrideJson["duration"] as JsonObject)?["untilDate"] is JsonObject untilDate)
@@ -457,6 +465,62 @@ public sealed partial class NotableDateDocumentBuilder
         }
 
         return new OverrideEntry(OverrideOperation.PatchRule, notableDateRef, ruleRef, rule);
+    }
+
+    /// <summary>
+    /// Rejects a <c>PatchRule</c> override that replaces the rule's occurrence source without naming exactly one, as
+    /// the loader rejects it: a present <c>strategy</c> or <c>recurrence</c> must name one recognized kind between
+    /// them.
+    /// </summary>
+    /// <param name="strategyJson">The override's strategy object, or <see langword="null" /> when absent.</param>
+    /// <param name="recurrenceJson">The override's recurrence object, or <see langword="null" /> when absent.</param>
+    /// <param name="notableDateRef">The identifier of the targeted concept, used in the exception message.</param>
+    /// <param name="ruleRef">The identifier of the targeted rule, used in the exception message.</param>
+    /// <exception cref="FormatException">
+    /// A strategy or a recurrence is present, and the two name no recognized kind or more than one.
+    /// </exception>
+    private static void ThrowIfPatchOccurrenceSourceInvalid(JsonObject? strategyJson, JsonObject? recurrenceJson, string notableDateRef, string ruleRef)
+    {
+        if (strategyJson is null && recurrenceJson is null)
+            return;
+
+        int sources = CountKinds(strategyJson, s_jsonStrategyElementNames.Keys) + CountKinds(recurrenceJson, s_jsonRecurrenceElementNames.Keys);
+        if (sources == 1)
+            return;
+
+        string format = sources == 0
+            ? CalendarResourceStrings.Validation_PatchOccurrenceSourceMissing
+            : CalendarResourceStrings.Validation_PatchOccurrenceSourceConflict;
+
+        throw new FormatException(string.Format(CultureInfo.CurrentCulture, format, notableDateRef, ruleRef));
+    }
+
+    /// <summary>
+    /// Counts the recognized kinds a JSON strategy or recurrence object names, as the loader counts them.
+    /// </summary>
+    /// <param name="source">The strategy or recurrence object, or <see langword="null" /> when absent.</param>
+    /// <param name="kinds">The recognized kind names.</param>
+    /// <returns>The number of recognized kinds present; zero when <paramref name="source" /> is absent.</returns>
+    private static int CountKinds(JsonObject? source, IEnumerable<string> kinds) =>
+        source is null ? 0 : kinds.Count(kind => FindKind(source, kind) is not null);
+
+    /// <summary>
+    /// Finds the body of a kind in a JSON strategy or recurrence object as the loader finds it: the first property that
+    /// bears the kind's name, ignoring case, and is not the JSON literal <c>null</c>, when that property holds an
+    /// object.
+    /// </summary>
+    /// <param name="source">The strategy or recurrence object.</param>
+    /// <param name="kind">The kind name.</param>
+    /// <returns>The kind's body, or <see langword="null" /> when the object does not name the kind.</returns>
+    private static JsonObject? FindKind(JsonObject source, string kind)
+    {
+        foreach (KeyValuePair<string, JsonNode?> property in source)
+        {
+            if (property.Value is not null && string.Equals(property.Key, kind, StringComparison.OrdinalIgnoreCase))
+                return property.Value as JsonObject;
+        }
+
+        return null;
     }
 
     /// <summary>
