@@ -135,7 +135,8 @@ Once the subfamily is chosen, this table compares the algorithms within each sub
 | `MurmurHash3_32` / `MurmurHash3_128` | 32 / 128 bits | Constant memory | No | Database index keys; widely used in distributed systems. |
 | `CityHash32` / `CityHash64` / `CityHash128` | 32 / 64 / 128 bits | Buffers the whole input | No | In-memory keys and blobs; memory grows with the input, so not for very large streams. |
 | `Pearson` | 8 - 2048 bits | Constant memory | No | Configurable output width in 8-bit steps; embedded scenarios. |
-| `Bernstein`, `BKDR`, `SDBM`, `JSHash`, `Elf64`, `ApHash`, `Pjw32`, `SuperFastHash` | 32 / 64 bits | Constant memory | No | Compiler-style string hashing; legacy interop. |
+| `Bernstein`, `BKDR`, `SDBM`, `JSHash`, `Elf64`, `ApHash`, `Pjw32` | 32 / 64 bits | Constant memory | No | Compiler-style string hashing; legacy interop. |
+| `SuperFastHash` | 32 bits | Buffers the whole input | No | Short keys; reproducing digests from existing SuperFastHash code. |
 | `Crc` (any standard from <xref:Bodu.IO.Hashing.Checksums.CrcStandard>) | 1 - 64 bits | Constant memory | **Yes** (`IResumableHashAlgorithm`) | Error-detection checksum on transmission / storage channels; choice driven by published `CrcStandard` (e.g. CRC-32/ISO-HDLC for zlib / PNG / Ethernet). |
 | `Fletcher16` / `Fletcher32` / `Fletcher64` | 16 / 32 / 64 bits | Constant memory | **Yes** (`IResumableHashAlgorithm`) | Faster than CRC at comparable error coverage; protocol checksums. |
 | `Adler32` / `Adler32C` / `Adler64` | 32 / 32 / 64 bits | Constant memory | **Yes** (`IResumableHashAlgorithm`) | Used by zlib; checksum for short, low-entropy payloads. |
