@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Globalization;
+
 namespace Bodu.Numerics;
 
 public partial class FractionTests
@@ -224,5 +226,97 @@ public partial class FractionTests
     {
         Assert.IsFalse(Fraction<int>.TryParse("x½", out Fraction<int> result));
         Assert.AreEqual(Fraction<int>.Zero, result);
+    }
+
+    /// <summary>
+    /// Verifies that a negative value formatted in every format under a culture whose negative sign is not the ASCII
+    /// hyphen-minus parses back to the same value under that culture.
+    /// </summary>
+    /// <param name="cultureName">The name of the culture under test.</param>
+    [TestMethod]
+    [DataRow("sv-SE")]
+    [DataRow("fa-IR")]
+    [DataRow("ar-SA")]
+    [DataRow("he-IL")]
+    public void Parse_WhenNegativeTextUsesCultureNegativeSign_ShouldReproduceValue(string cultureName)
+    {
+        var culture = CultureInfo.GetCultureInfo(cultureName);
+        var value = new Fraction<int>(-7, 4);
+
+        foreach (string format in new[] { "G", "M", "U", "P" })
+        {
+            string text = value.ToString(format, culture);
+            Assert.AreEqual(value, Fraction<int>.Parse(text, culture), $"{format}: '{text}'");
+        }
+    }
+
+    /// <summary>
+    /// Verifies that a negative value formatted into a character span under a culture whose negative sign is not the
+    /// ASCII hyphen-minus parses back from that span to the same value under that culture.
+    /// </summary>
+    /// <param name="cultureName">The name of the culture under test.</param>
+    [TestMethod]
+    [DataRow("sv-SE")]
+    [DataRow("fa-IR")]
+    [DataRow("ar-SA")]
+    [DataRow("he-IL")]
+    public void TryParse_WhenNegativeSpanUsesCultureNegativeSign_ShouldReturnTrueAndValue(string cultureName)
+    {
+        var culture = CultureInfo.GetCultureInfo(cultureName);
+        var value = new Fraction<int>(-3, 4);
+        Span<char> buffer = stackalloc char[32];
+        Assert.IsTrue(value.TryFormat(buffer, out int written, default, culture));
+
+        bool parsed = Fraction<int>.TryParse(buffer[..written], culture, out Fraction<int> result);
+
+        Assert.IsTrue(parsed, buffer[..written].ToString());
+        Assert.AreEqual(value, result);
+    }
+
+    /// <summary>
+    /// Verifies that a value carrying the positive sign of a culture whose positive sign is not the ASCII plus sign
+    /// parses under that culture.
+    /// </summary>
+    /// <param name="cultureName">The name of the culture under test.</param>
+    [TestMethod]
+    [DataRow("fa-IR")]
+    [DataRow("ar-SA")]
+    [DataRow("he-IL")]
+    public void TryParse_WhenTextUsesCulturePositiveSign_ShouldReturnTrueAndValue(string cultureName)
+    {
+        var culture = CultureInfo.GetCultureInfo(cultureName);
+        string text = culture.NumberFormat.PositiveSign + "3/4";
+
+        bool parsed = Fraction<int>.TryParse(text, culture, out Fraction<int> result);
+
+        Assert.IsTrue(parsed, text);
+        Assert.AreEqual(new Fraction<int>(3, 4), result);
+    }
+
+    /// <summary>
+    /// Verifies that negative, positive, whole and zero values formatted in every format under every culture the
+    /// runtime reports parse back to the same value under that culture.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenRoundTrippingUnderEveryCulture_ShouldReproduceValue()
+    {
+        Fraction<int>[] values = [new(-7, 4), new(-3, 4), new(-5, 1), Fraction<int>.Zero, new(7, 4), new(3, 4)];
+        string[] formats = ["G", "M", "U", "P"];
+        var failures = new List<string>();
+
+        foreach (CultureInfo culture in CultureInfo.GetCultures(CultureTypes.AllCultures))
+        {
+            foreach (Fraction<int> value in values)
+            {
+                foreach (string format in formats)
+                {
+                    string text = value.ToString(format, culture);
+                    if (!Fraction<int>.TryParse(text, culture, out Fraction<int> parsed) || parsed != value)
+                        failures.Add($"{culture.Name}/{format}/{value}: '{text}'");
+                }
+            }
+        }
+
+        Assert.AreEqual(0, failures.Count, string.Join("; ", failures.Take(10)));
     }
 }

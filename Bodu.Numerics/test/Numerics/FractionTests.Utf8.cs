@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Globalization;
 using System.Text;
 
 namespace Bodu.Numerics;
@@ -56,5 +57,28 @@ public partial class FractionTests
 
         Assert.IsTrue(formatted);
         Assert.AreEqual("3/4", Encoding.UTF8.GetString(buffer[..written]));
+    }
+
+    /// <summary>
+    /// Verifies that a negative value formatted into a UTF-8 byte span under a culture whose negative sign is not the
+    /// ASCII hyphen-minus parses back from those bytes to the same value under that culture.
+    /// </summary>
+    /// <param name="cultureName">The name of the culture under test.</param>
+    [TestMethod]
+    [DataRow("sv-SE")]
+    [DataRow("fa-IR")]
+    [DataRow("ar-SA")]
+    [DataRow("he-IL")]
+    public void TryParse_WhenNegativeUtf8TextUsesCultureNegativeSign_ShouldReturnTrueAndValue(string cultureName)
+    {
+        var culture = CultureInfo.GetCultureInfo(cultureName);
+        var value = new Fraction<int>(-3, 4);
+        Span<byte> buffer = stackalloc byte[32];
+        Assert.IsTrue(value.TryFormat(buffer, out int written, default, culture));
+
+        bool parsed = Fraction<int>.TryParse(buffer[..written], culture, out Fraction<int> result);
+
+        Assert.IsTrue(parsed, Encoding.UTF8.GetString(buffer[..written]));
+        Assert.AreEqual(value, result);
     }
 }
