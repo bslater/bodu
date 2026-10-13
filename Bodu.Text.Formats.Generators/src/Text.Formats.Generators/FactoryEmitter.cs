@@ -325,9 +325,9 @@ internal static class FactoryEmitter
     /// <param name="kind">The format whose reflection binder the expression mirrors.</param>
     /// <returns>The formatting expression text.</returns>
     /// <remarks>
-    /// The delimited binder writes temporal values in their round-trip forms, <c>O</c> for <see cref="DateTime" /> and
-    /// <see cref="DateTimeOffset" /> and the constant <c>c</c> form for <see cref="TimeSpan" />; the INI binder writes
-    /// the invariant general forms, which for <see cref="TimeSpan" /> is the same <c>c</c> form.
+    /// Both binders write <see cref="DateTime" /> and <see cref="DateTimeOffset" /> in the round-trip <c>O</c> form.
+    /// The delimited binder writes <see cref="TimeSpan" /> in the constant <c>c</c> form; the INI binder writes its
+    /// invariant general form, which is the same <c>c</c> form.
     /// </remarks>
     private static string FormatValue(MemberModel member, string value, FactoryKind kind) =>
         member.Scalar switch
@@ -337,10 +337,8 @@ internal static class FactoryEmitter
             ScalarKind.Char => $"{value}.ToString()",
             ScalarKind.Number => $"{value}.ToString(global::System.Globalization.CultureInfo.InvariantCulture)",
             ScalarKind.Guid => $"{value}.ToString()",
-            ScalarKind.DateTime or ScalarKind.DateTimeOffset when kind == FactoryKind.Delimited =>
+            ScalarKind.DateTime or ScalarKind.DateTimeOffset =>
                 $"{value}.ToString(\"O\", global::System.Globalization.CultureInfo.InvariantCulture)",
-            ScalarKind.DateTime => $"{value}.ToString(global::System.Globalization.CultureInfo.InvariantCulture)",
-            ScalarKind.DateTimeOffset => $"{value}.ToString(global::System.Globalization.CultureInfo.InvariantCulture)",
             ScalarKind.TimeSpan when kind == FactoryKind.Delimited =>
                 $"{value}.ToString(\"c\", global::System.Globalization.CultureInfo.InvariantCulture)",
             ScalarKind.TimeSpan => $"{value}.ToString()",

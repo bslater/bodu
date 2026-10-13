@@ -53,12 +53,13 @@ internal static class InvariantScalarCodec
     internal enum Policy
     {
         /// <summary>
-        /// The DotEnv and INI rules: invariant text, and only empty text is a missing nullable value.
+        /// The DotEnv and INI rules: invariant text, round-trip text for <see cref="DateTime" />,
+        /// <see cref="DateTimeOffset" /> and <see cref="TimeOnly" />, and only empty text is a missing nullable value.
         /// </summary>
         Configuration,
 
         /// <summary>
-        /// The delimited rules: round-trip text for temporal values, and a blank cell, empty or white space, is a
+        /// The delimited rules: round-trip text for every temporal value, and a blank cell, empty or white space, is a
         /// missing nullable value, except that one space is a value for a nullable <see cref="char" />.
         /// </summary>
         Delimited,
@@ -113,8 +114,12 @@ internal static class InvariantScalarCodec
     /// <param name="policy">The formatting policy to apply.</param>
     /// <returns>The scalar's serialized representation.</returns>
     /// <remarks>
-    /// A <see cref="TimeOnly" /> is written in its round-trip form, <c>HH:mm:ss.fffffff</c>, under both policies, since
-    /// its general invariant form holds only hours and minutes and would not read back as the value written.
+    /// A <see cref="DateTime" />, a <see cref="DateTimeOffset" /> and a <see cref="TimeOnly" /> are written in their
+    /// round-trip forms under both policies: <c>O</c>, which keeps every tick and the kind or the offset, and
+    /// <c>HH:mm:ss.fffffff</c>. Their general invariant forms drop the fractions of a second, the kind of a
+    /// <see cref="DateTime" />, and for a <see cref="TimeOnly" /> the seconds, so they would not read back as the value
+    /// written. The <see cref="Policy.Delimited" /> policy also writes a <see cref="DateOnly" /> as <c>yyyy-MM-dd</c>
+    /// and a <see cref="TimeSpan" /> in the constant <c>c</c> form.
     /// </remarks>
     internal static string Format(object? value, Policy policy) =>
         value switch
@@ -122,8 +127,8 @@ internal static class InvariantScalarCodec
             null => string.Empty,
             string s => s,
             bool b => b ? "true" : "false",
-            DateTime dateTime when policy == Policy.Delimited => dateTime.ToString("O", CultureInfo.InvariantCulture),
-            DateTimeOffset dateTimeOffset when policy == Policy.Delimited => dateTimeOffset.ToString("O", CultureInfo.InvariantCulture),
+            DateTime dateTime => dateTime.ToString("O", CultureInfo.InvariantCulture),
+            DateTimeOffset dateTimeOffset => dateTimeOffset.ToString("O", CultureInfo.InvariantCulture),
             DateOnly date when policy == Policy.Delimited => date.ToString("O", CultureInfo.InvariantCulture),
             TimeOnly time => time.ToString("O", CultureInfo.InvariantCulture),
             TimeSpan span when policy == Policy.Delimited => span.ToString("c", CultureInfo.InvariantCulture),
