@@ -49,6 +49,8 @@ var compact = new JsonSerializerOptions()
 | `Lenient` | as `Strict`, plus a top-level string is accepted on read | as `Strict`, plus `"min"`/`"max"` aliases and defaulted inclusivity | Spreadsheet / external-feed ingest. |
 | `Compact` | string `"3/4"` | ISO 31-11 bracket string `"[1, 5)"`, or `"∅"` for empty | Compact payloads where size matters. |
 
+An infinite endpoint of a bounded side, such as the upper side of `Interval<double>.Closed(0, double.PositiveInfinity)`, is written as the string `"Infinity"` or `"-Infinity"` under `Strict` and `Lenient` (JSON has no number for it) and reads back unchanged; under `Compact` a closed infinite side reads back unchanged, and an open one, as in `"(0, Infinity)"`, reads back as an unbounded side.
+
 `DiscreteInterval<T>` serializes through the `Interval<T>` shape over its canonical closed integer bounds (compact form `"[1, 5]"`), and `IntervalSet<T>` serializes as a JSON **array** of its `Interval<T>` pieces (empty set → `[]`). Both honour the selected policy.
 
 `BigDecimal` serializes as the canonical object `{ "unscaledValue": 1234, "scale": 2 }` under `Strict` (the unscaled value is a raw JSON number, so an arbitrary-magnitude mantissa round-trips exactly) and as the plain decimal string `"12.34"` under `Compact`. `Lenient` reads either shape. The string form is used for `Compact` - rather than a bare JSON number - because many consumers narrow long numbers to IEEE-754 `double`.

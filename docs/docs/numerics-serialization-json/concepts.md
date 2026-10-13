@@ -46,7 +46,7 @@ Both components are written as **raw** JSON numbers - not through the writer's `
 "[1, 5)"   "[1, +∞)"   "∅"
 ```
 
-A bounded side carries its endpoint and inclusivity flag; an unbounded side is a `lowerUnbounded` / `upperUnbounded` marker with no endpoint; the empty interval is the single-property object `{ "empty": true }` and must stand alone. Under `Strict` a bounded side's inclusivity flag is required; `Lenient` defaults a missing flag to closed and accepts `"min"` / `"max"` as endpoint aliases. The compact form is the same ISO 31-11 bracket notation `Interval<T>.ToString()` / `TryParse` use, with `"∅"` for empty (non-ASCII characters are escaped per the options' encoder).
+A bounded side carries its endpoint and inclusivity flag, the endpoint a JSON number or, for an infinite floating-point endpoint, the string `"Infinity"` or `"-Infinity"`; an unbounded side is a `lowerUnbounded` / `upperUnbounded` marker with no endpoint; the empty interval is the single-property object `{ "empty": true }` and must stand alone. Under `Strict` a bounded side's inclusivity flag is required; `Lenient` defaults a missing flag to closed and accepts `"min"` / `"max"` as endpoint aliases. The compact form is the same ISO 31-11 bracket notation `Interval<T>.ToString()` / `TryParse` use, with `"∅"` for empty (non-ASCII characters are escaped per the options' encoder), so an infinite endpoint on an open side, as in `"(0, Infinity)"`, reads back as an unbounded side.
 
 ## Discrete interval and interval set
 
