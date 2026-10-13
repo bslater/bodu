@@ -446,9 +446,10 @@ public abstract class WebRateProvider
     /// </para>
     /// <para>
     /// Returning <see langword="null" /> from <paramref name="publish" /> suppresses the snapshot rebuild and
-    /// completion log (the loaded key was already committed by another operation). The timestamp is captured
-    /// immediately after fetching, before entering the publication lock; a <paramref name="publish" /> whose table was
-    /// served from a disk cache stamps the cache entry's stored time instead, the time its bytes were fetched.
+    /// completion log (the loaded key was already committed by another operation); returning zero logs the completion
+    /// but keeps the current snapshot, which an empty publish leaves unchanged. The timestamp is captured immediately
+    /// after fetching, before entering the publication lock; a <paramref name="publish" /> whose table was served from
+    /// a disk cache stamps the cache entry's stored time instead, the time its bytes were fetched.
     /// </para>
     /// <para>
     /// <paramref name="publish" /> should record its unit as loaded only after
@@ -519,7 +520,10 @@ public abstract class WebRateProvider
             if (count is not int publishedCount)
                 return;
 
-            RebuildSnapshot();
+            // A publish that added no observation left the accumulator as it was, so the snapshot already reflects it.
+            if (publishedCount > 0)
+                RebuildSnapshot();
+
             logCompleted(publishedCount);
         }
     }
