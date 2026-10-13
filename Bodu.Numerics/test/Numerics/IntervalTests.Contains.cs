@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Numerics;
+
 namespace Bodu.Numerics;
 
 public partial class IntervalTests
@@ -120,4 +122,81 @@ public partial class IntervalTests
         Assert.IsFalse(Interval<int>.Empty.Contains(Interval<int>.Closed(1, 5)));
         Assert.IsTrue(Interval<int>.Empty.Contains(Interval<int>.Empty));
     }
+
+    /// <summary>
+    /// Verifies that an interval over <see cref="double" /> with an unbounded side contains neither NaN nor either
+    /// infinity, since an unbounded side admits every finite value and no infinity.
+    /// </summary>
+    /// <param name="shape">The name of the unbounded factory under test.</param>
+    [TestMethod]
+    [DataRow("All")]
+    [DataRow("AtLeast")]
+    [DataRow("GreaterThan")]
+    [DataRow("AtMost")]
+    [DataRow("LessThan")]
+    public void Contains_WhenSideIsUnbounded_ForDouble_ShouldExcludeNaNAndInfinities(string shape) =>
+        AssertExcludesNonFiniteValues<double>(shape);
+
+    /// <summary>
+    /// Verifies that an interval over <see cref="float" /> with an unbounded side contains neither NaN nor either
+    /// infinity, since an unbounded side admits every finite value and no infinity.
+    /// </summary>
+    /// <param name="shape">The name of the unbounded factory under test.</param>
+    [TestMethod]
+    [DataRow("All")]
+    [DataRow("AtLeast")]
+    [DataRow("GreaterThan")]
+    [DataRow("AtMost")]
+    [DataRow("LessThan")]
+    public void Contains_WhenSideIsUnbounded_ForSingle_ShouldExcludeNaNAndInfinities(string shape) =>
+        AssertExcludesNonFiniteValues<float>(shape);
+
+    /// <summary>
+    /// Verifies that an interval over <see cref="Half" /> with an unbounded side contains neither NaN nor either
+    /// infinity, since an unbounded side admits every finite value and no infinity.
+    /// </summary>
+    /// <param name="shape">The name of the unbounded factory under test.</param>
+    [TestMethod]
+    [DataRow("All")]
+    [DataRow("AtLeast")]
+    [DataRow("GreaterThan")]
+    [DataRow("AtMost")]
+    [DataRow("LessThan")]
+    public void Contains_WhenSideIsUnbounded_ForHalf_ShouldExcludeNaNAndInfinities(string shape) =>
+        AssertExcludesNonFiniteValues<Half>(shape);
+
+    /// <summary>
+    /// Asserts that the unbounded interval named by <paramref name="shape" /> contains neither NaN nor either infinity
+    /// of <typeparamref name="T" />.
+    /// </summary>
+    /// <typeparam name="T">The floating-point endpoint type.</typeparam>
+    /// <param name="shape">The name of the unbounded factory.</param>
+    private static void AssertExcludesNonFiniteValues<T>(string shape)
+        where T : IFloatingPointIeee754<T>
+    {
+        Interval<T> interval = UnboundedFloatingPointShape<T>(shape);
+
+        Assert.IsFalse(interval.Contains(T.NaN), $"{interval} contains NaN");
+        Assert.IsFalse(interval.Contains(T.PositiveInfinity), $"{interval} contains +Infinity");
+        Assert.IsFalse(interval.Contains(T.NegativeInfinity), $"{interval} contains -Infinity");
+    }
+
+    /// <summary>
+    /// Returns the unbounded interval over <typeparamref name="T" /> named by <paramref name="shape" />, anchored at
+    /// zero where it has a bounded side.
+    /// </summary>
+    /// <typeparam name="T">The floating-point endpoint type.</typeparam>
+    /// <param name="shape">The name of the unbounded factory.</param>
+    /// <returns>The corresponding unbounded interval.</returns>
+    private static Interval<T> UnboundedFloatingPointShape<T>(string shape)
+        where T : IFloatingPointIeee754<T> =>
+        shape switch
+        {
+            "All" => Interval<T>.All,
+            "AtLeast" => Interval<T>.AtLeast(T.Zero),
+            "GreaterThan" => Interval<T>.GreaterThan(T.Zero),
+            "AtMost" => Interval<T>.AtMost(T.Zero),
+            "LessThan" => Interval<T>.LessThan(T.Zero),
+            _ => throw new ArgumentOutOfRangeException(nameof(shape)),
+        };
 }
