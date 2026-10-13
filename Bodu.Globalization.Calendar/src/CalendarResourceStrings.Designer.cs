@@ -277,6 +277,24 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The &apos;{0}&apos; property holds a JSON {1}, which is not an object..
+        /// </summary>
+        internal static string Validation_InvalidObjectValue {
+            get {
+                return ResourceManager.GetString("Validation_InvalidObjectValue", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The &apos;{0}&apos; property holds a JSON {1}, which is not an array..
+        /// </summary>
+        internal static string Validation_InvalidListValue {
+            get {
+                return ResourceManager.GetString("Validation_InvalidListValue", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Override operation targets notable date '{0}', which does not exist in the resolved resource..
         /// </summary>
         internal static string Validation_OverrideNotableDateNotFound {

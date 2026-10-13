@@ -130,10 +130,10 @@ public sealed partial class NotableDateDocumentBuilder
     /// <exception cref="FormatException">
     /// <paramref name="json" /> is not well-formed or is not a notable-date document, an enumeration, integer, Boolean,
     /// trigger-month or <c>workingDays</c> value does not parse, a property that holds a value holds an object or an
-    /// array, an item of a list of identifiers, territory codes or tags is not a string, a rule's <c>strategy</c> and
-    /// <c>recurrence</c>, or a <c>PatchRule</c> override's when it carries either, name no recognized kind or more than
-    /// one between them, or an <c>untilDate</c> declares no end strategy or one that names no recognized kind or more
-    /// than one.
+    /// array, a property that holds an object or a list holds a value of another kind, an item of a list of
+    /// identifiers, territory codes or tags is not a string, a rule's <c>strategy</c> and <c>recurrence</c>, or a
+    /// <c>PatchRule</c> override's when it carries either, name no recognized kind or more than one between them, or an
+    /// <c>untilDate</c> declares no end strategy or one that names no recognized kind or more than one.
     /// </exception>
     /// <exception cref="NotSupportedException">
     /// <paramref name="json" /> declares a field the builder's document model cannot hold: an empty <c>tags</c> or
@@ -163,7 +163,8 @@ public sealed partial class NotableDateDocumentBuilder
     /// <see cref="FormatException" /> carrying the message of the loader's <c>BODU-CAL-VALUE</c> diagnostic; an item of
     /// a list of enumeration names is read by its JSON text, so a number there throws as a value that names no member.
     /// The metadata, an adjustment policy's description and a rule's comment, which the loader does not read, accept
-    /// the same scalars. Any other property that holds a value, holding an object or an array, throws a
+    /// the same scalars. Any other property that holds a value, holding an object or an array, and a property that
+    /// holds an object or a list, such as <c>applicability</c> or <c>tags</c>, holding a value of another kind, throw a
     /// <see cref="FormatException" /> carrying the message of the loader's <c>BODU-CAL-VALUE</c> diagnostic, while the
     /// JSON literal <c>null</c> reads as absent, as the loader reads it.
     /// </para>
@@ -231,10 +232,11 @@ public sealed partial class NotableDateDocumentBuilder
     /// <exception cref="ArgumentNullException"><paramref name="json" /> is <see langword="null" />.</exception>
     /// <exception cref="FormatException">
     /// An enumeration, integer, Boolean, trigger-month or <c>workingDays</c> value does not parse, a property that
-    /// holds a value holds an object or an array, an item of a list of identifiers, territory codes or tags is not a
-    /// string, a rule's <c>strategy</c> and <c>recurrence</c>, or a <c>PatchRule</c> override's when it carries either,
-    /// name no recognized kind or more than one between them, or an <c>untilDate</c> declares no end strategy or one
-    /// that names no recognized kind or more than one.
+    /// holds a value holds an object or an array, a property that holds an object or a list holds a value of another
+    /// kind, an item of a list of identifiers, territory codes or tags is not a string, a rule's <c>strategy</c> and
+    /// <c>recurrence</c>, or a <c>PatchRule</c> override's when it carries either, name no recognized kind or more than
+    /// one between them, or an <c>untilDate</c> declares no end strategy or one that names no recognized kind or more
+    /// than one.
     /// </exception>
     /// <exception cref="NotSupportedException">
     /// <paramref name="json" /> declares a field the builder's document model cannot hold; see

@@ -935,24 +935,47 @@ public sealed partial class NotableDateDocumentBuilder
     }
 
     /// <summary>
-    /// Finds a property of a JSON object that holds an object, as the loader finds it.
+    /// Finds a property of a JSON object that must hold an object, as the loader finds it.
     /// </summary>
     /// <param name="owner">The object holding the property.</param>
     /// <param name="name">The property's name, matched ignoring case.</param>
-    /// <returns>
-    /// The property's object, or <see langword="null" /> when the property is absent or holds a value of another kind.
-    /// </returns>
+    /// <returns>The property's object, or <see langword="null" /> when the property is absent.</returns>
+    /// <exception cref="FormatException">
+    /// The property holds a value that is not an object, which the loader reports with <c>BODU-CAL-VALUE</c>.
+    /// </exception>
     private static JsonObject? ObjectProperty(JsonObject owner, string name) =>
-        Property(owner, name) as JsonObject;
+        Property(owner, name) switch
+        {
+            null => null,
+            JsonObject value => value,
+            JsonNode value => throw WrongKind(CalendarResourceStrings.Validation_InvalidObjectValue, name, value),
+        };
 
     /// <summary>
-    /// Finds a property of a JSON object that holds an array, as the loader finds it.
+    /// Finds a property of a JSON object that must hold an array, as the loader finds it.
     /// </summary>
     /// <param name="owner">The object holding the property.</param>
     /// <param name="name">The property's name, matched ignoring case.</param>
-    /// <returns>
-    /// The property's array, or <see langword="null" /> when the property is absent or holds a value of another kind.
-    /// </returns>
+    /// <returns>The property's array, or <see langword="null" /> when the property is absent.</returns>
+    /// <exception cref="FormatException">
+    /// The property holds a value that is not an array, which the loader reports with <c>BODU-CAL-VALUE</c>.
+    /// </exception>
     private static JsonArray? ArrayProperty(JsonObject owner, string name) =>
-        Property(owner, name) as JsonArray;
+        Property(owner, name) switch
+        {
+            null => null,
+            JsonArray value => value,
+            JsonNode value => throw WrongKind(CalendarResourceStrings.Validation_InvalidListValue, name, value),
+        };
+
+    /// <summary>
+    /// Creates the <see cref="FormatException" /> for a property holding a value of the wrong kind, carrying the
+    /// message of the <c>BODU-CAL-VALUE</c> diagnostic the loader reports for it.
+    /// </summary>
+    /// <param name="format">The resource format string, taking the property's name and the kind of its value.</param>
+    /// <param name="name">The property's name.</param>
+    /// <param name="value">The property's value.</param>
+    /// <returns>The exception to throw.</returns>
+    private static FormatException WrongKind(string format, string name, JsonNode value) =>
+        new(string.Format(CultureInfo.CurrentCulture, format, name, JsonDocumentNode.KindName(value.GetValueKind())));
 }

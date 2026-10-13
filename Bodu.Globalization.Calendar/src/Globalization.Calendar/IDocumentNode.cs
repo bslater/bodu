@@ -12,6 +12,11 @@ namespace Bodu.Globalization.Calendar;
 /// item element, and attribute, plus the JSON property), keeping the XML-attribute versus JSON-array vocabulary
 /// divergence in one place rather than duplicated across two parsers.
 /// </summary>
+/// <remarks>
+/// A JSON property that a child accessor reads as an object, or a list accessor as an array, holding a value of another
+/// kind reads as absent, and its node records a <c>BODU-CAL-VALUE</c> error naming it; the JSON literal <c>null</c>
+/// reads as absent without a diagnostic.
+/// </remarks>
 internal interface IDocumentNode
 {
     /// <summary>
@@ -30,7 +35,7 @@ internal interface IDocumentNode
     /// case-insensitively.
     /// </summary>
     /// <param name="name">The child element local name or JSON property name.</param>
-    /// <returns>The child node, or <see langword="null" /> when absent.</returns>
+    /// <returns>The child node, or <see langword="null" /> when absent or, in JSON, not an object.</returns>
     IDocumentNode? Child(string name);
 
     /// <summary>
@@ -52,7 +57,7 @@ internal interface IDocumentNode
     /// The XML item element local name, or <see langword="null" /> for every element child.
     /// </param>
     /// <param name="jsonProperty">The JSON array property name.</param>
-    /// <returns>The item nodes; empty when absent.</returns>
+    /// <returns>The item nodes; empty when absent or, in JSON, not an array.</returns>
     IEnumerable<IDocumentNode> List(string? xmlWrapper, string? xmlItem, string jsonProperty);
 
     /// <summary>

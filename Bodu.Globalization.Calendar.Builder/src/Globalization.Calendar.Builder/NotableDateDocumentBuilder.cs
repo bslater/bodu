@@ -436,11 +436,11 @@ public sealed partial class NotableDateDocumentBuilder
     /// </exception>
     /// <exception cref="FormatException">
     /// The file content is not a well-formed notable-date document, an enumeration, integer, Boolean, trigger-month or
-    /// <c>workingDays</c> value does not parse, a JSON property that holds a value holds an object or an array, an item
-    /// of a JSON list of identifiers, territory codes or tags is not a string, a JSON rule's <c>strategy</c> and
-    /// <c>recurrence</c>, or a JSON <c>PatchRule</c> override's when it carries either, name no recognized kind or more
-    /// than one between them, or a JSON <c>untilDate</c> declares no end strategy or one that names no recognized kind
-    /// or more than one.
+    /// <c>workingDays</c> value does not parse, a JSON property that holds a value holds an object or an array, a JSON
+    /// property that holds an object or a list holds a value of another kind, an item of a JSON list of identifiers,
+    /// territory codes or tags is not a string, a JSON rule's <c>strategy</c> and <c>recurrence</c>, or a JSON
+    /// <c>PatchRule</c> override's when it carries either, name no recognized kind or more than one between them, or a
+    /// JSON <c>untilDate</c> declares no end strategy or one that names no recognized kind or more than one.
     /// </exception>
     /// <remarks>
     /// Like <see cref="FromXml(string)" /> and <see cref="FromJson(string)" />, loading reads each value with the
