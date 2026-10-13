@@ -129,9 +129,9 @@ public ref partial struct Utf8TomlWriter
     /// </exception>
     /// <remarks>
     /// A <see cref="TomlWriterOptions.MaxDepth" /> of zero or less selects the default maximum depth of 64, and a
-    /// larger value is clamped to <see cref="TomlLimits.AbsoluteMaxDepth" /> so that an unbounded configured value
-    /// cannot drive the writer into a <see cref="StackOverflowException" />. Opening a container past that depth - a
-    /// table or array nested deeper than the effective limit - throws <see cref="TomlSerializationException" />.
+    /// larger value is clamped to the hard ceiling of 64 so that an unbounded configured value cannot drive the writer
+    /// into a <see cref="StackOverflowException" />. Opening a container past that depth - a table or array nested
+    /// deeper than the effective limit - throws <see cref="TomlSerializationException" />.
     /// </remarks>
     public Utf8TomlWriter(IBufferWriter<byte> output, TomlWriterOptions options)
     {
@@ -298,6 +298,10 @@ public ref partial struct Utf8TomlWriter
     /// <exception cref="ArgumentException">
     /// Thrown when <paramref name="value" /> contains an unpaired surrogate.
     /// </exception>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when the document is already complete, when the value would become the document root (the root of a TOML
+    /// document must be a table), or when the enclosing container is a table with no pending property name.
+    /// </exception>
     public readonly void WriteString(string value)
     {
         ThrowHelper.ThrowIfNull(value);
@@ -310,6 +314,10 @@ public ref partial struct Utf8TomlWriter
     /// Writes a 64-bit signed integer value.
     /// </summary>
     /// <param name="value">The integer value.</param>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when the document is already complete, when the value would become the document root (the root of a TOML
+    /// document must be a table), or when the enclosing container is a table with no pending property name.
+    /// </exception>
     public readonly void WriteInteger(long value) =>
         Emit(new TomlScalarWriterNode(TomlTokenType.Integer, value));
 
@@ -317,6 +325,10 @@ public ref partial struct Utf8TomlWriter
     /// Writes an IEEE 754 binary64 floating-point value.
     /// </summary>
     /// <param name="value">The floating-point value.</param>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when the document is already complete, when the value would become the document root (the root of a TOML
+    /// document must be a table), or when the enclosing container is a table with no pending property name.
+    /// </exception>
     public readonly void WriteFloat(double value) =>
         Emit(new TomlScalarWriterNode(TomlTokenType.Float, value));
 
@@ -324,6 +336,10 @@ public ref partial struct Utf8TomlWriter
     /// Writes a Boolean value.
     /// </summary>
     /// <param name="value">The Boolean value.</param>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when the document is already complete, when the value would become the document root (the root of a TOML
+    /// document must be a table), or when the enclosing container is a table with no pending property name.
+    /// </exception>
     public readonly void WriteBoolean(bool value) =>
         Emit(new TomlScalarWriterNode(TomlTokenType.Boolean, value));
 
@@ -331,6 +347,10 @@ public ref partial struct Utf8TomlWriter
     /// Writes an offset date-time value in RFC 3339 form.
     /// </summary>
     /// <param name="value">The offset date-time value.</param>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when the document is already complete, when the value would become the document root (the root of a TOML
+    /// document must be a table), or when the enclosing container is a table with no pending property name.
+    /// </exception>
     public readonly void WriteOffsetDateTime(DateTimeOffset value) =>
         Emit(new TomlScalarWriterNode(TomlTokenType.OffsetDateTime, value));
 
@@ -338,6 +358,10 @@ public ref partial struct Utf8TomlWriter
     /// Writes a local date-time value in RFC 3339 form, without any offset.
     /// </summary>
     /// <param name="value">The local date-time value.</param>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when the document is already complete, when the value would become the document root (the root of a TOML
+    /// document must be a table), or when the enclosing container is a table with no pending property name.
+    /// </exception>
     public readonly void WriteLocalDateTime(DateTime value) =>
         Emit(new TomlScalarWriterNode(TomlTokenType.LocalDateTime, value));
 
@@ -345,6 +369,10 @@ public ref partial struct Utf8TomlWriter
     /// Writes a local date value in RFC 3339 form.
     /// </summary>
     /// <param name="value">The local date value.</param>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when the document is already complete, when the value would become the document root (the root of a TOML
+    /// document must be a table), or when the enclosing container is a table with no pending property name.
+    /// </exception>
     public readonly void WriteLocalDate(DateOnly value) =>
         Emit(new TomlScalarWriterNode(TomlTokenType.LocalDate, value));
 
@@ -352,6 +380,10 @@ public ref partial struct Utf8TomlWriter
     /// Writes a local time value in RFC 3339 form.
     /// </summary>
     /// <param name="value">The local time value.</param>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when the document is already complete, when the value would become the document root (the root of a TOML
+    /// document must be a table), or when the enclosing container is a table with no pending property name.
+    /// </exception>
     public readonly void WriteLocalTime(TimeOnly value) =>
         Emit(new TomlScalarWriterNode(TomlTokenType.LocalTime, value));
 

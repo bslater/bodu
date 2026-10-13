@@ -47,7 +47,8 @@ public ref partial struct Utf8TomlWriter
     /// Thrown when <paramref name="value" /> contains an unpaired surrogate.
     /// </exception>
     /// <exception cref="InvalidOperationException">
-    /// Thrown when the document is already complete or the enclosing table has no pending property name.
+    /// Thrown when the document is already complete, when the value would become the document root (the root of a TOML
+    /// document must be a table), or when the enclosing container is a table with no pending property name.
     /// </exception>
     public readonly void WriteString(ReadOnlySpan<char> value) =>
         WriteString(value.ToString());
@@ -58,7 +59,8 @@ public ref partial struct Utf8TomlWriter
     /// <param name="utf8Value">The UTF-8 string value.</param>
     /// <exception cref="ArgumentException">Thrown when <paramref name="utf8Value" /> is not valid UTF-8.</exception>
     /// <exception cref="InvalidOperationException">
-    /// Thrown when the document is already complete or the enclosing table has no pending property name.
+    /// Thrown when the document is already complete, when the value would become the document root (the root of a TOML
+    /// document must be a table), or when the enclosing container is a table with no pending property name.
     /// </exception>
     public readonly void WriteString(ReadOnlySpan<byte> utf8Value) =>
         WriteString(DecodeUtf8(utf8Value));

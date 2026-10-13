@@ -90,8 +90,7 @@ public sealed class TomlArray
     /// Gets or sets the element at the specified index.
     /// </summary>
     /// <param name="index">The zero-based index of the element.</param>
-    /// <value>The element at <paramref name="index" />.</value>
-    /// <returns>The element at <paramref name="index" />, which may be <see langword="null" />.</returns>
+    /// <value>The element at <paramref name="index" />, which may be <see langword="null" />.</value>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown when <paramref name="index" /> is outside the bounds of the list.
     /// </exception>

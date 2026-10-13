@@ -101,9 +101,9 @@ public ref struct TomlDocumentReader
     /// <exception cref="TomlFormatException">Thrown when the bytes are not a valid TOML document.</exception>
     /// <remarks>
     /// A <see cref="TomlReaderOptions.MaxDepth" /> of zero or less selects the default maximum depth of 64, and a
-    /// larger value is clamped to <see cref="TomlLimits.AbsoluteMaxDepth" /> so that an unbounded configured value
-    /// cannot drive the parser into a <see cref="StackOverflowException" />; a document nested deeper than the
-    /// effective limit throws <see cref="TomlFormatException" />.
+    /// larger value is clamped to the hard ceiling of 64 so that an unbounded configured value cannot drive the parser
+    /// into a <see cref="StackOverflowException" />; a document nested deeper than the effective limit throws
+    /// <see cref="TomlFormatException" />.
     /// </remarks>
     public TomlDocumentReader(ReadOnlySpan<byte> utf8Toml, TomlReaderOptions options)
         : this(utf8Toml, options, recordKeyOffsets: false)

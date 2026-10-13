@@ -137,8 +137,8 @@ public sealed partial class TomlDocument
     /// </exception>
     /// <remarks>
     /// A <see cref="TomlDocumentOptions.MaxDepth" /> of zero or less selects the default maximum depth of 64, and a
-    /// larger value is clamped to <see cref="TomlLimits.AbsoluteMaxDepth" />; a document nested deeper than the
-    /// effective limit throws <see cref="TomlFormatException" />.
+    /// larger value is clamped to the hard ceiling of 64; a document nested deeper than the effective limit throws
+    /// <see cref="TomlFormatException" />.
     /// </remarks>
     public static TomlDocument Parse(ReadOnlySpan<byte> utf8Toml, TomlDocumentOptions options)
     {

@@ -89,8 +89,7 @@ public abstract class TomlNode
     /// Gets or sets the element at the specified index, treating this node as a <see cref="TomlArray" />.
     /// </summary>
     /// <param name="index">The zero-based index of the element.</param>
-    /// <value>The element at <paramref name="index" />.</value>
-    /// <returns>The element at <paramref name="index" />, which may be <see langword="null" />.</returns>
+    /// <value>The element at <paramref name="index" />, which may be <see langword="null" />.</value>
     /// <exception cref="InvalidOperationException">Thrown when this node is not a <see cref="TomlArray" />.</exception>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown when <paramref name="index" /> is outside the bounds of the array.
@@ -106,10 +105,7 @@ public abstract class TomlNode
     /// <see cref="TomlObject" />.
     /// </summary>
     /// <param name="propertyName">The property name to look up.</param>
-    /// <value>The value associated with <paramref name="propertyName" />.</value>
-    /// <returns>
-    /// The value associated with <paramref name="propertyName" />, which may be <see langword="null" />.
-    /// </returns>
+    /// <value>The value associated with <paramref name="propertyName" />, which may be <see langword="null" />.</value>
     /// <exception cref="InvalidOperationException">
     /// Thrown when this node is not a <see cref="TomlObject" />.
     /// </exception>

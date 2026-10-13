@@ -18,8 +18,8 @@ namespace Bodu.Text.Toml.Document;
 /// <para>
 /// <see cref="MaxDepth" /> bounds the nesting of tables and arrays the parser will materialize, guarding against
 /// stack-exhausting input. A value of <c>0</c> selects the default of 64, and a larger value is clamped to the hard
-/// ceiling <see cref="TomlLimits.AbsoluteMaxDepth" />; a document that nests deeper than the effective limit throws
-/// <see cref="TomlFormatException" /> rather than risking a <see cref="StackOverflowException" />.
+/// ceiling of 64; a document that nests deeper than the effective limit throws <see cref="TomlFormatException" />
+/// rather than risking a <see cref="StackOverflowException" />.
 /// </para>
 /// <example>
 /// <code language="csharp">
@@ -45,8 +45,8 @@ public struct TomlDocumentOptions
     /// Gets or sets the maximum nesting depth of tables and arrays the parser will accept.
     /// </summary>
     /// <value>
-    /// The maximum nesting depth; <c>0</c> selects the default of 64, clamped to
-    /// <see cref="TomlLimits.AbsoluteMaxDepth" />.
+    /// The maximum nesting depth; <c>0</c> selects the default of 64, which is also the hard ceiling a larger value is
+    /// clamped to.
     /// </value>
     public int MaxDepth { get; set; }
 }
