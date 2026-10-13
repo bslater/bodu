@@ -198,4 +198,69 @@ public partial class FormatFactoryGeneratorTests
         Assert.AreEqual(section.AtOffset.Offset, restored.AtOffset.Offset, text);
         Assert.AreEqual(section.Span, restored.Span, text);
     }
+
+    /// <summary>
+    /// Verifies that a section of the scalars beyond the common set serializes through the generated INI factory to
+    /// the same text as through INI's runtime reflection binder, with the <see langword="null" /> members left out of
+    /// both and with every member set.
+    /// </summary>
+    /// <param name="setEveryMember">Whether every member holds a value, rather than the nullable ones none.</param>
+    [TestMethod]
+    [DataRow(true)]
+    [DataRow(false)]
+    public void IniFactory_WhenExtendedScalarsAreSerialized_ShouldMatchReflectionBinderOutput(bool setEveryMember)
+    {
+        GeneratedExtendedScalarSection section = CreateExtendedScalarSection(setEveryMember);
+
+        string reflection = IniSerializer.Serialize(new { scalars = section });
+        string generated = IniSerializer.SerializeSection("scalars", section, GeneratedExtendedScalarSection.IniFactory);
+
+        Assert.AreEqual(reflection, generated);
+    }
+
+    /// <summary>
+    /// Verifies that a section of the scalars beyond the common set reads back through the generated INI factory as
+    /// the values written.
+    /// </summary>
+    [TestMethod]
+    public void IniFactory_WhenExtendedScalarsAreRoundTripped_ShouldReadBackTheValues()
+    {
+        GeneratedExtendedScalarSection section = CreateExtendedScalarSection(setEveryMember: true);
+
+        string text = IniSerializer.SerializeSection("scalars", section, GeneratedExtendedScalarSection.IniFactory);
+        GeneratedExtendedScalarSection restored = IniSerializer.DeserializeSection(text, "scalars", GeneratedExtendedScalarSection.IniFactory);
+
+        Assert.AreEqual(section.Day, restored.Day, text);
+        Assert.AreEqual(section.Time, restored.Time, text);
+        Assert.AreEqual(section.Link, restored.Link, text);
+        Assert.AreEqual(section.Large, restored.Large, text);
+        Assert.AreEqual(section.Unsigned, restored.Unsigned, text);
+        Assert.AreEqual(section.Small, restored.Small, text);
+        Assert.AreEqual(section.Big, restored.Big, text);
+        Assert.AreEqual(section.Handle, restored.Handle, text);
+        Assert.AreEqual(section.Size, restored.Size, text);
+        Assert.AreEqual(section.MaybeDay, restored.MaybeDay, text);
+        Assert.AreEqual(section.MaybeLarge, restored.MaybeLarge, text);
+    }
+
+    /// <summary>
+    /// Creates a section of the scalars beyond the common set.
+    /// </summary>
+    /// <param name="setEveryMember">Whether every member holds a value, rather than the nullable ones none.</param>
+    /// <returns>The section.</returns>
+    private static GeneratedExtendedScalarSection CreateExtendedScalarSection(bool setEveryMember) =>
+        new()
+        {
+            Day = new DateOnly(2026, 1, 2),
+            Time = new TimeOnly(13, 45, 30).Add(TimeSpan.FromTicks(1234567)),
+            Link = setEveryMember ? new Uri("https://example.com/a?b=c") : null,
+            Large = Int128.MinValue,
+            Unsigned = UInt128.MaxValue,
+            Small = (Half)0.1,
+            Big = -(System.Numerics.BigInteger.Pow(10, 40) + 1),
+            Handle = nint.MinValue,
+            Size = nuint.MaxValue,
+            MaybeDay = setEveryMember ? new DateOnly(1999, 12, 31) : null,
+            MaybeLarge = setEveryMember ? Int128.MaxValue : null,
+        };
 }

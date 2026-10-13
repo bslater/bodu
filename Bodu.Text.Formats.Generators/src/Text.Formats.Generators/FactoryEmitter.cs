@@ -280,12 +280,12 @@ internal static class FactoryEmitter
             if (member.IsNullable)
                 return $"{access}.HasValue";
 
-            return member.Scalar == ScalarKind.String ? $"{access} is not null" : null;
+            return IsReferenceType(member) ? $"{access} is not null" : null;
         }
 
         if (condition == IgnoreConditionWhenWritingDefault)
         {
-            if (member.Scalar == ScalarKind.String)
+            if (IsReferenceType(member))
                 return $"{access} is not null";
 
             string comparer = $"global::System.Collections.Generic.EqualityComparer<{member.TypeDisplay}>.Default";
@@ -314,8 +314,23 @@ internal static class FactoryEmitter
         if (member.Scalar == ScalarKind.String)
             return $"{access} ?? string.Empty";
 
+        if (member.Scalar == ScalarKind.Uri)
+            return $"{access}?.ToString() ?? string.Empty";
+
         return FormatValue(member, access, kind);
     }
+
+    /// <summary>
+    /// Determines whether a member's scalar is a reference type, which holds <see langword="null" /> without being
+    /// nullable.
+    /// </summary>
+    /// <param name="member">The member model.</param>
+    /// <returns>
+    /// <see langword="true" /> for a <see cref="string" /> or <see cref="System.Uri" /> member; otherwise
+    /// <see langword="false" />.
+    /// </returns>
+    private static bool IsReferenceType(MemberModel member) =>
+        member.Scalar is ScalarKind.String or ScalarKind.Uri;
 
     /// <summary>
     /// Builds the wire-string formatting expression for a non-null value expression.
@@ -325,9 +340,10 @@ internal static class FactoryEmitter
     /// <param name="kind">The format whose reflection binder the expression mirrors.</param>
     /// <returns>The formatting expression text.</returns>
     /// <remarks>
-    /// Both binders write <see cref="DateTime" /> and <see cref="DateTimeOffset" /> in the round-trip <c>O</c> form.
-    /// The delimited binder writes <see cref="TimeSpan" /> in the constant <c>c</c> form; the INI binder writes its
-    /// invariant general form, which is the same <c>c</c> form.
+    /// Both binders write <see cref="DateTime" />, <see cref="DateTimeOffset" /> and <c>TimeOnly</c> in their
+    /// round-trip <c>O</c> forms. The delimited binder writes <c>DateOnly</c> in its <c>O</c> form, <c>yyyy-MM-dd</c>,
+    /// and <see cref="TimeSpan" /> in the constant <c>c</c> form; the INI binder writes their invariant general forms,
+    /// which for <see cref="TimeSpan" /> is the same <c>c</c> form.
     /// </remarks>
     private static string FormatValue(MemberModel member, string value, FactoryKind kind) =>
         member.Scalar switch
@@ -342,6 +358,10 @@ internal static class FactoryEmitter
             ScalarKind.TimeSpan when kind == FactoryKind.Delimited =>
                 $"{value}.ToString(\"c\", global::System.Globalization.CultureInfo.InvariantCulture)",
             ScalarKind.TimeSpan => $"{value}.ToString()",
+            ScalarKind.DateOnly when kind == FactoryKind.Delimited =>
+                $"{value}.ToString(\"O\", global::System.Globalization.CultureInfo.InvariantCulture)",
+            ScalarKind.DateOnly => $"{value}.ToString(global::System.Globalization.CultureInfo.InvariantCulture)",
+            ScalarKind.TimeOnly => $"{value}.ToString(\"O\", global::System.Globalization.CultureInfo.InvariantCulture)",
             _ => $"{value}.ToString()",
         };
 
@@ -371,6 +391,9 @@ internal static class FactoryEmitter
             ScalarKind.DateTimeOffset => $"global::System.DateTimeOffset.Parse({value}, global::System.Globalization.CultureInfo.InvariantCulture, global::System.Globalization.DateTimeStyles.RoundtripKind)",
             ScalarKind.TimeSpan => $"global::System.TimeSpan.Parse({value}, global::System.Globalization.CultureInfo.InvariantCulture)",
             ScalarKind.Enum => $"({member.TypeDisplay})global::System.Enum.Parse(typeof({member.TypeDisplay}), {value}, true)",
+            ScalarKind.DateOnly => $"global::System.DateOnly.Parse({value}, global::System.Globalization.CultureInfo.InvariantCulture)",
+            ScalarKind.TimeOnly => $"global::System.TimeOnly.Parse({value}, global::System.Globalization.CultureInfo.InvariantCulture)",
+            ScalarKind.Uri => $"new global::System.Uri({value}, global::System.UriKind.RelativeOrAbsolute)",
             _ => value,
         };
 

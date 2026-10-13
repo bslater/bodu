@@ -185,7 +185,7 @@ string generated  = DelimitedSerializer.Serialize(trades, Trade.DelimitedFactory
 bool same = reflection == generated;                                                // true
 ```
 
-A factory's names are fixed at compile time, so `PropertyNamingPolicy` on the options is ignored by the factory overloads; use `[PropertyName]` to pin wire names. That is not the only difference: inherited, get-only and `init`-only properties, `[PropertyOrder]`, case-insensitive name matching, `[Required]` and the unsupported scalar types all separate the two paths, as the package page lists under [Differences from the reflection binder](../../docs/formats/generators.md#differences-from-the-reflection-binder).
+A factory's names are fixed at compile time, so `PropertyNamingPolicy` on the options is ignored by the factory overloads; use `[PropertyName]` to pin wire names. That is not the only difference: inherited, get-only and `init`-only properties, `[PropertyOrder]`, case-insensitive name matching, and `[Required]` all separate the two paths, as the package page lists under [Differences from the reflection binder](../../docs/formats/generators.md#differences-from-the-reflection-binder).
 
 ## Diagnostics walk-through
 
@@ -200,7 +200,7 @@ public sealed class Trade { … }          // BTFG001: … is not declared parti
 
 A nested type must have *every* containing type marked `partial` too.
 
-**`BTFG002` (warning) - a member type is not a supported scalar.** The factory is still generated; the flagged member is left out of `Headers` / `Keys` and never written or read. Either move the value to a supported scalar (for example, format a `Uri` as a `string`), or drop the member with `[Ignore]` to silence the warning deliberately.
+**`BTFG002` (warning) - a member type is not a supported scalar.** The factory is still generated; the flagged member is left out of `Headers` / `Keys` and never written or read. Either move the value to a supported scalar (for example, join a list into a delimited `string`), or drop the member with `[Ignore]` to silence the warning deliberately.
 
 ```csharp
 [DelimitedRecord]

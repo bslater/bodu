@@ -4,6 +4,11 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Globalization;
+using System.Text;
+
+using Bodu.Text.Serialization;
+
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 
@@ -240,5 +245,47 @@ public partial class FormatFactoryGeneratorTests
 
         Diagnostic[] errors = [.. output.GetDiagnostics().Where(static d => d.Severity == DiagnosticSeverity.Error)];
         return (driver.GetRunResult(), errors);
+    }
+
+    /// <summary>
+    /// Verifies that every scalar type the reflection binders' codec lists, and an enumeration, alone and in nullable
+    /// form, is mapped by the generator for both formats rather than skipped with <c>BTFG002</c>, so that the
+    /// generator's scalar set cannot drift from the binders' again.
+    /// </summary>
+    /// <param name="attribute">The marker attribute that requests the factory.</param>
+    [TestMethod]
+    [DataRow("DelimitedRecord")]
+    [DataRow("IniSection")]
+    public void Generator_WhenMemberTypesAreTheScalarsTheCodecLists_ShouldMapEveryOne(string attribute)
+    {
+        Type[] scalars = [.. InvariantScalarCodec.ScalarTypes, typeof(DayOfWeek)];
+        var members = new StringBuilder();
+        for (int i = 0; i < scalars.Length; i++)
+        {
+            string type = $"global::{scalars[i].FullName}";
+            members.AppendLine(CultureInfo.InvariantCulture, $"    public {type} Value{i} {{ get; set; }} = default!;");
+            if (scalars[i].IsValueType)
+                members.AppendLine(CultureInfo.InvariantCulture, $"    public {type}? MaybeValue{i} {{ get; set; }}");
+        }
+
+        string source = $$"""
+            #nullable enable
+            using Bodu.Text.Delimited;
+            using Bodu.Text.Ini;
+
+            namespace Sample;
+
+            [{{attribute}}]
+            public sealed partial class Holder
+            {
+            {{members}}
+            }
+            """;
+
+        (GeneratorDriverRunResult result, IReadOnlyList<Diagnostic> errors) = RunGeneratorAndCompile(source);
+
+        Assert.IsTrue(InvariantScalarCodec.ScalarTypes.Count > 0);
+        Assert.IsFalse(result.Diagnostics.Any(static d => d.Id == "BTFG002"), string.Join(Environment.NewLine, result.Diagnostics));
+        Assert.AreEqual(0, errors.Count, string.Join(Environment.NewLine, errors));
     }
 }

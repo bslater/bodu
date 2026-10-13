@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Globalization;
+using System.Numerics;
 
 using Bodu.Text.Delimited;
 
@@ -304,4 +305,73 @@ public partial class FormatFactoryGeneratorTests
         string.Create(
             CultureInfo.InvariantCulture,
             $"{record.Id}|{record.Flag}|{(int?)record.Letter}|{record.Count}|{record.Amount}|{record.Key}|{record.At:O}|{record.AtOffset:O}|{record.Span:c}|{record.Kind}");
+
+    /// <summary>
+    /// Verifies that records of the scalars beyond the common set serialize through the generated factory to the same
+    /// text as through the runtime reflection binder.
+    /// </summary>
+    [TestMethod]
+    public void DelimitedFactory_WhenExtendedScalarsAreSerialized_ShouldMatchReflectionBinderOutput()
+    {
+        List<GeneratedExtendedScalarRecord> records = CreateExtendedScalarRecords();
+
+        string reflection = DelimitedSerializer.Serialize(records);
+        string generated = DelimitedSerializer.Serialize(records, GeneratedExtendedScalarRecord.DelimitedFactory);
+
+        Assert.AreEqual(reflection, generated);
+    }
+
+    /// <summary>
+    /// Verifies that records of the scalars beyond the common set read back through the generated factory as the
+    /// values written, and as the runtime reflection binder reads them.
+    /// </summary>
+    [TestMethod]
+    public void DelimitedFactory_WhenExtendedScalarsAreRoundTripped_ShouldReadBackTheValues()
+    {
+        List<GeneratedExtendedScalarRecord> records = CreateExtendedScalarRecords();
+
+        string text = DelimitedSerializer.Serialize(records, GeneratedExtendedScalarRecord.DelimitedFactory);
+        List<GeneratedExtendedScalarRecord> generated = DelimitedSerializer.Deserialize(text, GeneratedExtendedScalarRecord.DelimitedFactory);
+        List<GeneratedExtendedScalarRecord> reflection = DelimitedSerializer.Deserialize<GeneratedExtendedScalarRecord>(text);
+
+        CollectionAssert.AreEqual(records.Select(Describe).ToArray(), generated.Select(Describe).ToArray(), text);
+        CollectionAssert.AreEqual(reflection.Select(Describe).ToArray(), generated.Select(Describe).ToArray(), text);
+    }
+
+    /// <summary>
+    /// Creates records of the scalars beyond the common set, one at their extremes and one with the nullable members
+    /// empty.
+    /// </summary>
+    /// <returns>The records.</returns>
+    private static List<GeneratedExtendedScalarRecord> CreateExtendedScalarRecords() =>
+    [
+        new()
+        {
+            Day = new DateOnly(2026, 1, 2),
+            Time = new TimeOnly(13, 45, 30).Add(TimeSpan.FromTicks(1234567)),
+            Link = new Uri("https://example.com/a?b=c"),
+            Large = Int128.MinValue,
+            Unsigned = UInt128.MaxValue,
+            Small = (Half)0.1,
+            Big = -(BigInteger.Pow(10, 40) + 1),
+            Handle = nint.MinValue,
+            Size = nuint.MaxValue,
+            MaybeDay = new DateOnly(1999, 12, 31),
+            MaybeLarge = Int128.MaxValue,
+        },
+        new()
+        {
+            Link = new Uri("relative/path", UriKind.Relative),
+        },
+    ];
+
+    /// <summary>
+    /// Describes a record of the scalars beyond the common set in invariant forms.
+    /// </summary>
+    /// <param name="record">The record.</param>
+    /// <returns>The description, with an empty part for a <see langword="null" /> member.</returns>
+    private static string Describe(GeneratedExtendedScalarRecord record) =>
+        string.Create(
+            CultureInfo.InvariantCulture,
+            $"{record.Day:O}|{record.Time:O}|{record.Link}|{record.Large}|{record.Unsigned}|{record.Small}|{record.Big}|{record.Handle}|{record.Size}|{record.MaybeDay:O}|{record.MaybeLarge}");
 }

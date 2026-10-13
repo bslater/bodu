@@ -18,6 +18,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <!-- The reflection binders' scalar classification, compiled in so that a parity test holds the generator's scalar
+         set to it. -->
+    <Compile Include="..\..\Bodu.Text.Serialization\shared\Flat\InvariantScalarCodec.cs" Link="Shared\InvariantScalarCodec.cs" />
+    <Compile Include="..\..\Bodu.Text.Serialization\shared\Flat\FlatScalarKind.cs" Link="Shared\FlatScalarKind.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <!-- Driver-based tests compile snippets in-memory to assert the generator's diagnostics. -->
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
   </ItemGroup>
