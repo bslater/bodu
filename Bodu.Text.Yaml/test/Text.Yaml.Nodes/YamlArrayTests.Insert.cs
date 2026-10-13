@@ -71,4 +71,22 @@ public partial class YamlArrayTests
         var other = new YamlArray { item };
         Assert.AreSame(item, other[0], "The item once added elsewhere.");
     }
+
+    /// <summary>
+    /// Verifies that inserting an array into itself throws <see cref="InvalidOperationException" /> rather than
+    /// creating a cycle, and leaves the array unchanged.
+    /// </summary>
+    [TestMethod]
+    public void Insert_WhenNodeIsTheArrayItself_ShouldThrowInvalidOperationException()
+    {
+        var array = new YamlArray();
+        array.Add(YamlValue.Create(1L));
+
+        _ = Assert.ThrowsExactly<InvalidOperationException>(() =>
+        {
+            array.Insert(0, array);
+        });
+
+        Assert.AreEqual(1, array.Count, "The array's count after the rejected insert.");
+    }
 }

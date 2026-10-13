@@ -15,8 +15,9 @@ namespace Bodu.Text.Yaml.Nodes;
 /// <remarks>
 /// A node may appear at most once in a tree. Adding, inserting, or assigning a node that already belongs to a
 /// container, this sequence included, throws an <see cref="InvalidOperationException" />; removing or replacing an
-/// element, or clearing the sequence, detaches it so that it can be added elsewhere. A <see langword="null" /> element
-/// is not a node and may appear any number of times.
+/// element, or clearing the sequence, detaches it so that it can be added elsewhere. Adding the sequence to itself or
+/// to one of its own descendants throws an <see cref="InvalidOperationException" /> as well. A <see langword="null" />
+/// element is not a node and may appear any number of times.
 /// </remarks>
 public sealed class YamlArray
     : YamlNode,
@@ -46,7 +47,8 @@ public sealed class YamlArray
     /// <paramref name="index" /> is less than zero, or is greater than or equal to <see cref="Count" />.
     /// </exception>
     /// <exception cref="InvalidOperationException">
-    /// The assigned node already belongs to a container, and is not the element at <paramref name="index" />.
+    /// The assigned node already belongs to a container, and is not the element at <paramref name="index" />; or the
+    /// assigned node is this sequence or one of its ancestors.
     /// </exception>
     /// <remarks>
     /// Assigning over an element detaches the replaced node, so that it can be added elsewhere. Assigning an element
@@ -61,7 +63,7 @@ public sealed class YamlArray
             if (ReferenceEquals(existing, value))
                 return;
 
-            value?.ThrowIfAttached();
+            value?.ThrowIfCannotJoin(this);
 
             _items[index] = value;
             value?.Parent = this;
@@ -73,10 +75,12 @@ public sealed class YamlArray
     /// Adds an element to the end of the sequence.
     /// </summary>
     /// <param name="item">The element to add.</param>
-    /// <exception cref="InvalidOperationException"><paramref name="item" /> already belongs to a container.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// <paramref name="item" /> already belongs to a container, or is this sequence or one of its ancestors.
+    /// </exception>
     public void Add(YamlNode? item)
     {
-        item?.ThrowIfAttached();
+        item?.ThrowIfCannotJoin(this);
 
         _items.Add(item);
         item?.Parent = this;
@@ -122,10 +126,12 @@ public sealed class YamlArray
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="index" /> is less than zero, or is greater than <see cref="Count" />.
     /// </exception>
-    /// <exception cref="InvalidOperationException"><paramref name="item" /> already belongs to a container.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// <paramref name="item" /> already belongs to a container, or is this sequence or one of its ancestors.
+    /// </exception>
     public void Insert(int index, YamlNode? item)
     {
-        item?.ThrowIfAttached();
+        item?.ThrowIfCannotJoin(this);
 
         _items.Insert(index, item);
         item?.Parent = this;

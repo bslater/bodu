@@ -25,8 +25,9 @@ namespace Bodu.Text.Bencode.Nodes;
 /// be written.
 /// </para>
 /// <para>
-/// Each node has at most one parent. Adding a node that already belongs to another container throws an
-/// <see cref="InvalidOperationException" />.
+/// Each node has at most one parent, and appears in it once. Adding a node that already belongs to a container, the
+/// same one included, throws an <see cref="InvalidOperationException" />, as does adding a container to itself or to
+/// one of its own descendants, which would make the tree a cycle.
 /// </para>
 /// <example>
 /// <code language="csharp">
@@ -374,10 +375,6 @@ public abstract class BencodeNode
     /// segments for object keys. A key containing characters other than ASCII letters, digits, and underscores is
     /// rendered as a quoted <c>['name']</c> segment.
     /// </returns>
-    /// <remarks>
-    /// When the same node instance is stored under more than one key of the same object, the path reports the first
-    /// matching key in enumeration order.
-    /// </remarks>
     public string GetPath()
     {
         if (Parent is null)
@@ -403,7 +400,8 @@ public abstract class BencodeNode
     /// The replacement node, or <see langword="null" /> to clear the slot this node occupies.
     /// </param>
     /// <exception cref="InvalidOperationException">
-    /// Thrown when <paramref name="value" /> already belongs to another container.
+    /// Thrown when <paramref name="value" /> already belongs to a container, this node's parent included, and is not
+    /// this node itself, or when <paramref name="value" /> is this node's parent or one of its ancestors.
     /// </exception>
     /// <remarks>
     /// When this node has no parent the call does nothing. After a successful replacement this node's
@@ -635,30 +633,44 @@ public abstract class BencodeNode
     }
 
     /// <summary>
-    /// Assigns this node's parent, enforcing the single-parent rule.
+    /// Assigns this node's parent, enforcing the rule that a node belongs to at most one container and appears in it
+    /// once.
     /// </summary>
     /// <param name="parent">The container taking ownership of this node.</param>
     /// <exception cref="InvalidOperationException">
-    /// Thrown when this node already belongs to a different container.
+    /// Thrown when this node already belongs to a container, <paramref name="parent" /> included, or is
+    /// <paramref name="parent" /> or one of its ancestors.
     /// </exception>
     internal void AssignParent(BencodeNode parent)
     {
-        ThrowIfBelongsToOtherContainer(parent);
+        ThrowIfCannotJoin(parent);
         Parent = parent;
     }
 
     /// <summary>
-    /// Enforces the single-parent rule without assigning the parent, so that a container can check a node before it
-    /// commits to holding it.
+    /// Enforces the rules a node must meet to join a container, without assigning the parent, so that a container can
+    /// check a node before it commits to holding it: the node belongs to no container yet, and it is neither the
+    /// container nor one of the container's ancestors, either of which would make the tree a cycle.
     /// </summary>
     /// <param name="parent">The container that would take ownership of this node.</param>
     /// <exception cref="InvalidOperationException">
-    /// Thrown when this node already belongs to a different container.
+    /// Thrown when this node already belongs to a container, including <paramref name="parent" />, or is
+    /// <paramref name="parent" /> or one of its ancestors.
     /// </exception>
-    internal void ThrowIfBelongsToOtherContainer(BencodeNode parent)
+    /// <remarks>
+    /// A container that is asked to hold a node in the slot the node already occupies treats that as no change rather
+    /// than calling this method.
+    /// </remarks>
+    internal void ThrowIfCannotJoin(BencodeNode parent)
     {
-        if (Parent is not null && !ReferenceEquals(Parent, parent))
+        if (Parent is not null)
             throw new InvalidOperationException(BencodeResourceStrings.Op_Invalid_NodeAlreadyHasParent);
+
+        for (BencodeNode? ancestor = parent; ancestor is not null; ancestor = ancestor.Parent)
+        {
+            if (ReferenceEquals(ancestor, this))
+                throw new InvalidOperationException(BencodeResourceStrings.Op_Invalid_NodeCycle);
+        }
     }
 
     /// <summary>

@@ -16,9 +16,10 @@ namespace Bodu.Text.Bencode.Nodes;
 /// <remarks>
 /// Elements are kept in insertion order, which is also the order in which they are serialized. An element may be
 /// <see langword="null" /> in memory, but a list containing a <see langword="null" /> element cannot be written because
-/// Bencode has no null token. Adding a node that already belongs to another container throws an
-/// <see cref="InvalidOperationException" />; removing or replacing an element detaches it, clearing its
-/// <see cref="BencodeNode.Parent" /> so it can be added to another container.
+/// Bencode has no null token. Adding a node that already belongs to a container, this one included, or adding the list
+/// to itself or to one of its own descendants, throws an <see cref="InvalidOperationException" />; removing or
+/// replacing an element detaches it, clearing its <see cref="BencodeNode.Parent" /> so it can be added to another
+/// container.
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
@@ -55,7 +56,7 @@ public sealed class BencodeArray
     /// Thrown when <paramref name="items" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="InvalidOperationException">
-    /// Thrown when an element already belongs to another container.
+    /// Thrown when an element already belongs to a container, or appears in <paramref name="items" /> more than once.
     /// </exception>
     /// <remarks>
     /// When an item is rejected, construction fails and every item is left with the parent it had before, so the items
@@ -97,10 +98,12 @@ public sealed class BencodeArray
     /// Thrown when <paramref name="index" /> is outside the bounds of the list.
     /// </exception>
     /// <exception cref="InvalidOperationException">
-    /// Thrown when the assigned node already belongs to another container.
+    /// Thrown when the assigned node already belongs to a container, this list included, and is not the element at
+    /// <paramref name="index" />; or when the assigned node is this list or one of its ancestors.
     /// </exception>
     /// <remarks>
     /// Assigning over an existing element detaches the replaced node, clearing its <see cref="BencodeNode.Parent" />.
+    /// Assigning an element over itself leaves the list unchanged.
     /// </remarks>
     public new BencodeNode? this[int index]
     {
@@ -108,10 +111,11 @@ public sealed class BencodeArray
         set
         {
             BencodeNode? existing = _items[index];
-            value?.AssignParent(this);
+            if (ReferenceEquals(existing, value))
+                return;
 
-            if (existing is not null && !ReferenceEquals(existing, value))
-                existing.Parent = null;
+            value?.AssignParent(this);
+            existing?.Parent = null;
 
             _items[index] = value;
         }
@@ -162,7 +166,7 @@ public sealed class BencodeArray
     /// </remarks>
     public void Insert(int index, BencodeNode? item)
     {
-        item?.ThrowIfBelongsToOtherContainer(this);
+        item?.ThrowIfCannotJoin(this);
 
         _items.Insert(index, item);
         item?.AssignParent(this);

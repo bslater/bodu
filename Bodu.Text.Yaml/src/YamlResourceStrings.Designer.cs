@@ -674,6 +674,15 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to A node cannot be added to itself or to one of its own descendants..
+        /// </summary>
+        internal static string Op_Invalid_YamlNodeCycle {
+            get {
+                return ResourceManager.GetString("Op_Invalid_YamlNodeCycle", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The current token cannot be read as the requested value type..
         /// </summary>
         internal static string Op_Invalid_YamlReaderValueType {

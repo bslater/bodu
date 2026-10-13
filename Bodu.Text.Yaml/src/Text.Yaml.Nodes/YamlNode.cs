@@ -24,7 +24,9 @@ namespace Bodu.Text.Yaml.Nodes;
 /// A node may appear at most once in a tree: it belongs to at most one container, and appears in that container once.
 /// Adding, inserting, or assigning a node that already belongs to a container, including the container it is being
 /// added to, throws an <see cref="InvalidOperationException" />; assigning a node over itself is the one exception.
-/// Removing or replacing a node, or clearing its container, detaches it, so that it can be added elsewhere.
+/// Adding a container to itself or to one of its own descendants, which would make the tree a cycle, throws an
+/// <see cref="InvalidOperationException" /> too. Removing or replacing a node, or clearing its container, detaches it,
+/// so that it can be added elsewhere.
 /// </para>
 /// </remarks>
 public abstract class YamlNode
@@ -51,7 +53,8 @@ public abstract class YamlNode
     /// <param name="index">The zero-based index.</param>
     /// <value>The child node, or <see langword="null" />.</value>
     /// <exception cref="InvalidOperationException">
-    /// The node is not a sequence, or the assigned node already belongs to a container.
+    /// The node is not a sequence, or the assigned node already belongs to a container or is this node or one of its
+    /// ancestors.
     /// </exception>
     public virtual YamlNode? this[int index]
     {
@@ -65,7 +68,8 @@ public abstract class YamlNode
     /// <param name="key">The mapping key.</param>
     /// <value>The mapped node, or <see langword="null" />.</value>
     /// <exception cref="InvalidOperationException">
-    /// The node is not a mapping, or the assigned node already belongs to a container.
+    /// The node is not a mapping, or the assigned node already belongs to a container or is this node or one of its
+    /// ancestors.
     /// </exception>
     public virtual YamlNode? this[string key]
     {
@@ -217,12 +221,23 @@ public abstract class YamlNode
     }
 
     /// <summary>
-    /// Enforces the rule that a node appears at most once in a tree, before a container takes ownership of it.
+    /// Enforces the rules a node must meet before a container takes ownership of it: the node belongs to no container
+    /// yet, and it is neither the container nor one of the container's ancestors, either of which would make the tree a
+    /// cycle.
     /// </summary>
-    /// <exception cref="InvalidOperationException">This node already belongs to a container.</exception>
-    internal void ThrowIfAttached()
+    /// <param name="parent">The container that would take ownership of this node.</param>
+    /// <exception cref="InvalidOperationException">
+    /// This node already belongs to a container, or is <paramref name="parent" /> or one of its ancestors.
+    /// </exception>
+    internal void ThrowIfCannotJoin(YamlNode parent)
     {
         if (Parent is not null) throw new InvalidOperationException(YamlResourceStrings.Op_Invalid_YamlNodeAlreadyHasParent);
+
+        for (YamlNode? ancestor = parent; ancestor is not null; ancestor = ancestor.Parent)
+        {
+            if (ReferenceEquals(ancestor, this))
+                throw new InvalidOperationException(YamlResourceStrings.Op_Invalid_YamlNodeCycle);
+        }
     }
 
     /// <summary>

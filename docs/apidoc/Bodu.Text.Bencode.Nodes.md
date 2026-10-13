@@ -31,5 +31,5 @@ byte[] back = root.ToByteArray();    // keys re-emitted in canonical order
 ## Notes
 
 - **Canonical on write.** Insertion order is kept in memory, but `WriteTo` / `ToByteArray` always emit dictionary keys in bytewise order.
-- **Parent tracking.** A node belongs to at most one parent; adding an attached node elsewhere throws <xref:System.InvalidOperationException>.
+- **Parent tracking.** A node belongs to at most one parent and appears in it once; adding a node that is already attached, even to the same container, or adding a container to itself or to one of its own descendants, throws <xref:System.InvalidOperationException>.
 - **See also:** the [Bodu.Text.Bencode introduction](~/docs/serialization/bencode/index.md) and the [Using Bencode](~/guides/serialization/bencode/using.md) guide (Pattern 7 - Use a document model instead of a type).
