@@ -29,6 +29,9 @@ namespace Bodu.Financial.Currencies;
 /// The ISO 4217 three-digit numeric code (for example, <c>840</c> for <c>USD</c>, <c>36</c> for <c>AUD</c>), or
 /// <c>0</c> when the currency is custom or the numeric code is unknown.
 /// </param>
+/// <exception cref="ArgumentOutOfRangeException">
+/// <paramref name="MinorUnits" /> is less than 0 or greater than 28.
+/// </exception>
 /// <remarks>
 /// This record is the runtime counterpart of an <see cref="ICurrency" /> tag type. The runtime-tagged <c>Money</c> and
 /// the <c>MoneyBag</c> aggregate operate against <see cref="CurrencyRegistry" /> entries of this shape so they can
@@ -44,6 +47,24 @@ public sealed record CurrencyInfo(
     string EnglishName = "",
     int NumericCode = 0)
 {
+    /// <summary>The validated number of fractional digits in the currency's minor unit.</summary>
+    private readonly int _minorUnits = ValidateMinorUnits(MinorUnits);
+
+    /// <summary>
+    /// Gets the number of fractional digits in the currency's minor unit.
+    /// </summary>
+    /// <value>The minor-unit precision, from 0 to 28.</value>
+    /// <exception cref="ArgumentOutOfRangeException">The value is less than 0 or greater than 28.</exception>
+    /// <remarks>
+    /// The constructor, an object initializer and a <c>with</c> expression all apply the check, so every
+    /// <see cref="CurrencyInfo" /> carries a scale that <see cref="decimal" /> can represent.
+    /// </remarks>
+    public int MinorUnits
+    {
+        get => _minorUnits;
+        init => _minorUnits = ValidateMinorUnits(value);
+    }
+
     /// <summary>
     /// Gets the currency's primary symbol (for example, <c>"$"</c> or <c>"€"</c>), or an empty string when none is
     /// supplied.
@@ -165,5 +186,20 @@ public sealed record CurrencyInfo(
         }
 
         return code;
+    }
+
+    /// <summary>
+    /// Returns <paramref name="minorUnits" /> after checking that it lies in the range 0 to 28.
+    /// </summary>
+    /// <param name="minorUnits">The candidate minor-unit count.</param>
+    /// <returns>The minor-unit count.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="minorUnits" /> is less than 0 or greater than 28.
+    /// </exception>
+    private static int ValidateMinorUnits(int minorUnits)
+    {
+        ThrowHelper.ThrowIfOutOfRange(minorUnits, 0, MoneyMath.MaxMinorUnits, paramName: nameof(MinorUnits));
+
+        return minorUnits;
     }
 }
