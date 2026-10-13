@@ -70,12 +70,17 @@ public static partial class DelimitedSerializer
         bool headerPending = !isStringArray && !writerOptions.NoHeader;
         bool documentStarted = false;
 
+        // Each record is encoded by a writer of its own, since a writer cannot be held across an await, but the
+        // writers share one set of field lists, and the header is written here rather than by them.
+        DelimitedWriterOptions recordOptions = writerOptions with { NoHeader = true };
+        var fieldLists = new StreamingFieldLists();
+
         await foreach (TRecord record in records.WithCancellation(cancellationToken).ConfigureAwait(false))
         {
             if (record is null)
                 continue;
 
-            headerPending = WriteStreamingRecord(buffer, record, members, isStringArray, writerOptions, headerPending, documentStarted);
+            headerPending = WriteStreamingRecord(buffer, record, members, isStringArray, recordOptions, headerPending, documentStarted, fieldLists);
             documentStarted = true;
 
             if (buffer.WrittenCount >= StreamWriteFlushThreshold)
@@ -87,7 +92,7 @@ public static partial class DelimitedSerializer
 
         // The header row comes from the record type, so a sequence without records still writes it.
         if (headerPending)
-            WriteStreamingHeader(buffer, members, writerOptions);
+            WriteStreamingHeader(buffer, members, recordOptions);
 
         if (buffer.WrittenCount > 0)
             await destination.WriteAsync(buffer.WrittenMemory, cancellationToken).ConfigureAwait(false);
@@ -255,10 +260,10 @@ public static partial class DelimitedSerializer
     /// </summary>
     /// <param name="destination">The batch buffer.</param>
     /// <param name="members">The mapped members of the POCO record type.</param>
-    /// <param name="writerOptions">The writer options.</param>
+    /// <param name="writerOptions">The writer options, with the header row suppressed.</param>
     private static void WriteStreamingHeader(IBufferWriter<byte> destination, FlatMemberDescriptor[] members, DelimitedWriterOptions writerOptions)
     {
-        var writer = new Utf8DelimitedWriter(destination, writerOptions with { NoHeader = true });
+        var writer = new Utf8DelimitedWriter(destination, writerOptions);
         writer.WriteStartArray();
         WriteHeaderRow(ref writer, members);
         writer.WriteEndArray();
@@ -267,15 +272,16 @@ public static partial class DelimitedSerializer
 
     /// <summary>
     /// Encodes one record - preceded by the header row when it is still pending - into the batch buffer using a fresh
-    /// per-record writer, which is safe because delimited rows are self-contained.
+    /// per-record writer over the shared field lists, which is safe because delimited rows are self-contained.
     /// </summary>
     /// <param name="destination">The batch buffer.</param>
     /// <param name="record">The record instance.</param>
     /// <param name="members">The mapped members for a POCO record type.</param>
     /// <param name="isStringArray">Whether the record type is a positional <see cref="string" /> array.</param>
-    /// <param name="writerOptions">The writer options.</param>
+    /// <param name="writerOptions">The writer options, with the header row suppressed.</param>
     /// <param name="headerPending">Whether the header row has not yet been emitted.</param>
     /// <param name="documentStarted">Whether an earlier record has already been written to the document.</param>
+    /// <param name="fieldLists">The field lists every record's writer shares.</param>
     /// <returns>The new header-pending state.</returns>
     private static bool WriteStreamingRecord(
         IBufferWriter<byte> destination,
@@ -284,11 +290,18 @@ public static partial class DelimitedSerializer
         bool isStringArray,
         DelimitedWriterOptions writerOptions,
         bool headerPending,
-        bool documentStarted)
+        bool documentStarted,
+        StreamingFieldLists fieldLists)
     {
         // Header emission is handled here, so the per-record writer must never emit its own. A later record's writer
         // continues the document, so it quotes a leading U+FEFF only where the buffered serializer's single writer does.
-        var writer = new Utf8DelimitedWriter(destination, writerOptions with { NoHeader = true }, continuesDocument: documentStarted);
+        var writer = new Utf8DelimitedWriter(
+            destination,
+            writerOptions,
+            continuesDocument: documentStarted,
+            fieldLists.Headers,
+            fieldLists.Names,
+            fieldLists.Values);
         writer.WriteStartArray();
 
         if (headerPending)

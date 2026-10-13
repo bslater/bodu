@@ -139,6 +139,53 @@ public ref struct Utf8DelimitedWriter
     }
 
     /// <summary>
+    /// Initializes a new instance of the <see cref="Utf8DelimitedWriter" /> struct that writes to the supplied buffer
+    /// using the supplied options, continuing a document that another writer may already have started, and collecting
+    /// fields in lists the caller owns.
+    /// </summary>
+    /// <param name="output">The destination buffer writer.</param>
+    /// <param name="options">The writer options.</param>
+    /// <param name="continuesDocument">
+    /// Whether the rows written follow rows already written to the document, so that none of their fields begins it.
+    /// </param>
+    /// <param name="headers">The list the header names are kept in, which is cleared.</param>
+    /// <param name="names">The list a record's field names are collected in.</param>
+    /// <param name="values">The list a record's field values are collected in.</param>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="output" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when the delimiter, quote or comment character of <paramref name="options" /> is not an ASCII character
+    /// or is a carriage return or a line feed, when the delimiter equals the quote, or when the comment character
+    /// equals the delimiter or the quote.
+    /// </exception>
+    /// <remarks>
+    /// A caller that writes record after record, each with a writer of its own, passes the same lists to every writer,
+    /// so that the records do not each allocate them.
+    /// </remarks>
+    internal Utf8DelimitedWriter(
+        IBufferWriter<byte> output,
+        DelimitedWriterOptions options,
+        bool continuesDocument,
+        List<string> headers,
+        List<string> names,
+        List<string> values)
+    {
+        ThrowHelper.ThrowIfNull(output);
+        DelimitedThrowHelper.ThrowIfUnusableDialect(options);
+        headers.Clear();
+
+        _output = output;
+        _stream = null;
+        _scratch = null;
+        _options = options;
+        _headers = headers;
+        _names = names;
+        _values = values;
+        _rowWritten = continuesDocument;
+    }
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="Utf8DelimitedWriter" /> struct that writes to the supplied stream.
     /// </summary>
     /// <param name="stream">The destination stream.</param>
