@@ -59,7 +59,7 @@ MoneyBag wallet = MoneyBag.Empty
     .Add(new Money<EUR>(50m));
 
 string bag = JsonSerializer.Serialize(wallet, options);
-// {"balances":{"EUR":50.00,"USD":100.00}}
+// {"balances":{"EUR":50,"USD":100}}
 ```
 
 ### Choose a policy
@@ -74,7 +74,7 @@ Money<USD> imported = JsonSerializer.Deserialize<Money<USD>>(
 
 // Compact collapses each value to its smallest readable form.
 JsonSerializer.Serialize(new Money<USD>(19.99m), compact);   // "19.99 USD"
-JsonSerializer.Serialize(wallet, compact);                   // {"EUR":50.00,"USD":100.00}
+JsonSerializer.Serialize(wallet, compact);                   // {"EUR":50,"USD":100}
 
 Money<USD> either = JsonSerializer.Deserialize<Money<USD>>("\"USD 19.99\"", compact);   // ISO-prefix accepted too
 ```

@@ -32,8 +32,10 @@ RateLookupResult usd = provider.GetRate("EUR", "USD", new DateOnly(2023, 1, 3));
   (`EUR/USD`). The `SeriesMap` on the options maps each currency pair to its FRED series id,
   keyed `FROM/TO` in the exact direction the series is quoted, so no inversion is required.
 - **Unmapped pairs.** A pair with no entry in `SeriesMap` returns no data - without issuing a
-  request. The reverse direction of a mapped pair is served by the base class's inverse-lookup
-  fallback. To support additional pairs, add mappings via `SeriesMap`.
+  request. The reverse direction of a mapped pair resolves by inverting the mapped series only
+  once that series is loaded: a request for the reverse pair itself is unmapped and fetches
+  nothing, so warm the quoted direction first (for example `LoadPairAsync("EUR", "USD", ...)`
+  before reading `USD/EUR`). To support additional pairs, add mappings via `SeriesMap`.
 - **Built-in defaults.** The options seed a table of common USD pairs (EUR/USD, GBP/USD,
   AUD/USD, NZD/USD, USD/CAD, USD/JPY, USD/CHF, USD/CNY, USD/MXN, USD/INR, USD/SEK, USD/NOK,
   USD/DKK, USD/ZAR, USD/BRL, USD/KRW, USD/HKD, USD/SGD, USD/TWD).
@@ -54,7 +56,7 @@ RateLookupResult usd = provider.GetRate("EUR", "USD", new DateOnly(2023, 1, 3));
 | `SeriesMap` | built-in USD pairs | Maps each `FROM/TO` pair to a FRED series id. |
 | `HttpTimeout` | 30 s | Applied to the `HttpClient` the provider creates, or by the DI registration. |
 | `AllowSynchronousNetworkAccess` | `false` | Opt in to blocking on-demand fetches from synchronous lookups. |
-| `DefaultLookback` | 7 days | The window fetched around a date for on-demand and latest-rate lookups. |
+| `DefaultLookback` | 7 days | The look-back window, ending on the requested date, fetched for on-demand and latest-rate lookups. |
 | `CurrencyAliases` | empty | Maps ISO codes to symbol components where they differ. |
 
 ## Dependency injection

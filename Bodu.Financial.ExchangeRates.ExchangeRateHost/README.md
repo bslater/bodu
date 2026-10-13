@@ -47,7 +47,7 @@ RateLookupResult usd = provider.GetRate("EUR", "USD", new DateOnly(2023, 1, 3));
 | `HistoricalPath` | `historical` | The single-date endpoint (date sent as `date`). |
 | `HttpTimeout` | 30 s | Applied to the `HttpClient` the provider creates, or by the DI registration. |
 | `AllowSynchronousNetworkAccess` | `false` | Opt in to blocking on-demand fetches from synchronous lookups. |
-| `DefaultLookback` | 7 days | The window fetched around a date for on-demand and latest-rate lookups. |
+| `DefaultLookback` | 7 days | The look-back window, ending on the requested date, fetched for on-demand and latest-rate lookups. |
 | `CurrencyAliases` | empty | Maps ISO codes to exchangerate.host symbol components where they differ. |
 
 ## Dependency injection

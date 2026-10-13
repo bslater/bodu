@@ -36,7 +36,7 @@ providers, or compose them as above.
 - **Options** - [`CachingRateOptions`](xref:Bodu.Financial.ExchangeRates.Caching.CachingRateOptions)
   carries the cache **location** (`CacheDirectory`), the **default expiry**
   (`DefaultExpiry`), **per-provider overrides** (`ProviderExpiry`), the per-event
-  log levels, and `DefaultLookupOptions` for the timeless surface.
+  log levels, and `DefaultLookupOptions` for the undated lookups and the timeless surface.
 - **Aggregator** - [`AggregatingRateProvider`](xref:Bodu.Financial.ExchangeRates.Caching.AggregatingRateProvider)
   groups named children behind one entry point, combining them with a pluggable
   [`IRateAggregationStrategy`](xref:Bodu.Financial.ExchangeRates.Caching.IRateAggregationStrategy)
@@ -72,8 +72,10 @@ services.AddFinancialService()
 using var host = services.BuildServiceProvider();
 var rates = host.GetRequiredService<IDatedRateProvider>();
 
-RateLookupResult aud = rates.GetRate("AUD", "USD", new DateOnly(2024, 1, 3));
+RateLookupResult aud = await rates.GetRateAsync("AUD", "USD", new DateOnly(2024, 1, 3));
 // aud.Rate is served from SQLite when fresh, otherwise fetched from the RBA source and cached.
+// (A synchronous GetRate reaches the source only when it allows synchronous network access,
+// which the RBA provider does not by default.)
 ```
 
 **Manual** (new up every piece yourself - useful outside a DI container):
@@ -90,7 +92,7 @@ using var source = new RbaRateProvider(new RbaRateProviderOptions());
 using var cache = new SqliteRateCache("RBA", "/var/cache/fx.db");
 var rates = new CachingRateProvider(source, cache, new CachingRateOptions());
 
-RateLookupResult aud = rates.GetRate("AUD", "USD", new DateOnly(2024, 1, 3));
+RateLookupResult aud = await rates.GetRateAsync("AUD", "USD", new DateOnly(2024, 1, 3));
 ```
 
 From here: add [more providers behind one file](#sqlite-concurrency-durability-and-the-shared-file),
@@ -156,8 +158,9 @@ using var cached = new CachingRateProvider(
     ownsInner: true);
 ```
 
-The decorator also implements the timeless surface, which resolves the current UTC
-date under `CachingRateOptions.DefaultLookupOptions`:
+The decorator also implements the timeless surface, which, like the undated lookups, resolves
+the current UTC date under `CachingRateOptions.DefaultLookupOptions` (by default the most recent
+rate on or before that date):
 
 ```csharp
 decimal todayRate = ((IRateProvider)cachedRba).GetRate("AUD", "USD");
@@ -176,13 +179,17 @@ options.GetExpiry("ECB");     // 12 hours (the default)
 ### Single-date lookups
 
 `GetRate` / `TryGetRate` flow through the cache. On a hit the cached rows are
-reconstructed into a [`FixedDatedRateProvider`](xref:Bodu.Financial.ExchangeRates.FixedDatedRateProvider),
+resolved directly under the same rules as
+[`FixedDatedRateProvider`](xref:Bodu.Financial.ExchangeRates.FixedDatedRateProvider),
 so date-resolution policy, inverse pairs, and same-currency identity all behave
-exactly as the underlying stack would:
+exactly as the underlying stack would. On a miss the synchronous members ask the
+source's synchronous lookup, which fetches only when that source allows synchronous
+network access (the shipped web providers do not by default); `GetRateAsync` always
+lets the source fetch:
 
 ```csharp
 // Miss → fetched from the source, then cached.
-RateLookupResult r1 = cachedRba.GetRate("AUD", "USD", new DateOnly(2024, 1, 3));
+RateLookupResult r1 = await cachedRba.GetRateAsync("AUD", "USD", new DateOnly(2024, 1, 3));
 
 // Repeat within the expiry window → served from cache, no source call.
 RateLookupResult r2 = cachedRba.GetRate("AUD", "USD", new DateOnly(2024, 1, 3));
@@ -413,8 +420,7 @@ A cache backend is any [`IRateCache`](xref:Bodu.Financial.ExchangeRates.Caching.
 implementation. To back the cache with a store of your own, implement that interface
 directly - the shipped
 [`SqliteRateCache`](xref:Bodu.Financial.ExchangeRates.Caching.SqliteRateCache)
-and [`DistributedRateCache`](xref:Bodu.Financial.ExchangeRates.Caching.DistributedRateCache)
-are exactly that and serve as worked references. Delegate the freshness, validity,
+is exactly that and serves as the worked reference. Delegate the freshness, validity,
 merge, and coverage rules to the shared, public
 [`RateCacheRules`](xref:Bodu.Financial.ExchangeRates.Caching.RateCacheRules)
 so your backend stays behaviourally identical to the in-box caches - serving only
@@ -425,10 +431,11 @@ without its rows.
 
 The in-box [`RateCacheBase<TOptions>`](xref:Bodu.Financial.ExchangeRates.Caching.RateCacheBase`1)
 and [`FileRateCacheBase<TOptions>`](xref:Bodu.Financial.ExchangeRates.Caching.FileRateCacheBase`1)
-are internal scaffolding for the in-memory, TOML, and JSON caches - they own the per-pair
-locking and the read-modify-write sequencing over a `CachePairState` - and their
-storage seam is not a public subclassing point. Implement `IRateCache`
-directly, as the SQLite and distributed backends do.
+are internal scaffolding for the in-memory, TOML, JSON, and distributed caches - they own
+the per-pair locking and the read-modify-write sequencing over a `CachePairState` - and
+their storage seam is not a public subclassing point (the distributed backend derives from
+`RateCacheBase<TOptions>` only because its assembly is granted the internals). Implement
+`IRateCache` directly, as the SQLite backend does.
 
 ### Persistent and shared backends
 
@@ -599,6 +606,7 @@ On the way back, the fetched rate is written into L2 and then L1, so both tiers
 warm up; a process restart loses L1 but L2 still serves without hitting the origin.
 
 ```csharp
+using Bodu.Financial.ExchangeRates;
 using Bodu.Financial.ExchangeRates.Caching;
 
 // L2 short-circuits the network; L1 short-circuits even the SQLite read.
@@ -1033,7 +1041,8 @@ target a specific event:
 | 4505 | Served-rate provenance | option-set |
 | 4506-4508 | Advertised-history skip / empty-window skip / clamped fetch | option-set |
 | 4510-4512 | Aggregation routing and outcomes | option-set |
-| 4513-4515 | File-cache degradation and corrupt-file warnings | `Warning` |
+| 4513 / 4514 | File-cache storage failure swallowed / corrupt file read as empty | `Warning` |
+| 4515 | File-cache best-effort cleanup skipped | `Debug` |
 | 4516 / 4517 | Refresh-ahead scheduled / refresh-ahead failed | option-set / `Warning` |
 | 4518 | Warm-up pair failed and skipped | `Warning` |
 | 4520 | SQLite storage failure swallowed | `Warning` |

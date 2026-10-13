@@ -30,7 +30,7 @@ All dependency-injection registration lives in the `Bodu.Financial.ExchangeRates
 **Storage (a cache is bound to one provider)**
 
 - <xref:Bodu.Financial.ExchangeRates.Caching.IRateCache> - the single-provider cache contract: a bound `Provider`, and `GetRates`/`Store` keyed by currency pair.
-- <xref:Bodu.Financial.ExchangeRates.Caching.RateCacheBase`1> - the storage-agnostic core behind the in-box caches: read-time freshness filtering and write-time merge-and-prune, prescribing no physical layout. Its storage seam is `internal`, so it is not a public subclassing point - to back the cache with a store of your own, implement `IRateCache` directly and delegate the freshness, merge, and coverage rules to <xref:Bodu.Financial.ExchangeRates.Caching.RateCacheRules>, as the SQLite and distributed backends do.
+- <xref:Bodu.Financial.ExchangeRates.Caching.RateCacheBase`1> - the storage-agnostic core behind the in-box caches: read-time freshness filtering and write-time merge-and-prune, prescribing no physical layout. Its storage seam is `internal`, so it is not a public subclassing point - to back the cache with a store of your own, implement `IRateCache` directly and delegate the freshness, merge, and coverage rules to <xref:Bodu.Financial.ExchangeRates.Caching.RateCacheRules>, as the SQLite backend does (the distributed backend derives from this base, which only an assembly granted access to its internals can do).
 - <xref:Bodu.Financial.ExchangeRates.Caching.IFileRateCache>, <xref:Bodu.Financial.ExchangeRates.Caching.FileRateCacheBase`1> - the file-storage seam and the plumbing behind the TOML and JSON leaves: layout-driven directory and file-name resolution, optional date partitioning, and best-effort IO. The base exposes `ResolveFilePath`, `ResolveDirectory`, and `ResolvePartitionPath`, but its serialization seam is likewise not public - a new file format is another `IRateCache` implementation.
 - <xref:Bodu.Financial.ExchangeRates.Caching.RateCacheRules> - the shared, public freshness, validity, merge, and coverage rules every backend applies, so a custom `IRateCache` stays behaviourally identical to the in-box caches.
 - <xref:Bodu.Financial.ExchangeRates.Caching.TomlFileRateCache> - the sealed TOML leaf (`<directory>/<provider>/<from><to>.toml` by default; decimals quoted for lossless round-trips; a self-describing `Provider`/`From`/`To` header).
@@ -53,7 +53,7 @@ All dependency-injection registration lives in the `Bodu.Financial.ExchangeRates
 
 - <xref:Bodu.Financial.ExchangeRates.Caching.CachingRateProvider> - wraps one inner source over one cache; implements both the dated and timeless surfaces.
 - <xref:Bodu.Financial.ExchangeRates.Caching.CachingRateProviderBase> - the abstract base holding the read-through, staleness, and range logic; derived types supply the wrapped inner provider.
-- <xref:Bodu.Financial.ExchangeRates.Caching.CachingRateOptions> - cache location (`CacheDirectory`), `DefaultExpiry`, the per-provider `ProviderExpiry` overrides, the per-event log levels, and `DefaultLookupOptions` for the timeless surface.
+- <xref:Bodu.Financial.ExchangeRates.Caching.CachingRateOptions> - cache location (`CacheDirectory`, used by the default TOML cache the dependency-injection registration builds), `DefaultExpiry`, the per-provider `ProviderExpiry` overrides, the per-event log levels, and `DefaultLookupOptions` for the undated lookups and the timeless surface.
 - <xref:Bodu.Financial.ExchangeRates.Caching.RateCacheWarmupOptions>, <xref:Bodu.Financial.ExchangeRates.RateCacheWarmupExtensions> - the startup warm-up: the pairs (`"XXX/YYY"`), `LookbackDays` or explicit `StartDate` / `EndDate` window, and optional provider filter, registered on the `IFinancialServiceBuilder` with `AddRateCacheWarmup(...)` (default configuration section `Financial:RateCacheWarmup`) as a hosted service that pre-fetches through every registered caching provider.
 
 **Aggregation (group many providers)**
@@ -70,6 +70,8 @@ All dependency-injection registration lives in the `Bodu.Financial.ExchangeRates
 
 ```csharp
 using Bodu.Financial;
+using Bodu.Financial.Currencies;
+using Bodu.Financial.ExchangeRates;
 using Bodu.Financial.ExchangeRates.Caching;
 
 var options = new CachingRateOptions

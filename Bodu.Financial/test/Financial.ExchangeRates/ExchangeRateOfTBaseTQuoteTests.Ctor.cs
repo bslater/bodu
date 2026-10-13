@@ -25,6 +25,19 @@ public partial class ExchangeRateOfTBaseTQuoteTests
     }
 
     /// <summary>
+    /// Verifies that the constructor throws <see cref="ArgumentOutOfRangeException" /> when the supplied rate of an
+    /// inverted rate is zero, rather than failing while taking the reciprocal.
+    /// </summary>
+    [TestMethod]
+    public void Ctor_WhenInvertedAndRateIsZero_ShouldThrowArgumentOutOfRangeException()
+    {
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = new ExchangeRate<USD, AUD>(0m, SampleDate, SampleProvider, isInverted: true);
+        });
+    }
+
+    /// <summary>
     /// Verifies that the constructor throws <see cref="ArgumentException" /> when <c>provider</c> is white-space.
     /// </summary>
     [TestMethod]

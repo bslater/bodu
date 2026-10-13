@@ -19,6 +19,7 @@ namespace Bodu.Financial;
 ///<![CDATA[
 /// using System.Globalization;
 /// using Bodu.Financial;
+/// using Bodu.Financial.Currencies;
 ///
 /// MoneyFormatter formatter = new MoneyFormatterBuilder()
 ///     .WithEnglishName()
@@ -102,6 +103,10 @@ public sealed class MoneyFormatterBuilder
     /// </summary>
     /// <param name="minorUnits">The explicit precision to render.</param>
     /// <returns>This builder.</returns>
+    /// <remarks>
+    /// The value is not checked here: a value below 0 or above 28 makes the built formatter's <c>Format</c> methods
+    /// throw <see cref="FormatException" />.
+    /// </remarks>
     public MoneyFormatterBuilder WithMinorUnits(int minorUnits)
     {
         _options = _options with { MinorUnitsOverride = minorUnits };

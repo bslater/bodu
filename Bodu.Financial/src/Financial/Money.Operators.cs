@@ -86,6 +86,7 @@ public readonly partial struct Money
     /// <exception cref="InvalidOperationException">
     /// <paramref name="left" /> is a default-initialised, currency-less <see cref="Money" />.
     /// </exception>
+    /// <exception cref="OverflowException">The product falls outside the range of <see cref="decimal" />.</exception>
     /// <remarks>
     /// Use <see cref="Multiply(decimal, MidpointRounding)" /> when a rounding rule other than banker's rounding is
     /// required; the operator cannot accept a rounding-mode parameter.
@@ -106,6 +107,7 @@ public readonly partial struct Money
     /// <exception cref="InvalidOperationException">
     /// <paramref name="right" /> is a default-initialised, currency-less <see cref="Money" />.
     /// </exception>
+    /// <exception cref="OverflowException">The product falls outside the range of <see cref="decimal" />.</exception>
     /// <remarks>
     /// Use <see cref="Multiply(decimal, MidpointRounding)" /> when a rounding rule other than banker's rounding is
     /// required; the operator cannot accept a rounding-mode parameter.
@@ -127,6 +129,7 @@ public readonly partial struct Money
     /// <paramref name="left" /> is a default-initialised, currency-less <see cref="Money" />.
     /// </exception>
     /// <exception cref="DivideByZeroException"><paramref name="right" /> is zero.</exception>
+    /// <exception cref="OverflowException">The quotient falls outside the range of <see cref="decimal" />.</exception>
     /// <remarks>
     /// Use <see cref="Divide(decimal, MidpointRounding)" /> when a rounding rule other than banker's rounding is
     /// required; the operator cannot accept a rounding-mode parameter.
@@ -146,6 +149,7 @@ public readonly partial struct Money
     /// <exception cref="InvalidOperationException">
     /// This value is a default-initialised, currency-less <see cref="Money" />.
     /// </exception>
+    /// <exception cref="OverflowException">The product falls outside the range of <see cref="decimal" />.</exception>
     public Money Multiply(decimal multiplier)
     {
         EnsureHasCurrency();
@@ -162,6 +166,7 @@ public readonly partial struct Money
     /// <exception cref="InvalidOperationException">
     /// This value is a default-initialised, currency-less <see cref="Money" />.
     /// </exception>
+    /// <exception cref="OverflowException">The product falls outside the range of <see cref="decimal" />.</exception>
     /// <remarks>
     /// Use this overload when a non-default rounding rule (for example, <see cref="MidpointRounding.AwayFromZero" />
     /// for retail-tax workflows) must be applied. The <c>*</c> operator forces banker's rounding because operator
@@ -182,6 +187,7 @@ public readonly partial struct Money
     /// This value is a default-initialised, currency-less <see cref="Money" />.
     /// </exception>
     /// <exception cref="DivideByZeroException"><paramref name="divisor" /> is zero.</exception>
+    /// <exception cref="OverflowException">The quotient falls outside the range of <see cref="decimal" />.</exception>
     public Money Divide(decimal divisor)
     {
         EnsureHasCurrency();
@@ -199,6 +205,7 @@ public readonly partial struct Money
     /// This value is a default-initialised, currency-less <see cref="Money" />.
     /// </exception>
     /// <exception cref="DivideByZeroException"><paramref name="divisor" /> is zero.</exception>
+    /// <exception cref="OverflowException">The quotient falls outside the range of <see cref="decimal" />.</exception>
     /// <remarks>
     /// Use this overload when a non-default rounding rule must be applied. The <c>/</c> operator forces banker's
     /// rounding because operator signatures cannot accept a rounding-mode parameter.
@@ -217,6 +224,7 @@ public readonly partial struct Money
     /// <returns>The ratio.</returns>
     /// <exception cref="InvalidOperationException">The operands have different ISO codes.</exception>
     /// <exception cref="DivideByZeroException"><paramref name="right" /> has an amount of zero.</exception>
+    /// <exception cref="OverflowException">The ratio falls outside the range of <see cref="decimal" />.</exception>
     public static decimal operator /(Money left, Money right)
     {
         EnsureSameCurrency(left, right);

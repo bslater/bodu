@@ -17,7 +17,7 @@ namespace Bodu.Financial.ExchangeRates;
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
-/// using Bodu.Financial;
+/// using Bodu.Financial.ExchangeRates;
 ///
 /// // A minimal static-table implementation of the rate source.
 /// sealed class FixedTable : IRateProvider
@@ -44,6 +44,13 @@ public interface IRateProvider
     /// <param name="fromIsoCode">The source currency's ISO 4217 code.</param>
     /// <param name="toIsoCode">The destination currency's ISO 4217 code.</param>
     /// <returns>The rate.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown if <paramref name="fromIsoCode" /> or <paramref name="toIsoCode" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown if either ISO code is not a three-character uppercase ASCII code or names no
+    /// <see cref="Currencies.CurrencyCode" /> member.
+    /// </exception>
     /// <exception cref="KeyNotFoundException">No rate is available for the requested pair.</exception>
     decimal GetRate(string fromIsoCode, string toIsoCode);
 }

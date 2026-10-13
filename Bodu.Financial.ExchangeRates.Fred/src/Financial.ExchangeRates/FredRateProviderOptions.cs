@@ -21,11 +21,11 @@ namespace Bodu.Financial.ExchangeRates;
 /// <para>
 /// FRED publishes each foreign-exchange rate as an independent time series quoted in a fixed direction (for example
 /// <c>DEXUSEU</c> quotes US dollars per euro, that is <c>EUR/USD</c>). <see cref="SeriesMap" /> is keyed <c>FROM/TO</c>
-/// in the exact direction the FRED series is quoted, so no inversion is required; the reverse direction is served by
-/// the base class's inverse-lookup fallback. A pair with no mapped series yields no data rather than a fetch. Every
-/// member other than <see cref="ApiKey" /> carries a working default, so the options bind cleanly through
-/// <c>Microsoft.Extensions.Options</c>; the dependency-injection package binds this type from configuration and a
-/// <c>configure</c> delegate.
+/// in the exact direction the FRED series is quoted, so no inversion is required; the reverse direction resolves by
+/// inversion only once the quoted direction has been loaded, because a request for the reverse pair is itself unmapped.
+/// A pair with no mapped series yields no data rather than a fetch. Every member other than <see cref="ApiKey" />
+/// carries a working default, so the options bind cleanly through <c>Microsoft.Extensions.Options</c>; the
+/// dependency-injection package binds this type from configuration and a <c>configure</c> delegate.
 /// </para>
 /// </remarks>
 public sealed class FredRateProviderOptions
@@ -84,8 +84,8 @@ public sealed class FredRateProviderOptions
     /// </value>
     /// <remarks>
     /// Add or replace entries to support additional pairs. Each key is the pair's <c>FROM/TO</c> ISO codes in the exact
-    /// direction the FRED series is quoted; the reverse direction is served by the base class's inverse-lookup
-    /// fallback.
+    /// direction the FRED series is quoted; the reverse direction resolves by inversion only once the quoted direction
+    /// has been loaded, since a request for the reverse pair is itself unmapped and fetches nothing.
     /// </remarks>
     public IDictionary<string, string> SeriesMap { get; set; }
 

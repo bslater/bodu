@@ -27,4 +27,13 @@ public sealed partial class PriorityFallbackStrategyTests
     /// <returns>The named candidate.</returns>
     private static NamedDatedRateProvider Named(string name, params (string From, string To, DateOnly Date, decimal Rate)[] rows) =>
         new(name, new FixedDatedRateProvider(rows.Select(r => new ExchangeRate(CurrencyInfo.ParseCurrencyCode(r.From), CurrencyInfo.ParseCurrencyCode(r.To), r.Date, r.Rate, name))));
+
+    /// <summary>
+    /// Builds a named AUD-based candidate, shaped like the Reserve Bank of Australia feed, whose range reads throw
+    /// <see cref="RateSeriesNotFoundException" /> for a pair without AUD.
+    /// </summary>
+    /// <param name="name">The candidate name.</param>
+    /// <returns>The named candidate.</returns>
+    private static NamedDatedRateProvider AudBased(string name) =>
+        new(name, new SingleBaseRateProvider(CurrencyCode.AUD, new[] { new ExchangeRate(CurrencyCode.AUD, CurrencyCode.USD, D1, 0.65m, name) }));
 }

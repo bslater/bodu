@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Globalization;
 using System.Numerics;
 using Bodu.Financial.Currencies;
 using Bodu.Financial.ExchangeRates;
@@ -19,30 +20,67 @@ public readonly partial struct Money<TCurrency>
     /// <returns>
     /// A <see cref="Money" /> carrying the same amount and the ISO code derived from <typeparamref name="TCurrency" />.
     /// </returns>
+    /// <exception cref="InvalidOperationException">
+    /// <typeparamref name="TCurrency" /> is a custom tag whose ISO code is not in the shipped
+    /// <see cref="CurrencyCode" /> catalogue.
+    /// </exception>
     /// <remarks>
-    /// The conversion is lossless: <typeparamref name="TCurrency" /> determines the currency, which is encoded into the
-    /// runtime <see cref="Money.Code" />. An <c>implicit</c> operator is also provided so typed values flow into
-    /// runtime APIs without an explicit cast.
+    /// For a shipped currency the conversion is lossless: <typeparamref name="TCurrency" /> determines the currency,
+    /// which is encoded into the runtime <see cref="Money.Code" />. An <c>implicit</c> operator is also provided so
+    /// typed values flow into runtime APIs without an explicit cast. A custom tag outside the catalogue has no runtime
+    /// representation, so the conversion compiles for it but throws at run time.
     /// </remarks>
     public Money ToMoney() =>
-        Money.FromNormalized(_amount, CurrencyMetadata<TCurrency>.Value.Code);
+        Money.FromNormalized(_amount, RuntimeCurrencyCode());
 
     /// <summary>
     /// Returns a high-precision runtime-tagged <see cref="CalculatedMoney" /> carrying this value's amount and the
     /// currency derived from <typeparamref name="TCurrency" />, suitable for deferred-rounding calculation chains.
     /// </summary>
     /// <returns>A <see cref="CalculatedMoney" /> with this value's amount.</returns>
+    /// <exception cref="InvalidOperationException">
+    /// <typeparamref name="TCurrency" /> is a custom tag whose ISO code is not in the shipped
+    /// <see cref="CurrencyCode" /> catalogue.
+    /// </exception>
     public CalculatedMoney ToCalculated() =>
-        new(_amount, CurrencyMetadata<TCurrency>.Value.Code);
+        new(_amount, RuntimeCurrencyCode());
 
     /// <summary>
     /// Implicitly converts a <see cref="Money{TCurrency}" /> to a runtime-tagged <see cref="Money" />.
     /// </summary>
     /// <param name="value">The strongly-typed money.</param>
     /// <returns>The runtime-tagged equivalent.</returns>
+    /// <exception cref="InvalidOperationException">
+    /// <typeparamref name="TCurrency" /> is a custom tag whose ISO code is not in the shipped
+    /// <see cref="CurrencyCode" /> catalogue; the conversion compiles for such a tag but throws at run time.
+    /// </exception>
     public static implicit operator Money(Money<TCurrency> value)
     {
         return value.ToMoney();
+    }
+
+    /// <summary>
+    /// Returns the runtime <see cref="CurrencyCode" /> of <typeparamref name="TCurrency" />.
+    /// </summary>
+    /// <returns>The <see cref="CurrencyCode" /> member for the tag's ISO code.</returns>
+    /// <exception cref="InvalidOperationException">
+    /// <typeparamref name="TCurrency" /> is a custom tag whose ISO code is not in the shipped
+    /// <see cref="CurrencyCode" /> catalogue.
+    /// </exception>
+    private static CurrencyCode RuntimeCurrencyCode()
+    {
+        CurrencyMetadataDescriptor metadata = CurrencyMetadata<TCurrency>.Value;
+        if (metadata.Code == CurrencyCode.None)
+        {
+            throw new InvalidOperationException(
+                string.Format(
+                    CultureInfo.CurrentCulture,
+                    FinancialResourceStrings.Op_Invalid_CurrencyTagOutsideCatalogue,
+                    typeof(TCurrency).FullName,
+                    metadata.IsoCode));
+        }
+
+        return metadata.Code;
     }
 
     /// <summary>
@@ -134,8 +172,8 @@ public readonly partial struct Money<TCurrency>
     /// </exception>
     /// <remarks>
     /// Use this to coarsen below the currency's natural precision - for example, rounding USD to whole dollars before
-    /// display. Rounding above <see cref="MinorUnits" /> has no effect because the stored amount is already limited to
-    /// the minor-unit precision.
+    /// display. Requesting more digits than <see cref="MinorUnits" /> throws <see cref="ArgumentOutOfRangeException" />,
+    /// because the stored amount is already limited to the minor-unit precision.
     /// </remarks>
     public Money<TCurrency> Round(int decimals, MidpointRounding rounding = MidpointRounding.ToEven)
     {

@@ -10,8 +10,8 @@ using Microsoft.Extensions.Logging;
 namespace Bodu.Financial.ExchangeRates.Caching;
 
 /// <summary>
-/// Configures a <see cref="CachingRateProvider" />: the on-disk cache location, the default time a cached rate stays
-/// fresh, and per-provider overrides of that default.
+/// Configures a <see cref="CachingRateProvider" />: the default time a cached rate stays fresh, per-provider overrides
+/// of that default, and the on-disk location of the default cache the dependency-injection registration builds.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -21,7 +21,7 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// <para>
 /// The <c>Cache*LogLevel</c> members set the <see cref="LogLevel" /> at which each cache diagnostic is logged, so
 /// consumers can re-tune verbosity per concern without category-wide log filters. The per-lookup hit and miss events
-/// default to <see cref="LogLevel.Information" /> because they run on the read hot path; the range events default to
+/// default to <see cref="LogLevel.Trace" /> because they run on the read hot path; the range events default to
 /// <see cref="LogLevel.Debug" />. The per-serve <see cref="RateProvenanceLogLevel" /> records the lineage of every
 /// served rate - live versus cache hit, the backend identity, and the served data's age - and also defaults to
 /// <see cref="LogLevel.Debug" />. Set any member to <see cref="LogLevel.None" /> to suppress that event entirely.
@@ -48,7 +48,8 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 public sealed class CachingRateOptions
 {
     /// <summary>
-    /// Gets or sets the directory used by the on-disk cache.
+    /// Gets or sets the directory of the default TOML file cache that the dependency-injection registration builds when
+    /// no cache factory is supplied. A <see cref="CachingRateProvider" /> constructed directly does not read it.
     /// </summary>
     /// <value>
     /// The cache directory, or <see langword="null" /> to use a <c>bodu-exchange-rates</c> folder under the system
@@ -158,14 +159,14 @@ public sealed class CachingRateOptions
     /// <summary>
     /// Gets or sets the level at which a single-date lookup served from the cache is logged.
     /// </summary>
-    /// <value>The log level; defaults to <see cref="LogLevel.Information" />.</value>
-    public LogLevel CacheHitLogLevel { get; set; } = LogLevel.Information;
+    /// <value>The log level; defaults to <see cref="LogLevel.Trace" />.</value>
+    public LogLevel CacheHitLogLevel { get; set; } = LogLevel.Trace;
 
     /// <summary>
     /// Gets or sets the level at which a single-date cache miss resolved from a source and then cached is logged.
     /// </summary>
-    /// <value>The log level; defaults to <see cref="LogLevel.Information" />.</value>
-    public LogLevel CacheMissLogLevel { get; set; } = LogLevel.Information;
+    /// <value>The log level; defaults to <see cref="LogLevel.Trace" />.</value>
+    public LogLevel CacheMissLogLevel { get; set; } = LogLevel.Trace;
 
     /// <summary>
     /// Gets or sets the level at which a range lookup served entirely from the cache is logged.
@@ -197,12 +198,24 @@ public sealed class CachingRateOptions
     /// </remarks>
     public LogLevel RateProvenanceLogLevel { get; set; } = LogLevel.Debug;
 
+    /// <summary>The tolerance, in days, of the default undated lookup: large enough to reach any rate on or before the current date, matching the undated lookups of the shipped web providers.</summary>
+    internal const int LatestRateToleranceDays = 100_000;
+
     /// <summary>
-    /// Gets or sets the lookup options applied by the timeless <see cref="IRateProvider.GetRate(string, string)" />
-    /// surface, which resolves the rate for the current UTC date.
+    /// Gets or sets the lookup options the undated lookups apply against the current UTC date: the <c>GetRate</c> and
+    /// <c>GetRateAsync</c> overloads without a date when no options are passed, and the timeless
+    /// <see cref="IRateProvider.GetRate(string, string)" /> surface.
     /// </summary>
-    /// <value>The lookup options used for timeless lookups; defaults to <see cref="RateLookupOptions.Exact" />.</value>
-    public RateLookupOptions DefaultLookupOptions { get; set; } = RateLookupOptions.Exact;
+    /// <value>
+    /// The lookup options used for undated lookups; defaults to <see cref="RateLookupOptions.PreviousWithin(int)" />
+    /// with a tolerance of 100,000 days, which resolves the most recent available rate on or before the current date,
+    /// as the undated lookups of the shipped web providers do.
+    /// </value>
+    /// <remarks>
+    /// Its <see cref="RateLookupOptions.AllowInverse" /> setting also decides whether a range request may be served
+    /// from the inverse pair's cached coverage.
+    /// </remarks>
+    public RateLookupOptions DefaultLookupOptions { get; set; } = RateLookupOptions.PreviousWithin(LatestRateToleranceDays);
 
     /// <summary>
     /// Resolves the caching duration for a provider, returning its specific override when present and the default
@@ -218,9 +231,10 @@ public sealed class CachingRateOptions
     /// </summary>
     /// <exception cref="ArgumentException">
     /// Thrown when <see cref="DefaultExpiry" /> or any <see cref="ProviderExpiry" /> entry is not strictly positive,
-    /// when <see cref="ProviderExpiry" /> or <see cref="DefaultLookupOptions" /> is <see langword="null" />, or when
-    /// any <c>Cache*LogLevel</c>, <see cref="HistoryClampLogLevel" />, or <see cref="RateProvenanceLogLevel" /> is not
-    /// a defined <see cref="LogLevel" />.
+    /// when <see cref="ExpiryJitter" /> or <see cref="RefreshAheadFraction" /> is outside <c>[0, 1)</c> or not a
+    /// number, when <see cref="ProviderExpiry" /> or <see cref="DefaultLookupOptions" /> is <see langword="null" />, or
+    /// when any <c>Cache*LogLevel</c>, <see cref="HistoryClampLogLevel" />, or <see cref="RateProvenanceLogLevel" /> is
+    /// not a defined <see cref="LogLevel" />.
     /// </exception>
     /// <remarks>
     /// This throwing form preserves the <c>ParamName</c> of the offending option, which callers rely on. The
@@ -279,8 +293,9 @@ public sealed class CachingRateOptions
     /// </param>
     /// <returns><see langword="true" /> when every invariant holds; otherwise <see langword="false" />.</returns>
     /// <remarks>
-    /// The throwing <see cref="Validate" /> method is expressed in terms of this method, and the dependency-injection
-    /// registration wires it into <c>ValidateOnStart</c> so misconfiguration fails fast at application startup.
+    /// This method checks the same invariants as the throwing <see cref="Validate" /> method, and the
+    /// dependency-injection registration wires it into <c>ValidateOnStart</c> so misconfiguration fails fast at
+    /// application startup.
     /// </remarks>
     public bool TryValidate(out string? error)
     {

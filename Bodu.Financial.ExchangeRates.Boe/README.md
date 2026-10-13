@@ -7,7 +7,7 @@ England's** daily spot exchange rates, queried from the Bank's Interactive Stati
 Database (IADB).
 
 It builds an IADB CSV query for the configured series over a date range, parses the
-response with the `Bodu.Text.Formats` RFC 4180 reader, and serves the results as
+response with the `Bodu.Text.Delimited` RFC 4180 reader, and serves the results as
 `Bodu.Financial.ExchangeRates.ExchangeRate` values through the standard `IDatedRateProvider`
 and `IRateProvider` contracts - so it composes with `Money.ConvertTo`,
 the caching and aggregating providers, and the rest of the Bodu.Financial FX stack.
@@ -31,7 +31,7 @@ RateRangeResult series =
 
 // Discover what pairs the loaded data supports.
 foreach (BoeSeriesInfo info in provider.GetAvailablePairs())
-    Console.WriteLine($"{info.Pair.FromIsoCode}/{info.Pair.ToIsoCode} ({info.SeriesCode})");
+    Console.WriteLine($"{info.Pair.From}/{info.Pair.To} ({info.SeriesCode})");
 ```
 
 ## Behaviour
@@ -41,8 +41,8 @@ foreach (BoeSeriesInfo info in provider.GetAvailablePairs())
   (`GBP→X`) and inverse (`X→GBP`) lookups are supported; cross pairs are not.
 - **Range queries.** The IADB is queried by date range rather than by fixed file, so
   loading is range-based. `LoadRangeAsync` fetches an inclusive range; a synchronous lookup
-  that misses an unloaded date blocks to download a bounded window around it (configurable
-  via `OnDemandWindowDays`) only when `AllowSynchronousNetworkAccess` is enabled (it is
+  that misses an unloaded date blocks to download a bounded look-back window ending on it
+  (configurable via `OnDemandWindowDays`) only when `AllowSynchronousNetworkAccess` is enabled (it is
   `false` by default, so the provider serves a snapshot of already-loaded data and a
   synchronous miss does not reach the network).
 - **Caching.** Downloaded range responses are cached on disk (configurable) and refreshed
@@ -62,12 +62,12 @@ The provider is `IDisposable` and offers two construction styles:
   and timeout. Dispose the provider (for example with `using`) to release the client.
 - `new BoeRateProvider(httpClient, options, ...)` - you supply the client and own its
   lifetime; the provider never disposes a client it did not create. This is the form the
-  `*.DependencyInjection` package uses, backed by `IHttpClientFactory`.
+  package's `AddBoeExchangeRates` registration uses, backed by `IHttpClientFactory`.
 
 ## Logging
 
 The provider logs through `Microsoft.Extensions.Logging`. Pass an `ILogger` to the
-constructor, or let the `*.DependencyInjection` package wire one for you (category
+constructor, or let the package's `AddBoeExchangeRates` registration wire one for you (category
 `Bodu.Financial.ExchangeRates.BoeRateProvider`). When no logger is supplied it
 defaults to `NullLogger.Instance`, so logging is entirely opt-in and free when unused.
 

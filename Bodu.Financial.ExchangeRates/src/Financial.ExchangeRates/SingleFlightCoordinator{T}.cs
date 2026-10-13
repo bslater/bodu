@@ -53,7 +53,7 @@ public sealed class SingleFlightCoordinator<TKey>
     /// </param>
     /// <returns>A task that completes when the operation for <paramref name="key" /> completes.</returns>
     /// <exception cref="ArgumentNullException">
-    /// Thrown when <paramref name="operation" /> is <see langword="null" />.
+    /// Thrown when <paramref name="key" /> or <paramref name="operation" /> is <see langword="null" />.
     /// </exception>
     public Task RunAsync(TKey key, Func<Task> operation)
     {
@@ -75,7 +75,7 @@ public sealed class SingleFlightCoordinator<TKey>
     /// <param name="cancellationToken">A token that abandons this caller's wait on the shared result.</param>
     /// <returns>A task that completes when the operation for <paramref name="key" /> completes.</returns>
     /// <exception cref="ArgumentNullException">
-    /// Thrown when <paramref name="operation" /> is <see langword="null" />.
+    /// Thrown when <paramref name="key" /> or <paramref name="operation" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="OperationCanceledException">
     /// Thrown when <paramref name="cancellationToken" /> is signalled before the shared operation completes; the shared
@@ -99,7 +99,7 @@ public sealed class SingleFlightCoordinator<TKey>
     /// </param>
     /// <returns>A task that yields the result of the operation for <paramref name="key" />.</returns>
     /// <exception cref="ArgumentNullException">
-    /// Thrown when <paramref name="operation" /> is <see langword="null" />.
+    /// Thrown when <paramref name="key" /> or <paramref name="operation" /> is <see langword="null" />.
     /// </exception>
     public Task<TResult> RunAsync<TResult>(TKey key, Func<Task<TResult>> operation)
     {
@@ -122,7 +122,7 @@ public sealed class SingleFlightCoordinator<TKey>
     /// <param name="cancellationToken">A token that abandons this caller's wait on the shared result.</param>
     /// <returns>A task that yields the result of the operation for <paramref name="key" />.</returns>
     /// <exception cref="ArgumentNullException">
-    /// Thrown when <paramref name="operation" /> is <see langword="null" />.
+    /// Thrown when <paramref name="key" /> or <paramref name="operation" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="OperationCanceledException">
     /// Thrown when <paramref name="cancellationToken" /> is signalled before the shared operation completes; the shared

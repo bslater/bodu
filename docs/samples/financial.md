@@ -25,10 +25,11 @@ The core value types, offline with in-code data only. Covers the three-tier roun
 (<xref:Bodu.Financial.Money`1> per step, <xref:Bodu.Financial.CalculatedMoney> deferred,
 `Fraction<BigInteger>` exact via `MultiplyExact`), the typed↔runtime bridges (`As<T>`,
 `TryAs<T>`, casts), sum-preserving allocation and cash rounding, the format-specifier
-vocabulary and <xref:Bodu.Financial.MoneyFormatterBuilder>, the four
-<xref:Bodu.Financial.MoneyParseMode> levels, <xref:Bodu.Financial.MoneyBag> ledgers with
-`ConvertToWithAudit`, and the three <xref:Bodu.Financial.Serialization.Json.FinancialJsonPolicy>
-shapes. *Packages: `Bodu.Financial`.*
+vocabulary and <xref:Bodu.Financial.MoneyFormatterBuilder>, strict ISO parsing and the
+`RoundTripOnly` and `LenientImport` <xref:Bodu.Financial.MoneyParseMode> levels,
+<xref:Bodu.Financial.MoneyBag> ledgers with `ConvertToWithAudit`, and the three
+<xref:Bodu.Financial.Serialization.Json.FinancialJsonPolicy> shapes. *Packages: `Bodu.Financial`,
+`Bodu.Financial.Serialization.Json`.*
 
 ### Bodu.Financial.Samples.OfflineRates
 
@@ -103,7 +104,7 @@ the in-repo `Bodu.Financial.ExchangeRates.Testing` project, which is not publish
 
 The one sample that goes **online** (and is therefore excluded from the CI samples run): it
 fetches real published rates from a live web provider for a computed historical date - the most
-recent Wednesday at least five days old, with a `PreviousWithin(5)` tolerance so a published
+recent Wednesday more than five days old, with a `PreviousWithin(5)` tolerance so a published
 fixing is near-certain - plus that date's trailing week as a single range read. The ECB feed is
 active by default; RBA, BoE, Yahoo, OFX, OANDA, XE, Fixer, exchangerate.host, FRED, and IMF are
 comment-switchable blocks (the API-key sources need a key set), and every

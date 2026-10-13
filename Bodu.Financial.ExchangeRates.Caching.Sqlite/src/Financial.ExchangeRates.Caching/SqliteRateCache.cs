@@ -177,10 +177,11 @@ public sealed class SqliteRateCache
     /// <param name="provider">The provider the cache stores rates for.</param>
     /// <param name="databaseFilePath">The path to the SQLite database file used by the cache.</param>
     /// <exception cref="ArgumentNullException">
-    /// Thrown when <paramref name="provider" /> or <paramref name="databaseFilePath" /> is <see langword="null" />.
+    /// Thrown when <paramref name="provider" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="ArgumentException">
-    /// Thrown when <paramref name="provider" /> or <paramref name="databaseFilePath" /> is empty or white space.
+    /// Thrown when <paramref name="provider" /> is empty or white space, or when <paramref name="databaseFilePath" />
+    /// is <see langword="null" />, empty, or white space.
     /// </exception>
     public SqliteRateCache(string provider, string databaseFilePath)
         : this(new SqliteRateCacheOptions { Provider = provider, DatabaseFilePath = databaseFilePath })

@@ -29,6 +29,7 @@ The direct route is `Money.FromExplicitScale`, which stores the supplied scale w
 
 ```csharp
 using Bodu.Financial;
+using Bodu.Financial.Currencies;
 
 Money price = Money.FromExplicitScale(145.678912m, CurrencyCode.USD, 6);
 
@@ -66,9 +67,11 @@ The rules for how scales interact follow the established prior art (`decimal` it
   scale 6; the scale is not part of the identity or hash. Compare `MinorUnits` explicitly when the
   precision itself matters. (This is the `decimal` convention, deliberately unlike Java's
   scale-sensitive `BigDecimal.equals`.)
-- **Text round-trip is scale-faithful.** `Money.Parse` reconstructs a finer-than-registry scale from
-  the printed fractional digits, so `Money.Parse(value.ToString("R"))` restores the same amount,
-  currency, *and* scale.
+- **Text round-trip is scale-faithful above the registry precision.** `Money.Parse` reconstructs a
+  finer-than-registry scale from the printed fractional digits, so
+  `Money.Parse(value.ToString("R"), CultureInfo.InvariantCulture)` (or `Money.Parse` with
+  `MoneyParseMode.RoundTripOnly`) restores the same amount, currency, and any scale finer than the
+  registered minor units. A coarser explicit scale comes back at the registry precision.
 - **Changing a value's scale is explicit.** `Rescale(minorUnits, rounding)` re-expresses a value at
   a new scale - coarser rounds (a one-value settlement), finer pads losslessly - and `TrimScale()`
   drops trailing-zero precision down to (never below) the registered minor units. These are the

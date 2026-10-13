@@ -24,7 +24,7 @@ namespace Bodu.Financial.ExchangeRates;
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
-/// using Bodu.Financial;
+/// using Bodu.Financial.ExchangeRates;
 ///
 /// // Require an exact-date hit (the default safe behaviour).
 /// var exact = RateLookupOptions.Exact;

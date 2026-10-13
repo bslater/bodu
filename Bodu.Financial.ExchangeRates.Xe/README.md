@@ -2,6 +2,10 @@
 
 > **API stability - Experimental.** The public API surface and behaviour are still evolving and may change or be removed without a major-version bump.
 
+> **Not published to nuget.org.** This package is withheld from nuget.org on purpose (see the
+> [package matrix](https://github.com/bslater/bodu/blob/master/docs/docs/package-matrix.md#not-published-to-nugetorg));
+> build it from a clone to use it.
+
 A [Bodu.Financial](../Bodu.Financial) exchange-rate provider backed by the **XE.com**
 charting-rates JSON service.
 
@@ -63,8 +67,8 @@ or endorsement by XE.
   XE site applies. When the returned window has sub-daily granularity, the last point of
   each calendar day is the one retained.
 - **Loading.** Call `LoadPairAsync` to warm the in-memory store. A synchronous lookup that
-  misses an un-fetched pair will block to fetch a window around the requested date only
-  when `AllowSynchronousNetworkAccess` is enabled (it is `false` by default).
+  misses an un-fetched pair will block to fetch the look-back window ending on the requested
+  date only when `AllowSynchronousNetworkAccess` is enabled (it is `false` by default).
 - **No provider-local disk cache.** The provider keeps only an in-memory store of the pairs
   and windows it has fetched this session. For durable caching across processes, compose it
   with the generic caching provider - `AddCachedRateProvider<…>` from the
@@ -80,7 +84,7 @@ The provider is `IDisposable` and offers two construction styles:
   client.
 - `new XeRateProvider(httpClient, options, ...)` - you supply the client and own its
   lifetime; the provider never disposes a client it did not create. This is the form the
-  `*.DependencyInjection` package uses, backed by `IHttpClientFactory`.
+  package's `AddXeExchangeRates` registration uses, backed by `IHttpClientFactory`.
 
 ## Endpoint configuration
 
@@ -95,7 +99,7 @@ The provider is `IDisposable` and offers two construction styles:
 | `UserAgent` | browser-like | XE rejects requests without a recognizable user agent. |
 | `HttpTimeout` | 30 s | Applied to the `HttpClient` the provider creates, or by the DI registration. |
 | `AllowSynchronousNetworkAccess` | `false` | Opt in to blocking on-demand fetches from synchronous lookups. |
-| `DefaultLookback` | 7 days | The window fetched around a date for on-demand and latest-rate lookups. |
+| `DefaultLookback` | 7 days | The look-back window, ending on the requested date, fetched for on-demand and latest-rate lookups. |
 | `CurrencyAliases` | empty | Maps ISO codes to XE currency codes where they differ. |
 
 ## Dependency injection
@@ -107,7 +111,7 @@ package.
 ## Logging
 
 The provider logs through `Microsoft.Extensions.Logging`. Pass an `ILogger` to the
-constructor, or let the `*.DependencyInjection` package wire one for you (category
+constructor, or let the package's `AddXeExchangeRates` registration wire one for you (category
 `Bodu.Financial.ExchangeRates.XeRateProvider`). When no logger is supplied it
 defaults to `NullLogger.Instance`, so logging is entirely opt-in and free when unused.
 

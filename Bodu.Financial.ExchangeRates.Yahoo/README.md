@@ -30,7 +30,7 @@ RateRangeResult series =
     await provider.GetRatesAsync("AUD", "JPY", new DateOnly(2026, 1, 1), new DateOnly(2026, 6, 12));
 
 // The latest available spot rate.
-decimal latest = provider.GetRate("EUR", "GBP");
+decimal latest = provider.GetRate("EUR", "GBP").Rate.Rate;
 ```
 
 ## Behaviour
@@ -42,8 +42,8 @@ decimal latest = provider.GetRate("EUR", "GBP");
 - **Daily bars.** The chart interval is fixed at one day; the date range is supplied
   per call through `LoadPairAsync` / `GetRatesAsync`.
 - **Loading.** Call `LoadPairAsync` to warm the in-memory store. A synchronous lookup
-  that misses an un-fetched pair will block to fetch a window around the requested date
-  only when `AllowSynchronousNetworkAccess` is enabled (it is `false` by default, so the
+  that misses an un-fetched pair will block to fetch the look-back window ending on the
+  requested date only when `AllowSynchronousNetworkAccess` is enabled (it is `false` by default, so the
   provider serves a snapshot of already-loaded data and a synchronous miss does not reach
   the network).
 - **No provider-local disk cache.** The Yahoo provider fetches over HTTP and keeps only an
@@ -62,7 +62,7 @@ The provider is `IDisposable` and offers two construction styles:
   agent and timeout. Dispose the provider (for example with `using`) to release the client.
 - `new YahooRateProvider(httpClient, options, ...)` - you supply the client and own its
   lifetime; the provider never disposes a client it did not create. This is the form the
-  `*.DependencyInjection` package uses, backed by `IHttpClientFactory`.
+  package's `AddYahooExchangeRates` registration uses, backed by `IHttpClientFactory`.
 
 ## Endpoint configuration
 
@@ -76,7 +76,7 @@ The provider is `IDisposable` and offers two construction styles:
 | `UserAgent` | browser-like | Yahoo rejects requests without a recognizable user agent. |
 | `HttpTimeout` | 30 s | Applied to the `HttpClient` the provider creates from these options, or by the DI registration when you supply your own client. |
 | `AllowSynchronousNetworkAccess` | `false` | Opt in to blocking on-demand fetches from synchronous lookups. |
-| `DefaultLookback` | 7 days | The window fetched around a date for on-demand and latest-rate lookups. |
+| `DefaultLookback` | 7 days | The look-back window, ending on the requested date, fetched for on-demand and latest-rate lookups. |
 | `CurrencyAliases` | empty | Maps ISO codes to Yahoo symbol components where they differ. |
 
 The Yahoo provider has no `EnableDiskCache` / `CacheDirectory` / `CacheExpiry` options: it
@@ -93,7 +93,7 @@ package.
 ## Logging
 
 The provider logs through `Microsoft.Extensions.Logging`. Pass an `ILogger` to the
-constructor, or let the `*.DependencyInjection` package wire one for you (category
+constructor, or let the package's `AddYahooExchangeRates` registration wire one for you (category
 `Bodu.Financial.ExchangeRates.YahooRateProvider`). When no logger is supplied
 it defaults to `NullLogger.Instance`, so logging is entirely opt-in and free when unused.
 

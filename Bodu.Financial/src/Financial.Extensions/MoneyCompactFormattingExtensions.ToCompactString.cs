@@ -31,7 +31,8 @@ public static partial class MoneyCompactFormattingExtensions
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="precision" /> is negative.</exception>
     /// <exception cref="FormatException">
     /// Thrown when <paramref name="format" /> is not a supported specifier, or when it is <c>R</c> (which cannot be
-    /// combined with compact notation).
+    /// combined with compact notation), or when <paramref name="precision" /> is greater than 28 and the amount is at
+    /// least one thousand in magnitude.
     /// </exception>
     public static string ToCompactString<TCurrency>(
         this Money<TCurrency> money,
@@ -68,7 +69,8 @@ public static partial class MoneyCompactFormattingExtensions
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="precision" /> is negative.</exception>
     /// <exception cref="FormatException">
     /// Thrown when <paramref name="format" /> is not a supported specifier, or when it is <c>R</c> (which cannot be
-    /// combined with compact notation).
+    /// combined with compact notation), or when <paramref name="precision" /> is greater than 28 and the amount is at
+    /// least one thousand in magnitude.
     /// </exception>
     public static string ToCompactString(
         this Money money,

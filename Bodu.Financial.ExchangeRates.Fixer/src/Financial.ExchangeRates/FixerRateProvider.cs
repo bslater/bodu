@@ -25,7 +25,8 @@ namespace Bodu.Financial.ExchangeRates;
 /// <strong>Plan limits.</strong> Fixer's free plan is locked to a EUR base and to the latest and single-date endpoints;
 /// changing the base currency and the time-series endpoint require a paid plan. A request the account's plan does not
 /// permit surfaces as a fetch failure rather than being pre-empted, so a caller on the free plan should request pairs
-/// whose source currency is EUR (or map non-EUR sources through the inverse-lookup fallback).
+/// whose source currency is EUR. A request for the reverse pair sends that pair's own source currency as the base, so
+/// to read <c>USD/EUR</c> warm <c>EUR/USD</c> first; its reverse then resolves by inversion from the loaded series.
 /// </para>
 /// <para>
 /// <strong>HttpClient ownership.</strong> The constructor that takes only options builds and owns an
@@ -168,15 +169,16 @@ public sealed class FixerRateProvider
     }
 
     /// <summary>
-    /// Builds the <see cref="HttpClient" /> this provider owns, configured with the options' user agent and timeout.
+    /// Builds the <see cref="HttpClient" /> this provider owns, configured with the options' user agent, timeout, and
+    /// response buffer cap.
     /// </summary>
     /// <param name="options">The provider options.</param>
     /// <returns>A new, configured client owned by the provider.</returns>
-    private static HttpClient CreateOwnedClient(FixerRateProviderOptions options)
+    internal static HttpClient CreateOwnedClient(FixerRateProviderOptions options)
     {
         ThrowHelper.ThrowIfNull(options);
         options.Validate();
 
-        return RateProviderHttpClientFactory.Create(options.UserAgent, options.HttpTimeout);
+        return RateProviderHttpClientFactory.Create(options.UserAgent, options.HttpTimeout, options.MaxResponseContentBufferSize);
     }
 }

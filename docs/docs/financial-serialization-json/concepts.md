@@ -10,7 +10,7 @@ Part of the **[Numerics & Financial](../topics/numerics-and-financial.md)** topi
 
 ## Serialization-agnostic core
 
-`Bodu.Financial` carries no `[JsonConverter]` attribute and no reference to `System.Text.Json`; this package supplies both. The consequence worth remembering: **registration is required**. Serializing a `Money<USD>` with a `JsonSerializerOptions` that has not had `AddFinancialJsonConverters` called on it does not throw - `JsonSerializer` falls back to its reflection-based object shape, which does not round-trip. Configure the options before first use; once an options instance has been used, its `Converters` collection is read-only and `AddFinancialJsonConverters` throws `InvalidOperationException`.
+`Bodu.Financial` carries no `[JsonConverter]` attribute and no reference to `System.Text.Json`; this package supplies both. The consequence worth remembering: **registration is required**. Serializing a `Money<USD>` with a `JsonSerializerOptions` that has not had `AddFinancialJsonConverters` called on it does not throw - `JsonSerializer` falls back to its reflection-based object shape, which does not round-trip: reading it back yields a zero `Money<USD>` or a currency-less `Money`, and a `MoneyBag` cannot be deserialized at all. Configure the options before first use; once an options instance has been used, its `Converters` collection is read-only and `AddFinancialJsonConverters` throws `InvalidOperationException`.
 
 ## Policy
 
@@ -18,7 +18,7 @@ A <xref:Bodu.Financial.Serialization.Json.FinancialJsonPolicy> is passed once - 
 
 | Policy | Writes | Reads |
 |---|---|---|
-| `Strict` (`0`, default) | The canonical object shapes. | The canonical shapes only. Property names compare case-insensitively; duplicate properties are rejected; unknown properties are ignored; `Money<TCurrency>` requires `currency == TCurrency.IsoCode`. |
+| `Strict` (`0`, default) | The canonical object shapes. | The canonical shapes, plus the compact `pair` shape for an `ExchangeRate`. Property names compare case-insensitively; duplicate properties are rejected; unknown properties are ignored; `Money<TCurrency>` requires `currency == TCurrency.IsoCode`. |
 | `Lenient` (`1`) | Exactly what `Strict` writes. | Everything `Strict` reads, after normalizing lowercase ISO codes to uppercase and trimming surrounding whitespace. |
 | `Compact` (`2`) | The single-string and flat forms. | The compact forms; money strings in either `"19.99 USD"` or `"USD 19.99"` arrangement; an `ExchangeRate` in either the compact or the canonical object shape. |
 
@@ -62,8 +62,8 @@ A <xref:Bodu.Financial.Money> can carry an **explicit minor-unit scale** that di
 A <xref:Bodu.Financial.MoneyBag> is a wrapped ISO-keyed map under `Strict` / `Lenient` and a flat map under `Compact`:
 
 ```json
-{ "balances": { "EUR": 50.00, "USD": 100.00 } }
-{ "EUR": 50.00, "USD": 100.00 }
+{ "balances": { "EUR": 50, "USD": 100 } }
+{ "EUR": 50, "USD": 100 }
 ```
 
 Balances are written in lexicographic ISO order and may be read as numbers or numeric strings. Because the bag prunes zero balances on every operation, a bag deserializes to its canonical form - a `"JPY": 0` entry on the wire does not survive the round trip.
@@ -94,12 +94,12 @@ Every malformed payload surfaces as `JsonException`; the converters never coerce
 |---|---|
 | A token that is not an object under `Strict` / `Lenient`, or not a string under `Compact` | `JsonException` naming the expected form. |
 | Missing `amount` or `currency`; a missing required `ExchangeRate` property | `JsonException` naming the missing property. |
-| Duplicate `amount`, `currency`, `scale`, or any `ExchangeRate` property | `JsonException` - duplicates are rejected. |
+| Duplicate `amount`, `currency`, `scale`, or any `ExchangeRate` property; a repeated `balances` property or a currency named twice in it (`Strict` / `Lenient`) | `JsonException` - duplicates are rejected. |
 | `amount` that is neither a number nor a numeric string; `currency` that is not a string | `JsonException` reporting the type mismatch. |
 | `currency` that does not match `TCurrency.IsoCode` on `Money<TCurrency>` | `JsonException` - currency mismatch. |
 | A code that is not three uppercase letters, or is not in the shipped ISO 4217 catalogue (`Money`, `CalculatedMoney`, `MoneyBag`) | `JsonException` - unknown currency rejected. |
 | `scale` that is not an integer, or outside `0`-`28` | `JsonException`. |
-| A compact string `TryParse` rejects (`"19.99"`, `"USD/"`) | `JsonException` carrying the offending text. |
+| A compact string `TryParse` rejects (`"USD/"`, or a bare `"19.99"` for `Money` and `CalculatedMoney`; `Money<TCurrency>` accepts a bare amount) | `JsonException` carrying the offending text. |
 | `balances` that is not an object; a balance that is neither a number nor a numeric string | `JsonException`. |
 | A truncated document | `JsonException` - unexpected end. |
 

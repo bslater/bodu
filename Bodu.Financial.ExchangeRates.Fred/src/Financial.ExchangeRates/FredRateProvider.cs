@@ -23,8 +23,9 @@ namespace Bodu.Financial.ExchangeRates;
 /// </para>
 /// <para>
 /// <strong>Per-series mapping.</strong> FRED publishes each foreign-exchange rate as an independent time series quoted
-/// in a fixed direction. A pair with no mapped series yields no data rather than a fetch; the reverse of a mapped pair
-/// is served by the base class's inverse-lookup fallback. Add mappings through
+/// in a fixed direction. A pair with no mapped series yields no data rather than a fetch. The reverse of a mapped pair
+/// resolves by inverting the mapped series only once that series is loaded: a request for the reverse pair is itself
+/// unmapped and fetches nothing, so warm the quoted direction first. Add mappings through
 /// <see cref="FredRateProviderOptions.SeriesMap" /> to support additional pairs.
 /// </para>
 /// <para>
@@ -168,15 +169,16 @@ public sealed class FredRateProvider
     }
 
     /// <summary>
-    /// Builds the <see cref="HttpClient" /> this provider owns, configured with the options' user agent and timeout.
+    /// Builds the <see cref="HttpClient" /> this provider owns, configured with the options' user agent, timeout, and
+    /// response buffer cap.
     /// </summary>
     /// <param name="options">The provider options.</param>
     /// <returns>A new, configured client owned by the provider.</returns>
-    private static HttpClient CreateOwnedClient(FredRateProviderOptions options)
+    internal static HttpClient CreateOwnedClient(FredRateProviderOptions options)
     {
         ThrowHelper.ThrowIfNull(options);
         options.Validate();
 
-        return RateProviderHttpClientFactory.Create(options.UserAgent, options.HttpTimeout);
+        return RateProviderHttpClientFactory.Create(options.UserAgent, options.HttpTimeout, options.MaxResponseContentBufferSize);
     }
 }

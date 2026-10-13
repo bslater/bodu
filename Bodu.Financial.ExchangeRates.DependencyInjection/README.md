@@ -25,20 +25,36 @@ subclass as a singleton, exposed as both `IDatedRateProvider` and
 A provider package's public `Add…` method is a thin call through to this:
 
 ```csharp
+using Bodu.Financial;
 using Bodu.Financial.ExchangeRates;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Http.Resilience;
+using Microsoft.Extensions.Logging;
 
 // Inside a provider package's own extension:
 public static IFinancialServiceBuilder AddAcmeExchangeRates(
     this IFinancialServiceBuilder builder,
-    IConfiguration configuration,
+    IConfiguration? configuration = null,
     string sectionName = "Financial:Acme",
-    Action<AcmeRateProviderOptions>? configure = null) =>
+    Action<AcmeRateProviderOptions>? configure = null,
+    Action<HttpStandardResilienceOptions>? configureResilience = null) =>
     builder.AddWebRateProvider<AcmeRateProvider, AcmeRateProviderOptions>(
-        configuration, sectionName, configure);
+        "Acme.Rates",                                   // the named HttpClient
+        configuration,                                  // optional; binds sectionName when supplied
+        sectionName,
+        "Acme exchange-rate options are invalid.",      // the ValidateOnStart message
+        configure,                                      // applied after binding
+        configureResilience,
+        static (client, options, loggerFactory, timeProvider) =>
+            new AcmeRateProvider(client, options, loggerFactory?.CreateLogger<AcmeRateProvider>(), timeProvider));
 ```
 
-Both an `IConfiguration`-bound overload and a code-only `Action<TOptions>` overload are
-provided, so a provider can be registered from configuration or configured inline.
+There are two overloads, and both take the client name, an optional configuration, the
+section name, the validation message, the `configure` and `configureResilience` callbacks,
+and the provider factory. The short overload above serves an options type derived from
+`WebRateProviderOptions`, reading its validation, user agent, and timeout itself; the full
+overload adds explicit `validateOptions`, `getUserAgent`, and `getHttpTimeout` selectors for
+an options type that does not derive from it.
 
 Consumers do not usually reference this package directly - they add a concrete provider
 package (which brings this one transitively) and call its `Add…` method.

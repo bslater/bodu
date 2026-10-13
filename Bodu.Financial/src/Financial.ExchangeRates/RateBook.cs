@@ -27,7 +27,8 @@ namespace Bodu.Financial.ExchangeRates;
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
-/// using Bodu.Financial;
+/// using Bodu.Financial.Currencies;
+/// using Bodu.Financial.ExchangeRates;
 ///
 /// var series = new RateSeries(
 ///     new CurrencyPair(CurrencyCode.USD, CurrencyCode.EUR),
@@ -126,7 +127,10 @@ public sealed class RateBook
     /// </summary>
     /// <param name="pair">The currency pair to filter by.</param>
     /// <returns>A lazy sequence of <see cref="RateSeries" /> instances ordered by their hash slot.</returns>
-    /// <exception cref="ArgumentException">Thrown if <paramref name="pair" /> is invalid.</exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when the sequence is first enumerated, not when this method is called, if <paramref name="pair" /> is the
+    /// default-struct value (its <see cref="CurrencyPair.IsValid" /> property is <see langword="false" />).
+    /// </exception>
     public IEnumerable<RateSeries> GetSeries(CurrencyPair pair)
     {
         FinancialThrowHelper.ThrowIfInvalidCurrencyPair(pair);

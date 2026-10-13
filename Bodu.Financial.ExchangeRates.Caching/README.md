@@ -29,10 +29,11 @@ AggregatingRateProvider     ── groups named children; routes per FX pair and
 
 `CachingRateProvider` wraps exactly **one** inner `IDatedRateProvider`
 over **one** single-provider `IRateCache`. On a lookup it first tries the cache's
-fresh rows (reusing `FixedDatedRateProvider` for date-resolution, inverse, and
-identity handling) and, on a miss, delegates to the inner provider and stores what it
+fresh rows (resolving them directly under the same date-resolution, inverse, and
+identity rules as `FixedDatedRateProvider`) and, on a miss, delegates to the inner provider and stores what it
 returns. It also exposes the timeless `IRateProvider.GetRate(from, to)`, which
-resolves the current UTC date under `CachingRateOptions.DefaultLookupOptions`.
+resolves the current UTC date under `CachingRateOptions.DefaultLookupOptions` (by default the
+most recent rate on or before that date, as the undated lookups do).
 
 The cache is bound to a single provider, so its surface carries no provider argument:
 
@@ -51,9 +52,9 @@ The cache is bound to a single provider, so its surface carries no provider argu
 | `CachingRateProvider` | Read-through caching decorator over one source + one cache. |
 | `CachingRateOptions` | Cache location, default + per-provider expiry, log levels, timeless lookup options. |
 
-Craft your own storage by implementing `IRateCache`, extending
-`RateCacheBase<TOptions>` (storage-agnostic), or extending
-`FileRateCacheBase<TOptions>` (a new file format).
+Craft your own storage by implementing `IRateCache` and delegating the freshness and
+merge rules to `RateCacheRules`. `RateCacheBase<TOptions>` and `FileRateCacheBase<TOptions>`
+keep their storage seams internal, so they cannot be derived outside this package.
 
 ### File layout and date partitioning
 
@@ -117,14 +118,14 @@ IDatedRateProvider provider = new AggregatingRateProvider(
     agg);
 ```
 
-For dependency-injection wiring, see
-`Bodu.Financial.ExchangeRates.Caching.DependencyInjection`.
+For dependency-injection wiring, use this package's own `AddCachedRateProvider` and
+`AddAggregatedRateProvider` registrations (in the `Bodu.Financial.ExchangeRates` namespace).
 
 ## Logging
 
 Both the caching decorator and the aggregator log through `Microsoft.Extensions.Logging`.
-Pass an `ILogger` to the constructor, or let the `*.DependencyInjection` package wire one
-for you. When no logger is supplied it defaults to `NullLogger.Instance`, so logging is
+Pass an `ILogger` to the constructor, or let the `AddCachedRateProvider` /
+`AddAggregatedRateProvider` registrations wire one for you. When no logger is supplied it defaults to `NullLogger.Instance`, so logging is
 entirely opt-in and free when unused.
 
 Single-date lookups happen on the read hot path, so their hit/miss diagnostics default to

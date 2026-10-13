@@ -82,7 +82,7 @@ The contracts and value objects a provider implements ship in the core `Bodu.Fin
 
 ## The provider family
 
-Each per-source package ships its provider, its options type, and its own `Add<Source>ExchangeRates` DI registration; there is no per-provider `*.DependencyInjection` package. Status is as stated in the [package matrix](../package-matrix.md).
+Each per-source package ships its provider, its options type, and its own `Add<Source>ExchangeRates` DI registration; there is no per-provider `*.DependencyInjection` package. Status is as stated in the [package matrix](../package-matrix.md); the XE and OANDA packages are [not published to nuget.org](../package-matrix.md#not-published-to-nugetorg), so build them from a clone.
 
 | Package | Feed | Coverage | API key | Base class | Status | DI registration |
 |---|---|---|---|---|---|---|
@@ -92,13 +92,13 @@ Each per-source package ships its provider, its options type, and its own `Add<S
 | `Bodu.Financial.ExchangeRates.Imf` | IMF Representative Exchange Rates TSV | USD base, daily, monthly report | No | `WebRateProvider` (bulk) | Preview | `AddImfExchangeRates` |
 | `Bodu.Financial.ExchangeRates.Yahoo` | Yahoo Finance v8 chart JSON | Any pair | No | `PairWebRateProvider<TSeries>` | Preview | `AddYahooExchangeRates` |
 | `Bodu.Financial.ExchangeRates.Ofx` | OFX spot-rate-history JSON | Any pair | No | `PairWebRateProvider<TSeries>` | Preview | `AddOfxExchangeRates` |
-| `Bodu.Financial.ExchangeRates.Xe` | XE.com charting-rates JSON | Any pair | No (token scraped) | `PairWebRateProvider<TSeries>` | Experimental | `AddXeExchangeRates` |
-| `Bodu.Financial.ExchangeRates.Oanda` | OANDA Historical Currency Converter JSON | Any pair, rolling ~180 days | No | `PairWebRateProvider<TSeries>` | Preview | `AddOandaExchangeRates` |
+| `Bodu.Financial.ExchangeRates.Xe` | XE.com charting-rates JSON | Any pair | No (token scraped) | `PairWebRateProvider<TSeries>` | Experimental (not on nuget.org) | `AddXeExchangeRates` |
+| `Bodu.Financial.ExchangeRates.Oanda` | OANDA Historical Currency Converter JSON | Any pair, rolling ~180 days | No | `PairWebRateProvider<TSeries>` | Preview (not on nuget.org) | `AddOandaExchangeRates` |
 | `Bodu.Financial.ExchangeRates.Fixer` | fixer.io time-series / single-date JSON | Any pair the plan allows | `access_key` | `PairWebRateProvider<TSeries>` | Preview | `AddFixerExchangeRates` |
 | `Bodu.Financial.ExchangeRates.ExchangeRateHost` | exchangerate.host time-series / single-date JSON | Any pair | `access_key` | `PairWebRateProvider<TSeries>` | Preview | `AddExchangeRateHostExchangeRates` |
 | `Bodu.Financial.ExchangeRates.Fred` | St. Louis Fed FRED `series/observations` JSON | Mapped pairs via `SeriesMap` | `api_key` | `PairWebRateProvider<TSeries>` | Preview | `AddFredExchangeRates` |
 
-The shared **`Bodu.Financial.ExchangeRates.DependencyInjection`** package (Stable) supplies <xref:Bodu.Financial.ExchangeRates.WebRateProviderExtensions> - the generic `AddWebRateProvider<TProvider, TOptions>` on <xref:Bodu.Financial.IFinancialServiceBuilder> that every `Add<Source>ExchangeRates` delegates to. It binds and validates the options (`ValidateOnStart`), registers a named `HttpClient` fitted with the standard Polly resilience handler, constructs the provider as a singleton, and exposes it as both `IDatedRateProvider` and `IRateProvider`. Consumers do not normally call it directly; it is the seam for [writing your own web provider](../../guides/financial/testing-providers.md).
+The shared **`Bodu.Financial.ExchangeRates.DependencyInjection`** package (Stable) supplies <xref:Bodu.Financial.ExchangeRates.WebRateProviderExtensions> - the generic `AddWebRateProvider<TProvider, TOptions>` on <xref:Bodu.Financial.IFinancialServiceBuilder> that every `Add<Source>ExchangeRates` delegates to. It binds and validates the options (`ValidateOnStart`), registers a named `HttpClient` fitted with the standard Polly resilience handler, constructs the provider as a singleton, and exposes it as both `IDatedRateProvider` and `IRateProvider`. Consumers do not normally call it directly; it is the seam for [writing your own web provider](../../guides/financial/custom-web-provider.md).
 
 ## Which provider?
 

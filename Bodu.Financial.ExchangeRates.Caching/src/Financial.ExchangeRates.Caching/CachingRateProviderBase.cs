@@ -20,8 +20,9 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// <remarks>
 /// <para>
 /// The provider implements the same <see cref="IDatedRateProvider" /> contract the caller resolves, so it can be
-/// inserted transparently, and also the timeless <see cref="IRateProvider" /> surface, which resolves the current UTC
-/// date under <see cref="CachingRateOptions.DefaultLookupOptions" />. The cache's <see cref="IRateCache.Provider" />
+/// inserted transparently, and also the timeless <see cref="IRateProvider" /> surface. The timeless surface and the
+/// undated lookups resolve the current UTC date under <see cref="CachingRateOptions.DefaultLookupOptions" />, which by
+/// default selects the most recent available rate on or before it. The cache's <see cref="IRateCache.Provider" />
 /// identifies the source: it selects the caching duration from <see cref="CachingRateOptions.ProviderExpiry" />
 /// (falling back to <see cref="CachingRateOptions.DefaultExpiry" />) and tags both cached rows and log messages.
 /// </para>
@@ -496,7 +497,7 @@ public abstract partial class CachingRateProviderBase
 
     /// <summary>
     /// Attempts to resolve a single-date request from the fresh cached rows (and their inverse, when inversion is
-    /// permitted) by delegating to a <see cref="FixedDatedRateProvider" /> built from them.
+    /// permitted) directly, under the same resolution rules as <see cref="FixedDatedRateProvider" />.
     /// </summary>
     /// <param name="duration">The duration cached rows stay fresh.</param>
     /// <param name="fromIsoCode">The source-currency ISO code.</param>

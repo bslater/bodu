@@ -2,6 +2,10 @@
 
 > **API stability - Preview.** The public API surface is largely settled but is still being finalized ahead of the 1.0 release and may change; breaking changes can land in a minor version until then.
 
+> **Not published to nuget.org.** This package is withheld from nuget.org on purpose (see the
+> [package matrix](https://github.com/bslater/bodu/blob/master/docs/docs/package-matrix.md#not-published-to-nugetorg));
+> build it from a clone to use it.
+
 A [Bodu.Financial](../Bodu.Financial) exchange-rate provider backed by **OANDA's**
 Historical Currency Converter, queried from its anonymous JSON endpoint.
 

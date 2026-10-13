@@ -154,7 +154,7 @@ RateLookupResult lookup = provider.GetRate(
     RateLookupOptions.NearestWithin(7));
 
 Console.WriteLine($"Used {lookup.Rate.Date} from {lookup.Rate.Provider}");
-Console.WriteLine($"Offset: {lookup.OffsetDays} day(s), exact: {lookup.IsExactDate()}");
+Console.WriteLine($"Offset: {lookup.OffsetDays} day(s), exact: {lookup.IsExactDate}");
 ```
 
 The lookup result is a `readonly record struct` carrying the resolved
@@ -196,7 +196,9 @@ The runtime `Money` is closed to the shipped `CurrencyCode` set. For a
 generic amount in a unit outside ISO 4217, declare your own `ICurrency`
 tag (its `IsoCode` must be three uppercase ASCII letters) and use
 `Money<TCurrency>`; it carries its own precision and stays in the
-generic world - it cannot bridge to the runtime `Money`.
+generic world. The conversion to the runtime `Money` (`ToMoney()`, the
+implicit operator, `ToCalculated()`) compiles for such a tag but throws
+`InvalidOperationException` at run time.
 
 ```csharp
 public sealed class XPT : ICurrency      // troy ounces of platinum, say

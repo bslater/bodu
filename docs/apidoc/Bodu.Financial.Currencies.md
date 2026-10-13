@@ -33,8 +33,10 @@ Every shipped currency type follows the same shape:
 ```csharp
 public sealed class USD : ICurrency
 {
-    public static string IsoCode    => "USD";
-    public static int    MinorUnits => 2;
+    public static string IsoCode     => "USD";
+    public static int    NumericCode => 840;
+    public static int    MinorUnits  => 2;
+    public static string EnglishName => "US Dollar";
     private USD() { }
 }
 ```
@@ -45,8 +47,10 @@ Currencies with a cash-rounding convention declare the increment:
 public sealed class CHF : ICurrency
 {
     public static string  IsoCode               => "CHF";
+    public static int     NumericCode           => 756;
     public static int     MinorUnits            => 2;
     public static decimal CashRoundingIncrement => 0.05m;
+    public static string  EnglishName           => "Swiss Franc";
     private CHF() { }
 }
 ```
@@ -57,28 +61,29 @@ Historic (demonetised) currencies declare the withdrawal metadata:
 public sealed class DEM : ICurrency
 {
     public static string    IsoCode           => "DEM";
+    public static int       NumericCode       => 276;
     public static int       MinorUnits        => 2;
     public static bool      IsHistoric        => true;
     public static DateOnly? DemonetizedOn     => new DateOnly(2002, 2, 28);
     public static string?   SuccessorIsoCode  => "EUR";
+    public static string    EnglishName       => "Deutsche Mark";
     private DEM() { }
 }
 ```
 
 ## Catalogue contents
 
-The shipped catalogue covers every active ISO 4217 currency plus a curated set of historic / demonetised currencies for legacy ledger processing.
+The shipped catalogue covers the active ISO 4217 currencies, less the fund codes (such as `BOV`, `CLF`, `USN`, `UYI`) and the special-purpose codes (`XAU`, `XDR`, `XXX`, …), plus a curated set of historic / demonetised currencies for legacy ledger processing.
 
 **Active currencies (155)** - including all G20 currencies and every minor-unit category:
 
-- `MinorUnits = 0` - `JPY`, `KRW`, `CLP`, `ISK`, `VND`, `XAF`, `XOF`, `XPF`, `BIF`, `DJF`, `GNF`, `KMF`, `MGA`, `PYG`, `RWF`, `UGX`, `UYI`, `VUV`.
+- `MinorUnits = 0` - `JPY`, `KRW`, `CLP`, `ISK`, `VND`, `XAF`, `XOF`, `XPF`, `BIF`, `DJF`, `GNF`, `KMF`, `PYG`, `RWF`, `UGX`, `VUV`.
 - `MinorUnits = 2` - `USD`, `EUR`, `GBP`, `AUD`, `CAD`, `CHF`, `CNY`, `HKD`, `INR`, `MXN`, `NZD`, `SEK`, `SGD`, …
 - `MinorUnits = 3` - `BHD`, `IQD`, `JOD`, `KWD`, `LYD`, `OMR`, `TND`.
-- `MinorUnits = 4` - `CLF`, `UYW`.
 
-**Historic currencies (~30)** - the twenty Euro-zone predecessors (`ATS`, `BEF`, `CYP`, `DEM`, `EEK`, `ESP`, `FIM`, `FRF`, `GRD`, `HRK`, `IEP`, `ITL`, `LTL`, `LUF`, `LVL`, `MTL`, `NLG`, `PTE`, `SIT`, `SKK`) plus other notable replacements (`AZM`, `GHC`, `MZM`, `ROL`, `SRG`, `TMM`, `VEB`, `VEF`, `ZWL`).
+**Historic currencies (29)** - the twenty Euro-zone predecessors (`ATS`, `BEF`, `CYP`, `DEM`, `EEK`, `ESP`, `FIM`, `FRF`, `GRD`, `HRK`, `IEP`, `ITL`, `LTL`, `LUF`, `LVL`, `MTL`, `NLG`, `PTE`, `SIT`, `SKK`) plus other notable replacements (`AZM`, `GHC`, `MZM`, `ROL`, `SRG`, `TMM`, `VEB`, `VEF`, `ZWL`).
 
-**Cash rounding** - `CHF`, `AUD`, `CAD`, `NZD`, `SEK`, `NOK`, `ISK` and a handful of others declare a non-zero `CashRoundingIncrement` for physical cash totals (5-rappen / 5-cent / 10-cent / whole-krone). See [Cash rounding](~/guides/financial/money.md#cash-rounding).
+**Cash rounding** - six currencies declare a non-zero `CashRoundingIncrement` for physical cash totals: `AUD`, `CAD`, and `CHF` (`0.05`), `NZD` (`0.10`), and `NOK` and `SEK` (`1`). See [Cash rounding](~/guides/financial/money.md#cash-rounding).
 
 ## A unit outside the shipped catalogue
 
@@ -95,12 +100,12 @@ public sealed class XPT : ICurrency      // troy ounces of platinum, say
 Money<XPT> holding = new Money<XPT>(12.3456m);   // generic arithmetic only
 ```
 
-Because `XPT` is not a `CurrencyCode` member, the value cannot bridge to the runtime-tagged `Money`. To substitute or restrict the metadata used for the *shipped* currencies - for a test, or an alternate data source - install a custom `ICurrencyLookup` through <xref:Bodu.Financial.Currencies.CurrencyResolution>.
+Because `XPT` is not a `CurrencyCode` member, the value has no runtime-tagged `Money`: `ToMoney()`, `ToCalculated()`, and the implicit conversion to `Money` compile for it but throw `InvalidOperationException` at run time. To substitute or restrict the metadata used for the *shipped* currencies - for a test, or an alternate data source - install a custom `ICurrencyLookup` through <xref:Bodu.Financial.Currencies.CurrencyResolution>.
 
 ## Notes
 
 - **Sealed + private constructor.** Every tag type seals itself and hides its constructor, so the tag can only ever exist statically. `Money<USD>` is the only way to materialise a value tagged as USD.
 - **Static-abstract metadata.** All members are static via the `ICurrency` static-abstract pattern; consumers read them as `TCurrency.IsoCode` in generic code.
-- **Optional members default sensibly.** `CashRoundingIncrement`, `IsHistoric`, `DemonetizedOn`, `SuccessorIsoCode` have sensible defaults via `static virtual` so most currencies declare only `IsoCode` and `MinorUnits`.
+- **Optional members default sensibly.** `NumericCode`, `CashRoundingIncrement`, `IsHistoric`, `DemonetizedOn`, `SuccessorIsoCode`, and `EnglishName` have sensible defaults via `static virtual`, so a custom tag need declare only `IsoCode` and `MinorUnits`; the generated tags also declare `NumericCode` and `EnglishName`.
 - **ISO numeric codes.** <xref:Bodu.Financial.Currencies.CurrencyCode> is an enum whose members are the three-letter ISO 4217 alphabetic codes and whose values are the corresponding ISO 4217 numeric codes; both active and historic codes are members - each annotated with a `[CurrencyStatus]` attribute - alongside a `None` sentinel valued `0`.
 - **See also:** the [`Bodu.Financial` reference](xref:Bodu.Financial), the [`Money<TCurrency>` guide](~/guides/financial/money.md), [`CurrencyRegistry`](xref:Bodu.Financial.Currencies.CurrencyRegistry).

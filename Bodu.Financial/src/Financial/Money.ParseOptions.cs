@@ -20,7 +20,15 @@ public readonly partial struct Money
     /// <exception cref="ArgumentNullException">
     /// <paramref name="s" /> or <paramref name="options" /> is <see langword="null" />.
     /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="options" />.<see cref="MoneyParseOptions.Mode" /> is not a defined value.
+    /// </exception>
     /// <exception cref="FormatException">The input is not valid under <paramref name="options" />.</exception>
+    /// <remarks>
+    /// In every mode, text carrying more fractional digits than the currency's registered minor units parses to a value
+    /// reporting that finer scale from <see cref="MinorUnits" />, as <see cref="Parse(string, IFormatProvider?)" />
+    /// does.
+    /// </remarks>
     public static Money Parse(string s, MoneyParseOptions options)
     {
         ThrowHelper.ThrowIfNull(s);
@@ -52,8 +60,11 @@ public readonly partial struct Money
 
         result = default;
 
-        IFormatProvider provider = options.FormatProvider
-            ?? (options.Mode == MoneyParseMode.RoundTripOnly ? CultureInfo.InvariantCulture : CultureInfo.CurrentCulture);
+        // The round-trip form is exact: no trimming, no culture, and only the shape the "R" specifier writes.
+        if (options.Mode == MoneyParseMode.RoundTripOnly)
+            return TryParseRoundTrip(s, out result);
+
+        IFormatProvider provider = options.FormatProvider ?? CultureInfo.CurrentCulture;
 
         ReadOnlySpan<char> trimmed = s.Trim();
         if (trimmed.IsEmpty)
@@ -77,6 +88,56 @@ public readonly partial struct Money
         }
 
         return false;
+    }
+
+    /// <summary>
+    /// Parses the invariant round-trip form written by the <c>"R"</c> format specifier: an uppercase ISO code, one
+    /// space, and an amount in invariant fixed-point notation, with nothing before or after.
+    /// </summary>
+    /// <param name="s">The untrimmed input span.</param>
+    /// <param name="result">The constructed value.</param>
+    /// <returns>
+    /// <see langword="true" /> when <paramref name="s" /> is in the round-trip form for a registered currency.
+    /// </returns>
+    private static bool TryParseRoundTrip(ReadOnlySpan<char> s, out Money result)
+    {
+        result = default;
+
+        if (s.Length < 5 || s[3] != ' ' || !IsUppercaseAscii(s[0]) || !IsUppercaseAscii(s[1]) || !IsUppercaseAscii(s[2]))
+            return false;
+
+        ReadOnlySpan<char> numericPart = s[4..];
+        return IsRoundTripNumber(numericPart) && TryCompose(numericPart, s[..3].ToString(), CultureInfo.InvariantCulture, out result);
+    }
+
+    /// <summary>
+    /// Determines whether <paramref name="numericPart" /> is in the invariant fixed-point notation the <c>"R"</c>
+    /// format specifier writes: an optional leading minus sign, one or more digits, and optionally a decimal point
+    /// followed by one or more digits.
+    /// </summary>
+    /// <param name="numericPart">The numeric span.</param>
+    /// <returns><see langword="true" /> when <paramref name="numericPart" /> has the fixed-point shape.</returns>
+    private static bool IsRoundTripNumber(ReadOnlySpan<char> numericPart)
+    {
+        int index = !numericPart.IsEmpty && numericPart[0] == '-' ? 1 : 0;
+        int integerStart = index;
+        while (index < numericPart.Length && char.IsAsciiDigit(numericPart[index]))
+            index++;
+
+        if (index == integerStart)
+            return false;
+
+        if (index == numericPart.Length)
+            return true;
+
+        if (numericPart[index] != '.')
+            return false;
+
+        int fractionStart = ++index;
+        while (index < numericPart.Length && char.IsAsciiDigit(numericPart[index]))
+            index++;
+
+        return index > fractionStart && index == numericPart.Length;
     }
 
     /// <summary>
@@ -175,7 +236,7 @@ public readonly partial struct Money
 
         if (CurrencyResolution.Contains(iso) && CurrencyInfo.TryGetCurrencyCode(iso, out CurrencyCode code))
         {
-            result = new Money(amount, code);
+            result = FromParsedAmount(amount, code);
             return true;
         }
 

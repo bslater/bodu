@@ -9,8 +9,9 @@ using System.Globalization;
 namespace Bodu.Financial;
 
 /// <summary>
-/// Carries the rounding and scaling policy applied at a monetary operation boundary - multiplication, division,
-/// conversion, allocation, and the conversion of a high-precision calculation back to a settlement value.
+/// Carries the rounding and scaling policy applied at the monetary operations that accept one - typed multiplication,
+/// runtime conversion through an <see cref="ExchangeRates.ExchangeRate" />, and the conversion of a high-precision
+/// calculation back to a settlement value.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -19,10 +20,21 @@ namespace Bodu.Financial;
 /// that accept a nullable context treat <see langword="null" /> as <see cref="Default" />, preserving the historical
 /// banker's-rounding behaviour.
 /// </para>
+/// <para>
+/// The members that accept a context are <see cref="Money{TCurrency}.Multiply(decimal, MonetaryContext)" />, which
+/// applies its <see cref="Rounding" /> strategy;
+/// <see cref="Money.Convert(ExchangeRates.ExchangeRate, MonetaryContext?)" /> and
+/// <see cref="Money.ConvertWithResult(ExchangeRates.ExchangeRate, MonetaryContext?)" />; and
+/// <see cref="CalculatedMoney.RoundToMoney(MonetaryContext?)" />, which applies the rounding strategy, the scale
+/// policy, and the cash-rounding policy. No division or allocation member accepts a context, and no operation consults
+/// <see cref="Allocation" /> or <see cref="ConversionRounding" /> yet: <see cref="Validate" /> checks them, but
+/// allocation always uses the largest-remainder method and conversion always rounds at the target.
+/// </para>
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
 /// using Bodu.Financial;
+/// using Bodu.Financial.Currencies;
 ///
 /// // Start from the default and override only the policies you need.
 /// MonetaryContext retail = MonetaryContext.Default with
@@ -72,15 +84,23 @@ public sealed record MonetaryContext
     public CashRoundingPolicy CashRounding { get; init; } = CashRoundingPolicy.None;
 
     /// <summary>
-    /// Gets the allocation policy used when distributing an amount across shares.
+    /// Gets the allocation policy for distributing an amount across shares.
     /// </summary>
     /// <value>The configured <see cref="AllocationPolicy" />.</value>
+    /// <remarks>
+    /// Reserved: <see cref="Validate" /> checks the value, but no allocation member accepts a context, and allocation
+    /// always uses <see cref="AllocationPolicy.LargestRemainder" />.
+    /// </remarks>
     public AllocationPolicy Allocation { get; init; } = AllocationPolicy.LargestRemainder;
 
     /// <summary>
-    /// Gets the policy that determines when a currency conversion is rounded.
+    /// Gets the policy for when a currency conversion is rounded.
     /// </summary>
     /// <value>The configured <see cref="ConversionRoundingPolicy" />.</value>
+    /// <remarks>
+    /// Reserved: <see cref="Validate" /> checks the value, but no conversion consults it, and conversions always round
+    /// at the target, as <see cref="ConversionRoundingPolicy.RoundAtTarget" /> describes.
+    /// </remarks>
     public ConversionRoundingPolicy ConversionRounding { get; init; } = ConversionRoundingPolicy.RoundAtTarget;
 
     /// <summary>
@@ -120,6 +140,13 @@ public sealed record MonetaryContext
     /// The rounded amount, or <paramref name="value" /> unchanged when <see cref="ScalePolicy.Unrounded" /> is in
     /// effect.
     /// </returns>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <see cref="ScalePolicy" /> is not a defined value, or the resolved scale is greater than 28.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// <see cref="ScalePolicy" /> is <see cref="ScalePolicy.Custom" /> but <see cref="CustomScale" /> is
+    /// <see langword="null" />.
+    /// </exception>
     public decimal Round(decimal value, int currencyMinorUnits)
     {
         int scale = ResolveScale(currencyMinorUnits);
@@ -130,10 +157,13 @@ public sealed record MonetaryContext
     /// Validates that every policy member is a defined value and that <see cref="CustomScale" /> is supplied when
     /// required.
     /// </summary>
-    /// <exception cref="ArgumentOutOfRangeException">A policy member is not a defined value.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// A policy member is not a defined value, or <see cref="ScalePolicy" /> is <see cref="ScalePolicy.Custom" /> and
+    /// <see cref="CustomScale" /> is outside the range 0 to 28.
+    /// </exception>
     /// <exception cref="ArgumentException">
     /// <see cref="ScalePolicy" /> is <see cref="ScalePolicy.Custom" /> but <see cref="CustomScale" /> is
-    /// <see langword="null" />, or it is out of the range 0 to 28.
+    /// <see langword="null" />.
     /// </exception>
     public void Validate()
     {

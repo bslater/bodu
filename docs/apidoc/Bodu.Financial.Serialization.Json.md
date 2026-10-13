@@ -36,9 +36,9 @@ The core `Bodu.Financial` library is serialization-agnostic - its monetary types
 
 | Policy | `Money<TCurrency>` / `Money` | `MoneyBag` | Use when |
 |---|---|---|---|
-| `Strict` *(default)* | `{ "amount": 19.99, "currency": "USD" }` | `{ "balances": { "USD": 100.00, "EUR": 50.00 } }` | Storing canonical ledger payloads. Validates currency match, rejects duplicate keys. |
+| `Strict` *(default)* | `{ "amount": 19.99, "currency": "USD" }` | `{ "balances": { "EUR": 50, "USD": 100 } }` | Storing canonical ledger payloads. Validates currency match, rejects duplicate keys. |
 | `Lenient` | Same as Strict | Same as Strict | Importing third-party data. Normalises lowercase ISO codes, trims whitespace before validation. |
-| `Compact` | `"19.99 USD"` | `{ "USD": 100.00, "EUR": 50.00 }` | Log lines, API payloads where verbosity matters. Accepts either `"19.99 USD"` or `"USD 19.99"` on read. |
+| `Compact` | `"19.99 USD"` | `{ "EUR": 50, "USD": 100 }` | Log lines, API payloads where verbosity matters. Accepts either `"19.99 USD"` or `"USD 19.99"` on read. |
 
 ## Example
 
@@ -52,7 +52,7 @@ using Bodu.Financial.Serialization.Json;
 var strict = new JsonSerializerOptions().AddFinancialJsonConverters();
 
 string ledger = JsonSerializer.Serialize(new Money<USD>(19.99m), strict);
-// { "amount": 19.99, "currency": "USD" }
+// {"amount":19.99,"currency":"USD"}
 
 // Compact for log lines.
 var options = new JsonSerializerOptions()
@@ -71,8 +71,8 @@ Money<USD> imported = JsonSerializer.Deserialize<Money<USD>>(
 
 ## Notes
 
-- **Registration is required.** The core monetary types carry no `[JsonConverter]` attribute, so JSON support is opt-in: call `AddFinancialJsonConverters` (or add converters to `JsonSerializerOptions.Converters`) before serializing. Without registration, `JsonSerializer` silently falls back to reflection-shaped output rather than throwing.
-- **Currency-mismatch on `Money<TCurrency>`.** Strict and Lenient policies both reject payloads whose `"currency"` field does not match `TCurrency.IsoCode` - drift surfaces as `JsonException` rather than a silently re-interpreted amount. `Money` accepts any ISO code and rounds to the registry's `MinorUnits` for that code.
+- **Registration is required.** The core monetary types carry no `[JsonConverter]` attribute, so JSON support is opt-in: call `AddFinancialJsonConverters` (or add converters to `JsonSerializerOptions.Converters`) before serializing. Without registration, `JsonSerializer` silently writes reflection-shaped output and reads money back as zero or currency-less values rather than throwing; only a `MoneyBag` read throws.
+- **Currency-mismatch on `Money<TCurrency>`.** Strict and Lenient policies both reject payloads whose `"currency"` field does not match `TCurrency.IsoCode` - drift surfaces as `JsonException` rather than a silently re-interpreted amount. `Money` accepts any code in the shipped catalogue, rounding to the registry's `MinorUnits` for that code, and rejects any other with `JsonException`.
 - **MoneyBag pruning.** Zero balances are pruned on round-trip - the deserialised bag matches the canonical form, not the verbatim wire shape.
 - **Strict vs. Lenient on Compact.** The compact policy accepts both `"19.99 USD"` and `"USD 19.99"` regardless of `Strict` / `Lenient` because there is no ambiguity to be strict about; lenient and strict behave identically under `Compact`.
 - **AddFinancialJsonConverters.** Registers every converter on the same `JsonSerializerOptions` instance under a single policy. Call this once per options instance; mixing policies across types is not supported.

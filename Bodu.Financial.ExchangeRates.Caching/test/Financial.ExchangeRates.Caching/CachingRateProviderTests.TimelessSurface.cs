@@ -63,4 +63,19 @@ public sealed partial class CachingRateProviderTests
             _ = ((IRateProvider)sut).GetRate("AUD", "USD");
         });
     }
+
+    /// <summary>
+    /// Verifies that the timeless surface returns the most recent rate on or before the current UTC date when there is
+    /// no rate on the current date itself.
+    /// </summary>
+    [TestMethod]
+    public void GetRate_WhenTimelessAndLatestRateIsBeforeToday_ShouldReturnMostRecentRate()
+    {
+        CountingDatedRateProvider inner = InnerWith(("AUD", "USD", new DateOnly(2023, 1, 5), 0.50m), ("AUD", "USD", new DateOnly(2023, 1, 6), 0.51m));
+        CachingRateProvider sut = CreateDecorator(inner);
+
+        decimal rate = ((IRateProvider)sut).GetRate("AUD", "USD");
+
+        Assert.AreEqual(0.51m, rate);
+    }
 }

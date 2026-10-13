@@ -24,8 +24,9 @@ namespace Bodu.Financial.ExchangeRates;
 /// <para>
 /// <strong>Plan limits.</strong> exchangerate.host serves the source-currency conversion and time-series endpoints
 /// subject to the account's plan. A request the account's plan does not permit surfaces as a fetch failure rather than
-/// being pre-empted, so a caller should request pairs its plan supports (or map non-supported sources through the
-/// inverse-lookup fallback).
+/// being pre-empted, so a caller should request pairs its plan supports. A request for the reverse pair sends that
+/// pair's own source currency, so to read the reverse of a supported pair warm the supported direction first; its
+/// reverse then resolves by inversion from the loaded series.
 /// </para>
 /// <para>
 /// <strong>HttpClient ownership.</strong> The constructor that takes only options builds and owns an
@@ -169,15 +170,16 @@ public sealed class ExchangeRateHostRateProvider
     }
 
     /// <summary>
-    /// Builds the <see cref="HttpClient" /> this provider owns, configured with the options' user agent and timeout.
+    /// Builds the <see cref="HttpClient" /> this provider owns, configured with the options' user agent, timeout, and
+    /// response buffer cap.
     /// </summary>
     /// <param name="options">The provider options.</param>
     /// <returns>A new, configured client owned by the provider.</returns>
-    private static HttpClient CreateOwnedClient(ExchangeRateHostRateProviderOptions options)
+    internal static HttpClient CreateOwnedClient(ExchangeRateHostRateProviderOptions options)
     {
         ThrowHelper.ThrowIfNull(options);
         options.Validate();
 
-        return RateProviderHttpClientFactory.Create(options.UserAgent, options.HttpTimeout);
+        return RateProviderHttpClientFactory.Create(options.UserAgent, options.HttpTimeout, options.MaxResponseContentBufferSize);
     }
 }

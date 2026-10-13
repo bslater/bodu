@@ -119,9 +119,10 @@ The three explicit shapes encode intent:
 - `Set(date, rate)` - throws if the date is missing (you expected it).
 - `Upsert(date, rate)` - insert-or-replace, the merge shape.
 
-Each has a `Try`-prefixed boolean sibling; bulk import uses `AddRange`
-(rejects duplicates) and `UpsertRange` (replaces existing dates) with
-atomic rollback - a mid-batch failure leaves the builder untouched.
+`Add` and `Set` each have a `Try`-prefixed boolean sibling; bulk import
+uses `AddRange` (rejects duplicates) and `UpsertRange` (replaces existing
+dates) with atomic rollback - a mid-batch failure leaves the builder
+untouched.
 `ToSeries()` snapshots an immutable series; it throws on an empty
 builder because a series must hold at least one observation.
 

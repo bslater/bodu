@@ -34,6 +34,7 @@ public readonly partial struct CalculatedMoney
     /// <code language="csharp">
     ///<![CDATA[
     /// using Bodu.Financial;
+    /// using Bodu.Financial.Currencies;
     ///
     /// var calc = new CalculatedMoney(10m, CurrencyCode.USD).Divide(3m);   // 3.3333... USD, unrounded
     ///

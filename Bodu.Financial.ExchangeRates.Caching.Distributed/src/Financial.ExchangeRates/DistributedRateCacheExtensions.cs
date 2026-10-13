@@ -46,12 +46,20 @@ public static class DistributedRateCacheExtensions
     /// Thrown when <paramref name="providerName" /> or <paramref name="sectionName" /> is empty or white space.
     /// </exception>
     /// <remarks>
+    /// <para>
     /// The caller is responsible for registering an <see cref="IDistributedCache" /> (for example via
     /// <c>AddStackExchangeRedisCache</c> or <c>AddDistributedMemoryCache</c>); use <see cref="AddRedisRateCache" /> to
-    /// register a Redis cache and the exchange-rate cache together. The cache is registered as a singleton so its
-    /// per-pair write locks are shared across resolutions, and is exposed on both the default and the keyed
-    /// <see cref="IRateCache" /> surface as the same instance. Options are validated through <c>ValidateOnStart</c>, so
-    /// misconfiguration fails fast at application startup.
+    /// register a Redis cache and the exchange-rate cache together. The cache is registered as a singleton keyed by
+    /// <paramref name="providerName" />, so its per-pair write locks are shared across resolutions, and is exposed on
+    /// the keyed <see cref="IRateCache" /> surface under that name. Options are validated through
+    /// <c>ValidateOnStart</c>, so misconfiguration fails fast at application startup.
+    /// </para>
+    /// <para>
+    /// Call this once per provider to register several caches side by side over one <see cref="IDistributedCache" />:
+    /// each provider gets its own cache, bound to its own name, and its entries are written under keys that carry that
+    /// name. The first registration also backs the default <see cref="IRateCache" /> resolution; resolve a specific
+    /// provider's cache by its key.
+    /// </para>
     /// </remarks>
     /// <example>
     /// <code language="csharp">
@@ -95,13 +103,14 @@ public static class DistributedRateCacheExtensions
         // fails the start rather than the first lookup. The probe runs through the same ValidateOnStart wiring.
         services.TryAddEnumerable(ServiceDescriptor.Singleton<IValidateOptions<DistributedRateCacheOptions>, DistributedCacheStorageStartupValidator>());
 
-        // Register the concrete cache once as a singleton so a single instance - and its per-pair locks - backs every
-        // resolution. The backing IDistributedCache is resolved from the container so any registered distributed cache
-        // (Redis, in-memory, SQL Server, …) can host it.
-        services.TryAddSingleton(serviceProvider =>
+        // Register the concrete cache as a singleton keyed by the provider name so each provider added gets its own
+        // instance - bound to its own name, so its entries are written under its own keys - and its own per-pair locks.
+        // The backing IDistributedCache is resolved from the container so any registered distributed cache (Redis,
+        // in-memory, SQL Server, and so on) can host it, and several providers can share one store.
+        services.TryAddKeyedSingleton(providerName, static (serviceProvider, key) =>
         {
             DistributedRateCacheOptions options =
-                serviceProvider.GetRequiredService<IOptionsMonitor<DistributedRateCacheOptions>>().Get(providerName);
+                serviceProvider.GetRequiredService<IOptionsMonitor<DistributedRateCacheOptions>>().Get((string)key!);
             IDistributedCache distributedCache = serviceProvider.GetRequiredService<IDistributedCache>();
             return new DistributedRateCache(
                 distributedCache,
@@ -110,10 +119,12 @@ public static class DistributedRateCacheExtensions
                 serviceProvider.GetService<ILoggerFactory>()?.CreateLogger<DistributedRateCache>());
         });
 
-        // Expose the same singleton on both the default and the keyed IRateCache surface so a specific cached
-        // provider is resolvable by name without creating a second instance over the same distributed store.
-        services.TryAddSingleton<IRateCache>(static serviceProvider => serviceProvider.GetRequiredService<DistributedRateCache>());
-        services.TryAddKeyedSingleton<IRateCache>(providerName, static (serviceProvider, _) => serviceProvider.GetRequiredService<DistributedRateCache>());
+        // Expose the provider's cache on the keyed IRateCache surface so a specific cached provider is resolvable by
+        // name, and on the default IRateCache and unkeyed DistributedRateCache surfaces for the single-provider
+        // convenience case, where the first registered cache wins (TryAdd leaves any earlier default in place).
+        services.TryAddKeyedSingleton<IRateCache>(providerName, static (serviceProvider, key) => serviceProvider.GetRequiredKeyedService<DistributedRateCache>((string)key!));
+        services.TryAddSingleton(serviceProvider => serviceProvider.GetRequiredKeyedService<DistributedRateCache>(providerName));
+        services.TryAddSingleton<IRateCache>(serviceProvider => serviceProvider.GetRequiredKeyedService<DistributedRateCache>(providerName));
 
         return builder;
     }
@@ -150,7 +161,7 @@ public static class DistributedRateCacheExtensions
     /// <code language="csharp">
     ///<![CDATA[
     /// services.AddFinancialService()
-    ///         .AddRedisRateCache("RBA", redis => redis.Configuration = "localhost:6379");
+    ///         .AddRedisRateCache(redis => redis.Configuration = "localhost:6379", "RBA");
     ///]]>
     /// </code>
     /// </example>

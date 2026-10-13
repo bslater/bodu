@@ -15,9 +15,9 @@ namespace Bodu.Financial.ExchangeRates;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Same-currency lookups return <c>1m</c> without consulting the table. When a direct (from, to) pair is missing the
-/// provider also tries the inverse (to, from) pair and, if found, returns <c>1 / rate</c>. This is the convention most
-/// FX feeds use to keep the table minimal.
+/// Same-currency lookups return <c>1m</c> without consulting the table or validating the code. When a direct (from, to)
+/// pair is missing the provider also tries the inverse (to, from) pair and, if found, returns <c>1 / rate</c>. This is
+/// the convention most FX feeds use to keep the table minimal.
 /// </para>
 /// <para>
 /// The table is immutable after construction. The constructor copies the supplied rates into a
@@ -41,7 +41,8 @@ public sealed class FixedRateTable
     /// <see langword="null" /> ISO code.
     /// </exception>
     /// <exception cref="ArgumentException">
-    /// Thrown if any key tuple's ISO code is not a three-character uppercase ASCII code.
+    /// Thrown if any key tuple's ISO code is not a three-character uppercase ASCII code or names no
+    /// <see cref="CurrencyCode" /> member.
     /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown if any rate in <paramref name="rates" /> is zero or negative.

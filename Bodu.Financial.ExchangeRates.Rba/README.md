@@ -22,7 +22,7 @@ using var provider = new RbaRateProvider(new RbaRateProviderOptions());
 await provider.LoadRangeAsync(new DateOnly(2023, 1, 1), new DateOnly(2026, 6, 30));
 
 RateLookupResult usd = provider.GetRate("AUD", "USD", new DateOnly(2023, 1, 3));
-// usd.Rate == 0.6828m
+// usd.Rate.Rate is the number of US dollars per Australian dollar on that date.
 
 // Read a whole range at once (AUD-based pairs; the reverse direction is inverted). The result is
 // an IReadOnlyList<ExchangeRate> that also reports the requested window and the observed span.
@@ -31,7 +31,7 @@ RateRangeResult series =
 
 // Discover what pairs the loaded data supports.
 foreach (RbaSeriesInfo info in provider.GetAvailablePairs())
-    Console.WriteLine($"{info.Pair.FromIsoCode}/{info.Pair.ToIsoCode} ({info.SeriesId})");
+    Console.WriteLine($"{info.Pair.From}/{info.Pair.To} ({info.SeriesId})");
 ```
 
 ## Behaviour
@@ -43,8 +43,9 @@ foreach (RbaSeriesInfo info in provider.GetAvailablePairs())
   `AllowSynchronousNetworkAccess` is enabled (it is `false` by default, so the provider
   serves a snapshot of already-loaded data and a synchronous miss does not reach the
   network).
-- **Caching.** Downloaded files are cached on disk (configurable); immutable historical
-  eras are cached indefinitely and the open-ended current era refreshes on a TTL.
+- **Caching.** Downloaded files can be cached on disk by setting `EnableDiskCache` (off by
+  default); immutable historical eras are then cached indefinitely and the open-ended current
+  era refreshes on `CurrentEraRefreshInterval`.
 - **Configuration.** `RbaRateProviderOptions` carries working defaults and binds through
   `Microsoft.Extensions.Options`. The package ships its own `AddRbaExchangeRates`
   registration in the `Bodu.Financial.ExchangeRates` namespace.
@@ -58,12 +59,12 @@ The provider is `IDisposable` and offers two construction styles:
   and timeout. Dispose the provider (for example with `using`) to release the client.
 - `new RbaRateProvider(httpClient, options, ...)` - you supply the client and own its
   lifetime; the provider never disposes a client it did not create. This is the form the
-  `*.DependencyInjection` package uses, backed by `IHttpClientFactory`.
+  package's `AddRbaExchangeRates` registration uses, backed by `IHttpClientFactory`.
 
 ## Logging
 
 The provider logs through `Microsoft.Extensions.Logging`. Pass an `ILogger` to the
-constructor, or let the `*.DependencyInjection` package wire one for you (category
+constructor, or let the package's `AddRbaExchangeRates` registration wire one for you (category
 `Bodu.Financial.ExchangeRates.RbaRateProvider`). When no logger is supplied it
 defaults to `NullLogger.Instance`, so logging is entirely opt-in and free when unused.
 

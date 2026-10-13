@@ -46,7 +46,7 @@ public readonly record struct ExchangeRate<TBase, TQuote>
     /// <exception cref="ArgumentException"><paramref name="provider" /> is empty or white-space.</exception>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="rate" /> is zero or negative.</exception>
     public ExchangeRate(decimal rate, DateOnly date, string provider, bool isInverted = false)
-        : this(rate, isInverted ? 1m / rate : rate, date, provider, isInverted)
+        : this(rate, ExchangeRate.ObservedRateFor(rate, isInverted), date, provider, isInverted)
     {
     }
 

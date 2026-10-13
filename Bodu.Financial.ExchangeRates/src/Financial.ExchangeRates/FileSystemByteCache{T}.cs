@@ -130,6 +130,9 @@ public abstract class FileSystemByteCache<TKey>
         TryGetCore(key, refreshInterval, out bytes);
 
     /// <inheritdoc />
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="bytes" /> is <see langword="null" />.
+    /// </exception>
     public void Store(TKey key, byte[] bytes) =>
         StoreCore(key, bytes);
 

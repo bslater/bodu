@@ -19,12 +19,13 @@ namespace Bodu.Financial.ExchangeRates;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Each provider's dependency-injection package calls one of the <c>AddWebRateProvider</c> overloads to handle the
-/// common plumbing: binding and validating the provider's options, configuring a named <see cref="HttpClient" /> with a
-/// Polly standard-resilience handler, constructing the provider singleton, and exposing it as both
-/// <see cref="IDatedRateProvider" /> and <see cref="IRateProvider" />. The provider-specific extension method supplies
-/// only the values that differ across providers: the HttpClient name, configuration section, validation predicate,
-/// user-agent and timeout selectors, and the factory delegate that invokes the concrete constructor.
+/// Each provider package's own registration method (such as <c>AddEcbExchangeRates</c>) calls one of the
+/// <c>AddWebRateProvider</c> overloads to handle the common plumbing: binding and validating the provider's options,
+/// configuring a named <see cref="HttpClient" /> with a Polly standard-resilience handler, constructing the provider
+/// singleton, and exposing it as both <see cref="IDatedRateProvider" /> and <see cref="IRateProvider" />. The
+/// provider-specific extension method supplies only the values that differ across providers: the HttpClient name,
+/// configuration section, validation predicate, user-agent and timeout selectors, and the factory delegate that invokes
+/// the concrete constructor.
 /// </para>
 /// <para>
 /// The two public overloads differ by options-type constraint. Use the short overload when <c>TOptions</c> derives from

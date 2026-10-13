@@ -62,8 +62,8 @@ Every key below binds, shown at its default. Durations are `TimeSpan` strings
       "SkipInverseRangeProbeWhenDirectCovered": false,
       "ExpiryJitter": 0.0,
       "RefreshAheadFraction": 0.0,
-      "CacheHitLogLevel": "Information",
-      "CacheMissLogLevel": "Information",
+      "CacheHitLogLevel": "Trace",
+      "CacheMissLogLevel": "Trace",
       "CacheRangeHitLogLevel": "Debug",
       "CacheRangeRefetchLogLevel": "Debug",
       "HistoryClampLogLevel": "Debug",
@@ -84,10 +84,11 @@ Every key below binds, shown at its default. Durations are `TimeSpan` strings
 | `RefreshAheadFraction` | `0` | Fraction in `[0, 1)` of the expiry after which a hit also schedules one background refresh (stale-while-revalidate). |
 | `*LogLevel` | see block | The level of each cache event; `None` suppresses it. |
 
-`DefaultLookupOptions` - the <xref:Bodu.Financial.ExchangeRates.RateLookupOptions> the
-*timeless* surface applies - is not configuration-bindable (its members are read-only) and
-stays at `RateLookupOptions.Exact` whatever the section says. Set it, like anything the binder
-cannot express, in the `configure` callback:
+`DefaultLookupOptions` - the <xref:Bodu.Financial.ExchangeRates.RateLookupOptions> the undated
+lookups and the *timeless* surface apply - is not configuration-bindable (its members are
+read-only) and keeps its default, `RateLookupOptions.PreviousWithin(100_000)` (the most recent
+rate on or before today), whatever the section says. Set it, like anything the binder cannot
+express, in the `configure` callback:
 
 ```csharp
 builder.Services
@@ -223,12 +224,13 @@ builder.Services
 | `ThrowOnStorageFailure` / `ValidateStorageOnStart` | `false` | As for SQLite. |
 | `Provider` | set by the registration | As for SQLite. |
 
-> [!IMPORTANT]
-> `AddDistributedRateCache` registers a **single** `DistributedRateCache` instance per host:
-> the first call creates it (bound to that call's provider name), and later calls for other
-> names only add keyed aliases to the same instance. Register it for one cached provider, or use
-> it as the shared L1 tier of a [stack](exchange-rate-caching.md#stacking-providers-tiered-read-through);
-> give each source its own SQLite or file cache when you need one cache per provider.
+> [!NOTE]
+> `AddDistributedRateCache` registers one `DistributedRateCache` per provider name, keyed by that
+> name, so several providers can share one `IDistributedCache`: each cache writes under keys that
+> carry its own provider name. The first registration also backs the unkeyed `IRateCache`
+> resolution, so resolve each provider's cache by its key, for example with
+> `cacheFactory: (sp, name) => sp.GetRequiredKeyedService<IRateCache>(name)`. A distributed cache
+> can also serve as the shared L1 tier of a [stack](exchange-rate-caching.md#stacking-providers-tiered-read-through).
 
 ## Pattern 4 - warming the cache at startup
 
@@ -290,7 +292,7 @@ builder.Services
 ```
 
 The DI builder sets only `DefaultStrategy` and `Routes`. The remaining members - the default
-provider order, `RespectHistoryAvailability`, the timeless surface's `DefaultLookupOptions`, and
+provider order, `RespectHistoryAvailability`, the undated lookups' `DefaultLookupOptions`, and
 the three log levels - keep their defaults under DI. To tune them, construct the aggregator
 yourself and register the instance with `AddDatedExchangeRateProvider`:
 
@@ -300,7 +302,7 @@ var options = new RateAggregationOptions
     DefaultStrategy = PriorityFallbackStrategy.Instance,
     DefaultProviderOrder = new[] { "RBA", "ECB" },
     RespectHistoryAvailability = true,
-    DefaultLookupOptions = RateLookupOptions.PreviousWithin(3),   // the timeless surface's policy
+    DefaultLookupOptions = RateLookupOptions.PreviousWithin(3),   // the undated lookups' policy
     RouteSelectedLogLevel = LogLevel.Debug,                        // default Information
     ResolvedLogLevel = LogLevel.Debug,                             // default Information
     UnresolvedLogLevel = LogLevel.Warning,                         // default Debug
@@ -320,7 +322,7 @@ return new AggregatingRateProvider(
 | `DefaultProviderOrder` | `null` (registration order) | The child order for unrouted pairs. |
 | `Routes` | `{}` | Per-pair child order and optional strategy. |
 | `RespectHistoryAvailability` | `true` | Drop children whose advertised history cannot cover the request before the strategy runs. |
-| `DefaultLookupOptions` | `Exact` | The policy the timeless `IRateProvider` surface applies. |
+| `DefaultLookupOptions` | `PreviousWithin(100_000)` | The policy the undated lookups and the timeless `IRateProvider` surface apply: by default the most recent rate on or before today. |
 | `RouteSelectedLogLevel` | `Information` | A route (or the default order) was chosen for a pair. |
 | `ResolvedLogLevel` | `Information` | A child answered. |
 | `UnresolvedLogLevel` | `Debug` | No child answered. |
@@ -366,7 +368,7 @@ host's lifetime:
 | `AddAggregatedRateProvider` | keyed `IDatedRateProvider` per child name | singleton per child (`TryAddKeyedSingleton`) |
 | | <xref:Bodu.Financial.ExchangeRates.Caching.AggregatingRateProvider>, `IDatedRateProvider`, `IRateProvider` | one singleton under all three |
 | `AddSqliteRateCache(name)` | keyed `SqliteRateCache` / `IRateCache` per name; default `IRateCache` | one instance per provider name, each with its own keep-alive connection; the first registered is also the unkeyed default |
-| `AddDistributedRateCache(name)` / `AddRedisRateCache` | `DistributedRateCache`, `IRateCache`, keyed `IRateCache` | one instance per host (see the note in Pattern 3) |
+| `AddDistributedRateCache(name)` / `AddRedisRateCache` | keyed `DistributedRateCache` / `IRateCache` per name; default `DistributedRateCache` and `IRateCache` | one instance per provider name over the shared `IDistributedCache`; the first registered is also the unkeyed default (see the note in Pattern 3) |
 | `AddRateCacheWarmup` | `IHostedService` | one hosted service, runs once at start |
 
 The container disposes each singleton on shutdown; a cached provider does not dispose the inner

@@ -30,6 +30,18 @@ public class WebRateProviderOptionsTests
     }
 
     /// <summary>
+    /// Verifies that <see cref="WebRateProviderOptions.ObservationIngestedLogLevel" /> defaults to
+    /// <see cref="LogLevel.Trace" />, so the per-observation event stays out of ordinary logs.
+    /// </summary>
+    [TestMethod]
+    public void ObservationIngestedLogLevel_WhenDefault_ShouldBeTrace()
+    {
+        TestWebRateProviderOptions options = new();
+
+        Assert.AreEqual(LogLevel.Trace, options.ObservationIngestedLogLevel);
+    }
+
+    /// <summary>
     /// Verifies that a null base address is rejected.
     /// </summary>
     [TestMethod]

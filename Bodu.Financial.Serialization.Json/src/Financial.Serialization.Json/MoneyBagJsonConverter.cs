@@ -21,6 +21,12 @@ namespace Bodu.Financial.Serialization.Json;
 /// wrapper and emits a flat ISO-code-to-amount map (<c>{ "AUD": 12.34, "USD": 56.78 }</c>); this is the natural minimal
 /// shape when the consumer already knows the payload is a bag.
 /// </para>
+/// <para>
+/// When reading, <see cref="FinancialJsonPolicy.Strict" /> and <see cref="FinancialJsonPolicy.Lenient" /> reject a
+/// repeated <c>"balances"</c> property, and a balances map that names the same currency twice, with a
+/// <see cref="JsonException" />. <see cref="FinancialJsonPolicy.Lenient" /> also trims each ISO code key and converts
+/// it to uppercase before resolving the currency.
+/// </para>
 /// </remarks>
 public sealed class MoneyBagJsonConverter
     : JsonConverter<MoneyBag>
@@ -90,9 +96,11 @@ public sealed class MoneyBagJsonConverter
     /// </summary>
     /// <param name="reader">The reader positioned at the value to convert.</param>
     /// <returns>The deserialized bag.</returns>
-    private static MoneyBag ReadWrappedBalances(ref Utf8JsonReader reader)
+    /// <exception cref="JsonException">The payload is malformed, or repeats the <c>"balances"</c> property.</exception>
+    private MoneyBag ReadWrappedBalances(ref Utf8JsonReader reader)
     {
         List<Money> entries = new();
+        bool balancesSeen = false;
 
         while (reader.Read())
         {
@@ -108,6 +116,14 @@ public sealed class MoneyBagJsonConverter
 
             if (string.Equals(propertyName, "balances", StringComparison.OrdinalIgnoreCase))
             {
+                if (balancesSeen)
+                {
+                    throw new JsonException(
+                        string.Format(CultureInfo.CurrentCulture, FinancialJsonResourceStrings.Json_Invalid_DuplicateProperty, "balances"));
+                }
+
+                balancesSeen = true;
+
                 if (reader.TokenType != JsonTokenType.StartObject)
                     throw new JsonException(FinancialJsonResourceStrings.Json_Invalid_BalancesMustBeObject);
 
@@ -127,7 +143,7 @@ public sealed class MoneyBagJsonConverter
     /// </summary>
     /// <param name="reader">The reader positioned at the value to convert.</param>
     /// <returns>The deserialized bag.</returns>
-    private static MoneyBag ReadCompactBalances(ref Utf8JsonReader reader)
+    private MoneyBag ReadCompactBalances(ref Utf8JsonReader reader)
     {
         List<Money> entries = new();
         ReadBalanceMap(ref reader, entries);
@@ -140,8 +156,15 @@ public sealed class MoneyBagJsonConverter
     /// </summary>
     /// <param name="reader">The reader positioned at the map's <c>StartObject</c>.</param>
     /// <param name="entries">The list that receives the per-currency balances.</param>
-    private static void ReadBalanceMap(ref Utf8JsonReader reader, List<Money> entries)
+    /// <exception cref="JsonException">
+    /// The map is malformed, names an unknown currency, or, under <see cref="FinancialJsonPolicy.Strict" /> or
+    /// <see cref="FinancialJsonPolicy.Lenient" />, names the same currency twice.
+    /// </exception>
+    private void ReadBalanceMap(ref Utf8JsonReader reader, List<Money> entries)
     {
+        // The wrapped policies reject a repeated currency, as they reject every other duplicate property.
+        HashSet<CurrencyCode>? seen = _policy == FinancialJsonPolicy.Compact ? null : new();
+
         while (reader.Read())
         {
             if (reader.TokenType == JsonTokenType.EndObject)
@@ -174,10 +197,19 @@ public sealed class MoneyBagJsonConverter
                     string.Format(CultureInfo.CurrentCulture, FinancialJsonResourceStrings.Json_Invalid_BalanceMustBeNumber, iso));
             }
 
+            if (_policy == FinancialJsonPolicy.Lenient)
+                iso = iso.Trim().ToUpperInvariant();
+
             if (!CurrencyInfo.TryGetCurrencyCode(iso, out CurrencyCode code))
             {
                 throw new JsonException(
                     string.Format(CultureInfo.CurrentCulture, FinancialJsonResourceStrings.Arg_Invalid_UnknownCurrencyRejected, iso));
+            }
+
+            if (seen is not null && !seen.Add(code))
+            {
+                throw new JsonException(
+                    string.Format(CultureInfo.CurrentCulture, FinancialJsonResourceStrings.Json_Invalid_DuplicateProperty, iso));
             }
 
             entries.Add(new Money(amount, code));

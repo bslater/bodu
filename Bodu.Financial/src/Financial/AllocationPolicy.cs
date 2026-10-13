@@ -7,9 +7,12 @@
 namespace Bodu.Financial;
 
 /// <summary>
-/// Specifies the algorithm a <see cref="MonetaryContext" /> uses to distribute residual minor units when allocating a
-/// monetary amount across shares.
+/// Specifies the algorithm for distributing residual minor units when allocating a monetary amount across shares.
 /// </summary>
+/// <remarks>
+/// <see cref="MonetaryContext.Allocation" /> carries this value, but no allocation member consults a context yet: the
+/// <c>Allocate</c> methods always use <see cref="LargestRemainder" />.
+/// </remarks>
 public enum AllocationPolicy
 {
     /// <summary>

@@ -85,7 +85,7 @@ public interface ICurrency
     /// <value>
     /// The cash-rounding increment in the major unit (for example, <c>0.05m</c> for CHF's five-rappen smallest
     /// circulating coin, <c>0.05m</c> for AUD / CAD cash totals since smallest coins were withdrawn, or <c>1m</c> for
-    /// SEK / NOK / ISK), or <c>0m</c> when the currency does not require special cash rounding beyond its
+    /// SEK / NOK), or <c>0m</c> when the currency does not require special cash rounding beyond its
     /// <see cref="MinorUnits" /> precision.
     /// </value>
     /// <remarks>
@@ -129,8 +129,8 @@ public interface ICurrency
     /// Gets the English-language name of the currency.
     /// </summary>
     /// <value>
-    /// The currency's name in English, in singular form and Title Case (for example, <c>"United States Dollar"</c>,
-    /// <c>"Euro"</c>, or <c>"Australian Dollar"</c>), or an empty string when no name is supplied.
+    /// The currency's name in English, in singular form and Title Case (for example, <c>"US Dollar"</c>, <c>"Euro"</c>,
+    /// or <c>"Australian Dollar"</c>), or an empty string when no name is supplied.
     /// </value>
     /// <remarks>
     /// The English name is used by <see cref="Money{TCurrency}" /> formatting in the <c>L</c> specifier path (

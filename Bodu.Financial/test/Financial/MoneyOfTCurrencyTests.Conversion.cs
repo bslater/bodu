@@ -101,4 +101,67 @@ public partial class MoneyOfTCurrencyTests
         // 1.00 * 1/3 = 0.3333... → banker's-round to 0.33
         Assert.AreEqual(new Money<USD>(0.33m), result);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="Money{TCurrency}.ToMoney" /> throws <see cref="InvalidOperationException" /> for a
+    /// currency tag outside the shipped catalogue, rather than returning a currency-less <see cref="Money" />.
+    /// </summary>
+    [TestMethod]
+    public void ToMoney_WhenCurrencyTagIsOutsideCatalogue_ShouldThrowInvalidOperationException()
+    {
+        var holding = new Money<OutsideCatalogueCurrency>(12.3456m);
+
+        _ = Assert.ThrowsExactly<InvalidOperationException>(() =>
+        {
+            _ = holding.ToMoney();
+        });
+    }
+
+    /// <summary>
+    /// Verifies that the implicit conversion to <see cref="Money" /> throws <see cref="InvalidOperationException" />
+    /// for a currency tag outside the shipped catalogue, rather than producing a currency-less value.
+    /// </summary>
+    [TestMethod]
+    public void ImplicitOperator_WhenCurrencyTagIsOutsideCatalogue_ShouldThrowInvalidOperationException()
+    {
+        var holding = new Money<OutsideCatalogueCurrency>(12.3456m);
+
+        _ = Assert.ThrowsExactly<InvalidOperationException>(() =>
+        {
+            Money runtime = holding;
+            _ = runtime;
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Money{TCurrency}.ToCalculated" /> throws <see cref="InvalidOperationException" /> for a
+    /// currency tag outside the shipped catalogue, as <see cref="Money{TCurrency}.ToMoney" /> does.
+    /// </summary>
+    [TestMethod]
+    public void ToCalculated_WhenCurrencyTagIsOutsideCatalogue_ShouldThrowInvalidOperationException()
+    {
+        var holding = new Money<OutsideCatalogueCurrency>(12.3456m);
+
+        _ = Assert.ThrowsExactly<InvalidOperationException>(() =>
+        {
+            _ = holding.ToCalculated();
+        });
+    }
+
+    /// <summary>
+    /// A valid custom currency tag whose ISO code is not in the shipped <see cref="CurrencyCode" /> catalogue.
+    /// </summary>
+    private sealed class OutsideCatalogueCurrency
+        : ICurrency
+    {
+        /// <summary>
+        /// Gets the ISO-style code, which no shipped currency uses.
+        /// </summary>
+        public static string IsoCode => "XPT";
+
+        /// <summary>
+        /// Gets the minor-unit precision.
+        /// </summary>
+        public static int MinorUnits => 4;
+    }
 }

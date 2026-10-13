@@ -54,7 +54,10 @@ public sealed class RateSeriesBuilder
     /// <exception cref="ArgumentNullException">
     /// Thrown if <paramref name="provider" /> is <see langword="null" />.
     /// </exception>
-    /// <exception cref="ArgumentException">Thrown if <paramref name="provider" /> is empty or white-space.</exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown if <paramref name="pair" /> is the default-struct value, or if <paramref name="provider" /> is empty or
+    /// white-space.
+    /// </exception>
     public RateSeriesBuilder(CurrencyPair pair, string provider)
     {
         FinancialThrowHelper.ThrowIfInvalidCurrencyPair(pair);

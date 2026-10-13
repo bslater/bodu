@@ -17,8 +17,8 @@ namespace Bodu.Financial;
 /// <param name="Rate">The exchange rate applied to produce <paramref name="Target" />.</param>
 /// <param name="Context">The monetary context that governed rounding.</param>
 /// <param name="RoundingAdjustment">
-/// The signed difference between the rounded target amount and the exact (unrounded) converted amount, or
-/// <see langword="null" /> when rounding was deferred.
+/// The signed difference between the rounded target amount and the exact (unrounded) converted amount. Every conversion
+/// rounds, so the value is always present.
 /// </param>
 public readonly record struct MoneyConversionResult(
     Money Source,
