@@ -174,4 +174,28 @@ public partial class FormatFactoryGeneratorTests
         Assert.IsNotNull(generated.InnerException);
         Assert.AreEqual(reflection.InnerException.GetType(), generated.InnerException.GetType());
     }
+
+    /// <summary>
+    /// Verifies that a section of temporal values round-trips through the generated INI factory with every tick, the
+    /// kind of the <see cref="DateTime" /> and the offset of the <see cref="DateTimeOffset" /> kept.
+    /// </summary>
+    [TestMethod]
+    public void IniFactory_WhenTemporalValuesAreRoundTripped_ShouldKeepEveryTickTheKindAndTheOffset()
+    {
+        var section = new GeneratedScheduleSection
+        {
+            At = new DateTime(2021, 2, 6, 1, 2, 3, DateTimeKind.Utc).AddTicks(4567891),
+            AtOffset = new DateTimeOffset(2021, 2, 6, 1, 2, 3, TimeSpan.FromHours(10)).AddTicks(4567891),
+            Span = new TimeSpan(1, 2, 3, 4).Add(TimeSpan.FromTicks(5678901)),
+        };
+
+        string text = IniSerializer.SerializeSection("schedule", section, GeneratedScheduleSection.IniFactory);
+        GeneratedScheduleSection restored = IniSerializer.DeserializeSection(text, "schedule", GeneratedScheduleSection.IniFactory);
+
+        Assert.AreEqual(section.At, restored.At, text);
+        Assert.AreEqual(DateTimeKind.Utc, restored.At.Kind, text);
+        Assert.AreEqual(section.AtOffset, restored.AtOffset, text);
+        Assert.AreEqual(section.AtOffset.Offset, restored.AtOffset.Offset, text);
+        Assert.AreEqual(section.Span, restored.Span, text);
+    }
 }

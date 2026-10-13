@@ -132,6 +132,32 @@ public partial class DotEnvSerializerTests
     }
 
     /// <summary>
+    /// A POCO whose members are dates and times, two of them also in nullable form.
+    /// </summary>
+    public sealed class TemporalConfig
+    {
+        /// <summary>Gets or sets the instant.</summary>
+        /// <value>The instant.</value>
+        public DateTime At { get; set; }
+
+        /// <summary>Gets or sets a time of an unspecified kind.</summary>
+        /// <value>The time.</value>
+        public DateTime Unspecified { get; set; }
+
+        /// <summary>Gets or sets the instant with its offset.</summary>
+        /// <value>The instant and offset.</value>
+        public DateTimeOffset AtOffset { get; set; }
+
+        /// <summary>Gets or sets the optional instant.</summary>
+        /// <value>The instant, or <see langword="null" />.</value>
+        public DateTime? MaybeAt { get; set; }
+
+        /// <summary>Gets or sets the optional instant with its offset.</summary>
+        /// <value>The instant and offset, or <see langword="null" />.</value>
+        public DateTimeOffset? MaybeAtOffset { get; set; }
+    }
+
+    /// <summary>
     /// A POCO whose members are the native-sized integers <see cref="nint" /> and <see cref="nuint" />, one also in
     /// nullable form.
     /// </summary>

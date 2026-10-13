@@ -92,4 +92,32 @@ public sealed partial class InvariantScalarCodecTests
             Assert.AreEqual(value, parsed, text);
         }
     }
+
+    /// <summary>
+    /// Verifies that the text written for a <see cref="DateTime" /> of each kind but local, and for a
+    /// <see cref="DateTimeOffset" />, with fractions of a second, reads back with every tick, the kind and the offset.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenTheTextIsADateAndTimeAsWritten_ForConfigurationPolicy_ShouldKeepEveryTickTheKindAndTheOffset()
+    {
+        var utc = new DateTime(2026, 1, 2, 3, 4, 5, DateTimeKind.Utc).AddTicks(8910123);
+        var unspecified = new DateTime(2026, 1, 2, 3, 4, 5, DateTimeKind.Unspecified).AddTicks(1);
+        var offset = new DateTimeOffset(2026, 1, 2, 3, 4, 5, TimeSpan.FromHours(5.5)).AddTicks(1234567);
+
+        foreach (DateTime value in new[] { utc, unspecified })
+        {
+            string text = InvariantScalarCodec.Format(value, InvariantScalarCodec.Policy.Configuration);
+
+            var parsed = (DateTime)InvariantScalarCodec.Parse(text, typeof(DateTime), InvariantScalarCodec.Policy.Configuration)!;
+
+            Assert.AreEqual(value.Ticks, parsed.Ticks, text);
+            Assert.AreEqual(value.Kind, parsed.Kind, text);
+        }
+
+        string offsetText = InvariantScalarCodec.Format(offset, InvariantScalarCodec.Policy.Configuration);
+        var parsedOffset = (DateTimeOffset)InvariantScalarCodec.Parse(offsetText, typeof(DateTimeOffset), InvariantScalarCodec.Policy.Configuration)!;
+
+        Assert.AreEqual(offset.Ticks, parsedOffset.Ticks, offsetText);
+        Assert.AreEqual(offset.Offset, parsedOffset.Offset, offsetText);
+    }
 }

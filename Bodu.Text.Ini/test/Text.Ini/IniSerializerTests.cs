@@ -176,6 +176,27 @@ public partial class IniSerializerTests
     }
 
     /// <summary>
+    /// A root model whose global keys are dates and times, two of them also in nullable form.
+    /// </summary>
+    private sealed class TemporalConfig
+    {
+        /// <summary>Gets or sets the instant (a global key).</summary>
+        public DateTime At { get; set; }
+
+        /// <summary>Gets or sets a time of an unspecified kind (a global key).</summary>
+        public DateTime Unspecified { get; set; }
+
+        /// <summary>Gets or sets the instant with its offset (a global key).</summary>
+        public DateTimeOffset AtOffset { get; set; }
+
+        /// <summary>Gets or sets the optional instant (a global key).</summary>
+        public DateTime? MaybeAt { get; set; }
+
+        /// <summary>Gets or sets the optional instant with its offset (a global key).</summary>
+        public DateTimeOffset? MaybeAtOffset { get; set; }
+    }
+
+    /// <summary>
     /// A root model whose global keys are the native-sized integers <see cref="nint" /> and <see cref="nuint" />, one
     /// also in nullable form.
     /// </summary>

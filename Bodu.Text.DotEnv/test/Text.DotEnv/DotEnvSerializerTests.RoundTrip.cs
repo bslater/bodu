@@ -134,4 +134,35 @@ public partial class DotEnvSerializerTests
         Assert.AreEqual(original.Size, restored.Size, text);
         Assert.AreEqual(original.MaybeHandle, restored.MaybeHandle, text);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="DateTime" /> and <see cref="DateTimeOffset" /> members with fractions of a second, and
+    /// their nullable forms, read back as the values written, with every tick, the kind and the offset kept.
+    /// </summary>
+    [TestMethod]
+    public void SerializeDeserialize_WhenMembersAreDatesAndTimesWithFractionsOfASecond_ShouldKeepEveryTickTheKindAndTheOffset()
+    {
+        var original = new TemporalConfig
+        {
+            At = new DateTime(2026, 1, 2, 3, 4, 5, DateTimeKind.Utc).AddTicks(8910123),
+            Unspecified = new DateTime(2026, 1, 2, 3, 4, 5, DateTimeKind.Unspecified).AddTicks(1),
+            AtOffset = new DateTimeOffset(2026, 1, 2, 3, 4, 5, TimeSpan.FromHours(5.5)).AddTicks(1234567),
+            MaybeAt = new DateTime(2026, 1, 2, 3, 4, 5, DateTimeKind.Utc).AddMilliseconds(891),
+            MaybeAtOffset = new DateTimeOffset(2026, 1, 2, 3, 4, 5, TimeSpan.FromHours(-7)).AddMilliseconds(891),
+        };
+
+        string text = DotEnvSerializer.Serialize(original);
+        TemporalConfig restored = DotEnvSerializer.Deserialize<TemporalConfig>(text);
+
+        Assert.AreEqual(original.At, restored.At, text);
+        Assert.AreEqual(DateTimeKind.Utc, restored.At.Kind, text);
+        Assert.AreEqual(original.Unspecified, restored.Unspecified, text);
+        Assert.AreEqual(DateTimeKind.Unspecified, restored.Unspecified.Kind, text);
+        Assert.AreEqual(original.AtOffset, restored.AtOffset, text);
+        Assert.AreEqual(original.AtOffset.Offset, restored.AtOffset.Offset, text);
+        Assert.AreEqual(original.MaybeAt, restored.MaybeAt, text);
+        Assert.AreEqual(DateTimeKind.Utc, restored.MaybeAt!.Value.Kind, text);
+        Assert.AreEqual(original.MaybeAtOffset, restored.MaybeAtOffset, text);
+        Assert.AreEqual(original.MaybeAtOffset!.Value.Offset, restored.MaybeAtOffset!.Value.Offset, text);
+    }
 }
