@@ -1761,4 +1761,58 @@ public partial class NotableDateDocumentBuilderTests
 
         return ex.Diagnostics.Single(d => d.Severity == NotableDateValidationSeverity.Error).Message;
     }
+
+    /// <summary>
+    /// Verifies that an item of a JSON list of objects (concepts, rules, adjustment policies, imports, uses or
+    /// overrides) that is not an object, which the loader rejects with <c>BODU-CAL-VALUE</c>, is rejected with a
+    /// <see cref="FormatException" /> carrying the loader's message, rather than skipped.
+    /// </summary>
+    /// <param name="placeholder">The placeholder before which the item is added.</param>
+    /// <param name="item">The item, as a JSON literal.</param>
+    [TestMethod]
+    [DataRow("notableDate.item", "5")]
+    [DataRow("notableDate.item", "[ ]")]
+    [DataRow("policy.item", "true")]
+    [DataRow("rule.item", "\"r\"")]
+    [DataRow("import.item", "null")]
+    [DataRow("use.item", "5")]
+    [DataRow("override.item", "5")]
+    [DataRow("override.item", "\"PatchRule\"")]
+    public void FromJson_WhenObjectListHoldsNonObjectItem_ShouldThrowFormatException(string placeholder, string item)
+    {
+        string json = ObjectItemJson(placeholder, item);
+        string expected = LoaderErrorMessage(json, BuilderEnumImportResolver);
+
+        FormatException ex = Assert.ThrowsExactly<FormatException>(() =>
+        {
+            _ = NotableDateDocumentBuilder.FromJson(json);
+        });
+
+        Assert.AreEqual(expected, ex.Message);
+    }
+
+    /// <summary>
+    /// Builds a JSON document whose lists of concepts, rules, adjustment policies, imports, uses and overrides each
+    /// hold one well-formed object, with the supplied item added before the object of the named list.
+    /// </summary>
+    /// <param name="placeholder">The placeholder of the list to add the item to.</param>
+    /// <param name="item">The item, as a JSON literal.</param>
+    /// <returns>The JSON document.</returns>
+    private static string ObjectItemJson(string placeholder, string item)
+    {
+        string json = """
+            { "schemaVersion": "1.0", "resourceId": "test.items",
+              "adjustmentPolicies": [ @policy.item@{ "id": "policy", "trigger": { "type": "IfWeekend" },
+                "action": { "type": "MoveToNextWorkingDay" }, "emission": { "mode": "ObservedOnly" } } ],
+              "imports": [ @import.item@{ "resource": "lib", "uses": [ @use.item@{ "notableDateRef": "lib-day" } ] } ],
+              "notableDates": [ @notableDate.item@{ "id": "anchor", "displayName": "Anchor", "category": "PublicHoliday",
+                "rules": [ @rule.item@{ "id": "r", "strategy": { "fixed": { "month": 3, "day": 1 } }, "adjustments": [ "policy" ] } ] } ],
+              "overrides": [ @override.item@{ "operation": "PatchRule", "notableDateRef": "anchor", "ruleRef": "r", "priority": 2 } ] }
+            """;
+
+        foreach (string key in new[] { "policy.item", "import.item", "use.item", "notableDate.item", "rule.item", "override.item" })
+            json = json.Replace("@" + key + "@", key == placeholder ? item + ", " : string.Empty, StringComparison.Ordinal);
+
+        return json;
+    }
 }

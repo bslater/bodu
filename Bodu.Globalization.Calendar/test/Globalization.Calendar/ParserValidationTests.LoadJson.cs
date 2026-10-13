@@ -1746,4 +1746,74 @@ public sealed partial class ParserValidationTests
 
         Assert.Contains(d => d.Code == "BODU-CAL-VALUE" && d.Message == expected, ex.Diagnostics, expected);
     }
+
+    /// <summary>
+    /// Verifies that the object-list test document loads when every list of objects holds only objects, so each
+    /// rejection the per-list tests observe is caused by the one item they add.
+    /// </summary>
+    [TestMethod]
+    public void LoadJson_WhenEveryObjectListHoldsOnlyObjects_ShouldLoad()
+    {
+        NotableDateResource resource = NotableDateResourceLoader.LoadJson(ObjectItemJson(null, null), EnumImportResolver);
+
+        Assert.AreEqual("test.items", resource.ResourceId);
+    }
+
+    /// <summary>
+    /// Verifies that an item of a JSON list of objects (concepts, rules, adjustment policies, imports, uses or
+    /// overrides) that is not an object is rejected with a single <c>BODU-CAL-VALUE</c> error naming the property and
+    /// the item's JSON kind, rather than read as an object with every property absent or dropped without a report.
+    /// </summary>
+    /// <param name="placeholder">The placeholder before which the item is added.</param>
+    /// <param name="item">The item, as a JSON literal.</param>
+    /// <param name="property">The JSON name of the list.</param>
+    /// <param name="kind">The item's JSON kind, as the message names it.</param>
+    [TestMethod]
+    [DataRow("notableDate.item", "5", "notableDates", "number")]
+    [DataRow("notableDate.item", "[ ]", "notableDates", "array")]
+    [DataRow("policy.item", "true", "adjustmentPolicies", "Boolean")]
+    [DataRow("rule.item", "\"r\"", "rules", "string")]
+    [DataRow("import.item", "null", "imports", "null")]
+    [DataRow("use.item", "5", "uses", "number")]
+    [DataRow("override.item", "5", "overrides", "number")]
+    [DataRow("override.item", "\"PatchRule\"", "overrides", "string")]
+    public void LoadJson_WhenObjectListHoldsNonObjectItem_ShouldThrowValueDiagnostic(string placeholder, string item, string property, string kind)
+    {
+        string json = ObjectItemJson(placeholder, item);
+        string expected = $"The '{property}' property holds a JSON {kind} item, which is not an object.";
+
+        NotableDateValidationException ex = Assert.ThrowsExactly<NotableDateValidationException>(() =>
+        {
+            _ = NotableDateResourceLoader.LoadJson(json, EnumImportResolver);
+        });
+
+        NotableDateValidationDiagnostic diagnostic = Assert.ContainsSingle(d => d.Severity == NotableDateValidationSeverity.Error, ex.Diagnostics);
+        Assert.AreEqual("BODU-CAL-VALUE", diagnostic.Code);
+        Assert.AreEqual(expected, diagnostic.Message);
+    }
+
+    /// <summary>
+    /// Builds a JSON document whose lists of concepts, rules, adjustment policies, imports, uses and overrides each
+    /// hold one well-formed object, with the supplied item added before the object of the named list.
+    /// </summary>
+    /// <param name="placeholder">The placeholder of the list to add the item to, or <see langword="null" /> for none.</param>
+    /// <param name="item">The item, as a JSON literal.</param>
+    /// <returns>The JSON document.</returns>
+    private static string ObjectItemJson(string? placeholder, string? item)
+    {
+        string json = """
+            { "schemaVersion": "1.0", "resourceId": "test.items",
+              "adjustmentPolicies": [ @policy.item@{ "id": "policy", "trigger": { "type": "IfWeekend" },
+                "action": { "type": "MoveToNextWorkingDay" }, "emission": { "mode": "ObservedOnly" } } ],
+              "imports": [ @import.item@{ "resource": "lib", "uses": [ @use.item@{ "notableDateRef": "lib-day" } ] } ],
+              "notableDates": [ @notableDate.item@{ "id": "anchor", "displayName": "Anchor", "category": "PublicHoliday",
+                "rules": [ @rule.item@{ "id": "r", "strategy": { "fixed": { "month": 3, "day": 1 } }, "adjustments": [ "policy" ] } ] } ],
+              "overrides": [ @override.item@{ "operation": "PatchRule", "notableDateRef": "anchor", "ruleRef": "r", "priority": 2 } ] }
+            """;
+
+        foreach (string key in new[] { "policy.item", "import.item", "use.item", "notableDate.item", "rule.item", "override.item" })
+            json = json.Replace("@" + key + "@", key == placeholder ? item + ", " : string.Empty, StringComparison.Ordinal);
+
+        return json;
+    }
 }
