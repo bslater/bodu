@@ -94,7 +94,6 @@
 </div>
 <h2 id="step-1---annotate-a-partial-poco">Step 1 - annotate a partial POCO</h2>
 <p>The rules that matter: the type is <code>partial</code>, non-generic, has a parameterless constructor, and every mapped member is a public read/write property of a supported scalar type. <code>[PropertyName]</code> renames a column; <code>[Ignore]</code> drops one.</p>
-<!-- compile -->
 <pre><code class="lang-csharp">using Bodu.Text.Delimited;
 using Bodu.Text.Serialization;
 
@@ -116,11 +115,9 @@ public sealed partial class Trade
 </code></pre>
 <h2 id="step-2---build-and-look-at-what-was-generated">Step 2 - build, and look at what was generated</h2>
 <p>Building the project adds <code>Trade.DelimitedFactory</code>. Its <code>Headers</code> are the resolved wire names in declaration order - the renamed column and the omitted <code>Notes</code> member are already visible here:</p>
-<!-- compile -->
 <pre><code class="lang-csharp">Trade.DelimitedFactory.Headers   // &quot;Symbol&quot;, &quot;Quantity&quot;, &quot;Price&quot;, &quot;traded_at&quot;, &quot;Venue&quot;
 </code></pre>
 <p>The emitted source (visible with <code>&lt;EmitCompilerGeneratedFiles&gt;true&lt;/EmitCompilerGeneratedFiles&gt;</code>) is a second partial declaration of <code>Trade</code> holding the static property and a private nested implementation. Abridged:</p>
-<!-- compile -->
 <pre><code class="lang-csharp">// &lt;auto-generated/&gt;
 partial class Trade
 {
@@ -177,7 +174,6 @@ partial class Trade
 <p>Every conversion is explicit and invariant-culture, in the forms the reflection binder uses: <code>DateTime</code> and <code>DateTimeOffset</code> in the round-trip <code>O</code> form and <code>TimeSpan</code> in the constant <code>c</code> form, and, reading, <code>null</code> for a nullable member whose field is empty or white space (a <code>char?</code> member takes only an empty field as <code>null</code>). Nothing in the file touches <code>System.Reflection</code>.</p>
 <h2 id="step-3---serialize-and-deserialize-through-the-factory">Step 3 - serialize and deserialize through the factory</h2>
 <p>The factory overloads take the factory as an extra argument and are otherwise the same entry points:</p>
-<!-- compile -->
 <pre><code class="lang-csharp">using Bodu.Text.Delimited;
 
 var trades = new List&lt;Trade&gt;
@@ -195,7 +191,6 @@ List&lt;Trade&gt; back = DelimitedSerializer.Deserialize(csv, Trade.DelimitedFac
 // back[0].TradedAt → 2026-03-02T09:30:00+00:00; back[1].Venue → null (empty field)
 </code></pre>
 <p>Dialect options apply unchanged - a TSV or headerless variant is one options object away:</p>
-<!-- compile -->
 <pre><code class="lang-csharp">var tsv = new DelimitedSerializerOptions { Delimiter = '\t' };
 string tab = DelimitedSerializer.Serialize(trades, Trade.DelimitedFactory, tsv);
 
@@ -205,7 +200,6 @@ List&lt;Trade&gt; positional = DelimitedSerializer.Deserialize(
 // binds by position in Headers order → Symbol = &quot;IBM&quot;, Quantity = 10
 </code></pre>
 <h2 id="step-4---the-same-for-an-ini-section">Step 4 - the same for an INI section</h2>
-<!-- compile -->
 <pre><code class="lang-csharp">using Bodu.Text.Ini;
 using Bodu.Text.Serialization;
 
@@ -221,7 +215,6 @@ public sealed partial class ServerSection
     public TimeSpan? Timeout { get; set; }
 }
 </code></pre>
-<!-- compile -->
 <pre><code class="lang-csharp">var server = new ServerSection { Host = &quot;db.example.com&quot;, Port = 5432, UseTls = true, Timeout = TimeSpan.FromSeconds(90) };
 
 string ini = IniSerializer.SerializeSection(&quot;server&quot;, server, ServerSection.IniFactory);
@@ -241,23 +234,20 @@ string globals = IniSerializer.SerializeSection(&quot;&quot;, server, ServerSect
 </code></pre>
 <p><code>ServerSection.IniFactory.Keys</code> is <code>Host, Port, use_tls, Timeout</code>. A <code>null</code> nullable is left out, as <code>IniSerializer</code> leaves it out under its default <code>WhenWritingNull</code> condition, and an empty value reads back as <code>null</code>. Asking for a section the document does not contain raises <code>IniSerializationException</code>; the configured duplicate-section and duplicate-key policies are applied before the factory sees the entries.</p>
 <h2 id="byte-parity-with-the-reflection-binder">Byte parity with the reflection binder</h2>
-<p>The generated factory is designed to be a drop-in for the reflection path, and the solution's tests pin that: serializing the same records through <code>DelimitedSerializer.Serialize(records)</code> and <code>DelimitedSerializer.Serialize(records, Trade.DelimitedFactory)</code> yields <strong>identical text</strong> - same header names, same column order, same invariant scalar formatting, same quoting. The INI factory writes the same canonical <code>[section]</code> / <code>key=value</code> bytes the reflection binder emits for a section POCO, leaving out the keys the binder leaves out: a member's own <code>[Ignore]</code> condition applies, and a member without one takes <code>WhenWritingNull</code>, the default. A factory never sees <code>IniSerializerOptions</code>, so a <code>DefaultIgnoreCondition</code> other than <code>WhenWritingNull</code> does not reach it.</p>
-<!-- compile -->
+<p>For a type like <code>Trade</code> - settable properties declared on the type, in the order they should be written, with supported scalar types - the generated factory is a drop-in for the reflection path, and the solution's tests pin that: serializing the same records through <code>DelimitedSerializer.Serialize(records)</code> and <code>DelimitedSerializer.Serialize(records, Trade.DelimitedFactory)</code> yields <strong>identical text</strong> - same header names, same column order, same invariant scalar formatting, same quoting. The INI factory writes the same canonical <code>[section]</code> / <code>key=value</code> bytes the reflection binder emits for a section POCO, leaving out the keys the binder leaves out: a member's own <code>[Ignore]</code> condition applies, and a member without one takes <code>WhenWritingNull</code>, the default. A factory never sees <code>IniSerializerOptions</code>, so a <code>DefaultIgnoreCondition</code> other than <code>WhenWritingNull</code> does not reach it.</p>
 <pre><code class="lang-csharp">string reflection = DelimitedSerializer.Serialize(trades);                          // [RequiresUnreferencedCode]
 string generated  = DelimitedSerializer.Serialize(trades, Trade.DelimitedFactory);  // no annotations
 bool same = reflection == generated;                                                // true
 </code></pre>
-<p>The one deliberate divergence: a factory's names are fixed at compile time, so <code>PropertyNamingPolicy</code> on the options is ignored by the factory overloads. Use <code>[PropertyName]</code> to pin wire names, and both paths agree.</p>
+<p>A factory's names are fixed at compile time, so <code>PropertyNamingPolicy</code> on the options is ignored by the factory overloads; use <code>[PropertyName]</code> to pin wire names. That is not the only difference: inherited, get-only and <code>init</code>-only properties, <code>[PropertyOrder]</code>, case-insensitive name matching, <code>[Required]</code> and the unsupported scalar types all separate the two paths, as the package page lists under <a href="../../docs/formats/generators.html#differences-from-the-reflection-binder">Differences from the reflection binder</a>.</p>
 <h2 id="diagnostics-walk-through">Diagnostics walk-through</h2>
 <p>The generator reports three diagnostics, all in category <code>Bodu.Text.Formats.Generators</code>.</p>
 <p><strong><code>BTFG001</code> (error) - the type is not partial.</strong> The most common first-run failure: the attribute is present, the <code>partial</code> modifier is not. No factory is generated, so <code>Trade.DelimitedFactory</code> also fails to resolve.</p>
-<!-- compile -->
 <pre><code class="lang-csharp">[DelimitedRecord]
 public sealed class Trade { … }          // BTFG001: … is not declared partial, so no factory is generated
 </code></pre>
 <p>A nested type must have <em>every</em> containing type marked <code>partial</code> too.</p>
 <p><strong><code>BTFG002</code> (warning) - a member type is not a supported scalar.</strong> The factory is still generated; the flagged member is left out of <code>Headers</code> / <code>Keys</code> and never written or read. Either move the value to a supported scalar (for example, format a <code>Uri</code> as a <code>string</code>), or drop the member with <code>[Ignore]</code> to silence the warning deliberately.</p>
-<!-- compile -->
 <pre><code class="lang-csharp">[DelimitedRecord]
 public sealed partial class Order
 {
@@ -266,7 +256,6 @@ public sealed partial class Order
 }
 </code></pre>
 <p><strong><code>BTFG003</code> (error) - the type is generic.</strong> A static <code>DelimitedFactory</code> property cannot exist on an open generic, and the same applies to a type nested inside a generic type. No source is emitted; close the type over its arguments or write the factory by hand.</p>
-<!-- compile -->
 <pre><code class="lang-csharp">[IniSection]
 public sealed partial class Section&lt;T&gt; { … }   // BTFG003: … is generic (or nested in a generic type), so no factory is generated
 </code></pre>
@@ -296,7 +285,7 @@ public sealed partial class Section&lt;T&gt; { … }   // BTFG003: … is generi
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 8845b19 · Built: 2026-10-13 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: ca28f88 · Built: 2026-10-13 (UTC)</span>
         </div>
       </div>
     </footer>

@@ -122,9 +122,10 @@ IConfiguration configuration = new ConfigurationBuilder()
     .AddTextConfiguration(optional: true, reloadOnChange: false)
     .Build();
 </code></pre>
-<p>The parameterless overload probes for <code>.boduconfig</code> first and then <code>bodu.config</code> in the builder's base path. With <code>optional: true</code> (the default) the call is a no-op when neither file is present; with <code>optional: false</code> it throws <code>FileNotFoundException</code>.</p>
+<p>The parameterless overload probes for <code>.boduconfig</code> first and then <code>bodu.config</code> in the builder's base path. With <code>optional: true</code> (the default) the call is a no-op when neither file is present; with <code>optional: false</code> the call itself throws <code>FileNotFoundException</code>. The builder's default <code>PhysicalFileProvider</code> does not serve dot-prefixed files, so <code>.boduconfig</code> is found only through a provider constructed with <code>ExclusionFilters.None</code> (set with <code>SetFileProvider</code>); otherwise the probe finds only <code>bodu.config</code>.</p>
 <h2 id="pattern-4---stream-backed-source">Pattern 4 - stream-backed source</h2>
-<pre><code class="lang-csharp">using Bodu.Extensions.Configuration.Text;
+<pre><code class="lang-csharp">using System.Text;
+using Bodu.Extensions.Configuration.Text;
 using Bodu.Text.Configuration;
 
 using var ms = new MemoryStream(Encoding.UTF8.GetBytes(iniText));
@@ -134,10 +135,10 @@ IConfiguration configuration = new ConfigurationBuilder()
         stream: ms,
         targetPath: null,
         parseOptions: ConfigurationParseOptions.Relaxed,
-        resolveOptions: ConfigurationResolveOptions.EditorConfigCompatible)
+        resolveOptions: ConfigurationResolveOptions.For(ConfigurationProfile.Relaxed))
     .Build();
 </code></pre>
-<p><code>AddTextConfigurationStream(Stream, …)</code> registers a <code>TextStreamConfigurationSource</code>. Unlike file-backed sources, stream sources do not support reload-on-change - the stream is consumed once during <code>Build()</code>. Use the stream overload when the configuration comes from a network resource, an embedded resource, or anywhere else that cannot be expressed as a file path.</p>
+<p><code>AddTextConfigurationStream(Stream, …)</code> registers a <code>TextStreamConfigurationSource</code>. A stream has no file to root the document at, so with a <code>null</code> target path choose resolve options that do not require a path root: the <code>EditorConfigCompatible</code> and <code>Strict</code> resolve presets set <code>MissingPathRootMode.Throw</code>, and <code>Build()</code> would throw <code>InvalidOperationException</code> unless you also pass a <code>targetPath</code> or set <code>PathRoot</code>. Unlike file-backed sources, stream sources do not support reload-on-change - the stream is consumed once during <code>Build()</code>. Use the stream overload when the configuration comes from a network resource, an embedded resource, or anywhere else that cannot be expressed as a file path.</p>
 <h2 id="pattern-5---pre-parsed-document">Pattern 5 - pre-parsed document</h2>
 <pre><code class="lang-csharp">using Bodu.Extensions.Configuration.Text;
 using Bodu.Text.Configuration;
@@ -152,16 +153,18 @@ IConfiguration configuration = new ConfigurationBuilder()
 <p><code>AddTextConfigurationDocument</code> accepts any <a class="xref" href="../../api/Bodu.Text.Configuration.IniDocumentBase.html">IniDocumentBase</a> - including a
 <a class="xref" href="../../api/Bodu.Text.Configuration.ConfigurationDocument.html">ConfigurationDocument</a>. The bridge resolves the document once and flattens the view into an
 in-memory collection before handing it to the configuration root, so the source is captured <strong>by value</strong>: later mutations to the document do not flow into the configuration, and there is no reload-on-change.</p>
-<p>To author or mutate a document in code rather than parsing one, build an <a class="xref" href="../../api/Bodu.Text.Configuration.IniDocument.html">IniDocument</a> (the configuration library's own INI model) through its public surface (<code>GetOrAddSection</code>, <code>AddEntry</code>) and pass it the same way:</p>
+<p>To author or mutate a document in code rather than parsing one, build an <a class="xref" href="../../api/Bodu.Text.Configuration.IniDocument.html">IniDocument</a> (the configuration library's own INI model) through its public surface (<code>GlobalSection</code>, <code>GetOrAddSection</code>, <code>AddEntry</code>) and pass it the same way. With no target path only the preamble contributes, and a section name is a glob matched against the target path, not a namespace, so put keys meant for every target in the global section:</p>
 <pre><code class="lang-csharp">using Bodu.Extensions.Configuration.Text;
 using Bodu.Text.Configuration;
 
 var doc = new IniDocument();
-doc.GetOrAddSection(&quot;logging&quot;).AddEntry(new IniEntry(&quot;level&quot;, &quot;Debug&quot;));
+doc.GlobalSection.AddEntry(new IniEntry(&quot;logging.level&quot;, &quot;Debug&quot;));
 
 IConfiguration configuration = new ConfigurationBuilder()
     .AddTextConfigurationDocument(doc)
     .Build();
+
+string? level = configuration[&quot;logging:level&quot;];   // &quot;Debug&quot;
 </code></pre>
 <h2 id="pattern-6---fluent-source-configuration">Pattern 6 - fluent source configuration</h2>
 <pre><code class="lang-csharp">using Bodu.Extensions.Configuration.Text;
@@ -190,7 +193,7 @@ IConfiguration configuration = new ConfigurationBuilder()
 
 string? level = configuration[&quot;logging:level&quot;];
 </code></pre>
-<p><code>AddTomlFile(path, optional)</code> registers a <code>TomlConfigurationSource</code>. The source is <strong>read once</strong> when the configuration is built - the TOML bridge is read-only and attaches no reload-on-change watcher, so there is no <code>reloadOnChange</code> parameter (unlike the file-backed INI source in Pattern 1). With <code>optional: true</code> a missing file yields an empty source; with <code>optional: false</code> it throws <code>FileNotFoundException</code>.</p>
+<p><code>AddTomlFile(path, optional)</code> registers a <code>TomlConfigurationSource</code>, which locates the file as <code>AddJsonFile</code> does: a relative path through the builder's file provider (the provider <code>SetFileProvider</code> sets, the base path <code>SetBasePath</code> sets, or by default the application's base directory), a rooted path as it is. The default provider does not serve a file whose name begins with a dot. The source is <strong>read once</strong> when the configuration is built - the TOML bridge is read-only and attaches no reload-on-change watcher, so there is no <code>reloadOnChange</code> parameter (unlike the file-backed INI source in Pattern 1). With <code>optional: true</code> a missing file yields an empty source; with <code>optional: false</code> it throws <code>FileNotFoundException</code>.</p>
 <p>For configuration that arrives as a stream rather than a file path, use the stream overload - the UTF-8 TOML text is consumed once during <code>Build()</code>:</p>
 <pre><code class="lang-csharp">using Bodu.Extensions.Configuration.Text;
 using System.Text;
@@ -226,7 +229,7 @@ IConfiguration configuration = new ConfigurationBuilder()
 
 string? level = configuration[&quot;logging:level&quot;];
 </code></pre>
-<p><code>AddBencodeFile(path, optional)</code> registers a <code>BencodeConfigurationSource</code>. Like the TOML bridge, the source is <strong>read once</strong> when the configuration is built - it is read-only and attaches no reload-on-change watcher. With <code>optional: true</code> a missing file yields an empty source; with <code>optional: false</code> it throws <code>FileNotFoundException</code>.</p>
+<p><code>AddBencodeFile(path, optional)</code> registers a <code>BencodeConfigurationSource</code>, which locates the file as the TOML bridge does. Like the TOML bridge, the source is <strong>read once</strong> when the configuration is built - it is read-only and attaches no reload-on-change watcher. With <code>optional: true</code> a missing file yields an empty source; with <code>optional: false</code> it throws <code>FileNotFoundException</code>.</p>
 <p>For configuration that arrives as a stream, use the stream overload - the Bencode document is consumed once during <code>Build()</code>:</p>
 <!-- compile -->
 <pre><code class="lang-csharp">using Bodu.Extensions.Configuration.Text;
@@ -453,7 +456,7 @@ process lifetime.</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 8845b19 · Built: 2026-10-13 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: ca28f88 · Built: 2026-10-13 (UTC)</span>
         </div>
       </div>
     </footer>

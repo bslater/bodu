@@ -116,7 +116,7 @@ ConfigurationDocument fromFile   = ConfigurationDocument.Load(&quot;appsettings.
 ConfigurationDocument fromStream = ConfigurationDocument.Load(stream, leaveOpen: true);
 ConfigurationDocument fromReader = ConfigurationDocument.Load(new StringReader(source));
 </code></pre>
-<p><code>Load(string)</code> reads UTF-8 by default - pass an <code>Encoding</code> explicitly when the file is not UTF-8. <code>Load(Stream)</code> does not dispose the stream when <code>leaveOpen: true</code>. <code>Load(TextReader)</code> is for callers that already control the reader's lifetime; like <code>Parse</code>, it ignores one U+FEFF that opens the reader's text.</p>
+<p><code>Load(string)</code> reads UTF-8 by default - set <code>DefaultEncoding</code> on the parse options when the file is not UTF-8. <code>Load(Stream)</code> does not dispose the stream when <code>leaveOpen: true</code>. <code>Load(TextReader)</code> is for callers that already control the reader's lifetime; like <code>Parse</code>, it ignores one U+FEFF that opens the reader's text.</p>
 <h2 id="pattern-3---non-throwing-parse">Pattern 3 - non-throwing parse</h2>
 <pre><code class="lang-csharp">using Bodu.Text.Configuration;
 
@@ -149,11 +149,12 @@ ConfigurationDocument document = result.Document;
 
 ConfigurationDocument.Save(document, &quot;out.ini&quot;);
 ConfigurationDocument.Save(document, stream, leaveOpen: false);
-ConfigurationDocument.Save(document, new StreamWriter(path), options: writeOptions);
+using (var writer = new StreamWriter(path))
+    ConfigurationDocument.Save(document, writer, writeOptions);
 </code></pre>
-<p><code>Save</code> writes the document through the library's own INI writer with configurable <code>ConfigurationWriteOptions</code>. Comment trivia is preserved when the input parse retained it (<code>PreserveComments: true</code>, the default).</p>
+<p><code>Save</code> writes the document through the library's own INI writer with configurable <code>ConfigurationWriteOptions</code>. The <code>TextWriter</code> overload neither flushes nor disposes the writer, so dispose it (as above) to commit the text. Comment trivia is preserved when the input parse retained it (<code>PreserveComments: true</code>, the default).</p>
 <h2 id="the-four-profiles">The four profiles</h2>
-<p><code>ConfigurationProfile</code> is the headline behaviour switch. Each profile is a curated set of parse <em>and</em> resolve defaults. Materialise a clean starting point for a profile with the <code>For(profile)</code> factory that each option type exposes - <code>ConfigurationParseOptions.For(profile)</code>, <code>ConfigurationResolveOptions.For(profile)</code>, <code>ConfigurationWriteOptions.For(profile)</code> - then override individual fields for fine-grained tuning.</p>
+<p><code>ConfigurationProfile</code> is the headline behaviour switch. Each profile is a curated set of parse <em>and</em> resolve defaults. Materialise a profile's option set with the <code>For(profile)</code> factory that each option type exposes - <code>ConfigurationParseOptions.For(profile)</code>, <code>ConfigurationResolveOptions.For(profile)</code>, <code>ConfigurationWriteOptions.For(profile)</code> - or the matching static preset. The properties are <code>init</code>-only, so a variation is a new instance that sets the profile's values from the table below and the fields that differ.</p>
 <table>
 <thead>
 <tr>
@@ -251,7 +252,7 @@ ConfigurationDocument.Save(document, new StreamWriter(path), options: writeOptio
 <p>Construct a custom option set when none of the four profiles fits. <code>ConfigurationParseOptions</code> is a sealed class with <code>init</code>-only properties, so an object initialiser builds an immutable, thread-safe instance you can cache and reuse.</p>
 <h3 id="profile-and-presets">Profile and presets</h3>
 <ul>
-<li><code>Profile</code> (<code>ConfigurationProfile</code>, default <code>Bodu</code>) - selects the cohort of defaults above. Setting individual fields below overrides the profile's choice.</li>
+<li><code>Profile</code> (<code>ConfigurationProfile</code>, default <code>Bodu</code>) - labels the option set with the profile it was created from. It is informational: the parser does not read it, and setting it in an object initialiser changes no other field, so <code>new ConfigurationParseOptions { Profile = ConfigurationProfile.Strict }</code> parses with the field defaults below, not the Strict column above. Use <code>For(profile)</code> or a preset to select a profile.</li>
 </ul>
 <h3 id="comment-handling">Comment handling</h3>
 <ul>
@@ -280,12 +281,13 @@ ConfigurationDocument.Save(document, new StreamWriter(path), options: writeOptio
 </ul>
 <h3 id="diagnostic-handling">Diagnostic handling</h3>
 <ul>
-<li><code>DiagnosticMode</code> (<code>ConfigurationDiagnosticMode</code>, default per profile) -
+<li><p><code>DiagnosticMode</code> (<code>ConfigurationDiagnosticMode</code>, default per profile) -</p>
 <ul>
 <li><code>Throw</code> - first recoverable error raises <code>ConfigurationParseException</code> with a single diagnostic.</li>
 <li><code>Collect</code> - parser continues past recoverable errors; diagnostics accumulate on the <code>ConfigurationParseResult</code>.</li>
-<li><code>Ignore</code> - diagnostics dropped silently. Non-recoverable errors still throw.</li>
+<li><code>Ignore</code> - diagnostics dropped silently.</li>
 </ul>
+<p>Under <code>Collect</code> and <code>Ignore</code> parsing never throws <code>ConfigurationParseException</code>; an I/O error from the source propagates unchanged.</p>
 </li>
 </ul>
 <h3 id="trimming-and-limits">Trimming and limits</h3>
@@ -335,7 +337,7 @@ Console.WriteLine(document.Sections[1][&quot;indent_size&quot;]);  // &quot;2&qu
 <p>To go from the parsed <code>ConfigurationDocument</code> to a resolved typed view - including the EditorConfig glob behaviour where <code>[*.cs]</code> matches every <code>.cs</code> file - see <a href="views-and-resolution.html">Views and resolution</a>.</p>
 <h2 id="exceptions">Exceptions</h2>
 <ul>
-<li><strong><code>ConfigurationParseException</code></strong> (derives from <code>FormatException</code>) - raised when <code>DiagnosticMode = Throw</code> hits the first recoverable error, or any time a non-recoverable error occurs. The primary diagnostic is exposed on <code>Diagnostic</code>, every diagnostic gathered before the failure on the <code>Diagnostics</code> array, and <code>Location</code> forwards to the primary diagnostic's source location (or <code>ConfigurationSourceLocation.None</code>).</li>
+<li><strong><code>ConfigurationParseException</code></strong> (derives from <code>FormatException</code>) - raised when <code>DiagnosticMode = Throw</code> hits the first error; never raised by a parse under <code>Collect</code> or <code>Ignore</code>. The diagnostic that stopped the parse is exposed on <code>Diagnostic</code> and as the single entry of the <code>Diagnostics</code> array, and <code>Location</code> forwards to its source location (or <code>ConfigurationSourceLocation.None</code>). Resolving a document raises it as well when a section name is not a valid glob (see <a href="views-and-resolution.html">Views and resolution</a>).</li>
 <li><strong><code>ArgumentException</code></strong> / <strong><code>ArgumentNullException</code></strong> - input string null or stream not readable. Standard BCL contract.</li>
 </ul>
 <h2 id="switching-profiles-at-runtime">Switching profiles at runtime</h2>
@@ -392,13 +394,13 @@ ConfigurationDocument document = lenient.Document;
 </code></pre>
 <p><strong>Trade-offs.</strong> Re-parsing pays the parse cost twice and discards the first
 document, so reserve it for a deliberate validation step rather than the hot
-path. Switching profiles also switches <em>resolve</em> defaults bundled with each
-profile (duplicate handling, section-header strictness), so a value that resolved
-one way under <code>Bodu</code> can resolve differently under <code>EditorConfigCompatible</code> -
-choose the profile once per source and keep the consuming code reading the same
-<code>ConfigurationDocument</code> surface regardless. For fine-grained control without
-swapping the whole cohort, override individual fields on a single options record
-instead (see the field-by-field section above).</p>
+path. Switching the parse profile changes duplicate handling and section-header
+strictness, so a value that resolved one way under <code>Bodu</code> can resolve differently
+under <code>EditorConfigCompatible</code>; the resolve options are a separate object, so
+choose the matching resolve preset as well. Choose the profile once per source
+and keep the consuming code reading the same <code>ConfigurationDocument</code> surface
+regardless. For fine-grained control without swapping the whole cohort, build one
+options instance with the fields you need (see the field-by-field section above).</p>
 <h2 id="when-not-to-use-configurationdocument">When <em>not</em> to use <code>ConfigurationDocument</code></h2>
 <ul>
 <li><strong>Tabular data.</strong> Reach for <a href="../formats/delimited.html"><code>Delimited</code></a>.</li>
@@ -433,7 +435,7 @@ instead (see the field-by-field section above).</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 8845b19 · Built: 2026-10-13 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: ca28f88 · Built: 2026-10-13 (UTC)</span>
         </div>
       </div>
     </footer>

@@ -93,11 +93,12 @@
 <p>For the high-level shape of the library and the pipeline diagram, start with the <a href="index.html">introduction</a>.</p>
 <h2 id="document-and-view">Document and view</h2>
 <p>A <strong>document</strong> is the parsed-but-not-yet-resolved representation of the source text.
-<a class="xref" href="../../api/Bodu.Text.Configuration.ConfigurationDocument.html">ConfigurationDocument</a> is a <code>sealed</code> type that <em>inherits</em> the read-only
+<a class="xref" href="../../api/Bodu.Text.Configuration.ConfigurationDocument.html">ConfigurationDocument</a> is a <code>sealed</code> type that <em>inherits</em> the
 <a class="xref" href="../../api/Bodu.Text.Configuration.IniDocumentBase.html">IniDocumentBase</a> model - the library's own trivia-preserving INI structure, which the reader
 produces - with a preamble (the <a class="xref" href="../../api/Bodu.Text.Configuration.IniDocumentBase.html#Bodu_Text_Configuration_IniDocumentBase_GlobalSection">GlobalSection</a>) and zero or more named
 <a class="xref" href="../../api/Bodu.Text.Configuration.IniDocumentBase.html#Bodu_Text_Configuration_IniDocumentBase_Sections">Sections</a> in source order. The document preserves comments, ordering, and
-duplicate-policy decisions, so it can be re-emitted byte-for-byte.</p>
+duplicate-policy decisions, so it can be re-emitted with the same meaning; the writer canonicalizes the layout (see
+Saving, below).</p>
 <p>Because it derives from <code>IniDocumentBase</code>, every read member of the INI model is available directly on the document:
 <code>doc.GlobalSection[&quot;root&quot;]</code>, <code>doc.Sections[0].Name</code>, <code>section.Entries</code>, <code>section[&quot;indent_size&quot;]</code>, and the typed
 <code>section.TryGetValue&lt;T&gt;(...)</code> accessors all work without first resolving a view. The document-level surface is
@@ -169,7 +170,7 @@ exposes <code>Bodu</code>, <code>EditorConfigCompatible</code>, and <code>Normal
 <tbody>
 <tr>
 <td><code>Profile</code></td>
-<td>The profile this bag represents. Default <code>Bodu</code>.</td>
+<td>The profile the option set was created from. Informational: the reader does not read it. Default <code>Bodu</code>.</td>
 </tr>
 <tr>
 <td><code>InlineCommentMode</code></td>
@@ -232,7 +233,7 @@ handling are free to diverge from the raw-INI dialect.</p>
 <tbody>
 <tr>
 <td><code>Profile</code></td>
-<td>The profile this bag represents. Default <code>Bodu</code>.</td>
+<td>The profile the option set was created from. Informational: the resolver does not read it. Default <code>Bodu</code>.</td>
 </tr>
 <tr>
 <td><code>PathRoot</code></td>
@@ -370,7 +371,7 @@ language follows EditorConfig:</p>
 </tr>
 <tr>
 <td><code>?</code></td>
-<td>Any single character.</td>
+<td>Any single character except <code>/</code>.</td>
 </tr>
 <tr>
 <td><code>[abc]</code> / <code>[!abc]</code></td>
@@ -582,12 +583,14 @@ when it was parsed from a string or loaded from a stream or a text reader.</p>
 emits the document back to text. The writer preserves comment lines, section ordering, and the original property
 ordering within each section, so a parse-then-save round-trip is byte-stable for any document the library produced.
 <a class="xref" href="../../api/Bodu.Text.Configuration.ConfigurationWriteOptions.html">ConfigurationWriteOptions</a> controls encoding (default UTF-8 <em>without</em> BOM), newline style
-(<code>NewLine</code>, default <code>\n</code>), the key/value separator (<code>KeyValueSeparator</code>, default <code>&quot; = &quot;</code>), comment prefix
-(<code>CommentPrefix</code>, default <code>#</code>), and three booleans - <code>PreserveComments</code>, <code>WriteInlineComments</code>, and
-<code>InsertBlankLineBetweenSections</code>. The <code>EditorConfigCompatible</code> preset suppresses inline comments; the <code>Normalized</code>
+(<code>NewLine</code>, default <code>\n</code>), the key/value separator (<code>KeyValueSeparator</code>, default <code>&quot; = &quot;</code>), and three booleans -
+<code>PreserveComments</code>, <code>WriteInlineComments</code>, and <code>InsertBlankLineBetweenSections</code>. <code>CommentPrefix</code> has no effect: every
+comment is written with the prefix it was read or created with. The <code>EditorConfigCompatible</code> preset suppresses inline comments; the <code>Normalized</code>
 preset (which is <code>For(ConfigurationProfile.Strict)</code>) additionally drops preserved comments for deterministic output.</p>
 <p>For documents the library <em>did not</em> produce - hand-authored INI files with idiosyncratic whitespace - the writer
-emits canonical formatting, so the round-trip is semantically stable but may rearrange incidental whitespace.</p>
+emits canonical formatting, so the round-trip is semantically stable but may rearrange incidental whitespace. Comment
+lines after the last entry of a file are read as leading comments of the section that holds that entry, so they are
+written above that section's header.</p>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
 <li><strong><a href="getting-started.html">Getting started</a></strong> - install + runnable minimal samples.</li>
@@ -614,7 +617,7 @@ emits canonical formatting, so the round-trip is semantically stable but may rea
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 8845b19 · Built: 2026-10-13 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: ca28f88 · Built: 2026-10-13 (UTC)</span>
         </div>
       </div>
     </footer>

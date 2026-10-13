@@ -201,9 +201,8 @@
 </tbody>
 </table>
 <p>The writer emits the delimiter and quote as single UTF-8 bytes, so its constructors throw <code>ArgumentException</code> for a delimiter, quote, or comment character outside ASCII, for a carriage return or a line feed, and for any two of them that are the same character (<a href="../../docs/formats/parser-policies.html">parser policies</a> states the rule for the reader too).</p>
-<p>A field is quoted when the reader would otherwise read it back differently: when it contains the delimiter, the quote, or a line break; when it begins or ends with a space or a tab, which a reader with <code>TrimFields</code> would trim; when it is a record's first field and begins with <code>CommentChar</code>, which a reader that allows comments would skip; and when it is the only field of its record and is empty, which would otherwise be an empty line. Every other field is written bare.</p>
+<p>A field is quoted when the reader would otherwise read it back differently: when it contains the delimiter, the quote, or a line break; when it begins or ends with a space or a tab, which a reader with <code>TrimFields</code> would trim; when it is a record's first field and begins with <code>CommentChar</code>, which a reader that allows comments would skip; when it is the first field the writer writes and begins with U+FEFF, which the reader would skip as a byte order mark; and when it is the only field of its record and is empty, which would otherwise be an empty line. Every other field is written bare.</p>
 <p>Records written as objects (<code>WriteStartObject</code> / <code>WritePropertyName</code> / <code>WriteString</code>) emit a header from the first record's property names unless <code>NoHeader</code> is set. A tab-separated, header-less file with single-quote quoting:</p>
-<!-- compile -->
 <pre><code class="lang-csharp">using System.Buffers;
 using Bodu.Text.Delimited.Writer;
 
@@ -218,10 +217,11 @@ writer.WriteEndArray();
 writer.Flush();
 // MSFT\t'tab\there'\r\n
 </code></pre>
-<p>The value containing a tab is quoted with <code>'</code> because the tab is now the delimiter. The same records with the default options produce a header and RFC 4180 double-quote doubling:</p>
-<pre><code class="lang-text">symbol,note
-MSFT,&quot;say &quot;&quot;hi&quot;&quot;, now&quot;
+<p>The value containing a tab is quoted with <code>'</code> because the tab is now the delimiter. The same record with the default options produces a header row, and the tab, now ordinary text, is written bare:</p>
+<pre><code class="lang-text">symbol,note\r\n
+MSFT,tab\there\r\n
 </code></pre>
+<p>A field holding the default quote is quoted with its quotes doubled, as RFC 4180 requires: <code>say &quot;hi&quot;, now</code> is written <code>&quot;say &quot;&quot;hi&quot;&quot;, now&quot;</code>.</p>
 <p>Records end with <code>\r\n</code> in both dialects. <code>DelimitedSerializerOptions</code> exposes the same four members and forwards them to this struct (and to the reader options) on your behalf.</p>
 <h2 id="pattern-2---dotenv-writer-the-export-prefix">Pattern 2 - DotEnv writer: the <code>export</code> prefix</h2>
 <table>
@@ -243,7 +243,6 @@ MSFT,&quot;say &quot;&quot;hi&quot;&quot;, now&quot;
 </tbody>
 </table>
 <p>The option sets the default for the one-argument <code>WritePropertyName</code>; the two-argument overload <code>WritePropertyName(name, export)</code> decides per key and ignores the option:</p>
-<!-- compile -->
 <pre><code class="lang-csharp">using Bodu.Text.DotEnv.Writer;
 
 var buffer = new ArrayBufferWriter&lt;byte&gt;();
@@ -259,6 +258,7 @@ writer.Flush();
 // SECRET=&quot;s3cret #1&quot;
 </code></pre>
 <p>The value containing <code> #</code> is double-quoted automatically, because unquoted it would read back as <code>s3cret</code> followed by a comment. <code>DotEnvSerializerOptions.WriteExportPrefix</code> is the serializer-level form of the same flag; the mutable <code>DotEnvObject</code> DOM preserves each entry's own export flag instead.</p>
+<p>A key cannot be quoted, so the writer accepts only the keys the reader reads, which match <code>[A-Za-z_][A-Za-z0-9_]*</code>: <code>WritePropertyName</code> throws <code>ArgumentException</code> for an empty name or one holding <code>=</code>, <code>#</code>, white space, a line break or any other character, and <code>DotEnvSerializer</code> reports such a member name or dictionary key as a <code>DotEnvSerializationException</code> naming the key. <code>WriteComment</code> writes one <code>#</code> line per line of its text, so a line break in a comment cannot start an entry.</p>
 <h2 id="pattern-3---ini-writer-the-comment-prefix">Pattern 3 - INI writer: the comment prefix</h2>
 <table>
 <thead>
@@ -278,7 +278,6 @@ writer.Flush();
 </tr>
 </tbody>
 </table>
-<!-- compile -->
 <pre><code class="lang-csharp">using Bodu.Text.Ini.Writer;
 
 var buffer = new ArrayBufferWriter&lt;byte&gt;();
@@ -320,7 +319,6 @@ writer.Flush();
 </tbody>
 </table>
 <p>A Bencode document is single-valued; the writer enforces that unless told otherwise:</p>
-<!-- compile -->
 <pre><code class="lang-csharp">using Bodu.Text.Bencode.Writer;
 
 var buffer = new ArrayBufferWriter&lt;byte&gt;();
@@ -329,14 +327,12 @@ writer.WriteInteger(1);
 writer.WriteInteger(2);
 // → throws InvalidOperationException: A complete root value has already been written; a Bencode document is single-valued unless AllowMultipleRootValues is set.
 </code></pre>
-<!-- compile -->
 <pre><code class="lang-csharp">var writer = new Utf8BencodeWriter(buffer, new BencodeWriterOptions { AllowMultipleRootValues = true });
 writer.WriteInteger(1);
 writer.WriteString(&quot;two&quot;);
 // i1e3:two
 </code></pre>
 <p>Multiple roots are how a stream of bencoded messages (a DHT or peer-wire log, for example) is written to one buffer. The depth guard is the same family of error the serializer raises:</p>
-<!-- compile -->
 <pre><code class="lang-csharp">var writer = new Utf8BencodeWriter(buffer, new BencodeWriterOptions { MaxDepth = 1 });
 writer.WriteStartList();
 writer.WriteStartList();
@@ -367,7 +363,6 @@ writer.WriteStartList();
 </tr>
 </tbody>
 </table>
-<!-- compile -->
 <pre><code class="lang-csharp">using Bodu.Text.Toml.Writer;
 
 var buffer = new ArrayBufferWriter&lt;byte&gt;();
@@ -380,7 +375,6 @@ writer.WriteStartTable();
 // → throws TomlSerializationException: The maximum write depth of 1 has been exceeded.
 </code></pre>
 <p>With <code>MaxDepth = 2</code> the same two-level document renders - note that the TOML writer delivers its bytes when the <em>root table closes</em>, because it must decide between inline and header-defined tables with the whole document in hand:</p>
-<!-- compile -->
 <pre><code class="lang-csharp">var writer = new Utf8TomlWriter(buffer, new TomlWriterOptions { MaxDepth = 2 });
 writer.WriteStartTable();
 writer.WritePropertyName(&quot;server&quot;);
@@ -422,7 +416,6 @@ writer.WriteEndTable();
 </tr>
 </tbody>
 </table>
-<!-- compile -->
 <pre><code class="lang-csharp">using Bodu.Text.Yaml.Writer;
 
 var buffer = new ArrayBufferWriter&lt;byte&gt;();
@@ -444,7 +437,6 @@ writer.WriteEndMapping();
 //         - b\r\n
 </code></pre>
 <p>The default options render the same document at two spaces with <code>\n</code>. Unlike the other writer structs, <code>YamlWriterOptions</code> is <strong>validated at construction</strong> rather than at the point of use:</p>
-<!-- compile -->
 <pre><code class="lang-csharp">new Utf8YamlWriter(buffer, new YamlWriterOptions { NewLine = &quot;\r&quot; });
 // → throws ArgumentException: The writer newline must be null, a line feed, or a carriage-return line feed. (Parameter 'NewLine')
 
@@ -490,7 +482,6 @@ new Utf8YamlWriter(buffer, new YamlWriterOptions { IndentSize = 32 });
 </tbody>
 </table>
 <p>The node options govern <em>lookup</em>; the document options govern <em>parsing</em>, and <code>BencodeNode.Parse</code> has an overload that takes both so a mutable tree can be built from lenient input:</p>
-<!-- compile -->
 <pre><code class="lang-csharp">using Bodu.Text.Bencode.Document;
 using Bodu.Text.Bencode.Nodes;
 
@@ -546,7 +537,6 @@ long viaNode = BencodeNode.Parse(&quot;d1:bi1e1:ai2ee&quot;u8, default, new Benc
 </tr>
 </tbody>
 </table>
-<!-- compile -->
 <pre><code class="lang-csharp">using Bodu.Text.Toml;
 using Bodu.Text.Toml.Document;
 using Bodu.Text.Toml.Nodes;
@@ -601,7 +591,6 @@ long inner = d.RootElement.GetProperty(&quot;x&quot;).GetProperty(&quot;a&quot;)
 </tr>
 </tbody>
 </table>
-<!-- compile -->
 <pre><code class="lang-csharp">using Bodu.Text.Yaml;
 using Bodu.Text.Yaml.Document;
 
@@ -664,7 +653,6 @@ YamlDocument.Parse(&quot;a:\n  b: 1&quot;, new YamlDocumentOptions { MaxDepth = 
 </tbody>
 </table>
 <p>The <code>Parse</code> overloads on both INI DOMs take the reader options and the document options together:</p>
-<!-- compile -->
 <pre><code class="lang-csharp">using Bodu.Text.Ini;
 using Bodu.Text.Ini.Nodes;
 using Bodu.Text.Ini.Reader;
@@ -761,7 +749,7 @@ IniNode.Parse(Encoding.UTF8.GetBytes(ini), new IniReaderOptions { DisallowHashCo
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 8845b19 · Built: 2026-10-13 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: ca28f88 · Built: 2026-10-13 (UTC)</span>
         </div>
       </div>
     </footer>

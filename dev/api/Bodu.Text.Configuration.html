@@ -137,7 +137,7 @@
 <ul>
 <li><a class="xref" href="Bodu.Text.Configuration.ConfigurationDiagnostic.html">ConfigurationDiagnostic</a> - immutable record carrying <code>Severity</code>, <code>Code</code>, <code>Message</code>, <code>Location</code>.</li>
 <li><a class="xref" href="Bodu.Text.Configuration.ConfigurationDiagnosticSeverity.html">ConfigurationDiagnosticSeverity</a> - <code>Info</code>, <code>Warning</code>, <code>Error</code>.</li>
-<li><a class="xref" href="Bodu.Text.Configuration.ConfigurationDiagnosticCode.html">ConfigurationDiagnosticCode</a> - stable category identifier (duplicate key, invalid section header, invalid unset, line-length exceeded, …).</li>
+<li><a class="xref" href="Bodu.Text.Configuration.ConfigurationDiagnosticCode.html">ConfigurationDiagnosticCode</a> - stable category identifier (duplicate key, invalid section header, line-length exceeded, invalid section glob, …).</li>
 <li><a class="xref" href="Bodu.Text.Configuration.ConfigurationDiagnosticMode.html">ConfigurationDiagnosticMode</a> - <code>Throw</code> (default), <code>Collect</code>, <code>Ignore</code>.</li>
 <li><a class="xref" href="Bodu.Text.Configuration.ConfigurationSourceLocation.html">ConfigurationSourceLocation</a> - line / column / file metadata pointing into the source text.</li>
 </ul>
@@ -195,9 +195,9 @@ string canonicalText = sw.ToString();
 <li><strong>Thread safety.</strong> The view is safe to read from any number of threads concurrently. The parser, resolver, and save APIs are short-lived and stateless across calls; the document model itself is not thread-safe for concurrent mutation but is safe for concurrent read.</li>
 <li><strong>Determinism.</strong> All parsing, resolving, and typed conversion uses <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.globalization.cultureinfo.invariantculture">InvariantCulture</a>. Output bytes from <code>Save</code> are byte-stable for documents the library produced; documents authored by hand may be reformatted to the canonical layout on first save.</li>
 <li><strong>Last-wins precedence.</strong> The resolver walks the document once in source order; for any configuration key, the value from the later matching section wins. There is no override / inherit hierarchy beyond &quot;later in the file wins&quot; - this matches EditorConfig and is intentional.</li>
-<li><strong>EditorConfig conformance.</strong> Setting the profile to <a class="xref" href="Bodu.Text.Configuration.ConfigurationProfile.html#Bodu_Text_Configuration_ConfigurationProfile_EditorConfigCompatible">EditorConfigCompatible</a> aligns inline-comment, preamble, key-mapping, and unset behaviour with the EditorConfig 0.17.2 specification. Bodu-specific extensions (whitespace-introduced inline comments, dotted-to-colon key mapping, preamble layering) are opt-out under that profile.</li>
+<li><strong>EditorConfig conformance.</strong> Parsing and resolving with the <a class="xref" href="Bodu.Text.Configuration.ConfigurationProfile.html#Bodu_Text_Configuration_ConfigurationProfile_EditorConfigCompatible">EditorConfigCompatible</a> option sets (<code>ConfigurationParseOptions.EditorConfigCompatible</code> and <code>ConfigurationResolveOptions.EditorConfigCompatible</code>, or <code>For(profile)</code>) aligns inline-comment, preamble, key-mapping, and unset behaviour with the EditorConfig 0.17.2 specification. Bodu-specific extensions (whitespace-introduced inline comments, dotted-to-colon key mapping, preamble layering) are opt-out under that profile.</li>
 <li><strong>Validation.</strong> Public entry points validate inputs through <code>ThrowHelper</code> and the package-local <code>ConfigurationThrowHelper</code>. Null inputs surface as <code>ArgumentNullException</code>; empty or whitespace strings surface as <code>ArgumentException</code> with the parameter name set via <code>CallerArgumentExpression</code>.</li>
-<li><strong>See also:</strong> the <a href="../docs/text-configuration/index.html">introduction</a>, <a href="../docs/text-configuration/concepts.html">core concepts</a>, and <a href="../docs/text-configuration/getting-started.html">getting-started</a>; the underlying <a class="xref" href="Bodu.Text.Configuration.IniDocument.html">IniDocument</a> model; and the <code>Microsoft.Extensions.Configuration</code> bridge in <a href="../docs/extensions-configuration-text/index.html">Bodu.Extensions.Configuration.Text</a>.</li>
+<li><strong>See also:</strong> the <a href="../docs/text-configuration/index.html">introduction</a>, <a href="../docs/text-configuration/concepts.html">core concepts</a>, and <a href="../docs/text-configuration/getting-started.html">getting-started</a>; the underlying <a class="xref" href="Bodu.Text.Configuration.IniDocumentBase.html">IniDocumentBase</a> model; and the <code>Microsoft.Extensions.Configuration</code> bridge in <a href="../docs/extensions-configuration-text/index.html">Bodu.Extensions.Configuration.Text</a>.</li>
 </ul>
 </div>
   <div class="markdown level0 remarks"></div>
@@ -409,7 +409,7 @@ removes the effect of any previously set property for the matching path.</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 8845b19 · Built: 2026-10-13 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: ca28f88 · Built: 2026-10-13 (UTC)</span>
         </div>
       </div>
     </footer>
