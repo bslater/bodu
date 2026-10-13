@@ -49,23 +49,9 @@ public static partial class DateOnlyExtensions
         ThrowHelper.ThrowIfEnumValueIsUndefined(dayOfWeek);
         ThrowHelper.ThrowIfEnumValueIsUndefined(ordinal);
 
-        switch (ordinal)
-        {
-            case Extensions.WeekOrdinal.First:
-                return date.FirstDateOfWeekInMonth(dayOfWeek);
+        if (!TryGetNthDateOfWeekInMonth(date.Year, date.Month, dayOfWeek, ordinal, out DateOnly result)) throw new ArgumentOutOfRangeException(nameof(ordinal), string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_Invalid_OrdinalDoesNotExistForMonth, ordinal, dayOfWeek, date.ToString("MMMM yyyy", CultureInfo.CurrentCulture)));
 
-            case Extensions.WeekOrdinal.Last:
-                return date.LastDateOfWeekInMonth(dayOfWeek);
-
-            default:
-                int dayNumber = DateTimeExtensions.GetDayNumberUnchecked(date.Year, date.Month, 1);
-                var result = DateOnly.FromDayNumber(
-                    dayNumber + (((int)dayOfWeek - (int)GetDayOfWeekFromDayNumber(dayNumber) + 7) % 7) + (((int)ordinal - 1) * 7));
-
-                if (result.Month != date.Month) throw new ArgumentOutOfRangeException(nameof(ordinal), string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_Invalid_OrdinalDoesNotExistForMonth, ordinal, dayOfWeek, date.ToString("MMMM yyyy", CultureInfo.CurrentCulture)));
-
-                return result;
-        }
+        return result;
     }
 
     /// <summary>
@@ -116,21 +102,9 @@ public static partial class DateOnlyExtensions
         ThrowHelper.ThrowIfEnumValueIsUndefined(dayOfWeek);
         ThrowHelper.ThrowIfEnumValueIsUndefined(ordinal);
 
-        switch (ordinal)
-        {
-            case Extensions.WeekOrdinal.First:
-                return DateOnly.FromDayNumber(DateOnlyExtensions.GetFirstDateOfWeekInMonthDayNumber(year, month, dayOfWeek));
+        if (!TryGetNthDateOfWeekInMonth(year, month, dayOfWeek, ordinal, out DateOnly result)) throw new ArgumentOutOfRangeException(nameof(ordinal), string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_Invalid_OrdinalDoesNotExistForMonth, ordinal, dayOfWeek, new DateOnly(year, month, 1).ToString("MMMM yyyy", CultureInfo.CurrentCulture)));
 
-            case Extensions.WeekOrdinal.Last:
-                return DateOnly.FromDayNumber(DateOnlyExtensions.GetLastDateOfWeekInMonthDayNumber(year, month, dayOfWeek));
-
-            default:
-                var result = DateOnly.FromDayNumber(DateOnlyExtensions.GetFirstDateOfWeekInMonthDayNumber(year, month, dayOfWeek) + (((int)ordinal - 1) * 7));
-
-                if (result.Month != month) throw new ArgumentOutOfRangeException(nameof(ordinal), string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_Invalid_OrdinalDoesNotExistForMonth, ordinal, dayOfWeek, new DateOnly(year, month, 1).ToString("MMMM yyyy", CultureInfo.CurrentCulture)));
-
-                return result;
-        }
+        return result;
     }
 
     /// <summary>
@@ -149,9 +123,11 @@ public static partial class DateOnlyExtensions
     /// </returns>
     /// <remarks>
     /// <para>
-    /// This is the one definition of the nth weekday of a month that callers needing a non-throwing answer share, such
-    /// as the notable-date strategies. It validates nothing: <paramref name="year" /> must lie between 1 and 9999,
-    /// <paramref name="month" /> between 1 and 12, and <paramref name="dayOfWeek" /> must be defined.
+    /// This is the one definition of the nth weekday of a month. The public <c>NthDateOfWeekInMonth</c> and
+    /// <c>GetNthDateOfWeekInMonth</c> members of <see cref="DateOnlyExtensions" /> and
+    /// <see cref="DateTimeExtensions" /> throw where it finds no date, and callers needing a non-throwing answer, such
+    /// as the notable-date strategies, share it. It validates nothing: <paramref name="year" /> must lie between 1 and
+    /// 9999, <paramref name="month" /> between 1 and 12, and <paramref name="dayOfWeek" /> must be defined.
     /// </para>
     /// <para>
     /// A missing occurrence is never built as a date, so the method neither throws nor leaves the range of
