@@ -75,7 +75,10 @@ public sealed class MonthlyWeekdayRecurrenceStrategy
     /// <summary>
     /// Gets the ordinal position of the weekday within the month.
     /// </summary>
-    /// <value>The configured <see cref="Bodu.Extensions.WeekOrdinal" /> position.</value>
+    /// <value>
+    /// The configured <see cref="Bodu.Extensions.WeekOrdinal" /> position. A value the enumeration does not define is
+    /// kept, and the strategy yields no occurrence for it.
+    /// </value>
     public WeekOrdinal WeekOrdinal { get; }
 
     /// <summary>

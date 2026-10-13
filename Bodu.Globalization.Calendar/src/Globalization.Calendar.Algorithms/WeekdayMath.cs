@@ -80,11 +80,13 @@ internal static class WeekdayMath
     /// <param name="ordinal">The occurrence to select.</param>
     /// <returns>
     /// The matching date, or <see langword="null" /> when the requested ordinal does not exist in the month (for
-    /// example a fifth occurrence in a month that has only four).
+    /// example a fifth occurrence in a month that has only four), or is not a value <see cref="WeekOrdinal" /> defines.
     /// </returns>
     public static DateOnly? NthWeekdayInMonth(int year, int month, DayOfWeek dayOfWeek, WeekOrdinal ordinal)
     {
-        if (year < 1 || year > 9999 || month < 1 || month > 12)
+        // An undefined ordinal names no occurrence. Stepping whole weeks for one would reach the same month of another
+        // year, or leave the range of DateOnly.
+        if (year < 1 || year > 9999 || month < 1 || month > 12 || ordinal is < WeekOrdinal.First or > WeekOrdinal.Last)
             return null;
 
         if (ordinal == WeekOrdinal.Last)
