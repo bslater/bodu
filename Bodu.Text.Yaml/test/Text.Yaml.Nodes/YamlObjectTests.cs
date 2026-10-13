@@ -12,7 +12,7 @@ namespace Bodu.Text.Yaml.Nodes;
 /// Verifies the mapping surface of <see cref="YamlObject" />, the mutable mapping node.
 /// </summary>
 [TestClass]
-public sealed class YamlObjectTests
+public sealed partial class YamlObjectTests
 {
     /// <summary>
     /// Verifies that a new mapping is empty.

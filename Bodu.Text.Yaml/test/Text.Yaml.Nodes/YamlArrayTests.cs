@@ -16,7 +16,7 @@ namespace Bodu.Text.Yaml.Nodes;
 /// enumeration were all untested, as was writing a sequence back out after an edit.
 /// </remarks>
 [TestClass]
-public class YamlArrayTests
+public partial class YamlArrayTests
 {
     /// <summary>
     /// Builds a sequence of scalar strings.
