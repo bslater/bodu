@@ -58,4 +58,19 @@ public partial class MoneyBagJsonConverterPolicyTests
 
         Assert.AreEqual(original, recovered);
     }
+
+    /// <summary>
+    /// Verifies that the compact policy rejects a flat map that repeats an ISO code with <see cref="JsonException" />
+    /// rather than summing the repeated balances.
+    /// </summary>
+    [TestMethod]
+    public void Read_WhenCompactPolicyAndIsoCodeRepeated_ShouldThrowJsonException()
+    {
+        string json = "{\"USD\":1.00,\"USD\":2.00}";
+
+        _ = Assert.ThrowsExactly<JsonException>(() =>
+        {
+            _ = JsonSerializer.Deserialize<MoneyBag>(json, Options(FinancialJsonPolicy.Compact));
+        });
+    }
 }
