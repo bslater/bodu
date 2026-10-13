@@ -407,4 +407,154 @@ public partial class NotableDateDocumentBuilderTests
 
         return json;
     }
+
+    /// <summary>The adjustment policy the field test documents declare unless a scenario replaces it.</summary>
+    private const string DefaultFieldPolicyJson =
+        """{ "id": "policy", "trigger": { "type": "IfWeekend" }, "action": { "type": "MoveToNextWorkingDay" }, "emission": { "mode": "ObservedOnly" } }""";
+
+    /// <summary>
+    /// The field test scenarios, each naming the adjustment policy, the root <c>imports</c> property, and the extra
+    /// <c>PatchRule</c> properties its document declares.
+    /// </summary>
+    private static readonly Dictionary<string, (string Policy, string Imports, string Patch)> s_jsonFieldScenarios = new(StringComparer.Ordinal)
+    {
+        ["import with a use"] = (DefaultFieldPolicyJson, """ "imports": [ { "resource": "lib", "uses": [ { "notableDateRef": "lib-day", "as": "library-day", "territory": "AU", "category": "Cultural", "nonWorking": true, "adjustments": [ "policy" ] } ] } ], """, string.Empty),
+        ["import of a whole resource"] = (DefaultFieldPolicyJson, """ "imports": [ { "resource": "lib" } ], """, string.Empty),
+        ["trigger month and day"] = ("""{ "id": "policy", "trigger": { "type": "IfBeforeFixedDate", "month": "June", "day": 15 }, "action": { "type": "AddDays", "days": 1 }, "emission": { "mode": "ObservedOnly" } }""", string.Empty, string.Empty),
+        ["trigger numeric month"] = ("""{ "id": "policy", "trigger": { "type": "IfAfterFixedDate", "month": 6, "day": 15 }, "action": { "type": "AddDays", "days": 1 }, "emission": { "mode": "ObservedOnly" } }""", string.Empty, string.Empty),
+        ["trigger weekOrdinal"] = ("""{ "id": "policy", "trigger": { "type": "IfNthOccurrenceInMonth", "weekOrdinal": "Second", "weekdays": [ "Monday" ] }, "action": { "type": "AddDays", "days": 1 }, "emission": { "mode": "ObservedOnly" } }""", string.Empty, string.Empty),
+        ["trigger handlerKey"] = ("""{ "id": "policy", "trigger": { "type": "Custom", "handlerKey": "my-trigger" }, "action": { "type": "AddDays", "days": 1 }, "emission": { "mode": "ObservedOnly" } }""", string.Empty, string.Empty),
+        ["action replacement rule"] = ("""{ "id": "policy", "trigger": { "type": "IfWeekend" }, "action": { "type": "ReplaceWithRule", "notableDateRef": "other", "ruleRef": "r" }, "emission": { "mode": "ObservedOnly" } }""", string.Empty, string.Empty),
+        ["action handlerKey and parameters"] = ("""{ "id": "policy", "trigger": { "type": "IfWeekend" }, "action": { "type": "Custom", "handlerKey": "my-action" }, "emission": { "mode": "ObservedOnly" }, "parameters": { "offset": "2", "mode": "fast" } }""", string.Empty, string.Empty),
+        ["scope rule references and years"] = ("""{ "id": "policy", "scope": { "ruleRefs": [ { "notableDateRef": "anchor", "ruleRef": "r" } ], "fromYear": 2000, "toYear": 2100, "onlyYears": [ 2026 ], "exceptYears": [ 2027 ] }, "trigger": { "type": "IfWeekend" }, "action": { "type": "MoveToNextWorkingDay" }, "emission": { "mode": "ObservedOnly" } }""", string.Empty, string.Empty),
+        ["patch strategy"] = (DefaultFieldPolicyJson, string.Empty, """, "strategy": { "fixed": { "month": 5, "day": 2 } }"""),
+        ["patch recurrence"] = (DefaultFieldPolicyJson, string.Empty, """, "recurrence": { "monthlyDay": { "dayOfMonth": 15 } }"""),
+        ["patch duration"] = (DefaultFieldPolicyJson, string.Empty, """, "duration": { "untilDate": { "strategy": { "fixed": { "month": 4, "day": 3 } } } }"""),
+        ["patch applicability"] = (DefaultFieldPolicyJson, string.Empty, """, "applicability": { "calendar": "Gregorian", "territories": [ "NZ" ], "fromYear": 2000, "onlyYears": [ 2026 ] }"""),
+        ["patch empty applicability"] = (DefaultFieldPolicyJson, string.Empty, """, "applicability": { }"""),
+        ["patch tags"] = (DefaultFieldPolicyJson, string.Empty, """, "tags": [ "civic" ]"""),
+        ["patch adjustments"] = (DefaultFieldPolicyJson, string.Empty, """, "adjustments": [ "policy" ]"""),
+        ["every field"] = (
+            """{ "id": "policy", "scope": { "ruleRefs": [ { "notableDateRef": "anchor", "ruleRef": "r" } ], "fromYear": 2000, "toYear": 2100, "onlyYears": [ 2026 ], "exceptYears": [ 2027 ] }, "trigger": { "type": "IfBeforeFixedDate", "month": "June", "day": 15 }, "action": { "type": "ReplaceWithRule", "notableDateRef": "other", "ruleRef": "r" }, "emission": { "mode": "ObservedOnly" }, "parameters": { "offset": "2" } }""",
+            """ "imports": [ { "resource": "lib", "uses": [ { "notableDateRef": "lib-day", "as": "library-day", "territory": "AU", "category": "Cultural", "nonWorking": true, "adjustments": [ "policy" ] } ] } ], """,
+            """, "strategy": { "fixed": { "month": 5, "day": 2 } }, "duration": { "untilDate": { "strategy": { "fixed": { "month": 5, "day": 4 } } } }, "applicability": { "territories": [ "NZ" ] }, "tags": [ "civic" ], "adjustments": [ "policy" ]"""),
+        ["patch empty tags"] = (DefaultFieldPolicyJson, string.Empty, """, "tags": [ ]"""),
+        ["patch empty adjustments"] = (DefaultFieldPolicyJson, string.Empty, """, "adjustments": [ ]"""),
+        ["import use empty adjustments"] = (DefaultFieldPolicyJson, """ "imports": [ { "resource": "lib", "uses": [ { "notableDateRef": "lib-day", "adjustments": [ ] } ] } ], """, string.Empty),
+        ["unqualified scope rule reference"] = ("""{ "id": "policy", "scope": { "ruleRefs": [ "r" ] }, "trigger": { "type": "IfWeekend" }, "action": { "type": "MoveToNextWorkingDay" }, "emission": { "mode": "ObservedOnly" } }""", string.Empty, string.Empty),
+        ["handler parameter that is an object"] = ("""{ "id": "policy", "trigger": { "type": "IfWeekend" }, "action": { "type": "Custom", "handlerKey": "my-action" }, "emission": { "mode": "ObservedOnly" }, "parameters": { "options": { "fast": true } } }""", string.Empty, string.Empty),
+        ["scope rule reference without a concept"] = ("""{ "id": "policy", "scope": { "ruleRefs": [ { "ruleRef": "r" } ] }, "trigger": { "type": "IfWeekend" }, "action": { "type": "MoveToNextWorkingDay" }, "emission": { "mode": "ObservedOnly" } }""", string.Empty, string.Empty),
+    };
+
+    /// <summary>
+    /// Verifies that a JSON document declaring a field <see cref="NotableDateResourceLoader" /> reads builds, through
+    /// the builder, into the same resource the loader loads, compared byte for byte as binary rule packs, rather than
+    /// into one the builder dropped the field from.
+    /// </summary>
+    /// <param name="scenario">The name of the field scenario.</param>
+    [TestMethod]
+    [DataRow("import with a use")]
+    [DataRow("import of a whole resource")]
+    [DataRow("trigger month and day")]
+    [DataRow("trigger numeric month")]
+    [DataRow("trigger weekOrdinal")]
+    [DataRow("trigger handlerKey")]
+    [DataRow("action replacement rule")]
+    [DataRow("action handlerKey and parameters")]
+    [DataRow("scope rule references and years")]
+    [DataRow("patch strategy")]
+    [DataRow("patch recurrence")]
+    [DataRow("patch duration")]
+    [DataRow("patch applicability")]
+    [DataRow("patch empty applicability")]
+    [DataRow("patch tags")]
+    [DataRow("patch adjustments")]
+    [DataRow("every field")]
+    public void FromJson_WhenDocumentDeclaresField_ShouldBuildWhatLoadJsonLoads(string scenario)
+    {
+        string json = FieldScenarioJson(scenario);
+
+        NotableDateResource loaded = NotableDateResourceLoader.LoadJson(json, BuilderEnumImportResolver);
+        NotableDateResource built = NotableDateDocumentBuilder.FromJson(json).Build(BuilderEnumImportResolver);
+
+        CollectionAssert.AreEqual(PackBytes(loaded), PackBytes(built), scenario);
+    }
+
+    /// <summary>
+    /// Verifies that the valid JSON documents the builder tests use build, through the builder, into the same resource
+    /// the loader loads, compared byte for byte as binary rule packs.
+    /// </summary>
+    [TestMethod]
+    public void FromJson_WhenTestDocumentIsValid_ShouldBuildWhatLoadJsonLoads()
+    {
+        foreach (string json in new[] { EnumFieldJson(null, null), ScalarFieldJson(null, null), WorkingDaysJson("1111100") })
+        {
+            NotableDateResource loaded = NotableDateResourceLoader.LoadJson(json, BuilderEnumImportResolver);
+            NotableDateResource built = NotableDateDocumentBuilder.FromJson(json).Build(BuilderEnumImportResolver);
+
+            CollectionAssert.AreEqual(PackBytes(loaded), PackBytes(built), loaded.ResourceId);
+        }
+    }
+
+    /// <summary>
+    /// Verifies that a JSON field the builder's document model cannot represent, an explicitly empty list that clears
+    /// what a patch or an import would otherwise keep, a scope rule reference without its concept, or a handler
+    /// parameter whose value is not a scalar, is rejected with a <see cref="NotSupportedException" /> rather than
+    /// dropped or read differently.
+    /// </summary>
+    /// <param name="scenario">The name of the field scenario.</param>
+    [TestMethod]
+    [DataRow("patch empty tags")]
+    [DataRow("patch empty adjustments")]
+    [DataRow("import use empty adjustments")]
+    [DataRow("unqualified scope rule reference")]
+    [DataRow("scope rule reference without a concept")]
+    [DataRow("handler parameter that is an object")]
+    public void FromJson_WhenFieldCannotBeRepresented_ShouldThrowNotSupportedException(string scenario)
+    {
+        string json = FieldScenarioJson(scenario);
+
+        _ = Assert.ThrowsExactly<NotSupportedException>(() =>
+        {
+            _ = NotableDateDocumentBuilder.FromJson(json);
+        });
+    }
+
+    /// <summary>
+    /// Writes a resource as a binary rule pack, the byte-for-byte form two resources are compared in.
+    /// </summary>
+    /// <param name="resource">The resource to write.</param>
+    /// <returns>The pack bytes.</returns>
+    private static byte[] PackBytes(NotableDateResource resource)
+    {
+        using MemoryStream stream = new();
+        NotableDateBinaryResource.Write(resource, stream);
+        return stream.ToArray();
+    }
+
+    /// <summary>
+    /// Builds the JSON document of a field scenario: two concepts, a patch of the second concept's rule, and the
+    /// scenario's adjustment policy, imports, and extra patch properties.
+    /// </summary>
+    /// <param name="scenario">The name of the field scenario.</param>
+    /// <returns>The JSON document.</returns>
+    private static string FieldScenarioJson(string scenario)
+    {
+        (string policy, string imports, string patch) = s_jsonFieldScenarios[scenario];
+
+        return """
+            { "schemaVersion": "1.0", "resourceId": "test.fields",
+              "adjustmentPolicies": [ @policy@ ],
+              @imports@
+              "notableDates": [
+                { "id": "anchor", "displayName": "Anchor", "category": "PublicHoliday",
+                  "rules": [ { "id": "r", "strategy": { "fixed": { "month": 3, "day": 1 } }, "adjustments": [ "policy" ] } ] },
+                { "id": "other", "displayName": "Other", "category": "Observance",
+                  "rules": [ { "id": "r", "applicability": { "territories": [ "AU" ] }, "strategy": { "fixed": { "month": 4, "day": 1 } } } ] } ],
+              "overrides": [ { "operation": "PatchRule", "notableDateRef": "other", "ruleRef": "r", "priority": 2 @patch@ } ] }
+            """
+            .Replace("@policy@", policy, StringComparison.Ordinal)
+            .Replace("@imports@", imports, StringComparison.Ordinal)
+            .Replace("@patch@", patch, StringComparison.Ordinal);
+    }
 }
