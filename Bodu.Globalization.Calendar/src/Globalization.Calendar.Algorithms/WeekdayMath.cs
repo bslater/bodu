@@ -13,9 +13,10 @@ namespace Bodu.Globalization.Calendar.Algorithms;
 /// <remarks>
 /// The underlying weekday navigation is supplied by the <see cref="DateOnlyExtensions" /> primitives in
 /// <c>Bodu.Core</c> (<see cref="DateOnlyExtensions.NextDateOfWeek(DateOnly, DayOfWeek)" /> and its <c>OrSame</c>/
-/// <c>Previous</c>/<c>Nearest</c> companions). This type layers on only the behavior the resolution pipeline requires
-/// that those primitives do not provide: dispatch over <see cref="WeekdayProximity" />, and a null-returning (rather
-/// than throwing) result at the year extremes and for ordinals that do not occur in a month.
+/// <c>Previous</c>/<c>Nearest</c> companions), and the nth weekday of a month by Core's internal
+/// <c>DateOnlyExtensions.TryGetNthDateOfWeekInMonth</c>. This type layers on only the behavior the resolution pipeline
+/// requires that those primitives do not provide: dispatch over <see cref="WeekdayProximity" />, and a null-returning
+/// (rather than throwing) result at the year extremes and for ordinals that do not occur in a month.
 /// </remarks>
 internal static class WeekdayMath
 {
@@ -80,21 +81,16 @@ internal static class WeekdayMath
     /// <param name="ordinal">The occurrence to select.</param>
     /// <returns>
     /// The matching date, or <see langword="null" /> when the requested ordinal does not exist in the month (for
-    /// example a fifth occurrence in a month that has only four).
+    /// example a fifth occurrence in a month that has only four), or is not a value <see cref="WeekOrdinal" /> defines.
     /// </returns>
     public static DateOnly? NthWeekdayInMonth(int year, int month, DayOfWeek dayOfWeek, WeekOrdinal ordinal)
     {
-        if (year < 1 || year > 9999 || month < 1 || month > 12)
+        // An undefined ordinal names no occurrence, and is answered before the weekday is checked.
+        if (year < 1 || year > 9999 || month < 1 || month > 12 || ordinal is < WeekOrdinal.First or > WeekOrdinal.Last)
             return null;
 
-        if (ordinal == WeekOrdinal.Last)
-        {
-            DateOnly lastDay = new(year, month, DateTime.DaysInMonth(year, month));
-            return lastDay.PreviousOrSameDateOfWeek(dayOfWeek);
-        }
+        ThrowHelper.ThrowIfEnumValueIsUndefined(dayOfWeek);
 
-        DateOnly firstMatch = new DateOnly(year, month, 1).NextOrSameDateOfWeek(dayOfWeek);
-        DateOnly result = firstMatch.AddDays(7 * ((int)ordinal - 1));
-        return result.Month == month ? result : null;
+        return DateOnlyExtensions.TryGetNthDateOfWeekInMonth(year, month, dayOfWeek, ordinal, out DateOnly date) ? date : null;
     }
 }

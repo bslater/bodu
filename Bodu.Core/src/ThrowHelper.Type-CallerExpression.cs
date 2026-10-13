@@ -7,6 +7,7 @@
 #pragma warning disable SA1117 // Parameters should be on same line or separate lines
 #pragma warning disable IDE0011 // Add braces
 
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Runtime.CompilerServices;
 
@@ -24,16 +25,34 @@ public static partial class ThrowHelper
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown when <paramref name="value" /> is not a defined member of <typeparamref name="TEnum" />.
     /// </exception>
+    /// <remarks>
+    /// For an enumeration whose defined values form one contiguous range and that is not marked with
+    /// <see cref="FlagsAttribute" />, the test is two comparisons against bounds cached once per type; any other
+    /// enumeration is tested with <see cref="Enum.IsDefined{TEnum}(TEnum)" />. The answer is the same either way.
+    /// </remarks>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void ThrowIfEnumValueIsUndefined<TEnum>(
         TEnum value,
         [CallerArgumentExpression(nameof(value))] string? paramName = null)
         where TEnum : struct, Enum
     {
-        if (!Enum.IsDefined(value))
-            throw new ArgumentOutOfRangeException(
-                paramName,
-                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_OutOfRange_EnumValue, typeof(TEnum).Name, value));
+        if (!EnumValueRange<TEnum>.IsDefined(value))
+            ThrowEnumValueIsUndefined(value, paramName);
     }
+
+    /// <summary>
+    /// Throws the <see cref="ArgumentOutOfRangeException" /> reported for a value an enumeration does not define.
+    /// </summary>
+    /// <typeparam name="TEnum">The enum type.</typeparam>
+    /// <param name="value">The undefined value.</param>
+    /// <param name="paramName">The name of the parameter that supplied <paramref name="value" />.</param>
+    /// <exception cref="ArgumentOutOfRangeException">Always thrown.</exception>
+    [DoesNotReturn]
+    private static void ThrowEnumValueIsUndefined<TEnum>(TEnum value, string? paramName)
+        where TEnum : struct, Enum =>
+        throw new ArgumentOutOfRangeException(
+            paramName,
+            string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_OutOfRange_EnumValue, typeof(TEnum).Name, value));
 
     /// <summary>
     /// Throws an <see cref="ArgumentException" /> if <paramref name="comparison" /> is not a valid

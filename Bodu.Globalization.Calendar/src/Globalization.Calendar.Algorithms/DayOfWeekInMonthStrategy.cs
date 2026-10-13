@@ -60,7 +60,10 @@ public sealed class DayOfWeekInMonthStrategy
     /// <summary>
     /// Gets the occurrence of the weekday to select.
     /// </summary>
-    /// <value>The target <see cref="WeekOrdinal" />.</value>
+    /// <value>
+    /// The target <see cref="WeekOrdinal" />. A value the enumeration does not define is kept, and the strategy yields
+    /// no date for it.
+    /// </value>
     public WeekOrdinal WeekOrdinal { get; }
 
     /// <inheritdoc />

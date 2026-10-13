@@ -61,4 +61,52 @@ public partial class DateTimeExtensionsTests
         DateTime once = input.NearestWeekdayInMonth();
         Assert.AreEqual(once, once.NearestWeekdayInMonth());
     }
+
+    /// <summary>
+    /// Verifies, for every day of the years 1, 1900, 2000, 2023, 2024 and 9999 and each <see cref="DateTimeKind" />,
+    /// that the nearest weekday in the month follows the documented rule: a Saturday moves to the Friday before it, or
+    /// to the Monday after it on the first of the month; a Sunday moves to the Monday after it, or to the Friday before
+    /// it on the last of the month; every other day is unchanged. The time of day and kind are kept.
+    /// </summary>
+    [TestMethod]
+    public void NearestWeekdayInMonth_WhenComparedWithTheRuleForEveryDay_ShouldAgreeAndKeepTimeAndKind()
+    {
+        TimeSpan timeOfDay = new TimeSpan(13, 45, 30) + TimeSpan.FromTicks(1234567);
+        DateTimeKind[] kinds = [DateTimeKind.Unspecified, DateTimeKind.Utc, DateTimeKind.Local];
+
+        foreach (int year in new[] { 1, 1900, 2000, 2023, 2024, 9999 })
+        {
+            for (int dayNumber = new DateOnly(year, 1, 1).DayNumber; dayNumber <= new DateOnly(year, 12, 31).DayNumber; dayNumber++)
+            {
+                DateOnly date = DateOnly.FromDayNumber(dayNumber);
+                int daysInMonth = DateTime.DaysInMonth(date.Year, date.Month);
+                int shift = date.DayOfWeek switch
+                {
+                    DayOfWeek.Saturday => date.Day == 1 ? 2 : -1,
+                    DayOfWeek.Sunday => date.Day == daysInMonth ? -2 : 1,
+                    _ => 0,
+                };
+
+                DateTimeKind kind = kinds[date.DayNumber % kinds.Length];
+                DateTime input = DateTime.SpecifyKind(date.ToDateTime(TimeOnly.MinValue) + timeOfDay, kind);
+                DateTime expected = DateTime.SpecifyKind(date.AddDays(shift).ToDateTime(TimeOnly.MinValue) + timeOfDay, kind);
+
+                DateTime actual = input.NearestWeekdayInMonth();
+
+                Assert.AreEqual(expected, actual, $"{input:O}");
+                Assert.AreEqual(kind, actual.Kind, $"{input:O}");
+            }
+        }
+    }
+
+    /// <summary>
+    /// Verifies that the first and last values a <see cref="DateTime" /> can hold, a Monday and a Friday, are their own
+    /// nearest weekdays, to the tick.
+    /// </summary>
+    [TestMethod]
+    public void NearestWeekdayInMonth_WhenAtTheEndsOfTheRange_ShouldReturnTheSameValue()
+    {
+        Assert.AreEqual(DateTime.MinValue, DateTime.MinValue.NearestWeekdayInMonth());
+        Assert.AreEqual(DateTime.MaxValue, DateTime.MaxValue.NearestWeekdayInMonth());
+    }
 }

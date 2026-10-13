@@ -37,9 +37,6 @@ public static partial class DateTimeExtensions
             get
             {
                 int ordinal = ((dateTime.Day - 1) / 7) + 1;
-
-                ThrowHelper.ThrowIfEnumValueIsUndefined<WeekOrdinal>((WeekOrdinal)ordinal);
-
                 return (WeekOrdinal)ordinal;
             }
         }
@@ -70,9 +67,6 @@ public static partial class DateTimeExtensions
     public static WeekOrdinal WeekOrdinalOfMonth(this DateTime dateTime)
     {
         int ordinal = ((dateTime.Day - 1) / 7) + 1;
-
-        ThrowHelper.ThrowIfEnumValueIsUndefined<WeekOrdinal>((WeekOrdinal)ordinal);
-
         return (WeekOrdinal)ordinal;
     }
 

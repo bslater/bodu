@@ -39,4 +39,18 @@ public partial class DateTimeExtensionsTests
         Assert.AreEqual(WeekOrdinal.Fifth, actual); // 1st = 1st, 8th = 2nd, ..., 29th = 5th Thursday
     }
 
+    /// <summary>
+    /// Verifies that the week ordinal of every day of a 31-day month is its seven-day block, First for days 1 to 7
+    /// through Fifth for days 29 to 31.
+    /// </summary>
+    [TestMethod]
+    public void WeekOrdinalOfMonth_WhenEveryDayOfALongMonth_ShouldReturnItsSevenDayBlock()
+    {
+        for (int day = 1; day <= 31; day++)
+        {
+            WeekOrdinal actual = new DateTime(2024, 1, day, 23, 59, 59).WeekOrdinalOfMonth;
+
+            Assert.AreEqual((WeekOrdinal)(((day - 1) / 7) + 1), actual, $"day {day}");
+        }
+    }
 }

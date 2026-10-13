@@ -132,4 +132,56 @@ public static partial class DateOnlyExtensions
                 return result;
         }
     }
+
+    /// <summary>
+    /// Attempts to find the specified ordinal occurrence of a <see cref="DayOfWeek" /> within a calendar month,
+    /// reporting an occurrence the month does not have instead of throwing.
+    /// </summary>
+    /// <param name="year">The calendar year.</param>
+    /// <param name="month">The calendar month, where 1 represents January and 12 represents December.</param>
+    /// <param name="dayOfWeek">The <see cref="DayOfWeek" /> to locate within the month.</param>
+    /// <param name="ordinal">The ordinal occurrence to find.</param>
+    /// <param name="result">The occurrence when the month has it; otherwise the default value.</param>
+    /// <returns>
+    /// <see langword="true" /> when the month has the occurrence; <see langword="false" /> when
+    /// <paramref name="ordinal" /> names a fifth occurrence the month lacks, or is not a value
+    /// <see cref="WeekOrdinal" /> defines.
+    /// </returns>
+    /// <remarks>
+    /// <para>
+    /// This is the one definition of the nth weekday of a month that callers needing a non-throwing answer share, such
+    /// as the notable-date strategies. It validates nothing: <paramref name="year" /> must lie between 1 and 9999,
+    /// <paramref name="month" /> between 1 and 12, and <paramref name="dayOfWeek" /> must be defined.
+    /// </para>
+    /// <para>
+    /// A missing occurrence is never built as a date, so the method neither throws nor leaves the range of
+    /// <see cref="DateOnly" />, even for a fifth occurrence December 9999 does not have.
+    /// </para>
+    /// </remarks>
+    internal static bool TryGetNthDateOfWeekInMonth(int year, int month, DayOfWeek dayOfWeek, WeekOrdinal ordinal, out DateOnly result)
+    {
+        if (ordinal == Extensions.WeekOrdinal.Last)
+        {
+            result = DateOnly.FromDayNumber(GetLastDateOfWeekInMonthDayNumber(year, month, dayOfWeek));
+            return true;
+        }
+
+        if (ordinal is < Extensions.WeekOrdinal.First or > Extensions.WeekOrdinal.Fifth)
+        {
+            result = default;
+            return false;
+        }
+
+        // Only a fifth occurrence can miss a month of 28 to 31 days. Comparing day numbers with the month's last day
+        // keeps a missing one from ever becoming a date, so December 9999 needs no special case.
+        int dayNumber = GetFirstDateOfWeekInMonthDayNumber(year, month, dayOfWeek) + (((int)ordinal - 1) * 7);
+        if (dayNumber > DateTimeExtensions.GetDayNumberUnchecked(year, month, DateTime.DaysInMonth(year, month)))
+        {
+            result = default;
+            return false;
+        }
+
+        result = DateOnly.FromDayNumber(dayNumber);
+        return true;
+    }
 }
