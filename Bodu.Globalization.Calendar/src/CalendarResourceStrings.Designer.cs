@@ -187,6 +187,15 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Resolution policy: workingDays &apos;{0}&apos; is not a seven-character working-week pattern..
+        /// </summary>
+        internal static string Validation_InvalidWorkingDays {
+            get {
+                return ResourceManager.GetString("Validation_InvalidWorkingDays", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Notable date '{0}', rule '{1}': '{2}' is not a valid territory code..
         /// </summary>
         internal static string Validation_InvalidTerritoryCode {

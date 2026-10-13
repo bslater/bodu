@@ -24,12 +24,29 @@ internal static class NotableDateDocumentParseHelpers
 
     /// <summary>
     /// Parses a Sunday-first seven-character working-week pattern, falling back to the default working week when the
-    /// value is absent or blank.
+    /// value is absent or blank, and recording an error diagnostic when it is not a pattern.
     /// </summary>
     /// <param name="value">The working-week pattern, or <see langword="null" />.</param>
-    /// <returns>The parsed <see cref="DayOfWeekSet" />, or <see langword="null" /> when unspecified.</returns>
-    public static DayOfWeekSet? ParseWorkingWeek(string? value) =>
-        string.IsNullOrWhiteSpace(value) ? null : DayOfWeekSet.Parse(value);
+    /// <param name="diagnostics">The collection that receives the diagnostic for a malformed pattern.</param>
+    /// <returns>
+    /// The parsed <see cref="DayOfWeekSet" />, or <see langword="null" /> when unspecified or malformed. A malformed
+    /// pattern has then recorded a <c>BODU-CAL-WORKING-DAYS</c> error, so the default never reaches a loaded resource.
+    /// </returns>
+    public static DayOfWeekSet? ParseWorkingWeek(string? value, ICollection<NotableDateValidationDiagnostic> diagnostics)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return null;
+
+        if (DayOfWeekSet.TryParse(value, out DayOfWeekSet workingWeek))
+            return workingWeek;
+
+        diagnostics.Add(new NotableDateValidationDiagnostic(
+            NotableDateValidationSeverity.Error,
+            "BODU-CAL-WORKING-DAYS",
+            string.Format(CultureInfo.CurrentCulture, CalendarResourceStrings.Validation_InvalidWorkingDays, value)));
+
+        return null;
+    }
 
     /// <summary>
     /// Parses a trigger comparison month expressed as a full English month name or an integer between 1 and 12.

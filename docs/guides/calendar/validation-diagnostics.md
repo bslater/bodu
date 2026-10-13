@@ -61,6 +61,7 @@ Codes are stable identifiers: they are safe to match on, suppress by, or documen
 | `BODU-CAL-DUP-POLICY` | Error | Two adjustment policies share an identifier. |
 | `BODU-CAL-MONTH` | Error | A strategy's month is outside the valid range for its calendar. |
 | `BODU-CAL-DAY` | Error | A strategy's day is outside the valid range for its month/calendar. |
+| `BODU-CAL-WORKING-DAYS` | Error | The resolution policy's `workingDays` is not a seven-character working-week pattern. In XML the schema reports it too. |
 | `BODU-CAL-YEARS` | Error | A rule's or adjustment scope's `fromYear` is after its `toYear`. |
 | `BODU-CAL-RECURRENCE` | Error | A recurrence declaration is invalid. |
 | `BODU-CAL-STRATEGY` | Error | A strategy value lies outside the strategy's range (for example an `<OrdinalDayOfMonth>` ordinal beyond 31, ISO week 54, or a zero ordinal). In XML the schema reports most of these too. |

@@ -37,7 +37,7 @@ internal static class NotableDateDocumentReader
         return new ParsedNotableDateDocument(
             root.Scalar("resourceId") ?? string.Empty,
             root.Scalar("schemaVersion") ?? string.Empty,
-            ReadResolutionPolicy(root.Child("resolutionPolicy")),
+            ReadResolutionPolicy(root.Child("resolutionPolicy"), diagnostics),
             ReadAdjustmentPolicies(root),
             ReadNotableDates(root, diagnostics),
             ReadOverrides(root, diagnostics),
@@ -48,8 +48,9 @@ internal static class NotableDateDocumentReader
     /// Reads the resource-level resolution policy, falling back to the recommended defaults when absent.
     /// </summary>
     /// <param name="node">The resolution-policy node, or <see langword="null" />.</param>
+    /// <param name="diagnostics">The collection that receives semantic diagnostics.</param>
     /// <returns>The parsed <see cref="ResolutionPolicy" />.</returns>
-    private static ResolutionPolicy ReadResolutionPolicy(IDocumentNode? node)
+    private static ResolutionPolicy ReadResolutionPolicy(IDocumentNode? node, ICollection<NotableDateValidationDiagnostic> diagnostics)
     {
         if (node is null)
             return ResolutionPolicy.Default;
@@ -62,7 +63,7 @@ internal static class NotableDateDocumentReader
             ParseEnum(node.Scalar("spanCollisionPolicy"), CollisionPolicy.KeepAll),
             ParseEnum(node.Scalar("priorityDirection"), PriorityDirection.HigherWins),
             ParseEnum(node.Scalar("observedDateRangePolicy"), ObservedDateRangePolicy.ObservedOccurrenceControlsInclusion),
-            ParseWorkingWeek(node.Scalar("workingDays")),
+            ParseWorkingWeek(node.Scalar("workingDays"), diagnostics),
             precedence is null ? null : [.. precedence.Select(c => ParseEnum(c, NotableDateCategory.None))]);
     }
 

@@ -105,6 +105,9 @@
   <data name="Validation_InvalidMonthValue" xml:space="preserve">
     <value>Notable date '{0}', rule '{1}': '{2}' is not a valid month value. Expected a full English month name or an integer between 1 and 12.</value>
   </data>
+  <data name="Validation_InvalidWorkingDays" xml:space="preserve">
+    <value>Resolution policy: workingDays '{0}' is not a seven-character working-week pattern.</value>
+  </data>
   <data name="Validation_InvalidTerritoryCode" xml:space="preserve">
     <value>Notable date '{0}', rule '{1}': '{2}' is not a valid territory code.</value>
   </data>
