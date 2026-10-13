@@ -45,6 +45,23 @@ internal static class MoneyMath
         decimal.Round(amount, minorUnits, rounding);
 
     /// <summary>
+    /// Determines whether <paramref name="value" /> is a whole number of minor units at <paramref name="minorUnits" />
+    /// fractional digits, that is, whether it has no non-zero digit past that scale.
+    /// </summary>
+    /// <param name="value">The amount to test.</param>
+    /// <param name="minorUnits">The minor-unit precision, in the inclusive range <c>[0, 28]</c>.</param>
+    /// <returns>
+    /// <see langword="true" /> when <paramref name="value" /> has no non-zero digit past <paramref name="minorUnits" />
+    /// fractional digits; otherwise, <see langword="false" />.
+    /// </returns>
+    /// <remarks>
+    /// The test compares <paramref name="value" /> with itself rounded to <paramref name="minorUnits" /> digits, which,
+    /// unlike scaling it by <c>10 ^ minorUnits</c>, cannot overflow.
+    /// </remarks>
+    internal static bool IsWholeNumberOfMinorUnits(decimal value, int minorUnits) =>
+        decimal.Round(value, minorUnits) == value;
+
+    /// <summary>
     /// Distributes <paramref name="amount" /> as evenly as possible across <paramref name="shares" />.<see
     /// cref="System.Span{T}.Length" /> slots so the per-slot amounts sum exactly to <paramref name="amount" />.
     /// </summary>

@@ -30,7 +30,8 @@ namespace Bodu.Financial.Currencies;
 /// <c>0</c> when the currency is custom or the numeric code is unknown.
 /// </param>
 /// <exception cref="ArgumentOutOfRangeException">
-/// <paramref name="MinorUnits" /> is less than 0 or greater than 28.
+/// <paramref name="MinorUnits" /> is less than 0 or greater than 28, or <paramref name="CashRoundingIncrement" /> is
+/// negative or is not a whole number of minor units at <paramref name="MinorUnits" />.
 /// </exception>
 /// <remarks>
 /// This record is the runtime counterpart of an <see cref="ICurrency" /> tag type. The runtime-tagged <c>Money</c> and
@@ -50,19 +51,52 @@ public sealed record CurrencyInfo(
     /// <summary>The validated number of fractional digits in the currency's minor unit.</summary>
     private readonly int _minorUnits = ValidateMinorUnits(MinorUnits);
 
+    /// <summary>The validated smallest physical cash denomination, in the major unit.</summary>
+    private readonly decimal _cashRoundingIncrement = ValidateCashRoundingIncrement(CashRoundingIncrement, MinorUnits);
+
     /// <summary>
     /// Gets the number of fractional digits in the currency's minor unit.
     /// </summary>
     /// <value>The minor-unit precision, from 0 to 28.</value>
-    /// <exception cref="ArgumentOutOfRangeException">The value is less than 0 or greater than 28.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// The value is less than 0 or greater than 28, or <see cref="CashRoundingIncrement" /> is not a whole number of
+    /// minor units at the value; the exception then names <see cref="CashRoundingIncrement" />.
+    /// </exception>
     /// <remarks>
-    /// The constructor, an object initializer and a <c>with</c> expression all apply the check, so every
-    /// <see cref="CurrencyInfo" /> carries a scale that <see cref="decimal" /> can represent.
+    /// The constructor, an object initializer and a <c>with</c> expression all apply the checks, so every
+    /// <see cref="CurrencyInfo" /> carries a scale that <see cref="decimal" /> can represent and a cash-rounding
+    /// increment that scale can hold. An initializer that sets both this property and
+    /// <see cref="CashRoundingIncrement" /> checks each against the other's value when it is set, so set the increment
+    /// first when the new minor units cannot hold the current one.
     /// </remarks>
     public int MinorUnits
     {
         get => _minorUnits;
-        init => _minorUnits = ValidateMinorUnits(value);
+        init
+        {
+            int minorUnits = ValidateMinorUnits(value);
+            _ = ValidateCashRoundingIncrement(_cashRoundingIncrement, minorUnits);
+
+            _minorUnits = minorUnits;
+        }
+    }
+
+    /// <summary>
+    /// Gets the smallest physical cash denomination in the major unit, or <c>0m</c> when no special cash rounding is
+    /// required beyond <see cref="MinorUnits" />.
+    /// </summary>
+    /// <value>The cash-rounding increment: zero, or a positive whole number of minor units.</value>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// The value is negative, or is not a whole number of minor units at <see cref="MinorUnits" />.
+    /// </exception>
+    /// <remarks>
+    /// The constructor, an object initializer and a <c>with</c> expression all apply the check, which is the rule
+    /// <see cref="ICurrency.CashRoundingIncrement" /> follows for a currency tag type.
+    /// </remarks>
+    public decimal CashRoundingIncrement
+    {
+        get => _cashRoundingIncrement;
+        init => _cashRoundingIncrement = ValidateCashRoundingIncrement(value, _minorUnits);
     }
 
     /// <summary>
@@ -201,5 +235,38 @@ public sealed record CurrencyInfo(
         ThrowHelper.ThrowIfOutOfRange(minorUnits, 0, MoneyMath.MaxMinorUnits, paramName: nameof(MinorUnits));
 
         return minorUnits;
+    }
+
+    /// <summary>
+    /// Returns <paramref name="increment" /> after checking that it is not negative and is a whole number of minor
+    /// units at <paramref name="minorUnits" />.
+    /// </summary>
+    /// <param name="increment">The candidate cash-rounding increment.</param>
+    /// <param name="minorUnits">The minor-unit count the increment must be a whole number of.</param>
+    /// <returns>The cash-rounding increment.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="increment" /> is negative, or is not a whole number of minor units at
+    /// <paramref name="minorUnits" />.
+    /// </exception>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2208:Instantiate argument exceptions correctly", Justification = "The invalid value is the record's CashRoundingIncrement, which the constructor parameter, the init accessor and a with expression all set; the parameter name identifies that member.")]
+    private static decimal ValidateCashRoundingIncrement(decimal increment, int minorUnits)
+    {
+        if (increment < 0m)
+        {
+            throw new ArgumentOutOfRangeException(
+                nameof(CashRoundingIncrement),
+                increment,
+                string.Format(CultureInfo.CurrentCulture, FinancialResourceStrings.Arg_OutOfRange_CashRoundingIncrementNegative, increment));
+        }
+
+        if (!MoneyMath.IsWholeNumberOfMinorUnits(increment, minorUnits))
+        {
+            throw new ArgumentOutOfRangeException(
+                nameof(CashRoundingIncrement),
+                increment,
+                string.Format(CultureInfo.CurrentCulture, FinancialResourceStrings.Arg_OutOfRange_CashRoundingIncrementTooFine, increment, minorUnits));
+        }
+
+        return increment;
     }
 }
