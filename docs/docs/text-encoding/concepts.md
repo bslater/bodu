@@ -26,7 +26,7 @@ different padding, line-wrap, or shortcut rules:
 | Base16 | `Lower` (default), `Upper` - via the `Base16Variant` enum, or equivalently `BaseFormattingOptions.UpperCase` |
 | Base32 | `Standard` (RFC 4648 §6), `HexExtended` (RFC 4648 §7), `Crockford`, `ZBase32` |
 | Base64 | `Standard` (RFC 4648 §4), `UrlSafe` (RFC 4648 §5), `Mime` (RFC 2045) |
-| Base58 | `BitcoinFlickr` (default), `Ripple` |
+| Base58 | `BitcoinFlickr` (default; the Bitcoin alphabet), `Ripple`, `Flickr` |
 | Base85 | `Ascii85` (Adobe Tech Note 5045), `Z85` (RFC 32 ZeroMQ), `GitCompact` (Git `base85.c`) |
 | Base45 | RFC 9285 (single alphabet) |
 | Base62 | GMP-style (single alphabet) |
@@ -45,7 +45,8 @@ Base32 Crockford:      "0123456789ABCDEFGHJKMNPQRSTVWXYZ"   (no I L O U)
 Base32 Z-Base-32:      "ybndrfg8ejkmcpqxot1uwisza345h769"
 Base64 Standard:       "A..Za..z0..9+/"             (RFC 4648 §4)
 Base64 URL-safe:       "A..Za..z0..9-_"             (RFC 4648 §5)
-Base58 Bitcoin/Flickr: "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"  (no 0 O I l)
+Base58 Bitcoin:        "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"  (no 0 O I l)
+Base58 Flickr:         "123456789abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ"  (lower case first)
 Base85 Ascii85:        '!' (33) through 'u' (117)   (Adobe alphabet)
 Base85 Z85:            "0..9a..zA..Z.-:+=^!/*?&<>()[]{}@%$#"  (shell-safe)
 Base45:                "0..9A..Z" + " $%*+-./:"      (45 chars, RFC 9285)
@@ -111,7 +112,7 @@ length aligns to the group size. For a *3-byte* Base64 input, no padding is need
 | Base32 Standard / HexExtended | Yes (RFC 4648 mandates) |
 | Base32 Crockford / ZBase32 | No (by spec convention) |
 | Base64 Standard / Mime | Yes (RFC 4648 / 2045 mandate) |
-| Base64 UrlSafe | No (JWT / OAuth convention; can be added with omission of `OmitPadding`) |
+| Base64 UrlSafe | No (JWT / OAuth convention); the encoder never pads URL-safe output, whatever the options |
 | Base58 | No padding character |
 | Base85 | No padding character - alignment is via partial-group truncation (Ascii85) or fixed 4-byte alignment (Z85) |
 
@@ -136,9 +137,10 @@ container framing, and tolerated at decode time when explicitly allowed:
 | Decoration | Encode flag | Decode flag | Applies to |
 |---|---|---|---|
 | `0x` prefix | `BaseFormattingOptions.IncludePrefix` | `BaseFormatStyles.AllowPrefix` | Base16 |
+| `<~` / `~>` delimiters | `BaseFormattingOptions.IncludePrefix` | `BaseFormatStyles.AllowPrefix` | Base85 Ascii85 |
 | Byte spacing (e.g. `DE AD BE EF`) | `BaseFormattingOptions.InsertSpacing` | (combine with `IgnoreWhitespace`) | Base16 |
-| Line breaks every N chars (64 for Base16, 76 for Base64 Mime) | `BaseFormattingOptions.InsertLineBreaks` | (combine with `IgnoreWhitespace`) | Base16, Base32, Base64 |
-| Case folding (lower / upper) | `BaseFormattingOptions.UpperCase` | implicit (decoders are case-insensitive) | Base16, Base32 |
+| Line breaks every N chars (64 for Base16 and Base32, 76 for Base64) | `BaseFormattingOptions.InsertLineBreaks` | (combine with `IgnoreWhitespace`) | Base16, Base32, Base64 |
+| Case folding (lower / upper) | `BaseFormattingOptions.UpperCase` | implicit (decoders are case-insensitive) | Base16 |
 
 ## Encoder vs. decoder strictness
 
@@ -163,8 +165,8 @@ stricter mode (a flag that tightens, not relaxes)
 ```
 
 The `Decode` overloads throw `FormatException` on validation failure. The `TryDecode` overloads return
-`false` instead. The `IsValid` predicate returns `true` only for inputs that the strict decoder would accept
-(when no leniency flags are passed).
+`false` instead. The `IsValid` predicate returns `true` exactly when `Decode` with the same variant and styles
+would succeed, and `TryGetDecodedLength` / `GetDecodedLength` report the length that `Decode` returns.
 
 ### Canonical-form enforcement
 
@@ -190,7 +192,8 @@ deduplication keys, signature inputs.
 
 ## UTF-8 path
 
-Every encoding family exposes a UTF-8 byte path alongside the character path:
+The five core families (Base16, Base32, Base58, Base64, Base85) expose a UTF-8 byte path alongside the character
+path:
 
 ```
 encode:  EncodeToUtf8(ReadOnlySpan<byte>) → byte[]
@@ -198,13 +201,15 @@ encode:  EncodeToUtf8(ReadOnlySpan<byte>) → byte[]
 
 decode:  FromBase{N}String(ReadOnlySpan<byte> utf8Source, Span<byte> dst, out int consumed, out int written)
                                                                       → OperationStatus
-         DecodeFromUtf8(ReadOnlySpan<byte>, Span<byte>, out int, out int, …, isFinalBlock)
+         DecodeFromUtf8(ReadOnlySpan<byte>, Span<byte>, out int, out int, …[, isFinalBlock])
                                                                       → OperationStatus
 ```
 
-Because every encoding alphabet is ASCII, the UTF-8 byte form is bit-identical to the character form. This path is
-the natural choice when bytes come from a network / file pipeline and you want to avoid allocating a `string` or
-`char[]` between stages.
+Base16 names its aliases `FromHexString` / `ToHexString`, and only Base16, Base32, and Base64 take `isFinalBlock`.
+
+Because every encoding alphabet is ASCII, the UTF-8 byte form is bit-identical to the character form (including
+the MIME variant's line breaks). This path is the natural choice when bytes come from a network / file pipeline and
+you want to avoid allocating a `string` or `char[]` between stages.
 
 ## GUID convenience surface
 
@@ -239,8 +244,8 @@ stream data through chunk by chunk - the decoder will report `NeedMoreData` inst
 that could complete with another chunk.
 
 > Base58 and Base85 are not streamable: each requires the entire input to be available before decode (Base58 because
-> of big-integer arithmetic, Base85 because of fixed-size block packing). The `isFinalBlock` parameter on those
-> variants is accepted for API consistency but has no behavioural effect.
+> of big-integer arithmetic, Base85 because of fixed-size block packing). Their `DecodeFromUtf8` overloads have no
+> `isFinalBlock` parameter and always treat the input as complete.
 >
 > The special-purpose encodings - Base45, Base62, and Bech32 - are likewise single-shot and expose no
 > `OperationStatus` path at all (Base45 packs in fixed groups, Base62 uses big-integer arithmetic, and Bech32 must

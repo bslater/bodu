@@ -30,7 +30,8 @@ public static partial class Base58
     /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is undefined.</exception>
     /// <exception cref="FormatException">
-    /// Thrown when the input contains characters outside the variant alphabet.
+    /// Thrown when the input contains characters outside the variant alphabet, or is longer than 65536 characters (a
+    /// bound on the decoder's quadratic cost).
     /// </exception>
     public static byte[] Decode(string s, Base58Variant variant = Base58Variant.BitcoinFlickr, BaseFormatStyles style = BaseFormatStyles.None)
     {
@@ -46,7 +47,9 @@ public static partial class Base58
     /// <param name="style">Parsing styles.</param>
     /// <returns>The decoded byte array. Returns <see cref="Array.Empty{T}" /> for empty input.</returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is undefined.</exception>
-    /// <exception cref="FormatException">Thrown when the input is not valid Base58.</exception>
+    /// <exception cref="FormatException">
+    /// Thrown when the input is not valid Base58, or is longer than 65536 characters.
+    /// </exception>
     public static byte[] Decode(ReadOnlySpan<char> chars, Base58Variant variant = Base58Variant.BitcoinFlickr, BaseFormatStyles style = BaseFormatStyles.None)
     {
         sbyte[] lookup = GetLookup(variant);
@@ -78,7 +81,9 @@ public static partial class Base58
     /// Thrown when the segment defined by <paramref name="offset" /> and <paramref name="count" /> exceeds the
     /// available range of <paramref name="chars" />.
     /// </exception>
-    /// <exception cref="FormatException">Thrown when the input is not valid Base58.</exception>
+    /// <exception cref="FormatException">
+    /// Thrown when the input is not valid Base58, or is longer than 65536 characters.
+    /// </exception>
     public static byte[] Decode(char[] chars, int offset, int count, Base58Variant variant = Base58Variant.BitcoinFlickr, BaseFormatStyles style = BaseFormatStyles.None)
     {
         ThrowHelper.ThrowIfArrayOffsetOrCountInvalid(chars, offset, count);
@@ -96,8 +101,8 @@ public static partial class Base58
     /// <param name="variant">The Base58 variant.</param>
     /// <param name="style">Parsing styles.</param>
     /// <returns>
-    /// <see langword="true" /> on success; <see langword="false" /> when the input is malformed or the destination is
-    /// too small.
+    /// <see langword="true" /> on success; <see langword="false" /> when the input is malformed or longer than 65536
+    /// characters, or the destination is too small.
     /// </returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is undefined.</exception>
     public static bool TryDecode(ReadOnlySpan<char> chars, Span<byte> destination, out int bytesWritten, Base58Variant variant = Base58Variant.BitcoinFlickr, BaseFormatStyles style = BaseFormatStyles.None)

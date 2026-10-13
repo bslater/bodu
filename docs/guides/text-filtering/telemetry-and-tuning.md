@@ -73,8 +73,9 @@ Regexes prefer the linear-time `NonBacktracking` engine; patterns it cannot comp
 decision fails safe **by action**: a timed-out include does not admit the value, and a timed-out
 exclude still vetoes it - the filter never accidentally lets a value through because its exclude
 timed out. Timeouts are counted in
-[`TextFilterStatistics.RegexTimeouts`](xref:Bodu.Text.Filtering.TextFilterStatistics) and visible
-to the observer.
+[`TextFilterStatistics.RegexTimeouts`](xref:Bodu.Text.Filtering.TextFilterStatistics), the only
+place they are reported: the observer receives the fail-safe decision like any other, with
+nothing to mark it as a timeout.
 
 ## Where to go next
 

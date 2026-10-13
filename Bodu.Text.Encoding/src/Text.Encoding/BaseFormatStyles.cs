@@ -21,7 +21,7 @@ namespace Bodu.Text.Encoding;
 /// byte[] decoded = Base64.Decode(encoded, style: BaseFormatStyles.IgnoreWhitespace);
 ///
 /// // RequireCanonicalEncoding rejects non-canonical trailing bits lenient decoders accept.
-/// bool strict = Base64.IsValid(encoded, BaseFormatStyles.RequireCanonicalEncoding | BaseFormatStyles.IgnoreWhitespace);
+/// bool strict = Base64.IsValid(encoded, styles: BaseFormatStyles.RequireCanonicalEncoding | BaseFormatStyles.IgnoreWhitespace);
 ///]]>
 /// </code>
 /// </example>

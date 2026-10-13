@@ -11,32 +11,32 @@ namespace Bodu.Text.Encoding;
 public static partial class Base58
 {
     /// <summary>
-    /// Decodes <paramref name="s" /> as Bitcoin/Flickr Base58 into a byte array.
+    /// Decodes <paramref name="s" /> as Bitcoin Base58 into a byte array.
     /// </summary>
     /// <param name="s">The input.</param>
     /// <returns>The decoded byte array.</returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="s" /> is <see langword="null" />.
     /// </exception>
-    /// <exception cref="FormatException">Thrown when the input is not valid Bitcoin/Flickr Base58.</exception>
+    /// <exception cref="FormatException">Thrown when the input is not valid Bitcoin Base58.</exception>
     public static byte[] FromBase58String(string s) =>
         Decode(s, Base58Variant.BitcoinFlickr, BaseFormatStyles.None);
 
     /// <summary>
-    /// Decodes a Base58 character span using the Bitcoin/Flickr alphabet.
+    /// Decodes a Base58 character span using the Bitcoin alphabet.
     /// </summary>
     /// <param name="chars">The input span.</param>
     /// <returns>The decoded byte array.</returns>
-    /// <exception cref="FormatException">Thrown when the input is not valid Bitcoin/Flickr Base58.</exception>
+    /// <exception cref="FormatException">Thrown when the input is not valid Bitcoin Base58.</exception>
     public static byte[] FromBase58String(ReadOnlySpan<char> chars) =>
         Decode(chars, Base58Variant.BitcoinFlickr, BaseFormatStyles.None);
 
     /// <summary>
-    /// Decodes UTF-8 Base58 bytes into a byte array using the Bitcoin/Flickr alphabet.
+    /// Decodes UTF-8 Base58 bytes into a byte array using the Bitcoin alphabet.
     /// </summary>
     /// <param name="utf8Source">The UTF-8 Base58 source.</param>
     /// <returns>The decoded byte array.</returns>
-    /// <exception cref="FormatException">Thrown when the input is not valid Bitcoin/Flickr Base58.</exception>
+    /// <exception cref="FormatException">Thrown when the input is not valid Bitcoin Base58.</exception>
     public static byte[] FromBase58String(ReadOnlySpan<byte> utf8Source)
     {
         if (utf8Source.IsEmpty)
@@ -56,8 +56,7 @@ public static partial class Base58
     }
 
     /// <summary>
-    /// Strict Bitcoin/Flickr Base58 decode from a character span using the <see cref="OperationStatus" /> return
-    /// convention.
+    /// Strict Bitcoin Base58 decode from a character span using the <see cref="OperationStatus" /> return convention.
     /// </summary>
     /// <param name="source">The character span.</param>
     /// <param name="destination">The destination byte span.</param>
@@ -72,8 +71,7 @@ public static partial class Base58
         DecodeWithStatus(source, destination, out charsConsumed, out bytesWritten, Base58Variant.BitcoinFlickr, BaseFormatStyles.None);
 
     /// <summary>
-    /// Strict Bitcoin/Flickr Base58 decode from a UTF-8 byte span using the <see cref="OperationStatus" /> return
-    /// convention.
+    /// Strict Bitcoin Base58 decode from a UTF-8 byte span using the <see cref="OperationStatus" /> return convention.
     /// </summary>
     /// <param name="utf8Source">The UTF-8 Base58 source.</param>
     /// <param name="destination">The destination byte span.</param>
@@ -84,10 +82,10 @@ public static partial class Base58
         DecodeFromUtf8(utf8Source, destination, out bytesConsumed, out bytesWritten, Base58Variant.BitcoinFlickr, BaseFormatStyles.None);
 
     /// <summary>
-    /// Encodes <paramref name="inArray" /> into a Base58 string using the Bitcoin/Flickr alphabet.
+    /// Encodes <paramref name="inArray" /> into a Base58 string using the Bitcoin alphabet.
     /// </summary>
     /// <param name="inArray">The byte array to encode.</param>
-    /// <returns>A Base58 (Bitcoin/Flickr) string.</returns>
+    /// <returns>A Base58 (Bitcoin) string.</returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="inArray" /> is <see langword="null" />.
     /// </exception>
@@ -95,7 +93,7 @@ public static partial class Base58
         Encode(inArray, Base58Variant.BitcoinFlickr);
 
     /// <summary>
-    /// Encodes <paramref name="bytes" /> into a Base58 string using the Bitcoin/Flickr alphabet.
+    /// Encodes <paramref name="bytes" /> into a Base58 string using the Bitcoin alphabet.
     /// </summary>
     /// <param name="bytes">The bytes.</param>
     /// <returns>A Base58 string.</returns>
@@ -103,7 +101,7 @@ public static partial class Base58
         Encode(bytes, Base58Variant.BitcoinFlickr);
 
     /// <summary>
-    /// Encodes a portion of <paramref name="inArray" /> into a Base58 string using the Bitcoin/Flickr alphabet.
+    /// Encodes a portion of <paramref name="inArray" /> into a Base58 string using the Bitcoin alphabet.
     /// </summary>
     /// <param name="inArray">The byte array.</param>
     /// <param name="offset">The starting offset.</param>
@@ -123,7 +121,7 @@ public static partial class Base58
         Encode(inArray, offset, length, Base58Variant.BitcoinFlickr);
 
     /// <summary>
-    /// Attempts to encode <paramref name="source" /> as a Bitcoin/Flickr Base58 character span.
+    /// Attempts to encode <paramref name="source" /> as a Bitcoin Base58 character span.
     /// </summary>
     /// <param name="source">The bytes to encode.</param>
     /// <param name="destination">The destination character span.</param>
@@ -135,7 +133,7 @@ public static partial class Base58
         TryEncode(source, destination, out charsWritten, Base58Variant.BitcoinFlickr);
 
     /// <summary>
-    /// Attempts to encode <paramref name="source" /> as a Bitcoin/Flickr Base58 UTF-8 byte span.
+    /// Attempts to encode <paramref name="source" /> as a Bitcoin Base58 UTF-8 byte span.
     /// </summary>
     /// <param name="source">The bytes to encode.</param>
     /// <param name="utf8Destination">The UTF-8 destination span.</param>

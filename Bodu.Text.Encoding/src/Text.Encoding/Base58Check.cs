@@ -20,8 +20,8 @@ namespace Bodu.Text.Encoding;
 /// original <c>payload</c> after verifying the checksum; if the checksum disagrees the decoder fails.
 /// </para>
 /// <para>
-/// Leading zero bytes in the payload are preserved by the underlying Base58 encoder as leading alphabet[0] characters
-/// (typically <c>1</c> in the Bitcoin/Flickr alphabet).
+/// Leading zero bytes in the payload are preserved by the underlying Base58 encoder as leading alphabet[0] characters (<c>1</c>
+/// in the Bitcoin alphabet).
 /// </para>
 /// </remarks>
 /// <example>
@@ -149,8 +149,9 @@ public static class Base58Check
         if (!Base58.IsValid(source, variant, styles))
             return false;
 
-        int upper = Base58.GetMaxDecodedLength(source.Length);
-        byte[] rented = ArrayPool<byte>.Shared.Rent(upper);
+        // Each character decodes to at most one byte (a leading alphabet[0] to exactly one), so the input length bounds
+        // the decoded length even for a long run of leading zero bytes, which Base58.GetMaxDecodedLength undercounts.
+        byte[] rented = ArrayPool<byte>.Shared.Rent(source.Length);
         try
         {
             if (!Base58.TryDecode(source, rented, out int decodedLength, variant, styles))

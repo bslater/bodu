@@ -26,7 +26,7 @@ Base16 / Base32 / Base64, the big-integer arithmetic for Base58, and the 4-byte 
 | **[Base16](base16.md)** | 100 % | lower / upper case | Hex dumps, hash digests, low-level inspection |
 | **[Base32](base32.md)** | 60 % | Standard, HexExtended, Crockford, Z-Base-32 | TOTP secrets, NSEC3 DNS labels, human-spoken IDs |
 | **[Base64](base64.md)** | 33 % | Standard, URL-safe, MIME | MIME / SMTP, JWT, certificates, generic binary-in-text |
-| **[Base58](base58.md)** | ≈ 37 % | Bitcoin/Flickr, Ripple | Bitcoin addresses, IPFS CIDs, Solana, Stellar |
+| **[Base58](base58.md)** | ≈ 37 % | Bitcoin, Ripple, Flickr | Bitcoin addresses, IPFS CIDs, Solana, Flickr short URLs |
 | **[Base85](base85.md)** | 25 % | Ascii85 (Adobe), Z85 (ZeroMQ), GitCompact | PDF / PostScript, ZeroMQ wire keys, Git binary patches |
 | **[Base45](base45.md)** | 50 % | RFC 9285 | QR-code payloads, EU Digital COVID Certificate |
 | **[Base62](base62.md)** | ≈ 35 % | GMP-style | Short URLs, compact identifiers, slugs |
@@ -53,7 +53,7 @@ interface cannot express).
 | Human-readable, spoken aloud | Base32 Crockford or Z-Base-32 |
 | Crypto key / TOTP secret display | Base32 Standard |
 | Hex dump for debugging / forensics | Base16 with `InsertSpacing | InsertLineBreaks` |
-| Bitcoin / blockchain address (legacy) | Base58 Bitcoin/Flickr |
+| Bitcoin / blockchain address (legacy) | Base58 (Bitcoin alphabet) |
 | Bitcoin SegWit / Lightning address | Bech32 / Bech32m |
 | Checksum-protected address or key | Base58Check |
 | Binary inside a QR code | Base45 |
@@ -73,14 +73,16 @@ guides drill into the variant-specific options:
   `int`, `TryEncode(span, span, out int)` returning `bool`.
 - **Decode**: `Decode(string/span)` returning `byte[]`, `Decode(char[], int, int)`,
   `TryDecode(span, span, out int)` returning `bool`.
-- **BCL-style aliases**: `ToBase{N}String(...)`, `FromBase{N}String(...)`, `TryToBase{N}String(...)`.
+- **BCL-style aliases**: `ToBase{N}String(...)`, `FromBase{N}String(...)`, `TryToBase{N}String(...)` (Base16:
+  `ToHexString`, `FromHexString`, `TryToHexString`).
 - **UTF-8 path**: `EncodeToUtf8(span)` returning `byte[]`, `TryEncodeToUtf8(span, span, out int)`,
-  `DecodeFromUtf8(span, span, out int, out int, …, isFinalBlock)` returning `OperationStatus`.
+  `DecodeFromUtf8(span, span, out int, out int, …)` returning `OperationStatus` (with an `isFinalBlock` parameter on
+  Base16, Base32, and Base64).
 - **Streaming decode**: `FromBase{N}String(span<char>/<byte>, span<byte>, out int, out int)` returning
   `OperationStatus`.
 - **Sizing**: `GetEncodedLength(int)`, `GetMaxEncodedLength(int)` (where exact requires the data),
   `GetMaxDecodedLength(int)`, `GetDecodedLength(span)`, `TryGetDecodedLength(span, out int)`.
-- **Validation**: `IsValid(span)`, `IsBase{N}Digit(char)`.
+- **Validation**: `IsValid(span)`, `IsBase{N}Digit(char)` (Base16: `IsHexDigit(char)`).
 
 ## Where to go next
 

@@ -45,8 +45,9 @@ namespace Bodu.IO.Hashing.Checksums;
 /// <item>
 /// <term><see cref="FromName(string)" /></term>
 /// <description>
-/// Resolves canonical names <em>and</em> published aliases - <c>"CRC-32"</c>, <c>"PKZIP"</c>, <c>"CRC-32/XZ"</c>,
-/// <c>"CRC-32/ADCCP"</c> all return the same <see cref="CRC32_ISOHDLC" /> instance.
+/// Resolves a canonical RevEng name - <c>"CRC-32/ISO-HDLC"</c> returns the same instance as
+/// <see cref="CRC32_ISOHDLC" />. The comparison is ordinal and case-sensitive, and published aliases such as
+/// <c>"CRC-32"</c> or <c>"PKZIP"</c> are not resolved.
 /// </description>
 /// </item>
 /// <item>
@@ -91,9 +92,9 @@ namespace Bodu.IO.Hashing.Checksums;
 /// CrcStandards configured = Enum.Parse<CrcStandards>(config["CrcVariant"]);
 /// var configuredCrc = new Crc(CrcStandard.Get(configured));
 ///
-/// // 3. Look-up by alias - accept legacy or vendor names supplied by users.
-/// CrcStandard pkzip = CrcStandard.FromName("PKZIP");      // same instance as CRC32_ISOHDLC
-/// CrcStandard ccitt = CrcStandard.FromName("CRC-CCITT");  // resolves to CRC16_KERMIT
+/// // 3. Look-up by canonical RevEng name - for example a name read from configuration.
+/// CrcStandard iso    = CrcStandard.FromName("CRC-32/ISO-HDLC");  // same instance as CRC32_ISOHDLC
+/// CrcStandard kermit = CrcStandard.FromName("CRC-16/KERMIT");    // same instance as CRC16_KERMIT
 ///
 /// // 4. Custom variant (not in the RevEng catalogue): a 12-bit CRC with bespoke parameters.
 /// var custom = new CrcStandard(

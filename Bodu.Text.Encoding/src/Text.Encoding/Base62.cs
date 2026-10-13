@@ -102,8 +102,8 @@ public static partial class Base62
     /// <param name="source">The character span.</param>
     /// <param name="styles">Parsing styles. Only <see cref="BaseFormatStyles.IgnoreWhitespace" /> has effect.</param>
     /// <returns>
-    /// <see langword="true" /> when the input is no longer than <see cref="MaxDecodeInputLength" /> and every retained
-    /// character is in the alphabet; otherwise <see langword="false" />.
+    /// <see langword="true" /> when the input is no longer than 65536 characters and every retained character is in the
+    /// alphabet; otherwise <see langword="false" />.
     /// </returns>
     public static bool IsValid(ReadOnlySpan<char> source, BaseFormatStyles styles = BaseFormatStyles.None)
     {

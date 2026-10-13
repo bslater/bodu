@@ -92,7 +92,7 @@ public sealed partial class Base58Tests
         CollectionAssert.AreEqual(Ascii("Hello"), destination);
     }
     /// <summary>
-    /// Verifies that <see cref="Base58.ToBase58String(byte[])" /> returns the Bitcoin/Flickr Base58 output.
+    /// Verifies that <see cref="Base58.ToBase58String(byte[])" /> returns the Bitcoin Base58 output.
     /// </summary>
     [TestMethod]
     public void ToBase58String_ForByteArray_ShouldReturnBitcoinFlickrOutput()
@@ -104,7 +104,7 @@ public sealed partial class Base58Tests
 
     /// <summary>
     /// Verifies that <see cref="Base58.TryToBase58String(ReadOnlySpan{byte}, Span{char}, out int)" /> writes the
-    /// Bitcoin/Flickr output into a destination char span.
+    /// Bitcoin output into a destination char span.
     /// </summary>
     [TestMethod]
     public void TryToBase58String_ForCharSpan_ShouldWriteExpectedOutput()

@@ -44,7 +44,9 @@ from `TextFilter.Build`, never per value.
 Alternatives may be empty (`a{b,}` matches `ab` and `a`), groups nest, and expansion is capped
 (nesting depth 32, at most 10 000 alternatives per pattern) so a hostile pattern cannot demand
 unbounded build work. All expanded alternatives report as their single declared pattern in results
-and statistics.
+and statistics. A pattern itself, glob or regex, may be at most 4096 characters long: a longer one
+throws `ArgumentOutOfRangeException` when it is declared, or when `TextFilter.Parse` /
+`TextFilterBuilder.AddParsed` reads it from a line.
 
 ## Escapes
 

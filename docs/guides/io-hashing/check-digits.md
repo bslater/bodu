@@ -14,8 +14,8 @@ Every check-digit type in this package lives in the single `Bodu.IO.Hashing.Chec
 
 | Base class | Input alphabet | Output | Types |
 |---|---|---|---|
-| <xref:Bodu.IO.Hashing.CheckDigits.CheckDigitAlgorithm> | ASCII decimal digits (`'0'`-`'9'`) | A single `char` | `Luhn`, `Damm`, `Verhoeff`, `Ean8`, `Ean13`, `Gtin14`, `UpcA`, `Isbn13`, `AbaRoutingNumber` |
-| <xref:Bodu.IO.Hashing.CheckDigits.AlphanumericCheckDigitAlgorithm> | Digits and/or letters | A single `char` (may be `'X'`) | `Isin`, `Isbn10`, `Sedol`, `Cusip`, `Iso7064Mod11_2` |
+| <xref:Bodu.IO.Hashing.CheckDigits.CheckDigitAlgorithm> | ASCII decimal digits (`'0'`-`'9'`) | A single `char` | `Luhn`, `Damm`, `Verhoeff`, `Gumm`, `Ean8`, `Ean13`, `Gtin14`, `UpcA`, `Isbn13`, `AbaRoutingNumber` |
+| <xref:Bodu.IO.Hashing.CheckDigits.AlphanumericCheckDigitAlgorithm> | Digits and/or letters | A single `char` (may be `'X'`) | `Isin`, `Isbn10`, `Sedol`, `Cusip`, `Iso7064Mod11_2`, `Code39Mod43`, `Crockford32` |
 | <xref:Bodu.IO.Hashing.CheckDigits.MultiCharCheckDigitAlgorithm> | Digits and/or letters | A fixed-length `string` (typically two digits) | `Iban`, `Lei`, `Iso7064Mod97_10` |
 
 All three bases expose the same streaming idiom: `Append` digits or characters into the running state; call `GetCurrentCheckDigit()` (single-char bases) or `GetCurrentCheckDigits()` (the multi-char base) - or the root's `GetCurrentCheckValue()` string form on any of them - to read the result non-destructively; call `Reset()` to restart. The static `Compute` / `IsValid` helpers wrap that lifecycle for the common one-shot case.
@@ -68,7 +68,7 @@ bool valid = Damm.IsValid("5724");          // true
 
 ### Verhoeff - `Verhoeff`
 
-The **Verhoeff algorithm** uses the dihedral group D₅ and a permutation table to detect all single-digit substitution errors, all adjacent transpositions, and all twin errors. It was designed by Jacobus Verhoeff (1969) and is used by the German ID card system and various medical device identifiers.
+The **Verhoeff algorithm** uses the dihedral group D₅ and a permutation table to detect all single-digit substitution errors, all adjacent transpositions, and most twin errors. It was designed by Jacobus Verhoeff (1969) and is used by the German ID card system and various medical device identifiers.
 
 ```csharp
 using Bodu.IO.Hashing.CheckDigits;
@@ -167,12 +167,14 @@ using Bodu.IO.Hashing.CheckDigits;
 // Body = country code + BBAN (without the two check digits).
 var iban = new Iban();
 iban.Append("GB");       // country code
-iban.Append("BARC20201530093459");   // BBAN
+iban.Append("WEST12345698765432");   // BBAN
 Span<char> checkBuf = stackalloc char[2];
-iban.GetCurrentCheckDigits(checkBuf);   // "29"  →  "GB29 BARC 2020 1530 0934 59"
+iban.GetCurrentCheckDigits(checkBuf);   // "82"  →  "GB82 WEST 1234 5698 7654 32"
 
-bool valid = Iban.IsValid("GB29BARC20201530093459");   // true
+bool valid = Iban.IsValid("GB82WEST12345698765432");   // true
 ```
+
+`Iban.IsValid` checks the check digits and the character set only: at least four characters, all uppercase ASCII letters or digits, with digits in the two check positions. It does not check the country code or the country-specific length and BBAN format, so validate those separately when you need a complete IBAN check.
 
 ---
 
@@ -184,7 +186,7 @@ bool valid = Iban.IsValid("GB29BARC20201530093459");   // true
 using Bodu.IO.Hashing.CheckDigits;
 
 char check10 = Isbn10.Compute("030640615");   // '2'  →  "0306406152"
-char check13 = Isbn13.Compute("978030640615");   // '2'
+char check13 = Isbn13.Compute("978030640615");   // '7'
 
 bool valid10 = Isbn10.IsValid("0306406152");
 bool valid13 = Isbn13.IsValid("9780306406157");
@@ -199,8 +201,8 @@ SEDOL (Stock Exchange Daily Official List) is a 7-character identifier used by t
 ```csharp
 using Bodu.IO.Hashing.CheckDigits;
 
-char check = Sedol.Compute("710889");   // '2'  →  "7108892"
-bool valid  = Sedol.IsValid("7108892");   // true
+char check = Sedol.Compute("B0WNLY");   // '7'  →  "B0WNLY7"
+bool valid  = Sedol.IsValid("B0WNLY7");   // true
 ```
 
 ---
@@ -212,8 +214,8 @@ CUSIP (Committee on Uniform Securities Identification Procedures, ANSI X9.6) ide
 ```csharp
 using Bodu.IO.Hashing.CheckDigits;
 
-char check = Cusip.Compute("037833100");   // '5'  →  "0378331005"  (Apple)
-bool valid  = Cusip.IsValid("0378331005");
+char check = Cusip.Compute("03783310");   // '0'  →  "037833100"  (Apple)
+bool valid  = Cusip.IsValid("037833100");   // true
 ```
 
 ---
@@ -236,13 +238,15 @@ A check digit is only as good as the keying errors it catches. The schemes here 
 
 | Family | Bodu types | Single substitution | Adjacent transposition | Twin error |
 |---|---|---|---|---|
-| Mod 10, weighted sum (Luhn) | `Luhn`, `Ean8`, `Ean13`, `Gtin14`, `UpcA`, `AbaRoutingNumber`, `Isin` | All | All **except** `09 ↔ 90` | No |
+| Mod 10, Luhn doubling | `Luhn`, `Isin`, `Cusip` | All | All **except** `09 ↔ 90` | Most (misses `22 ↔ 55`, `33 ↔ 66`, `44 ↔ 77`) |
+| Mod 10, fixed weights (GS1 3-1, ABA 3-7-1, SEDOL 1-3-1-7-3-9) | `Ean8`, `Ean13`, `Gtin14`, `UpcA`, `Isbn13`, `AbaRoutingNumber`, `Sedol` | All | All **except** swaps of digits that differ by 5 | Some |
 | Quasigroup (Damm) | `Damm` | All | **All** | Many |
-| Dihedral D₅ (Verhoeff) | `Verhoeff` | All | All | All |
-| Mod 11 | `Isbn10`, `Sedol`, `Cusip`, `Iso7064Mod11_2` | All | Most | Some |
+| Dihedral D₅ (Verhoeff) | `Verhoeff` | All | All | Most |
+| Dihedral D₅, alternating (Gumm) | `Gumm` | All | All | Some (more than four in ten pass) |
+| Mod 11 | `Isbn10`, `Iso7064Mod11_2` | All | All | Most |
 | Mod 97-10 (ISO 7064) | `Iban`, `Lei`, `Iso7064Mod97_10` | Effectively all | Effectively all | Effectively all |
 
-The `Ean*`, `Gtin14`, `UpcA`, and `Isin` schemes share Luhn's mod-10 floor (and its `09 ↔ 90` blind spot) because they reduce to a weighted-sum-mod-10 over the expanded payload. For a **free** choice of a general decimal identifier, `Damm` closes that gap with a single character; `Verhoeff` adds twin-error coverage at the cost of a permutation table. Reach for `Luhn` only when a standard mandates it. The two-character `Iban` / `Lei` schemes over a large modulus catch essentially every realistic transcription error - the appropriate strength for high-value financial identifiers. See the [concepts page](../../docs/io-hashing/concepts.md#transcription-error-classes) for what each error class means.
+`Isin` and `Cusip` apply Luhn's doubling, so they share its `09 ↔ 90` blind spot. The fixed-weight schemes catch `09 ↔ 90` but miss every adjacent swap of two digits that differ by 5 (`05`, `16`, `27`, `38`, `49`), because each pair of neighbouring weights differs by an even number. For a **free** choice of a general decimal identifier, `Damm` closes those gaps with a single character; `Verhoeff` also catches more twin errors, at the cost of a permutation table. The measured figures, with `Gumm`, `Code39Mod43`, and `Crockford32`, are in [Alphanumeric and encoded check digits](alphanumeric-check-digits.md#error-classes---measured). Reach for `Luhn` only when a standard mandates it. The two-character `Iban` / `Lei` schemes over a large modulus catch essentially every realistic transcription error - the appropriate strength for high-value financial identifiers. See the [concepts page](../../docs/io-hashing/concepts.md#transcription-error-classes) for what each error class means.
 
 ## Streaming a payload in chunks
 
@@ -279,6 +283,10 @@ luhn.Reset();                               // ready for the next identifier
 | Book identifier | `Isbn13` (new) · `Isbn10` (legacy) |
 | US bank routing number | `AbaRoutingNumber` |
 | Legal entity identifier (LEI) | `Lei` |
+| Code 39 barcode check character | `Code39Mod43` |
+| Crockford base-32 identifier | `Crockford32` |
+
+`Gumm` guards the same two error classes as `Verhoeff` with a simpler construction but catches far fewer twin errors; [Alphanumeric and encoded check digits](alphanumeric-check-digits.md) covers it with the other schemes.
 
 ## Where to go next
 

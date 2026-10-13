@@ -26,7 +26,7 @@ For self-framing document formats (CSV / TSV, DotEnv, INI), see the companion `B
 - <xref:Bodu.Text.Encoding.Base16> - hexadecimal; 4 bits per symbol; flexible formatting (case, `0x` prefix, line breaks, byte spacing); lenient parsing.
 - <xref:Bodu.Text.Encoding.Base32> - 5 bits per symbol; four variants via <xref:Bodu.Text.Encoding.Base32Variant>: Standard (RFC 4648 §6), HexExtended (RFC 4648 §7), Crockford, ZBase32; padding control.
 - <xref:Bodu.Text.Encoding.Base64> - 6 bits per symbol; three variants via <xref:Bodu.Text.Encoding.Base64Variant>: Standard (RFC 4648 §4), UrlSafe (RFC 4648 §5), Mime (RFC 2045 with 76-char wrap). Delegates inner conversion to the BCL for SIMD speed.
-- <xref:Bodu.Text.Encoding.Base58> - non-power-of-two radix using big-integer divmod; two variants via <xref:Bodu.Text.Encoding.Base58Variant>: BitcoinFlickr (default), Ripple. Preserves leading zeros.
+- <xref:Bodu.Text.Encoding.Base58> - non-power-of-two radix using big-integer divmod; three variants via <xref:Bodu.Text.Encoding.Base58Variant>: BitcoinFlickr (default; the Bitcoin alphabet), Ripple, Flickr. Preserves leading zeros.
 - <xref:Bodu.Text.Encoding.Base85> - 4-byte block → 5 chars; three variants via <xref:Bodu.Text.Encoding.Base85Variant>: Ascii85 (Adobe, with `z` shortcut), Z85 (RFC 32 ZeroMQ; 4-byte alignment), GitCompact (Git `base85.c` alphabet; compact self-delimiting tail plus the `EncodeGitPadded` / `DecodeGitPadded` line primitive).
 
 **Special-purpose encodings**
@@ -80,8 +80,8 @@ byte[] headerBytes = Base64.Decode(
 byte[] secret  = RandomNumberGenerator.GetBytes(20);
 string display = Base32.Encode(secret, Base32Variant.Standard, BaseFormattingOptions.OmitPadding);
 
-// --- Base58 BitcoinFlickr: decode a mainnet P2PKH address -------------------
-byte[] payload = Base58.Decode("1NS17iag9jJgTHD1VXjvLCEnZuQ3rJDE9L");
+// --- Base58 (Bitcoin alphabet): decode a mainnet P2PKH address -------------
+byte[] payload = Base58.Decode("1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa");
 
 // --- Base85 Ascii85 with the z shortcut -------------------------------------
 string ascii85 = Base85.Encode(new byte[] { 0, 0, 0, 0 }, Base85Variant.Ascii85);
@@ -131,9 +131,9 @@ OperationStatus status = Base16.DecodeFromUtf8(
 
 ## Notes
 
-- **ASCII alphabets / UTF-8 byte path.** Every variant's alphabet is pure ASCII, so the UTF-8 byte form is bit-identical to the character form. The `EncodeToUtf8` / `DecodeFromUtf8` overloads are the natural choice when bytes come from a network or file pipeline - they avoid the allocation of an intermediate `string` or `char[]`.
+- **ASCII alphabets / UTF-8 byte path.** Every variant's alphabet is pure ASCII, so for the five core encodings (Base16, Base32, Base58, Base64, Base85), which have one, the UTF-8 byte form is bit-identical to the character form, the MIME variant's line breaks included. The `EncodeToUtf8` / `DecodeFromUtf8` overloads are the natural choice when bytes come from a network or file pipeline - they avoid the allocation of an intermediate `string` or `char[]`.
 - **`OperationStatus` and streaming.** Base16, Base32, and Base64 expose the `System.Buffers`-style `OperationStatus` return convention used by `System.Buffers.Text.Base64`: `Done`, `DestinationTooSmall`, `InvalidData`, and (streaming only, `isFinalBlock: false`) `NeedMoreData`. This makes them safe to drop into chunked stream pipelines without buffering the entire input.
-- **Base58 and Base85 are not streamable.** Base58 needs the entire input for its big-integer divmod; Base85 needs fixed-size block packing. Both surfaces accept `isFinalBlock` for API consistency but ignore the flag - pass the entire input as a single span.
+- **Base58 and Base85 are not streamable.** Base58 needs the entire input for its big-integer divmod; Base85 needs fixed-size block packing. Their `DecodeFromUtf8` overloads have no `isFinalBlock` parameter and always treat the input as complete - pass the entire input as a single span.
 - **The special-purpose encodings are single-shot.** Base45, Base62, and Bech32 each require the whole input at once (Base45 packs in two/three-character groups, Base62 uses big-integer divmod, Bech32 must compute a checksum over the entire data part), so they expose no `OperationStatus` streaming path. They throw `FormatException` on invalid input and offer `Try*` variants that report failure as `false`.
 - **Bech32 is HRP-aware and checksum-verified.** <xref:Bodu.Text.Encoding.Bech32> encodes and decodes the *whole* string - human-readable part, `1` separator, data, and checksum - rather than a flat byte buffer, which is why it sits outside <xref:Bodu.Text.Encoding.IBinaryEncoding>. Decode reports which scheme (Bech32 vs Bech32m) validated the checksum through an out parameter; the BIP 173 90-character limit is enforced on decode, and `ConvertBits` converts between 8-bit bytes and 5-bit groups. <xref:Bodu.Text.Encoding.Base58Check> likewise verifies its appended four-byte double-SHA-256 checksum on decode and throws on a corrupted string.
 - **Stateless encodings.** Every encoding type is a `static class` with no instance state. There is no lookup-table cache to share across instances (encodings are stateless), no thread-affinity, and no global configuration. The runtime-selection types in <xref:Bodu.Text.Encoding.BinaryEncodings> are pre-configured singletons over the same static APIs.

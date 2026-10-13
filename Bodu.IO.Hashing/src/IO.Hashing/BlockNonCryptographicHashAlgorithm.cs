@@ -16,11 +16,12 @@ namespace Bodu.IO.Hashing;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Many non-cryptographic hashes - Murmur, CityHash, Pearson, the FNV variants - define their compression step over a
-/// fixed block size (4, 8, 16, or 32 bytes) and must buffer trailing bytes that do not fill a complete block. Writing
-/// that buffering loop correctly is fiddly: handle straddling input, accumulate the running message length, and pad
-/// once on finalization. <see cref="BlockNonCryptographicHashAlgorithm" /> centralizes that machinery so derived types
-/// only express the algorithm-specific behavior.
+/// A hash that defines its compression step over a fixed block size must buffer trailing bytes that do not fill a
+/// complete block. Writing that buffering loop correctly is fiddly: handle straddling input, accumulate the running
+/// message length, and pad once on finalization. <see cref="BlockNonCryptographicHashAlgorithm" /> centralizes that
+/// machinery so derived types only express the algorithm-specific behavior. In this package the
+/// <see cref="Bodu.IO.Hashing.Checksums.Fletcher" /> family derives from it; <see cref="MurmurHash3" /> and
+/// <see cref="CityHash" /> manage their own buffering, and the FNV and Pearson hashes consume one byte at a time.
 /// </para>
 /// <para>
 /// <strong>Inheritance contract.</strong> Derived classes implement four members and may override two more:
@@ -274,10 +275,10 @@ public abstract class BlockNonCryptographicHashAlgorithm
     /// input is padded and aligned to the block size required by the algorithm.
     /// </summary>
     /// <param name="block">
-    /// The final block of unprocessed input, typically containing 0 to <see cref="BlockSizeBytes" />-1 bytes.
+    /// The final block of unprocessed input, containing 0 to <see cref="BlockSizeBytes" />-1 bytes.
     /// </param>
     /// <param name="messageLength">
-    /// The total number of bytes processed by the algorithm before padding, not including this block.
+    /// The total number of bytes appended since the last reset, including the bytes in <paramref name="block" />.
     /// </param>
     /// <returns>
     /// A padded byte array consisting of one or more full blocks that include the input data and message-length
@@ -286,14 +287,17 @@ public abstract class BlockNonCryptographicHashAlgorithm
     protected abstract byte[] PadBlock(ReadOnlySpan<byte> block, ulong messageLength);
 
     /// <summary>
-    /// Transforms a complete block of input data and updates the internal hash state.
+    /// Transforms a block of input data and updates the internal hash state.
     /// </summary>
-    /// <param name="block">
-    /// The input block to process. Its length must match the algorithm's configured block size.
-    /// </param>
-    /// <exception cref="ArgumentException">
-    /// Thrown if the <paramref name="block" /> is not the expected size.
-    /// </exception>
+    /// <param name="block">The input block to process.</param>
+    /// <remarks>
+    /// While input is appended, and for each block of a padded final result, <paramref name="block" /> holds exactly
+    /// <see cref="BlockSizeBytes" /> bytes. Two final-block cases differ: when <see cref="ShouldPadFinalBlock" />
+    /// returns <see langword="false" />, the residual bytes are passed as one shorter block; and when
+    /// <see cref="AllowUnalignedFinalBlock" /> is <see langword="true" />, the whole array returned by
+    /// <see cref="PadBlock(ReadOnlySpan{byte}, ulong)" /> is passed in one call, whatever its length. An implementation
+    /// that enables either must accept those lengths.
+    /// </remarks>
     protected abstract void ProcessBlock(ReadOnlySpan<byte> block);
 
     /// <summary>

@@ -10,6 +10,36 @@ public sealed partial class Base64Tests
 {
 
     /// <summary>
+    /// Verifies that <see cref="Base64.GetDecodedLength" /> returns the length
+    /// <see cref="Base64.Decode(string, Base64Variant, BaseFormatStyles)" /> produces when it succeeds, and throws
+    /// <see cref="FormatException" /> when it fails, in every variant and every combination of styles.
+    /// </summary>
+    [TestMethod]
+    public void GetDecodedLength_WhenSweptAcrossVariantsAndStyles_ShouldMatchDecode()
+    {
+        var disagreements = new List<string>();
+
+        foreach (Base64Variant variant in Enum.GetValues<Base64Variant>())
+        {
+            foreach (var input in GetValidationSweepInputs(variant))
+            {
+                foreach (BaseFormatStyles styles in DecodeAgreement.AllStyles)
+                {
+                    if (IsShortPaddedStrictInput(input, variant, styles))
+                        continue;
+
+                    DecodeAgreement.TryDecode(() => Base64.Decode(input, variant, styles), out int decodedLength);
+                    DecodeAgreement.TryDecode(() => new byte[Base64.GetDecodedLength(input, variant, styles)], out int reportedLength);
+                    if (reportedLength != decodedLength)
+                        disagreements.Add($"{variant} [{styles}] {DecodeAgreement.Quote(input)}: GetDecodedLength {reportedLength}, Decode {decodedLength} (-1: FormatException)");
+                }
+            }
+        }
+
+        DecodeAgreement.AssertNone(disagreements);
+    }
+
+    /// <summary>
     /// Verifies that <see cref="Base64.GetDecodedLength" /> rejects invalid characters with
     /// <see cref="FormatException" />.
     /// </summary>
@@ -74,6 +104,36 @@ public sealed partial class Base64Tests
 
         Assert.AreEqual(8, standard);
         Assert.AreEqual(6, urlSafe);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Base64.TryGetDecodedLength" /> returns <see langword="true" /> exactly when
+    /// <see cref="Base64.Decode(string, Base64Variant, BaseFormatStyles)" /> succeeds, and then reports the length it
+    /// produces, in every variant and every combination of styles.
+    /// </summary>
+    [TestMethod]
+    public void TryGetDecodedLength_WhenSweptAcrossVariantsAndStyles_ShouldMatchDecode()
+    {
+        var disagreements = new List<string>();
+
+        foreach (Base64Variant variant in Enum.GetValues<Base64Variant>())
+        {
+            foreach (var input in GetValidationSweepInputs(variant))
+            {
+                foreach (BaseFormatStyles styles in DecodeAgreement.AllStyles)
+                {
+                    if (IsShortPaddedStrictInput(input, variant, styles))
+                        continue;
+
+                    DecodeAgreement.TryDecode(() => Base64.Decode(input, variant, styles), out int decodedLength);
+                    var reportedLength = Base64.TryGetDecodedLength(input, out int byteCount, variant, styles) ? byteCount : -1;
+                    if (reportedLength != decodedLength)
+                        disagreements.Add($"{variant} [{styles}] {DecodeAgreement.Quote(input)}: TryGetDecodedLength {reportedLength}, Decode {decodedLength} (-1: rejected)");
+                }
+            }
+        }
+
+        DecodeAgreement.AssertNone(disagreements);
     }
 
     /// <summary>

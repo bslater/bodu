@@ -13,7 +13,11 @@ public static partial class Base85
     /// </summary>
     /// <param name="s">The Base85 input.</param>
     /// <param name="variant">The variant.</param>
-    /// <param name="style">Parsing styles. Only <see cref="BaseFormatStyles.IgnoreWhitespace" /> has effect.</param>
+    /// <param name="style">
+    /// Parsing styles. <see cref="BaseFormatStyles.IgnoreWhitespace" /> permits whitespace in the input;
+    /// <see cref="BaseFormatStyles.AllowPrefix" /> permits the Adobe Ascii85 <c>&lt;~</c> / <c>~&gt;</c> delimiter pair
+    /// (Ascii85 only).
+    /// </param>
     /// <returns>The decoded byte array.</returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="s" /> is <see langword="null" />.
@@ -44,7 +48,7 @@ public static partial class Base85
 
         byte[] buffer = new byte[GetMaxDecodedLength(chars.Length)];
 
-        if (!TryDecodeCore(chars, variant, style, buffer, out int written, out string? error))
+        if (!TryDecodeCore(chars, variant, style, buffer, measureOnly: false, out int written, out string? error))
             throw new FormatException(error);
 
         if (written == buffer.Length)
@@ -104,7 +108,7 @@ public static partial class Base85
             return true;
 
         byte[] buffer = new byte[GetMaxDecodedLength(chars.Length)];
-        if (!TryDecodeCore(chars, variant, style, buffer, out int written, out _))
+        if (!TryDecodeCore(chars, variant, style, buffer, measureOnly: false, out int written, out _))
             return false;
 
         if (destination.Length < written)
@@ -116,17 +120,24 @@ public static partial class Base85
     }
 
     /// <summary>
-    /// Core decoder. Walks the input span, validating characters and accumulating bytes into <paramref name="buffer" />
-    /// .
+    /// Core decoder. Walks the input span, validating characters and accumulating bytes into <paramref name="buffer" />,
+    /// or, when <paramref name="measureOnly" /> is set, validating and counting the bytes without writing them.
     /// </summary>
     /// <param name="chars">The input characters.</param>
     /// <param name="variant">The variant.</param>
     /// <param name="style">The parsing styles.</param>
-    /// <param name="buffer">The output buffer (must be at least <see cref="GetMaxDecodedLength" /> in size).</param>
-    /// <param name="written">When this method returns, contains the number of bytes written.</param>
+    /// <param name="buffer">
+    /// The output buffer (must be at least <see cref="GetMaxDecodedLength" /> in size). Ignored when
+    /// <paramref name="measureOnly" /> is set.
+    /// </param>
+    /// <param name="measureOnly">
+    /// Whether to validate and count the decoded bytes without writing them, so that <see cref="IsValid" /> applies
+    /// exactly the rules the decoder applies.
+    /// </param>
+    /// <param name="written">When this method returns, contains the number of bytes written (or counted).</param>
     /// <param name="error">When this method returns <see langword="false" />, contains the failure reason.</param>
     /// <returns><see langword="true" /> on success; <see langword="false" /> on failure.</returns>
-    private static bool TryDecodeCore(ReadOnlySpan<char> chars, Base85Variant variant, BaseFormatStyles style, byte[] buffer, out int written, out string? error)
+    private static bool TryDecodeCore(ReadOnlySpan<char> chars, Base85Variant variant, BaseFormatStyles style, Span<byte> buffer, bool measureOnly, out int written, out string? error)
     {
         sbyte[] lookup = GetLookup(variant);
         bool ignoreWhitespace = style.HasFlag(BaseFormatStyles.IgnoreWhitespace);
@@ -157,10 +168,10 @@ public static partial class Base85
                     return false;
                 }
 
-                buffer[written++] = 0;
-                buffer[written++] = 0;
-                buffer[written++] = 0;
-                buffer[written++] = 0;
+                if (!measureOnly)
+                    buffer.Slice(written, 4).Clear();
+
+                written += 4;
                 continue;
             }
 
@@ -188,10 +199,15 @@ public static partial class Base85
 
             if (charsAccumulated == 5)
             {
-                buffer[written++] = (byte)((accumulator >> 24) & 0xFF);
-                buffer[written++] = (byte)((accumulator >> 16) & 0xFF);
-                buffer[written++] = (byte)((accumulator >> 8) & 0xFF);
-                buffer[written++] = (byte)(accumulator & 0xFF);
+                if (!measureOnly)
+                {
+                    buffer[written] = (byte)((accumulator >> 24) & 0xFF);
+                    buffer[written + 1] = (byte)((accumulator >> 16) & 0xFF);
+                    buffer[written + 2] = (byte)((accumulator >> 8) & 0xFF);
+                    buffer[written + 3] = (byte)(accumulator & 0xFF);
+                }
+
+                written += 4;
                 accumulator = 0;
                 charsAccumulated = 0;
             }
@@ -229,11 +245,13 @@ public static partial class Base85
         }
 
         int bytesFromTail = charsAccumulated - 1;
-        for (int i = 0; i < bytesFromTail; i++)
+        if (!measureOnly)
         {
-            buffer[written++] = (byte)((accumulator >> ((3 - i) * 8)) & 0xFF);
+            for (int i = 0; i < bytesFromTail; i++)
+                buffer[written + i] = (byte)((accumulator >> ((3 - i) * 8)) & 0xFF);
         }
 
+        written += bytesFromTail;
         return true;
     }
 }

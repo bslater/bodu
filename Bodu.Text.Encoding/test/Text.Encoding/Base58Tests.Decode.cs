@@ -13,7 +13,7 @@ public sealed partial class Base58Tests
 
     /// <summary>
     /// Verifies that <see cref="Base58.Decode(string, Base58Variant, BaseFormatStyles)" /> recovers the bytes for
-    /// every Bitcoin Core Known Answer Test vector for the Bitcoin/Flickr alphabet.
+    /// every Bitcoin Core Known Answer Test vector for the Bitcoin alphabet.
     /// </summary>
     /// <param name="vector">A KAT vector.</param>
     [TestMethod]
@@ -28,7 +28,7 @@ public sealed partial class Base58Tests
     }
 
     /// <summary>
-    /// Verifies that strict Bitcoin/Flickr Base58 decoding rejects every malformed input in
+    /// Verifies that strict Bitcoin Base58 decoding rejects every malformed input in
     /// <see cref="Base58KnownAnswerVectors.BitcoinFlickrNegativeVectors" /> with the expected exception type.
     /// </summary>
     /// <param name="vector">A negative KAT vector.</param>
@@ -54,7 +54,7 @@ public sealed partial class Base58Tests
     }
     /// <summary>
     /// Verifies that <see cref="Base58.Decode(string, Base58Variant, BaseFormatStyles)" /> reverses the known
-    /// Bitcoin/Flickr Base58 vectors.
+    /// Bitcoin Base58 vectors.
     /// </summary>
     /// <param name="encoded">The Base58 input.</param>
     /// <param name="expectedHex">The expected decoded bytes expressed as hex.</param>
@@ -108,7 +108,7 @@ public sealed partial class Base58Tests
 
     /// <summary>
     /// Verifies that <see cref="Base58.Decode(string, Base58Variant, BaseFormatStyles)" /> rejects each character
-    /// that the Bitcoin/Flickr alphabet intentionally omits.
+    /// that the Bitcoin alphabet intentionally omits.
     /// </summary>
     /// <param name="excluded">The excluded character.</param>
     [TestMethod]
@@ -138,7 +138,7 @@ public sealed partial class Base58Tests
     {
         Assert.ThrowsExactly<FormatException>(() =>
         {
-            _ = Base58.Decode("0OIl"); // every character is intentionally excluded from Bitcoin/Flickr Base58
+            _ = Base58.Decode("0OIl"); // every character is intentionally excluded from Bitcoin Base58
         });
     }
 
@@ -171,7 +171,7 @@ public sealed partial class Base58Tests
 
     /// <summary>
     /// Verifies that <see cref="Base58.IsValid(ReadOnlySpan{char}, Base58Variant, BaseFormatStyles)" /> returns
-    /// <see langword="false" /> for every malformed Bitcoin/Flickr input.
+    /// <see langword="false" /> for every malformed Bitcoin input.
     /// </summary>
     /// <param name="vector">A negative KAT vector.</param>
     [TestMethod]
@@ -193,7 +193,7 @@ public sealed partial class Base58Tests
     [TestCategory("Regression")]
     public void Decode_WhenInputExceedsMaxLength_ShouldThrowFormatException()
     {
-        // '1' is the zero symbol of the Bitcoin/Flickr alphabet, so the input is otherwise well-formed.
+        // '1' is the zero symbol of the Bitcoin alphabet, so the input is otherwise well-formed.
         string tooLong = new string('1', Base58.MaxDecodeInputLength + 1);
 
         Assert.ThrowsExactly<FormatException>(() => _ = Base58.Decode(tooLong, Base58Variant.BitcoinFlickr));

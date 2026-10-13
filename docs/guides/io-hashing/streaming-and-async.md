@@ -4,7 +4,7 @@ title: Streaming, async, and resumable hashing
 
 # Streaming, async, and resumable hashing
 
-Every algorithm in `Bodu.IO.Hashing` derives from `System.IO.Hashing.NonCryptographicHashAlgorithm`, whose core is `Append` / `GetCurrentHash` / `Reset`. Three things build on that core for data that does not fit in one span: <xref:Bodu.IO.Hashing.HashingStream> computes a digest as a side effect of ordinary stream I/O; <xref:Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions> adds the `Stream`, `async`, and verify overloads; and <xref:Bodu.IO.Hashing.IResumableHashAlgorithm> lets a stored digest be extended with new bytes without re-reading the original input. This page walks through all three and ends with the digest byte-order table you need when comparing results across tools.
+Every checksum and fingerprint in `Bodu.IO.Hashing` derives from `System.IO.Hashing.NonCryptographicHashAlgorithm` (the check digits are a separate family over text), whose core is `Append` / `GetCurrentHash` / `Reset`. Three things build on that core for data that does not fit in one span: <xref:Bodu.IO.Hashing.HashingStream> computes a digest as a side effect of ordinary stream I/O; <xref:Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions> adds the `Stream`, `async`, and verify overloads; and <xref:Bodu.IO.Hashing.IResumableHashAlgorithm> lets a stored digest be extended with new bytes without re-reading the original input. This page walks through all three and ends with the digest byte-order table you need when comparing results across tools.
 
 ## Pattern 1 - `HashingStream` while copying
 
@@ -58,8 +58,10 @@ byte[] second = hashing.GetCurrentHash();         // Fletcher-32 of "abcdef" alo
 | `ComputeHash(Stream source, int bufferSize = 4096)` | 4 KiB | Resets first, then `GetCurrentHash` | synchronous |
 | `ComputeHashAsync(Stream source, int bufferSize = 81920, CancellationToken)` | 80 KiB | as above | returns `ValueTask<byte[]>` |
 | `AppendData(Stream source, int bufferSize = 4096)` / `AppendDataAsync(Stream, int = 4096, CancellationToken)` | 4 KiB | **No** - call `GetCurrentHash` when done | accumulate several sources into one digest |
-| `VerifyHash(Stream, byte[] \| string hex)` / `VerifyHashAsync(Stream, byte[] \| string \| ReadOnlyMemory<byte>, CancellationToken)` | via `ComputeHash*` | Yes | constant-time compare; throws on `null` |
-| `TryVerifyHash(…)` / `TryVerifyHashAsync(…)` | as above | Yes | `false` for `null` arguments, malformed hex, cancellation, or any exception |
+| `VerifyHash(Stream, byte[] \| string hex)` / `VerifyHashAsync(Stream, byte[] \| string \| ReadOnlyMemory<byte>, CancellationToken)` | via `ComputeHash*` | Yes | ordinary compare, not constant-time; throws on `null` |
+| `TryVerifyHash(…)` / `TryVerifyHashAsync(…)` | as above | Yes | `false` for malformed hex, cancellation, or any exception while hashing; some `null` arguments still throw (below) |
+
+The `Try` forms throw `ArgumentNullException` for a `null` algorithm, and for a `null` expected digest except in the `Stream` + `byte[]` overloads and the overload with an `out bool` result, which return `false`. A `null` input stream returns `false`, as does a `null` input array in the synchronous overloads; the asynchronous `byte[]` overloads and the `string` + `Encoding` overloads throw for a `null` input.
 
 Read buffers are rented from `ArrayPool<byte>.Shared` and returned on every exit path; `bufferSize` must be positive (`ArgumentOutOfRangeException`). An already-cancelled token surfaces from `ComputeHashAsync` as `TaskCanceledException` (an `OperationCanceledException`).
 

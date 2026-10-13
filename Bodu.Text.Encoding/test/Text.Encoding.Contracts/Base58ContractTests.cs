@@ -9,7 +9,7 @@ namespace Bodu.Text.Encoding.Contracts;
 
 /// <summary>
 /// Drives <see cref="BinaryEncodingContractTests{TEncoding}" /> against <see cref="Base58" /> with a
-/// small set of Bitcoin/Flickr-variant vectors. Validates encode/decode parity and round-trip on the
+/// small set of Bitcoin-variant vectors. Validates encode/decode parity and round-trip on the
 /// shared contract surface; bespoke Base58 tests (variants, formatting options, span overloads) live in
 /// the existing <c>Base58Tests.*.cs</c> partials.
 /// </summary>

@@ -33,8 +33,8 @@ namespace Bodu.IO.Hashing;
 /// Pearson's per-byte distribution is weaker than those alternatives.
 /// </para>
 /// <para>
-/// <strong>Output and lifecycle.</strong> Output size is set by the constructor's <c>hashSize</c> argument (a multiple
-/// of 8 bits, typically 8, 16, 32, or 64). The digest is emitted in little-endian byte order.
+/// <strong>Output and lifecycle.</strong> Output size is set by the constructor's <c>hashSizeBits</c> argument (a
+/// multiple of 8 bits from 8 to 2048). Each digest byte is the result of one permutation pass, in pass order.
 /// <see cref="System.IO.Hashing.NonCryptographicHashAlgorithm.GetCurrentHash()" /> is non-destructive; instances are
 /// not thread-safe.
 /// </para>
@@ -46,9 +46,9 @@ namespace Bodu.IO.Hashing;
 /// using Bodu.IO.Hashing;
 /// using Bodu.IO.Hashing.Extensions;
 ///
-/// 8-byte (64-bit) Pearson digest assembled from eight permutation passes,
-/// using one of the canonical lookup tables.
-/// var pearson = new Pearson(hashSizeBits: 64, PearsonTableType.Pearson);
+/// // 8-byte (64-bit) Pearson digest assembled from eight permutation passes,
+/// // using one of the canonical lookup tables.
+/// var pearson = new Pearson(hashSizeBits: 64, Pearson.PearsonTableType.Pearson);
 /// byte[] digest = pearson.ComputeHash(System.Text.Encoding.UTF8.GetBytes("payload"));
 ///]]>
 /// </code>

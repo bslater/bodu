@@ -54,7 +54,7 @@ public sealed class SmokeTests
     /// <summary>
     /// Verifies that <see cref="Base58.Encode(byte[], Base58Variant)" /> followed by
     /// <see cref="Base58.Decode(string, Base58Variant, BaseFormatStyles)" /> round-trips the ASCII representation of
-    /// <c>"Hello"</c> using the canonical Bitcoin/Flickr alphabet.
+    /// <c>"Hello"</c> using the canonical Bitcoin alphabet.
     /// </summary>
     [TestMethod]
     [TestCategory("Smoke")]

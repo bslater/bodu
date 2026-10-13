@@ -57,5 +57,5 @@ var stats = filter.GetStatistics();   // evaluated / accepted / excluded, hits p
 
 - **Whole-string matching.** Globs match the entire value; use `*abc*` for contains-style matching. Comparison is ordinal, case-insensitive by default, and overridable per filter and per pattern.
 - **Cost-tiered evaluation.** At build time each glob is classified - literal, prefix, suffix, contains, general wildcard - and regexes compile preferring the linear-time `NonBacktracking` engine; groups evaluate cheapest-first, which cannot change the outcome because set matching is an order-independent OR.
-- **Fail-safe regex timeouts.** A timed-out include does not admit the value; a timed-out exclude still vetoes it - and the event is visible in the statistics and to the observer.
+- **Fail-safe regex timeouts.** A timed-out include does not admit the value; a timed-out exclude still vetoes it - and the event is counted in `TextFilterStatistics.RegexTimeouts`. The observer sees only the fail-safe decision.
 - **See also:** the [introduction](~/docs/text-filtering/index.md) and the [guides](~/guides/text-filtering/index.md).

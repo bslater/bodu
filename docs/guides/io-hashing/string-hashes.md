@@ -33,7 +33,7 @@ using Bodu.IO.Hashing;
 
 byte[] data = Encoding.UTF8.GetBytes("the quick brown fox");
 
-var hash = new Bernstein();             // djb2 - seed 5381, XOR form
+var hash = new Bernstein();             // djb2 - seed 5381, addition form
 hash.Append(data);
 byte[] digest = hash.GetCurrentHash();
 uint h = BitConverter.ToUInt32(digest);

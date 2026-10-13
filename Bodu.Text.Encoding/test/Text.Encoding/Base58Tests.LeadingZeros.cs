@@ -29,7 +29,7 @@ public sealed partial class Base58Tests
         CollectionAssert.AreEqual(expected, actual);
     }
     /// <summary>
-    /// Verifies that leading zero bytes are encoded as repeated <c>1</c> characters in the Bitcoin/Flickr alphabet.
+    /// Verifies that leading zero bytes are encoded as repeated <c>1</c> characters in the Bitcoin alphabet.
     /// </summary>
     /// <param name="leadingZeroCount">The number of leading zero bytes.</param>
     [TestMethod]

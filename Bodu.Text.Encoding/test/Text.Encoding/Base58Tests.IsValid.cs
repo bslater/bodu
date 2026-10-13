@@ -10,7 +10,7 @@ public sealed partial class Base58Tests
 {
 
     /// <summary>
-    /// Verifies that <see cref="Base58.IsBase58Digit" /> recognises Bitcoin/Flickr alphabet characters.
+    /// Verifies that <see cref="Base58.IsBase58Digit" /> recognises Bitcoin alphabet characters.
     /// </summary>
     [TestMethod]
     public void IsBase58Digit_WhenBitcoinFlickrSymbol_ShouldReturnTrue()
@@ -34,7 +34,7 @@ public sealed partial class Base58Tests
         Assert.IsFalse(Base58.IsBase58Digit('!'));
     }
     /// <summary>
-    /// Verifies that <see cref="Base58.IsValid" /> returns <see langword="true" /> for a canonical Bitcoin/Flickr
+    /// Verifies that <see cref="Base58.IsValid" /> returns <see langword="true" /> for a canonical Bitcoin
     /// input.
     /// </summary>
     [TestMethod]
@@ -83,7 +83,7 @@ public sealed partial class Base58Tests
 
     /// <summary>
     /// Verifies that <see cref="Base58.IsValid" /> recognises the Ripple variant alphabet - driving the variant
-    /// branch independently from the Bitcoin/Flickr default.
+    /// branch independently from the Bitcoin default.
     /// </summary>
     [TestMethod]
     public void IsValid_WhenRippleVariantAndRippleAlphabetInput_ShouldReturnTrue() =>
@@ -100,9 +100,40 @@ public sealed partial class Base58Tests
     [TestCategory("Regression")]
     public void IsValid_WhenInputExceedsMaxLength_ShouldReturnFalse()
     {
-        // '1' is the zero symbol of the Bitcoin/Flickr alphabet, so the input is otherwise well-formed.
+        // '1' is the zero symbol of the Bitcoin alphabet, so the input is otherwise well-formed.
         string tooLong = new string('1', Base58.MaxDecodeInputLength + 1);
 
         Assert.IsFalse(Base58.IsValid(tooLong.AsSpan(), Base58Variant.BitcoinFlickr));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Base58.IsValid" /> returns <see langword="true" /> exactly when
+    /// <see cref="Base58.Decode(string, Base58Variant, BaseFormatStyles)" /> succeeds with the same variant and styles,
+    /// over well-formed, decorated, and malformed input in every variant and every combination of styles.
+    /// </summary>
+    [TestMethod]
+    public void IsValid_WhenSweptAcrossVariantsAndStyles_ShouldAgreeWithDecode()
+    {
+        const string symbols = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz0OIl";
+        var disagreements = new List<string>();
+
+        foreach (Base58Variant variant in Enum.GetValues<Base58Variant>())
+        {
+            var inputs = new HashSet<string>(StringComparer.Ordinal) { new('1', 1300) };
+            foreach (var payload in DecodeAgreement.Payloads(8))
+                inputs.UnionWith(DecodeAgreement.Mutations(Base58.Encode(payload, variant), symbols));
+
+            foreach (var input in inputs)
+            {
+                foreach (BaseFormatStyles styles in DecodeAgreement.AllStyles)
+                {
+                    var decodes = DecodeAgreement.TryDecode(() => Base58.Decode(input, variant, styles), out _);
+                    if (Base58.IsValid(input, variant, styles) != decodes)
+                        disagreements.Add($"{variant} [{styles}] {DecodeAgreement.Quote(input)}: Decode succeeds = {decodes}");
+                }
+            }
+        }
+
+        DecodeAgreement.AssertNone(disagreements);
     }
 }

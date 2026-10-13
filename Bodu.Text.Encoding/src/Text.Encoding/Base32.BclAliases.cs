@@ -34,7 +34,7 @@ public static partial class Base32
     /// <summary>
     /// Decodes a UTF-8 encoded Base32 byte span into a byte array using the Standard variant with strict parsing.
     /// </summary>
-    /// <param name="utf8Source">The UTF-8 hexadecimal source.</param>
+    /// <param name="utf8Source">The UTF-8 Base32 source.</param>
     /// <returns>The decoded byte array.</returns>
     /// <exception cref="FormatException">Thrown when the input is not strict Standard Base32.</exception>
     /// <remarks>
@@ -121,8 +121,8 @@ public static partial class Base32
         Encode(inArray, offset, length, Base32Variant.Standard, BaseFormattingOptions.None);
 
     /// <summary>
-    /// Attempts to encode <paramref name="source" /> into <paramref name="destination" /> using the Standard variant
-    /// without padding decoration.
+    /// Attempts to encode <paramref name="source" /> into <paramref name="destination" /> using the Standard variant,
+    /// with its <c>=</c> padding.
     /// </summary>
     /// <param name="source">The bytes to encode.</param>
     /// <param name="destination">The destination span.</param>

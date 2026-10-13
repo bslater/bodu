@@ -66,8 +66,8 @@ URL-safe Base64 swaps two characters: `+` → `-`, `/` → `_`. The decoder is *
 are rejected in URL-safe mode, and `-` / `_` are rejected in Standard mode. To accept either alphabet, use the
 `Get(name)` lookup with the appropriate variant or pre-normalise the input.
 
-URL-safe also omits padding by default. To re-add padding pass `BaseFormattingOptions.None` and the encoder will
-emit canonical `=` padding:
+URL-safe output is never padded: no `BaseFormattingOptions` value makes the encoder emit `=` for the URL-safe
+variant. Code that must send padded URL-safe text can append `=` until the length is a multiple of four:
 
 ```csharp
 Base64.Encode(data, Base64Variant.UrlSafe);                                  // no padding (default)

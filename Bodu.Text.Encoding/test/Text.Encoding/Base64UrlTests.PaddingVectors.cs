@@ -134,18 +134,14 @@ public sealed class Base64UrlTests_PaddingVectors
     }
 
     /// <summary>
-    /// Documents that <see cref="Base64Url.IsValid(ReadOnlySpan{char})" /> applies a stricter padding-length
-    /// check than the decoder, so the single-padding shape "AQ=" returns <see langword="false" /> from
-    /// IsValid even though <see cref="Base64Url.Decode(string)" /> accepts and normalises the same input. The
-    /// divergence is intentional pinning: any future reconciliation between IsValid and Decode should update
-    /// this test along with the implementation.
+    /// Verifies that <see cref="Base64Url.IsValid(ReadOnlySpan{char})" /> accepts the single-padding shape "AQ=", which
+    /// <see cref="Base64Url.Decode(string)" /> accepts by completing the final quantum's padding.
     /// </summary>
     [TestMethod]
-    public void IsValid_WhenInputHasSinglePadding_ShouldReturnFalseEvenThoughDecodeSucceeds()
+    public void IsValid_WhenInputHasSinglePadding_ShouldAcceptAsDecodeDoes()
     {
-        Assert.IsFalse(Base64Url.IsValid("AQ=".AsSpan()));
+        Assert.IsTrue(Base64Url.IsValid("AQ=".AsSpan()));
 
-        // Decode still accepts the same input - the asymmetry is what the test pins.
         byte[] decoded = Base64Url.Decode("AQ=");
         CollectionAssert.AreEqual(new byte[] { 0x01 }, decoded);
     }

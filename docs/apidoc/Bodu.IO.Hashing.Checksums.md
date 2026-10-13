@@ -6,7 +6,7 @@ uid: Bodu.IO.Hashing.Checksums
 
 ## Purpose
 
-**Bodu.IO.Hashing.Checksums** ships the cyclic redundancy check (CRC) catalogue from the [RevEng project](https://reveng.sourceforge.io/crc-catalogue/) - every variant from CRC-1 through CRC-64, addressable by name. The catalogue is auto-generated; the consumer-facing surface is the immutable <xref:Bodu.IO.Hashing.Checksums.CrcStandard> parameter set, used as a parameter to <xref:Bodu.IO.Hashing.Checksums.Crc>. The namespace also hosts the twin-accumulator checksums (Fletcher, Adler) and the CRC lookup-table machinery.
+**Bodu.IO.Hashing.Checksums** ships the cyclic redundancy check (CRC) catalogue from the [RevEng project](https://reveng.sourceforge.io/crc-catalogue/) - every catalogued variant from CRC-3 through CRC-64, addressable by canonical name (`CRC-82/DARC`, the one wider entry, is omitted). The catalogue is auto-generated; the consumer-facing surface is the immutable <xref:Bodu.IO.Hashing.Checksums.CrcStandard> parameter set, used as a parameter to <xref:Bodu.IO.Hashing.Checksums.Crc>. The namespace also hosts the twin-accumulator checksums (Fletcher, Adler) and the CRC lookup-table machinery.
 
 ## Key types
 

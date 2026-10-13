@@ -204,4 +204,40 @@ public sealed class Base58CheckTests
         Assert.AreEqual(0, bytesWritten);
     }
 
+    /// <summary>
+    /// Verifies that <see cref="Base58Check.IsValid" /> returns <see langword="true" /> exactly when
+    /// <see cref="Base58Check.Decode(ReadOnlySpan{char}, Base58Variant, BaseFormatStyles)" /> succeeds with the same
+    /// variant and styles, over well-formed input, input with a damaged checksum or a foreign character, and an
+    /// encoding whose run of leading zero bytes is longer than its other digits.
+    /// </summary>
+    [TestMethod]
+    public void IsValid_WhenSweptAcrossVariantsAndStyles_ShouldAgreeWithDecode()
+    {
+        const string symbols = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz0OIl";
+        var disagreements = new List<string>();
+
+        foreach (Base58Variant variant in Enum.GetValues<Base58Variant>())
+        {
+            var inputs = new HashSet<string>(StringComparer.Ordinal)
+            {
+                Base58Check.Encode(new byte[1300], variant),
+            };
+
+            foreach (var payload in DecodeAgreement.Payloads(6))
+                inputs.UnionWith(DecodeAgreement.Mutations(Base58Check.Encode(payload, variant), symbols));
+
+            foreach (var input in inputs)
+            {
+                foreach (BaseFormatStyles styles in DecodeAgreement.AllStyles)
+                {
+                    var decodes = DecodeAgreement.TryDecode(() => Base58Check.Decode(input, variant, styles), out _);
+                    if (Base58Check.IsValid(input, variant, styles) != decodes)
+                        disagreements.Add($"{variant} [{styles}] {DecodeAgreement.Quote(input)}: Decode succeeds = {decodes}");
+                }
+            }
+        }
+
+        DecodeAgreement.AssertNone(disagreements);
+    }
+
 }

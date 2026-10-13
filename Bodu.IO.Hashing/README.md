@@ -46,7 +46,7 @@ the full catalogue, streaming, and verification surfaces.
 | FNV | `Fnv132`, `Fnv164`, `Fnv1a32`, `Fnv1a64` | 32 / 64 | Fowler-Noll-Vo |
 | CityHash | `CityHash32`, `CityHash64`, `CityHash128` | 32 / 64 / 128 | Google CityHash |
 | MurmurHash3 | `MurmurHash3_32`, `MurmurHash3_128` | 32 / 128 | |
-| Pearson | `Pearson` (selectable `PearsonTableType`) | 8 | |
+| Pearson | `Pearson` (selectable `PearsonTableType`) | 8 to 2048, in steps of 8 | |
 | String hashes | `ApHash`, `Bernstein`, `BKDR`, `Elf64`, `JSHash`, `Pjw32`, `SDBM`, `SuperFastHash` | varies | Classic table / multiplicative hashes |
 
 ## CRC
@@ -70,7 +70,7 @@ Decimal algorithms derive from `CheckDigitAlgorithm`; alphanumeric and multi-cha
 
 ## Streaming and one-shot APIs
 
-The extension surface on `NonCryptographicHashAlgorithm` adds `AppendData(Stream)`, one-shot `ComputeHash(...)` / `ComputeHashAsync(Stream)`, and constant-time `VerifyHash` / `TryVerifyHash` (sync and async) over the standard incremental `Append` / `GetCurrentHash` / `Reset` methods.
+The extension surface on `NonCryptographicHashAlgorithm` adds `AppendData(Stream)`, one-shot `ComputeHash(...)` / `ComputeHashAsync(Stream)`, and `VerifyHash` / `TryVerifyHash` (sync and async; the comparison is not constant-time) over the standard incremental `Append` / `GetCurrentHash` / `Reset` methods.
 
 ## Runnable samples
 

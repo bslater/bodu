@@ -40,7 +40,7 @@ decoration, apply alphabet lookup, then bit-stream unpack / divmod / block expan
 | **Base16** | 4 | 100 % | Hex dumps, hash digests, low-level binary inspection |
 | **Base32** | 5 | 60 % | TOTP / HOTP secrets, DNSSEC NSEC3, S/MIME, human-spoken IDs (Crockford / z-base-32) |
 | **Base64** | 6 | 33 % | MIME / SMTP, JWT (URL-safe), TLS certificates, generic binary-in-text |
-| **Base58** | ≈5.86 | ≈37 % | Bitcoin addresses, IPFS CIDs, Solana, NEAR, Stellar, Flickr short URLs |
+| **Base58** | ≈5.86 | ≈37 % | Bitcoin addresses, IPFS CIDs, Solana, NEAR, Flickr short URLs (`Flickr` variant) |
 | **Base85** | ≈6.41 | 25 % | PDF / PostScript (Ascii85), ZeroMQ keys (Z85), tight ASCII transport |
 | **Base45** | ≈5.49 | 50 % (2 bytes → 3 chars) | QR-code payloads (RFC 9285), EU Digital COVID Certificate |
 | **Base62** | ≈5.95 | ≈35 % | Short URLs, compact identifiers, URL-safe slugs (no special characters) |
@@ -54,11 +54,11 @@ Every **core** encoding type (Base16, Base32, Base64, Base58, Base85) exposes th
 |---|---|
 | **Encode** | `Encode(byte[]/span)`, `Encode(byte[], int, int)`, `Encode(span, span)`, `TryEncode(span, span, out int)` |
 | **Decode** | `Decode(string)`, `Decode(char[], int, int)`, `Decode(span)`, `TryDecode(span, span, out int)` |
-| **BCL-style aliases** | `ToBase{N}String(...)`, `FromBase{N}String(...)`, `TryToBase{N}String(...)` |
-| **UTF-8 path** | `EncodeToUtf8(span)`, `TryEncodeToUtf8(span, span, out int)`, `DecodeFromUtf8(span, span, out int, out int)` returning `OperationStatus` |
+| **BCL-style aliases** | `ToBase{N}String(...)`, `FromBase{N}String(...)`, `TryToBase{N}String(...)` (Base16: `ToHexString`, `FromHexString`, `TryToHexString`) |
+| **UTF-8 path** | `EncodeToUtf8(span)`, `TryEncodeToUtf8(span, span, out int)`, `EncodeToUtf8(span, IBufferWriter<byte>)`, `DecodeFromUtf8(span, span, out int, out int)` returning `OperationStatus` |
 | **Streaming decode** | `FromBase{N}String(span char/byte, span byte, out int, out int)` returning `OperationStatus` |
 | **Sizing** | `GetEncodedLength(int)`, `GetMaxDecodedLength(int)`, `GetDecodedLength(span)`, `TryGetDecodedLength(span, out int)` - variable-ratio encodings (Base58, Base85) expose `GetMaxEncodedLength(int)` in place of the exact `GetEncodedLength` / `GetDecodedLength` / `TryGetDecodedLength` forms |
-| **Validation** | `IsValid(span)`, `IsBase{N}Digit(char)` |
+| **Validation** | `IsValid(span)`, `IsBase{N}Digit(char)` (Base16: `IsHexDigit(char)`) |
 
 For runtime-selected encoding choice, see the **[IBinaryEncoding](../../guides/text-encoding/binary-encodings-interface.md)** interface and the
 `BinaryEncodings` registry: `BinaryEncodings.Base64`, `BinaryEncodings.Base32Crockford`,
@@ -80,7 +80,7 @@ and [Bech32](../../guides/text-encoding/bech32.md).
 | Base16 | <xref:Bodu.Text.Encoding.Base16Variant> | Lower (default), Upper |
 | Base32 | <xref:Bodu.Text.Encoding.Base32Variant> | Standard (RFC 4648 §6), HexExtended (RFC 4648 §7), Crockford, ZBase32 |
 | Base64 | <xref:Bodu.Text.Encoding.Base64Variant> | Standard (RFC 4648 §4), UrlSafe (RFC 4648 §5), Mime (RFC 2045 with 76-char wrap) |
-| Base58 | <xref:Bodu.Text.Encoding.Base58Variant> | BitcoinFlickr (default), Ripple |
+| Base58 | <xref:Bodu.Text.Encoding.Base58Variant> | BitcoinFlickr (default; the Bitcoin alphabet), Ripple, Flickr |
 | Base85 | <xref:Bodu.Text.Encoding.Base85Variant> | Ascii85 (Adobe), Z85 (RFC 32 ZeroMQ), GitCompact (Git `base85.c`) |
 | Base45 | (none) | RFC 9285 |
 | Base62 | (none) | GMP-style (`0-9 A-Z a-z`) |

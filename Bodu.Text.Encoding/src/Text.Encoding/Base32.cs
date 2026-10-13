@@ -84,15 +84,13 @@ public static partial class Base32
     /// <returns>The exact decoded byte count.</returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is undefined.</exception>
     /// <exception cref="FormatException">
-    /// Thrown when the input contains characters outside the variant alphabet, or when the digit count is invalid after
-    /// stripping decorations.
+    /// Thrown when the input is not valid Base32 for the variant and styles, that is, when
+    /// <see cref="Decode(ReadOnlySpan{char}, Base32Variant, BaseFormatStyles)" /> would reject it.
     /// </exception>
-    public static int GetDecodedLength(ReadOnlySpan<char> source, Base32Variant variant = Base32Variant.Standard, BaseFormatStyles styles = BaseFormatStyles.None)
-    {
-        return !TryCountSymbols(source, variant, styles, out int symbolCount)
-            ? throw new FormatException(EncodingResourceStrings.Format_Invalid_Base32VariantAlphabet)
-            : (symbolCount * 5) / 8;
-    }
+    public static int GetDecodedLength(ReadOnlySpan<char> source, Base32Variant variant = Base32Variant.Standard, BaseFormatStyles styles = BaseFormatStyles.None) =>
+        TryMeasure(source, variant, styles, out int byteCount, out string? error)
+            ? byteCount
+            : throw new FormatException(error);
 
     /// <summary>
     /// Returns the number of characters produced by encoding <paramref name="byteCount" /> bytes using the Standard
@@ -190,10 +188,13 @@ public static partial class Base32
     /// <param name="source">The input characters.</param>
     /// <param name="variant">The variant.</param>
     /// <param name="styles">The parsing styles.</param>
-    /// <returns><see langword="true" /> when the input is valid; otherwise <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> when <see cref="Decode(ReadOnlySpan{char}, Base32Variant, BaseFormatStyles)" /> with the
+    /// same variant and styles would succeed; otherwise <see langword="false" />.
+    /// </returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is undefined.</exception>
     public static bool IsValid(ReadOnlySpan<char> source, Base32Variant variant = Base32Variant.Standard, BaseFormatStyles styles = BaseFormatStyles.None) =>
-        TryCountSymbols(source, variant, styles, out _);
+        TryMeasure(source, variant, styles, out _, out _);
 
     /// <summary>
     /// Attempts to compute the exact number of decoded bytes for <paramref name="source" />.
@@ -208,17 +209,8 @@ public static partial class Base32
     /// <see langword="true" /> when the input would decode cleanly; otherwise <see langword="false" />.
     /// </returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is undefined.</exception>
-    public static bool TryGetDecodedLength(ReadOnlySpan<char> source, out int byteCount, Base32Variant variant = Base32Variant.Standard, BaseFormatStyles styles = BaseFormatStyles.None)
-    {
-        if (!TryCountSymbols(source, variant, styles, out int symbolCount))
-        {
-            byteCount = 0;
-            return false;
-        }
-
-        byteCount = (symbolCount * 5) / 8;
-        return true;
-    }
+    public static bool TryGetDecodedLength(ReadOnlySpan<char> source, out int byteCount, Base32Variant variant = Base32Variant.Standard, BaseFormatStyles styles = BaseFormatStyles.None) =>
+        TryMeasure(source, variant, styles, out byteCount, out _);
 
     /// <summary>
     /// Builds the Crockford Base32 lookup table, including the documented aliases <c>I</c>/<c>L</c> -&gt; <c>1</c> and
@@ -305,97 +297,35 @@ public static partial class Base32
      };
 
     /// <summary>
-    /// Walks <paramref name="source" />, validating each non-decoration character against the variant alphabet, and
-    /// reports the number of data symbols (excluding padding).
+    /// Validates <paramref name="source" /> by the rules
+    /// <see cref="Decode(ReadOnlySpan{char}, Base32Variant, BaseFormatStyles)" /> applies, counting the decoded bytes
+    /// without writing them, so that the validation members accept exactly the input the decoder accepts.
     /// </summary>
     /// <param name="source">The input characters.</param>
     /// <param name="variant">The variant.</param>
     /// <param name="styles">The parsing styles.</param>
-    /// <param name="symbolCount">When this method returns, contains the number of data symbols.</param>
-    /// <returns><see langword="true" /> when every character is valid; otherwise <see langword="false" />.</returns>
-    private static bool TryCountSymbols(ReadOnlySpan<char> source, Base32Variant variant, BaseFormatStyles styles, out int symbolCount)
+    /// <param name="byteCount">
+    /// When this method returns, contains the number of bytes the input decodes to, or <c>0</c> on failure.
+    /// </param>
+    /// <param name="error">
+    /// When this method returns <see langword="false" />, contains the reason the decoder would reject the input.
+    /// </param>
+    /// <returns><see langword="true" /> when the input would decode; otherwise <see langword="false" />.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is undefined.</exception>
+    private static bool TryMeasure(ReadOnlySpan<char> source, Base32Variant variant, BaseFormatStyles styles, out int byteCount, out string? error)
     {
         (_, sbyte[]? lookup) = GetVariantConfig(variant);
-        bool ignoreWhitespace = styles.HasFlag(BaseFormatStyles.IgnoreWhitespace);
 
-        symbolCount = 0;
-        int paddingSeen = 0;
-
-        foreach (char c in source)
-        {
-            if (ignoreWhitespace && c is ' ' or '\t' or '\r' or '\n')
-                continue;
-
-            if (c == PaddingChar)
-            {
-                paddingSeen++;
-                continue;
-            }
-
-            if (paddingSeen > 0)
-            {
-                symbolCount = 0;
-                return false;
-            }
-
-            if (c >= lookup.Length || lookup[c] < 0)
-            {
-                symbolCount = 0;
-                return false;
-            }
-
-            symbolCount++;
-        }
-
-        // Terminal-quantum data character count must be one of {0, 2, 4, 5, 7, 8} per RFC 4648 §6. Crockford and
-        // Z-Base32 do not impose a fixed terminal-quantum rule (the spec defines five bits per character with no
-        // alignment restriction) so the check is gated by variant.
-        bool strictQuantum = variant is Base32Variant.Standard or Base32Variant.HexExtended;
-        int dataMod = symbolCount % 8;
-        if (strictQuantum && dataMod is 1 or 3 or 6)
-        {
-            symbolCount = 0;
-            return false;
-        }
-
-        // Padding alignment: Standard / HexExtended require canonical padding by default. AllowMissingPadding
-        // bypasses the "must have padding" requirement; Crockford / Z-Base32 ignore padding entirely. In every
-        // case, if padding IS present it must match the canonical count for the data - partial or excessive
-        // padding ("MZXW6Y========" or "M=") is always rejected.
-        if (variant is Base32Variant.Standard or Base32Variant.HexExtended)
-        {
-            int expectedPadding = (8 - dataMod) % 8;
-            bool padIsRequired = !styles.HasFlag(BaseFormatStyles.AllowMissingPadding);
-
-            if (padIsRequired)
-            {
-                int totalSymbols = symbolCount + paddingSeen;
-                if ((totalSymbols % 8) != 0)
-                {
-                    symbolCount = 0;
-                    return false;
-                }
-
-                if (paddingSeen != expectedPadding)
-                {
-                    symbolCount = 0;
-                    return false;
-                }
-            }
-            else if (paddingSeen != 0 && paddingSeen != expectedPadding)
-            {
-                // AllowMissingPadding mode: padding may be absent OR canonical, but never partial / excessive.
-                symbolCount = 0;
-                return false;
-            }
-        }
-        else if (paddingSeen > 0)
-        {
-            // Crockford and Z-Base32 do not use padding at all. Any padding character is a structural error.
-            symbolCount = 0;
-            return false;
-        }
-
-        return true;
+        return DecodeCore(
+            source,
+            lookup,
+            styles.HasFlag(BaseFormatStyles.IgnoreWhitespace),
+            ShouldRequireExactPadding(variant, styles),
+            variant is Base32Variant.Standard or Base32Variant.HexExtended,
+            styles.HasFlag(BaseFormatStyles.RequireCanonicalEncoding),
+            Span<byte>.Empty,
+            measureOnly: true,
+            out byteCount,
+            out error);
     }
 }

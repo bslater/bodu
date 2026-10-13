@@ -6,7 +6,7 @@ title: Bodu.IO.Hashing - Introduction
 
 ![Bodu.IO.Hashing](../../images/hero-io.svg)
 
-**Bodu.IO.Hashing** is the non-cryptographic hashing package of the Bodu suite, and one half of the **[Hashing & Cryptography](../topics/hashing-and-cryptography.md)** topic. Everything in the package derives from <xref:System.IO.Hashing.NonCryptographicHashAlgorithm?displayProperty=nameWithType>, so the lifecycle (`Append` / `GetCurrentHash` / `Reset`) is identical regardless of which algorithm you pick.
+**Bodu.IO.Hashing** is the non-cryptographic hashing package of the Bodu suite, and one half of the **[Hashing & Cryptography](../topics/hashing-and-cryptography.md)** topic. Every fingerprint and checksum in the package derives from <xref:System.IO.Hashing.NonCryptographicHashAlgorithm?displayProperty=nameWithType>, so the lifecycle (`Append` / `GetCurrentHash` / `Reset`) is identical regardless of which one you pick; the check digits, which work on text, have their own root type with the same `Append` / `Reset` shape.
 
 > **Adversary model: none.** Nothing in this library is safe against an attacker who can choose inputs. Use it for error detection, distribution, fingerprinting, and identifier validation - for anything security-sensitive, see [Bodu.Security.Cryptography](../cryptography/index.md).
 
@@ -30,7 +30,7 @@ Fast, distribution-quality hash functions for hash-table keys, in-memory cache b
 |---|---|---|
 | <xref:Bodu.IO.Hashing.Fnv1a32> / <xref:Bodu.IO.Hashing.Fnv1a64> | 32 / 64 bits | Constant-memory, streaming. Preferred over FNV-1 for better avalanche. |
 | <xref:Bodu.IO.Hashing.Fnv132> / <xref:Bodu.IO.Hashing.Fnv164> | 32 / 64 bits | Original FNV-1; legacy interoperability only. |
-| <xref:Bodu.IO.Hashing.CityHash32> / <xref:Bodu.IO.Hashing.CityHash64> / <xref:Bodu.IO.Hashing.CityHash128> | 32 / 64 / 128 bits | SIMD-friendly; fastest on long inputs (buffers internally). |
+| <xref:Bodu.IO.Hashing.CityHash32> / <xref:Bodu.IO.Hashing.CityHash64> / <xref:Bodu.IO.Hashing.CityHash128> | 32 / 64 / 128 bits | One-shot reference algorithm: buffers the whole input until the digest is read. |
 | <xref:Bodu.IO.Hashing.MurmurHash3_32> / <xref:Bodu.IO.Hashing.MurmurHash3_128> | 32 / 128 bits | Seeded; excellent avalanche; widely used in databases. |
 | <xref:Bodu.IO.Hashing.Pearson> | 8-2048 bits | Table-driven; configurable output width in 8-bit steps. |
 | <xref:Bodu.IO.Hashing.Bernstein> | 32 bits | Classic djb2; configurable add-vs-XOR variant. |
@@ -61,6 +61,7 @@ Check-digit algorithms for human-typed identifiers - single-character schemes ov
 | <xref:Bodu.IO.Hashing.CheckDigits.Luhn> | Credit cards (Visa, Mastercard, Amex), IMEI, SIN |
 | <xref:Bodu.IO.Hashing.CheckDigits.Damm> | General purpose; detects all single-digit and adjacent-transposition errors |
 | <xref:Bodu.IO.Hashing.CheckDigits.Verhoeff> | German ID, medical device codes; widest decimal-alphabet error coverage |
+| <xref:Bodu.IO.Hashing.CheckDigits.Gumm> | General purpose; detects all single-digit and adjacent-transposition errors, but misses many twin errors |
 | <xref:Bodu.IO.Hashing.CheckDigits.Ean8> / <xref:Bodu.IO.Hashing.CheckDigits.Ean13> | Retail barcodes |
 | <xref:Bodu.IO.Hashing.CheckDigits.Gtin14> | Shipping cartons |
 | <xref:Bodu.IO.Hashing.CheckDigits.UpcA> | US/Canada retail barcodes |
@@ -85,7 +86,7 @@ Extension methods over `NonCryptographicHashAlgorithm` for ergonomic one-shot co
 
 ## Choosing a subfamily
 
-All three subfamilies derive from the same base type, but they are tuned for different jobs - and the best algorithm for one job is a poor choice for another.
+Fingerprints and checksums share one base type and check digits have their own, and the three are tuned for different jobs - and the best algorithm for one job is a poor choice for another.
 
 | Subfamily | Optimized for | Operates on | Adversary model |
 |---|---|---|---|
@@ -93,7 +94,7 @@ All three subfamilies derive from the same base type, but they are tuned for dif
 | Checksum | Detecting specific error patterns | Binary buffer | None |
 | Check digit | Catching human transcription errors | Character sequence | None |
 
-**Fingerprints** map an arbitrary byte sequence to a fixed-size integer that distributes evenly across the output range. They are judged on *avalanche* (a single input-bit change flips roughly half the output bits), *distribution* (hash-table buckets fill evenly), and *streaming* behaviour (FNV and Pearson are constant-memory; CityHash and MurmurHash3 buffer internally for SIMD throughput). Reach for them for hash-table keys, cache bucketing, deduplication, and content-addressable lookups inside a trust boundary - never for error-pattern detection or authentication.
+**Fingerprints** map an arbitrary byte sequence to a fixed-size integer that distributes evenly across the output range. They are judged on *avalanche* (a single input-bit change flips roughly half the output bits), *distribution* (hash-table buckets fill evenly), and *streaming* behaviour (FNV, MurmurHash3, and Pearson are constant-memory; CityHash buffers the whole input because its reference algorithm is one-shot). Reach for them for hash-table keys, cache bucketing, deduplication, and content-addressable lookups inside a trust boundary - never for error-pattern detection or authentication.
 
 **Checksums** produce a short tag engineered to catch the error patterns of a transmission or storage channel - single-bit flips, burst errors, adjacent transpositions. Two structural shapes: *polynomial-remainder* (CRC - divides the input as a polynomial over GF(2) by a generator polynomial) and *twin-accumulator* (Fletcher and Adler - two running sums whose cross-position coupling catches transpositions a simple sum misses).
 
@@ -102,11 +103,11 @@ The two shapes differ in the guarantees they offer, which is the axis to choose 
 | Property | CRC | Fletcher / Adler |
 |---|---|---|
 | Single-bit error | Always detected | Always detected |
-| Adjacent transposition | Always detected | Always detected |
+| Adjacent byte transposition | Detected when the CRC is at least 16 bits wide | Detected, except `0x00` / `0xFF` swaps in Fletcher-16 |
 | Burst error of length ≤ width | **Always detected** | No per-position guarantee |
 | Odd number of bit-flips | Always detected (most polynomials) | Not guaranteed |
-| Per-byte cost | Higher (table lookup + XOR) | Lower (two adds + a fold) |
-| Documented blind spots | None for accidental noise | Zero-byte runs (Fletcher); short inputs (Adler) |
+| Per-byte cost | Higher (table lookup + XOR) | Lower (two adds; the modulo is deferred) |
+| Documented blind spots | None for accidental noise | Leading zero bytes (Fletcher); short inputs (Adler) |
 
 Reach for CRC when you must match a wire format or need the published burst guarantee; reach for Fletcher or Adler when you control both endpoints and want the cheapest position-dependent checksum. The [concepts page](concepts.md#crc-error-detection-guarantees) carries the full guarantee tables.
 
@@ -114,10 +115,10 @@ Reach for CRC when you must match a wire format or need the published burst guar
 
 | Subfamily | Detects | Bodu types |
 |---|---|---|
-| **Mod 10 (weighted sum)** | All single-digit substitutions; most adjacent transpositions | `Luhn`, `Ean8`, `Ean13`, `Gtin14`, `UpcA`, `AbaRoutingNumber`, `Isin` |
-| **Quasigroup (Damm)** | All single-digit substitutions and all adjacent transpositions | `Damm` |
+| **Mod 10 (weighted sum)** | All single-digit substitutions; most adjacent transpositions | `Luhn`, `Ean8`, `Ean13`, `Gtin14`, `UpcA`, `AbaRoutingNumber`, `Isin`, `Sedol`, `Cusip` |
+| **Quasigroup (Damm); alternating D₅ (Gumm)** | All single-digit substitutions and all adjacent transpositions | `Damm`, `Gumm` |
 | **Dihedral group D₅ (Verhoeff)** | The widest error coverage of any decimal scheme | `Verhoeff` |
-| **Mod 11** | All single-digit errors; most transpositions | `Isbn10`, `Sedol`, `Cusip`, `Iso7064Mod11_2` |
+| **Mod 11** | All single-digit errors; most transpositions | `Isbn10`, `Iso7064Mod11_2` |
 | **Mod 97-10 (ISO 7064)** | Almost all transcription errors at scale | `Iban`, `Lei`, `Iso7064Mod97_10` |
 
 > **Picking between them.** A checksum guards a *binary payload* that only software sees; a check digit guards a *printed identifier* a human copies by hand; a fingerprint just needs fast, even distribution across a table. CRC and Fletcher distribute poorly as hash functions, and FNV and CityHash give weaker burst-error guarantees than CRC - match the algorithm to the job.
@@ -132,19 +133,20 @@ Once the subfamily is chosen, this table compares the algorithms within each sub
 |---|---|---|---|---|
 | `Fnv1a32` / `Fnv1a64` (and `Fnv132` / `Fnv164`) | 32 / 64 bits | Constant memory | **Yes** (`IResumableHashAlgorithm`) | Hash-table keys; the default fingerprint when in doubt. |
 | `MurmurHash3_32` / `MurmurHash3_128` | 32 / 128 bits | Constant memory | No | Database index keys; widely used in distributed systems. |
-| `CityHash32` / `CityHash64` / `CityHash128` | 32 / 64 / 128 bits | Buffered (SIMD) | No | Fastest on long inputs; CDN and large-blob fingerprints. |
+| `CityHash32` / `CityHash64` / `CityHash128` | 32 / 64 / 128 bits | Buffers the whole input | No | In-memory keys and blobs; memory grows with the input, so not for very large streams. |
 | `Pearson` | 8 - 2048 bits | Constant memory | No | Configurable output width in 8-bit steps; embedded scenarios. |
-| `Bernstein`, `BKDR`, `SDBM`, `JSHash`, `Elf64`, `ApHash`, `Pjw32`, `SuperFastHash` | 32 / 64 bits | Constant memory | No | Compiler-style string hashing; legacy interop. |
+| `Bernstein`, `BKDR`, `SDBM`, `JSHash`, `Elf64`, `ApHash`, `Pjw32` | 32 / 64 bits | Constant memory | No | Compiler-style string hashing; legacy interop. |
+| `SuperFastHash` | 32 bits | Buffers the whole input | No | Short keys; reproducing digests from existing SuperFastHash code. |
 | `Crc` (any standard from <xref:Bodu.IO.Hashing.Checksums.CrcStandard>) | 1 - 64 bits | Constant memory | **Yes** (`IResumableHashAlgorithm`) | Error-detection checksum on transmission / storage channels; choice driven by published `CrcStandard` (e.g. CRC-32/ISO-HDLC for zlib / PNG / Ethernet). |
 | `Fletcher16` / `Fletcher32` / `Fletcher64` | 16 / 32 / 64 bits | Constant memory | **Yes** (`IResumableHashAlgorithm`) | Faster than CRC at comparable error coverage; protocol checksums. |
 | `Adler32` / `Adler32C` / `Adler64` | 32 / 32 / 64 bits | Constant memory | **Yes** (`IResumableHashAlgorithm`) | Used by zlib; checksum for short, low-entropy payloads. |
-| `Luhn`, `Damm`, `Verhoeff`, `Ean8`, `Ean13`, `UpcA`, `Gtin14`, `AbaRoutingNumber` | 1 character | Constant memory | No | Single-character check digit for human-typed numeric identifiers. |
+| `Luhn`, `Damm`, `Verhoeff`, `Gumm`, `Ean8`, `Ean13`, `UpcA`, `Gtin14`, `AbaRoutingNumber` | 1 character | Constant memory | No | Single-character check digit for human-typed numeric identifiers. |
 | `Isbn10`, `Sedol`, `Cusip`, `Isin`, `Iso7064Mod11_2` | 1 character | Constant memory | No | Single-character check digit for mixed numeric / alphanumeric identifiers. |
 | `Iban`, `Lei`, `Iso7064Mod97_10` | 2 characters | Constant memory | No | Two-character check digit (ISO 7064 Mod 97-10) for high-coverage validation. |
 
-> `Crc`, the FNV family, the Fletcher family, and the Adler family implement `IResumableHashAlgorithm` - the ability to reverse-finalize a stored digest, append more bytes, and finalize again. The buffered fingerprints (CityHash, MurmurHash3) and the classic string hashes do not.
+> `Crc`, the FNV family, the Fletcher family, and the Adler family implement `IResumableHashAlgorithm` - the ability to reverse-finalize a stored digest, append more bytes, and finalize again. CityHash, MurmurHash3, Pearson, and the classic string hashes do not.
 
-> The `Bodu.IO.Hashing.Extensions` namespace adds ergonomic one-shot and async helpers (`ComputeHash`, `ComputeHashAsync`, `VerifyHash`, `TryVerifyHash`) over every algorithm in the table.
+> The `Bodu.IO.Hashing.Extensions` namespace adds ergonomic one-shot and async helpers (`ComputeHash`, `ComputeHashAsync`, `VerifyHash`, `TryVerifyHash`) over every fingerprint and checksum in the table; the check digits have their own `Compute` / `IsValid` members.
 
 ## Common lifecycle
 
@@ -152,7 +154,7 @@ Once the subfamily is chosen, this table compares the algorithms within each sub
 using Bodu.IO.Hashing;
 using Bodu.IO.Hashing.Checksums;
 
-using var hash = new Crc();      // or Fletcher32, Adler32, Fnv1a64, CityHash64, …
+var hash = new Crc();            // or Fletcher32, Adler32, Fnv1a64, CityHash64, …
 
 hash.Append(chunk1);
 hash.Append(chunk2);

@@ -48,7 +48,7 @@ Every binary hash in `Bodu.IO.Hashing` derives from <xref:System.IO.Hashing.NonC
 | `TryGetCurrentHash(Span<byte>, out int)` | Same as `GetCurrentHash` but writes into a caller-supplied buffer. Returns `false` when the destination is too small. |
 | `Reset()` | Return the instance to its constructed initial state, ready to compute a fresh digest. |
 
-This streaming shape means one instance can hash arbitrarily large inputs in chunks without buffering the whole payload, and the snapshot semantics make rolling integrity tags trivial. The check-digit base classes (<xref:Bodu.IO.Hashing.CheckDigits.CheckValueAlgorithm> and its three derivatives <xref:Bodu.IO.Hashing.CheckDigits.CheckDigitAlgorithm>, <xref:Bodu.IO.Hashing.CheckDigits.AlphanumericCheckDigitAlgorithm>, and <xref:Bodu.IO.Hashing.CheckDigits.MultiCharCheckDigitAlgorithm>) mirror the same shape over characters rather than bytes - `Append` / `GetCurrentCheckValue` (with the typed `GetCurrentCheckDigit` / `GetCurrentCheckDigits` on the derivatives) / `Reset`.
+For most algorithms this streaming shape means one instance can hash arbitrarily large inputs in chunks without buffering the whole payload, and the snapshot semantics make rolling integrity tags trivial. CityHash and SuperFastHash are the exceptions: their reference algorithms are one-shot, so they buffer the whole input until the digest is read. The check-digit base classes (<xref:Bodu.IO.Hashing.CheckDigits.CheckValueAlgorithm> and its three derivatives <xref:Bodu.IO.Hashing.CheckDigits.CheckDigitAlgorithm>, <xref:Bodu.IO.Hashing.CheckDigits.AlphanumericCheckDigitAlgorithm>, and <xref:Bodu.IO.Hashing.CheckDigits.MultiCharCheckDigitAlgorithm>) mirror the same shape over characters rather than bytes - `Append` / `GetCurrentCheckValue` (with the typed `GetCurrentCheckDigit` / `GetCurrentCheckDigits` on the derivatives) / `Reset`.
 
 ## Avalanche
 
@@ -122,14 +122,14 @@ Both Fletcher and Adler reduce their accumulators **modulo** some value after ea
 | Fletcher-16 | 255 (`2^8 - 1`) | Largest 8-bit value; fast reduction. |
 | Fletcher-32 | 65535 (`2^16 - 1`) | Largest 16-bit value; fast reduction. |
 | <xref:Bodu.IO.Hashing.Checksums.Adler32> | **65521** (largest prime ≤ `2^16`) | Prime modulus catches more error patterns than the next-larger composite. |
-| <xref:Bodu.IO.Hashing.Checksums.Adler32C> | `2^16` | The "C" variant trades error coverage for a power-of-two modulus that branchlessly compiles to a bitmask. |
+| <xref:Bodu.IO.Hashing.Checksums.Adler32C> | `2^16` | The "C" variant swaps the prime for a power of two, which detects fewer errors; it runs the same scalar loop as Adler-32, so it is no faster. |
 | <xref:Bodu.IO.Hashing.Checksums.Adler64> | Largest prime ≤ `2^32` | Wider variant of the same idea. |
 
 Adler-32 is the canonical zlib trailer checksum.
 
 ## Twin-accumulator error coverage
 
-Both Fletcher and Adler catch every single-bit error and every adjacent transposition, and at far lower per-byte cost than a CRC. What they do **not** match is the CRC's burst guarantee or its uniform behaviour across the whole digest space - and both carry documented blind spots a CRC does not:
+Both Fletcher and Adler catch every single-bit error and every adjacent byte transposition (except, in Fletcher-16, a swap of `0x00` and `0xFF`, which are congruent modulo 255), and at far lower per-byte cost than a CRC. What they do **not** match is the CRC's burst guarantee or its uniform behaviour across the whole digest space - and both carry documented blind spots a CRC does not:
 
 - **Fletcher's `2^k − 1` modulus** means the value `0` and the value `2^k − 1` (here, `M`) are congruent, so a byte that should push an accumulator to `M` instead leaves it at `0`. A run of bytes that sums to a multiple of `M` can therefore go undetected, and a block of all-`0x00` bytes followed by an all-`0xFF` block of the right length can collide.
 - **Adler's weakness on short inputs.** Each byte first lands in accumulator `A`; `B` only accumulates the *running* `A`. For a short message `A` stays small, so `B` grows slowly and the high bits of the digest barely move - the effective digest space is much narrower than 32 bits until the message is a few hundred bytes long. This is the well-known reason Adler-32 is a poor checksum for very short payloads, and why CRC-32 is preferred there.
@@ -155,7 +155,7 @@ The classic example is the Luhn check digit on the last digit of a credit-card n
 
 ## Single-character vs. multi-character check digit
 
-Most check-digit schemes emit **one character**. Over a decimal payload - Luhn, Damm, Verhoeff, EAN-8, EAN-13, GTIN-14, UPC-A, ISBN-13, and the ABA routing-number check - the check is a decimal digit drawn from `0`-`9`, and the algorithms share the <xref:Bodu.IO.Hashing.CheckDigits.CheckDigitAlgorithm> abstract base. Over an alphanumeric payload - ISIN, ISBN-10, SEDOL, CUSIP, ISO 7064 Mod 11-2, Code 39, Crockford base-32 - the single check character may come from a wider alphabet (ISBN-10's `X`, for example), and the algorithms share the <xref:Bodu.IO.Hashing.CheckDigits.AlphanumericCheckDigitAlgorithm> abstract base. Both bases, like the multi-character base below, derive from the root <xref:Bodu.IO.Hashing.CheckDigits.CheckValueAlgorithm>; everything lives in `Bodu.IO.Hashing.CheckDigits`.
+Most check-digit schemes emit **one character**. Over a decimal payload - Luhn, Damm, Verhoeff, Gumm, EAN-8, EAN-13, GTIN-14, UPC-A, ISBN-13, and the ABA routing-number check - the check is a decimal digit drawn from `0`-`9`, and the algorithms share the <xref:Bodu.IO.Hashing.CheckDigits.CheckDigitAlgorithm> abstract base. Over an alphanumeric payload - ISIN, ISBN-10, SEDOL, CUSIP, ISO 7064 Mod 11-2, Code 39, Crockford base-32 - the single check character may come from a wider alphabet (ISBN-10's `X`, for example), and the algorithms share the <xref:Bodu.IO.Hashing.CheckDigits.AlphanumericCheckDigitAlgorithm> abstract base. Both bases, like the multi-character base below, derive from the root <xref:Bodu.IO.Hashing.CheckDigits.CheckValueAlgorithm>; everything lives in `Bodu.IO.Hashing.CheckDigits`.
 
 A few high-stakes identifiers use **multi-character** checks - two or more characters, often drawn from a larger alphabet:
 
@@ -203,10 +203,12 @@ How each Bodu scheme fares - grounded in the algorithm each one implements:
 
 | Scheme | Single substitution | Adjacent transposition | Twin | Notes |
 |---|---|---|---|---|
-| <xref:Bodu.IO.Hashing.CheckDigits.Luhn> (mod 10) | All | All **except** `09 ↔ 90` | No | The `09 ↔ 90` swap preserves the Luhn sum and slips through. |
+| <xref:Bodu.IO.Hashing.CheckDigits.Luhn> (mod 10) | All | All **except** `09 ↔ 90` | Most (misses `22 ↔ 55`, `33 ↔ 66`, `44 ↔ 77`) | The `09 ↔ 90` swap preserves the Luhn sum and slips through. |
 | <xref:Bodu.IO.Hashing.CheckDigits.Damm> (quasigroup) | All | **All**, including `09 ↔ 90` | Many | Closes the one gap Luhn leaves, with a single character. |
-| <xref:Bodu.IO.Hashing.CheckDigits.Verhoeff> (dihedral D₅) | All | All | All | The widest coverage of any single decimal check digit. |
-| Mod 11 - <xref:Bodu.IO.Hashing.CheckDigits.Isbn10>, <xref:Bodu.IO.Hashing.CheckDigits.Sedol>, <xref:Bodu.IO.Hashing.CheckDigits.Cusip> | All | Most | Some | A check value of 10 needs an extra symbol (ISBN-10 uses `X`). |
+| <xref:Bodu.IO.Hashing.CheckDigits.Verhoeff> (dihedral D₅) | All | All | Most | The widest coverage of any single decimal check digit. |
+| <xref:Bodu.IO.Hashing.CheckDigits.Gumm> (dihedral D₅, alternating) | All | All | Some (more than four in ten pass) | Simpler than Verhoeff, with much weaker twin coverage. |
+| Weighted mod 10 - <xref:Bodu.IO.Hashing.CheckDigits.Sedol>, <xref:Bodu.IO.Hashing.CheckDigits.Cusip> | All | Most | Some | CUSIP doubles every second digit as Luhn does and misses the same `09 ↔ 90` swap; SEDOL misses swaps of digits that differ by 5. |
+| Mod 11 - <xref:Bodu.IO.Hashing.CheckDigits.Isbn10> | All | All | Some | A check value of 10 needs an extra symbol (ISBN-10 uses `X`). |
 | Mod 97-10 - <xref:Bodu.IO.Hashing.CheckDigits.Iban>, <xref:Bodu.IO.Hashing.CheckDigits.Lei> | Effectively all | Effectively all | Effectively all | Two check digits over a large modulus catch essentially every realistic transcription error. |
 
 Damm and Verhoeff buy strictly better coverage than Luhn from the *same* single character; the price is a small lookup table rather than a weighted sum. Reach for Luhn only when an existing standard mandates it (payment cards, IMEI). For a free choice of a general decimal identifier, Damm is the better default, and Verhoeff better still where the table cost is acceptable.
@@ -220,7 +222,9 @@ Two different bit-order questions arise in this library and they are easy to con
 
 | Family | Byte order of the digest | Matches |
 |---|---|---|
-| Fingerprints - FNV, CityHash, MurmurHash3, Pearson, the classic string hashes | **Little-endian** | `BitConverter.ToUInt32` / `ToUInt64` on a little-endian platform. |
+| Fingerprints - FNV, <xref:Bodu.IO.Hashing.BKDR>, <xref:Bodu.IO.Hashing.Bernstein>, <xref:Bodu.IO.Hashing.Elf64>, <xref:Bodu.IO.Hashing.Pjw32>, <xref:Bodu.IO.Hashing.SDBM> | **Big-endian** | `BinaryPrimitives.ReadUInt32BigEndian` / `ReadUInt64BigEndian`. |
+| Fingerprints - CityHash, MurmurHash3, <xref:Bodu.IO.Hashing.ApHash>, <xref:Bodu.IO.Hashing.JSHash>, <xref:Bodu.IO.Hashing.SuperFastHash> | **Little-endian** | `BitConverter.ToUInt32` / `ToUInt64` on a little-endian platform. |
+| <xref:Bodu.IO.Hashing.Pearson> | One byte per permutation pass, in pass order | no multi-byte word; compare byte by byte. |
 | <xref:Bodu.IO.Hashing.Checksums.Crc> | **Little-endian** | the width-byte register, low byte first. |
 | <xref:Bodu.IO.Hashing.Checksums.Fletcher16> / `Fletcher32` / `Fletcher64` | **Big-endian**, `B ‖ A` | the high accumulator `B` precedes `A`. |
 | <xref:Bodu.IO.Hashing.Checksums.Adler32> / `Adler32C` / `Adler64` | **Big-endian**, `(B << k) | A` | RFC 1950 §2.2 - the zlib trailer is written big-endian directly. |

@@ -21,8 +21,8 @@ namespace Bodu.Text.Filtering;
 /// </para>
 /// <para>
 /// The constructor validates only shape-independent rules: the pattern text must be non-empty, must not consist solely
-/// of white space, and must not exceed <see cref="MaxPatternLength" /> characters (a guard against pathological
-/// patterns, mirroring the limits used elsewhere in the Bodu libraries).
+/// of white space, and must not exceed 4096 characters (a guard against pathological patterns, mirroring the limits
+/// used elsewhere in the Bodu libraries).
 /// </para>
 /// </remarks>
 public sealed class TextFilterPattern
@@ -45,8 +45,8 @@ public sealed class TextFilterPattern
     /// <paramref name="pattern" /> is empty or consists solely of white space.
     /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="pattern" /> is longer than <see cref="MaxPatternLength" /> characters, or
-    /// <paramref name="action" /> or <paramref name="kind" /> is not a defined enumeration value.
+    /// <paramref name="pattern" /> is longer than 4096 characters, or <paramref name="action" /> or
+    /// <paramref name="kind" /> is not a defined enumeration value.
     /// </exception>
     public TextFilterPattern(
         string pattern,
@@ -107,8 +107,8 @@ public sealed class TextFilterPattern
     /// <paramref name="pattern" /> is empty or consists solely of white space.
     /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="pattern" /> is longer than <see cref="MaxPatternLength" /> characters, or
-    /// <paramref name="kind" /> is not a defined enumeration value.
+    /// <paramref name="pattern" /> is longer than 4096 characters, or <paramref name="kind" /> is not a defined
+    /// enumeration value.
     /// </exception>
     public static TextFilterPattern Include(
         string pattern,
@@ -132,8 +132,8 @@ public sealed class TextFilterPattern
     /// <paramref name="pattern" /> is empty or consists solely of white space.
     /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="pattern" /> is longer than <see cref="MaxPatternLength" /> characters, or
-    /// <paramref name="kind" /> is not a defined enumeration value.
+    /// <paramref name="pattern" /> is longer than 4096 characters, or <paramref name="kind" /> is not a defined
+    /// enumeration value.
     /// </exception>
     public static TextFilterPattern Exclude(
         string pattern,

@@ -10,6 +10,60 @@ public sealed partial class Base32Tests
 {
 
     /// <summary>
+    /// Verifies that <see cref="Base32.GetDecodedLength" /> returns the length
+    /// <see cref="Base32.Decode(string, Base32Variant, BaseFormatStyles)" /> produces when it succeeds, and throws
+    /// <see cref="FormatException" /> when it fails, in every variant and every combination of styles.
+    /// </summary>
+    [TestMethod]
+    public void GetDecodedLength_WhenSweptAcrossVariantsAndStyles_ShouldMatchDecode()
+    {
+        var disagreements = new List<string>();
+
+        foreach (Base32Variant variant in Enum.GetValues<Base32Variant>())
+        {
+            foreach (var input in GetValidationSweepInputs(variant))
+            {
+                foreach (BaseFormatStyles styles in DecodeAgreement.AllStyles)
+                {
+                    DecodeAgreement.TryDecode(() => Base32.Decode(input, variant, styles), out int decodedLength);
+                    DecodeAgreement.TryDecode(() => new byte[Base32.GetDecodedLength(input, variant, styles)], out int reportedLength);
+                    if (reportedLength != decodedLength)
+                        disagreements.Add($"{variant} [{styles}] {DecodeAgreement.Quote(input)}: GetDecodedLength {reportedLength}, Decode {decodedLength} (-1: FormatException)");
+                }
+            }
+        }
+
+        DecodeAgreement.AssertNone(disagreements);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Base32.TryGetDecodedLength" /> returns <see langword="true" /> exactly when
+    /// <see cref="Base32.Decode(string, Base32Variant, BaseFormatStyles)" /> succeeds, and then reports the length it
+    /// produces, in every variant and every combination of styles.
+    /// </summary>
+    [TestMethod]
+    public void TryGetDecodedLength_WhenSweptAcrossVariantsAndStyles_ShouldMatchDecode()
+    {
+        var disagreements = new List<string>();
+
+        foreach (Base32Variant variant in Enum.GetValues<Base32Variant>())
+        {
+            foreach (var input in GetValidationSweepInputs(variant))
+            {
+                foreach (BaseFormatStyles styles in DecodeAgreement.AllStyles)
+                {
+                    DecodeAgreement.TryDecode(() => Base32.Decode(input, variant, styles), out int decodedLength);
+                    var reportedLength = Base32.TryGetDecodedLength(input, out int byteCount, variant, styles) ? byteCount : -1;
+                    if (reportedLength != decodedLength)
+                        disagreements.Add($"{variant} [{styles}] {DecodeAgreement.Quote(input)}: TryGetDecodedLength {reportedLength}, Decode {decodedLength} (-1: rejected)");
+                }
+            }
+        }
+
+        DecodeAgreement.AssertNone(disagreements);
+    }
+
+    /// <summary>
     /// Verifies that <see cref="Base32.GetDecodedLength" /> with
     /// <see cref="BaseFormatStyles.IgnoreWhitespace" /> strips whitespace before counting.
     /// </summary>

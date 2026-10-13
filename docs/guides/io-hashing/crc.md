@@ -42,13 +42,13 @@ var crc8  = new Crc(CrcStandard.Get(CrcStandards.CRC8_SAEJ1850));
 
 Instances are memoized inside <xref:Bodu.IO.Hashing.Checksums.CrcStandard>, so repeated calls to `Get` for the same entry return the same reference.
 
-## Pattern 3 - look up by name (including aliases)
+## Pattern 3 - look up by name
 
-Canonical names and every published alias resolve to the same standard.
+`FromName` resolves the canonical RevEng name to the same instance that the strongly-typed property returns. Published aliases such as `CRC-32` or `PKZIP` are not resolved; pass the canonical name instead.
 
 ```csharp
 var a = new Crc(CrcStandard.FromName("CRC-32/ISO-HDLC"));
-var b = new Crc(CrcStandard.FromName("PKZIP"));          // same underlying instance
+bool same = ReferenceEquals(CrcStandard.FromName("CRC-32/ISO-HDLC"), CrcStandard.CRC32_ISOHDLC);   // true
 ```
 
 `FromName` is ordinal and case-sensitive. `TryFromName` returns `false` instead of throwing when the name is unknown, which is the safer choice for user-supplied configuration.

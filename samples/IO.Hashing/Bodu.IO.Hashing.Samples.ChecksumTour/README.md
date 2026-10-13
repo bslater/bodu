@@ -138,7 +138,7 @@ the whole log.
 
 **Intent.** Two families demonstrated so far each ship in more than one width. Put the FNV-1a
 hash and the Adler checksum side by side across their variants - FNV-1a in 32 and 64 bits, and
-Adler in its RFC 1950 32-bit, SIMD-friendly power-of-two-modulus (`Adler32C`), and 64-bit forms -
+Adler in its RFC 1950 32-bit, power-of-two-modulus (`Adler32C`), and 64-bit forms -
 so the shared `NonCryptographicHashAlgorithm` surface is visible while only the digest width and
 mixing change.
 
@@ -171,7 +171,7 @@ digest as hex. FNV lives in `Bodu.IO.Hashing`; the Adler variants in `Bodu.IO.Ha
 ```
 
 The two Adler-32 forms differ only in their combining modulus - `Adler32` uses the RFC 1950
-prime 65521, `Adler32C` the power-of-two 65536 for cheaper vectorized reduction - so their
+prime 65521, `Adler32C` the power-of-two 65536 (no faster here, and weaker) - so their
 digests are close but not interchangeable (`Adler32C` is an internal-only variant; anything
 touching zlib/PNG must use `Adler32`). The wider 64-bit forms of each family spread the same
 input over more state - the trade of a longer digest for fewer accidental collisions.

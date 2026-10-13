@@ -36,6 +36,7 @@ public sealed class BinaryEncodingsCoverageTests
             BinaryEncodings.Base32ZBase32,
             BinaryEncodings.Base58,
             BinaryEncodings.Base58Ripple,
+            BinaryEncodings.Base58Flickr,
             BinaryEncodings.Base64,
             BinaryEncodings.Base64Mime,
             BinaryEncodings.Base64UrlSafe,
@@ -152,7 +153,7 @@ public sealed class BinaryEncodingsCoverageTests
     }
 
     /// <summary>
-    /// Verifies that the <see cref="BinaryEncodings.Base58" /> variant adapter (Bitcoin/Flickr) mirrors the canonical
+    /// Verifies that the <see cref="BinaryEncodings.Base58" /> variant adapter (Bitcoin) mirrors the canonical
     /// API for round-trip and validation.
     /// </summary>
     [TestMethod]
@@ -236,6 +237,7 @@ public sealed class BinaryEncodingsCoverageTests
         Assert.AreSame(BinaryEncodings.Base64Mime, BinaryEncodings.Get("base64-mime"));
         Assert.AreSame(BinaryEncodings.Base58, BinaryEncodings.Get("base58"));
         Assert.AreSame(BinaryEncodings.Base58Ripple, BinaryEncodings.Get("base58-ripple"));
+        Assert.AreSame(BinaryEncodings.Base58Flickr, BinaryEncodings.Get("base58-flickr"));
         Assert.AreSame(BinaryEncodings.Ascii85, BinaryEncodings.Get("ascii85"));
         Assert.AreSame(BinaryEncodings.Z85, BinaryEncodings.Get("z85"));
     }

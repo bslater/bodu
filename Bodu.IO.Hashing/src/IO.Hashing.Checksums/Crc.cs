@@ -45,8 +45,9 @@ namespace Bodu.IO.Hashing.Checksums;
 /// <item>
 /// <term><see cref="CrcStandard.FromName(string)" /></term>
 /// <description>
-/// Resolves both canonical names and aliases - <c>"CRC-32"</c>, <c>"PKZIP"</c>, <c>"CRC-32/ISO-HDLC"</c> all return the
-/// same instance.
+/// Resolves the canonical RevEng names - <c>"CRC-32/ISO-HDLC"</c> returns the same instance as
+/// <see cref="CrcStandard.CRC32_ISOHDLC" />. Published aliases such as <c>"CRC-32"</c> or <c>"PKZIP"</c> are not
+/// resolved.
 /// </description>
 /// </item>
 /// </list>
@@ -57,7 +58,8 @@ namespace Bodu.IO.Hashing.Checksums;
 /// <see cref="System.IO.Hashing.NonCryptographicHashAlgorithm.Reset" /> /
 /// <see cref="System.IO.Hashing.NonCryptographicHashAlgorithm.GetCurrentHash()" /> shape. The
 /// <see cref="Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions" /> companion adds one-shot
-/// <c>ComputeHash</c>, stream variants, and constant-time <c>VerifyHash</c> / <c>TryVerifyHash</c> on top.
+/// <c>ComputeHash</c>, stream variants, and <c>VerifyHash</c> / <c>TryVerifyHash</c> on top. Their comparison is not
+/// constant-time; a CRC detects accidental corruption and is not an authenticator.
 /// </para>
 /// <para>
 /// <strong>Snapshot semantics.</strong> The final reflection, XOR-out, and width mask are applied to a <em>copy</em> of
@@ -74,9 +76,10 @@ namespace Bodu.IO.Hashing.Checksums;
 /// <para>
 /// <strong>Performance.</strong> Lookup tables are precomputed once per <c>(width, polynomial, reflectIn)</c> tuple and
 /// shared via <see cref="GlobalCache" />, so creating multiple <see cref="Crc" /> instances for the same standard is
-/// cheap. The hot path uses byte-at-a-time table lookups; for throughput-critical code consider re-using a single
-/// instance and feeding it large spans rather than repeatedly constructing new ones. Instances are <strong>not
-/// thread-safe</strong>; share behind explicit synchronization.
+/// cheap. Reflected 32- and 64-bit standards (CRC-32/ISO-HDLC, CRC-32/ISCSI, CRC-64/XZ, and the like) run a
+/// slicing-by-8 loop that consumes eight bytes per step; every other standard uses byte-at-a-time table lookups. For
+/// throughput-critical code consider re-using a single instance and feeding it large spans rather than repeatedly
+/// constructing new ones. Instances are <strong>not thread-safe</strong>; share behind explicit synchronization.
 /// </para>
 /// <note type="important">CRC is <strong>not</strong> cryptographically secure. It detects accidental corruption, not
 /// adversarial tampering - collisions are easy to construct. Use a member of <c>Bodu.Security.Cryptography</c> or

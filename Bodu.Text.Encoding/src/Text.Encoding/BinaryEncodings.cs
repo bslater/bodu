@@ -88,13 +88,19 @@ public static class BinaryEncodings
     public static IBinaryEncoding Base45 { get; } = new Base45Adapter();
 
     /// <summary>
-    /// Gets the Bitcoin/Flickr Base58 encoding - the alphabet used by Bitcoin addresses, IPFS CIDs, Solana, and many
+    /// Gets the Bitcoin Base58 encoding - the alphabet used by Bitcoin addresses, IPFS CIDs, Solana, and many
     /// derivative protocols.
     /// </summary>
-    public static IBinaryEncoding Base58 { get; } = new Base58VariantAdapter(Base58Variant.BitcoinFlickr, "base58", "Bitcoin/Flickr Base58 (1-9, A-Z minus O/I, a-z minus l).");
+    public static IBinaryEncoding Base58 { get; } = new Base58VariantAdapter(Base58Variant.BitcoinFlickr, "base58", "Bitcoin Base58 (1-9, A-Z minus O/I, a-z minus l).");
 
     /// <summary>
-    /// Gets the Ripple Base58 encoding (XRP ledger alphabet, a permutation of Bitcoin/Flickr).
+    /// Gets the Flickr Base58 encoding - the alphabet of Flickr short photo URLs, which puts the lower-case letters
+    /// before the upper-case ones.
+    /// </summary>
+    public static IBinaryEncoding Base58Flickr { get; } = new Base58VariantAdapter(Base58Variant.Flickr, "base58-flickr", "Flickr Base58 (1-9, a-z minus l, A-Z minus O/I).");
+
+    /// <summary>
+    /// Gets the Ripple Base58 encoding (XRP ledger alphabet, a permutation of the Bitcoin alphabet).
     /// </summary>
     public static IBinaryEncoding Base58Ripple { get; } = new Base58VariantAdapter(Base58Variant.Ripple, "base58-ripple", "Ripple Base58 (XRP ledger permutation).");
 
@@ -132,11 +138,13 @@ public static class BinaryEncodings
     public static IBinaryEncoding Z85 { get; } = new Base85VariantAdapter(Base85Variant.Z85, "z85", "ZeroMQ Z85 (RFC 32 shell-safe alphabet, 4-byte aligned).");
 
     /// <summary>
-    /// Returns the encoding for the supplied case-insensitive name. The recognised names are the values returned by
-    /// each instance's <see cref="IBinaryEncoding.Name" />: <c>"base16"</c>, <c>"base16-lower"</c>,
-    /// <c>"base16-upper"</c>, <c>"base32"</c>, <c>"base32hex"</c>, <c>"base32-crockford"</c>, <c>"z-base-32"</c>,
-    /// <c>"base45"</c>, <c>"base64"</c>, <c>"base64-urlsafe"</c>, <c>"base64-mime"</c>, <c>"base58"</c>,
-    /// <c>"base58-ripple"</c>, <c>"base62"</c>, <c>"ascii85"</c>, <c>"base85-git"</c>, <c>"z85"</c>.
+    /// Returns the encoding for the supplied case-insensitive name: either the value an instance returns from
+    /// <see cref="IBinaryEncoding.Name" /> (<c>"base16-lower"</c>, <c>"base16-upper"</c>, <c>"base32"</c>,
+    /// <c>"base32hex"</c>, <c>"base32-crockford"</c>, <c>"z-base-32"</c>, <c>"base45"</c>, <c>"base64"</c>,
+    /// <c>"base64-urlsafe"</c>, <c>"base64-mime"</c>, <c>"base58"</c>, <c>"base58-ripple"</c>, <c>"base58-flickr"</c>,
+    /// <c>"base62"</c>, <c>"ascii85"</c>, <c>"base85-git"</c>, <c>"z85"</c>) or one of the aliases <c>"base16"</c> and
+    /// <c>"hex"</c> (lower-case Base16), <c>"hex-upper"</c>, <c>"zbase32"</c>, <c>"base64url"</c>,
+    /// <c>"base58-bitcoin"</c>, <c>"base85"</c> (Ascii85), and <c>"git-base85"</c> and <c>"b85"</c> (Git Base85).
     /// </summary>
     /// <param name="name">The encoding name.</param>
     /// <returns>The matching <see cref="IBinaryEncoding" /> instance.</returns>
@@ -160,8 +168,9 @@ public static class BinaryEncodings
             "base64" => Base64,
             "base64-urlsafe" or "base64url" => Base64UrlSafe,
             "base64-mime" => Base64Mime,
-            "base58" or "base58-bitcoin" or "base58-flickr" => Base58,
+            "base58" or "base58-bitcoin" => Base58,
             "base58-ripple" => Base58Ripple,
+            "base58-flickr" => Base58Flickr,
             "base62" => Base62,
             "ascii85" or "base85" => Ascii85,
             "base85-git" or "git-base85" or "b85" => Base85Git,

@@ -6,8 +6,9 @@ title: Using Base62
 
 `Base62` encodes binary data with the **GMP-style** alphabet `0-9 A-Z a-z` (digits first, then upper-case, then
 lower-case letters). Like [Base58](base58.md), its radix is **not a power of two**, so it treats the input as a
-big-integer and repeatedly divides by 62 to extract digits. Unlike Base58, it keeps the two visually ambiguous
-characters Base58 drops - Base62 optimises for **density and URL-safety**, not hand-transcription.
+big-integer and repeatedly divides by 62 to extract digits. Unlike Base58, it keeps the four visually ambiguous
+characters Base58 drops (`0`, `O`, `I`, `l`) - Base62 optimises for **density and URL-safety**, not
+hand-transcription.
 
 Base62 is the natural choice for short URLs, compact record identifiers, and slugs: every character is a letter or
 digit, so the output is URL-safe and shell-safe without any escaping, and the 62-character radix is more compact than

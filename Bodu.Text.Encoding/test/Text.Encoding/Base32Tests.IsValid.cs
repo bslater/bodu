@@ -46,29 +46,63 @@ public sealed partial class Base32Tests
     }
 
     /// <summary>
-    /// Regression: verifies that <see cref="Base32.IsValid" /> rejects excessive padding even when
-    /// <see cref="BaseFormatStyles.AllowMissingPadding" /> is set. The AllowMissingPadding leniency permits
-    /// absent padding but never partial or excessive padding.
+    /// Verifies that <see cref="Base32.IsValid" /> accepts partial or excessive padding when
+    /// <see cref="BaseFormatStyles.AllowMissingPadding" /> is set, because
+    /// <see cref="Base32.Decode(string, Base32Variant, BaseFormatStyles)" /> does not check the padding count when
+    /// padding may be missing.
     /// </summary>
     [TestMethod]
-    public void IsValid_WhenAllowMissingPaddingAndExcessivePadding_ShouldStillReturnFalse()
+    public void IsValid_WhenAllowMissingPaddingAndExcessivePadding_ShouldAcceptAsDecodeDoes()
     {
-        // "MY========" - 1 data char + 8 padding chars (canonical is 6). Invalid even with lenient padding.
-        Assert.IsFalse(Base32.IsValid("MY========".AsSpan(), Base32Variant.Standard, BaseFormatStyles.AllowMissingPadding));
+        // "MY========" - 2 data characters + 8 padding characters (canonical is 6).
+        Assert.IsTrue(Base32.IsValid("MY========".AsSpan(), Base32Variant.Standard, BaseFormatStyles.AllowMissingPadding));
+        CollectionAssert.AreEqual(Ascii("f"), Base32.Decode("MY========", Base32Variant.Standard, BaseFormatStyles.AllowMissingPadding));
 
-        // "MZXW6YTBOI=" - 10 data chars + 1 padding char (canonical is 6 for 10%8=2 data). Invalid.
-        Assert.IsFalse(Base32.IsValid("MZXW6YTBOI=".AsSpan(), Base32Variant.Standard, BaseFormatStyles.AllowMissingPadding));
+        // "MZXW6YTBOI=" - 10 data characters + 1 padding character (canonical is 6).
+        Assert.IsTrue(Base32.IsValid("MZXW6YTBOI=".AsSpan(), Base32Variant.Standard, BaseFormatStyles.AllowMissingPadding));
+        CollectionAssert.AreEqual(Ascii("foobar"), Base32.Decode("MZXW6YTBOI=", Base32Variant.Standard, BaseFormatStyles.AllowMissingPadding));
     }
 
     /// <summary>
-    /// Regression: verifies that <see cref="Base32.IsValid" /> in the Crockford and Z-Base32 variants rejects any
-    /// padding character because the specifications do not use padding.
+    /// Verifies that <see cref="Base32.IsValid" /> in the Crockford and Z-Base32 variants accepts trailing padding
+    /// characters, because <see cref="Base32.Decode(string, Base32Variant, BaseFormatStyles)" /> ignores them in the
+    /// variants that do not use padding.
     /// </summary>
     [TestMethod]
-    public void IsValid_WhenCrockfordOrZBase32WithPaddingCharacter_ShouldReturnFalse()
+    public void IsValid_WhenCrockfordOrZBase32WithPaddingCharacter_ShouldAcceptAsDecodeDoes()
     {
-        Assert.IsFalse(Base32.IsValid("D1G2=".AsSpan(), Base32Variant.Crockford));
-        Assert.IsFalse(Base32.IsValid("ybnd=".AsSpan(), Base32Variant.ZBase32));
+        Assert.IsTrue(Base32.IsValid("D1G2=".AsSpan(), Base32Variant.Crockford));
+        CollectionAssert.AreEqual(Base32.Decode("D1G2", Base32Variant.Crockford), Base32.Decode("D1G2=", Base32Variant.Crockford));
+
+        Assert.IsTrue(Base32.IsValid("ybnd=".AsSpan(), Base32Variant.ZBase32));
+        CollectionAssert.AreEqual(Base32.Decode("ybnd", Base32Variant.ZBase32), Base32.Decode("ybnd=", Base32Variant.ZBase32));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Base32.IsValid" /> returns <see langword="true" /> exactly when
+    /// <see cref="Base32.Decode(string, Base32Variant, BaseFormatStyles)" /> succeeds with the same variant and styles,
+    /// over canonical, non-canonical, partially padded, over-padded, decorated, and malformed input in every variant
+    /// and every combination of styles.
+    /// </summary>
+    [TestMethod]
+    public void IsValid_WhenSweptAcrossVariantsAndStyles_ShouldAgreeWithDecode()
+    {
+        var disagreements = new List<string>();
+
+        foreach (Base32Variant variant in Enum.GetValues<Base32Variant>())
+        {
+            foreach (var input in GetValidationSweepInputs(variant))
+            {
+                foreach (BaseFormatStyles styles in DecodeAgreement.AllStyles)
+                {
+                    var decodes = DecodeAgreement.TryDecode(() => Base32.Decode(input, variant, styles), out _);
+                    if (Base32.IsValid(input, variant, styles) != decodes)
+                        disagreements.Add($"{variant} [{styles}] {DecodeAgreement.Quote(input)}: Decode succeeds = {decodes}");
+                }
+            }
+        }
+
+        DecodeAgreement.AssertNone(disagreements);
     }
 
     /// <summary>

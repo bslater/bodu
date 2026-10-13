@@ -10,14 +10,14 @@ big-integer and repeatedly divides by 58 to extract digits.
 
 Base58's defining feature is that its alphabet excludes the four visually ambiguous characters `0`, `O`, `I`, and
 `l`. This makes it suitable for any context where a user might transcribe the encoded form by hand - Bitcoin
-addresses, IPFS CIDs, Solana / Stellar identifiers, Flickr short URLs.
+addresses, IPFS CIDs, Solana identifiers, Flickr short URLs.
 
 ```
-input bytes        : 00 EB 15 23 1D FC EB 60 92 58 86 B6 7D 06 52 99 92 59 15 AE B1 72 C0 66 47
+input bytes        : 00 62 E9 07 B1 5C BF 27 D5 42 53 99 EB F6 F0 FB 50 EB B8 8F 18 C2 9B 7D 93
                                                                                 (Bitcoin payload)
                      ┌── leading 0x00 → leading '1' character ──┐
                      │  remaining 24 bytes → big-integer encode │
-encoded text       : 1NS17iag9jJgTHD1VXjvLCEnZuQ3rJDE9L          (Bitcoin/Flickr)
+encoded text       : 1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa          (Bitcoin alphabet)
 ```
 
 ## Quick reference
@@ -25,28 +25,32 @@ encoded text       : 1NS17iag9jJgTHD1VXjvLCEnZuQ3rJDE9L          (Bitcoin/Flickr
 ```csharp
 using Bodu.Text.Encoding;
 
-byte[] payload = Convert.FromHexString("00EB15231DFCEB60925886B67D065299925915AEB172C06647");
+byte[] payload = Convert.FromHexString("0062E907B15CBF27D5425399EBF6F0FB50EBB88F18C29B7D93");
 
-// Bitcoin/Flickr alphabet (default)
+// Bitcoin alphabet (default)
 string address = Base58.Encode(payload);
-// "1NS17iag9jJgTHD1VXjvLCEnZuQ3rJDE9L"
+// "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa" - the genesis block's address
 
 // Decode back
 byte[] back = Base58.Decode(address);
 
 // Ripple alphabet (XRP ledger)
 string rippled = Base58.Encode(payload, Base58Variant.Ripple);
+
+// Flickr alphabet (lower-case letters before upper-case)
+string flickr = Base58.Encode(payload, Base58Variant.Flickr);
 ```
 
 ## Variant comparison
 
 | Variant | Alphabet ordering | Used by |
 |---|---|---|
-| `BitcoinFlickr` (default) | Digits ascending, then upper-case letters (minus `O`, `I`), then lower-case letters (minus `l`) | Bitcoin, IPFS, Solana, NEAR, Stellar, Flickr |
+| `BitcoinFlickr` (default) | Digits ascending, then upper-case letters (minus `O`, `I`), then lower-case letters (minus `l`) - the Bitcoin alphabet, despite the member's name | Bitcoin, IPFS, Solana, NEAR |
 | `Ripple` | Permuted ordering specific to the XRP ledger | Ripple / XRP |
+| `Flickr` | Digits ascending, then lower-case letters (minus `l`), then upper-case letters (minus `O`, `I`) | Flickr short photo URLs |
 
-Both variants use the same 58 characters - only the *order* differs, so a string encoded under one variant
-decodes to different bytes under the other.
+All three variants use the same 58 characters - only the *order* differs, so a string encoded under one variant
+decodes to different bytes under another. `BinaryEncodings.Get("base58-flickr")` returns the `Flickr` variant.
 
 ## Leading zeros
 
@@ -67,7 +71,7 @@ always start with `1` in their encoded form.
 ```csharp
 // Round trip preserves leading zero bytes exactly:
 byte[] withZeros = new byte[] { 0x00, 0x00, 0xDE, 0xAD };
-string encoded = Base58.Encode(withZeros);  // "115Q"
+string encoded = Base58.Encode(withZeros);  // "11Hwr"
 byte[] back = Base58.Decode(encoded);       // back.SequenceEqual(withZeros)
 ```
 
@@ -82,8 +86,8 @@ Base58.Decode("IAjdvzr");  // FormatException - 'I' (capital I) excluded
 Base58.Decode("lAjdvzr");  // FormatException - 'l' (lower L) excluded
 ```
 
-This is intentional - a user transcribing `1NS17` might write `lNS17` or `INS17`, and the decoder rejecting those
-inputs catches the typo at the input boundary rather than silently producing different bytes.
+This is intentional - a user transcribing `1A1zP` might type `l` or `I` for its leading `1`, and the decoder rejecting
+those inputs catches the typo at the input boundary rather than silently producing different bytes.
 
 ## Lenient parsing
 
@@ -96,7 +100,7 @@ inputs catches the typo at the input boundary rather than silently producing dif
 ```csharp
 // User-pasted address with stray spaces - strip and decode
 byte[] payload = Base58.Decode(
-    "  1NS17iag9jJgTHD1VXjvLCEnZuQ3rJDE9L  ",
+    "  1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa  ",
     Base58Variant.BitcoinFlickr,
     BaseFormatStyles.IgnoreWhitespace);
 ```
@@ -112,15 +116,17 @@ int written = Base58.Encode(payload, buffer);
 ReadOnlySpan<char> result = buffer.AsSpan(0, written);
 ```
 
-Base58 uses big-integer arithmetic, so there is no `OperationStatus` streaming path: each operation requires the
-entire input to be available. The `EncodeToUtf8` / `DecodeFromUtf8` methods exist for API consistency with the
-other encodings but behave as a single-shot transform.
+Base58 uses big-integer arithmetic, so there is no streaming decode: each operation requires the entire input to be
+available. The `EncodeToUtf8` / `DecodeFromUtf8` methods exist for API consistency with the other encodings, but
+`DecodeFromUtf8` takes no `isFinalBlock` parameter and treats its input as complete. To bound that quadratic cost on
+untrusted input, `Decode` rejects input longer than 65536 characters with `FormatException` (`TryDecode` and
+`IsValid` return `false` for it).
 
 ## Validation and sizing
 
 ```csharp
-Base58.IsValid("1NS17iag9jJgTHD1VXjvLCEnZuQ3rJDE9L");  // true
-Base58.IsValid("0NS17iag");                            // false ('0' excluded)
+Base58.IsValid("1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa");  // true
+Base58.IsValid("0A1zP1eP");                            // false ('0' excluded)
 Base58.IsBase58Digit('1');                              // true
 Base58.IsBase58Digit('0');                              // false
 

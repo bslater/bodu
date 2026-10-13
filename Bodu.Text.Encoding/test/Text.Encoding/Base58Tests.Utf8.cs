@@ -77,7 +77,7 @@ public sealed partial class Base58Tests
         CollectionAssert.AreEqual(Ascii("Hello"), destination);
     }
     /// <summary>
-    /// Verifies that <see cref="Base58.EncodeToUtf8" /> returns the Bitcoin/Flickr output as ASCII bytes.
+    /// Verifies that <see cref="Base58.EncodeToUtf8" /> returns the Bitcoin output as ASCII bytes.
     /// </summary>
     [TestMethod]
     public void EncodeToUtf8_ShouldReturnAsciiBytesOfBitcoinFlickrOutput()

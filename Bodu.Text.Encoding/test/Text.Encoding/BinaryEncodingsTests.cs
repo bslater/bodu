@@ -27,7 +27,6 @@ public sealed class BinaryEncodingsTests
     [DataRow("zbase32", "z-base-32")]
     [DataRow("base64url", "base64-urlsafe")]
     [DataRow("base58-bitcoin", "base58")]
-    [DataRow("base58-flickr", "base58")]
     [DataRow("base85", "ascii85")]
     public void Get_WhenAliasProvided_ShouldResolveToCanonicalEncoding(string alias, string canonical)
     {
@@ -101,6 +100,7 @@ public sealed class BinaryEncodingsTests
             BinaryEncodings.Base64Mime,
             BinaryEncodings.Base58,
             BinaryEncodings.Base58Ripple,
+            BinaryEncodings.Base58Flickr,
             BinaryEncodings.Ascii85,
             BinaryEncodings.Z85,
         ];
@@ -127,6 +127,7 @@ public sealed class BinaryEncodingsTests
     [DataRow("base64-mime")]
     [DataRow("base58")]
     [DataRow("base58-ripple")]
+    [DataRow("base58-flickr")]
     [DataRow("ascii85")]
     public void RoundTrip_ForEveryRegisteredEncoding_ShouldRecoverOriginal(string encodingName)
     {
@@ -175,6 +176,34 @@ public sealed class BinaryEncodingsTests
             Assert.AreEqual(encoded.Length, charsWritten, $"Length mismatch for {name}.");
             Assert.AreEqual(encoded, new string(buffer, 0, charsWritten));
         }
+    }
+
+    /// <summary>
+    /// Verifies that the <c>base58-flickr</c> name resolves to an encoding that uses Flickr's alphabet, which puts the
+    /// lower-case letters before the upper-case ones: the value 57, the alphabet's last symbol, encodes as <c>Z</c>
+    /// where the Bitcoin alphabet has <c>z</c>, and the value 3392387861 as <c>6aLSHT</c> where Bitcoin's gives
+    /// <c>6Amsit</c>.
+    /// </summary>
+    [TestMethod]
+    public void Get_WhenBase58FlickrName_ShouldEncodeWithFlickrAlphabet()
+    {
+        IBinaryEncoding flickr = BinaryEncodings.Get("base58-flickr");
+
+        Assert.AreEqual("1Z", flickr.Encode(new byte[] { 0x00, 0x39 }));
+        Assert.AreEqual("6aLSHT", flickr.Encode(new byte[] { 0xCA, 0x33, 0xBB, 0x15 }));
+    }
+
+    /// <summary>
+    /// Verifies that the encoding the <c>base58-flickr</c> name resolves to decodes Flickr-alphabet text to the bytes
+    /// Flickr's alphabet assigns it.
+    /// </summary>
+    [TestMethod]
+    public void Get_WhenBase58FlickrName_ShouldDecodeWithFlickrAlphabet()
+    {
+        IBinaryEncoding flickr = BinaryEncodings.Get("base58-flickr");
+
+        CollectionAssert.AreEqual(new byte[] { 0x00, 0x39 }, flickr.Decode("1Z"));
+        CollectionAssert.AreEqual(new byte[] { 0xCA, 0x33, 0xBB, 0x15 }, flickr.Decode("6aLSHT"));
     }
 
 }

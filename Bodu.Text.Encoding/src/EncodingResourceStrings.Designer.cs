@@ -364,15 +364,6 @@ namespace Bodu {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Input contains characters outside the Base32 variant alphabet..
-        /// </summary>
-        internal static string Format_Invalid_Base32VariantAlphabet {
-            get {
-                return ResourceManager.GetString("Format_Invalid_Base32VariantAlphabet", resourceCulture);
-            }
-        }
-
-        /// <summary>
         ///   Looks up a localized string similar to Input contains a character outside the Base45 alphabet: &apos;{0}&apos;..
         /// </summary>
         internal static string Format_Invalid_Base45CharacterNotInAlphabet {
@@ -468,15 +459,6 @@ namespace Bodu {
         internal static string Format_Invalid_Base64NonCanonical {
             get {
                 return ResourceManager.GetString("Format_Invalid_Base64NonCanonical", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Input contains characters outside the Base64 variant alphabet..
-        /// </summary>
-        internal static string Format_Invalid_Base64VariantAlphabet {
-            get {
-                return ResourceManager.GetString("Format_Invalid_Base64VariantAlphabet", resourceCulture);
             }
         }
 
@@ -607,7 +589,7 @@ namespace Bodu {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Input is not valid Bitcoin/Flickr Base58..
+        ///   Looks up a localized string similar to Input is not valid Bitcoin Base58..
         /// </summary>
         internal static string Format_Invalid_BitcoinFlickrBase58 {
             get {

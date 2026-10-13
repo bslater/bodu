@@ -89,7 +89,7 @@ For very large files where you do not want the whole buffer in memory, do the ha
 
 ## CityHash vs the other non-cryptographic hashes in this package
 
-- **vs <xref:Bodu.IO.Hashing.Fnv1a64>** - CityHash is faster on long inputs (SIMD-friendly); FNV uses constant memory regardless of input size.
+- **vs <xref:Bodu.IO.Hashing.Fnv1a64>** - CityHash processes long inputs in wide blocks rather than byte by byte; FNV uses constant memory regardless of input size.
 - **vs <xref:Bodu.IO.Hashing.Checksums.Adler32>** - Adler is tuned for short checksums and has a fixed 4-byte digest. CityHash dominates for general-purpose in-memory fingerprinting.
 - **vs <xref:Bodu.IO.Hashing.Checksums.Crc>** - CRC is defined by wire specifications and has provable burst-error detection; CityHash is a better default when you control both endpoints and want the best speed/quality trade-off.
 - **vs <xref:Bodu.Security.Cryptography.SipHash64>** - SipHash is keyed and resists adversarial collisions; CityHash does not. Use SipHash whenever untrusted input can reach the hash function.

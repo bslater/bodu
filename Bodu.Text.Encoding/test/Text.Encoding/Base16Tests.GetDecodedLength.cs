@@ -139,4 +139,52 @@ public sealed partial class Base16Tests
         Assert.AreEqual(4, byteCount);
     }
 
+    /// <summary>
+    /// Verifies that <see cref="Base16.GetDecodedLength" /> returns the length
+    /// <see cref="Base16.Decode(string, BaseFormatStyles)" /> produces when it succeeds, and throws
+    /// <see cref="FormatException" /> when it fails, in every combination of styles.
+    /// </summary>
+    [TestMethod]
+    public void GetDecodedLength_WhenSweptAcrossStyles_ShouldMatchDecode()
+    {
+        var disagreements = new List<string>();
+
+        foreach (var input in GetValidationSweepInputs())
+        {
+            foreach (BaseFormatStyles styles in DecodeAgreement.AllStyles)
+            {
+                DecodeAgreement.TryDecode(() => Base16.Decode(input, styles), out int decodedLength);
+                DecodeAgreement.TryDecode(() => new byte[Base16.GetDecodedLength(input, styles)], out int reportedLength);
+                if (reportedLength != decodedLength)
+                    disagreements.Add($"[{styles}] {DecodeAgreement.Quote(input)}: GetDecodedLength {reportedLength}, Decode {decodedLength} (-1: FormatException)");
+            }
+        }
+
+        DecodeAgreement.AssertNone(disagreements);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Base16.TryGetDecodedLength" /> returns <see langword="true" /> exactly when
+    /// <see cref="Base16.Decode(string, BaseFormatStyles)" /> succeeds, and then reports the length it produces, in
+    /// every combination of styles.
+    /// </summary>
+    [TestMethod]
+    public void TryGetDecodedLength_WhenSweptAcrossStyles_ShouldMatchDecode()
+    {
+        var disagreements = new List<string>();
+
+        foreach (var input in GetValidationSweepInputs())
+        {
+            foreach (BaseFormatStyles styles in DecodeAgreement.AllStyles)
+            {
+                DecodeAgreement.TryDecode(() => Base16.Decode(input, styles), out int decodedLength);
+                var reportedLength = Base16.TryGetDecodedLength(input, out int byteCount, styles) ? byteCount : -1;
+                if (reportedLength != decodedLength)
+                    disagreements.Add($"[{styles}] {DecodeAgreement.Quote(input)}: TryGetDecodedLength {reportedLength}, Decode {decodedLength} (-1: rejected)");
+            }
+        }
+
+        DecodeAgreement.AssertNone(disagreements);
+    }
+
 }

@@ -22,7 +22,7 @@ using Bodu.IO.Hashing.Checksums;
 
 byte[] data = Encoding.UTF8.GetBytes("the quick brown fox");
 
-using var crc = new Crc(CrcStandard.CRC32_ISOHDLC);
+var crc = new Crc(CrcStandard.CRC32_ISOHDLC);
 crc.Append(data);
 string hex = Convert.ToHexString(crc.GetCurrentHash());
 ```
@@ -37,7 +37,7 @@ using Bodu.IO.Hashing.Checksums;
 
 byte[] data = Encoding.UTF8.GetBytes("the quick brown fox");
 
-using var fletcher = new Fletcher32();
+var fletcher = new Fletcher32();
 fletcher.Append(data);
 byte[] checksum = fletcher.GetCurrentHash();
 ```
@@ -52,19 +52,19 @@ using Bodu.IO.Hashing;
 
 byte[] data = Encoding.UTF8.GetBytes("the quick brown fox");
 
-using var fnv = new Fnv1a64();
+var fnv = new Fnv1a64();
 fnv.Append(data);
 ulong key = BitConverter.ToUInt64(fnv.GetCurrentHash());
 ```
 
-Constant-memory and streaming. For SIMD-friendly throughput on large buffers, swap in `CityHash64`. For seeded hashes used in databases or probabilistic data structures, use `MurmurHash3_128`. For xxHash specifically, prefer `System.IO.Hashing.XxHash64` from the BCL - Bodu does not duplicate it.
+Constant-memory and streaming. `CityHash64` is another 64-bit fingerprint, but it keeps the whole input in memory until the digest is read, so it suits in-memory buffers rather than large streams. For seeded hashes used in databases or probabilistic data structures, use `MurmurHash3_128`. For xxHash specifically, prefer `System.IO.Hashing.XxHash64` from the BCL - Bodu does not duplicate it.
 
 ### Fingerprint - Pearson with custom output width
 
 ```csharp
 using Bodu.IO.Hashing;
 
-using var hash = new Pearson(hashSizeBits: 256, tableType: Pearson.PearsonTableType.Pearson);
+var hash = new Pearson(hashSizeBits: 256, tableType: Pearson.PearsonTableType.Pearson);
 hash.Append(data);
 byte[] digest = hash.GetCurrentHash(); // 32 bytes
 ```
@@ -96,7 +96,7 @@ bool valid = Iban.IsValid("GB82WEST12345698765432");
 using Bodu.IO.Hashing;
 using Bodu.IO.Hashing.Extensions;
 
-using var hash = new Fnv1a64();
+var hash = new Fnv1a64();
 byte[] digest   = hash.ComputeHash(data);            // Append + GetCurrentHash + Reset, in one call
 bool   match    = hash.VerifyHash(data, digest);     // recompute and compare against the byte[]
 bool   matchHex = hash.VerifyHash(data, Convert.ToHexString(digest)); // or compare against a stored hex string
@@ -110,16 +110,16 @@ bool   matchHex = hash.VerifyHash(data, Convert.ToHexString(digest)); // or comp
 ### Async streaming over a `Stream`
 
 ```csharp
-using Bodu.IO.Hashing;
+using Bodu.IO.Hashing.Checksums;
 using Bodu.IO.Hashing.Extensions;
 
 await using FileStream fs = File.OpenRead("archive.bin");
 
-using var hash = new Crc(CrcStandard.CRC32_ISOHDLC);
+var hash = new Crc(CrcStandard.CRC32_ISOHDLC);
 byte[] digest = await hash.ComputeHashAsync(fs);     // rents a pooled buffer, appends in chunks
 ```
 
-`AppendDataAsync`, `ComputeHashAsync`, `VerifyHashAsync`, and `TryVerifyHashAsync` are the streaming-friendly equivalents; each accepts an optional `bufferSize` and a `CancellationToken`. They rent the working buffer from `ArrayPool<byte>.Shared`, so hashing a large file allocates only the final digest.
+`AppendDataAsync`, `ComputeHashAsync`, `VerifyHashAsync`, and `TryVerifyHashAsync` are the streaming-friendly equivalents; each accepts a `CancellationToken`, and `AppendDataAsync` and `ComputeHashAsync` also take an optional `bufferSize`. They rent the working buffer from `ArrayPool<byte>.Shared`, so hashing a large file allocates only the final digest.
 
 ## Where to go next
 
