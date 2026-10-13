@@ -67,7 +67,7 @@ For the auto-generated API reference, see the [Bodu.IO.Hashing namespace page](x
 
 <div class="bodu-card">
   <h3><a href="crc-catalogue.md">CRC catalogue</a></h3>
-  <p>The full table of named CRC standards from the RevEng catalogue - name, width, class, enum value, and aliases.</p>
+  <p>The full table of named CRC standards from the RevEng catalogue - name, width, class, and enum value.</p>
 </div>
 
 <div class="bodu-card">

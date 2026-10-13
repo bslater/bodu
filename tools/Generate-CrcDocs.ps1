@@ -81,6 +81,13 @@ $regeneratedUtc = (Get-Date).ToUniversalTime().ToString('yyyy-MM-ddTHH:mm:ssZ')
 $supported = @($specs | Where-Object { $_.size -le $MaxSize })
 $skipped   = @($specs | Where-Object { $_.size -gt $MaxSize })
 
+# Alias claims and the Aliases columns are emitted only when at least one supported entry records an alias:
+# CrcStandard.FromName resolves exactly the names in crc-specs.json, so the page never promises a lookup the
+# generated name map cannot answer.
+$hasAliases = @($supported | Where-Object {
+    $_.PSObject.Properties.Match('aliases').Count -gt 0 -and @($_.aliases).Count -gt 0
+}).Count -gt 0
+
 $lines = [System.Collections.Generic.List[string]]::new()
 [void]$lines.Add('---')
 [void]$lines.Add('title: CRC catalogue')
@@ -110,16 +117,22 @@ if ($fetchedUtc) {
 [void]$lines.Add('')
 [void]$lines.Add('```csharp')
 [void]$lines.Add('// 1. Strongly-typed common standards - most convenient for the usual suspects.')
-[void]$lines.Add('using var crc = new Crc(CrcStandard.CRC32_ISOHDLC);')
-[void]$lines.Add('using var crc = new Crc(CrcStandard.CRC32_ISCSI);          // iSCSI / Castagnoli')
-[void]$lines.Add('using var crc = new Crc(CrcStandard.CRC16_MODBUS);')
+[void]$lines.Add('var crc = new Crc(CrcStandard.CRC32_ISOHDLC);')
+[void]$lines.Add('var crc = new Crc(CrcStandard.CRC32_ISCSI);          // iSCSI / Castagnoli')
+[void]$lines.Add('var crc = new Crc(CrcStandard.CRC16_MODBUS);')
 [void]$lines.Add('')
-[void]$lines.Add('// 2. By enum - covers every canonical catalogue entry (112 in total).')
-[void]$lines.Add('using var crc = new Crc(CrcStandard.Get(CrcStandards.CRC8_SAEJ1850));')
+[void]$lines.Add("// 2. By enum - covers every canonical catalogue entry ($($supported.Count) in total).")
+[void]$lines.Add('var crc = new Crc(CrcStandard.Get(CrcStandards.CRC8_SAEJ1850));')
 [void]$lines.Add('')
-[void]$lines.Add('// 3. By name - resolves canonical names AND published aliases.')
-[void]$lines.Add('using var crc1 = new Crc(CrcStandard.FromName("CRC-32/ISO-HDLC"));')
-[void]$lines.Add('using var crc2 = new Crc(CrcStandard.FromName("PKZIP"));   // same instance as crc1')
+if ($hasAliases) {
+    [void]$lines.Add('// 3. By name - resolves canonical names AND published aliases.')
+    [void]$lines.Add('var crc1 = new Crc(CrcStandard.FromName("CRC-32/ISO-HDLC"));')
+    [void]$lines.Add('var crc2 = new Crc(CrcStandard.FromName("PKZIP"));   // same instance as crc1')
+}
+else {
+    [void]$lines.Add('// 3. By canonical RevEng name.')
+    [void]$lines.Add('var crc1 = new Crc(CrcStandard.FromName("CRC-32/ISO-HDLC"));')
+}
 [void]$lines.Add('')
 [void]$lines.Add('// Iterate every catalogue standard')
 [void]$lines.Add('foreach (CrcStandard std in CrcStandard.All) { ... }')
@@ -131,15 +144,26 @@ if ($fetchedUtc) {
 [void]$lines.Add('')
 [void]$lines.Add('`CrcStandard` represents all scalar parameters as <xref:System.UInt64>, so the library can materialise any CRC of width 1-64 bits. Entries whose width exceeds 64 bits are listed below for completeness but are **not** exposed by <xref:Bodu.IO.Hashing.Checksums.CrcStandards> and cannot be constructed through `CrcStandard`.')
 [void]$lines.Add('')
-[void]$lines.Add('Aliases share a single catalogue instance with their canonical standard. `CrcStandard.FromName` resolves both canonical and alias names, so `FromName("CRC-32")` and `FromName("CRC-32/ISO-HDLC")` return the same instance.')
+if ($hasAliases) {
+    [void]$lines.Add('Aliases share a single catalogue instance with their canonical standard. `CrcStandard.FromName` resolves both canonical and alias names, so `FromName("CRC-32")` and `FromName("CRC-32/ISO-HDLC")` return the same instance.')
+}
+else {
+    [void]$lines.Add('`CrcStandard.FromName` resolves canonical names only. Published aliases such as `CRC-32` or `PKZIP` are not resolved: pass the canonical name instead (`CRC-32/ISO-HDLC` for both), which the upstream page lists beside each alias.')
+}
 [void]$lines.Add('')
 
 [void]$lines.Add('## Common standards (strongly-typed)')
 [void]$lines.Add('')
 [void]$lines.Add('These are exposed as `public static CrcStandard` properties on <xref:Bodu.IO.Hashing.Checksums.CrcStandard> for convenience - the underlying cache is still shared with the enum-based lookup.')
 [void]$lines.Add('')
-[void]$lines.Add('| Name | Width | Property | Aliases |')
-[void]$lines.Add('|---|---:|---|---|')
+if ($hasAliases) {
+    [void]$lines.Add('| Name | Width | Property | Aliases |')
+    [void]$lines.Add('|---|---:|---|---|')
+}
+else {
+    [void]$lines.Add('| Name | Width | Property |')
+    [void]$lines.Add('|---|---:|---|')
+}
 foreach ($spec in $supported) {
     if (-not $Common.Contains($spec.name)) { continue }
     $c = ConvertTo-ConstantName $spec.name
@@ -149,7 +173,8 @@ foreach ($spec in $supported) {
         $aliases = @($spec.aliases)
     }    
     $aliasCell = if ($aliases.Count -eq 0) { '-' } else { ($aliases | ForEach-Object { '`' + $_ + '`' }) -join ', ' }
-    [void]$lines.Add("| $($spec.name) | $($spec.size) | ``CrcStandard.$c`` | $aliasCell |")
+    $aliasColumn = if ($hasAliases) { " $aliasCell |" } else { '' }
+    [void]$lines.Add("| $($spec.name) | $($spec.size) | ``CrcStandard.$c`` |$aliasColumn")
 }
 [void]$lines.Add('')
 
@@ -157,8 +182,14 @@ foreach ($spec in $supported) {
 [void]$lines.Add('')
 [void]$lines.Add('Access the following via `CrcStandard.Get(CrcStandards.X)` or `CrcStandard.FromName("name")`.')
 [void]$lines.Add('')
-[void]$lines.Add('| Name | Width | Class | Enum | Aliases | RevEng |')
-[void]$lines.Add('|---|---:|---|---|---|---|')
+if ($hasAliases) {
+    [void]$lines.Add('| Name | Width | Class | Enum | Aliases | RevEng |')
+    [void]$lines.Add('|---|---:|---|---|---|---|')
+}
+else {
+    [void]$lines.Add('| Name | Width | Class | Enum | RevEng |')
+    [void]$lines.Add('|---|---:|---|---|---|')
+}
 foreach ($spec in $supported) {
     $c = ConvertTo-ConstantName $spec.name
     $cls = if ($spec.PSObject.Properties['class']) { [string]$spec.class } else { '' }
@@ -171,7 +202,8 @@ foreach ($spec in $supported) {
     $anchor = Format-AnchorSlug $spec.name
     $refLink = "[spec]($source#$anchor)"
     $nameCell = if ($Common.Contains($spec.name)) { "**$($spec.name)**" } else { $spec.name }
-    [void]$lines.Add("| $nameCell | $($spec.size) | $cls | ``CrcStandards.$c`` | $aliasCell | $refLink |")
+    $aliasColumn = if ($hasAliases) { " $aliasCell |" } else { '' }
+    [void]$lines.Add("| $nameCell | $($spec.size) | $cls | ``CrcStandards.$c`` |$aliasColumn $refLink |")
 }
 [void]$lines.Add('')
 

@@ -160,7 +160,7 @@ public sealed partial class CrcStandard
     /// <summary>Lazy per-entry cache: index by <c>(int)CrcStandards</c> ordinal, materialised on first <see cref="Get(CrcStandards)" />.</summary>
     private static readonly CrcStandard?[] s_cache = new CrcStandard?[s_catalog.Length];
 
-    /// <summary>Lazy map from canonical name or alias to the enum ordinal. Built on first <see cref="FromName(string)" /> call.</summary>
+    /// <summary>Lazy map from canonical name to the enum ordinal. Built on first <see cref="FromName(string)" /> call.</summary>
     private static Dictionary<string, CrcStandards>? s_nameToEnum;
 
     /// <summary>Lazy snapshot of every catalogue <see cref="CrcStandard" /> instance; materialised on first <see cref="All" /> access.</summary>
@@ -172,8 +172,7 @@ public sealed partial class CrcStandard
     /// <value>A read-only list containing one <see cref="CrcStandard" /> per canonical entry.</value>
     /// <remarks>
     /// <para>The backing array is built lazily on first access and then memoised, so merely loading this type does not construct any
-    /// <see cref="CrcStandard" /> instances. Aliases are not included as separate entries; use <see cref="FromName(string)" /> to
-    /// resolve an alias to its canonical instance.</para>
+    /// <see cref="CrcStandard" /> instances.</para>
     /// </remarks>
     public static IReadOnlyList<CrcStandard> All
     {
@@ -221,9 +220,9 @@ public sealed partial class CrcStandard
     }
 
     /// <summary>
-    /// Resolves a catalogue entry by its canonical name or any of its published aliases.
+    /// Resolves a catalogue entry by its canonical name, such as <c>CRC-32/ISO-HDLC</c>.
     /// </summary>
-    /// <param name="name">The canonical CRC standard name, or an alias. Comparison is ordinal and case-sensitive.</param>
+    /// <param name="name">The canonical CRC standard name. Comparison is ordinal and case-sensitive.</param>
     /// <returns>The shared <see cref="CrcStandard" /> instance for <paramref name="name" />.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="name" /> is <see langword="null" />.</exception>
     /// <exception cref="KeyNotFoundException">No catalogue entry matching <paramref name="name" /> exists.</exception>
@@ -237,9 +236,9 @@ public sealed partial class CrcStandard
     }
 
     /// <summary>
-    /// Attempts to resolve a catalogue entry by its canonical name or alias without throwing.
+    /// Attempts to resolve a catalogue entry by its canonical name without throwing.
     /// </summary>
-    /// <param name="name">The canonical CRC standard name or alias to look up.</param>
+    /// <param name="name">The canonical CRC standard name to look up.</param>
     /// <param name="standard">When this method returns, contains the matching <see cref="CrcStandard" /> if found; otherwise, <see langword="null" />.</param>
     /// <returns><see langword="true" /> if a catalogue entry was found; otherwise, <see langword="false" />.</returns>
     public static bool TryFromName(string? name, out CrcStandard? standard)
