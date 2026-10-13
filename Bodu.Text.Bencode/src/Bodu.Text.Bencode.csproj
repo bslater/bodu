@@ -10,22 +10,16 @@
         <PackageTags>$(PackageTags);text;bencode;bep3;bittorrent;torrent;serialization;serializer</PackageTags>
     </PropertyGroup>
 
-    <!-- Per-framework compilation symbols. -->
-    <PropertyGroup Condition="'$(TargetFramework)' == 'net8.0'">
-        <DefineConstants>$(DefineConstants);NET8_0_OR_GREATER</DefineConstants>
-    </PropertyGroup>
-
     <!-- Format selector for the shared serializer source (see Bodu.Text.Serialization/shared/). -->
     <PropertyGroup>
         <DefineConstants>$(DefineConstants);BENCODE</DefineConstants>
     </PropertyGroup>
 
     <!-- Shared serializer source, compiled into this assembly with format aliases (net8.0 ref-struct
-       converters cannot live in a shared generic assembly). The shared\Flat sources serve the line formats
-       (Delimited, DotEnv, INI) and are left out: this package uses none of them. -->
+       converters cannot live in a shared generic assembly). -->
     <ItemGroup>
         <Compile Include="..\..\Bodu.Text.Serialization\shared\**\*.cs"
-                 Exclude="..\..\Bodu.Text.Serialization\shared\SerializationException.cs;..\..\Bodu.Text.Serialization\shared\Flat\**\*.cs"
+                 Exclude="..\..\Bodu.Text.Serialization\shared\SerializationException.cs"
                  Link="shared\%(RecursiveDir)%(Filename)%(Extension)" />
     </ItemGroup>
 

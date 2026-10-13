@@ -217,14 +217,6 @@ public sealed class DelimitedSerializerOptions
     internal void MakeReadOnly() => _isReadOnly = true;
 
     /// <summary>
-    /// Converts a member name to its serialized column name, applying the configured naming policy.
-    /// </summary>
-    /// <param name="memberName">The .NET member name.</param>
-    /// <returns>The serialized column name.</returns>
-    internal string ConvertName(string memberName) =>
-        _propertyNamingPolicy?.ConvertName(memberName) ?? memberName;
-
-    /// <summary>
     /// Builds the reader options that mirror these serializer settings.
     /// </summary>
     /// <returns>The reader options.</returns>
@@ -237,6 +229,15 @@ public sealed class DelimitedSerializerOptions
     /// <returns>The writer options.</returns>
     internal Writer.DelimitedWriterOptions ToWriterOptions() =>
         new() { Delimiter = _delimiter, Quote = _quote, CommentChar = _commentChar, NoHeader = _noHeader };
+
+    /// <summary>
+    /// Gets the cache of the member descriptors of the record types serialized with these options.
+    /// </summary>
+    /// <value>
+    /// The cache, consulted only once the options are read-only, so that the naming policy and field inclusion that
+    /// shaped a type's descriptors cannot change.
+    /// </value>
+    internal FlatMemberCache MemberCache { get; } = new();
 
     /// <summary>
     /// Creates the shared read-only default options.

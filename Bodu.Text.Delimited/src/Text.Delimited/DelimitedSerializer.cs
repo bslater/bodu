@@ -12,6 +12,7 @@ using System.Text;
 
 using Bodu.Text.Delimited.Reader;
 using Bodu.Text.Delimited.Writer;
+using Bodu.Text.Serialization;
 
 namespace Bodu.Text.Delimited;
 
@@ -26,7 +27,8 @@ namespace Bodu.Text.Delimited;
 /// honour <see cref="DelimitedSerializerOptions.PropertyNamingPolicy" /> and the
 /// <see cref="Bodu.Text.Serialization.PropertyNameAttribute" /> family. Each member name maps to one column, its most
 /// derived declaration: a property or field hidden with the <see langword="new" /> modifier is neither written nor
-/// read.
+/// read. A record type that maps two members to one column is rejected with
+/// <see cref="DelimitedSerializationException" /> before anything is read or written.
 /// </para>
 /// <para>
 /// Field values convert with the invariant culture. An empty field, or one of white space only, binds
@@ -115,7 +117,7 @@ public static partial class DelimitedSerializer
         Type recordType = GetRecordType(collectionType)
             ?? throw new DelimitedSerializationException(string.Format(CultureInfo.CurrentCulture, DelimitedResourceStrings.Op_Invalid_DelimitedRootNotCollection, collectionType));
         bool isStringArray = recordType == typeof(string[]);
-        Member[] members = isStringArray ? [] : GetRecordMembers(recordType, effective, reading: false);
+        FlatMemberDescriptor[] members = isStringArray ? [] : GetRecordMembers(recordType, effective, reading: false);
 
         var writer = new Utf8DelimitedWriter(destination, effective.ToWriterOptions());
         writer.WriteStartArray();
@@ -230,7 +232,7 @@ public static partial class DelimitedSerializer
         effective.MakeReadOnly();
 
         bool isStringArray = typeof(TRecord) == typeof(string[]);
-        Member[] members = isStringArray ? [] : GetRecordMembers(typeof(TRecord), effective, reading: true);
+        FlatMemberDescriptor[] members = isStringArray ? [] : GetRecordMembers(typeof(TRecord), effective, reading: true);
 
         ReadRows(utf8Delimited, effective.ToReaderOptions(), out List<string> headers, out List<string[]> rows);
 
@@ -243,8 +245,9 @@ public static partial class DelimitedSerializer
             return result;
         }
 
+        int[]? columns = CreateColumnMap(headers, members, effective);
         foreach (string[] row in rows)
-            result.Add((TRecord)BindRecord(row, headers, members, typeof(TRecord), effective));
+            result.Add((TRecord)BindRecord(row, columns, members, typeof(TRecord)));
 
         return result;
     }
@@ -291,7 +294,10 @@ public static partial class DelimitedSerializer
     {
         var reader = new Utf8DelimitedReader(utf8Delimited, options);
         rows = [];
-        List<string>? currentRow = null;
+
+        // One list collects every row's fields in turn, and each row keeps an array of them.
+        var currentRow = new List<string>();
+        bool inRow = false;
         int depth = 0;
 
         while (reader.Read())
@@ -301,22 +307,28 @@ public static partial class DelimitedSerializer
                 case DelimitedTokenType.StartArray:
                 case DelimitedTokenType.StartObject:
                     if (++depth == 2)
-                        currentRow = [];
+                    {
+                        currentRow.Clear();
+                        inRow = true;
+                    }
+
                     break;
 
                 case DelimitedTokenType.EndArray:
                 case DelimitedTokenType.EndObject:
-                    if (depth == 2 && currentRow is not null)
+                    if (depth == 2 && inRow)
                     {
                         rows.Add([.. currentRow]);
-                        currentRow = null;
+                        inRow = false;
                     }
 
                     depth--;
                     break;
 
                 case DelimitedTokenType.String:
-                    currentRow?.Add(reader.GetString());
+                    if (inRow)
+                        currentRow.Add(reader.GetString());
+
                     break;
 
                 default:

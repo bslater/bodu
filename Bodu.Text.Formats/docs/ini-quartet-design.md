@@ -120,9 +120,12 @@ read-only on first use, `IniSerializerDefaults`) reuses the shared attribute /
 **As built:** `IniSerializerOptions` is a `sealed` class, not `partial`, and
 there are no format-local converters: scalars convert through the shared
 `InvariantScalarCodec` under its `Configuration` policy
-(`Bodu.Text.Serialization/shared/Flat/InvariantScalarCodec.cs`, compiled into
+(`Bodu.Text.Serialization/flat/src/InvariantScalarCodec.cs`, compiled into
 the package and called by `ValueToString` and `ConvertFromString` in
-`Bodu.Text.Ini/src/Text.Ini/IniSerializer.Binder.cs`).
+`Bodu.Text.Ini/src/Text.Ini/IniSerializer.Binder.cs`). A root or section
+dictionary may be any `IDictionary<string, TValue>`; one that does not also
+implement the non-generic `IDictionary` is read and written through the generic
+interface (`FlatBinding.SetEntry` and `FlatBinding.TryGetDictionary`, #1242).
 
 ## Dialect migration
 

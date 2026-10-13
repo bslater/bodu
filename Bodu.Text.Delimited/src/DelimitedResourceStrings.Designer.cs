@@ -147,6 +147,15 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The record type '{0}' maps more than one member to the column '{1}'..
+        /// </summary>
+        internal static string Op_Invalid_DelimitedDuplicateColumn {
+            get {
+                return ResourceManager.GetString("Op_Invalid_DelimitedDuplicateColumn", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The delimited value for column '{0}' could not be converted to type '{1}'..
         /// </summary>
         internal static string Format_Invalid_DelimitedValueConversion {

@@ -10,6 +10,10 @@ namespace Bodu.Text.Formats.Generators;
 /// Identifies the scalar conversion strategy for a mapped member, mirroring the scalar set the runtime reflection
 /// binders convert with the invariant culture.
 /// </summary>
+/// <remarks>
+/// The reflection binders' set is the one <c>InvariantScalarCodec.Classify</c> lists; a parity test in the generator's
+/// test project fails when a scalar type it lists is not mapped here.
+/// </remarks>
 internal enum ScalarKind
 {
     /// <summary>
@@ -33,7 +37,8 @@ internal enum ScalarKind
     Char,
 
     /// <summary>
-    /// A numeric value parsed and formatted with the invariant culture.
+    /// A numeric value parsed and formatted with the invariant culture: a primitive number, <see cref="decimal" />,
+    /// <c>nint</c>, <c>nuint</c>, <c>Int128</c>, <c>UInt128</c>, <c>Half</c> or <c>BigInteger</c>.
     /// </summary>
     Number,
 
@@ -61,4 +66,19 @@ internal enum ScalarKind
     /// An enum value parsed case-insensitively by name or numeric value.
     /// </summary>
     Enum,
+
+    /// <summary>
+    /// A <c>DateOnly</c> value.
+    /// </summary>
+    DateOnly,
+
+    /// <summary>
+    /// A <c>TimeOnly</c> value, written in its round-trip form.
+    /// </summary>
+    TimeOnly,
+
+    /// <summary>
+    /// A <see cref="System.Uri" /> value, relative or absolute.
+    /// </summary>
+    Uri,
 }

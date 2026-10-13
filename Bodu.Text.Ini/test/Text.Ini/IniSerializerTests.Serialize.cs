@@ -260,4 +260,149 @@ public partial class IniSerializerTests
 
         Assert.IsTrue(ex.Message.Contains(kat.MessageContains!, StringComparison.Ordinal), ex.Message);
     }
+
+    /// <summary>
+    /// Verifies that a global key hiding a base member of the same name with <see langword="new" /> is written once,
+    /// from the most derived declaration, and that the hidden member is not written.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenAMemberHidesABaseMemberWithNew_ShouldWriteOnlyTheMostDerivedMember()
+    {
+        var config = new PortNumberHidingConfig { Port = 5 };
+        ((PortTextBase)config).Port = "x";
+
+        string text = IniSerializer.Serialize(config);
+
+        Assert.AreEqual("Port=5\n", text);
+    }
+
+    /// <summary>
+    /// Verifies that a type mapping two global keys to one name throws <see cref="IniSerializationException" /> naming
+    /// the type and the name, rather than writing the key twice.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenTwoMembersMapToOneName_ShouldThrowIniSerializationException()
+    {
+        var config = new DuplicateKeyConfig { First = "a", Second = "b" };
+
+        var ex = Assert.ThrowsExactly<IniSerializationException>(() =>
+        {
+            _ = IniSerializer.Serialize(config);
+        });
+
+        Assert.IsTrue(ex.Message.Contains(nameof(DuplicateKeyConfig), StringComparison.Ordinal), ex.Message);
+        Assert.IsTrue(ex.Message.Contains("'X'", StringComparison.Ordinal), ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that the options' default ignore condition leaves out the null members, or the null and default ones,
+    /// that it ignores, and that a member's own condition overrides it.
+    /// </summary>
+    /// <param name="condition">The options' default ignore condition.</param>
+    /// <param name="expected">The text written.</param>
+    [TestMethod]
+    [DataRow(IgnoreCondition.Never, "Text=\nZero=0\nOne=1\nFlag=false\nMaybe=\nNullByMember=\n")]
+    [DataRow(IgnoreCondition.WhenWritingNull, "Zero=0\nOne=1\nFlag=false\nNullByMember=\n")]
+    [DataRow(IgnoreCondition.WhenWritingDefault, "One=1\nNullByMember=\n")]
+    public void Serialize_WhenTheDefaultIgnoreConditionIsSet_ShouldLeaveOutTheMembersItIgnores(IgnoreCondition condition, string expected)
+    {
+        var options = new IniSerializerOptions { DefaultIgnoreCondition = condition };
+
+        string text = IniSerializer.Serialize(new ConditionalConfig(), options);
+
+        Assert.AreEqual(expected, text);
+    }
+
+    /// <summary>
+    /// Verifies that a dictionary entry whose value is <see langword="null" /> is left out unless the options' default
+    /// ignore condition is <see cref="IgnoreCondition.Never" />, which writes it with an empty value.
+    /// </summary>
+    /// <param name="condition">The options' default ignore condition.</param>
+    /// <param name="expected">The text written.</param>
+    [TestMethod]
+    [DataRow(IgnoreCondition.Never, "A=\nB=b\n")]
+    [DataRow(IgnoreCondition.WhenWritingNull, "B=b\n")]
+    [DataRow(IgnoreCondition.WhenWritingDefault, "B=b\n")]
+    public void Serialize_WhenADictionaryValueIsNull_ShouldLeaveItOutUnlessTheConditionIsNever(IgnoreCondition condition, string expected)
+    {
+        var options = new IniSerializerOptions { DefaultIgnoreCondition = condition };
+        var map = new Dictionary<string, string?> { ["A"] = null, ["B"] = "b" };
+
+        string text = IniSerializer.Serialize(map, options);
+
+        Assert.AreEqual(expected, text);
+    }
+
+    /// <summary>
+    /// Verifies that a root that implements <see cref="IDictionary{TKey, TValue}" /> keyed by <see cref="string" />,
+    /// but not the non-generic <see cref="System.Collections.IDictionary" />, serializes each entry as a global key, in
+    /// the order the dictionary enumerates them.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenTheRootImplementsOnlyTheGenericDictionaryInterface_ShouldWriteTheGlobalKeys()
+    {
+        var root = new GenericOnlyDictionary<int> { ["b"] = 2, ["a"] = 1 };
+
+        string text = IniSerializer.Serialize(root);
+
+        Assert.AreEqual("b=2\na=1\n", text);
+    }
+
+    /// <summary>
+    /// Verifies that a root whose sections, and the root itself, implement only the generic dictionary interface
+    /// writes the reserved global entry as global keys and every other entry as a section.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenTheSectionsImplementOnlyTheGenericDictionaryInterface_ShouldWriteEachSection()
+    {
+        var root = new GenericOnlyDictionary<GenericOnlyDictionary<string>>
+        {
+            ["db"] = new() { ["host"] = "x" },
+            ["global"] = new() { ["a"] = "1" },
+        };
+        var options = new IniSerializerOptions { GlobalSectionName = "global" };
+
+        string text = IniSerializer.Serialize(root, options);
+
+        Assert.AreEqual("a=1\n[db]\nhost=x\n", text);
+    }
+
+    /// <summary>
+    /// Verifies that a section member whose type implements only the generic dictionary interface is written as a
+    /// section of its entries.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenASectionMemberImplementsOnlyTheGenericDictionaryInterface_ShouldWriteItsEntries()
+    {
+        var config = new GenericOnlySectionConfig
+        {
+            Name = "app",
+            Logging = new GenericOnlyDictionary<string> { ["level"] = "info", ["sink"] = "console" },
+        };
+
+        string text = IniSerializer.Serialize(config);
+
+        Assert.AreEqual("Name=app\n[Logging]\nlevel=info\nsink=console\n", text);
+    }
+
+    /// <summary>
+    /// Verifies that a section entry whose value implements only the generic dictionary interface nests beyond INI's
+    /// two levels, as a <see cref="Dictionary{TKey, TValue}" /> value does, and throws
+    /// <see cref="IniSerializationException" /> naming the entry.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenASectionEntryImplementsOnlyTheGenericDictionaryInterface_ShouldThrowIniSerializationException()
+    {
+        var root = new Dictionary<string, Dictionary<string, object>>
+        {
+            ["db"] = new() { ["inner"] = new GenericOnlyDictionary<string> { ["host"] = "x" } },
+        };
+
+        var ex = Assert.ThrowsExactly<IniSerializationException>(() =>
+        {
+            _ = IniSerializer.Serialize(root);
+        });
+
+        Assert.IsTrue(ex.Message.Contains("'inner'", StringComparison.Ordinal), ex.Message);
+    }
 }

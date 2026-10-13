@@ -16,6 +16,12 @@
     <EmbeddedResource Include="Fixtures\ReleaseNotes\*-fixes.csv" />
   </ItemGroup>
 
+  <!-- The tests of the line formats' shared source, one copy compiled into each line format's test project, as the
+       source is into each serializer. -->
+  <ItemGroup>
+    <Compile Include="..\..\Bodu.Text.Serialization\flat\test\*.cs" Link="Text.Serialization\%(Filename)%(Extension)" />
+  </ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
   </ItemGroup>

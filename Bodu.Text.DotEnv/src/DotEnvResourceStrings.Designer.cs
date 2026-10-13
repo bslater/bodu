@@ -160,6 +160,15 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The type '{0}' maps more than one member to the DotEnv key '{1}'..
+        /// </summary>
+        internal static string Op_Invalid_DotEnvDuplicateKey {
+            get {
+                return ResourceManager.GetString("Op_Invalid_DotEnvDuplicateKey", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The DotEnv value for key '{0}' could not be converted to type '{1}'..
         /// </summary>
         internal static string Format_Invalid_DotEnvValueConversion {

@@ -7,8 +7,6 @@
 using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-using System.Numerics;
-using System.Reflection;
 
 using Bodu.Text.Ini.Reader;
 using Bodu.Text.Ini.Writer;
@@ -45,7 +43,7 @@ public static partial class IniSerializer
 
         (value as IOnSerializing)?.OnSerializing();
 
-        if (value is IDictionary dictionary)
+        if (FlatBinding.TryGetDictionary(value, out IDictionary? dictionary))
             WriteRootDictionary(ref writer, dictionary, options);
         else if (IsScalarOrEnumerable(value.GetType()))
             throw new IniSerializationException(string.Format(CultureInfo.CurrentCulture, IniResourceStrings.Op_Invalid_IniRootNotObject, value.GetType()));
@@ -66,12 +64,14 @@ public static partial class IniSerializer
     /// Thrown when a section nests beyond INI's two levels, or when a key, section name or value cannot be written so
     /// that it reads back unchanged.
     /// </exception>
+    [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
+    [RequiresDynamicCode(RequiresDynamicCodeMessage)]
     private static void WriteRootDictionary(ref Utf8IniWriter writer, IDictionary dictionary, IniSerializerOptions options)
     {
         foreach (DictionaryEntry entry in dictionary)
         {
             string key = KeyToString(entry.Key);
-            if (entry.Value is IDictionary nested)
+            if (FlatBinding.TryGetDictionary(entry.Value, out IDictionary? nested))
             {
                 if (IsGlobalName(key, options))
                     WriteDictionaryEntries(ref writer, string.Empty, nested, options);
@@ -79,7 +79,7 @@ public static partial class IniSerializer
                 continue;
             }
 
-            if (ShouldSkipDictionaryValue(entry.Value, options))
+            if (FlatBinding.ShouldSkipDictionaryValue(entry.Value, options.DefaultIgnoreCondition))
                 continue;
 
             WriteEntry(ref writer, string.Empty, key, ValueToString(entry.Value));
@@ -88,7 +88,7 @@ public static partial class IniSerializer
         foreach (DictionaryEntry entry in dictionary)
         {
             string key = KeyToString(entry.Key);
-            if (entry.Value is IDictionary nested && !IsGlobalName(key, options))
+            if (!IsGlobalName(key, options) && FlatBinding.TryGetDictionary(entry.Value, out IDictionary? nested))
             {
                 WriteHeader(ref writer, key);
                 WriteDictionaryEntries(ref writer, key, nested, options);
@@ -111,17 +111,20 @@ public static partial class IniSerializer
     [RequiresDynamicCode(RequiresDynamicCodeMessage)]
     private static void WriteRootPoco(ref Utf8IniWriter writer, object value, IniSerializerOptions options)
     {
-        List<Member> members = GetMembers(value.GetType(), options).Where(static m => m.CanRead).ToList();
+        FlatMemberDescriptor[] members = GetMembers(value.GetType(), options);
 
-        foreach (Member member in members)
+        foreach (FlatMemberDescriptor member in members)
         {
-            if (IsScalarType(member.MemberType))
+            if (!member.CanRead)
+                continue;
+
+            if (member.IsScalar)
             {
                 object? memberValue = member.GetValue(value);
-                if (ShouldSkipOnWrite(memberValue, member, options))
+                if (FlatBinding.ShouldSkipOnWrite(memberValue, member.IgnoreCondition, options.DefaultIgnoreCondition))
                     continue;
 
-                WriteEntry(ref writer, string.Empty, member.Name, ValueToString(memberValue));
+                WriteEntry(ref writer, string.Empty, member.Name, ValueToString(memberValue, member.ScalarKind));
             }
             else if (IsGlobalName(member.Name, options))
             {
@@ -131,16 +134,16 @@ public static partial class IniSerializer
             }
         }
 
-        foreach (Member member in members)
+        foreach (FlatMemberDescriptor member in members)
         {
-            if (IsScalarType(member.MemberType) || IsGlobalName(member.Name, options))
+            if (!member.CanRead || member.IsScalar || IsGlobalName(member.Name, options))
                 continue;
 
             if (IsUnsupportedEnumerable(member.MemberType))
                 throw new IniSerializationException(string.Format(CultureInfo.CurrentCulture, IniResourceStrings.Op_Invalid_IniDepthExceeded, member.Name));
 
             object? memberValue = member.GetValue(value);
-            if (ShouldSkipOnWrite(memberValue, member, options))
+            if (FlatBinding.ShouldSkipOnWrite(memberValue, member.IgnoreCondition, options.DefaultIgnoreCondition))
                 continue;
 
             WriteHeader(ref writer, member.Name);
@@ -167,7 +170,7 @@ public static partial class IniSerializer
     {
         // The reserved global section's entries are written as global keys, so a refused entry is reported as global.
         string entrySection = IsGlobalName(sectionName, options) ? string.Empty : sectionName;
-        if (body is IDictionary dictionary)
+        if (FlatBinding.TryGetDictionary(body, out IDictionary? dictionary))
         {
             WriteDictionaryEntries(ref writer, entrySection, dictionary, options);
             return;
@@ -178,19 +181,19 @@ public static partial class IniSerializer
 
         (body as IOnSerializing)?.OnSerializing();
 
-        foreach (Member member in GetMembers(body.GetType(), options))
+        foreach (FlatMemberDescriptor member in GetMembers(body.GetType(), options))
         {
             if (!member.CanRead)
                 continue;
 
-            if (!IsScalarType(member.MemberType))
+            if (!member.IsScalar)
                 throw new IniSerializationException(string.Format(CultureInfo.CurrentCulture, IniResourceStrings.Op_Invalid_IniDepthExceeded, member.Name));
 
             object? memberValue = member.GetValue(body);
-            if (ShouldSkipOnWrite(memberValue, member, options))
+            if (FlatBinding.ShouldSkipOnWrite(memberValue, member.IgnoreCondition, options.DefaultIgnoreCondition))
                 continue;
 
-            WriteEntry(ref writer, entrySection, member.Name, ValueToString(memberValue));
+            WriteEntry(ref writer, entrySection, member.Name, ValueToString(memberValue, member.ScalarKind));
         }
 
         (body as IOnSerialized)?.OnSerialized();
@@ -207,14 +210,16 @@ public static partial class IniSerializer
     /// Thrown when an entry value is itself a dictionary, which INI cannot represent inside a section, or when an
     /// entry's key or value cannot be written so that it reads back unchanged.
     /// </exception>
+    [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
+    [RequiresDynamicCode(RequiresDynamicCodeMessage)]
     private static void WriteDictionaryEntries(ref Utf8IniWriter writer, string sectionName, IDictionary entries, IniSerializerOptions options)
     {
         foreach (DictionaryEntry entry in entries)
         {
-            if (entry.Value is IDictionary)
+            if (FlatBinding.TryGetDictionary(entry.Value, out _))
                 throw new IniSerializationException(string.Format(CultureInfo.CurrentCulture, IniResourceStrings.Op_Invalid_IniDepthExceeded, KeyToString(entry.Key)));
 
-            if (ShouldSkipDictionaryValue(entry.Value, options))
+            if (FlatBinding.ShouldSkipDictionaryValue(entry.Value, options.DefaultIgnoreCondition))
                 continue;
 
             WriteEntry(ref writer, sectionName, KeyToString(entry.Key), ValueToString(entry.Value));
@@ -290,7 +295,7 @@ public static partial class IniSerializer
     [RequiresDynamicCode(RequiresDynamicCodeMessage)]
     private static object ReadValue(IniNormalizedDocument document, Type targetType, IniSerializerOptions options)
     {
-        if (TryGetStringKeyedDictionary(targetType, out Type? valueType))
+        if (FlatBinding.TryGetStringKeyedDictionary(targetType, out Type? valueType))
             return ReadRootDictionary(document, targetType, valueType, options);
 
         if (IsScalarOrEnumerable(targetType))
@@ -317,20 +322,20 @@ public static partial class IniSerializer
     [RequiresDynamicCode(RequiresDynamicCodeMessage)]
     private static object ReadRootDictionary(IniNormalizedDocument document, Type targetType, Type valueType, IniSerializerOptions options)
     {
-        var dictionary = (IDictionary)CreateInstance(ConcreteDictionaryType(targetType, valueType));
+        object dictionary = CreateInstance(FlatBinding.ConcreteDictionaryType(targetType, valueType));
 
-        if (TryGetStringKeyedDictionary(valueType, out Type? nestedValueType))
+        if (FlatBinding.TryGetStringKeyedDictionary(valueType, out Type? nestedValueType))
         {
             if (document.GlobalEntries.Count > 0)
             {
                 if (options.GlobalSectionName is null)
                     throw new IniSerializationException(string.Format(CultureInfo.CurrentCulture, IniResourceStrings.Op_Invalid_IniGlobalWithoutSectionName, targetType));
 
-                dictionary[options.GlobalSectionName] = BuildEntryDictionary(document.GlobalEntries, valueType, nestedValueType);
+                FlatBinding.SetEntry(dictionary, valueType, options.GlobalSectionName, BuildEntryDictionary(document.GlobalEntries, valueType, nestedValueType));
             }
 
             foreach (IniNormalizedSection section in document.Sections)
-                dictionary[section.Name] = BuildEntryDictionary(section.Entries, valueType, nestedValueType);
+                FlatBinding.SetEntry(dictionary, valueType, section.Name, BuildEntryDictionary(section.Entries, valueType, nestedValueType));
 
             return dictionary;
         }
@@ -339,7 +344,7 @@ public static partial class IniSerializer
             throw new IniSerializationException(string.Format(CultureInfo.CurrentCulture, IniResourceStrings.Format_Invalid_IniValueConversion, document.Sections[0].Name, valueType));
 
         foreach ((string key, string raw) in document.GlobalEntries)
-            dictionary[key] = ConvertFromString(raw, valueType, key);
+            FlatBinding.SetEntry(dictionary, valueType, key, ConvertFromString(raw, valueType, key));
 
         return dictionary;
     }
@@ -365,16 +370,16 @@ public static partial class IniSerializer
 
         StringComparison comparison = options.PropertyNameCaseInsensitive ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
 
-        foreach (Member member in GetMembers(targetType, options))
+        foreach (FlatMemberDescriptor member in GetMembers(targetType, options))
         {
             if (!member.CanWrite)
                 continue;
 
-            if (IsScalarType(member.MemberType))
+            if (member.IsScalar)
             {
                 int found = IndexOfEntry(document.GlobalEntries, member.Name, comparison);
                 if (found >= 0)
-                    member.SetValue(instance, ConvertFromString(document.GlobalEntries[found].Value, member.MemberType, member.Name));
+                    member.SetValue(instance, ConvertFromString(document.GlobalEntries[found].Value, member));
                 else if (member.Required)
                     throw new IniSerializationException(string.Format(CultureInfo.CurrentCulture, IniResourceStrings.Op_Invalid_IniMissingRequiredKey, member.Name));
 
@@ -417,11 +422,11 @@ public static partial class IniSerializer
     [RequiresDynamicCode(RequiresDynamicCodeMessage)]
     private static object ReadSectionBody(List<KeyValuePair<string, string>> entries, Type targetType, IniSerializerOptions options)
     {
-        if (TryGetStringKeyedDictionary(targetType, out Type? valueType))
+        if (FlatBinding.TryGetStringKeyedDictionary(targetType, out Type? valueType))
         {
-            var dictionary = (IDictionary)CreateInstance(ConcreteDictionaryType(targetType, valueType));
+            object dictionary = CreateInstance(FlatBinding.ConcreteDictionaryType(targetType, valueType));
             foreach ((string key, string raw) in entries)
-                dictionary[key] = ConvertFromString(raw, valueType, key);
+                FlatBinding.SetEntry(dictionary, valueType, key, ConvertFromString(raw, valueType, key));
 
             return dictionary;
         }
@@ -431,17 +436,17 @@ public static partial class IniSerializer
 
         StringComparison comparison = options.PropertyNameCaseInsensitive ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
 
-        foreach (Member member in GetMembers(targetType, options))
+        foreach (FlatMemberDescriptor member in GetMembers(targetType, options))
         {
             if (!member.CanWrite)
                 continue;
 
-            if (!IsScalarType(member.MemberType))
+            if (!member.IsScalar)
                 throw new IniSerializationException(string.Format(CultureInfo.CurrentCulture, IniResourceStrings.Op_Invalid_IniDepthExceeded, member.Name));
 
             int found = IndexOfEntry(entries, member.Name, comparison);
             if (found >= 0)
-                member.SetValue(instance, ConvertFromString(entries[found].Value, member.MemberType, member.Name));
+                member.SetValue(instance, ConvertFromString(entries[found].Value, member));
             else if (member.Required)
                 throw new IniSerializationException(string.Format(CultureInfo.CurrentCulture, IniResourceStrings.Op_Invalid_IniMissingRequiredKey, member.Name));
         }
@@ -461,14 +466,10 @@ public static partial class IniSerializer
     /// parameterless constructor.
     /// </exception>
     [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
-    private static object CreateInstance(Type type)
-    {
-        // A value type can always be created; a reference type needs the constructor Activator calls.
-        if (!type.IsValueType && (type.IsAbstract || type.GetConstructor(Type.EmptyTypes) is null))
-            throw new IniSerializationException(string.Format(CultureInfo.CurrentCulture, IniResourceStrings.Op_Invalid_IniTypeNotCreatable, type));
-
-        return Activator.CreateInstance(type)!;
-    }
+    private static object CreateInstance(Type type) =>
+        FlatBinding.CreateInstance(
+            type,
+            static type => new IniSerializationException(string.Format(CultureInfo.CurrentCulture, IniResourceStrings.Op_Invalid_IniTypeNotCreatable, type)));
 
     /// <summary>
     /// Finds the section with the specified name.
@@ -517,24 +518,12 @@ public static partial class IniSerializer
     [RequiresDynamicCode(RequiresDynamicCodeMessage)]
     private static object BuildEntryDictionary(List<KeyValuePair<string, string>> entries, Type dictionaryType, Type valueType)
     {
-        var dictionary = (IDictionary)CreateInstance(ConcreteDictionaryType(dictionaryType, valueType));
+        object dictionary = CreateInstance(FlatBinding.ConcreteDictionaryType(dictionaryType, valueType));
         foreach ((string key, string raw) in entries)
-            dictionary[key] = ConvertFromString(raw, valueType, key);
+            FlatBinding.SetEntry(dictionary, valueType, key, ConvertFromString(raw, valueType, key));
 
         return dictionary;
     }
-
-    /// <summary>
-    /// Resolves the concrete dictionary type to instantiate for a declared dictionary type.
-    /// </summary>
-    /// <param name="declaredType">The declared dictionary type, possibly an interface.</param>
-    /// <param name="valueType">The dictionary value type.</param>
-    /// <returns>The instantiable dictionary type.</returns>
-    [RequiresDynamicCode(RequiresDynamicCodeMessage)]
-    private static Type ConcreteDictionaryType(Type declaredType, Type valueType) =>
-        declaredType.IsInterface
-            ? typeof(Dictionary<,>).MakeGenericType(typeof(string), valueType)
-            : declaredType;
 
     /// <summary>
     /// Determines whether a name is the reserved global-section name.
@@ -544,50 +533,6 @@ public static partial class IniSerializer
     /// <returns><see langword="true" /> when the name matches the configured reserved name.</returns>
     private static bool IsGlobalName(string name, IniSerializerOptions options) =>
         options.GlobalSectionName is not null && string.Equals(name, options.GlobalSectionName, StringComparison.Ordinal);
-
-    /// <summary>
-    /// Determines whether a member should be omitted from the output for the current value and options.
-    /// </summary>
-    /// <param name="memberValue">The member's value.</param>
-    /// <param name="member">The member descriptor.</param>
-    /// <param name="options">The serializer options.</param>
-    /// <returns><see langword="true" /> when the member should be skipped.</returns>
-    private static bool ShouldSkipOnWrite(object? memberValue, Member member, IniSerializerOptions options)
-    {
-        IgnoreCondition condition = member.IgnoreCondition ?? options.DefaultIgnoreCondition;
-
-        return condition switch
-        {
-            IgnoreCondition.Always => true,
-            IgnoreCondition.WhenWritingNull => memberValue is null,
-            IgnoreCondition.WhenWritingDefault => memberValue is null || IsDefaultValue(memberValue),
-            _ => false,
-        };
-    }
-
-    /// <summary>
-    /// Determines whether a dictionary entry value should be omitted from the output.
-    /// </summary>
-    /// <param name="value">The entry value.</param>
-    /// <param name="options">The serializer options.</param>
-    /// <returns><see langword="true" /> when the entry should be skipped.</returns>
-    private static bool ShouldSkipDictionaryValue(object? value, IniSerializerOptions options) =>
-        value is null && options.DefaultIgnoreCondition is IgnoreCondition.WhenWritingNull or IgnoreCondition.WhenWritingDefault;
-
-    /// <summary>
-    /// Determines whether a value equals the default for its type.
-    /// </summary>
-    /// <param name="value">The value to test.</param>
-    /// <returns><see langword="true" /> when the value is the type default.</returns>
-    private static bool IsDefaultValue(object value)
-    {
-        Type type = value.GetType();
-        if (!type.IsValueType)
-            return false;
-
-        object? defaultValue = Activator.CreateInstance(type);
-        return value.Equals(defaultValue);
-    }
 
     /// <summary>
     /// Converts a dictionary key to its string representation.
@@ -604,6 +549,15 @@ public static partial class IniSerializer
     /// <returns>The string representation.</returns>
     private static string ValueToString(object? value) =>
         InvariantScalarCodec.Format(value, InvariantScalarCodec.Policy.Configuration);
+
+    /// <summary>
+    /// Converts a member's value to its INI string representation using an invariant, round-trippable format.
+    /// </summary>
+    /// <param name="value">The value to convert.</param>
+    /// <param name="declaredKind">The scalar kind of the member's declared type.</param>
+    /// <returns>The string representation.</returns>
+    private static string ValueToString(object? value, FlatScalarKind declaredKind) =>
+        InvariantScalarCodec.Format(value, declaredKind, InvariantScalarCodec.Policy.Configuration);
 
     /// <summary>
     /// Converts a string into a scalar while preserving this serializer's exception contract.
@@ -627,33 +581,23 @@ public static partial class IniSerializer
     }
 
     /// <summary>
-    /// Determines whether a type maps to a single INI value rather than a section.
+    /// Converts a string into a member's value while preserving this serializer's exception contract.
     /// </summary>
-    /// <param name="type">The type to test.</param>
-    /// <returns>
-    /// <see langword="true" /> for <see cref="string" />, a primitive, an enumeration, <see cref="decimal" />,
-    /// <see cref="Guid" />, a date or time type, <see cref="Uri" />, a 128-bit or half-precision number,
-    /// <see cref="BigInteger" />, or the nullable form of any of them; otherwise <see langword="false" />.
-    /// </returns>
-    private static bool IsScalarType(Type type)
+    /// <param name="raw">The raw text.</param>
+    /// <param name="member">The member the value is for.</param>
+    /// <returns>The converted value.</returns>
+    /// <exception cref="IniSerializationException">Thrown when the value cannot be converted.</exception>
+    private static object? ConvertFromString(string raw, FlatMemberDescriptor member)
     {
-        Type underlying = Nullable.GetUnderlyingType(type) ?? type;
-
-        return underlying == typeof(string)
-            || underlying.IsPrimitive
-            || underlying.IsEnum
-            || underlying == typeof(decimal)
-            || underlying == typeof(DateTime)
-            || underlying == typeof(DateTimeOffset)
-            || underlying == typeof(DateOnly)
-            || underlying == typeof(TimeOnly)
-            || underlying == typeof(TimeSpan)
-            || underlying == typeof(Guid)
-            || underlying == typeof(Uri)
-            || underlying == typeof(Int128)
-            || underlying == typeof(UInt128)
-            || underlying == typeof(Half)
-            || underlying == typeof(BigInteger);
+        try
+        {
+            return InvariantScalarCodec.Parse(raw, member.ScalarKind, member.ScalarType, member.IsNullable, InvariantScalarCodec.Policy.Configuration);
+        }
+        catch (Exception ex) when (ex is FormatException or OverflowException or ArgumentException or InvalidCastException)
+        {
+            throw new IniSerializationException(
+                string.Format(CultureInfo.CurrentCulture, IniResourceStrings.Format_Invalid_IniValueConversion, member.Name, member.MemberType), ex);
+        }
     }
 
     /// <summary>
@@ -662,7 +606,7 @@ public static partial class IniSerializer
     /// <param name="type">The type to test.</param>
     /// <returns><see langword="true" /> when the type cannot be an INI document root.</returns>
     private static bool IsScalarOrEnumerable(Type type) =>
-        IsScalarType(type) || IsUnsupportedEnumerable(type);
+        InvariantScalarCodec.IsScalar(type) || IsUnsupportedEnumerable(type);
 
     /// <summary>
     /// Determines whether a type is a non-dictionary enumerable, which INI cannot represent at any level.
@@ -673,46 +617,24 @@ public static partial class IniSerializer
         type != typeof(string)
             && typeof(IEnumerable).IsAssignableFrom(type)
             && !typeof(IDictionary).IsAssignableFrom(type)
-            && !TryGetStringKeyedDictionary(type, out _);
+            && !FlatBinding.TryGetStringKeyedDictionary(type, out _);
 
     /// <summary>
-    /// Determines whether the type is (or implements) a dictionary keyed by <see cref="string" />.
-    /// </summary>
-    /// <param name="type">The type to test.</param>
-    /// <param name="valueType">When this method returns <see langword="true" />, the dictionary value type.</param>
-    /// <returns><see langword="true" /> when the type is a string-keyed dictionary.</returns>
-    private static bool TryGetStringKeyedDictionary(Type type, [NotNullWhen(true)] out Type? valueType)
-    {
-        foreach (Type candidate in new[] { type }.Concat(type.GetInterfaces()))
-        {
-            if (candidate.IsGenericType && candidate.GetGenericTypeDefinition() == typeof(IDictionary<,>))
-            {
-                Type[] args = candidate.GetGenericArguments();
-                if (args[0] == typeof(string))
-                {
-                    valueType = args[1];
-                    return true;
-                }
-            }
-        }
-
-        valueType = null;
-        return false;
-    }
-
-    /// <summary>
-    /// Enumerates the mapped members of a type, applying naming, inclusion, and ordering rules.
+    /// Gets the mapped members of a type, applying naming, inclusion, and ordering rules, from the options' cache.
     /// </summary>
     /// <param name="type">The type whose members to map.</param>
-    /// <param name="options">The serializer options.</param>
+    /// <param name="options">The read-only serializer options.</param>
     /// <returns>The ordered member descriptors.</returns>
+    /// <exception cref="IniSerializationException">
+    /// Thrown when two members of <paramref name="type" /> map to one name.
+    /// </exception>
     [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
-    private static IEnumerable<Member> GetMembers(
+    private static FlatMemberDescriptor[] GetMembers(
         [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.PublicFields)] Type type,
         IniSerializerOptions options) =>
-        FlatMemberDiscovery.Enumerate(type, options.IncludeFields)
-            .Select(member => member is PropertyInfo property
-                ? Member.FromProperty(property, options)
-                : Member.FromField((FieldInfo)member, options))
-            .OrderBy(static member => member.Order);
+        options.MemberCache.GetMembers(
+            type,
+            options.IncludeFields,
+            options.PropertyNamingPolicy,
+            static (type, name) => new IniSerializationException(string.Format(CultureInfo.CurrentCulture, IniResourceStrings.Op_Invalid_IniDuplicateName, type, name)));
 }

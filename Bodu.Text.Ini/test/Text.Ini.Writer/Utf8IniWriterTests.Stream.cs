@@ -138,4 +138,146 @@ public partial class Utf8IniWriterTests
         _ = Assert.ThrowsExactly<ArgumentNullException>(() => _ = new Utf8IniWriter((Stream)null!));
         _ = Assert.ThrowsExactly<ArgumentNullException>(() => _ = new Utf8IniWriter((Stream)null!, IniWriterOptions.Default));
     }
+
+    /// <summary>
+    /// Verifies that both buffer-writer constructors reject a <see langword="null" /> destination, naming the
+    /// <c>output</c> parameter.
+    /// </summary>
+    [TestMethod]
+    public void Ctor_WhenOutputIsNull_ShouldThrowArgumentNullExceptionNamingIt()
+    {
+        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = new Utf8IniWriter((IBufferWriter<byte>)null!);
+        });
+
+        var optionsEx = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = new Utf8IniWriter((IBufferWriter<byte>)null!, IniWriterOptions.Default);
+        });
+
+        Assert.AreEqual("output", ex.ParamName);
+        Assert.AreEqual("output", optionsEx.ParamName);
+    }
+
+    /// <summary>
+    /// Verifies that both stream constructors name the <c>stream</c> parameter when it is <see langword="null" />.
+    /// </summary>
+    [TestMethod]
+    public void Ctor_WhenStreamIsNull_ShouldNameTheStreamParameter()
+    {
+        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = new Utf8IniWriter((Stream)null!);
+        });
+
+        var optionsEx = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = new Utf8IniWriter((Stream)null!, IniWriterOptions.Default);
+        });
+
+        Assert.AreEqual("stream", ex.ParamName);
+        Assert.AreEqual("stream", optionsEx.ParamName);
+    }
+
+    /// <summary>
+    /// Verifies that in buffer-writer mode every byte counts as committed as soon as it is written, with nothing
+    /// pending, and that a flush there changes neither count.
+    /// </summary>
+    [TestMethod]
+    public void BytesCommitted_WhenDestinationIsABufferWriter_ShouldCountEveryByteAsItIsWritten()
+    {
+        var buffer = new ArrayBufferWriter<byte>();
+        var writer = new Utf8IniWriter(buffer);
+        WriteSample(ref writer);
+
+        Assert.IsGreaterThan(0, buffer.WrittenCount);
+        Assert.AreEqual(buffer.WrittenCount, writer.BytesCommitted);
+        Assert.AreEqual(0L, writer.BytesPending);
+
+        writer.Flush();
+
+        Assert.AreEqual(buffer.WrittenCount, writer.BytesCommitted);
+        Assert.AreEqual(0L, writer.BytesPending);
+    }
+
+    /// <summary>
+    /// Verifies that text outside ASCII is written as its UTF-8 bytes, the same in stream mode as in buffer-writer mode,
+    /// and that the committed count of each mode is the number of those bytes.
+    /// </summary>
+    [TestMethod]
+    public void Write_WhenTextIsOutsideAscii_ShouldEmitTheSameUtf8BytesInBothModes()
+    {
+        var buffer = new ArrayBufferWriter<byte>();
+        var bufferWriter = new Utf8IniWriter(buffer);
+        bufferWriter.WriteComment("na\u00EFve \u2615");
+        bufferWriter.WriteSectionHeader("caf\u00E9");
+        bufferWriter.WritePropertyName("dr\u00EFnk");
+        bufferWriter.WriteString("\u2615 hot");
+
+        using var destination = new MemoryStream();
+        var streamWriter = new Utf8IniWriter(destination);
+        streamWriter.WriteComment("na\u00EFve \u2615");
+        streamWriter.WriteSectionHeader("caf\u00E9");
+        streamWriter.WritePropertyName("dr\u00EFnk");
+        streamWriter.WriteString("\u2615 hot");
+        streamWriter.Flush();
+
+        CollectionAssert.AreEqual(buffer.WrittenSpan.ToArray(), destination.ToArray());
+        Assert.AreEqual(buffer.WrittenCount, bufferWriter.BytesCommitted);
+        Assert.AreEqual(destination.Length, streamWriter.BytesCommitted);
+        Assert.Contains("\u2615", Encoding.UTF8.GetString(destination.ToArray()));
+    }
+
+    /// <summary>
+    /// Verifies that successive flushes accumulate into the committed count rather than resetting it, so the count
+    /// describes the whole document.
+    /// </summary>
+    [TestMethod]
+    public void Flush_WhenCalledBetweenEntries_ShouldAccumulateCommittedBytes()
+    {
+        using var destination = new MemoryStream();
+        var writer = new Utf8IniWriter(destination);
+
+        writer.WritePropertyName("a");
+        writer.WriteString("1");
+        writer.Flush();
+        long first = writer.BytesCommitted;
+
+        writer.WritePropertyName("b");
+        writer.WriteString("2");
+        writer.Flush();
+
+        var buffer = new ArrayBufferWriter<byte>();
+        var bufferWriter = new Utf8IniWriter(buffer);
+        bufferWriter.WritePropertyName("a");
+        bufferWriter.WriteString("1");
+        bufferWriter.WritePropertyName("b");
+        bufferWriter.WriteString("2");
+
+        Assert.IsGreaterThan(first, writer.BytesCommitted);
+        Assert.AreEqual(destination.Length, writer.BytesCommitted);
+        CollectionAssert.AreEqual(buffer.WrittenSpan.ToArray(), destination.ToArray());
+    }
+
+    /// <summary>
+    /// Verifies that a stream-backed writer disposed twice neither throws nor writes its pending bytes a second time.
+    /// </summary>
+    [TestMethod]
+    public void Dispose_WhenCalledTwice_ShouldWriteTheDocumentOnce()
+    {
+        var buffer = new ArrayBufferWriter<byte>();
+        var bufferWriter = new Utf8IniWriter(buffer);
+        WriteSample(ref bufferWriter);
+
+        using var destination = new MemoryStream();
+        var writer = new Utf8IniWriter(destination);
+        WriteSample(ref writer);
+
+        writer.Dispose();
+        writer.Dispose();
+
+        CollectionAssert.AreEqual(buffer.WrittenSpan.ToArray(), destination.ToArray());
+        Assert.AreEqual(destination.Length, writer.BytesCommitted);
+    }
 }

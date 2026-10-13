@@ -42,7 +42,7 @@ Settings settings = DotEnvSerializer.Deserialize<Settings>(
     envText, new DotEnvSerializerOptions(DotEnvSerializerDefaults.Web));
 ```
 
-`Deserialize<Dictionary<string, string>>` binds the whole file as a dictionary. The write direction (`Serialize`) emits `KEY=value` lines; `DotEnvSerializerOptions.WriteExportPrefix` adds the `export` keyword.
+`Deserialize<Dictionary<string, string>>` binds the whole file as a dictionary. Any type that implements `IDictionary<string, TValue>` binds the same way in both directions, whether or not it also implements the non-generic `IDictionary`. The write direction (`Serialize`) emits `KEY=value` lines; `DotEnvSerializerOptions.WriteExportPrefix` adds the `export` keyword.
 
 ## Pattern 3 - author and round-trip with the mutable DOM
 

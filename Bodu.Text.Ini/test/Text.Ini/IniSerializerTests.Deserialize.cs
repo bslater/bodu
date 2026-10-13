@@ -284,4 +284,188 @@ public partial class IniSerializerTests
 
         Assert.IsTrue(ex.Message.Contains(nameof(ConstructedSection), StringComparison.Ordinal), ex.Message);
     }
+
+    /// <summary>
+    /// Verifies that a global key binds only to the most derived member of its name, so that a base
+    /// <see cref="int" /> member hidden with <see langword="new" /> by a text member is not bound, and text it cannot
+    /// convert does not throw.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenAMemberHidesABaseMemberWithNew_ShouldBindOnlyTheMostDerivedMember()
+    {
+        PortTextHidingConfig config = IniSerializer.Deserialize<PortTextHidingConfig>("Port=abc\n");
+
+        Assert.AreEqual("abc", config.Port);
+        Assert.AreEqual(0, ((PortNumberBase)config).Port);
+    }
+
+    /// <summary>
+    /// Verifies that a missing global key for a member declared with the C# <see langword="required" /> keyword throws
+    /// <see cref="IniSerializationException" /> naming the key, as a member marked <see cref="RequiredAttribute" />
+    /// does.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenARequiredKeywordKeyIsMissing_ShouldThrowIniSerializationException()
+    {
+        var ex = Assert.ThrowsExactly<IniSerializationException>(() =>
+        {
+            _ = IniSerializer.Deserialize<RequiredKeywordConfig>("Other=1\n[Database]\nHost=x\n");
+        });
+
+        Assert.IsTrue(ex.Message.Contains("'Name'", StringComparison.Ordinal), ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that a missing section for a member declared with the C# <see langword="required" /> keyword throws
+    /// <see cref="IniSerializationException" /> naming the section.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenARequiredKeywordSectionIsMissing_ShouldThrowIniSerializationException()
+    {
+        var ex = Assert.ThrowsExactly<IniSerializationException>(() =>
+        {
+            _ = IniSerializer.Deserialize<RequiredKeywordConfig>("Name=app\n");
+        });
+
+        Assert.IsTrue(ex.Message.Contains("'Database'", StringComparison.Ordinal), ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that a missing key in a section, for a section member declared with the C# <see langword="required" />
+    /// keyword, throws <see cref="IniSerializationException" /> naming the key.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenARequiredKeywordSectionKeyIsMissing_ShouldThrowIniSerializationException()
+    {
+        var ex = Assert.ThrowsExactly<IniSerializationException>(() =>
+        {
+            _ = IniSerializer.Deserialize<RequiredKeywordConfig>("Name=app\n[Database]\nPort=1\n");
+        });
+
+        Assert.IsTrue(ex.Message.Contains("'Host'", StringComparison.Ordinal), ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that a type mapping two global keys to one name throws <see cref="IniSerializationException" /> naming
+    /// the type and the name, rather than binding the key to both.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenTwoMembersMapToOneName_ShouldThrowIniSerializationException()
+    {
+        var ex = Assert.ThrowsExactly<IniSerializationException>(() =>
+        {
+            _ = IniSerializer.Deserialize<DuplicateKeyConfig>("X=a\n");
+        });
+
+        Assert.IsTrue(ex.Message.Contains(nameof(DuplicateKeyConfig), StringComparison.Ordinal), ex.Message);
+        Assert.IsTrue(ex.Message.Contains("'X'", StringComparison.Ordinal), ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that a value that cannot be converted throws <see cref="IniSerializationException" /> naming the key
+    /// and the member's declared type, a nullable one included, with the conversion error as the inner exception.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenAValueCannotBeConverted_ShouldNameTheKeyAndTheDeclaredType()
+    {
+        var ex = Assert.ThrowsExactly<IniSerializationException>(() =>
+        {
+            _ = IniSerializer.Deserialize<NullableCountConfig>("Count=abc\n");
+        });
+
+        Assert.IsTrue(ex.Message.Contains("'Count'", StringComparison.Ordinal), ex.Message);
+        Assert.IsTrue(ex.Message.Contains(typeof(int?).ToString(), StringComparison.Ordinal), ex.Message);
+        Assert.IsInstanceOfType<FormatException>(ex.InnerException);
+    }
+
+    /// <summary>
+    /// Verifies that a value-type root model is created and its global keys bound.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenTheRootIsAStruct_ShouldBindItsMembers()
+    {
+        PortStruct config = IniSerializer.Deserialize<PortStruct>("Port=5\nHost=h\n");
+
+        Assert.AreEqual(5, config.Port);
+        Assert.AreEqual("h", config.Host);
+    }
+
+    /// <summary>
+    /// Verifies that a dictionary root of sections of a concrete type is created as that type, and one declared as the
+    /// dictionary interface, sections included, as <see cref="Dictionary{TKey, TValue}" /> instances.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenTheRootIsAStringKeyedDictionary_ShouldCreateTheDeclaredTypeOrADictionary()
+    {
+        SortedDictionary<string, Dictionary<string, int>> sorted = IniSerializer.Deserialize<SortedDictionary<string, Dictionary<string, int>>>("[s]\nB=2\n");
+        IDictionary<string, IDictionary<string, int>> declared = IniSerializer.Deserialize<IDictionary<string, IDictionary<string, int>>>("[s]\nB=2\n");
+
+        Assert.AreEqual(2, sorted["s"]["B"]);
+        Assert.IsInstanceOfType<Dictionary<string, IDictionary<string, int>>>(declared);
+        Assert.IsInstanceOfType<Dictionary<string, int>>(declared["s"]);
+        Assert.AreEqual(2, declared["s"]["B"]);
+    }
+
+    /// <summary>
+    /// Verifies that a root declared as a read-only dictionary interface, which is not a dictionary the serializer
+    /// creates, throws <see cref="IniSerializationException" /> naming the type.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenTheRootIsAReadOnlyDictionaryInterface_ShouldThrowIniSerializationException()
+    {
+        var ex = Assert.ThrowsExactly<IniSerializationException>(() =>
+        {
+            _ = IniSerializer.Deserialize<IReadOnlyDictionary<string, int>>("B=2\n");
+        });
+
+        Assert.IsTrue(ex.Message.Contains("IReadOnlyDictionary", StringComparison.Ordinal), ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that a root that implements <see cref="IDictionary{TKey, TValue}" /> keyed by <see cref="string" />,
+    /// but not the non-generic <see cref="System.Collections.IDictionary" />, is created and bound through the generic
+    /// interface, each global key converted to the value type.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenTheRootImplementsOnlyTheGenericDictionaryInterface_ShouldMapTheGlobalKeys()
+    {
+        GenericOnlyDictionary<int> root = IniSerializer.Deserialize<GenericOnlyDictionary<int>>("b=2\na=1\n");
+
+        CollectionAssert.AreEqual(new[] { "b", "a" }, root.Keys.ToArray());
+        Assert.AreEqual(2, root["b"]);
+        Assert.AreEqual(1, root["a"]);
+    }
+
+    /// <summary>
+    /// Verifies that a root whose sections, and the root itself, implement only the generic dictionary interface maps
+    /// the reserved global entries and each section to a dictionary of that type.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenTheSectionsImplementOnlyTheGenericDictionaryInterface_ShouldMapEachSection()
+    {
+        var options = new IniSerializerOptions { GlobalSectionName = "global" };
+
+        GenericOnlyDictionary<GenericOnlyDictionary<string>> root =
+            IniSerializer.Deserialize<GenericOnlyDictionary<GenericOnlyDictionary<string>>>("a=1\n[db]\nhost=x\n", options);
+
+        CollectionAssert.AreEqual(new[] { "global", "db" }, root.Keys.ToArray());
+        Assert.AreEqual("1", root["global"]["a"]);
+        Assert.AreEqual("x", root["db"]["host"]);
+    }
+
+    /// <summary>
+    /// Verifies that a section member whose type implements only the generic dictionary interface binds the section's
+    /// entries.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenASectionMemberImplementsOnlyTheGenericDictionaryInterface_ShouldBindItsEntries()
+    {
+        GenericOnlySectionConfig config = IniSerializer.Deserialize<GenericOnlySectionConfig>("Name=app\n[Logging]\nlevel=info\nsink=console\n");
+
+        Assert.AreEqual("app", config.Name);
+        Assert.IsNotNull(config.Logging);
+        CollectionAssert.AreEqual(new[] { "level", "sink" }, config.Logging.Keys.ToArray());
+        Assert.AreEqual("info", config.Logging["level"]);
+        Assert.AreEqual("console", config.Logging["sink"]);
+    }
 }

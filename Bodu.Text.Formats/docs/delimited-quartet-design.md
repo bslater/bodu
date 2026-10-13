@@ -24,7 +24,7 @@ Field values are always **string**; typed access is via format-local
 
 **As built:** there are no format-local or `ISpanParsable<T>` converters. Typed
 access goes through the shared `InvariantScalarCodec` under its `Delimited`
-policy (`Bodu.Text.Serialization/shared/Flat/InvariantScalarCodec.cs`, compiled
+policy (`Bodu.Text.Serialization/flat/src/InvariantScalarCodec.cs`, compiled
 into the package and called by `ValueToString` and `ConvertFromString` in
 `Bodu.Text.Delimited/src/Text.Delimited/DelimitedSerializer.Binder.cs`).
 

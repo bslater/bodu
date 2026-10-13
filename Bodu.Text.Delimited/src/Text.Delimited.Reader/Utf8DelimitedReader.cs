@@ -4,8 +4,10 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Buffers;
 using System.Globalization;
 using System.Text;
+using Bodu.Text.Serialization;
 
 namespace Bodu.Text.Delimited.Reader;
 
@@ -117,7 +119,7 @@ public ref struct Utf8DelimitedReader
         _fieldRanges = [];
 
         // Skip a leading UTF-8 byte-order mark so a BOM-prefixed file does not corrupt the first header column.
-        _position = data.StartsWith(Utf8Bom) ? Utf8Bom.Length : 0;
+        _position = Utf8LineCursor.ByteOrderMarkLength(data);
         _line = 1;
         _stage = Stage.Start;
         _tokenType = DelimitedTokenType.None;
@@ -152,11 +154,6 @@ public ref struct Utf8DelimitedReader
         if (firstOffset != 0)
             _position = 0;
     }
-
-    /// <summary>
-    /// Gets the UTF-8 byte-order mark.
-    /// </summary>
-    private static ReadOnlySpan<byte> Utf8Bom => [0xEF, 0xBB, 0xBF];
 
     /// <summary>
     /// Gets the number of bytes consumed so far.
@@ -480,14 +477,7 @@ public ref struct Utf8DelimitedReader
     private void ParseUnquotedField()
     {
         int start = _position;
-        while (_position < _data.Length)
-        {
-            byte b = _data[_position];
-            if (b == (byte)_options.EffectiveDelimiter || b is (byte)'\r' or (byte)'\n')
-                break;
-
-            _position++;
-        }
+        _position = Utf8LineCursor.EndOfLineOr(_data, _position, (byte)_options.EffectiveDelimiter);
 
         int end = _position;
         if (_options.TrimFields)
@@ -511,54 +501,108 @@ public ref struct Utf8DelimitedReader
     /// <see langword="false" /> when other text does, with the cursor left on it.
     /// </returns>
     /// <exception cref="DelimitedFormatException">Thrown when the field is unterminated.</exception>
+    /// <remarks>
+    /// The field's content is decoded as whole runs of bytes between quotes, as an unquoted field is decoded, so an
+    /// invalid UTF-8 sequence reads as U+FFFD and never swallows the quote, line ending or byte that follows it.
+    /// </remarks>
     private bool ParseQuotedField()
     {
         byte quote = (byte)_options.EffectiveQuote;
         _position++; // consume opening quote
         int rawStart = _position;
+        bool hasEscapedQuote = false;
 
-        var sb = new StringBuilder();
         while (true)
         {
-            if (_position >= _data.Length)
+            int next = _data[_position..].IndexOfAny(quote, (byte)'\r', (byte)'\n');
+            if (next < 0)
+            {
+                _position = _data.Length;
                 throw CreateFormatException(DelimitedResourceStrings.Format_Invalid_DelimitedUnterminatedQuote, _line, _position);
+            }
 
+            _position += next;
             byte b = _data[_position];
 
             if (b == quote)
             {
                 if (_position + 1 < _data.Length && _data[_position + 1] == quote)
                 {
-                    sb.Append((char)quote);
+                    hasEscapedQuote = true;
                     _position += 2;
                     continue;
                 }
 
-                int rawEnd = _position;
-                _position++; // consume closing quote
-                _fields.Add(sb.ToString());
-                _fieldRanges.Add((rawStart, rawEnd - rawStart));
-
-                // With TrimFields, white space between the closing quote and what ends the field is skipped.
-                if (_options.TrimFields)
-                {
-                    while (_position < _data.Length && IsTrimmedWhiteSpace(_data[_position]))
-                        _position++;
-                }
-
-                // Only the delimiter, a line ending or the end of the input may follow a closing quote.
-                return _position >= _data.Length
-                    || _data[_position] == (byte)_options.EffectiveDelimiter
-                    || _data[_position] is (byte)'\r' or (byte)'\n';
+                break;
             }
 
             // A line feed ends a line, and so does a carriage return that no line feed follows; the line feed of a
             // CRLF is counted on its own, so the pair counts once.
-            if (b == (byte)'\n' || (b == (byte)'\r' && (_position + 1 >= _data.Length || _data[_position + 1] != (byte)'\n')))
+            if (Utf8LineCursor.EndsLine(_data, _position))
                 _line++;
 
-            _position += AppendByte(sb, b);
+            _position++;
         }
+
+        int rawEnd = _position;
+        _position++; // consume closing quote
+
+        ReadOnlySpan<byte> raw = _data[rawStart..rawEnd];
+        _fields.Add(hasEscapedQuote ? DecodeEscapedQuotes(raw, quote) : Encoding.UTF8.GetString(raw));
+        _fieldRanges.Add((rawStart, rawEnd - rawStart));
+
+        // With TrimFields, white space between the closing quote and what ends the field is skipped.
+        if (_options.TrimFields)
+        {
+            while (_position < _data.Length && IsTrimmedWhiteSpace(_data[_position]))
+                _position++;
+        }
+
+        // Only the delimiter, a line ending or the end of the input may follow a closing quote.
+        return _position >= _data.Length
+            || _data[_position] == (byte)_options.EffectiveDelimiter
+            || Utf8LineCursor.IsLineEnding(_data[_position]);
+    }
+
+    /// <summary>
+    /// Decodes the content of a quoted field that holds escaped (doubled) quotes, collapsing each pair to one quote.
+    /// </summary>
+    /// <param name="raw">The content between the opening and closing quotes, every quote in it doubled.</param>
+    /// <param name="quote">The quote byte.</param>
+    /// <returns>The decoded text.</returns>
+    /// <remarks>
+    /// Each run between escaped quotes is decoded whole. Since a quote is an ASCII byte, which ends any invalid UTF-8
+    /// sequence before it and never falls inside a valid one, the runs decode exactly as the content would with the
+    /// pairs collapsed.
+    /// </remarks>
+    private static string DecodeEscapedQuotes(ReadOnlySpan<byte> raw, byte quote)
+    {
+        // UTF-8 never decodes to more UTF-16 code units than it has bytes.
+        char[]? rented = null;
+        Span<char> chars = raw.Length <= 256
+            ? stackalloc char[256]
+            : (rented = ArrayPool<char>.Shared.Rent(raw.Length));
+
+        int written = 0;
+        while (true)
+        {
+            int next = raw.IndexOf(quote);
+            if (next < 0)
+            {
+                written += Encoding.UTF8.GetChars(raw, chars[written..]);
+                break;
+            }
+
+            written += Encoding.UTF8.GetChars(raw[..next], chars[written..]);
+            chars[written++] = (char)quote;
+            raw = raw[(next + 2)..];
+        }
+
+        string text = new(chars[..written]);
+        if (rented is not null)
+            ArrayPool<char>.Shared.Return(rented);
+
+        return text;
     }
 
     /// <summary>
@@ -579,7 +623,7 @@ public ref struct Utf8DelimitedReader
         {
             byte b = _data[_position];
 
-            if (b is (byte)'\r' or (byte)'\n')
+            if (Utf8LineCursor.IsLineEnding(b))
             {
                 SkipLineEnding();
                 continue;
@@ -587,40 +631,12 @@ public ref struct Utf8DelimitedReader
 
             if (_options.AllowComments && b == (byte)_options.EffectiveCommentChar)
             {
-                while (_position < _data.Length && _data[_position] is not ((byte)'\n' or (byte)'\r'))
-                    _position++;
-
+                _position = Utf8LineCursor.EndOfLine(_data, _position);
                 continue;
             }
 
             return;
         }
-    }
-
-    /// <summary>
-    /// Appends a source byte to the decode buffer, decoding a multi-byte UTF-8 sequence starting at the cursor.
-    /// </summary>
-    /// <param name="sb">The decode buffer.</param>
-    /// <param name="lead">The leading byte already at the cursor.</param>
-    /// <returns>The number of source bytes consumed (one for ASCII, two to four for a multibyte sequence).</returns>
-    private readonly int AppendByte(StringBuilder sb, byte lead)
-    {
-        if (lead < 0x80)
-        {
-            sb.Append((char)lead);
-            return 1;
-        }
-
-        int length = lead switch
-        {
-            >= 0xF0 => 4,
-            >= 0xE0 => 3,
-            _ => 2,
-        };
-
-        length = Math.Min(length, _data.Length - _position);
-        sb.Append(Encoding.UTF8.GetString(_data.Slice(_position, length)));
-        return length;
     }
 
     /// <summary>
@@ -639,34 +655,15 @@ public ref struct Utf8DelimitedReader
     /// </summary>
     private void SkipRestOfLine()
     {
-        while (_position < _data.Length && _data[_position] is not ((byte)'\r' or (byte)'\n'))
-            _position++;
-
+        _position = Utf8LineCursor.EndOfLine(_data, _position);
         SkipLineEnding();
     }
 
     /// <summary>
     /// Consumes a <c>\r\n</c>, <c>\r</c>, or <c>\n</c> line terminator and increments <see cref="_line" />.
     /// </summary>
-    private void SkipLineEnding()
-    {
-        if (_position >= _data.Length)
-            return;
-
-        if (_data[_position] == (byte)'\r')
-        {
-            _position++;
-            if (_position < _data.Length && _data[_position] == (byte)'\n')
-                _position++;
-
-            _line++;
-        }
-        else if (_data[_position] == (byte)'\n')
-        {
-            _position++;
-            _line++;
-        }
-    }
+    private void SkipLineEnding() =>
+        _line += Utf8LineCursor.ConsumeLineEnding(_data, ref _position);
 
     /// <summary>
     /// Sets the current token to a structural kind with no text.

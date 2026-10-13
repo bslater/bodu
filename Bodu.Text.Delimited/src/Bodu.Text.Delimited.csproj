@@ -10,11 +10,6 @@
     <PackageTags>$(PackageTags);text;delimited;csv;tsv;rfc4180;serialization;serializer</PackageTags>
   </PropertyGroup>
 
-  <!-- Per-framework compilation symbols. -->
-  <PropertyGroup Condition="'$(TargetFramework)' == 'net8.0'">
-    <DefineConstants>$(DefineConstants);NET8_0_OR_GREATER</DefineConstants>
-  </PropertyGroup>
-
   <!-- Grant the companion test project access to internal members. -->
   <ItemGroup>
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
@@ -41,10 +36,10 @@
     </Compile>
   </ItemGroup>
 
-    <!-- Shared-source scalar and flat-member primitives: remain internal in each serializer assembly. -->
+    <!-- The line formats' shared source (Bodu.Text.Serialization/flat/src): member discovery, the scalar codec and the
+         line cursor, internal to each serializer assembly. -->
     <ItemGroup>
-        <Compile Include="..\..\Bodu.Text.Serialization\shared\Flat\InvariantScalarCodec.cs" Link="Shared\InvariantScalarCodec.cs" />
-        <Compile Include="..\..\Bodu.Text.Serialization\shared\Flat\FlatMemberDescriptor.cs" Link="Shared\FlatMemberDescriptor.cs" />
+        <Compile Include="..\..\Bodu.Text.Serialization\flat\src\*.cs" Link="Shared\%(Filename)%(Extension)" />
     </ItemGroup>
 
 </Project>

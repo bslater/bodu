@@ -176,4 +176,124 @@ public partial class DotEnvSerializerTests
 
         Assert.IsTrue(ex.Message.Contains(nameof(AbstractConfig), StringComparison.Ordinal), ex.Message);
     }
+
+    /// <summary>
+    /// Verifies that a key binds only to the most derived member of its name, so that a base <see cref="int" /> member
+    /// hidden with <see langword="new" /> by a text member is not bound, and text it cannot convert does not throw.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenAMemberHidesABaseMemberWithNew_ShouldBindOnlyTheMostDerivedMember()
+    {
+        PortTextHidingConfig config = DotEnvSerializer.Deserialize<PortTextHidingConfig>("Port=abc\n");
+
+        Assert.AreEqual("abc", config.Port);
+        Assert.AreEqual(0, ((PortNumberBase)config).Port);
+    }
+
+    /// <summary>
+    /// Verifies that a missing key for a member declared with the C# <see langword="required" /> keyword throws
+    /// <see cref="DotEnvSerializationException" /> naming the key, as a member marked
+    /// <see cref="Bodu.Text.Serialization.RequiredAttribute" /> does.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenARequiredKeywordMemberIsMissing_ShouldThrowDotEnvSerializationException()
+    {
+        var ex = Assert.ThrowsExactly<DotEnvSerializationException>(() =>
+        {
+            _ = DotEnvSerializer.Deserialize<RequiredKeywordConfig>("OTHER=1\n");
+        });
+
+        Assert.IsTrue(ex.Message.Contains("HOST", StringComparison.Ordinal), ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that a type mapping two members to one key throws <see cref="DotEnvSerializationException" /> naming the
+    /// type and the key, rather than binding the key to both.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenTwoMembersMapToOneKey_ShouldThrowDotEnvSerializationException()
+    {
+        var ex = Assert.ThrowsExactly<DotEnvSerializationException>(() =>
+        {
+            _ = DotEnvSerializer.Deserialize<DuplicateKeyConfig>("X=a\n");
+        });
+
+        Assert.IsTrue(ex.Message.Contains(nameof(DuplicateKeyConfig), StringComparison.Ordinal), ex.Message);
+        Assert.IsTrue(ex.Message.Contains("'X'", StringComparison.Ordinal), ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that a value that cannot be converted throws <see cref="DotEnvSerializationException" /> naming the key
+    /// and the member's declared type, a nullable one included, with the conversion error as the inner exception.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenAValueCannotBeConverted_ShouldNameTheKeyAndTheDeclaredType()
+    {
+        var ex = Assert.ThrowsExactly<DotEnvSerializationException>(() =>
+        {
+            _ = DotEnvSerializer.Deserialize<NullableCountConfig>("Count=abc\n");
+        });
+
+        Assert.IsTrue(ex.Message.Contains("'Count'", StringComparison.Ordinal), ex.Message);
+        Assert.IsTrue(ex.Message.Contains(typeof(int?).ToString(), StringComparison.Ordinal), ex.Message);
+        Assert.IsInstanceOfType<FormatException>(ex.InnerException);
+    }
+
+    /// <summary>
+    /// Verifies that a value-type POCO is created and its members bound.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenTheRootIsAStruct_ShouldBindItsMembers()
+    {
+        PortStruct config = DotEnvSerializer.Deserialize<PortStruct>("Port=5\nHost=h\n");
+
+        Assert.AreEqual(5, config.Port);
+        Assert.AreEqual("h", config.Host);
+    }
+
+    /// <summary>
+    /// Verifies that a dictionary root of a concrete type is created as that type, and one declared as the dictionary
+    /// interface as a <see cref="Dictionary{TKey, TValue}" />, each entry converted to the value type.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenTheRootIsAStringKeyedDictionary_ShouldCreateTheDeclaredTypeOrADictionary()
+    {
+        SortedDictionary<string, int> sorted = DotEnvSerializer.Deserialize<SortedDictionary<string, int>>("B=2\nA=1\n");
+        IDictionary<string, int> declared = DotEnvSerializer.Deserialize<IDictionary<string, int>>("B=2\nA=1\n");
+
+        CollectionAssert.AreEqual(new[] { "A", "B" }, sorted.Keys.ToArray());
+        Assert.AreEqual(2, sorted["B"]);
+        Assert.IsInstanceOfType<Dictionary<string, int>>(declared);
+        Assert.AreEqual(1, declared["A"]);
+    }
+
+    /// <summary>
+    /// Verifies that a root declared as a read-only dictionary interface, which is not a dictionary the serializer
+    /// creates, throws <see cref="DotEnvSerializationException" /> naming the type.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenTheRootIsAReadOnlyDictionaryInterface_ShouldThrowDotEnvSerializationException()
+    {
+        var ex = Assert.ThrowsExactly<DotEnvSerializationException>(() =>
+        {
+            _ = DotEnvSerializer.Deserialize<IReadOnlyDictionary<string, int>>("B=2\n");
+        });
+
+        Assert.IsTrue(ex.Message.Contains("IReadOnlyDictionary", StringComparison.Ordinal), ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that a root that implements <see cref="IDictionary{TKey, TValue}" /> keyed by <see cref="string" />,
+    /// but not the non-generic <see cref="System.Collections.IDictionary" />, is created and bound through the generic
+    /// interface, each entry converted to the value type.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenTheRootImplementsOnlyTheGenericDictionaryInterface_ShouldBindEachEntry()
+    {
+        GenericOnlyDictionary<int> map = DotEnvSerializer.Deserialize<GenericOnlyDictionary<int>>("B=2\nA=1\n");
+
+        CollectionAssert.AreEqual(new[] { "B", "A" }, map.Keys.ToArray());
+        Assert.AreEqual(2, map["B"]);
+        Assert.AreEqual(1, map["A"]);
+    }
 }

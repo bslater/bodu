@@ -156,13 +156,15 @@ first use, `DotEnvSerializerDefaults`) reuses the shared attribute /
 **As built:** there are no format-local or `ISpanParsable<T>` converters.
 Scalars convert through the shared `InvariantScalarCodec` under its
 `Configuration` policy
-(`Bodu.Text.Serialization/shared/Flat/InvariantScalarCodec.cs`, compiled into
+(`Bodu.Text.Serialization/flat/src/InvariantScalarCodec.cs`, compiled into
 the package and called by `ValueToString` and `ConvertFromString` in
 `Bodu.Text.DotEnv/src/Text.DotEnv/DotEnvSerializer.Binder.cs`), which
 handles `string`, `bool`, enums, `Guid`, `DateTime`, `DateTimeOffset`,
 `TimeSpan` and `Uri` itself and passes any other type to `Convert.ChangeType`.
 A dictionary target may be any `IDictionary<string, TValue>` whose values the
-codec converts. `DotEnvSerializerOptions` is a `sealed` class, not `partial`.
+codec converts; one that does not also implement the non-generic `IDictionary`
+is read and written through the generic interface (`FlatBinding.SetEntry` and
+`FlatBinding.TryGetDictionary`, #1242). `DotEnvSerializerOptions` is a `sealed` class, not `partial`.
 The root gate (`IsScalarOrEnumerable`) rejects a scalar root, `decimal`,
 `DateTime`, `Guid`, `Uri` and the other scalar types and their nullable forms
 included, and a non-dictionary enumerable root, with

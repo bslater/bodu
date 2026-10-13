@@ -486,4 +486,35 @@ public partial class DelimitedSerializerTests
 
         Assert.AreEqual("Key,Value\r\na,1\r\nb,2\r\n", text);
     }
+
+    /// <summary>
+    /// Verifies that a record type mapping two members to one column throws
+    /// <see cref="DelimitedSerializationException" /> naming the type and the column, rather than writing the header
+    /// <c>X,X</c>.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenTwoMembersMapToOneColumn_ShouldThrowDelimitedSerializationException()
+    {
+        var records = new List<DuplicateColumnRecord> { new() { First = "a", Second = "b" } };
+
+        var ex = Assert.ThrowsExactly<DelimitedSerializationException>(() =>
+        {
+            _ = DelimitedSerializer.Serialize(records);
+        });
+
+        Assert.IsTrue(ex.Message.Contains(nameof(DuplicateColumnRecord), StringComparison.Ordinal), ex.Message);
+        Assert.IsTrue(ex.Message.Contains("'X'", StringComparison.Ordinal), ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that a member declared as <see cref="object" /> is written in the form of its value's own type: a
+    /// <see cref="DateOnly" /> in its round-trip form.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenAMemberIsDeclaredAsObject_ShouldFormatTheValueByItsOwnType()
+    {
+        string text = DelimitedSerializer.Serialize(new List<ObjectValueRecord> { new() { Value = new DateOnly(2026, 1, 2) } });
+
+        Assert.AreEqual("Value\r\n2026-01-02\r\n", text);
+    }
 }

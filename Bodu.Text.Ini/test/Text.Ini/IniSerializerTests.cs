@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Collections;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Numerics;
 using System.Reflection;
@@ -176,6 +178,169 @@ public partial class IniSerializerTests
     }
 
     /// <summary>
+    /// A root model whose members hold null and default values, two of them with an ignore condition of their own.
+    /// </summary>
+    private sealed class ConditionalConfig
+    {
+        /// <summary>Gets or sets a text, <see langword="null" /> unless set.</summary>
+        public string? Text { get; set; }
+
+        /// <summary>Gets or sets a number, zero unless set.</summary>
+        public int Zero { get; set; }
+
+        /// <summary>Gets or sets a number, one unless set.</summary>
+        public int One { get; set; } = 1;
+
+        /// <summary>Gets or sets a flag, <see langword="false" /> unless set.</summary>
+        public bool Flag { get; set; }
+
+        /// <summary>Gets or sets an optional number, <see langword="null" /> unless set.</summary>
+        public int? Maybe { get; set; }
+
+        /// <summary>Gets or sets a number its own condition leaves out while it is zero.</summary>
+        [Bodu.Text.Serialization.Ignore(Condition = IgnoreCondition.WhenWritingDefault)]
+        public int ZeroByMember { get; set; }
+
+        /// <summary>Gets or sets a text its own condition always writes.</summary>
+        [Bodu.Text.Serialization.Ignore(Condition = IgnoreCondition.Never)]
+        public string? NullByMember { get; set; }
+    }
+
+    /// <summary>
+    /// A value-type root model with two members.
+    /// </summary>
+    private struct PortStruct
+    {
+        /// <summary>Gets or sets the port.</summary>
+        public int Port { get; set; }
+
+        /// <summary>Gets or sets the host.</summary>
+        public string? Host { get; set; }
+    }
+
+    /// <summary>
+    /// A root model whose global key is a nullable number, which a value that is not a number cannot be converted to.
+    /// </summary>
+    private sealed class NullableCountConfig
+    {
+        /// <summary>Gets or sets the optional count (a global key).</summary>
+        public int? Count { get; set; }
+    }
+
+    /// <summary>
+    /// A root model whose global keys are dates and times, two of them also in nullable form.
+    /// </summary>
+    private sealed class TemporalConfig
+    {
+        /// <summary>Gets or sets the instant (a global key).</summary>
+        public DateTime At { get; set; }
+
+        /// <summary>Gets or sets a time of an unspecified kind (a global key).</summary>
+        public DateTime Unspecified { get; set; }
+
+        /// <summary>Gets or sets the instant with its offset (a global key).</summary>
+        public DateTimeOffset AtOffset { get; set; }
+
+        /// <summary>Gets or sets the optional instant (a global key).</summary>
+        public DateTime? MaybeAt { get; set; }
+
+        /// <summary>Gets or sets the optional instant with its offset (a global key).</summary>
+        public DateTimeOffset? MaybeAtOffset { get; set; }
+    }
+
+    /// <summary>
+    /// A root model whose global keys are the native-sized integers <see cref="nint" /> and <see cref="nuint" />, one
+    /// also in nullable form.
+    /// </summary>
+    private sealed class NativeIntegerRecord
+    {
+        /// <summary>Gets or sets the native-sized signed integer (a global key).</summary>
+        public nint Handle { get; set; }
+
+        /// <summary>Gets or sets the native-sized unsigned integer (a global key).</summary>
+        public nuint Size { get; set; }
+
+        /// <summary>Gets or sets the optional native-sized signed integer (a global key).</summary>
+        public nint? MaybeHandle { get; set; }
+    }
+
+    /// <summary>
+    /// A root model whose global key and section member are declared with the C# <see langword="required" /> keyword
+    /// rather than <see cref="RequiredAttribute" />.
+    /// </summary>
+    private sealed class RequiredKeywordConfig
+    {
+        /// <summary>Gets or sets the required server name (a global key).</summary>
+        public required string Name { get; set; }
+
+        /// <summary>Gets or sets the required database section.</summary>
+        public required RequiredKeywordSection Database { get; set; }
+    }
+
+    /// <summary>
+    /// A section model whose key is declared with the C# <see langword="required" /> keyword.
+    /// </summary>
+    private sealed class RequiredKeywordSection
+    {
+        /// <summary>Gets or sets the required host name.</summary>
+        public required string Host { get; set; }
+    }
+
+    /// <summary>
+    /// A root model whose two global keys are both mapped to the name <c>X</c>.
+    /// </summary>
+    private sealed class DuplicateKeyConfig
+    {
+        /// <summary>Gets or sets the first value mapped to <c>X</c>.</summary>
+        [PropertyName("X")]
+        public string? First { get; set; }
+
+        /// <summary>Gets or sets the second value mapped to <c>X</c>.</summary>
+        [PropertyName("X")]
+        public string? Second { get; set; }
+    }
+
+    /// <summary>
+    /// A base root model whose text <c>Port</c> global key <see cref="PortNumberHidingConfig" /> hides.
+    /// </summary>
+    private class PortTextBase
+    {
+        /// <summary>Gets or sets the base port text (a global key), which a derived type hides.</summary>
+        public string? Port { get; set; }
+    }
+
+    /// <summary>
+    /// A root model whose <see cref="int" /> <c>Port</c> global key hides the base type's text <c>Port</c> with the
+    /// <see langword="new" /> modifier.
+    /// </summary>
+    private sealed class PortNumberHidingConfig
+        : PortTextBase
+    {
+        /// <summary>Gets or sets the port (a global key), hiding the base type's.</summary>
+        public new int Port { get; set; }
+    }
+
+    /// <summary>
+    /// A base root model whose <see cref="int" /> <c>Port</c> global key <see cref="PortTextHidingConfig" /> hides.
+    /// </summary>
+    private class PortNumberBase
+    {
+        /// <summary>Gets or sets the base port number (a global key), which a derived type hides.</summary>
+        public int Port { get; set; }
+    }
+
+    /// <summary>
+    /// A root model whose text <c>Port</c> global key hides the base type's <see cref="int" /> <c>Port</c> with the
+    /// <see langword="new" /> modifier.
+    /// </summary>
+    private sealed class PortTextHidingConfig
+        : PortNumberBase
+    {
+        /// <summary>Gets or sets the port text (a global key), hiding the base type's.</summary>
+        public new string? Port { get; set; }
+    }
+
+    /// <summary>
     /// A root model whose section has no public parameterless constructor.
     /// </summary>
     private sealed class ConstructedSectionConfig
@@ -198,6 +363,94 @@ public partial class IniSerializerTests
 
         /// <summary>Gets or sets the host name.</summary>
         public string Host { get; set; }
+    }
+
+    /// <summary>
+    /// A root model with a global scalar member and a section held in a dictionary that implements only the generic
+    /// dictionary interface.
+    /// </summary>
+    private sealed class GenericOnlySectionConfig
+    {
+        /// <summary>Gets or sets the application name (a global key).</summary>
+        public string? Name { get; set; }
+
+        /// <summary>Gets or sets the logging section.</summary>
+        public GenericOnlyDictionary<string>? Logging { get; set; }
+    }
+
+    /// <summary>
+    /// A dictionary keyed by <see cref="string" /> that implements the generic
+    /// <see cref="IDictionary{TKey, TValue}" /> interface but not the non-generic <see cref="IDictionary" />, and
+    /// enumerates its entries in the order they were added.
+    /// </summary>
+    /// <typeparam name="TValue">The type of the values.</typeparam>
+    private sealed class GenericOnlyDictionary<TValue> : IDictionary<string, TValue>
+    {
+        /// <summary>The entries, which enumerate in the order they were added.</summary>
+        private readonly Dictionary<string, TValue> _entries = new(StringComparer.Ordinal);
+
+        /// <inheritdoc />
+        public ICollection<string> Keys => _entries.Keys;
+
+        /// <inheritdoc />
+        public ICollection<TValue> Values => _entries.Values;
+
+        /// <inheritdoc />
+        public int Count => _entries.Count;
+
+        /// <inheritdoc />
+        public bool IsReadOnly => false;
+
+        /// <inheritdoc />
+        public TValue this[string key]
+        {
+            get => _entries[key];
+            set => _entries[key] = value;
+        }
+
+        /// <inheritdoc />
+        public void Add(string key, TValue value) =>
+            _entries.Add(key, value);
+
+        /// <inheritdoc />
+        public void Add(KeyValuePair<string, TValue> item) =>
+            _entries.Add(item.Key, item.Value);
+
+        /// <inheritdoc />
+        public void Clear() =>
+            _entries.Clear();
+
+        /// <inheritdoc />
+        public bool Contains(KeyValuePair<string, TValue> item) =>
+            ((ICollection<KeyValuePair<string, TValue>>)_entries).Contains(item);
+
+        /// <inheritdoc />
+        public bool ContainsKey(string key) =>
+            _entries.ContainsKey(key);
+
+        /// <inheritdoc />
+        public void CopyTo(KeyValuePair<string, TValue>[] array, int arrayIndex) =>
+            ((ICollection<KeyValuePair<string, TValue>>)_entries).CopyTo(array, arrayIndex);
+
+        /// <inheritdoc />
+        public IEnumerator<KeyValuePair<string, TValue>> GetEnumerator() =>
+            _entries.GetEnumerator();
+
+        /// <inheritdoc />
+        public bool Remove(string key) =>
+            _entries.Remove(key);
+
+        /// <inheritdoc />
+        public bool Remove(KeyValuePair<string, TValue> item) =>
+            ((ICollection<KeyValuePair<string, TValue>>)_entries).Remove(item);
+
+        /// <inheritdoc />
+        public bool TryGetValue(string key, [MaybeNullWhen(false)] out TValue value) =>
+            _entries.TryGetValue(key, out value);
+
+        /// <inheritdoc />
+        IEnumerator IEnumerable.GetEnumerator() =>
+            GetEnumerator();
     }
 
     /// <summary>

@@ -7,8 +7,6 @@
 using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-using System.Numerics;
-using System.Reflection;
 
 using Bodu.Text.DotEnv.Writer;
 using Bodu.Text.Serialization;
@@ -45,7 +43,7 @@ public static partial class DotEnvSerializer
         {
             (value as IOnSerializing)?.OnSerializing();
 
-            if (value is IDictionary dictionary)
+            if (FlatBinding.TryGetDictionary(value, out IDictionary? dictionary))
                 WriteDictionary(ref writer, dictionary, options);
             else if (IsScalarOrEnumerable(value.GetType()))
                 throw new DotEnvSerializationException(string.Format(CultureInfo.CurrentCulture, DotEnvResourceStrings.Op_Invalid_DotEnvRootType, value.GetType()));
@@ -68,7 +66,7 @@ public static partial class DotEnvSerializer
     {
         foreach (DictionaryEntry entry in dictionary)
         {
-            if (entry.Value is null && options.DefaultIgnoreCondition is IgnoreCondition.WhenWritingNull or IgnoreCondition.WhenWritingDefault)
+            if (FlatBinding.ShouldSkipDictionaryValue(entry.Value, options.DefaultIgnoreCondition))
                 continue;
 
             WriteKey(ref writer, Convert.ToString(entry.Key, CultureInfo.InvariantCulture) ?? string.Empty);
@@ -107,18 +105,18 @@ public static partial class DotEnvSerializer
     [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
     private static void WritePoco(ref Utf8DotEnvWriter writer, object value, DotEnvSerializerOptions options)
     {
-        foreach (Member member in GetMembers(value.GetType(), options))
+        foreach (FlatMemberDescriptor member in GetMembers(value.GetType(), options))
         {
             if (!member.CanRead)
                 continue;
 
             object? memberValue = member.GetValue(value);
 
-            if (ShouldSkipOnWrite(memberValue, member, options))
+            if (FlatBinding.ShouldSkipOnWrite(memberValue, member.IgnoreCondition, options.DefaultIgnoreCondition))
                 continue;
 
             WriteKey(ref writer, member.Name);
-            writer.WriteString(ValueToString(memberValue));
+            writer.WriteString(ValueToString(memberValue, member.ScalarKind));
         }
     }
 
@@ -136,7 +134,7 @@ public static partial class DotEnvSerializer
     [RequiresDynamicCode(RequiresDynamicCodeMessage)]
     private static object ReadValue(List<KeyValuePair<string, string>> entries, Type targetType, DotEnvSerializerOptions options)
     {
-        if (TryGetStringKeyedDictionary(targetType, out Type? valueType))
+        if (FlatBinding.TryGetStringKeyedDictionary(targetType, out Type? valueType))
             return ReadDictionary(entries, targetType, valueType, options);
 
         if (IsScalarOrEnumerable(targetType))
@@ -157,13 +155,10 @@ public static partial class DotEnvSerializer
     [RequiresDynamicCode(RequiresDynamicCodeMessage)]
     private static object ReadDictionary(List<KeyValuePair<string, string>> entries, Type targetType, Type valueType, DotEnvSerializerOptions options)
     {
-        Type concrete = targetType.IsInterface
-            ? typeof(Dictionary<,>).MakeGenericType(typeof(string), valueType)
-            : targetType;
-        var dictionary = (IDictionary)CreateInstance(concrete);
+        object dictionary = CreateInstance(FlatBinding.ConcreteDictionaryType(targetType, valueType));
 
         foreach ((string key, string raw) in entries)
-            dictionary[key] = ConvertFromString(raw, valueType, key);
+            FlatBinding.SetEntry(dictionary, valueType, key, ConvertFromString(raw, valueType, key));
 
         return dictionary;
     }
@@ -187,7 +182,7 @@ public static partial class DotEnvSerializer
 
         StringComparison comparison = options.PropertyNameCaseInsensitive ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
 
-        foreach (Member member in GetMembers(targetType, options))
+        foreach (FlatMemberDescriptor member in GetMembers(targetType, options))
         {
             if (!member.CanWrite)
                 continue;
@@ -197,7 +192,7 @@ public static partial class DotEnvSerializer
             {
                 if (string.Equals(entries[i].Key, member.Name, comparison))
                 {
-                    member.SetValue(instance, ConvertFromString(entries[i].Value, member.MemberType, member.Name));
+                    member.SetValue(instance, ConvertFromString(entries[i].Value, member));
                     found = true;
                     break;
                 }
@@ -222,49 +217,10 @@ public static partial class DotEnvSerializer
     /// parameterless constructor.
     /// </exception>
     [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
-    private static object CreateInstance(Type type)
-    {
-        // A value type can always be created; a reference type needs the constructor Activator calls.
-        if (!type.IsValueType && (type.IsAbstract || type.GetConstructor(Type.EmptyTypes) is null))
-            throw new DotEnvSerializationException(string.Format(CultureInfo.CurrentCulture, DotEnvResourceStrings.Op_Invalid_DotEnvTypeNotCreatable, type));
-
-        return Activator.CreateInstance(type)!;
-    }
-
-    /// <summary>
-    /// Determines whether a member should be omitted from the output for the current value and options.
-    /// </summary>
-    /// <param name="memberValue">The member's value.</param>
-    /// <param name="member">The member descriptor.</param>
-    /// <param name="options">The serializer options.</param>
-    /// <returns><see langword="true" /> when the member should be skipped.</returns>
-    private static bool ShouldSkipOnWrite(object? memberValue, Member member, DotEnvSerializerOptions options)
-    {
-        IgnoreCondition condition = member.IgnoreCondition ?? options.DefaultIgnoreCondition;
-
-        return condition switch
-        {
-            IgnoreCondition.Always => true,
-            IgnoreCondition.WhenWritingNull => memberValue is null,
-            IgnoreCondition.WhenWritingDefault => memberValue is null || IsDefaultValue(memberValue),
-            _ => false,
-        };
-    }
-
-    /// <summary>
-    /// Determines whether a value equals the default for its type.
-    /// </summary>
-    /// <param name="value">The value to test.</param>
-    /// <returns><see langword="true" /> when the value is the type default.</returns>
-    private static bool IsDefaultValue(object value)
-    {
-        Type type = value.GetType();
-        if (!type.IsValueType)
-            return false;
-
-        object? defaultValue = Activator.CreateInstance(type);
-        return value.Equals(defaultValue);
-    }
+    private static object CreateInstance(Type type) =>
+        FlatBinding.CreateInstance(
+            type,
+            static type => new DotEnvSerializationException(string.Format(CultureInfo.CurrentCulture, DotEnvResourceStrings.Op_Invalid_DotEnvTypeNotCreatable, type)));
 
     /// <summary>
     /// Converts a value to its DotEnv string representation using an invariant, round-trippable format.
@@ -273,6 +229,15 @@ public static partial class DotEnvSerializer
     /// <returns>The string representation.</returns>
     private static string ValueToString(object? value) =>
         InvariantScalarCodec.Format(value, InvariantScalarCodec.Policy.Configuration);
+
+    /// <summary>
+    /// Converts a member's value to its DotEnv string representation using an invariant, round-trippable format.
+    /// </summary>
+    /// <param name="value">The value to convert.</param>
+    /// <param name="declaredKind">The scalar kind of the member's declared type.</param>
+    /// <returns>The string representation.</returns>
+    private static string ValueToString(object? value, FlatScalarKind declaredKind) =>
+        InvariantScalarCodec.Format(value, declaredKind, InvariantScalarCodec.Policy.Configuration);
 
     /// <summary>
     /// Converts a string into a scalar while preserving this serializer's exception contract.
@@ -296,77 +261,58 @@ public static partial class DotEnvSerializer
     }
 
     /// <summary>
+    /// Converts a string into a member's value while preserving this serializer's exception contract.
+    /// </summary>
+    /// <param name="raw">The raw text.</param>
+    /// <param name="member">The member the value is for.</param>
+    /// <returns>The converted value.</returns>
+    /// <exception cref="DotEnvSerializationException">Thrown when the value cannot be converted.</exception>
+    private static object? ConvertFromString(string raw, FlatMemberDescriptor member)
+    {
+        try
+        {
+            return InvariantScalarCodec.Parse(raw, member.ScalarKind, member.ScalarType, member.IsNullable, InvariantScalarCodec.Policy.Configuration);
+        }
+        catch (Exception ex) when (ex is FormatException or OverflowException or ArgumentException or InvalidCastException)
+        {
+            throw new DotEnvSerializationException(
+                string.Format(CultureInfo.CurrentCulture, DotEnvResourceStrings.Format_Invalid_DotEnvValueConversion, member.Name, member.MemberType), ex);
+        }
+    }
+
+    /// <summary>
     /// Determines whether a type is a scalar or a non-dictionary enumerable that cannot be a DotEnv root.
     /// </summary>
     /// <param name="type">The type to test.</param>
     /// <returns><see langword="true" /> when the type cannot be a DotEnv object root.</returns>
+    /// <remarks>
+    /// A scalar cannot be a DotEnv root, although many scalars have public properties that would otherwise be bound as
+    /// keys; <see cref="InvariantScalarCodec.IsScalar(Type)" /> lists the scalars.
+    /// </remarks>
     private static bool IsScalarOrEnumerable(Type type)
     {
-        if (IsScalarType(type))
+        if (InvariantScalarCodec.IsScalar(type))
             return true;
 
         return typeof(IEnumerable).IsAssignableFrom(type) && !typeof(IDictionary).IsAssignableFrom(type);
     }
 
     /// <summary>
-    /// Determines whether a type is a scalar, which a DotEnv root cannot be, although many scalars have public
-    /// properties that would otherwise be bound as keys.
-    /// </summary>
-    /// <param name="type">The type to test.</param>
-    /// <returns>
-    /// <see langword="true" /> for <see cref="string" />, a primitive, an enumeration, <see cref="decimal" />,
-    /// <see cref="Guid" />, a date or time type, <see cref="Uri" />, a 128-bit or half-precision number,
-    /// <see cref="BigInteger" />, or the nullable form of any of them; otherwise <see langword="false" />.
-    /// </returns>
-    private static bool IsScalarType(Type type)
-    {
-        Type underlying = Nullable.GetUnderlyingType(type) ?? type;
-
-        return underlying == typeof(string) || underlying.IsPrimitive || underlying.IsEnum || underlying == typeof(decimal) ||
-            underlying == typeof(Guid) || underlying == typeof(DateTime) || underlying == typeof(DateTimeOffset) ||
-            underlying == typeof(DateOnly) || underlying == typeof(TimeOnly) || underlying == typeof(TimeSpan) ||
-            underlying == typeof(Uri) || underlying == typeof(Int128) || underlying == typeof(UInt128) ||
-            underlying == typeof(Half) || underlying == typeof(BigInteger);
-    }
-
-    /// <summary>
-    /// Determines whether the type is (or implements) a dictionary keyed by <see cref="string" />.
-    /// </summary>
-    /// <param name="type">The type to test.</param>
-    /// <param name="valueType">When this method returns <see langword="true" />, the dictionary value type.</param>
-    /// <returns><see langword="true" /> when the type is a string-keyed dictionary.</returns>
-    private static bool TryGetStringKeyedDictionary(Type type, [NotNullWhen(true)] out Type? valueType)
-    {
-        foreach (Type candidate in new[] { type }.Concat(type.GetInterfaces()))
-        {
-            if (candidate.IsGenericType && candidate.GetGenericTypeDefinition() == typeof(IDictionary<,>))
-            {
-                Type[] args = candidate.GetGenericArguments();
-                if (args[0] == typeof(string))
-                {
-                    valueType = args[1];
-                    return true;
-                }
-            }
-        }
-
-        valueType = null;
-        return false;
-    }
-
-    /// <summary>
-    /// Enumerates the mapped members of a type, applying naming, inclusion, and ordering rules.
+    /// Gets the mapped members of a type, applying naming, inclusion, and ordering rules, from the options' cache.
     /// </summary>
     /// <param name="type">The type whose members to map.</param>
-    /// <param name="options">The serializer options.</param>
+    /// <param name="options">The read-only serializer options.</param>
     /// <returns>The ordered member descriptors.</returns>
+    /// <exception cref="DotEnvSerializationException">
+    /// Thrown when two members of <paramref name="type" /> map to one key.
+    /// </exception>
     [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
-    private static IEnumerable<Member> GetMembers(
+    private static FlatMemberDescriptor[] GetMembers(
         [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.PublicFields)] Type type,
         DotEnvSerializerOptions options) =>
-        FlatMemberDiscovery.Enumerate(type, options.IncludeFields)
-            .Select(member => member is PropertyInfo property
-                ? Member.FromProperty(property, options)
-                : Member.FromField((FieldInfo)member, options))
-            .OrderBy(static member => member.Order);
+        options.MemberCache.GetMembers(
+            type,
+            options.IncludeFields,
+            options.PropertyNamingPolicy,
+            static (type, key) => new DotEnvSerializationException(string.Format(CultureInfo.CurrentCulture, DotEnvResourceStrings.Op_Invalid_DotEnvDuplicateKey, type, key)));
 }

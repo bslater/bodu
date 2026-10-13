@@ -22,7 +22,7 @@ namespace Bodu.Text.Formats.Generators;
 /// <c>IgnoreCondition.Always</c>), and convert scalars with the invariant culture, mirroring the runtime reflection
 /// binders for the members both map. They differ from those binders where the binders read the options or reflect over
 /// more: the naming policy, inherited, get-only and <c>init</c>-only properties, <c>[PropertyOrder]</c>, case-sensitive
-/// name matching, <c>[Required]</c>, and the scalar types the factories do not support.
+/// name matching, and <c>[Required]</c>. Their scalar set is the binders'.
 /// </remarks>
 [Generator(LanguageNames.CSharp)]
 public sealed class FormatFactoryGenerator : IIncrementalGenerator
@@ -324,6 +324,8 @@ public sealed class FormatFactoryGenerator : IIncrementalGenerator
             case SpecialType.System_Single:
             case SpecialType.System_Double:
             case SpecialType.System_Decimal:
+            case SpecialType.System_IntPtr:
+            case SpecialType.System_UIntPtr:
                 return ScalarKind.Number;
             case SpecialType.System_DateTime:
                 return ScalarKind.DateTime;
@@ -331,11 +333,16 @@ public sealed class FormatFactoryGenerator : IIncrementalGenerator
                 break;
         }
 
-        return type.ToDisplayString() switch
+        // A reference type's nullable annotation is not part of its name.
+        return type.WithNullableAnnotation(NullableAnnotation.NotAnnotated).ToDisplayString() switch
         {
             "System.Guid" => ScalarKind.Guid,
             "System.DateTimeOffset" => ScalarKind.DateTimeOffset,
             "System.TimeSpan" => ScalarKind.TimeSpan,
+            "System.DateOnly" => ScalarKind.DateOnly,
+            "System.TimeOnly" => ScalarKind.TimeOnly,
+            "System.Uri" => ScalarKind.Uri,
+            "System.Int128" or "System.UInt128" or "System.Half" or "System.Numerics.BigInteger" => ScalarKind.Number,
             _ => ScalarKind.Unsupported,
         };
     }

@@ -10,11 +10,6 @@
         <PackageTags>$(PackageTags);configuration;editorconfig;microsoft-extensions-configuration;ioptions;config;settings;toml;bencode;bep3</PackageTags>
     </PropertyGroup>
 
-    <!-- Per-framework compilation symbols. -->
-    <PropertyGroup Condition="'$(TargetFramework)' == 'net8.0'">
-        <DefineConstants>$(DefineConstants);NET8_0_OR_GREATER</DefineConstants>
-    </PropertyGroup>
-
     <!-- Grant the companion test project access to internal members. -->
     <ItemGroup>
         <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">

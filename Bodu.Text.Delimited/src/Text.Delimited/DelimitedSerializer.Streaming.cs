@@ -64,18 +64,23 @@ public static partial class DelimitedSerializer
         DelimitedThrowHelper.ThrowIfUnusableDialect(writerOptions, nameof(options));
 
         bool isStringArray = typeof(TRecord) == typeof(string[]);
-        Member[] members = isStringArray ? [] : GetRecordMembers(typeof(TRecord), effective, reading: false);
+        FlatMemberDescriptor[] members = isStringArray ? [] : GetRecordMembers(typeof(TRecord), effective, reading: false);
 
         var buffer = new ArrayBufferWriter<byte>();
         bool headerPending = !isStringArray && !writerOptions.NoHeader;
         bool documentStarted = false;
+
+        // Each record is encoded by a writer of its own, since a writer cannot be held across an await, but the
+        // writers share one set of field lists, and the header is written here rather than by them.
+        DelimitedWriterOptions recordOptions = writerOptions with { NoHeader = true };
+        var fieldLists = new StreamingFieldLists();
 
         await foreach (TRecord record in records.WithCancellation(cancellationToken).ConfigureAwait(false))
         {
             if (record is null)
                 continue;
 
-            headerPending = WriteStreamingRecord(buffer, record, members, isStringArray, writerOptions, headerPending, documentStarted);
+            headerPending = WriteStreamingRecord(buffer, record, members, isStringArray, recordOptions, headerPending, documentStarted, fieldLists);
             documentStarted = true;
 
             if (buffer.WrittenCount >= StreamWriteFlushThreshold)
@@ -87,7 +92,7 @@ public static partial class DelimitedSerializer
 
         // The header row comes from the record type, so a sequence without records still writes it.
         if (headerPending)
-            WriteStreamingHeader(buffer, members, writerOptions);
+            WriteStreamingHeader(buffer, members, recordOptions);
 
         if (buffer.WrittenCount > 0)
             await destination.WriteAsync(buffer.WrittenMemory, cancellationToken).ConfigureAwait(false);
@@ -157,7 +162,7 @@ public static partial class DelimitedSerializer
         DelimitedThrowHelper.ThrowIfUnusableDialect(readerOptions, nameof(options));
 
         bool isStringArray = typeof(TRecord) == typeof(string[]);
-        Member[] members = isStringArray ? [] : GetRecordMembers(typeof(TRecord), effective, reading: true);
+        FlatMemberDescriptor[] members = isStringArray ? [] : GetRecordMembers(typeof(TRecord), effective, reading: true);
 
         return DeserializeAsyncEnumerableCoreAsync<TRecord>(source, effective, readerOptions, isStringArray, members, cancellationToken);
     }
@@ -183,7 +188,7 @@ public static partial class DelimitedSerializer
         DelimitedSerializerOptions effective,
         DelimitedReaderOptions readerOptions,
         bool isStringArray,
-        Member[] members,
+        FlatMemberDescriptor[] members,
         [EnumeratorCancellation] CancellationToken cancellationToken)
     {
         byte[] buffer = ArrayPool<byte>.Shared.Rent(StreamReadChunkSize);
@@ -192,6 +197,10 @@ public static partial class DelimitedSerializer
             int buffered = 0;
             bool finalBlock = false;
             List<string>? headers = null;
+
+            // The member-to-column map of the header, built once the header is known.
+            List<string>? mappedHeaders = null;
+            int[]? columns = null;
             var rows = new List<(string[] Fields, int Line, long Offset)>();
 
             // The line and offset, in the whole stream, of the buffer's first byte, so that every error reports its
@@ -228,6 +237,12 @@ public static partial class DelimitedSerializer
                     segmentOffset += consumed;
                 }
 
+                if (!isStringArray && !ReferenceEquals(headers, mappedHeaders))
+                {
+                    mappedHeaders = headers;
+                    columns = CreateColumnMap(headers ?? [], members, effective);
+                }
+
                 foreach ((string[] row, int line, long offset) in rows)
                 {
                     cancellationToken.ThrowIfCancellationRequested();
@@ -237,7 +252,7 @@ public static partial class DelimitedSerializer
 
                     yield return isStringArray
                         ? (TRecord)(object)row
-                        : (TRecord)BindRecord(row, headers ?? [], members, typeof(TRecord), effective);
+                        : (TRecord)BindRecord(row, columns, members, typeof(TRecord));
                 }
 
                 if (finalBlock)
@@ -255,10 +270,10 @@ public static partial class DelimitedSerializer
     /// </summary>
     /// <param name="destination">The batch buffer.</param>
     /// <param name="members">The mapped members of the POCO record type.</param>
-    /// <param name="writerOptions">The writer options.</param>
-    private static void WriteStreamingHeader(IBufferWriter<byte> destination, Member[] members, DelimitedWriterOptions writerOptions)
+    /// <param name="writerOptions">The writer options, with the header row suppressed.</param>
+    private static void WriteStreamingHeader(IBufferWriter<byte> destination, FlatMemberDescriptor[] members, DelimitedWriterOptions writerOptions)
     {
-        var writer = new Utf8DelimitedWriter(destination, writerOptions with { NoHeader = true });
+        var writer = new Utf8DelimitedWriter(destination, writerOptions);
         writer.WriteStartArray();
         WriteHeaderRow(ref writer, members);
         writer.WriteEndArray();
@@ -267,34 +282,42 @@ public static partial class DelimitedSerializer
 
     /// <summary>
     /// Encodes one record - preceded by the header row when it is still pending - into the batch buffer using a fresh
-    /// per-record writer, which is safe because delimited rows are self-contained.
+    /// per-record writer over the shared field lists, which is safe because delimited rows are self-contained.
     /// </summary>
     /// <param name="destination">The batch buffer.</param>
     /// <param name="record">The record instance.</param>
     /// <param name="members">The mapped members for a POCO record type.</param>
     /// <param name="isStringArray">Whether the record type is a positional <see cref="string" /> array.</param>
-    /// <param name="writerOptions">The writer options.</param>
+    /// <param name="writerOptions">The writer options, with the header row suppressed.</param>
     /// <param name="headerPending">Whether the header row has not yet been emitted.</param>
     /// <param name="documentStarted">Whether an earlier record has already been written to the document.</param>
+    /// <param name="fieldLists">The field lists every record's writer shares.</param>
     /// <returns>The new header-pending state.</returns>
     private static bool WriteStreamingRecord(
         IBufferWriter<byte> destination,
         object record,
-        Member[] members,
+        FlatMemberDescriptor[] members,
         bool isStringArray,
         DelimitedWriterOptions writerOptions,
         bool headerPending,
-        bool documentStarted)
+        bool documentStarted,
+        StreamingFieldLists fieldLists)
     {
         // Header emission is handled here, so the per-record writer must never emit its own. A later record's writer
         // continues the document, so it quotes a leading U+FEFF only where the buffered serializer's single writer does.
-        var writer = new Utf8DelimitedWriter(destination, writerOptions with { NoHeader = true }, continuesDocument: documentStarted);
+        var writer = new Utf8DelimitedWriter(
+            destination,
+            writerOptions,
+            continuesDocument: documentStarted,
+            fieldLists.Headers,
+            fieldLists.Names,
+            fieldLists.Values);
         writer.WriteStartArray();
 
         if (headerPending)
         {
             writer.WriteStartArray();
-            foreach (Member member in members)
+            foreach (FlatMemberDescriptor member in members)
             {
                 if (member.CanRead)
                     writer.WriteString(member.Name);
@@ -312,10 +335,10 @@ public static partial class DelimitedSerializer
             (record as IOnSerializing)?.OnSerializing();
 
             writer.WriteStartArray();
-            foreach (Member member in members)
+            foreach (FlatMemberDescriptor member in members)
             {
                 if (member.CanRead)
-                    writer.WriteString(ValueToString(member.GetValue(record)));
+                    writer.WriteString(ValueToString(member.GetValue(record), member.ScalarKind));
             }
 
             writer.WriteEndArray();

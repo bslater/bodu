@@ -400,6 +400,107 @@ public partial class DelimitedSerializerTests
     }
 
     /// <summary>
+    /// A record POCO whose members are the native-sized integers <see cref="nint" /> and <see cref="nuint" />, one also in
+    /// nullable form.
+    /// </summary>
+    public sealed class NativeIntegerRecord
+    {
+        /// <summary>Gets or sets the native-sized signed integer.</summary>
+        /// <value>The native-sized signed integer.</value>
+        public nint Handle { get; set; }
+
+        /// <summary>Gets or sets the native-sized unsigned integer.</summary>
+        /// <value>The native-sized unsigned integer.</value>
+        public nuint Size { get; set; }
+
+        /// <summary>Gets or sets the optional native-sized signed integer.</summary>
+        /// <value>The native-sized signed integer, or <see langword="null" />.</value>
+        public nint? MaybeHandle { get; set; }
+    }
+
+    /// <summary>
+    /// A record POCO whose member is a nullable number, which a value that is not a number cannot be converted to.
+    /// </summary>
+    public sealed class NullableCountRecord
+    {
+        /// <summary>Gets or sets the optional count.</summary>
+        /// <value>The count, or <see langword="null" />.</value>
+        public int? Count { get; set; }
+    }
+
+    /// <summary>
+    /// A record POCO whose member is declared as <see cref="object" />, so the type of its value is known only at run time.
+    /// </summary>
+    public sealed class ObjectValueRecord
+    {
+        /// <summary>Gets or sets the value.</summary>
+        /// <value>The value, of any type.</value>
+        public object? Value { get; set; }
+    }
+
+    /// <summary>
+    /// A record POCO of ten number columns, which the allocation tests write and read in thousands.
+    /// </summary>
+    public sealed class TenNumberRecord
+    {
+        /// <summary>Gets or sets the value of column <c>A</c>.</summary>
+        /// <value>The value.</value>
+        public int A { get; set; } = 0;
+
+        /// <summary>Gets or sets the value of column <c>B</c>.</summary>
+        /// <value>The value.</value>
+        public int B { get; set; } = 1;
+
+        /// <summary>Gets or sets the value of column <c>C</c>.</summary>
+        /// <value>The value.</value>
+        public int C { get; set; } = 2;
+
+        /// <summary>Gets or sets the value of column <c>D</c>.</summary>
+        /// <value>The value.</value>
+        public int D { get; set; } = 3;
+
+        /// <summary>Gets or sets the value of column <c>E</c>.</summary>
+        /// <value>The value.</value>
+        public int E { get; set; } = 4;
+
+        /// <summary>Gets or sets the value of column <c>F</c>.</summary>
+        /// <value>The value.</value>
+        public int F { get; set; } = 5;
+
+        /// <summary>Gets or sets the value of column <c>G</c>.</summary>
+        /// <value>The value.</value>
+        public int G { get; set; } = 6;
+
+        /// <summary>Gets or sets the value of column <c>H</c>.</summary>
+        /// <value>The value.</value>
+        public int H { get; set; } = 7;
+
+        /// <summary>Gets or sets the value of column <c>I</c>.</summary>
+        /// <value>The value.</value>
+        public int I { get; set; } = 8;
+
+        /// <summary>Gets or sets the value of column <c>J</c>.</summary>
+        /// <value>The value.</value>
+        public int J { get; set; } = 9;
+    }
+
+    /// <summary>
+    /// A record POCO whose two properties are both mapped to the column <c>X</c>.
+    /// </summary>
+    public sealed class DuplicateColumnRecord
+    {
+        /// <summary>Gets or sets the first value mapped to <c>X</c>.</summary>
+        /// <value>The first value.</value>
+        [Bodu.Text.Serialization.PropertyName("X")]
+        public string? First { get; set; }
+
+        /// <summary>Gets or sets the second value mapped to <c>X</c>.</summary>
+        /// <value>The second value.</value>
+        [Bodu.Text.Serialization.PropertyName("X")]
+        public string? Second { get; set; }
+    }
+
+    /// <summary>
     /// A record POCO whose every property is excluded with <see cref="Bodu.Text.Serialization.IgnoreAttribute" />.
     /// </summary>
     public sealed class IgnoredRecord

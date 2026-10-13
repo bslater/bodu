@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Collections;
+using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
 using System.Reflection;
 using System.Runtime.ExceptionServices;
@@ -132,6 +134,121 @@ public partial class DotEnvSerializerTests
     }
 
     /// <summary>
+    /// A POCO whose members hold null and default values, two of them with an ignore condition of their own.
+    /// </summary>
+    public sealed class ConditionalConfig
+    {
+        /// <summary>Gets or sets a text, <see langword="null" /> unless set.</summary>
+        /// <value>The text.</value>
+        public string? Text { get; set; }
+
+        /// <summary>Gets or sets a number, zero unless set.</summary>
+        /// <value>The number.</value>
+        public int Zero { get; set; }
+
+        /// <summary>Gets or sets a number, one unless set.</summary>
+        /// <value>The number.</value>
+        public int One { get; set; } = 1;
+
+        /// <summary>Gets or sets a flag, <see langword="false" /> unless set.</summary>
+        /// <value>The flag.</value>
+        public bool Flag { get; set; }
+
+        /// <summary>Gets or sets an optional number, <see langword="null" /> unless set.</summary>
+        /// <value>The number, or <see langword="null" />.</value>
+        public int? Maybe { get; set; }
+
+        /// <summary>Gets or sets a number its own condition leaves out while it is zero.</summary>
+        /// <value>The number.</value>
+        [Bodu.Text.Serialization.Ignore(Condition = IgnoreCondition.WhenWritingDefault)]
+        public int ZeroByMember { get; set; }
+
+        /// <summary>Gets or sets a text its own condition always writes.</summary>
+        /// <value>The text.</value>
+        [Bodu.Text.Serialization.Ignore(Condition = IgnoreCondition.Never)]
+        public string? NullByMember { get; set; }
+    }
+
+    /// <summary>
+    /// A value-type POCO with two members.
+    /// </summary>
+    public struct PortStruct
+    {
+        /// <summary>Gets or sets the port.</summary>
+        /// <value>The port.</value>
+        public int Port { get; set; }
+
+        /// <summary>Gets or sets the host.</summary>
+        /// <value>The host.</value>
+        public string? Host { get; set; }
+    }
+
+    /// <summary>
+    /// A POCO whose member is a nullable number, which a value that is not a number cannot be converted to.
+    /// </summary>
+    public sealed class NullableCountConfig
+    {
+        /// <summary>Gets or sets the optional count.</summary>
+        /// <value>The count, or <see langword="null" />.</value>
+        public int? Count { get; set; }
+    }
+
+    /// <summary>
+    /// A POCO whose member is declared as <see cref="object" />, so the type of its value is known only at run time.
+    /// </summary>
+    public sealed class ObjectValueConfig
+    {
+        /// <summary>Gets or sets the value.</summary>
+        /// <value>The value, of any type.</value>
+        public object? Value { get; set; }
+    }
+
+    /// <summary>
+    /// A POCO whose members are dates and times, two of them also in nullable form.
+    /// </summary>
+    public sealed class TemporalConfig
+    {
+        /// <summary>Gets or sets the instant.</summary>
+        /// <value>The instant.</value>
+        public DateTime At { get; set; }
+
+        /// <summary>Gets or sets a time of an unspecified kind.</summary>
+        /// <value>The time.</value>
+        public DateTime Unspecified { get; set; }
+
+        /// <summary>Gets or sets the instant with its offset.</summary>
+        /// <value>The instant and offset.</value>
+        public DateTimeOffset AtOffset { get; set; }
+
+        /// <summary>Gets or sets the optional instant.</summary>
+        /// <value>The instant, or <see langword="null" />.</value>
+        public DateTime? MaybeAt { get; set; }
+
+        /// <summary>Gets or sets the optional instant with its offset.</summary>
+        /// <value>The instant and offset, or <see langword="null" />.</value>
+        public DateTimeOffset? MaybeAtOffset { get; set; }
+    }
+
+    /// <summary>
+    /// A POCO whose members are the native-sized integers <see cref="nint" /> and <see cref="nuint" />, one also in
+    /// nullable form.
+    /// </summary>
+    public sealed class NativeIntegerRecord
+    {
+        /// <summary>Gets or sets the native-sized signed integer.</summary>
+        /// <value>The native-sized signed integer.</value>
+        public nint Handle { get; set; }
+
+        /// <summary>Gets or sets the native-sized unsigned integer.</summary>
+        /// <value>The native-sized unsigned integer.</value>
+        public nuint Size { get; set; }
+
+        /// <summary>Gets or sets the optional native-sized signed integer.</summary>
+        /// <value>The native-sized signed integer, or <see langword="null" />.</value>
+        public nint? MaybeHandle { get; set; }
+    }
+
+    /// <summary>
     /// A POCO with a key <c>HOST</c> and no public parameterless constructor, which deserialization cannot create.
     /// </summary>
     public sealed class ConstructedConfig
@@ -158,6 +275,169 @@ public partial class DotEnvSerializerTests
         /// <value>The host.</value>
         [PropertyName("HOST")]
         public string Host { get; set; } = string.Empty;
+    }
+
+    /// <summary>
+    /// A base POCO whose text <c>Port</c> property <see cref="PortNumberHidingConfig" /> hides.
+    /// </summary>
+    public class PortTextBase
+    {
+        /// <summary>Gets or sets the base port text, which a derived type hides.</summary>
+        /// <value>The port text.</value>
+        public string? Port { get; set; }
+    }
+
+    /// <summary>
+    /// A POCO whose <see cref="int" /> <c>Port</c> property hides the base type's text <c>Port</c> with the
+    /// <see langword="new" /> modifier.
+    /// </summary>
+    public sealed class PortNumberHidingConfig
+        : PortTextBase
+    {
+        /// <summary>Gets or sets the port, hiding the base type's.</summary>
+        /// <value>The port.</value>
+        public new int Port { get; set; }
+    }
+
+    /// <summary>
+    /// A base POCO whose <see cref="int" /> <c>Port</c> property <see cref="PortTextHidingConfig" /> hides.
+    /// </summary>
+    public class PortNumberBase
+    {
+        /// <summary>Gets or sets the base port number, which a derived type hides.</summary>
+        /// <value>The port number.</value>
+        public int Port { get; set; }
+    }
+
+    /// <summary>
+    /// A POCO whose text <c>Port</c> property hides the base type's <see cref="int" /> <c>Port</c> with the
+    /// <see langword="new" /> modifier.
+    /// </summary>
+    public sealed class PortTextHidingConfig
+        : PortNumberBase
+    {
+        /// <summary>Gets or sets the port text, hiding the base type's.</summary>
+        /// <value>The port text.</value>
+        public new string? Port { get; set; }
+    }
+
+    /// <summary>
+    /// A POCO whose member is declared with the C# <see langword="required" /> keyword rather than
+    /// <see cref="RequiredAttribute" />.
+    /// </summary>
+    public sealed class RequiredKeywordConfig
+    {
+        /// <summary>Gets or sets the required host name, remapped to the <c>HOST</c> key.</summary>
+        /// <value>The host.</value>
+        [PropertyName("HOST")]
+        public required string Host { get; set; }
+    }
+
+    /// <summary>
+    /// A POCO whose two members are both mapped to the key <c>X</c>.
+    /// </summary>
+    public sealed class DuplicateKeyConfig
+    {
+        /// <summary>Gets or sets the first value mapped to <c>X</c>.</summary>
+        /// <value>The first value.</value>
+        [PropertyName("X")]
+        public string? First { get; set; }
+
+        /// <summary>Gets or sets the second value mapped to <c>X</c>.</summary>
+        /// <value>The second value.</value>
+        [PropertyName("X")]
+        public string? Second { get; set; }
+    }
+
+    /// <summary>
+    /// A POCO whose member <c>HostName</c> the <see cref="DotEnvSerializerDefaults.Web" /> naming policy maps to
+    /// <c>HOST_NAME</c>, the key another member names explicitly.
+    /// </summary>
+    public sealed class PolicyDuplicateKeyConfig
+    {
+        /// <summary>Gets or sets the host name, mapped to <c>HOST_NAME</c> by the naming policy.</summary>
+        /// <value>The host name.</value>
+        public string? HostName { get; set; }
+
+        /// <summary>Gets or sets an alias mapped explicitly to <c>HOST_NAME</c>.</summary>
+        /// <value>The alias.</value>
+        [PropertyName("HOST_NAME")]
+        public string? Alias { get; set; }
+    }
+
+    /// <summary>
+    /// A dictionary keyed by <see cref="string" /> that implements the generic
+    /// <see cref="IDictionary{TKey, TValue}" /> interface but not the non-generic <see cref="IDictionary" />, and
+    /// enumerates its entries in the order they were added.
+    /// </summary>
+    /// <typeparam name="TValue">The type of the values.</typeparam>
+    public sealed class GenericOnlyDictionary<TValue> : IDictionary<string, TValue>
+    {
+        /// <summary>The entries, which enumerate in the order they were added.</summary>
+        private readonly Dictionary<string, TValue> _entries = new(StringComparer.Ordinal);
+
+        /// <inheritdoc />
+        public ICollection<string> Keys => _entries.Keys;
+
+        /// <inheritdoc />
+        public ICollection<TValue> Values => _entries.Values;
+
+        /// <inheritdoc />
+        public int Count => _entries.Count;
+
+        /// <inheritdoc />
+        public bool IsReadOnly => false;
+
+        /// <inheritdoc />
+        public TValue this[string key]
+        {
+            get => _entries[key];
+            set => _entries[key] = value;
+        }
+
+        /// <inheritdoc />
+        public void Add(string key, TValue value) =>
+            _entries.Add(key, value);
+
+        /// <inheritdoc />
+        public void Add(KeyValuePair<string, TValue> item) =>
+            _entries.Add(item.Key, item.Value);
+
+        /// <inheritdoc />
+        public void Clear() =>
+            _entries.Clear();
+
+        /// <inheritdoc />
+        public bool Contains(KeyValuePair<string, TValue> item) =>
+            ((ICollection<KeyValuePair<string, TValue>>)_entries).Contains(item);
+
+        /// <inheritdoc />
+        public bool ContainsKey(string key) =>
+            _entries.ContainsKey(key);
+
+        /// <inheritdoc />
+        public void CopyTo(KeyValuePair<string, TValue>[] array, int arrayIndex) =>
+            ((ICollection<KeyValuePair<string, TValue>>)_entries).CopyTo(array, arrayIndex);
+
+        /// <inheritdoc />
+        public IEnumerator<KeyValuePair<string, TValue>> GetEnumerator() =>
+            _entries.GetEnumerator();
+
+        /// <inheritdoc />
+        public bool Remove(string key) =>
+            _entries.Remove(key);
+
+        /// <inheritdoc />
+        public bool Remove(KeyValuePair<string, TValue> item) =>
+            ((ICollection<KeyValuePair<string, TValue>>)_entries).Remove(item);
+
+        /// <inheritdoc />
+        public bool TryGetValue(string key, [MaybeNullWhen(false)] out TValue value) =>
+            _entries.TryGetValue(key, out value);
+
+        /// <inheritdoc />
+        IEnumerator IEnumerable.GetEnumerator() =>
+            GetEnumerator();
     }
 
     /// <summary>

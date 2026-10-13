@@ -47,6 +47,9 @@ namespace Bodu.Text.DotEnv.Reader;
 /// </remarks>
 public ref struct Utf8DotEnvReader
 {
+    /// <summary>The bytes at which the scan of a double-quoted value stops: a quote, a backslash, a CR and a LF.</summary>
+    private static readonly SearchValues<byte> s_doubleQuotedStops = SearchValues.Create("\"\\\r\n"u8);
+
     /// <summary>The source bytes being read.</summary>
     private readonly ReadOnlySpan<byte> _data;
 
@@ -119,17 +122,12 @@ public ref struct Utf8DotEnvReader
         _options = options;
 
         // Skip a leading UTF-8 byte-order mark so a BOM-prefixed file does not corrupt the first key.
-        _position = data.StartsWith(Utf8Bom) ? Utf8Bom.Length : 0;
+        _position = Utf8LineCursor.ByteOrderMarkLength(data);
         _line = 1;
         _tokenLine = 1;
         _phase = Phase.Start;
         _tokenType = DotEnvTokenType.None;
     }
-
-    /// <summary>
-    /// Gets the UTF-8 byte-order mark.
-    /// </summary>
-    private static ReadOnlySpan<byte> Utf8Bom => [0xEF, 0xBB, 0xBF];
 
     /// <summary>
     /// Gets the number of bytes consumed so far.
@@ -346,7 +344,7 @@ public ref struct Utf8DotEnvReader
 
             byte b = _data[_position];
 
-            if (b is (byte)'\r' or (byte)'\n')
+            if (Utf8LineCursor.IsLineEnding(b))
             {
                 SkipLineEnding();
                 continue;
@@ -355,9 +353,7 @@ public ref struct Utf8DotEnvReader
             if (b == (byte)'#')
             {
                 int textStart = _position + 1;
-                int end = textStart;
-                while (end < _data.Length && _data[end] is not ((byte)'\n' or (byte)'\r'))
-                    end++;
+                int end = Utf8LineCursor.EndOfLine(_data, textStart);
 
                 _position = end;
 
@@ -486,80 +482,141 @@ public ref struct Utf8DotEnvReader
     /// <param name="startLine">The 1-based line on which the opening quote appears.</param>
     /// <param name="rawStart">The source start of the content between the quotes.</param>
     /// <param name="rawLength">The source length of the content between the quotes.</param>
-    /// <param name="decoded">The decoded value.</param>
+    /// <param name="decoded">
+    /// The decoded value when the content holds a backslash; otherwise <see langword="null" />, since the content as
+    /// written is the value.
+    /// </param>
     /// <exception cref="DotEnvFormatException">
     /// Thrown when the value is unterminated; the error is reported at the opening quote.
     /// </exception>
     /// <remarks>
+    /// <para>
     /// The escapes resolved are <c>\\</c>, <c>\'</c>, <c>\"</c>, <c>\a</c>, <c>\b</c>, <c>\f</c>, <c>\n</c>, <c>\r</c>,
     /// <c>\t</c>, <c>\v</c> and <c>\$</c>, and a backslash before a line break, which continues the value on the next
     /// line; any other escape keeps its backslash, and octal escapes are not recognized.
+    /// </para>
+    /// <para>
+    /// The scan for the closing quote stops only at a quote, a backslash or a line ending, all ASCII bytes, and the
+    /// value is decoded as whole runs of bytes between backslashes, as an unquoted value is decoded, so an invalid
+    /// UTF-8 sequence reads as U+FFFD and never swallows the byte that follows it.
+    /// </para>
     /// </remarks>
     private void ReadDoubleQuoted(int startLine, out int rawStart, out int rawLength, out string? decoded)
     {
         int quoteOffset = _position;
         _position++; // consume opening '"'
         rawStart = _position;
-
-        var sb = new StringBuilder();
+        bool hasBackslash = false;
 
         while (true)
         {
-            if (_position >= _data.Length)
+            int next = _data[_position..].IndexOfAny(s_doubleQuotedStops);
+            if (next < 0)
                 throw UnterminatedDoubleQuote(startLine, quoteOffset);
 
+            _position += next;
             byte c = _data[_position];
 
             if (c == (byte)'"')
-            {
-                rawLength = _position - rawStart;
-                _position++; // consume closing '"'
-                decoded = sb.ToString();
-                return;
-            }
+                break;
 
             if (c == (byte)'\\')
             {
+                hasBackslash = true;
                 _position++;
                 if (_position >= _data.Length)
                     throw UnterminatedDoubleQuote(startLine, quoteOffset);
 
-                switch (_data[_position])
-                {
-                    case (byte)'"': sb.Append('"'); break;
-                    case (byte)'\'': sb.Append('\''); break;
-                    case (byte)'\\': sb.Append('\\'); break;
-                    case (byte)'a': sb.Append('\a'); break;
-                    case (byte)'b': sb.Append('\b'); break;
-                    case (byte)'f': sb.Append('\f'); break;
-                    case (byte)'n': sb.Append('\n'); break;
-                    case (byte)'r': sb.Append('\r'); break;
-                    case (byte)'t': sb.Append('\t'); break;
-                    case (byte)'v': sb.Append('\v'); break;
-                    case (byte)'$': sb.Append('$'); break;
-                    case (byte)'\n': _line++; break; // line continuation
-                    case (byte)'\r':
-                        _line++;
-                        if (_position + 1 < _data.Length && _data[_position + 1] == (byte)'\n')
-                            _position++;
-                        break;
-                    default:
-                        // Not an escape: keep the backslash, and leave the character after it to the loop, which
-                        // decodes it whatever its UTF-8 length.
-                        sb.Append('\\');
-                        continue;
-                }
+                // A backslash before a line ending continues the value on the next line; any other byte after a
+                // backslash is passed over with it, so an escaped quote or backslash neither ends the value nor starts
+                // an escape.
+                if (Utf8LineCursor.IsLineEnding(_data[_position]))
+                    _line += Utf8LineCursor.ConsumeLineEnding(_data, ref _position);
+                else
+                    _position++;
 
-                _position++; // consume the escaped character
                 continue;
             }
 
             // A line ends at a LF, a CR LF pair or a lone CR, as it does between entries; a CR LF counts at its LF.
-            if (c == (byte)'\n' || (c == (byte)'\r' && (_position + 1 == _data.Length || _data[_position + 1] != (byte)'\n')))
+            if (Utf8LineCursor.EndsLine(_data, _position))
                 _line++;
 
-            _position += AppendByte(sb, c);
+            _position++;
         }
+
+        rawLength = _position - rawStart;
+        _position++; // consume closing '"'
+
+        // Without a backslash the content as written is the value, which GetString decodes when it is asked for, as it
+        // decodes an unquoted value.
+        decoded = hasBackslash ? DecodeEscapes(_data.Slice(rawStart, rawLength)) : null;
+    }
+
+    /// <summary>
+    /// Decodes the content of a double-quoted value that holds a backslash, resolving its escape sequences.
+    /// </summary>
+    /// <param name="raw">
+    /// The content between the opening and closing quotes, in which a byte follows every backslash.
+    /// </param>
+    /// <returns>The decoded text.</returns>
+    /// <remarks>
+    /// Each run between backslashes is decoded whole. Since a backslash is an ASCII byte, which ends any invalid UTF-8
+    /// sequence before it and never falls inside a valid one, the runs decode exactly as the content would with each
+    /// escape sequence resolved in place.
+    /// </remarks>
+    private static string DecodeEscapes(ReadOnlySpan<byte> raw)
+    {
+        // UTF-8 never decodes to more UTF-16 code units than it has bytes, and no escape sequence reads as more
+        // characters than it has bytes.
+        char[]? rented = null;
+        Span<char> chars = raw.Length <= 256
+            ? stackalloc char[256]
+            : (rented = ArrayPool<char>.Shared.Rent(raw.Length));
+
+        int written = 0;
+        int backslash;
+        while ((backslash = raw.IndexOf((byte)'\\')) >= 0)
+        {
+            written += Encoding.UTF8.GetChars(raw[..backslash], chars[written..]);
+
+            byte escaped = raw[backslash + 1];
+            int consumed = 2;
+            switch (escaped)
+            {
+                case (byte)'"' or (byte)'\'' or (byte)'\\' or (byte)'$': chars[written++] = (char)escaped; break;
+                case (byte)'a': chars[written++] = '\a'; break;
+                case (byte)'b': chars[written++] = '\b'; break;
+                case (byte)'f': chars[written++] = '\f'; break;
+                case (byte)'n': chars[written++] = '\n'; break;
+                case (byte)'r': chars[written++] = '\r'; break;
+                case (byte)'t': chars[written++] = '\t'; break;
+                case (byte)'v': chars[written++] = '\v'; break;
+                case (byte)'\n': break; // line continuation
+                case (byte)'\r':
+                    // A line continuation, whose line ending may be a CR LF.
+                    if (backslash + 2 < raw.Length && raw[backslash + 2] == (byte)'\n')
+                        consumed = 3;
+
+                    break;
+                default:
+                    // Not an escape: keep the backslash, and leave the character after it to the next run, which
+                    // decodes it whatever its UTF-8 length.
+                    chars[written++] = '\\';
+                    consumed = 1;
+                    break;
+            }
+
+            raw = raw[(backslash + consumed)..];
+        }
+
+        written += Encoding.UTF8.GetChars(raw, chars[written..]);
+
+        string text = new(chars[..written]);
+        if (rented is not null)
+            ArrayPool<char>.Shared.Return(rented);
+
+        return text;
     }
 
     /// <summary>
@@ -577,22 +634,13 @@ public ref struct Utf8DotEnvReader
         _position++; // consume opening '\''
         rawStart = _position;
 
-        for (int i = _position; i < _data.Length; i++)
-        {
-            byte c = _data[i];
+        // The value ends at its closing quote; a line ending or the end of the input before one leaves it unterminated.
+        int end = Utf8LineCursor.EndOfLineOr(_data, _position, (byte)'\'');
+        if (end >= _data.Length || _data[end] != (byte)'\'')
+            throw UnterminatedSingleQuote(startLine, quoteOffset);
 
-            if (c == (byte)'\'')
-            {
-                rawLength = i - rawStart;
-                _position = i + 1; // consume closing '\''
-                return;
-            }
-
-            if (c is (byte)'\n' or (byte)'\r')
-                throw UnterminatedSingleQuote(startLine, quoteOffset);
-        }
-
-        throw UnterminatedSingleQuote(startLine, quoteOffset);
+        rawLength = end - rawStart;
+        _position = end + 1; // consume closing '\''
     }
 
     /// <summary>
@@ -603,9 +651,7 @@ public ref struct Utf8DotEnvReader
     /// <param name="rawLength">The source length of the trimmed value.</param>
     private void ReadUnquoted(out int rawStart, out int rawLength)
     {
-        int lineEnd = _position;
-        while (lineEnd < _data.Length && _data[lineEnd] is not ((byte)'\n' or (byte)'\r'))
-            lineEnd++;
+        int lineEnd = Utf8LineCursor.EndOfLine(_data, _position);
 
         int start = _position;
         int end = lineEnd;
@@ -613,13 +659,18 @@ public ref struct Utf8DotEnvReader
         // Honour an inline comment: a '#' preceded by whitespace, including the whitespace after '=', ends the value.
         if (_options.AllowInlineComments)
         {
-            for (int i = start; i < end; i++)
+            int from = start;
+            int hash;
+            while ((hash = _data[from..end].IndexOf((byte)'#')) >= 0)
             {
-                if (_data[i] == (byte)'#' && WhitespaceLengthBefore(i, 0) > 0)
+                int i = from + hash;
+                if (WhitespaceLengthBefore(i, 0) > 0)
                 {
                     end = i;
                     break;
                 }
+
+                from = i + 1;
             }
         }
 
@@ -648,35 +699,6 @@ public ref struct Utf8DotEnvReader
     /// <returns><see langword="true" /> when the byte may continue a key.</returns>
     private static bool IsKeyContinue(byte b) =>
         IsKeyStart(b) || b is >= (byte)'0' and <= (byte)'9';
-
-    /// <summary>
-    /// Appends the character that starts at the cursor to the decode buffer, decoding its whole UTF-8 sequence.
-    /// </summary>
-    /// <param name="sb">The decode buffer.</param>
-    /// <param name="lead">The first byte of the character, already at the cursor.</param>
-    /// <returns>
-    /// The number of source bytes consumed: the length of the character, or, where the bytes are not valid UTF-8, the
-    /// length of the sequence the decoder rejects.
-    /// </returns>
-    /// <remarks>
-    /// Bytes that are not valid UTF-8 are appended as one U+FFFD for each sequence the decoder rejects, as
-    /// <see cref="Encoding.UTF8" /> decodes them in a single-quoted or unquoted value. The decoder never takes an ASCII
-    /// byte into a rejected sequence, so a closing quote after one still closes the value.
-    /// </remarks>
-    private readonly int AppendByte(StringBuilder sb, byte lead)
-    {
-        if (lead < 0x80)
-        {
-            sb.Append((char)lead);
-            return 1;
-        }
-
-        _ = Rune.DecodeFromUtf8(_data[_position..], out Rune rune, out int length);
-
-        Span<char> utf16 = stackalloc char[2];
-        sb.Append(utf16[..rune.EncodeToUtf16(utf16)]);
-        return length;
-    }
 
     /// <summary>
     /// Determines whether an ASCII byte is whitespace other than a line break: a space, tab, vertical tab or form feed.
@@ -744,7 +766,7 @@ public ref struct Utf8DotEnvReader
     {
         SkipWhitespace();
 
-        if (_position < _data.Length && _data[_position] is not ((byte)'\n' or (byte)'\r' or (byte)'#'))
+        if (_position < _data.Length && !Utf8LineCursor.IsLineEnding(_data[_position]) && _data[_position] != (byte)'#')
             throw TextAfterClosingQuoteError();
     }
 
@@ -811,14 +833,8 @@ public ref struct Utf8DotEnvReader
     /// A line starts after a <c>\n</c> or <c>\r</c> byte, matching the line endings the reader recognizes. The column
     /// is computed only when an error is raised, so the hot path keeps no line-start state.
     /// </remarks>
-    private readonly int ColumnAt(int offset)
-    {
-        int lineStart = _data[..offset].LastIndexOfAny((byte)'\n', (byte)'\r') + 1;
-        if (lineStart == 0 && _data.StartsWith(Utf8Bom))
-            lineStart = Utf8Bom.Length;
-
-        return offset - lineStart + 1;
-    }
+    private readonly int ColumnAt(int offset) =>
+        offset - Utf8LineCursor.LineStart(_data, offset) + 1;
 
     /// <summary>
     /// Describes the character at a source offset for an error message: the character as written, or its first byte in

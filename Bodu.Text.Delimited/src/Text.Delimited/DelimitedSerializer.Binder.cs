@@ -7,7 +7,6 @@
 using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-using System.Reflection;
 
 using Bodu.Text.Delimited.Writer;
 using Bodu.Text.Serialization;
@@ -30,18 +29,18 @@ public static partial class DelimitedSerializer
     /// <param name="writer">The writer.</param>
     /// <param name="record">The record instance.</param>
     /// <param name="members">The mapped members.</param>
-    private static void WriteRecord(ref Utf8DelimitedWriter writer, object record, Member[] members)
+    private static void WriteRecord(ref Utf8DelimitedWriter writer, object record, FlatMemberDescriptor[] members)
     {
         (record as IOnSerializing)?.OnSerializing();
 
         writer.WriteStartObject();
-        foreach (Member member in members)
+        foreach (FlatMemberDescriptor member in members)
         {
             if (!member.CanRead)
                 continue;
 
             writer.WritePropertyName(member.Name);
-            writer.WriteString(ValueToString(member.GetValue(record)));
+            writer.WriteString(ValueToString(member.GetValue(record), member.ScalarKind));
         }
 
         writer.WriteEndObject();
@@ -55,13 +54,13 @@ public static partial class DelimitedSerializer
     /// </summary>
     /// <param name="writer">The writer.</param>
     /// <param name="members">The mapped members.</param>
-    private static void WriteHeaderRow(ref Utf8DelimitedWriter writer, Member[] members)
+    private static void WriteHeaderRow(ref Utf8DelimitedWriter writer, FlatMemberDescriptor[] members)
     {
         if (!Array.Exists(members, static member => member.CanRead))
             return;
 
         writer.WriteStartArray();
-        foreach (Member member in members)
+        foreach (FlatMemberDescriptor member in members)
         {
             if (member.CanRead)
                 writer.WriteString(member.Name);
@@ -85,13 +84,39 @@ public static partial class DelimitedSerializer
     }
 
     /// <summary>
+    /// Maps each member of a record type to the column of a header that it binds to, once for every row read under the
+    /// header.
+    /// </summary>
+    /// <param name="headers">The header column names, or an empty list for a headerless document.</param>
+    /// <param name="members">The mapped members.</param>
+    /// <param name="options">The serializer options.</param>
+    /// <returns>
+    /// For each member, the index of the first column whose header has its name, or <c>-1</c> when it has none or is
+    /// not writable; <see langword="null" /> for a headerless document, whose fields bind by position.
+    /// </returns>
+    private static int[]? CreateColumnMap(List<string> headers, FlatMemberDescriptor[] members, DelimitedSerializerOptions options)
+    {
+        if (headers.Count == 0)
+            return null;
+
+        StringComparison comparison = options.PropertyNameCaseInsensitive ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
+        int[] columns = new int[members.Length];
+        for (int i = 0; i < members.Length; i++)
+            columns[i] = members[i].CanWrite ? IndexOfHeader(headers, members[i].Name, comparison) : -1;
+
+        return columns;
+    }
+
+    /// <summary>
     /// Binds a single decoded row to a new record instance of the target type.
     /// </summary>
     /// <param name="fields">The decoded field values.</param>
-    /// <param name="headers">The header column names, or an empty list for a headerless document.</param>
+    /// <param name="columns">
+    /// The column of each member, from <see cref="CreateColumnMap" />, or <see langword="null" /> for a headerless
+    /// document.
+    /// </param>
     /// <param name="members">The mapped members.</param>
     /// <param name="recordType">The record type.</param>
-    /// <param name="options">The serializer options.</param>
     /// <returns>The bound record.</returns>
     /// <exception cref="DelimitedSerializationException">Thrown when a field cannot be converted.</exception>
     /// <remarks>
@@ -103,27 +128,22 @@ public static partial class DelimitedSerializer
     /// </remarks>
     [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
     [RequiresDynamicCode(RequiresDynamicCodeMessage)]
-    private static object BindRecord(string[] fields, List<string> headers, Member[] members, Type recordType, DelimitedSerializerOptions options)
+    private static object BindRecord(string[] fields, int[]? columns, FlatMemberDescriptor[] members, Type recordType)
     {
         object instance = Activator.CreateInstance(recordType)!;
         (instance as IOnDeserializing)?.OnDeserializing();
 
-        if (headers.Count == 0)
+        if (columns is null)
         {
             BindPositionally(instance, fields, members);
         }
         else
         {
-            StringComparison comparison = options.PropertyNameCaseInsensitive ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
-
-            foreach (Member member in members)
+            for (int i = 0; i < members.Length; i++)
             {
-                if (!member.CanWrite)
-                    continue;
-
-                int column = IndexOfHeader(headers, member.Name, comparison);
+                int column = columns[i];
                 if (column >= 0 && column < fields.Length)
-                    member.SetValue(instance, ConvertFromString(fields[column], member.MemberType, member.Name));
+                    members[i].SetValue(instance, ConvertFromString(fields[column], members[i]));
             }
         }
 
@@ -139,10 +159,10 @@ public static partial class DelimitedSerializer
     /// <param name="fields">The decoded field values.</param>
     /// <param name="members">The mapped members, in the order their columns are written.</param>
     /// <exception cref="DelimitedSerializationException">Thrown when a field cannot be converted.</exception>
-    private static void BindPositionally(object instance, string[] fields, Member[] members)
+    private static void BindPositionally(object instance, string[] fields, FlatMemberDescriptor[] members)
     {
         int column = 0;
-        foreach (Member member in members)
+        foreach (FlatMemberDescriptor member in members)
         {
             // Only a readable member is written, so only a readable member has a column.
             if (!member.CanRead)
@@ -152,7 +172,7 @@ public static partial class DelimitedSerializer
                 return;
 
             if (member.CanWrite)
-                member.SetValue(instance, ConvertFromString(fields[column], member.MemberType, member.Name));
+                member.SetValue(instance, ConvertFromString(fields[column], member));
 
             column++;
         }
@@ -191,6 +211,16 @@ public static partial class DelimitedSerializer
         InvariantScalarCodec.Format(value, InvariantScalarCodec.Policy.Delimited);
 
     /// <summary>
+    /// Converts a member's value to its delimited string representation, as <see cref="ValueToString(object?)" />
+    /// converts a value of the member's declared type.
+    /// </summary>
+    /// <param name="value">The value to convert.</param>
+    /// <param name="declaredKind">The scalar kind of the member's declared type.</param>
+    /// <returns>The string representation.</returns>
+    private static string ValueToString(object? value, FlatScalarKind declaredKind) =>
+        InvariantScalarCodec.Format(value, declaredKind, InvariantScalarCodec.Policy.Delimited);
+
+    /// <summary>
     /// Converts a string into a scalar while preserving this serializer's exception contract.
     /// </summary>
     /// <param name="raw">The raw text.</param>
@@ -216,6 +246,27 @@ public static partial class DelimitedSerializer
         {
             throw new DelimitedSerializationException(
                 string.Format(CultureInfo.CurrentCulture, DelimitedResourceStrings.Format_Invalid_DelimitedValueConversion, column, targetType), ex);
+        }
+    }
+
+    /// <summary>
+    /// Converts a field into a member's value, as <see cref="ConvertFromString(string, Type, string)" /> converts it
+    /// for the member's declared type and column.
+    /// </summary>
+    /// <param name="raw">The raw text.</param>
+    /// <param name="member">The member the value is for.</param>
+    /// <returns>The converted value.</returns>
+    /// <exception cref="DelimitedSerializationException">Thrown when the value cannot be converted.</exception>
+    private static object? ConvertFromString(string raw, FlatMemberDescriptor member)
+    {
+        try
+        {
+            return InvariantScalarCodec.Parse(raw, member.ScalarKind, member.ScalarType, member.IsNullable, InvariantScalarCodec.Policy.Delimited);
+        }
+        catch (Exception ex) when (ex is FormatException or OverflowException or ArgumentException or InvalidCastException)
+        {
+            throw new DelimitedSerializationException(
+                string.Format(CultureInfo.CurrentCulture, DelimitedResourceStrings.Format_Invalid_DelimitedValueConversion, member.Name, member.MemberType), ex);
         }
     }
 
@@ -266,12 +317,12 @@ public static partial class DelimitedSerializer
     /// read or written, so a type that is not a record is rejected whether or not there are records.
     /// </remarks>
     [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
-    private static Member[] GetRecordMembers(
+    private static FlatMemberDescriptor[] GetRecordMembers(
         [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)] Type recordType,
         DelimitedSerializerOptions options,
         bool reading)
     {
-        if (IsScalarType(recordType) || typeof(IEnumerable).IsAssignableFrom(recordType))
+        if (InvariantScalarCodec.IsScalar(recordType) || typeof(IEnumerable).IsAssignableFrom(recordType))
         {
             throw new DelimitedSerializationException(
                 string.Format(CultureInfo.CurrentCulture, DelimitedResourceStrings.Op_Invalid_DelimitedRecordTypeNotSupported, recordType));
@@ -287,89 +338,26 @@ public static partial class DelimitedSerializer
     }
 
     /// <summary>
-    /// Determines whether a type is a scalar, which converts as one field rather than mapping to columns.
-    /// </summary>
-    /// <param name="type">The type to examine.</param>
-    /// <returns>
-    /// <see langword="true" /> for a primitive, an enumeration, <see cref="string" />, <see cref="decimal" />,
-    /// <see cref="Guid" />, a date or time type, <see cref="Uri" />, a 128-bit or half-precision number,
-    /// <see cref="System.Numerics.BigInteger" />, or the nullable form of any of them; otherwise
-    /// <see langword="false" />.
-    /// </returns>
-    private static bool IsScalarType(Type type)
-    {
-        Type underlying = Nullable.GetUnderlyingType(type) ?? type;
-
-        return underlying.IsPrimitive || underlying.IsEnum || underlying == typeof(string) || underlying == typeof(decimal) ||
-            underlying == typeof(Guid) || underlying == typeof(DateTime) || underlying == typeof(DateTimeOffset) ||
-            underlying == typeof(DateOnly) || underlying == typeof(TimeOnly) || underlying == typeof(TimeSpan) ||
-            underlying == typeof(Uri) || underlying == typeof(Int128) || underlying == typeof(UInt128) ||
-            underlying == typeof(Half) || underlying == typeof(System.Numerics.BigInteger);
-    }
-
-    /// <summary>
-    /// Enumerates the mapped members of a record type, ordered by the property-order attribute.
+    /// Gets the mapped members of a record type, ordered by the property-order attribute, from the options' cache.
     /// </summary>
     /// <param name="type">The record type.</param>
-    /// <param name="options">The serializer options.</param>
+    /// <param name="options">The read-only serializer options.</param>
     /// <returns>The ordered member descriptors.</returns>
+    /// <exception cref="DelimitedSerializationException">
+    /// Thrown when two members of <paramref name="type" /> map to one column.
+    /// </exception>
     /// <remarks>
     /// Each member name is mapped once, to its most derived declaration: a property or field hidden with the
     /// <see langword="new" /> modifier is not mapped, for writing or for reading. When that most derived declaration is
     /// ignored, the name is not mapped at all.
     /// </remarks>
     [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
-    private static Member[] GetMembers(
+    private static FlatMemberDescriptor[] GetMembers(
         [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.PublicFields)] Type type,
-        DelimitedSerializerOptions options)
-    {
-        // Reflection returns a member hidden with new beside the member that hides it, so only the most derived
-        // declaration of each name is kept, at the position its name first appeared.
-        var declarations = new List<MemberInfo>();
-        foreach (PropertyInfo property in type.GetProperties(BindingFlags.Public | BindingFlags.Instance))
-        {
-            if (property.GetIndexParameters().Length == 0)
-                KeepMostDerived(declarations, property);
-        }
-
-        if (options.IncludeFields)
-        {
-            foreach (FieldInfo fieldInfo in type.GetFields(BindingFlags.Public | BindingFlags.Instance))
-                KeepMostDerived(declarations, fieldInfo);
-        }
-
-        var members = new List<Member>(declarations.Count);
-        foreach (MemberInfo declaration in declarations)
-        {
-            if (declaration.GetCustomAttribute<IgnoreAttribute>() is { Condition: IgnoreCondition.Always })
-                continue;
-
-            members.Add(declaration is PropertyInfo property ? Member.FromProperty(property, options) : Member.FromField((FieldInfo)declaration, options));
-        }
-
-        return [.. members.OrderBy(static m => m.Order)];
-    }
-
-    /// <summary>
-    /// Adds a member declaration to the list unless the list already holds the same name from a more derived type, and
-    /// replaces, in place, a declaration of the same name that it hides.
-    /// </summary>
-    /// <param name="declarations">The declarations kept so far, one per name.</param>
-    /// <param name="candidate">The declaration to consider.</param>
-    private static void KeepMostDerived(List<MemberInfo> declarations, MemberInfo candidate)
-    {
-        int existing = declarations.FindIndex(declaration => string.Equals(declaration.Name, candidate.Name, StringComparison.Ordinal));
-        if (existing < 0)
-        {
-            declarations.Add(candidate);
-            return;
-        }
-
-        if (candidate.DeclaringType is { } declaringType &&
-            declarations[existing].DeclaringType is { } keptType &&
-            declaringType.IsSubclassOf(keptType))
-        {
-            declarations[existing] = candidate;
-        }
-    }
+        DelimitedSerializerOptions options) =>
+        options.MemberCache.GetMembers(
+            type,
+            options.IncludeFields,
+            options.PropertyNamingPolicy,
+            static (type, column) => new DelimitedSerializationException(string.Format(CultureInfo.CurrentCulture, DelimitedResourceStrings.Op_Invalid_DelimitedDuplicateColumn, type, column)));
 }
