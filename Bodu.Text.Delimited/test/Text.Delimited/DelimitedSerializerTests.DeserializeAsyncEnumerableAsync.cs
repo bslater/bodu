@@ -794,4 +794,22 @@ public partial class DelimitedSerializerTests
         Assert.AreEqual("Grace", people[1].Name);
         Assert.AreEqual(45, people[1].Age);
     }
+
+    /// <summary>
+    /// Verifies that the incremental read binds columns by name as the buffered read does: with case-insensitive names
+    /// a member binds to the first of two columns that match it, on every record, a column no member is named for is
+    /// not read, and a member no column is named for keeps its default.
+    /// </summary>
+    /// <returns>A task representing the asynchronous test.</returns>
+    [TestMethod]
+    public async Task DeserializeAsyncEnumerableAsync_WhenColumnsMatchMembersIgnoringCase_ShouldBindTheFirstMatchingColumn()
+    {
+        var options = new DelimitedSerializerOptions { PropertyNameCaseInsensitive = true };
+        using var stream = new MemoryStream(Encoding.UTF8.GetBytes("name,Extra,NAME\nfirst,x,second\nthird,y,fourth\n"));
+
+        List<Person> people = await ToListAsync(DelimitedSerializer.DeserializeAsyncEnumerableAsync<Person>(stream, options));
+
+        CollectionAssert.AreEqual(new[] { "first", "third" }, people.Select(static person => person.Name).ToArray());
+        Assert.IsTrue(people.All(static person => person.Age == 0));
+    }
 }

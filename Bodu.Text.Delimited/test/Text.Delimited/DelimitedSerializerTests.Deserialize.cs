@@ -624,4 +624,48 @@ public partial class DelimitedSerializerTests
         Assert.IsTrue(ex.Message.Contains(typeof(int?).ToString(), StringComparison.Ordinal), ex.Message);
         Assert.IsInstanceOfType<FormatException>(ex.InnerException);
     }
+
+    /// <summary>
+    /// Verifies that with case-insensitive names a member binds to the first of two columns whose names match it
+    /// ignoring case, and the second is not read into it.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenTwoColumnsMatchAMemberIgnoringCase_ForCaseInsensitiveOptions_ShouldBindTheFirst()
+    {
+        var options = new DelimitedSerializerOptions { PropertyNameCaseInsensitive = true };
+
+        List<Person> people = DelimitedSerializer.Deserialize<Person>("name,NAME,AGE\nfirst,second,3\n", options);
+
+        Assert.AreEqual(1, people.Count);
+        Assert.AreEqual("first", people[0].Name);
+        Assert.AreEqual(3, people[0].Age);
+    }
+
+    /// <summary>
+    /// Verifies that with case-sensitive names a column whose name differs from a member's only in case is not bound,
+    /// and the member keeps its default.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenNamesDifferInCase_ForCaseSensitiveOptions_ShouldLeaveTheMembersAtTheirDefaults()
+    {
+        List<Person> people = DelimitedSerializer.Deserialize<Person>("name,age\nAda,36\n");
+
+        Assert.AreEqual(1, people.Count);
+        Assert.AreEqual(string.Empty, people[0].Name);
+        Assert.AreEqual(0, people[0].Age);
+    }
+
+    /// <summary>
+    /// Verifies that a column no member is named for is not read, and a member no column is named for keeps its
+    /// default.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenColumnsAndMembersDoNotAllMatch_ShouldBindOnlyTheMatchingOnes()
+    {
+        List<Person> people = DelimitedSerializer.Deserialize<Person>("Extra,Name\nx,Ada\n");
+
+        Assert.AreEqual(1, people.Count);
+        Assert.AreEqual("Ada", people[0].Name);
+        Assert.AreEqual(0, people[0].Age);
+    }
 }
