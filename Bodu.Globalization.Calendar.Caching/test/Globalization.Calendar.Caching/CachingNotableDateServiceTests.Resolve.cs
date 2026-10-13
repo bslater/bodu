@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Globalization;
+
 namespace Bodu.Globalization.Calendar.Caching;
 
 /// <summary>
@@ -12,6 +14,63 @@ namespace Bodu.Globalization.Calendar.Caching;
 /// </summary>
 public sealed partial class CachingNotableDateServiceTests
 {
+    /// <summary>
+    /// A fixture with a ten-day observance from 28 December, which runs into the next civil year, a five-day observance
+    /// from 1 June, and a one-day holiday on 1 January.
+    /// </summary>
+    private const string MultiDayXml = """
+    <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.multi-day">
+      <NotableDates>
+        <NotableDate id="new-years-day" displayName="New Year's Day" category="PublicHoliday" defaultNonWorkingDay="true">
+          <Rules><Rule id="x"><Strategy><Fixed month="January" day="1" /></Strategy></Rule></Rules>
+        </NotableDate>
+        <NotableDate id="summer-festival" displayName="Summer Festival" category="Cultural" defaultNonWorkingDay="false">
+          <Rules><Rule id="x" durationDays="5"><Strategy><Fixed month="June" day="1" /></Strategy></Rule></Rules>
+        </NotableDate>
+        <NotableDate id="year-end-break" displayName="Year-End Break" category="Cultural" defaultNonWorkingDay="false">
+          <Rules><Rule id="x" durationDays="10"><Strategy><Fixed month="December" day="28" /></Strategy></Rule></Rules>
+        </NotableDate>
+      </NotableDates>
+    </NotableDateResource>
+    """;
+
+    /// <summary>
+    /// Verifies that a window cutting a multi-day occurrence - one that starts before the window, including one that
+    /// starts in the previous civil year - resolves exactly as the wrapped service resolves it, through both the
+    /// per-year and the batch read paths.
+    /// </summary>
+    /// <param name="start">The first day of the window, as an ISO 8601 date.</param>
+    /// <param name="end">The last day of the window, as an ISO 8601 date.</param>
+    /// <param name="supportsBatch">Whether the cache backend exposes the batch read seam.</param>
+    [TestMethod]
+    [DataRow("2027-01-02", "2027-01-03", true)]
+    [DataRow("2027-01-06", "2027-01-06", false)]
+    [DataRow("2026-06-03", "2026-06-04", true)]
+    [DataRow("2026-12-01", "2027-01-31", true)]
+    [DataRow("2026-12-01", "2027-01-31", false)]
+    [DataRow("2026-12-30", "2027-01-02", true)]
+    [DataRow("2027-01-03", "2028-12-31", false)]
+    [DataRow("2025-06-01", "2027-12-31", true)]
+    public void Resolve_WhenRangeCutsMultiDayOccurrence_ShouldMatchWrappedService(string start, string end, bool supportsBatch)
+    {
+        var range = new DateRange(
+            DateOnly.ParseExact(start, "yyyy-MM-dd", CultureInfo.InvariantCulture),
+            DateOnly.ParseExact(end, "yyyy-MM-dd", CultureInfo.InvariantCulture));
+        var inner = new NotableDateService(NotableDateResourceLoader.Load(MultiDayXml));
+        using var service = new CachingNotableDateService(
+            inner,
+            new CountingNotableDateCache(supportsBatch).AsCache(),
+            new NotableDateCachingOptions { Ttl = TimeSpan.FromDays(30), ResourceVersion = "fixed" },
+            timeProvider: new MutableTimeProvider(Now));
+
+        string[] expected = Describe(inner.Resolve(range, "US"));
+        string[] computed = Describe(service.Resolve(range, "US"));
+        string[] served = Describe(service.Resolve(range, "US"));
+
+        CollectionAssert.AreEqual(expected, computed);
+        CollectionAssert.AreEqual(expected, served);
+    }
+
     /// <summary>
     /// Verifies that resolving the same year twice computes it once and serves the second call from the cache.
     /// </summary>
@@ -124,4 +183,12 @@ public sealed partial class CachingNotableDateServiceTests
             _ = service.Resolve(new DateOnly(2026, 1, 1), null!);
         });
     }
+
+    /// <summary>
+    /// Describes each occurrence by its emitted date, identity, and span, so two resolutions compare by value.
+    /// </summary>
+    /// <param name="occurrences">The occurrences to describe.</param>
+    /// <returns>One description per occurrence, in order.</returns>
+    private static string[] Describe(IReadOnlyList<NotableDate> occurrences) =>
+        [.. occurrences.Select(o => string.Create(CultureInfo.InvariantCulture, $"{o.Date:yyyy-MM-dd} {o.NotableDateId}/{o.RuleId} x{o.DurationDays}"))];
 }
