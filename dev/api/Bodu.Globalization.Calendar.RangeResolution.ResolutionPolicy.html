@@ -8,7 +8,7 @@
       <meta name="title" content="ResolutionPolicy Class
  | BODU ">
       
-      <meta name="description" content="Captures the resource-level policies that govern same-day collision handling, priority direction, category precedence, and the working week, plus three settings reserved for later releases.">
+      <meta name="description" content="Captures the resource-level policies that govern duplicate declarations, same-day and span collisions, priority direction, category precedence, range inclusion, and the working week.">
       <link rel="icon" href="../images/favicon.svg">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Globalization_Calendar_RangeResolution_ResolutionPolicy" data-uid="Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 ResolutionPolicy Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/66c058a8ea07bd18ef58627839845a1ba83d7f3f/Bodu.Globalization.Calendar/src/Globalization.Calendar.RangeResolution/ResolutionPolicy.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/acf497a438c38c5ebc4687b298bbf26dad20a2b6/Bodu.Globalization.Calendar/src/Globalization.Calendar.RangeResolution/ResolutionPolicy.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -104,11 +104,11 @@ ResolutionPolicy Class
   <dl><dt>Assembly</dt><dd>Bodu.Globalization.Calendar.dll</dd></dl>
   <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Globalization.Calendar">Bodu.Globalization.Calendar</a> <span class="bodu-package-version">1.3.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/66c058a8ea07bd18ef58627839845a1ba83d7f3f/Bodu.Globalization.Calendar/src/Globalization.Calendar.RangeResolution/ResolutionPolicy.cs">ResolutionPolicy.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/acf497a438c38c5ebc4687b298bbf26dad20a2b6/Bodu.Globalization.Calendar/src/Globalization.Calendar.RangeResolution/ResolutionPolicy.cs">ResolutionPolicy.cs</a></dd></dl>
   </div>
 
-  <div class="markdown summary"><p>Captures the resource-level policies that govern same-day collision handling, priority direction, category
-precedence, and the working week, plus three settings reserved for later releases.</p>
+  <div class="markdown summary"><p>Captures the resource-level policies that govern duplicate declarations, same-day and span collisions, priority
+direction, category precedence, range inclusion, and the working week.</p>
 </div>
 
   <div class="codewrapper">
@@ -184,11 +184,9 @@ The defaults mirror the recommended policy in the schema strategy: duplicates ar
 occurrences, higher priority wins, and the observed (emitted) occurrence controls range inclusion.
 </p>
 <p>
-<a class="xref" href="Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy.html#Bodu_Globalization_Calendar_RangeResolution_ResolutionPolicy_DuplicatePolicy">DuplicatePolicy</a>, <a class="xref" href="Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy.html#Bodu_Globalization_Calendar_RangeResolution_ResolutionPolicy_SpanCollisionPolicy">SpanCollisionPolicy</a>, and <a class="xref" href="Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy.html#Bodu_Globalization_Calendar_RangeResolution_ResolutionPolicy_ObservedDateRangePolicy">ObservedDateRangePolicy</a> are
-reserved: they are read from a document, stored, and written to binary packs, but the loader and the service do not
-consult them, so the engine always behaves as their defaults describe (duplicate identifiers are load errors,
-overlapping spans are kept, and inclusion follows the emitted span). Implementing them is tracked by
-<a href="https://github.com/bslater/bodu/issues/1119">issue #1119</a>.
+The loader applies <a class="xref" href="Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy.html#Bodu_Globalization_Calendar_RangeResolution_ResolutionPolicy_DuplicatePolicy">DuplicatePolicy</a> to the loaded document's own declarations. The service applies
+<a class="xref" href="Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy.html#Bodu_Globalization_Calendar_RangeResolution_ResolutionPolicy_SameDayCollisionPolicy">SameDayCollisionPolicy</a>, then <a class="xref" href="Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy.html#Bodu_Globalization_Calendar_RangeResolution_ResolutionPolicy_SpanCollisionPolicy">SpanCollisionPolicy</a>, and decides inclusion in a window
+with <a class="xref" href="Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy.html#Bodu_Globalization_Calendar_RangeResolution_ResolutionPolicy_ObservedDateRangePolicy">ObservedDateRangePolicy</a>.
 </p>
 <example>
 <pre><code class="lang-csharp">// The policy is authored on the document; the builder route sets each knob fluently
@@ -214,7 +212,7 @@ NotableDateResource resource = NotableDateDocumentBuilder.Create("demo")
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Globalization_Calendar_RangeResolution_ResolutionPolicy__ctor_Bodu_Globalization_Calendar_RangeResolution_DuplicatePolicy_Bodu_Globalization_Calendar_RangeResolution_CollisionPolicy_Bodu_Globalization_Calendar_RangeResolution_CollisionPolicy_Bodu_Globalization_Calendar_RangeResolution_PriorityDirection_Bodu_Globalization_Calendar_RangeResolution_ObservedDateRangePolicy_System_Nullable_Bodu_DayOfWeekSet__System_Collections_Generic_IReadOnlyList_Bodu_Globalization_Calendar_NotableDateCategory__" data-uid="Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy.#ctor(Bodu.Globalization.Calendar.RangeResolution.DuplicatePolicy,Bodu.Globalization.Calendar.RangeResolution.CollisionPolicy,Bodu.Globalization.Calendar.RangeResolution.CollisionPolicy,Bodu.Globalization.Calendar.RangeResolution.PriorityDirection,Bodu.Globalization.Calendar.RangeResolution.ObservedDateRangePolicy,System.Nullable{Bodu.DayOfWeekSet},System.Collections.Generic.IReadOnlyList{Bodu.Globalization.Calendar.NotableDateCategory})">
   ResolutionPolicy(DuplicatePolicy, CollisionPolicy, CollisionPolicy, PriorityDirection, ObservedDateRangePolicy, DayOfWeekSet?, IReadOnlyList&lt;NotableDateCategory&gt;?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/66c058a8ea07bd18ef58627839845a1ba83d7f3f/Bodu.Globalization.Calendar/src/Globalization.Calendar.RangeResolution/ResolutionPolicy.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/acf497a438c38c5ebc4687b298bbf26dad20a2b6/Bodu.Globalization.Calendar/src/Globalization.Calendar.RangeResolution/ResolutionPolicy.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -229,21 +227,21 @@ NotableDateResource resource = NotableDateDocumentBuilder.Create("demo")
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>duplicatePolicy</code> <a class="xref" href="Bodu.Globalization.Calendar.RangeResolution.DuplicatePolicy.html">DuplicatePolicy</a></dt>
-    <dd><p>The policy for two rules that resolve to the same identity; reserved, stored but not applied.</p>
+    <dd><p>The policy for two concepts, or two rules of one concept, that the document declares with one identifier.</p>
 </dd>
     <dt><code>sameDayCollisionPolicy</code> <a class="xref" href="Bodu.Globalization.Calendar.RangeResolution.CollisionPolicy.html">CollisionPolicy</a></dt>
     <dd><p>The policy applied when distinct notable dates resolve to the same emitted date.</p>
 </dd>
     <dt><code>spanCollisionPolicy</code> <a class="xref" href="Bodu.Globalization.Calendar.RangeResolution.CollisionPolicy.html">CollisionPolicy</a></dt>
-    <dd><p>The policy for distinct notable dates that resolve to overlapping spans; reserved, stored but not applied.</p>
+    <dd><p>The policy applied, after same-day settlement, to occurrences connected through overlapping spans.</p>
 </dd>
     <dt><code>priorityDirection</code> <a class="xref" href="Bodu.Globalization.Calendar.RangeResolution.PriorityDirection.html">PriorityDirection</a></dt>
     <dd><p>The direction in which numeric priority is interpreted.</p>
 </dd>
     <dt><code>observedDateRangePolicy</code> <a class="xref" href="Bodu.Globalization.Calendar.RangeResolution.ObservedDateRangePolicy.html">ObservedDateRangePolicy</a></dt>
-    <dd><p>The occurrence that controls range-query inclusion; reserved, stored but not applied.</p>
+    <dd><p>The span of an occurrence that controls range-query inclusion.</p>
 </dd>
-    <dt><code>workingWeek</code> <a class="xref" href="https://github.com/bslater/bodu/blob/66c058a8ea07bd18ef58627839845a1ba83d7f3f/Bodu.Core/src/DayOfWeekSet.Enumerator.cs">DayOfWeekSet</a>?</dt>
+    <dt><code>workingWeek</code> <a class="xref" href="https://github.com/bslater/bodu/blob/acf497a438c38c5ebc4687b298bbf26dad20a2b6/Bodu.Core/src/DayOfWeekSet.Enumerator.cs">DayOfWeekSet</a>?</dt>
     <dd><p>The working week that defines which weekdays are working days, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> for the default
 Monday-to-Friday working week (a Saturday and Sunday weekend).</p>
 </dd>
@@ -276,7 +274,7 @@ in built-in order so every ranked category retains a position.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Globalization_Calendar_RangeResolution_ResolutionPolicy_CategoryPrecedence" data-uid="Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy.CategoryPrecedence">
   CategoryPrecedence
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/66c058a8ea07bd18ef58627839845a1ba83d7f3f/Bodu.Globalization.Calendar/src/Globalization.Calendar.RangeResolution/ResolutionPolicy.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/acf497a438c38c5ebc4687b298bbf26dad20a2b6/Bodu.Globalization.Calendar/src/Globalization.Calendar.RangeResolution/ResolutionPolicy.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -314,7 +312,7 @@ list omits appended in built-in order.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Globalization_Calendar_RangeResolution_ResolutionPolicy_Default" data-uid="Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy.Default">
   Default
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/66c058a8ea07bd18ef58627839845a1ba83d7f3f/Bodu.Globalization.Calendar/src/Globalization.Calendar.RangeResolution/ResolutionPolicy.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/acf497a438c38c5ebc4687b298bbf26dad20a2b6/Bodu.Globalization.Calendar/src/Globalization.Calendar.RangeResolution/ResolutionPolicy.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -351,12 +349,12 @@ list omits appended in built-in order.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Globalization_Calendar_RangeResolution_ResolutionPolicy_DuplicatePolicy" data-uid="Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy.DuplicatePolicy">
   DuplicatePolicy
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/66c058a8ea07bd18ef58627839845a1ba83d7f3f/Bodu.Globalization.Calendar/src/Globalization.Calendar.RangeResolution/ResolutionPolicy.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/acf497a438c38c5ebc4687b298bbf26dad20a2b6/Bodu.Globalization.Calendar/src/Globalization.Calendar.RangeResolution/ResolutionPolicy.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
-  <div class="markdown level1 summary"><p>Gets the policy the resource declares for two rules that resolve to the same identity. Reserved: the value is
-stored but not applied.</p>
+  <div class="markdown level1 summary"><p>Gets the policy the loader applies to two concepts, or two rules of one concept, that the document declares with
+one identifier.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -379,8 +377,8 @@ stored but not applied.</p>
 
 
   <h4 class="section" id="Bodu_Globalization_Calendar_RangeResolution_ResolutionPolicy_DuplicatePolicy_remarks">Remarks</h4>
-  <div class="markdown level1 remarks"><p>Duplicate concept and rule identifiers are always load errors, whatever the value; see
-<a class="xref" href="Bodu.Globalization.Calendar.RangeResolution.DuplicatePolicy.html">DuplicatePolicy</a>.</p>
+  <div class="markdown level1 remarks"><p>The loader applies it when the document is loaded, to that document's own declarations; a loaded resource holds
+no duplicate the policy settles. See <a class="xref" href="Bodu.Globalization.Calendar.RangeResolution.DuplicatePolicy.html">DuplicatePolicy</a>.</p>
 </div>
 
 
@@ -393,12 +391,11 @@ stored but not applied.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Globalization_Calendar_RangeResolution_ResolutionPolicy_ObservedDateRangePolicy" data-uid="Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy.ObservedDateRangePolicy">
   ObservedDateRangePolicy
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/66c058a8ea07bd18ef58627839845a1ba83d7f3f/Bodu.Globalization.Calendar/src/Globalization.Calendar.RangeResolution/ResolutionPolicy.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/acf497a438c38c5ebc4687b298bbf26dad20a2b6/Bodu.Globalization.Calendar/src/Globalization.Calendar.RangeResolution/ResolutionPolicy.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
-  <div class="markdown level1 summary"><p>Gets the occurrence the resource declares to control whether a resolved notable date is included by a range
-query. Reserved: the value is stored but not applied.</p>
+  <div class="markdown level1 summary"><p>Gets the span of an occurrence, emitted, actual, or either, that decides whether a range query includes it.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -421,8 +418,7 @@ query. Reserved: the value is stored but not applied.</p>
 
 
   <h4 class="section" id="Bodu_Globalization_Calendar_RangeResolution_ResolutionPolicy_ObservedDateRangePolicy_remarks">Remarks</h4>
-  <div class="markdown level1 remarks"><p>A query always includes an occurrence whose emitted span intersects the window; see
-<a class="xref" href="Bodu.Globalization.Calendar.RangeResolution.ObservedDateRangePolicy.html">ObservedDateRangePolicy</a>.</p>
+  <div class="markdown level1 remarks"><p>See <a class="xref" href="Bodu.Globalization.Calendar.RangeResolution.ObservedDateRangePolicy.html">ObservedDateRangePolicy</a>.</p>
 </div>
 
 
@@ -435,7 +431,7 @@ query. Reserved: the value is stored but not applied.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Globalization_Calendar_RangeResolution_ResolutionPolicy_PriorityDirection" data-uid="Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy.PriorityDirection">
   PriorityDirection
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/66c058a8ea07bd18ef58627839845a1ba83d7f3f/Bodu.Globalization.Calendar/src/Globalization.Calendar.RangeResolution/ResolutionPolicy.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/acf497a438c38c5ebc4687b298bbf26dad20a2b6/Bodu.Globalization.Calendar/src/Globalization.Calendar.RangeResolution/ResolutionPolicy.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -472,7 +468,7 @@ query. Reserved: the value is stored but not applied.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Globalization_Calendar_RangeResolution_ResolutionPolicy_SameDayCollisionPolicy" data-uid="Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy.SameDayCollisionPolicy">
   SameDayCollisionPolicy
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/66c058a8ea07bd18ef58627839845a1ba83d7f3f/Bodu.Globalization.Calendar/src/Globalization.Calendar.RangeResolution/ResolutionPolicy.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/acf497a438c38c5ebc4687b298bbf26dad20a2b6/Bodu.Globalization.Calendar/src/Globalization.Calendar.RangeResolution/ResolutionPolicy.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -513,12 +509,11 @@ multi-day occurrence that loses on its emitted date is absent from every range i
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Globalization_Calendar_RangeResolution_ResolutionPolicy_SpanCollisionPolicy" data-uid="Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy.SpanCollisionPolicy">
   SpanCollisionPolicy
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/66c058a8ea07bd18ef58627839845a1ba83d7f3f/Bodu.Globalization.Calendar/src/Globalization.Calendar.RangeResolution/ResolutionPolicy.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/acf497a438c38c5ebc4687b298bbf26dad20a2b6/Bodu.Globalization.Calendar/src/Globalization.Calendar.RangeResolution/ResolutionPolicy.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
-  <div class="markdown level1 summary"><p>Gets the policy the resource declares for distinct notable dates that resolve to overlapping spans. Reserved:
-the value is stored but not applied.</p>
+  <div class="markdown level1 summary"><p>Gets the policy applied, after same-day settlement, to distinct notable dates whose emitted spans overlap.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -541,8 +536,17 @@ the value is stored but not applied.</p>
 
 
   <h4 class="section" id="Bodu_Globalization_Calendar_RangeResolution_ResolutionPolicy_SpanCollisionPolicy_remarks">Remarks</h4>
-  <div class="markdown level1 remarks"><p>Overlapping multi-day spans are never reconciled; only <a class="xref" href="Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy.html#Bodu_Globalization_Calendar_RangeResolution_ResolutionPolicy_SameDayCollisionPolicy">SameDayCollisionPolicy</a>, over occurrences
-that share an emitted date, is applied.</p>
+  <div class="markdown level1 remarks"><p>
+The policy settles every chain of occurrences connected through overlapping emitted spans that holds a multi-day
+occurrence, as one group ranked as a same-day group is; a chain is the whole connected run, not each overlapping
+pair. Occurrences that overlap only by sharing their emitted date, none of them multi-day, are left to
+<a class="xref" href="Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy.html#Bodu_Globalization_Calendar_RangeResolution_ResolutionPolicy_SameDayCollisionPolicy">SameDayCollisionPolicy</a>.
+</p>
+<p>
+A chain is settled whole, whatever window is queried: while a chain that reaches the window may continue into a
+civil year the query has not gathered, the query gathers one more year on that side, up to ten civil years
+beyond its one-year margin. A chain that never ends is settled over what was gathered at that limit.
+</p>
 </div>
 
 
@@ -555,7 +559,7 @@ that share an emitted date, is applied.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Globalization_Calendar_RangeResolution_ResolutionPolicy_WorkingWeek" data-uid="Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy.WorkingWeek">
   WorkingWeek
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/66c058a8ea07bd18ef58627839845a1ba83d7f3f/Bodu.Globalization.Calendar/src/Globalization.Calendar.RangeResolution/ResolutionPolicy.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/acf497a438c38c5ebc4687b298bbf26dad20a2b6/Bodu.Globalization.Calendar/src/Globalization.Calendar.RangeResolution/ResolutionPolicy.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -623,7 +627,7 @@ unspecified.</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 66c058a · Built: 2026-10-13 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: acf497a · Built: 2026-10-13 (UTC)</span>
         </div>
       </div>
     </footer>

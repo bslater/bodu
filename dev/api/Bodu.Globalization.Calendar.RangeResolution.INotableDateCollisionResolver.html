@@ -8,7 +8,7 @@
       <meta name="title" content="INotableDateCollisionResolver Interface
  | BODU ">
       
-      <meta name="description" content="Resolves a set of notable-date occurrences that share the same emitted date, used when the resource&#39;s same-day collision policy is .">
+      <meta name="description" content="Resolves a group of colliding notable-date occurrences, used when the resource&#39;s same-day or span collision policy is .">
       <link rel="icon" href="../images/favicon.svg">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Globalization_Calendar_RangeResolution_INotableDateCollisionResolver" data-uid="Bodu.Globalization.Calendar.RangeResolution.INotableDateCollisionResolver" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 INotableDateCollisionResolver Interface
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/66c058a8ea07bd18ef58627839845a1ba83d7f3f/Bodu.Globalization.Calendar/src/Globalization.Calendar.RangeResolution/INotableDateCollisionResolver.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/acf497a438c38c5ebc4687b298bbf26dad20a2b6/Bodu.Globalization.Calendar/src/Globalization.Calendar.RangeResolution/INotableDateCollisionResolver.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -104,11 +104,11 @@ INotableDateCollisionResolver Interface
   <dl><dt>Assembly</dt><dd>Bodu.Globalization.Calendar.dll</dd></dl>
   <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Globalization.Calendar">Bodu.Globalization.Calendar</a> <span class="bodu-package-version">1.3.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/66c058a8ea07bd18ef58627839845a1ba83d7f3f/Bodu.Globalization.Calendar/src/Globalization.Calendar.RangeResolution/INotableDateCollisionResolver.cs">INotableDateCollisionResolver.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/acf497a438c38c5ebc4687b298bbf26dad20a2b6/Bodu.Globalization.Calendar/src/Globalization.Calendar.RangeResolution/INotableDateCollisionResolver.cs">INotableDateCollisionResolver.cs</a></dd></dl>
   </div>
 
-  <div class="markdown summary"><p>Resolves a set of notable-date occurrences that share the same emitted date, used when the resource's same-day
-collision policy is <a class="xref" href="Bodu.Globalization.Calendar.RangeResolution.CollisionPolicy.html#Bodu_Globalization_Calendar_RangeResolution_CollisionPolicy_Custom">Custom</a>.</p>
+  <div class="markdown summary"><p>Resolves a group of colliding notable-date occurrences, used when the resource's same-day or span collision policy
+is <a class="xref" href="Bodu.Globalization.Calendar.RangeResolution.CollisionPolicy.html#Bodu_Globalization_Calendar_RangeResolution_CollisionPolicy_Custom">Custom</a>.</p>
 </div>
 
   <div class="codewrapper">
@@ -164,16 +164,21 @@ public sealed class HighestPriorityResolver : INotableDateCollisionResolver
 
   <h2 id="Bodu_Globalization_Calendar_RangeResolution_INotableDateCollisionResolver_remarks">Remarks</h2>
   <div class="markdown level0 remarks"><p>
-The resolver is consulted once per group of two or more occurrences that land on the same emitted date. It returns
-the subset to keep, in the order they should appear; returning an empty list suppresses the date entirely. Pass an
-implementation to the collaborator-aware <a class="xref" href="Bodu.Globalization.Calendar.NotableDateService.html">NotableDateService</a> constructor, and set the resource's
-same-day collision policy to <a class="xref" href="Bodu.Globalization.Calendar.RangeResolution.CollisionPolicy.html#Bodu_Globalization_Calendar_RangeResolution_CollisionPolicy_Custom">Custom</a> so the resolver is invoked.
+The resolver is consulted once per group: under the same-day policy, two or more occurrences that land on the same
+emitted date, passed with that date; under the span policy, a chain of two or more occurrences connected through
+overlapping emitted spans that holds a multi-day occurrence, passed with the chain's earliest emitted date, after
+the same-day groups are settled. It returns the subset to keep, in the order they should appear within their date;
+returning an empty list suppresses the group entirely. Pass an implementation to the collaborator-aware
+<a class="xref" href="Bodu.Globalization.Calendar.NotableDateService.html">NotableDateService</a> constructor, and set the resource's same-day or span collision policy to
+<a class="xref" href="Bodu.Globalization.Calendar.RangeResolution.CollisionPolicy.html#Bodu_Globalization_Calendar_RangeResolution_CollisionPolicy_Custom">Custom</a> so the resolver is invoked. Without a resolver,
+<a class="xref" href="Bodu.Globalization.Calendar.RangeResolution.CollisionPolicy.html#Bodu_Globalization_Calendar_RangeResolution_CollisionPolicy_Custom">Custom</a> keeps every occurrence of the group.
 </p>
 <p>
-The group holds every occurrence emitted on the date, including one whose span ends before the queried range, so the
-resolver sees the same group whatever range is queried and its decision does not depend on the range. The service
-consults it only for a date at least one of whose occurrences reaches into the queried range, and returns the kept
-occurrences that reach into the range.
+A same-day group holds every occurrence emitted on the date, including one whose span ends before the queried range,
+and a chain is gathered whole, so the resolver sees the same group whatever range is queried and its decision does
+not depend on the range. The service consults it only for a group that can reach the result, one holding an
+occurrence the queried range includes or, under the span policy, belonging to a chain that does, and returns the
+kept occurrences the range includes.
 </p>
 </div>
 
@@ -187,7 +192,7 @@ occurrences that reach into the range.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Globalization_Calendar_RangeResolution_INotableDateCollisionResolver_Resolve_System_DateOnly_System_Collections_Generic_IReadOnlyList_Bodu_Globalization_Calendar_NotableDate__" data-uid="Bodu.Globalization.Calendar.RangeResolution.INotableDateCollisionResolver.Resolve(System.DateOnly,System.Collections.Generic.IReadOnlyList{Bodu.Globalization.Calendar.NotableDate})">
   Resolve(DateOnly, IReadOnlyList&lt;NotableDate&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/66c058a8ea07bd18ef58627839845a1ba83d7f3f/Bodu.Globalization.Calendar/src/Globalization.Calendar.RangeResolution/INotableDateCollisionResolver.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/acf497a438c38c5ebc4687b298bbf26dad20a2b6/Bodu.Globalization.Calendar/src/Globalization.Calendar.RangeResolution/INotableDateCollisionResolver.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -202,16 +207,16 @@ occurrences that reach into the range.
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>date</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.dateonly">DateOnly</a></dt>
-    <dd><p>The emitted date the occurrences share.</p>
+    <dd><p>The emitted date a same-day group shares, or the earliest emitted date of an overlap chain.</p>
 </dd>
-    <dt><code>colliding</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://github.com/bslater/bodu/blob/66c058a8ea07bd18ef58627839845a1ba83d7f3f/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDate.cs">NotableDate</a>&gt;</dt>
-    <dd><p>The two or more occurrences emitted on the date, in resolution order.</p>
+    <dt><code>colliding</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://github.com/bslater/bodu/blob/acf497a438c38c5ebc4687b298bbf26dad20a2b6/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDate.cs">NotableDate</a>&gt;</dt>
+    <dd><p>The two or more colliding occurrences, in resolution order.</p>
 </dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://github.com/bslater/bodu/blob/66c058a8ea07bd18ef58627839845a1ba83d7f3f/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDate.cs">NotableDate</a>&gt;</dt>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="https://github.com/bslater/bodu/blob/acf497a438c38c5ebc4687b298bbf26dad20a2b6/Bodu.Globalization.Calendar/src/Globalization.Calendar/NotableDate.cs">NotableDate</a>&gt;</dt>
     <dd><p>The occurrences to keep; an empty result suppresses the date entirely.</p>
 </dd>
   </dl>
@@ -262,7 +267,7 @@ occurrences that reach into the range.
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 66c058a · Built: 2026-10-13 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: acf497a · Built: 2026-10-13 (UTC)</span>
         </div>
       </div>
     </footer>

@@ -10299,7 +10299,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Globalization.Calendar.RangeResolution.DuplicatePolicy",
-      "Summary": "<p sourcefile=\"api/Bodu.Globalization.Calendar.RangeResolution.DuplicatePolicy.yml\" sourcestartlinenumber=\"1\">Specifies how a resource asks for two rules that resolve to the same full identity to be treated. Reserved: the\nvalue is stored but not yet applied.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Globalization.Calendar.RangeResolution.DuplicatePolicy.yml\" sourcestartlinenumber=\"1\">Specifies how the loader treats two concepts, or two rules of one concept, that a document declares with the same\nidentifier.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -10327,7 +10327,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Globalization.Calendar.RangeResolution.INotableDateCollisionResolver",
-      "Summary": "<p sourcefile=\"api/Bodu.Globalization.Calendar.RangeResolution.INotableDateCollisionResolver.yml\" sourcestartlinenumber=\"1\">Resolves a set of notable-date occurrences that share the same emitted date, used when the resource's same-day\ncollision policy is <xref href=\"Bodu.Globalization.Calendar.RangeResolution.CollisionPolicy.Custom\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Globalization.Calendar.RangeResolution.INotableDateCollisionResolver.yml\" sourcestartlinenumber=\"1\">Resolves a group of colliding notable-date occurrences, used when the resource's same-day or span collision policy\nis <xref href=\"Bodu.Globalization.Calendar.RangeResolution.CollisionPolicy.Custom\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -10341,7 +10341,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Globalization.Calendar.RangeResolution.ObservedDateRangePolicy",
-      "Summary": "<p sourcefile=\"api/Bodu.Globalization.Calendar.RangeResolution.ObservedDateRangePolicy.yml\" sourcestartlinenumber=\"1\">Specifies which occurrence date a resource asks to control whether a resolved notable date is included by a\ndate-range query. Reserved: the value is stored but not yet applied.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Globalization.Calendar.RangeResolution.ObservedDateRangePolicy.yml\" sourcestartlinenumber=\"1\">Specifies which span of a resolved occurrence decides whether a date-range query includes it: the emitted span, the\nactual span, or either.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -10369,7 +10369,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy",
-      "Summary": "<p sourcefile=\"api/Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy.yml\" sourcestartlinenumber=\"1\">Captures the resource-level policies that govern same-day collision handling, priority direction, category\nprecedence, and the working week, plus three settings reserved for later releases.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy.yml\" sourcestartlinenumber=\"1\">Captures the resource-level policies that govern duplicate declarations, same-day and span collisions, priority\ndirection, category precedence, range inclusion, and the working week.</p>\n"
     },
     {
       "type": "ManagedReference",
