@@ -132,6 +132,25 @@ public sealed partial class Base64Tests
     }
 
     /// <summary>
+    /// Verifies that <see cref="Base64.TryDecode" /> returns <see langword="false" />, rather than throwing, for padded
+    /// input shorter than one four-character quantum.
+    /// </summary>
+    /// <param name="input">The padded input shorter than one quantum.</param>
+    [TestMethod]
+    [DataRow("QQ=")]
+    [DataRow("Q=")]
+    [DataRow("=")]
+    public void TryDecode_WhenStrictInputIsPaddedAndShorterThanAQuantum_ShouldReturnFalse(string input)
+    {
+        byte[] destination = new byte[4];
+
+        bool ok = Base64.TryDecode(input.AsSpan(), destination, out int bytesWritten);
+
+        Assert.IsFalse(ok);
+        Assert.AreEqual(0, bytesWritten);
+    }
+
+    /// <summary>
     /// Verifies that <see cref="Base64.TryDecode" /> rejects an undefined variant.
     /// </summary>
     [TestMethod]

@@ -175,6 +175,58 @@ public sealed partial class Base64Tests
     }
 
     /// <summary>
+    /// Verifies that <see cref="Base64.Decode(string, Base64Variant, BaseFormatStyles)" /> rejects padded input shorter
+    /// than one four-character quantum with <see cref="FormatException" /> when the variant and styles require padding.
+    /// </summary>
+    /// <param name="input">The padded input shorter than one quantum.</param>
+    /// <param name="variant">The variant to decode with.</param>
+    /// <param name="styles">The styles to decode with.</param>
+    [TestMethod]
+    [DataRow("QQ=", Base64Variant.Standard, BaseFormatStyles.None, DisplayName = "QQ=")]
+    [DataRow("Q=", Base64Variant.Standard, BaseFormatStyles.None, DisplayName = "Q=")]
+    [DataRow("=", Base64Variant.Standard, BaseFormatStyles.None, DisplayName = "=")]
+    [DataRow("==", Base64Variant.Standard, BaseFormatStyles.None, DisplayName = "==")]
+    [DataRow("===", Base64Variant.Standard, BaseFormatStyles.None, DisplayName = "===")]
+    [DataRow("QQ=", Base64Variant.Mime, BaseFormatStyles.None, DisplayName = "QQ= (MIME)")]
+    [DataRow(" Q Q = ", Base64Variant.Standard, BaseFormatStyles.IgnoreWhitespace, DisplayName = "QQ= among white space")]
+    [DataRow("QQ=", Base64Variant.Standard, BaseFormatStyles.RequireCanonicalEncoding, DisplayName = "QQ= (canonical)")]
+    public void Decode_WhenStrictInputIsPaddedAndShorterThanAQuantum_ShouldThrowFormatException(string input, Base64Variant variant, BaseFormatStyles styles)
+    {
+        Assert.ThrowsExactly<FormatException>(() =>
+        {
+            _ = Base64.Decode(input, variant, styles);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Base64.Decode(ReadOnlySpan{char}, Base64Variant, BaseFormatStyles)" /> rejects padded
+    /// input shorter than one four-character quantum with <see cref="FormatException" />.
+    /// </summary>
+    [TestMethod]
+    public void Decode_ForCharSpan_WhenStrictInputIsPaddedAndShorterThanAQuantum_ShouldThrowFormatException()
+    {
+        Assert.ThrowsExactly<FormatException>(() =>
+        {
+            _ = Base64.Decode("QQ=".AsSpan());
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Base64.Decode(char[], int, int, Base64Variant, BaseFormatStyles)" /> rejects a padded
+    /// segment shorter than one four-character quantum with <see cref="FormatException" />.
+    /// </summary>
+    [TestMethod]
+    public void Decode_ForCharArraySegment_WhenStrictInputIsPaddedAndShorterThanAQuantum_ShouldThrowFormatException()
+    {
+        char[] chars = "QUJDQQ=".ToCharArray();
+
+        Assert.ThrowsExactly<FormatException>(() =>
+        {
+            _ = Base64.Decode(chars, 4, 3);
+        });
+    }
+
+    /// <summary>
     /// Verifies that the decoder rejects an input containing only padding characters.
     /// </summary>
     [TestMethod]

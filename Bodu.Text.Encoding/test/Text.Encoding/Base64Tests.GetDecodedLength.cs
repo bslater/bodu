@@ -25,9 +25,6 @@ public sealed partial class Base64Tests
             {
                 foreach (BaseFormatStyles styles in DecodeAgreement.AllStyles)
                 {
-                    if (IsShortPaddedStrictInput(input, variant, styles))
-                        continue;
-
                     DecodeAgreement.TryDecode(() => Base64.Decode(input, variant, styles), out int decodedLength);
                     DecodeAgreement.TryDecode(() => new byte[Base64.GetDecodedLength(input, variant, styles)], out int reportedLength);
                     if (reportedLength != decodedLength)
@@ -122,9 +119,6 @@ public sealed partial class Base64Tests
             {
                 foreach (BaseFormatStyles styles in DecodeAgreement.AllStyles)
                 {
-                    if (IsShortPaddedStrictInput(input, variant, styles))
-                        continue;
-
                     DecodeAgreement.TryDecode(() => Base64.Decode(input, variant, styles), out int decodedLength);
                     var reportedLength = Base64.TryGetDecodedLength(input, out int byteCount, variant, styles) ? byteCount : -1;
                     if (reportedLength != decodedLength)

@@ -116,6 +116,21 @@ public sealed partial class Base64Tests
         Assert.AreEqual(3, bytesWritten);
     }
     /// <summary>
+    /// Verifies that <see cref="Base64.DecodeFromUtf8" /> reports <see cref="OperationStatus.InvalidData" /> for padded
+    /// UTF-8 input shorter than one four-character quantum.
+    /// </summary>
+    [TestMethod]
+    public void DecodeFromUtf8_WhenStrictInputIsPaddedAndShorterThanAQuantum_ShouldReturnInvalidData()
+    {
+        byte[] destination = new byte[4];
+
+        OperationStatus status = Base64.DecodeFromUtf8(Ascii("QQ="), destination, out int bytesConsumed, out int bytesWritten);
+
+        Assert.AreEqual(OperationStatus.InvalidData, status);
+        Assert.AreEqual(0, bytesWritten);
+    }
+
+    /// <summary>
     /// Verifies that <see cref="Base64.EncodeToUtf8" /> returns the Standard variant output as ASCII bytes.
     /// </summary>
     [TestMethod]
