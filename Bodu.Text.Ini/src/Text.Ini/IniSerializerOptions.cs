@@ -193,14 +193,6 @@ public sealed class IniSerializerOptions
     internal void MakeReadOnly() => _isReadOnly = true;
 
     /// <summary>
-    /// Converts a member name to its serialized key, applying the configured naming policy.
-    /// </summary>
-    /// <param name="memberName">The .NET member name.</param>
-    /// <returns>The serialized key.</returns>
-    internal string ConvertName(string memberName) =>
-        _propertyNamingPolicy?.ConvertName(memberName) ?? memberName;
-
-    /// <summary>
     /// Creates the document-model options carrying this instance's duplicate policies.
     /// </summary>
     /// <returns>The document options.</returns>

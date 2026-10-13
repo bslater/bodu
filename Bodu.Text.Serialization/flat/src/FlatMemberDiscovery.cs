@@ -54,6 +54,24 @@ internal static class FlatMemberDiscovery
     }
 
     /// <summary>
+    /// Describes the members a type maps, applying the selection rules of <see cref="Enumerate(Type, bool)" /> and
+    /// ordering the descriptors by the property-order attribute.
+    /// </summary>
+    /// <param name="type">The type whose members will be described.</param>
+    /// <param name="includeFields">Whether public instance fields are included.</param>
+    /// <param name="namingPolicy">The naming policy that converts member names, or <see langword="null" />.</param>
+    /// <returns>
+    /// The descriptors, in order of their property-order attribute and, for an equal order, of discovery.
+    /// </returns>
+    internal static FlatMemberDescriptor[] Describe(
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.PublicFields)] Type type,
+        bool includeFields,
+        NamingPolicy? namingPolicy) =>
+        [.. Enumerate(type, includeFields)
+            .Select(member => new FlatMemberDescriptor(member, namingPolicy))
+            .OrderBy(static member => member.Order)];
+
+    /// <summary>
     /// Finds the first name that more than one of the mapped members uses, comparing names ordinally.
     /// </summary>
     /// <param name="members">The mapped members.</param>

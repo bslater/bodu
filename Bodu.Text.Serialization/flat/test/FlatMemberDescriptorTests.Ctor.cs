@@ -15,7 +15,7 @@ public sealed partial class FlatMemberDescriptorTests
     [TestMethod]
     public void Ctor_WhenPropertyHasNameAndRequiredAttributes_ShouldReadThem()
     {
-        var descriptor = new DescriptorProbe(typeof(MemberSample).GetProperty(nameof(MemberSample.Count))!);
+        var descriptor = new FlatMemberDescriptor(typeof(MemberSample).GetProperty(nameof(MemberSample.Count))!, namingPolicy: null);
 
         Assert.AreEqual("CUSTOM_KEY", descriptor.Name);
         Assert.IsTrue(descriptor.Required);
@@ -30,7 +30,7 @@ public sealed partial class FlatMemberDescriptorTests
     [TestMethod]
     public void Ctor_WhenPropertyIsDeclaredWithTheRequiredKeyword_ShouldDescribeItAsRequired()
     {
-        var descriptor = new DescriptorProbe(typeof(RequiredKeywordSample).GetProperty(nameof(RequiredKeywordSample.Count))!);
+        var descriptor = new FlatMemberDescriptor(typeof(RequiredKeywordSample).GetProperty(nameof(RequiredKeywordSample.Count))!, namingPolicy: null);
 
         Assert.IsTrue(descriptor.Required);
     }
@@ -41,7 +41,7 @@ public sealed partial class FlatMemberDescriptorTests
     [TestMethod]
     public void Ctor_WhenFieldIsReadOnly_ShouldDescribeItAsReadableButNotWritable()
     {
-        var descriptor = new DescriptorProbe(typeof(MemberSample).GetField(nameof(MemberSample.ImmutableField))!);
+        var descriptor = new FlatMemberDescriptor(typeof(MemberSample).GetField(nameof(MemberSample.ImmutableField))!, namingPolicy: null);
 
         Assert.IsTrue(descriptor.CanRead);
         Assert.IsFalse(descriptor.CanWrite);
@@ -53,7 +53,7 @@ public sealed partial class FlatMemberDescriptorTests
     [TestMethod]
     public void Ctor_WhenPropertyHasOrderAttribute_ShouldReadTheOrder()
     {
-        var descriptor = new DescriptorProbe(typeof(MemberSample).GetProperty(nameof(MemberSample.Number))!);
+        var descriptor = new FlatMemberDescriptor(typeof(MemberSample).GetProperty(nameof(MemberSample.Number))!, namingPolicy: null);
 
         Assert.AreEqual(2, descriptor.Order);
     }

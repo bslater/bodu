@@ -10,12 +10,13 @@ using System.Runtime.CompilerServices;
 namespace Bodu.Text.Serialization;
 
 /// <summary>
-/// Common reflection descriptor for the simple POCO record serializers.
+/// Describes one property or field that a line-format serializer maps: its serialized name, its type and the scalar it
+/// converts as, the attributes that shape it, and access to its value.
 /// </summary>
 /// <remarks>
-/// Discovery and format-specific mapping remain owned by the caller.
+/// A descriptor is immutable once created, so it can be shared between calls and threads.
 /// </remarks>
-internal class FlatMemberDescriptor
+internal sealed class FlatMemberDescriptor
 {
     /// <summary>The underlying property, when the member is a property.</summary>
     private readonly PropertyInfo? _property;
@@ -27,14 +28,22 @@ internal class FlatMemberDescriptor
     /// Initializes a new instance of the <see cref="FlatMemberDescriptor" /> class for a reflected property or field.
     /// </summary>
     /// <param name="member">The reflected property or field.</param>
-    /// <param name="convertName">The member-naming policy.</param>
-    protected FlatMemberDescriptor(MemberInfo member, Func<string, string> convertName)
+    /// <param name="namingPolicy">
+    /// The naming policy that converts the member's name, or <see langword="null" /> to keep it.
+    /// </param>
+    /// <remarks>
+    /// A <see cref="PropertyNameAttribute" /> names the member as it is, before and instead of the naming policy.
+    /// </remarks>
+    internal FlatMemberDescriptor(MemberInfo member, NamingPolicy? namingPolicy)
     {
         _property = member as PropertyInfo;
         _field = member as FieldInfo;
 
-        Name = member.GetCustomAttribute<PropertyNameAttribute>()?.Name ?? convertName(member.Name);
+        Name = member.GetCustomAttribute<PropertyNameAttribute>()?.Name ?? namingPolicy?.ConvertName(member.Name) ?? member.Name;
         MemberType = _property?.PropertyType ?? _field!.FieldType;
+        ScalarType = Nullable.GetUnderlyingType(MemberType) ?? MemberType;
+        IsNullable = ScalarType != MemberType;
+        ScalarKind = InvariantScalarCodec.Classify(ScalarType);
         CanRead = _property is null || _property.GetMethod is { IsPublic: true };
         CanWrite = _property is not null ? _property.SetMethod is { IsPublic: true } : !_field!.IsInitOnly;
         Required = member.GetCustomAttribute<RequiredAttribute>() is not null
@@ -53,6 +62,27 @@ internal class FlatMemberDescriptor
     /// Gets the declared type of the member.
     /// </summary>
     public Type MemberType { get; }
+
+    /// <summary>
+    /// Gets the declared type of the member, or the type it makes nullable when it is a <see cref="Nullable{T}" />.
+    /// </summary>
+    public Type ScalarType { get; }
+
+    /// <summary>
+    /// Gets a value indicating whether the declared type of the member is a <see cref="Nullable{T}" />.
+    /// </summary>
+    public bool IsNullable { get; }
+
+    /// <summary>
+    /// Gets the scalar the member's value converts as, or <see cref="FlatScalarKind.None" /> when its type is not a
+    /// scalar.
+    /// </summary>
+    public FlatScalarKind ScalarKind { get; }
+
+    /// <summary>
+    /// Gets a value indicating whether the member's type is a scalar, which maps to one value rather than to members.
+    /// </summary>
+    public bool IsScalar => ScalarKind != FlatScalarKind.None;
 
     /// <summary>
     /// Gets a value indicating whether the member is publicly readable.

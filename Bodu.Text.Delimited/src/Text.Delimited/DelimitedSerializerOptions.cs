@@ -217,14 +217,6 @@ public sealed class DelimitedSerializerOptions
     internal void MakeReadOnly() => _isReadOnly = true;
 
     /// <summary>
-    /// Converts a member name to its serialized column name, applying the configured naming policy.
-    /// </summary>
-    /// <param name="memberName">The .NET member name.</param>
-    /// <returns>The serialized column name.</returns>
-    internal string ConvertName(string memberName) =>
-        _propertyNamingPolicy?.ConvertName(memberName) ?? memberName;
-
-    /// <summary>
     /// Builds the reader options that mirror these serializer settings.
     /// </summary>
     /// <returns>The reader options.</returns>

@@ -122,17 +122,44 @@ internal static class InvariantScalarCodec
     /// and a <see cref="TimeSpan" /> in the constant <c>c</c> form.
     /// </remarks>
     internal static string Format(object? value, Policy policy) =>
-        value switch
+        value is null ? string.Empty : FormatScalar(value, Classify(value.GetType()), policy);
+
+    /// <summary>
+    /// Formats a value of a member whose declared type is known, using the invariant culture and the requested
+    /// wire-format policy.
+    /// </summary>
+    /// <param name="value">The value to format.</param>
+    /// <param name="declaredKind">
+    /// The scalar kind of the member's declared type, or <see cref="FlatScalarKind.None" /> when it is not a scalar.
+    /// </param>
+    /// <param name="policy">The formatting policy to apply.</param>
+    /// <returns>The value's serialized representation.</returns>
+    /// <remarks>
+    /// A value whose declared type is a scalar is formatted as that scalar, as <see cref="Format(object?, Policy)" />
+    /// formats it; any other value, such as one declared as <see cref="object" />, is formatted by its own type.
+    /// </remarks>
+    internal static string Format(object? value, FlatScalarKind declaredKind, Policy policy) =>
+        value is null ? string.Empty
+            : FormatScalar(value, declaredKind == FlatScalarKind.None ? Classify(value.GetType()) : declaredKind, policy);
+
+    /// <summary>
+    /// Formats a non-<see langword="null" /> value of a known scalar kind.
+    /// </summary>
+    /// <param name="value">The value to format, whose type has <paramref name="kind" />.</param>
+    /// <param name="kind">The scalar kind of the value's type, or <see cref="FlatScalarKind.None" />.</param>
+    /// <param name="policy">The formatting policy to apply.</param>
+    /// <returns>The value's serialized representation.</returns>
+    private static string FormatScalar(object value, FlatScalarKind kind, Policy policy) =>
+        kind switch
         {
-            null => string.Empty,
-            string s => s,
-            bool b => b ? "true" : "false",
-            DateTime dateTime => dateTime.ToString("O", CultureInfo.InvariantCulture),
-            DateTimeOffset dateTimeOffset => dateTimeOffset.ToString("O", CultureInfo.InvariantCulture),
-            DateOnly date when policy == Policy.Delimited => date.ToString("O", CultureInfo.InvariantCulture),
-            TimeOnly time => time.ToString("O", CultureInfo.InvariantCulture),
-            TimeSpan span when policy == Policy.Delimited => span.ToString("c", CultureInfo.InvariantCulture),
-            IFormattable formattable => formattable.ToString(null, CultureInfo.InvariantCulture),
+            FlatScalarKind.String => (string)value,
+            FlatScalarKind.Boolean => (bool)value ? "true" : "false",
+            FlatScalarKind.DateTime => ((DateTime)value).ToString("O", CultureInfo.InvariantCulture),
+            FlatScalarKind.DateTimeOffset => ((DateTimeOffset)value).ToString("O", CultureInfo.InvariantCulture),
+            FlatScalarKind.DateOnly when policy == Policy.Delimited => ((DateOnly)value).ToString("O", CultureInfo.InvariantCulture),
+            FlatScalarKind.TimeOnly => ((TimeOnly)value).ToString("O", CultureInfo.InvariantCulture),
+            FlatScalarKind.TimeSpan when policy == Policy.Delimited => ((TimeSpan)value).ToString("c", CultureInfo.InvariantCulture),
+            _ when value is IFormattable formattable => formattable.ToString(null, CultureInfo.InvariantCulture),
             _ => value.ToString() ?? string.Empty,
         };
 
@@ -154,11 +181,27 @@ internal static class InvariantScalarCodec
     {
         Type? nullableUnderlying = Nullable.GetUnderlyingType(targetType);
         Type underlying = nullableUnderlying ?? targetType;
-        FlatScalarKind kind = Classify(underlying);
 
+        return Parse(raw, Classify(underlying), underlying, nullableUnderlying is not null, policy);
+    }
+
+    /// <summary>
+    /// Converts a scalar for a member whose scalar kind is already known, as <see cref="Parse(string, Type, Policy)" />
+    /// converts it for the member's declared type.
+    /// </summary>
+    /// <param name="raw">The text to convert.</param>
+    /// <param name="kind">The scalar kind of <paramref name="scalarType" />.</param>
+    /// <param name="scalarType">
+    /// The declared type, or the type it makes nullable when it is a <see cref="Nullable{T}" />.
+    /// </param>
+    /// <param name="nullable">Whether the declared type is a <see cref="Nullable{T}" />.</param>
+    /// <param name="policy">The parsing policy to apply.</param>
+    /// <returns>The parsed value, or <see langword="null" /> for a permitted empty nullable value.</returns>
+    internal static object? Parse(string raw, FlatScalarKind kind, Type scalarType, bool nullable, Policy policy)
+    {
         // Delimited intentionally differs: whitespace-only nullable cells are empty, except for char?.
         bool empty = raw.Length == 0 || (policy == Policy.Delimited && kind != FlatScalarKind.Char && string.IsNullOrWhiteSpace(raw));
-        if (nullableUnderlying is not null && empty)
+        if (nullable && empty)
             return null;
 
         // The numbers IConvertible does not cover parse with the styles Convert.ChangeType gives the ones it does.
@@ -166,7 +209,7 @@ internal static class InvariantScalarCodec
         {
             FlatScalarKind.String => raw,
             FlatScalarKind.Boolean => bool.Parse(raw),
-            FlatScalarKind.Enum => Enum.Parse(underlying, raw, ignoreCase: true),
+            FlatScalarKind.Enum => Enum.Parse(scalarType, raw, ignoreCase: true),
             FlatScalarKind.Guid => Guid.Parse(raw),
             FlatScalarKind.DateTime => DateTime.Parse(raw, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind),
             FlatScalarKind.DateTimeOffset => DateTimeOffset.Parse(raw, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind),
@@ -180,7 +223,7 @@ internal static class InvariantScalarCodec
             FlatScalarKind.UInt128 => UInt128.Parse(raw, NumberStyles.Integer, CultureInfo.InvariantCulture),
             FlatScalarKind.Half => Half.Parse(raw, NumberStyles.Float | NumberStyles.AllowThousands, CultureInfo.InvariantCulture),
             FlatScalarKind.BigInteger => BigInteger.Parse(raw, NumberStyles.Integer, CultureInfo.InvariantCulture),
-            _ => Convert.ChangeType(raw, underlying, CultureInfo.InvariantCulture),
+            _ => Convert.ChangeType(raw, scalarType, CultureInfo.InvariantCulture),
         };
     }
 }

@@ -151,14 +151,6 @@ public sealed class DotEnvSerializerOptions
     internal void MakeReadOnly() => _isReadOnly = true;
 
     /// <summary>
-    /// Converts a member name to its serialized key, applying the configured naming policy.
-    /// </summary>
-    /// <param name="memberName">The .NET member name.</param>
-    /// <returns>The serialized key.</returns>
-    internal string ConvertName(string memberName) =>
-        _propertyNamingPolicy?.ConvertName(memberName) ?? memberName;
-
-    /// <summary>
     /// Creates the shared read-only default options.
     /// </summary>
     /// <returns>The default options.</returns>

@@ -7,7 +7,6 @@
 using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-using System.Reflection;
 
 using Bodu.Text.DotEnv.Writer;
 using Bodu.Text.Serialization;
@@ -106,7 +105,7 @@ public static partial class DotEnvSerializer
     [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
     private static void WritePoco(ref Utf8DotEnvWriter writer, object value, DotEnvSerializerOptions options)
     {
-        foreach (Member member in GetMembers(value.GetType(), options))
+        foreach (FlatMemberDescriptor member in GetMembers(value.GetType(), options))
         {
             if (!member.CanRead)
                 continue;
@@ -117,7 +116,7 @@ public static partial class DotEnvSerializer
                 continue;
 
             WriteKey(ref writer, member.Name);
-            writer.WriteString(ValueToString(memberValue));
+            writer.WriteString(ValueToString(memberValue, member.ScalarKind));
         }
     }
 
@@ -186,7 +185,7 @@ public static partial class DotEnvSerializer
 
         StringComparison comparison = options.PropertyNameCaseInsensitive ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
 
-        foreach (Member member in GetMembers(targetType, options))
+        foreach (FlatMemberDescriptor member in GetMembers(targetType, options))
         {
             if (!member.CanWrite)
                 continue;
@@ -196,7 +195,7 @@ public static partial class DotEnvSerializer
             {
                 if (string.Equals(entries[i].Key, member.Name, comparison))
                 {
-                    member.SetValue(instance, ConvertFromString(entries[i].Value, member.MemberType, member.Name));
+                    member.SetValue(instance, ConvertFromString(entries[i].Value, member));
                     found = true;
                     break;
                 }
@@ -237,7 +236,7 @@ public static partial class DotEnvSerializer
     /// <param name="member">The member descriptor.</param>
     /// <param name="options">The serializer options.</param>
     /// <returns><see langword="true" /> when the member should be skipped.</returns>
-    private static bool ShouldSkipOnWrite(object? memberValue, Member member, DotEnvSerializerOptions options)
+    private static bool ShouldSkipOnWrite(object? memberValue, FlatMemberDescriptor member, DotEnvSerializerOptions options)
     {
         IgnoreCondition condition = member.IgnoreCondition ?? options.DefaultIgnoreCondition;
 
@@ -274,6 +273,15 @@ public static partial class DotEnvSerializer
         InvariantScalarCodec.Format(value, InvariantScalarCodec.Policy.Configuration);
 
     /// <summary>
+    /// Converts a member's value to its DotEnv string representation using an invariant, round-trippable format.
+    /// </summary>
+    /// <param name="value">The value to convert.</param>
+    /// <param name="declaredKind">The scalar kind of the member's declared type.</param>
+    /// <returns>The string representation.</returns>
+    private static string ValueToString(object? value, FlatScalarKind declaredKind) =>
+        InvariantScalarCodec.Format(value, declaredKind, InvariantScalarCodec.Policy.Configuration);
+
+    /// <summary>
     /// Converts a string into a scalar while preserving this serializer's exception contract.
     /// </summary>
     /// <param name="raw">The raw text.</param>
@@ -291,6 +299,26 @@ public static partial class DotEnvSerializer
         {
             throw new DotEnvSerializationException(
                 string.Format(CultureInfo.CurrentCulture, DotEnvResourceStrings.Format_Invalid_DotEnvValueConversion, key, targetType), ex);
+        }
+    }
+
+    /// <summary>
+    /// Converts a string into a member's value while preserving this serializer's exception contract.
+    /// </summary>
+    /// <param name="raw">The raw text.</param>
+    /// <param name="member">The member the value is for.</param>
+    /// <returns>The converted value.</returns>
+    /// <exception cref="DotEnvSerializationException">Thrown when the value cannot be converted.</exception>
+    private static object? ConvertFromString(string raw, FlatMemberDescriptor member)
+    {
+        try
+        {
+            return InvariantScalarCodec.Parse(raw, member.ScalarKind, member.ScalarType, member.IsNullable, InvariantScalarCodec.Policy.Configuration);
+        }
+        catch (Exception ex) when (ex is FormatException or OverflowException or ArgumentException or InvalidCastException)
+        {
+            throw new DotEnvSerializationException(
+                string.Format(CultureInfo.CurrentCulture, DotEnvResourceStrings.Format_Invalid_DotEnvValueConversion, member.Name, member.MemberType), ex);
         }
     }
 
@@ -337,7 +365,7 @@ public static partial class DotEnvSerializer
     }
 
     /// <summary>
-    /// Enumerates the mapped members of a type, applying naming, inclusion, and ordering rules.
+    /// Gets the mapped members of a type, applying naming, inclusion, and ordering rules.
     /// </summary>
     /// <param name="type">The type whose members to map.</param>
     /// <param name="options">The serializer options.</param>
@@ -346,16 +374,11 @@ public static partial class DotEnvSerializer
     /// Thrown when two members of <paramref name="type" /> map to one key.
     /// </exception>
     [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
-    private static Member[] GetMembers(
+    private static FlatMemberDescriptor[] GetMembers(
         [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.PublicFields)] Type type,
         DotEnvSerializerOptions options)
     {
-        Member[] members = [.. FlatMemberDiscovery.Enumerate(type, options.IncludeFields)
-            .Select(member => member is PropertyInfo property
-                ? Member.FromProperty(property, options)
-                : Member.FromField((FieldInfo)member, options))
-            .OrderBy(static member => member.Order)];
-
+        FlatMemberDescriptor[] members = FlatMemberDiscovery.Describe(type, options.IncludeFields, options.PropertyNamingPolicy);
         if (FlatMemberDiscovery.FindDuplicateName(members) is { } duplicate)
             throw new DotEnvSerializationException(string.Format(CultureInfo.CurrentCulture, DotEnvResourceStrings.Op_Invalid_DotEnvDuplicateKey, type, duplicate));
 

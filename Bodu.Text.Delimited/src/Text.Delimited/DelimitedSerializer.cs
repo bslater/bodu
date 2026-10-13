@@ -12,6 +12,7 @@ using System.Text;
 
 using Bodu.Text.Delimited.Reader;
 using Bodu.Text.Delimited.Writer;
+using Bodu.Text.Serialization;
 
 namespace Bodu.Text.Delimited;
 
@@ -116,7 +117,7 @@ public static partial class DelimitedSerializer
         Type recordType = GetRecordType(collectionType)
             ?? throw new DelimitedSerializationException(string.Format(CultureInfo.CurrentCulture, DelimitedResourceStrings.Op_Invalid_DelimitedRootNotCollection, collectionType));
         bool isStringArray = recordType == typeof(string[]);
-        Member[] members = isStringArray ? [] : GetRecordMembers(recordType, effective, reading: false);
+        FlatMemberDescriptor[] members = isStringArray ? [] : GetRecordMembers(recordType, effective, reading: false);
 
         var writer = new Utf8DelimitedWriter(destination, effective.ToWriterOptions());
         writer.WriteStartArray();
@@ -231,7 +232,7 @@ public static partial class DelimitedSerializer
         effective.MakeReadOnly();
 
         bool isStringArray = typeof(TRecord) == typeof(string[]);
-        Member[] members = isStringArray ? [] : GetRecordMembers(typeof(TRecord), effective, reading: true);
+        FlatMemberDescriptor[] members = isStringArray ? [] : GetRecordMembers(typeof(TRecord), effective, reading: true);
 
         ReadRows(utf8Delimited, effective.ToReaderOptions(), out List<string> headers, out List<string[]> rows);
 

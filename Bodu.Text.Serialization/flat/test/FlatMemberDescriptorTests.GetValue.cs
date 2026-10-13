@@ -14,7 +14,7 @@ public sealed partial class FlatMemberDescriptorTests
     [TestMethod]
     public void GetValue_WhenMemberIsField_ShouldReturnItsValue()
     {
-        var descriptor = new DescriptorProbe(typeof(MemberSample).GetField(nameof(MemberSample.ImmutableField))!);
+        var descriptor = new FlatMemberDescriptor(typeof(MemberSample).GetField(nameof(MemberSample.ImmutableField))!, namingPolicy: null);
 
         Assert.AreEqual(12, descriptor.GetValue(new MemberSample()));
     }

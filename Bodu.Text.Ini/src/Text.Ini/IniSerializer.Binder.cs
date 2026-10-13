@@ -7,7 +7,6 @@
 using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-using System.Reflection;
 
 using Bodu.Text.Ini.Reader;
 using Bodu.Text.Ini.Writer;
@@ -110,17 +109,20 @@ public static partial class IniSerializer
     [RequiresDynamicCode(RequiresDynamicCodeMessage)]
     private static void WriteRootPoco(ref Utf8IniWriter writer, object value, IniSerializerOptions options)
     {
-        List<Member> members = GetMembers(value.GetType(), options).Where(static m => m.CanRead).ToList();
+        FlatMemberDescriptor[] members = GetMembers(value.GetType(), options);
 
-        foreach (Member member in members)
+        foreach (FlatMemberDescriptor member in members)
         {
-            if (InvariantScalarCodec.IsScalar(member.MemberType))
+            if (!member.CanRead)
+                continue;
+
+            if (member.IsScalar)
             {
                 object? memberValue = member.GetValue(value);
                 if (ShouldSkipOnWrite(memberValue, member, options))
                     continue;
 
-                WriteEntry(ref writer, string.Empty, member.Name, ValueToString(memberValue));
+                WriteEntry(ref writer, string.Empty, member.Name, ValueToString(memberValue, member.ScalarKind));
             }
             else if (IsGlobalName(member.Name, options))
             {
@@ -130,9 +132,9 @@ public static partial class IniSerializer
             }
         }
 
-        foreach (Member member in members)
+        foreach (FlatMemberDescriptor member in members)
         {
-            if (InvariantScalarCodec.IsScalar(member.MemberType) || IsGlobalName(member.Name, options))
+            if (!member.CanRead || member.IsScalar || IsGlobalName(member.Name, options))
                 continue;
 
             if (IsUnsupportedEnumerable(member.MemberType))
@@ -177,19 +179,19 @@ public static partial class IniSerializer
 
         (body as IOnSerializing)?.OnSerializing();
 
-        foreach (Member member in GetMembers(body.GetType(), options))
+        foreach (FlatMemberDescriptor member in GetMembers(body.GetType(), options))
         {
             if (!member.CanRead)
                 continue;
 
-            if (!InvariantScalarCodec.IsScalar(member.MemberType))
+            if (!member.IsScalar)
                 throw new IniSerializationException(string.Format(CultureInfo.CurrentCulture, IniResourceStrings.Op_Invalid_IniDepthExceeded, member.Name));
 
             object? memberValue = member.GetValue(body);
             if (ShouldSkipOnWrite(memberValue, member, options))
                 continue;
 
-            WriteEntry(ref writer, entrySection, member.Name, ValueToString(memberValue));
+            WriteEntry(ref writer, entrySection, member.Name, ValueToString(memberValue, member.ScalarKind));
         }
 
         (body as IOnSerialized)?.OnSerialized();
@@ -364,16 +366,16 @@ public static partial class IniSerializer
 
         StringComparison comparison = options.PropertyNameCaseInsensitive ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
 
-        foreach (Member member in GetMembers(targetType, options))
+        foreach (FlatMemberDescriptor member in GetMembers(targetType, options))
         {
             if (!member.CanWrite)
                 continue;
 
-            if (InvariantScalarCodec.IsScalar(member.MemberType))
+            if (member.IsScalar)
             {
                 int found = IndexOfEntry(document.GlobalEntries, member.Name, comparison);
                 if (found >= 0)
-                    member.SetValue(instance, ConvertFromString(document.GlobalEntries[found].Value, member.MemberType, member.Name));
+                    member.SetValue(instance, ConvertFromString(document.GlobalEntries[found].Value, member));
                 else if (member.Required)
                     throw new IniSerializationException(string.Format(CultureInfo.CurrentCulture, IniResourceStrings.Op_Invalid_IniMissingRequiredKey, member.Name));
 
@@ -430,17 +432,17 @@ public static partial class IniSerializer
 
         StringComparison comparison = options.PropertyNameCaseInsensitive ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
 
-        foreach (Member member in GetMembers(targetType, options))
+        foreach (FlatMemberDescriptor member in GetMembers(targetType, options))
         {
             if (!member.CanWrite)
                 continue;
 
-            if (!InvariantScalarCodec.IsScalar(member.MemberType))
+            if (!member.IsScalar)
                 throw new IniSerializationException(string.Format(CultureInfo.CurrentCulture, IniResourceStrings.Op_Invalid_IniDepthExceeded, member.Name));
 
             int found = IndexOfEntry(entries, member.Name, comparison);
             if (found >= 0)
-                member.SetValue(instance, ConvertFromString(entries[found].Value, member.MemberType, member.Name));
+                member.SetValue(instance, ConvertFromString(entries[found].Value, member));
             else if (member.Required)
                 throw new IniSerializationException(string.Format(CultureInfo.CurrentCulture, IniResourceStrings.Op_Invalid_IniMissingRequiredKey, member.Name));
         }
@@ -551,7 +553,7 @@ public static partial class IniSerializer
     /// <param name="member">The member descriptor.</param>
     /// <param name="options">The serializer options.</param>
     /// <returns><see langword="true" /> when the member should be skipped.</returns>
-    private static bool ShouldSkipOnWrite(object? memberValue, Member member, IniSerializerOptions options)
+    private static bool ShouldSkipOnWrite(object? memberValue, FlatMemberDescriptor member, IniSerializerOptions options)
     {
         IgnoreCondition condition = member.IgnoreCondition ?? options.DefaultIgnoreCondition;
 
@@ -605,6 +607,15 @@ public static partial class IniSerializer
         InvariantScalarCodec.Format(value, InvariantScalarCodec.Policy.Configuration);
 
     /// <summary>
+    /// Converts a member's value to its INI string representation using an invariant, round-trippable format.
+    /// </summary>
+    /// <param name="value">The value to convert.</param>
+    /// <param name="declaredKind">The scalar kind of the member's declared type.</param>
+    /// <returns>The string representation.</returns>
+    private static string ValueToString(object? value, FlatScalarKind declaredKind) =>
+        InvariantScalarCodec.Format(value, declaredKind, InvariantScalarCodec.Policy.Configuration);
+
+    /// <summary>
     /// Converts a string into a scalar while preserving this serializer's exception contract.
     /// </summary>
     /// <param name="raw">The raw text.</param>
@@ -622,6 +633,26 @@ public static partial class IniSerializer
         {
             throw new IniSerializationException(
                 string.Format(CultureInfo.CurrentCulture, IniResourceStrings.Format_Invalid_IniValueConversion, key, targetType), ex);
+        }
+    }
+
+    /// <summary>
+    /// Converts a string into a member's value while preserving this serializer's exception contract.
+    /// </summary>
+    /// <param name="raw">The raw text.</param>
+    /// <param name="member">The member the value is for.</param>
+    /// <returns>The converted value.</returns>
+    /// <exception cref="IniSerializationException">Thrown when the value cannot be converted.</exception>
+    private static object? ConvertFromString(string raw, FlatMemberDescriptor member)
+    {
+        try
+        {
+            return InvariantScalarCodec.Parse(raw, member.ScalarKind, member.ScalarType, member.IsNullable, InvariantScalarCodec.Policy.Configuration);
+        }
+        catch (Exception ex) when (ex is FormatException or OverflowException or ArgumentException or InvalidCastException)
+        {
+            throw new IniSerializationException(
+                string.Format(CultureInfo.CurrentCulture, IniResourceStrings.Format_Invalid_IniValueConversion, member.Name, member.MemberType), ex);
         }
     }
 
@@ -670,7 +701,7 @@ public static partial class IniSerializer
     }
 
     /// <summary>
-    /// Enumerates the mapped members of a type, applying naming, inclusion, and ordering rules.
+    /// Gets the mapped members of a type, applying naming, inclusion, and ordering rules.
     /// </summary>
     /// <param name="type">The type whose members to map.</param>
     /// <param name="options">The serializer options.</param>
@@ -679,16 +710,11 @@ public static partial class IniSerializer
     /// Thrown when two members of <paramref name="type" /> map to one name.
     /// </exception>
     [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
-    private static Member[] GetMembers(
+    private static FlatMemberDescriptor[] GetMembers(
         [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.PublicFields)] Type type,
         IniSerializerOptions options)
     {
-        Member[] members = [.. FlatMemberDiscovery.Enumerate(type, options.IncludeFields)
-            .Select(member => member is PropertyInfo property
-                ? Member.FromProperty(property, options)
-                : Member.FromField((FieldInfo)member, options))
-            .OrderBy(static member => member.Order)];
-
+        FlatMemberDescriptor[] members = FlatMemberDiscovery.Describe(type, options.IncludeFields, options.PropertyNamingPolicy);
         if (FlatMemberDiscovery.FindDuplicateName(members) is { } duplicate)
             throw new IniSerializationException(string.Format(CultureInfo.CurrentCulture, IniResourceStrings.Op_Invalid_IniDuplicateName, type, duplicate));
 

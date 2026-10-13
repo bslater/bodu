@@ -64,7 +64,7 @@ public static partial class DelimitedSerializer
         DelimitedThrowHelper.ThrowIfUnusableDialect(writerOptions, nameof(options));
 
         bool isStringArray = typeof(TRecord) == typeof(string[]);
-        Member[] members = isStringArray ? [] : GetRecordMembers(typeof(TRecord), effective, reading: false);
+        FlatMemberDescriptor[] members = isStringArray ? [] : GetRecordMembers(typeof(TRecord), effective, reading: false);
 
         var buffer = new ArrayBufferWriter<byte>();
         bool headerPending = !isStringArray && !writerOptions.NoHeader;
@@ -157,7 +157,7 @@ public static partial class DelimitedSerializer
         DelimitedThrowHelper.ThrowIfUnusableDialect(readerOptions, nameof(options));
 
         bool isStringArray = typeof(TRecord) == typeof(string[]);
-        Member[] members = isStringArray ? [] : GetRecordMembers(typeof(TRecord), effective, reading: true);
+        FlatMemberDescriptor[] members = isStringArray ? [] : GetRecordMembers(typeof(TRecord), effective, reading: true);
 
         return DeserializeAsyncEnumerableCoreAsync<TRecord>(source, effective, readerOptions, isStringArray, members, cancellationToken);
     }
@@ -183,7 +183,7 @@ public static partial class DelimitedSerializer
         DelimitedSerializerOptions effective,
         DelimitedReaderOptions readerOptions,
         bool isStringArray,
-        Member[] members,
+        FlatMemberDescriptor[] members,
         [EnumeratorCancellation] CancellationToken cancellationToken)
     {
         byte[] buffer = ArrayPool<byte>.Shared.Rent(StreamReadChunkSize);
@@ -256,7 +256,7 @@ public static partial class DelimitedSerializer
     /// <param name="destination">The batch buffer.</param>
     /// <param name="members">The mapped members of the POCO record type.</param>
     /// <param name="writerOptions">The writer options.</param>
-    private static void WriteStreamingHeader(IBufferWriter<byte> destination, Member[] members, DelimitedWriterOptions writerOptions)
+    private static void WriteStreamingHeader(IBufferWriter<byte> destination, FlatMemberDescriptor[] members, DelimitedWriterOptions writerOptions)
     {
         var writer = new Utf8DelimitedWriter(destination, writerOptions with { NoHeader = true });
         writer.WriteStartArray();
@@ -280,7 +280,7 @@ public static partial class DelimitedSerializer
     private static bool WriteStreamingRecord(
         IBufferWriter<byte> destination,
         object record,
-        Member[] members,
+        FlatMemberDescriptor[] members,
         bool isStringArray,
         DelimitedWriterOptions writerOptions,
         bool headerPending,
@@ -294,7 +294,7 @@ public static partial class DelimitedSerializer
         if (headerPending)
         {
             writer.WriteStartArray();
-            foreach (Member member in members)
+            foreach (FlatMemberDescriptor member in members)
             {
                 if (member.CanRead)
                     writer.WriteString(member.Name);
@@ -312,10 +312,10 @@ public static partial class DelimitedSerializer
             (record as IOnSerializing)?.OnSerializing();
 
             writer.WriteStartArray();
-            foreach (Member member in members)
+            foreach (FlatMemberDescriptor member in members)
             {
                 if (member.CanRead)
-                    writer.WriteString(ValueToString(member.GetValue(record)));
+                    writer.WriteString(ValueToString(member.GetValue(record), member.ScalarKind));
             }
 
             writer.WriteEndArray();

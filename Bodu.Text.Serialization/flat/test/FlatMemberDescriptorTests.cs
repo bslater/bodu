@@ -4,8 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Reflection;
-
 namespace Bodu.Text.Serialization;
 
 /// <summary>
@@ -15,21 +13,6 @@ namespace Bodu.Text.Serialization;
 [TestClass]
 public sealed partial class FlatMemberDescriptorTests
 {
-    /// <summary>
-    /// A descriptor over a member, with the member's own name kept as its serialized name.
-    /// </summary>
-    private sealed class DescriptorProbe : FlatMemberDescriptor
-    {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="DescriptorProbe" /> class.
-        /// </summary>
-        /// <param name="member">The property or field to describe.</param>
-        public DescriptorProbe(MemberInfo member)
-            : base(member, static name => name)
-        {
-        }
-    }
-
     /// <summary>
     /// A record with a renamed required property, an ordered property and a read-only field.
     /// </summary>
