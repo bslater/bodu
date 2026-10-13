@@ -976,4 +976,126 @@ public partial class NotableDateDocumentBuilderTests
             "rules": [ { "id": "r", "strategy": { "fixed": { "month": 4, "day": 1 } } } ] } ],
           "overrides": [ { "operation": "PatchRule", "notableDateRef": "other", "ruleRef": "r", "priority": 2 @patch@ } ] }
         """.Replace("@patch@", patch, StringComparison.Ordinal);
+
+    /// <summary>
+    /// The JSON documents whose property names differ in case from the canonical names, keyed by scenario, each of
+    /// which the loader reads as it reads the canonical names.
+    /// </summary>
+    private static readonly Dictionary<string, string> s_jsonCaseScenarios = new(StringComparer.Ordinal)
+    {
+        ["root"] = """
+            { "SchemaVersion": "1.0", "ResourceId": "test.case",
+              "NotableDates": [ { "id": "x", "displayName": "X", "category": "PublicHoliday",
+                "rules": [ { "id": "r", "strategy": { "fixed": { "month": 7, "day": 4 } } } ] } ] }
+            """,
+        ["concept and rule"] = """
+            { "schemaVersion": "1.0", "resourceId": "test.case",
+              "notableDates": [ { "Id": "x", "DisplayName": "X", "Category": "PublicHoliday", "Tags": [ "civic" ],
+                "Rules": [ { "Id": "r", "Priority": 3, "Strategy": { "fixed": { "month": 7, "day": 4 } } } ] } ] }
+            """,
+        ["strategy body"] = """
+            { "schemaVersion": "1.0", "resourceId": "test.case",
+              "notableDates": [ { "id": "x", "displayName": "X", "category": "PublicHoliday",
+                "rules": [ { "id": "r", "strategy": { "fixed": { "Month": 7, "DAY": 4 } } } ] } ] }
+            """,
+        ["recurrence body"] = """
+            { "schemaVersion": "1.0", "resourceId": "test.case",
+              "notableDates": [ { "id": "x", "displayName": "X", "category": "Observance",
+                "rules": [ { "id": "r", "Recurrence": { "MonthlyDay": { "DayOfMonth": 15, "IntervalMonths": 2, "AnchorDate": "2026-01-15" } } } ] } ] }
+            """,
+        ["weekly days"] = """
+            { "schemaVersion": "1.0", "resourceId": "test.case",
+              "notableDates": [ { "id": "x", "displayName": "X", "category": "Observance",
+                "rules": [ { "id": "r", "recurrence": { "weekly": { "Days": [ "Monday", "Friday" ], "IntervalWeeks": 2, "AnchorDate": "2026-01-05" } } } ] } ] }
+            """,
+        ["applicability and until date"] = """
+            { "schemaVersion": "1.0", "resourceId": "test.case",
+              "notableDates": [ { "id": "x", "displayName": "X", "category": "Observance",
+                "rules": [ { "id": "r", "Applicability": { "Territories": [ "AU" ], "FromYear": 2020 },
+                  "strategy": { "fixed": { "month": 3, "day": 1 } },
+                  "Duration": { "UntilDate": { "Strategy": { "Fixed": { "Month": 3, "Day": 5 } }, "EndBoundary": "Exclusive" } } } ] } ] }
+            """,
+        ["adjustment policy"] = """
+            { "schemaVersion": "1.0", "resourceId": "test.case",
+              "AdjustmentPolicies": [ { "Id": "p", "Trigger": { "Type": "IfWeekend" },
+                "Action": { "Type": "MoveToNextWorkingDay", "SkipWeekends": true }, "Emission": { "Mode": "ObservedOnly", "Reason": "Moved" } } ],
+              "notableDates": [ { "id": "x", "displayName": "X", "category": "PublicHoliday",
+                "rules": [ { "id": "r", "strategy": { "fixed": { "month": 7, "day": 4 } }, "Adjustments": [ "p" ] } ] } ] }
+            """,
+        ["override"] = """
+            { "schemaVersion": "1.0", "resourceId": "test.case",
+              "notableDates": [ { "id": "x", "displayName": "X", "category": "PublicHoliday",
+                "rules": [ { "id": "r", "strategy": { "fixed": { "month": 7, "day": 4 } } } ] } ],
+              "Overrides": [ { "Operation": "PatchRule", "NotableDateRef": "x", "RuleRef": "r", "Priority": 4 } ] }
+            """,
+        ["import"] = """
+            { "schemaVersion": "1.0", "resourceId": "test.case",
+              "Imports": [ { "Resource": "lib", "Uses": [ { "NotableDateRef": "lib-day", "As": "alias", "NonWorking": true } ] } ],
+              "notableDates": [ { "id": "x", "displayName": "X", "category": "PublicHoliday",
+                "rules": [ { "id": "r", "strategy": { "fixed": { "month": 7, "day": 4 } } } ] } ] }
+            """,
+    };
+
+    /// <summary>
+    /// The JSON documents whose strategy or recurrence body holds a property the loader does not read, keyed by
+    /// scenario.
+    /// </summary>
+    private static readonly Dictionary<string, string> s_jsonUnreadBodyPropertyScenarios = new(StringComparer.Ordinal)
+    {
+        ["fixed note"] = """{ "strategy": { "fixed": { "month": 3, "day": 1, "note": "ignored" } } }""",
+        ["fixed object"] = """{ "strategy": { "fixed": { "month": 3, "day": 1, "meta": { "source": "x" } } } }""",
+        ["monthlyDay extra"] = """{ "recurrence": { "monthlyDay": { "dayOfMonth": 15, "extra": 5 } } }""",
+        ["weekly label"] = """{ "recurrence": { "weekly": { "days": [ "Monday" ], "label": "Mondays" } } }""",
+    };
+
+    /// <summary>
+    /// Verifies that a JSON document whose property names differ in case from the canonical names, which the loader
+    /// matches ignoring case, builds through the builder into the same resource the loader loads, compared byte for byte
+    /// as binary packs.
+    /// </summary>
+    /// <param name="scenario">The name of the scenario.</param>
+    [TestMethod]
+    [DataRow("root")]
+    [DataRow("concept and rule")]
+    [DataRow("strategy body")]
+    [DataRow("recurrence body")]
+    [DataRow("weekly days")]
+    [DataRow("applicability and until date")]
+    [DataRow("adjustment policy")]
+    [DataRow("override")]
+    [DataRow("import")]
+    public void FromJson_WhenPropertyNameDiffersInCase_ShouldBuildWhatLoadJsonLoads(string scenario)
+    {
+        string json = s_jsonCaseScenarios[scenario];
+
+        NotableDateResource loaded = NotableDateResourceLoader.LoadJson(json, AnyLibraryResolver);
+        NotableDateResource built = NotableDateDocumentBuilder.FromJson(json).Build(AnyLibraryResolver);
+
+        CollectionAssert.AreEqual(PackBytes(loaded), PackBytes(built), scenario);
+    }
+
+    /// <summary>
+    /// Verifies that a strategy or recurrence body holding a property the loader does not read, which the loader
+    /// ignores, builds through the builder into the same resource the loader loads, rather than reaching the document as
+    /// an attribute the schema rejects.
+    /// </summary>
+    /// <param name="scenario">The name of the scenario.</param>
+    [TestMethod]
+    [DataRow("fixed note")]
+    [DataRow("fixed object")]
+    [DataRow("monthlyDay extra")]
+    [DataRow("weekly label")]
+    public void FromJson_WhenOccurrenceSourceHoldsPropertyTheLoaderIgnores_ShouldBuildWhatLoadJsonLoads(string scenario)
+    {
+        string json = $$"""
+            { "schemaVersion": "1.0", "resourceId": "test.unread-body",
+              "notableDates": [ { "id": "x", "displayName": "X", "category": "Observance",
+                "rules": [ { "id": "r", {{s_jsonUnreadBodyPropertyScenarios[scenario][1..^1]}} } ] } ] }
+            """;
+
+        NotableDateResource loaded = NotableDateResourceLoader.LoadJson(json);
+        NotableDateResource built = NotableDateDocumentBuilder.FromJson(json).Build();
+
+        CollectionAssert.AreEqual(PackBytes(loaded), PackBytes(built), scenario);
+    }
 }
