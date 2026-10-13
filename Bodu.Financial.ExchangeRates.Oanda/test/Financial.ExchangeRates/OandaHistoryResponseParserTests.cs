@@ -92,6 +92,44 @@ public class OandaHistoryResponseParserTests
     }
 
     /// <summary>
+    /// Verifies that a widget entry whose currency codes are not strings is passed over when the entry matching the
+    /// requested pair is selected, rather than escaping as <see cref="InvalidOperationException" />.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenCurrencyCodeIsNotString_ShouldPassOverThatSeries()
+    {
+        byte[] json = Utf8(
+            """
+            {
+              "widget": [
+                { "baseCurrency": 36, "quoteCurrency": "USD", "data": [ [1672704000000, "0.6300"] ] },
+                { "baseCurrency": "AUD", "quoteCurrency": "USD", "data": [ [1672704000000, "0.6828"] ] }
+              ]
+            }
+            """);
+
+        PairRateData<OandaSeriesInfo> data = OandaHistoryResponseParser.Parse(json, Request(new(2023, 1, 1), new(2023, 1, 31)), Options);
+
+        Assert.HasCount(1, data.Observations);
+        Assert.AreEqual(0.6828m, data.Observations[0].Rate);
+    }
+
+    /// <summary>
+    /// Verifies that a widget whose only entry is not an object throws <see cref="ExchangeRateFormatException" />
+    /// rather than <see cref="InvalidOperationException" />.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenSeriesIsNotObject_ShouldThrowFormatException()
+    {
+        byte[] json = Utf8("""{ "widget": [ 5 ] }""");
+
+        _ = Assert.ThrowsExactly<ExchangeRateFormatException>(() =>
+        {
+            _ = OandaHistoryResponseParser.Parse(json, Request(new(2023, 1, 1), new(2023, 1, 31)), Options);
+        });
+    }
+
+    /// <summary>
     /// Verifies that malformed JSON throws <see cref="ExchangeRateFormatException" />.
     /// </summary>
     [TestMethod]

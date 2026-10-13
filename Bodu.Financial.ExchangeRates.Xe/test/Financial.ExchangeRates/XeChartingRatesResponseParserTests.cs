@@ -163,6 +163,76 @@ public class XeChartingRatesResponseParserTests
         Assert.AreEqual(0.68m, data.Observations[1].Rate);
     }
 
+    /// <summary>
+    /// Verifies that a point of a kind other than a number or a numeric string (a boolean, a non-numeric string, or
+    /// <c>null</c>) is skipped while the points after it keep their dates, rather than escaping as
+    /// <see cref="InvalidOperationException" />.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenPointIsNotNumeric_ShouldSkipThatPoint()
+    {
+        byte[] json = Utf8(
+            """
+            { "batchList": [ { "startTime": 1672617600000, "interval": 86400000, "rates": [100, true, "n/a", null, 100.6828] } ] }
+            """);
+
+        PairRateData<XeSeriesInfo> data = XeChartingRatesResponseParser.Parse(json, Request(new(2023, 1, 1), new(2023, 1, 31)), Options);
+
+        Assert.HasCount(1, data.Observations);
+        Assert.AreEqual(new DateOnly(2023, 1, 5), data.Observations[0].Date);
+        Assert.AreEqual(0.6828m, data.Observations[0].Rate);
+    }
+
+    /// <summary>
+    /// Verifies that a point written as a numeric string is decoded as the number it spells.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenPointIsNumericString_ShouldDecodeIt()
+    {
+        byte[] json = Utf8(
+            """
+            { "batchList": [ { "startTime": 1672617600000, "interval": 86400000, "rates": [100, "100.68"] } ] }
+            """);
+
+        PairRateData<XeSeriesInfo> data = XeChartingRatesResponseParser.Parse(json, Request(new(2023, 1, 1), new(2023, 1, 31)), Options);
+
+        Assert.HasCount(1, data.Observations);
+        Assert.AreEqual(0.68m, data.Observations[0].Rate);
+    }
+
+    /// <summary>
+    /// Verifies that a baseline that is not numeric throws <see cref="ExchangeRateFormatException" /> rather than
+    /// <see cref="InvalidOperationException" />.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenBaselineIsNotNumeric_ShouldThrowFormatException()
+    {
+        byte[] json = Utf8(
+            """
+            { "batchList": [ { "startTime": 1672617600000, "interval": 86400000, "rates": [true, 100.68] } ] }
+            """);
+
+        _ = Assert.ThrowsExactly<ExchangeRateFormatException>(() =>
+        {
+            _ = XeChartingRatesResponseParser.Parse(json, Request(new(2023, 1, 1), new(2023, 1, 31)), Options);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that a batch that is not an object throws <see cref="ExchangeRateFormatException" /> rather than
+    /// <see cref="InvalidOperationException" />.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenBatchIsNotObject_ShouldThrowFormatException()
+    {
+        byte[] json = Utf8("""{ "batchList": [ 5 ] }""");
+
+        _ = Assert.ThrowsExactly<ExchangeRateFormatException>(() =>
+        {
+            _ = XeChartingRatesResponseParser.Parse(json, Request(new(2023, 1, 1), new(2023, 1, 31)), Options);
+        });
+    }
+
     private static CurrencyPairRequest Request(DateOnly startDate, DateOnly endDate) =>
         new(new CurrencyPair(CurrencyCode.AUD, CurrencyCode.USD), startDate, endDate);
 
