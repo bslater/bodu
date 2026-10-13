@@ -35,9 +35,8 @@ public struct BencodeReaderOptions
     /// </summary>
     /// <value>The maximum container nesting depth; <c>0</c> selects the default of 64.</value>
     /// <remarks>
-    /// The effective depth is clamped to the hard ceiling <see cref="BencodeLimits.AbsoluteMaxDepth" />; a document
-    /// nested past the effective limit throws <see cref="BencodeFormatException" /> rather than risking a
-    /// <see cref="StackOverflowException" />.
+    /// The effective depth is clamped to the hard ceiling of 64; a document nested past the effective limit throws
+    /// <see cref="BencodeFormatException" /> rather than risking a <see cref="StackOverflowException" />.
     /// </remarks>
     public int MaxDepth { get; set; }
 

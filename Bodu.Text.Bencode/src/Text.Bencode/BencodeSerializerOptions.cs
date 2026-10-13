@@ -142,9 +142,17 @@ public sealed partial class BencodeSerializerOptions
     /// <see langword="true" />.
     /// </value>
     /// <remarks>
+    /// <para>
     /// The default is deliberately lenient: Bencode wire keys are raw bytes with no prescribed casing convention, so
     /// reads tolerate casing variation by default. The option affects reading only; written keys always use the
     /// resolved wire name unchanged.
+    /// </para>
+    /// <para>
+    /// Under the default, two distinct keys that differ only in case, such as <c>Name</c> and <c>name</c>, bind to the
+    /// same member, so a valid document carrying both is rejected with <see cref="BencodeSerializationException" /> as
+    /// a duplicate member unless <see cref="AllowDuplicateKeys" /> is set, in which case the later value wins. Set this
+    /// option to <see langword="false" /> to bind each key only to the member whose wire name matches it exactly.
+    /// </para>
     /// </remarks>
     /// <exception cref="InvalidOperationException">Thrown when the options are read-only.</exception>
     public bool PropertyNameCaseInsensitive
@@ -318,12 +326,11 @@ public sealed partial class BencodeSerializerOptions
     /// <see cref="BencodeFormatException" /> while deserializing.
     /// </para>
     /// <para>
-    /// Although any non-negative value is accepted here, the <em>effective</em> limit is clamped to the hard ceiling,
-    /// <see cref="BencodeLimits.AbsoluteMaxDepth" /> (64); setting a larger value - even <see cref="int.MaxValue" /> -
-    /// does not raise it. The ceiling exists because the serializer recurses one call-stack frame per nested container,
-    /// so an unbounded depth on hostile or malformed input would exhaust the call stack and terminate the process with
-    /// an uncatchable <see cref="StackOverflowException" />. Clamping converts that into the catchable exceptions
-    /// above.
+    /// Although any non-negative value is accepted here, the <em>effective</em> limit is clamped to the hard ceiling of
+    /// 64; setting a larger value - even <see cref="int.MaxValue" /> - does not raise it. The ceiling exists because
+    /// the serializer recurses one call-stack frame per nested container, so an unbounded depth on hostile or malformed
+    /// input would exhaust the call stack and terminate the process with an uncatchable
+    /// <see cref="StackOverflowException" />. Clamping converts that into the catchable exceptions above.
     /// </para>
     /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when the value is negative.</exception>
