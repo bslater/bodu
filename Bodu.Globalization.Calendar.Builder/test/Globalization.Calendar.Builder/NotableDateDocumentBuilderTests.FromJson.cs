@@ -2182,6 +2182,163 @@ public partial class NotableDateDocumentBuilderTests
     }
 
     /// <summary>
+    /// The well-formed value of every identifier, reference and territory code the JSON document under the pattern tests
+    /// holds, keyed by the placeholder that stands for it.
+    /// </summary>
+    private static readonly Dictionary<string, string> s_jsonIdentifierFieldValues = new(StringComparer.Ordinal)
+    {
+        ["resourceId"] = "test.identifiers",
+        ["policy.id"] = "policy",
+        ["action.notableDateRef"] = "offset",
+        ["action.ruleRef"] = "r",
+        ["scope.territories"] = "AU",
+        ["scope.notableDateRefs"] = "anchor",
+        ["scope.ruleRefs.notableDateRef"] = "anchor",
+        ["scope.ruleRefs.ruleRef"] = "r",
+        ["use.notableDateRef"] = "lib-day",
+        ["use.as"] = "alias",
+        ["use.territory"] = "AU-NSW",
+        ["use.adjustments"] = "policy",
+        ["notableDate.id"] = "anchor",
+        ["rule.id"] = "r",
+        ["applicability.territories"] = "AU",
+        ["rule.adjustments"] = "policy",
+        ["offsetFromRule.notableDateRef"] = "anchor",
+        ["offsetFromRule.ruleRef"] = "r",
+        ["weekdayNearRule.notableDateRef"] = "anchor",
+        ["weekdayNearRule.ruleRef"] = "r",
+        ["nthWeekdayFromRule.notableDateRef"] = "anchor",
+        ["nthWeekdayFromRule.ruleRef"] = "r",
+        ["workingDayOffsetFromRule.notableDateRef"] = "anchor",
+        ["workingDayOffsetFromRule.ruleRef"] = "r",
+        ["untilDate.notableDateRef"] = "anchor",
+        ["untilDate.ruleRef"] = "r",
+        ["patch.notableDateRef"] = "anchor",
+        ["patch.ruleRef"] = "r",
+        ["patch.territories"] = "NZ",
+        ["patch.adjustments"] = "policy",
+        ["remove.notableDateRef"] = "offset",
+        ["remove.ruleRef"] = "gone",
+        ["add.notableDateRef"] = "offset",
+        ["add.rule.id"] = "added",
+    };
+
+    /// <summary>
+    /// Verifies that the pattern test document builds, through the builder, into the same resource the loader loads,
+    /// compared byte for byte as binary rule packs, so each rejection the per-field tests observe is caused by the one
+    /// value they replace.
+    /// </summary>
+    [TestMethod]
+    public void FromJson_WhenEveryIdentifierMatchesSchemaPattern_ShouldBuildWhatLoadJsonLoads()
+    {
+        string json = IdentifierFieldJson(null, null);
+
+        NotableDateResource loaded = NotableDateResourceLoader.LoadJson(json, BuilderEnumImportResolver);
+        NotableDateResource built = NotableDateDocumentBuilder.FromJson(json).Build(BuilderEnumImportResolver);
+
+        CollectionAssert.AreEqual(PackBytes(loaded), PackBytes(built));
+    }
+
+    /// <summary>
+    /// Verifies that a JSON identifier, reference or territory code that breaks the pattern the schema requires of it,
+    /// which the loader rejects with <c>BODU-CAL-SCHEMA</c>, is rejected with a <see cref="FormatException" /> carrying
+    /// the loader's message, rather than read and left for <c>Build</c> to reject.
+    /// </summary>
+    /// <param name="field">The placeholder of the field holding the value.</param>
+    /// <param name="value">The value that breaks the field's pattern.</param>
+    [TestMethod]
+    [DataRow("resourceId", "Test.Identifiers")]
+    [DataRow("resourceId", "test..identifiers")]
+    [DataRow("policy.id", "Policy")]
+    [DataRow("action.notableDateRef", "Offset")]
+    [DataRow("action.ruleRef", "r_1")]
+    [DataRow("scope.territories", "au")]
+    [DataRow("scope.notableDateRefs", "Anchor")]
+    [DataRow("scope.ruleRefs.notableDateRef", "anchor.day")]
+    [DataRow("scope.ruleRefs.ruleRef", "R")]
+    [DataRow("use.notableDateRef", "Lib-Day")]
+    [DataRow("use.as", "1alias")]
+    [DataRow("use.territory", "AU-NEWSW")]
+    [DataRow("use.adjustments", "policy-")]
+    [DataRow("notableDate.id", "New-Year")]
+    [DataRow("notableDate.id", "new year")]
+    [DataRow("rule.id", "R")]
+    [DataRow("applicability.territories", "AUS")]
+    [DataRow("rule.adjustments", "-policy")]
+    [DataRow("offsetFromRule.notableDateRef", "Anchor")]
+    [DataRow("offsetFromRule.ruleRef", "r--1")]
+    [DataRow("weekdayNearRule.notableDateRef", "anchor_day")]
+    [DataRow("weekdayNearRule.ruleRef", "R")]
+    [DataRow("nthWeekdayFromRule.notableDateRef", "1anchor")]
+    [DataRow("nthWeekdayFromRule.ruleRef", "r-")]
+    [DataRow("workingDayOffsetFromRule.notableDateRef", "Anchor")]
+    [DataRow("workingDayOffsetFromRule.ruleRef", "r 1")]
+    [DataRow("untilDate.notableDateRef", "ANCHOR")]
+    [DataRow("untilDate.ruleRef", "r.1")]
+    [DataRow("patch.notableDateRef", "Anchor")]
+    [DataRow("patch.ruleRef", "R")]
+    [DataRow("patch.territories", "nz")]
+    [DataRow("patch.adjustments", "Policy")]
+    [DataRow("remove.notableDateRef", "Offset")]
+    [DataRow("remove.ruleRef", "Gone")]
+    [DataRow("add.notableDateRef", "Offset")]
+    [DataRow("add.rule.id", "Added")]
+    public void FromJson_WhenIdentifierBreaksSchemaPattern_ShouldThrowLoadersMessage(string field, string value)
+    {
+        AssertThrowsLoaderSchemaMessage(IdentifierFieldJson(field, value));
+    }
+
+    /// <summary>
+    /// Builds a JSON document holding every identifier, reference and territory code the loader holds to a pattern, each
+    /// set to its well-formed value except the one named, which holds the supplied value.
+    /// </summary>
+    /// <param name="field">The placeholder of the field to set, or <see langword="null" /> to set none.</param>
+    /// <param name="value">The value the named field holds.</param>
+    /// <returns>The JSON document.</returns>
+    private static string IdentifierFieldJson(string? field, string? value)
+    {
+        string json = """
+            { "schemaVersion": "1.0", "resourceId": "@resourceId@",
+              "adjustmentPolicies": [ { "id": "@policy.id@",
+                "scope": { "territories": [ "@scope.territories@" ], "notableDateRefs": [ "@scope.notableDateRefs@" ],
+                  "ruleRefs": [ { "notableDateRef": "@scope.ruleRefs.notableDateRef@", "ruleRef": "@scope.ruleRefs.ruleRef@" } ] },
+                "trigger": { "type": "IfWeekend" },
+                "action": { "type": "ReplaceWithRule", "notableDateRef": "@action.notableDateRef@", "ruleRef": "@action.ruleRef@" },
+                "emission": { "mode": "ObservedOnly" } } ],
+              "imports": [ { "resource": "lib", "uses": [ { "notableDateRef": "@use.notableDateRef@", "as": "@use.as@",
+                "territory": "@use.territory@", "adjustments": [ "@use.adjustments@" ] } ] } ],
+              "notableDates": [
+                { "id": "@notableDate.id@", "displayName": "Anchor", "category": "PublicHoliday",
+                  "rules": [ { "id": "@rule.id@", "applicability": { "territories": [ "@applicability.territories@" ] },
+                    "strategy": { "fixed": { "month": 3, "day": 1 } }, "adjustments": [ "@rule.adjustments@" ] } ] },
+                { "id": "offset", "displayName": "Offset", "category": "Observance",
+                  "rules": [
+                    { "id": "r", "strategy": { "offsetFromRule": { "notableDateRef": "@offsetFromRule.notableDateRef@",
+                      "ruleRef": "@offsetFromRule.ruleRef@", "offsetDays": 1 } },
+                      "duration": { "untilDate": { "strategy": { "offsetFromRule": { "notableDateRef": "@untilDate.notableDateRef@",
+                        "ruleRef": "@untilDate.ruleRef@", "offsetDays": 3 } } } } },
+                    { "id": "near", "strategy": { "weekdayNearRule": { "notableDateRef": "@weekdayNearRule.notableDateRef@",
+                      "ruleRef": "@weekdayNearRule.ruleRef@", "dayOfWeek": "Friday", "direction": "Before" } } },
+                    { "id": "nth", "strategy": { "nthWeekdayFromRule": { "notableDateRef": "@nthWeekdayFromRule.notableDateRef@",
+                      "ruleRef": "@nthWeekdayFromRule.ruleRef@", "dayOfWeek": "Sunday", "ordinal": 2 } } },
+                    { "id": "working", "strategy": { "workingDayOffsetFromRule": { "notableDateRef": "@workingDayOffsetFromRule.notableDateRef@",
+                      "ruleRef": "@workingDayOffsetFromRule.ruleRef@", "offsetWorkingDays": 1 } } },
+                    { "id": "gone", "strategy": { "fixed": { "month": 5, "day": 1 } } } ] } ],
+              "overrides": [
+                { "operation": "PatchRule", "notableDateRef": "@patch.notableDateRef@", "ruleRef": "@patch.ruleRef@", "priority": 2,
+                  "applicability": { "territories": [ "@patch.territories@" ] }, "adjustments": [ "@patch.adjustments@" ] },
+                { "operation": "RemoveRule", "notableDateRef": "@remove.notableDateRef@", "ruleRef": "@remove.ruleRef@" },
+                { "operation": "AddRule", "notableDateRef": "@add.notableDateRef@",
+                  "rule": { "id": "@add.rule.id@", "strategy": { "fixed": { "month": 6, "day": 1 } } } } ] }
+            """;
+
+        foreach ((string key, string wellFormed) in s_jsonIdentifierFieldValues)
+            json = json.Replace("@" + key + "@", key == field ? value : wellFormed, StringComparison.Ordinal);
+
+        return json;
+    }
+
+    /// <summary>
     /// Asserts that the builder rejects a JSON document with a <see cref="FormatException" /> carrying the message of the
     /// first <c>BODU-CAL-SCHEMA</c> error the loader reports for it.
     /// </summary>
