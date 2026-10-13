@@ -63,4 +63,26 @@ public partial class CurrencyInfoTests
         Assert.AreEqual(minorUnits, changed.MinorUnits);
         Assert.AreEqual(2, info.MinorUnits);
     }
+
+    /// <summary>
+    /// Verifies that a <c>with</c> expression that lowers <see cref="CurrencyInfo.MinorUnits" /> below the precision of
+    /// the record's cash-rounding increment throws <see cref="ArgumentOutOfRangeException" /> naming
+    /// <see cref="CurrencyInfo.CashRoundingIncrement" />, rather than producing a record whose increment is not a whole
+    /// number of its minor units.
+    /// </summary>
+    /// <param name="minorUnits">The minor-unit count too coarse for an increment of 0.05.</param>
+    [TestMethod]
+    [DataRow(0)]
+    [DataRow(1)]
+    public void MinorUnits_WhenSetBelowCashRoundingPrecisionInWithExpression_ShouldThrowArgumentOutOfRangeException(int minorUnits)
+    {
+        var info = new CurrencyInfo("XQQ", 2, 0.05m, false, null, null);
+
+        ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = info with { MinorUnits = minorUnits };
+        });
+
+        Assert.AreEqual(nameof(CurrencyInfo.CashRoundingIncrement), ex.ParamName);
+    }
 }
