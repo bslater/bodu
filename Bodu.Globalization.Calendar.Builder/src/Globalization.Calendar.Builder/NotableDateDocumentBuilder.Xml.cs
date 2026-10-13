@@ -454,16 +454,7 @@ public sealed partial class NotableDateDocumentBuilder
             element.Add(new XElement(rule.Recurrence));
 
         if (rule.EndStrategy is not null)
-        {
-            element.Add(new XElement(
-                BuilderXml.Namespace + "Duration",
-                new XElement(
-                    BuilderXml.Namespace + "UntilDate",
-                    new XAttribute("startBoundary", rule.EndStartBoundary.ToString()),
-                    new XAttribute("endBoundary", rule.EndEndBoundary.ToString()),
-                    new XAttribute("selection", rule.EndSelectionValue.ToString()),
-                    new XElement(BuilderXml.Namespace + "Strategy", new XElement(rule.EndStrategy)))));
-        }
+            element.Add(BuildDurationElement(rule));
 
         XElement? tags = BuildTagsElement(rule.Tags);
         if (tags is not null) element.Add(tags);
@@ -473,6 +464,21 @@ public sealed partial class NotableDateDocumentBuilder
 
         return element;
     }
+
+    /// <summary>
+    /// Builds the <c>Duration</c> element of a rule or patch whose span ends on a calculated date.
+    /// </summary>
+    /// <param name="rule">The rule or patch declaring the end strategy.</param>
+    /// <returns>The serialized duration element.</returns>
+    private static XElement BuildDurationElement(NotableDateRuleBuilder rule) =>
+        new(
+            BuilderXml.Namespace + "Duration",
+            new XElement(
+                BuilderXml.Namespace + "UntilDate",
+                new XAttribute("startBoundary", rule.EndStartBoundary.ToString()),
+                new XAttribute("endBoundary", rule.EndEndBoundary.ToString()),
+                new XAttribute("selection", rule.EndSelectionValue.ToString()),
+                new XElement(BuilderXml.Namespace + "Strategy", new XElement(rule.EndStrategy!))));
 
     /// <summary>
     /// Writes the optional scalar attributes shared by rules and patches onto the supplied element.
@@ -602,6 +608,12 @@ public sealed partial class NotableDateDocumentBuilder
 
         if (rule.Strategy is not null)
             element.Add(new XElement(BuilderXml.Namespace + "Strategy", new XElement(rule.Strategy)));
+
+        if (rule.Recurrence is not null)
+            element.Add(new XElement(rule.Recurrence));
+
+        if (rule.EndStrategy is not null)
+            element.Add(BuildDurationElement(rule));
 
         XElement? tags = BuildTagsElement(rule.Tags);
         if (tags is not null) element.Add(tags);

@@ -46,9 +46,20 @@ Features outside the JSON subset (each rejection pinned by `…JsonSubset.ToJson
 | Trigger refinements: month, day, week ordinal, custom trigger handler keys | Adjustment policies |
 | Action refinements: replacement rule references, custom action handler keys, handler parameters | Adjustment policies |
 | Scope year bounds (`FromYear` / `ToYear` / `OnlyYear` / `ExceptYear`) and notable-date / rule scope references | Adjustment scopes |
-| Override patches carrying applicability, strategy, tag, or adjustment changes | Overrides |
+| Override patches carrying applicability, strategy, recurrence, duration-end, tag, or adjustment changes | Overrides |
 
 Serialize such documents as XML. Scopes confined to territories, calendars, and categories - and lunisolar strategy flags - are inside the subset and round-trip through JSON unchanged.
+
+The subset limits only what `ToJson()` writes. `FromJson` reads every field <xref:Bodu.Globalization.Calendar.NotableDateResourceLoader> reads from JSON, the features above included, so `FromJson(json).Build()` produces the same resource as `NotableDateResourceLoader.LoadJson(json)` for any document both accept (pinned by `…FromJson.FromJson_WhenDocumentDeclaresField_ShouldBuildWhatLoadJsonLoads`, which compares the two as binary rule packs). A few JSON fields have no counterpart in the builder's document model, whose full form is the XML schema, and `FromJson` throws <xref:System.NotSupportedException> for them rather than dropping them:
+
+| JSON field the builder cannot hold | Why |
+|---|---|
+| An empty `tags` or `adjustments` list on a `PatchRule` override | The loader reads an empty list as "clear the rule's list"; the schema has no empty `<Tags>` or `<Adjustments>` element. |
+| An empty `adjustments` list on an import `use` | The same, for the imported concept's rules. |
+| A scope `ruleRefs` item that does not name its `notableDateRef` (a bare string, or an object without it) | The schema's scope `<Rule>` element requires both references. |
+| A handler parameter whose value is an object or an array | The loader keeps it as its original JSON text, which a parsed document no longer carries. |
+
+Load such documents with `NotableDateResourceLoader.LoadJson` instead.
 
 ## Build parity: what you serialize is what the runtime loads
 

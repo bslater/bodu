@@ -122,10 +122,10 @@ public sealed partial class NotableDateDocumentBuilder
             policy.SetParsedTrigger(
                 ParseNullableEnum<AdjustmentTrigger>((string?)trigger["type"], "trigger type"),
                 ReadStringArray(trigger["weekdays"] as JsonArray).Select(day => ParseEnum<DayOfWeek>(day, "trigger weekdays")),
-                null,
-                null,
-                null,
-                null);
+                ParseTriggerMonth(ScalarText(trigger["month"]), "trigger month"),
+                JsonInt(trigger["day"], "trigger day"),
+                ParseNullableEnum<WeekOrdinal>((string?)trigger["weekOrdinal"], "trigger weekOrdinal"),
+                (string?)trigger["handlerKey"]);
         }
 
         if (policyJson["action"] is JsonObject action)
@@ -137,9 +137,9 @@ public sealed partial class NotableDateDocumentBuilder
                 JsonInt(action["maxSearchDays"], "action maxSearchDays"),
                 JsonBool(action["skipWeekends"], "action skipWeekends"),
                 JsonBool(action["skipNonWorkingDates"], "action skipNonWorkingDates"),
-                null,
-                null,
-                null);
+                (string?)action["notableDateRef"],
+                (string?)action["ruleRef"],
+                (string?)action["handlerKey"]);
         }
 
         if (policyJson["emission"] is JsonObject emission)
@@ -150,7 +150,40 @@ public sealed partial class NotableDateDocumentBuilder
                 JsonBool(emission["nonWorking"], "emission nonWorking"));
         }
 
+        if (policyJson["parameters"] is JsonObject parameters)
+            policy.SetParsedParameters(ReadParametersJson(parameters));
+
         return policy;
+    }
+
+    /// <summary>
+    /// Reads a JSON handler-parameter map as the loader reads it: a string verbatim, a number by its JSON text, a
+    /// Boolean as <see cref="bool.TrueString" /> or <see cref="bool.FalseString" />, and a <c>null</c> as empty text.
+    /// </summary>
+    /// <param name="parameters">The parameter map.</param>
+    /// <returns>The key/value pairs, in document order.</returns>
+    /// <exception cref="NotSupportedException">A parameter value is an object or an array.</exception>
+    private static List<KeyValuePair<string, string>> ReadParametersJson(JsonObject parameters)
+    {
+        List<KeyValuePair<string, string>> pairs = new();
+        foreach (KeyValuePair<string, JsonNode?> property in parameters)
+        {
+            // The loader keeps an object or an array as its original JSON text, white space included, which a parsed
+            // node no longer carries, so such a value is rejected rather than read differently.
+            string value = property.Value switch
+            {
+                null => string.Empty,
+                JsonValue text when text.GetValueKind() == JsonValueKind.String => text.GetValue<string>(),
+                JsonValue flag when flag.GetValueKind() == JsonValueKind.True => bool.TrueString,
+                JsonValue flag when flag.GetValueKind() == JsonValueKind.False => bool.FalseString,
+                JsonValue number => number.ToJsonString(),
+                _ => throw UnrepresentableJsonField("a handler parameter whose value is an object or an array"),
+            };
+
+            pairs.Add(new KeyValuePair<string, string>(property.Key, value));
+        }
+
+        return pairs;
     }
 
     /// <summary>
@@ -169,13 +202,40 @@ public sealed partial class NotableDateDocumentBuilder
             ReadStringArray(scopeJson["calendars"] as JsonArray).Select(calendar => ParseEnum<CalendarSystem>(calendar, "scope calendars")),
             ReadStringArray(scopeJson["categories"] as JsonArray).Select(category => ParseEnum<NotableDateCategory>(category, "scope categories")),
             ReadStringArray(scopeJson["notableDateRefs"] as JsonArray),
-            Array.Empty<(string, string)>(),
-            Array.Empty<int>(),
-            Array.Empty<int>(),
-            null,
-            null);
+            ReadScopeRuleRefsJson(scopeJson["ruleRefs"] as JsonArray),
+            ReadIntArray(scopeJson["onlyYears"] as JsonArray, "scope onlyYears"),
+            ReadIntArray(scopeJson["exceptYears"] as JsonArray, "scope exceptYears"),
+            JsonInt(scopeJson["fromYear"], "scope fromYear"),
+            JsonInt(scopeJson["toYear"], "scope toYear"));
 
         return scope;
+    }
+
+    /// <summary>
+    /// Reads a JSON adjustment scope's rule references, each of which must name its concept, since the document's XML
+    /// form has no unqualified rule reference.
+    /// </summary>
+    /// <param name="array">The <c>ruleRefs</c> array, or <see langword="null" /> when absent.</param>
+    /// <returns>The qualified rule references; empty when the array is absent.</returns>
+    /// <exception cref="NotSupportedException">A reference does not name its concept.</exception>
+    /// <exception cref="FormatException">An item is neither a rule identifier nor a reference object.</exception>
+    private static List<(string NotableDateRef, string RuleRef)> ReadScopeRuleRefsJson(JsonArray? array)
+    {
+        List<(string NotableDateRef, string RuleRef)> references = new();
+        if (array is null)
+            return references;
+
+        foreach (JsonNode? node in array)
+        {
+            if (node is JsonObject reference && ScalarText(reference["notableDateRef"]) is string notableDateRef)
+                references.Add((notableDateRef, ScalarText(reference["ruleRef"]) ?? string.Empty));
+            else if (node is JsonObject || (node is JsonValue name && name.GetValueKind() == JsonValueKind.String))
+                throw UnrepresentableJsonField("a scope rule reference that does not name its notableDateRef");
+            else
+                throw new FormatException(string.Format(CultureInfo.CurrentCulture, CalendarResourceStrings.Validation_InvalidReferenceItem, "scope ruleRefs", node?.ToJsonString() ?? "null"));
+        }
+
+        return references;
     }
 
     /// <summary>
@@ -359,19 +419,112 @@ public sealed partial class NotableDateDocumentBuilder
     {
         string ruleRef = (string?)overrideJson["ruleRef"] ?? string.Empty;
         NotableDateRuleBuilder rule = new(ruleRef);
+        var applicability = overrideJson["applicability"] as JsonObject;
+
+        // A patch that carries an applicability replaces the rule's whole applicability, an empty one included, so a
+        // present applicability always declares its calendar: the default, Gregorian, when the patch names none.
         rule.SetParsedScalars(
             JsonInt(overrideJson["priority"], "patch priority"),
             ParseNullableEnum<NotableDateCategory>((string?)overrideJson["category"], "category"),
             JsonBool(overrideJson["nonWorking"], "patch nonWorking"),
             JsonInt(overrideJson["durationDays"], "durationDays"),
             null,
-            null,
-            null,
-            null,
-            null,
-            null);
+            applicability is null ? null : ParseNullableEnum<CalendarSystem>((string?)applicability["calendar"], "calendar") ?? CalendarSystem.Gregorian,
+            applicability is null ? null : JsonInt(applicability["fromYear"], "applicability fromYear"),
+            applicability is null ? null : JsonInt(applicability["toYear"], "applicability toYear"),
+            applicability is null ? null : JsonInt(applicability["everyYears"], "applicability everyYears"),
+            applicability is null ? null : JsonInt(applicability["anchorYear"], "applicability anchorYear"));
+
+        rule.SetParsedCollections(
+            applicability is null ? Array.Empty<string>() : ReadStringArray(applicability["territories"] as JsonArray),
+            applicability is null ? Array.Empty<int>() : ReadIntArray(applicability["onlyYears"] as JsonArray, "applicability onlyYears"),
+            applicability is null ? Array.Empty<int>() : ReadIntArray(applicability["exceptYears"] as JsonArray, "applicability exceptYears"),
+            ReadPatchListJson(overrideJson["tags"] as JsonArray, "an empty tags list on a PatchRule override"),
+            ReadPatchListJson(overrideJson["adjustments"] as JsonArray, "an empty adjustments list on a PatchRule override"));
+
+        rule.SetParsedStrategy(BuildStrategyElement(overrideJson["strategy"] as JsonObject));
+
+        if (BuildRecurrenceElement(overrideJson["recurrence"] as JsonObject) is XElement recurrence)
+            rule.SetParsedRecurrence(recurrence);
+
+        if (overrideJson["duration"]?["untilDate"] is JsonObject untilDate)
+        {
+            rule.SetParsedDuration(
+                BuildStrategyElement(untilDate["strategy"] as JsonObject),
+                ParseNullableEnum<DateBoundary>((string?)untilDate["startBoundary"], "untilDate startBoundary") ?? DateBoundary.Inclusive,
+                ParseNullableEnum<DateBoundary>((string?)untilDate["endBoundary"], "untilDate endBoundary") ?? DateBoundary.Inclusive,
+                ParseNullableEnum<EndDateSelection>((string?)untilDate["selection"], "untilDate selection") ?? EndDateSelection.FirstOnOrAfterStart);
+        }
 
         return new OverrideEntry(OverrideOperation.PatchRule, notableDateRef, ruleRef, rule);
+    }
+
+    /// <summary>
+    /// Reads a list that replaces a patched rule's or an imported concept's list, which the builder can hold only when
+    /// it is absent or has items: the document's XML form has no empty replacement list.
+    /// </summary>
+    /// <param name="array">The list, or <see langword="null" /> when absent.</param>
+    /// <param name="feature">A description of the list, used in the exception message when it is empty.</param>
+    /// <returns>The list's values; empty when the list is absent.</returns>
+    /// <exception cref="NotSupportedException">The list is present and empty.</exception>
+    private static List<string> ReadPatchListJson(JsonArray? array, string feature) =>
+        array is { Count: 0 } ? throw UnrepresentableJsonField(feature) : ReadStringArray(array);
+
+    /// <summary>
+    /// Creates a <see cref="NotSupportedException" /> describing a field of a JSON document that the builder's document
+    /// model cannot represent.
+    /// </summary>
+    /// <param name="feature">A description of the field.</param>
+    /// <returns>The exception to throw.</returns>
+    private static NotSupportedException UnrepresentableJsonField(string feature) =>
+        new(string.Format(CultureInfo.CurrentCulture, BuilderResourceStrings.Op_NotSupported_JsonFieldNotRepresentable, feature));
+
+    /// <summary>
+    /// Reads the JSON <c>imports</c> array into the builder.
+    /// </summary>
+    /// <param name="array">The imports array, or <see langword="null" /> when absent.</param>
+    /// <exception cref="NotSupportedException">A use declares an empty <c>adjustments</c> list.</exception>
+    private void ReadImportsJson(JsonArray? array)
+    {
+        if (array is null)
+            return;
+
+        foreach (JsonNode? node in array)
+        {
+            if (node is not JsonObject importJson)
+                continue;
+
+            ImportBuilder import = new((string?)importJson["resource"] ?? string.Empty);
+            if (importJson["uses"] is JsonArray uses)
+            {
+                foreach (JsonNode? useNode in uses)
+                {
+                    if (useNode is JsonObject useJson)
+                        import.AddUse(ReadImportUseJson(useJson));
+                }
+            }
+
+            _imports.Add(import);
+        }
+    }
+
+    /// <summary>
+    /// Reads a single JSON import use into an import-use builder.
+    /// </summary>
+    /// <param name="useJson">The use object.</param>
+    /// <returns>The reconstructed import-use builder.</returns>
+    /// <exception cref="NotSupportedException">The use declares an empty <c>adjustments</c> list.</exception>
+    private static ImportUseBuilder ReadImportUseJson(JsonObject useJson)
+    {
+        ImportUseBuilder use = new((string?)useJson["notableDateRef"] ?? string.Empty);
+        use.SetParsedValues(
+            (string?)useJson["as"],
+            (string?)useJson["territory"],
+            ParseNullableEnum<NotableDateCategory>((string?)useJson["category"], "import use category"),
+            JsonBool(useJson["nonWorking"], "import use nonWorking"),
+            ReadPatchListJson(useJson["adjustments"] as JsonArray, "an empty adjustments list on an import use"));
+
+        return use;
     }
 
     /// <summary>

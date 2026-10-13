@@ -178,6 +178,15 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The JSON document declares {0}, which the document builder cannot represent. Load the document with NotableDateResourceLoader.LoadJson instead..
+        /// </summary>
+        internal static string Op_NotSupported_JsonFieldNotRepresentable {
+            get {
+                return ResourceManager.GetString("Op_NotSupported_JsonFieldNotRepresentable", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to A binary rule pack is compiled output and cannot be re-opened for editing..
         /// </summary>
         internal static string Op_NotSupported_LoadBinaryPack {
