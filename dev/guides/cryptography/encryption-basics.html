@@ -89,18 +89,19 @@
 
 <p>This page introduces the mental model that every cipher in the library follows. If you know <code>System.Security.Cryptography.SymmetricAlgorithm</code> from the BCL, most of this will feel familiar - with three twists:</p>
 <ol>
-<li><strong><code>BlockMode</code></strong> replaces <code>Mode</code>. The inherited <code>Mode</code> property (type <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.ciphermode">CipherMode</a>) only knows about the modes the BCL defined. Bodu ciphers expose a new <code>BlockMode</code> property of type <a class="xref" href="../../api/Bodu.Security.Cryptography.CipherModeKind.html">CipherModeKind</a>, which adds <code>CTR</code>, <code>XTS</code>, and friends. <em>Set <code>BlockMode</code>, not <code>Mode</code>.</em></li>
+<li><strong><code>BlockMode</code></strong> replaces <code>Mode</code>. The inherited <code>Mode</code> property (type <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.ciphermode">CipherMode</a>) only knows about the modes the BCL defined. Bodu ciphers expose a new <code>BlockMode</code> property of type <a class="xref" href="../../api/Bodu.Security.Cryptography.CipherModeKind.html">CipherModeKind</a>, which adds <code>CTR</code> (the enum also names <code>CTS</code>, <code>XTS</code>, and the AEAD modes, which ship only as direct transforms). <em>Set <code>BlockMode</code>, not <code>Mode</code>.</em></li>
 <li><strong>Tweak</strong> is a first-class input for Threefish. Threefish is a <em>tweakable</em> block cipher; each call is parameterized by a key, an IV, <strong>and</strong> a 128-bit tweak that acts as a domain-separation label.</li>
 <li><strong>Key / IV / Tweak are lazily generated.</strong> If you never set them, they are materialized on first read from a cryptographically secure RNG. Read the property, or call <code>GenerateKey()</code> / <code>GenerateIV()</code> / <code>GenerateTweak()</code> explicitly.</li>
 </ol>
 <p>The <a class="xref" href="../../api/Bodu.Security.Cryptography.CipherModeKind.html">CipherModeKind</a> enum is a superset of the BCL <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.ciphermode">CipherMode</a>: its <code>CBC</code>, <code>ECB</code>, <code>OFB</code>, <code>CFB</code>, and <code>CTS</code> members share the framework numeric values (so they cast directly), and <code>CTR</code>, <code>XTS</code>, plus the AEAD modes <code>OCB</code> / <code>EAX</code> / <code>SIV</code> start at <code>1 &lt;&lt; 10</code> so they never collide with framework values. That is how a Bodu cipher can offer counter mode while still deriving from <code>SymmetricAlgorithm</code>.</p>
 <h2 id="two-padding-properties-kept-in-sync">Two padding properties, kept in sync</h2>
-<p>Every block-cipher wrapper carries <strong>two</strong> padding surfaces that always agree:</p>
+<p>The block-cipher wrappers built on <a class="xref" href="../../api/Bodu.Security.Cryptography.ExtendedSymmetricAlgorithm.html">ExtendedSymmetricAlgorithm</a> (Skipjack, Blowfish, Camellia, Twofish, and Serpent128) carry <strong>two</strong> padding surfaces that always agree:</p>
 <ul>
 <li>the inherited <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.paddingmode">PaddingMode</a>-typed <code>Padding</code> (so the cipher plugs into <code>CryptoStream</code> and any BCL-shaped code); and</li>
 <li>a <code>BlockPadding</code> of type <a class="xref" href="../../api/Bodu.Security.Cryptography.PaddingModeKind.html">PaddingModeKind</a>, the extended enum that adds ISO/IEC 7816-4 bit padding on top of the framework values.</li>
 </ul>
 <p>Assigning either one updates the other whenever the value has a counterpart: setting <code>Padding = PaddingMode.PKCS7</code> sets <code>BlockPadding</code> to <code>PaddingModeKind.PKCS7</code>, and the reverse holds. The single asymmetry is the Bodu-only <code>PaddingModeKind.ISO7816_4</code>, which has no <code>PaddingMode</code> equivalent - assigning it leaves the inherited <code>Padding</code> untouched. Use whichever property reads more naturally at the call site; the samples in these guides use the BCL <code>Padding</code> because it is the name most readers already know.</p>
+<p>The tweakable wrappers (the Threefish family, and Serpent256 / Serpent512 / Serpent1024) derive from <a class="xref" href="../../api/Bodu.Security.Cryptography.TweakableSymmetricAlgorithm.html">TweakableSymmetricAlgorithm</a> instead. They have their own <code>BlockMode</code> but only the BCL <code>Padding</code>, so <code>BlockPadding</code> and ISO/IEC 7816-4 padding are not available on them.</p>
 <h2 id="anatomy-of-an-encryption">Anatomy of an encryption</h2>
 <pre><code class="lang-csharp">using System.Security.Cryptography;
 using Bodu.Security.Cryptography;
@@ -227,7 +228,7 @@ byte[] recovered = fresh.Decrypt(cipher);
 <li><strong>Holding the algorithm instance alive longer than needed</strong> keeps the expanded key schedule in memory. Dispose as soon as encryption finishes.</li>
 </ul>
 <h2 id="when-to-prefer-the-bcl-over-a-bodu-cipher">When to prefer the BCL over a Bodu cipher</h2>
-<p>These wrappers exist to cover algorithms the BCL does not ship - Threefish, Camellia, Twofish, Serpent, Skipjack, Blowfish - and to expose the modes (<code>CTR</code>, <code>XTS</code>) and padding (<code>ISO7816_4</code>) the framework enums omit. They do <strong>not</strong> re-implement AES: the only AES surface here is <a class="xref" href="../../api/Bodu.Security.Cryptography.AesBlockCipher.html">AesBlockCipher</a>, a thin <a class="xref" href="../../api/Bodu.Security.Cryptography.IBlockCipher.html">IBlockCipher</a> adapter over the BCL <code>Aes</code> engine, provided so AES can drive the AEAD mode transforms.</p>
+<p>These wrappers exist to cover algorithms the BCL does not ship - Threefish, Camellia, Twofish, Serpent, Skipjack, Blowfish - and to expose the <code>CTR</code> mode and the <code>ISO7816_4</code> padding the framework enums omit (<code>CTS</code> and <code>XTS</code> ship as direct transforms). They do <strong>not</strong> re-implement AES: the only AES surface here is <a class="xref" href="../../api/Bodu.Security.Cryptography.AesBlockCipher.html">AesBlockCipher</a>, a thin <a class="xref" href="../../api/Bodu.Security.Cryptography.IBlockCipher.html">IBlockCipher</a> adapter over the BCL <code>Aes</code> engine, provided so AES can drive the AEAD mode transforms.</p>
 <table>
 <thead>
 <tr>
@@ -237,8 +238,12 @@ byte[] recovered = fresh.Decrypt(cipher);
 </thead>
 <tbody>
 <tr>
-<td>AES in ECB / CBC / CTR / CFB</td>
+<td>AES in ECB / CBC / CFB</td>
 <td>the BCL <code>Aes</code> directly - it is hardware-accelerated on AES-NI CPUs</td>
+</tr>
+<tr>
+<td>AES in CTR</td>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.AesBlockCipher.html">AesBlockCipher</a> + <a class="xref" href="../../api/Bodu.Security.Cryptography.CtrModeTransform.html">CtrModeTransform</a> - the BCL <code>CipherMode</code> has no CTR value</td>
 </tr>
 <tr>
 <td>AES-GCM / AES-CCM</td>
@@ -280,7 +285,7 @@ byte[] recovered = fresh.Decrypt(cipher);
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 57ffd22 · Built: 2026-10-12 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: b1517af · Built: 2026-10-13 (UTC)</span>
         </div>
       </div>
     </footer>

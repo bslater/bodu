@@ -121,7 +121,7 @@
 <td><strong>EAX</strong></td>
 <td><a class="xref" href="../../api/Bodu.Security.Cryptography.EaxModeTransform.html">EaxModeTransform</a></td>
 <td>Bellare/Rogaway/Wagner (FSE 2004)</td>
-<td>Two-pass (CTR + OMAC); arbitrary nonce length, no length-extension limits.</td>
+<td>Two-pass (CTR + OMAC); nonce of exactly the cipher block size (16 bytes for AES), no length-extension limits.</td>
 </tr>
 <tr>
 <td><strong>SIV</strong></td>
@@ -175,7 +175,7 @@
 </table>
 <p>The output is the ciphertext (same length as the plaintext) followed by a fixed-size <strong>tag</strong>. Decryption recomputes the tag over the ciphertext and AAD and compares it in constant time; a mismatch throws and releases no plaintext.</p>
 <h2 id="prerequisites---an-aes-iblockcipher">Prerequisites - an AES <code>IBlockCipher</code></h2>
-<p>Every mode transform in this family takes an <a class="xref" href="../../api/Bodu.Security.Cryptography.IBlockCipher.html">IBlockCipher</a> as its primitive <strong>and assumes a 16-byte (128-bit) block size</strong>. That assumption is baked into the counter formats, the GHASH/POLYVAL field, and the offset schedules - so the library's other primitives (Skipjack and Blowfish at 8 bytes, Threefish-256/512/1024 at 32/64/128 bytes) are not eligible. <a class="xref" href="../../api/Bodu.Security.Cryptography.AesBlockCipher.html">AesBlockCipher</a>, which wraps the BCL's hardware-accelerated <code>Aes</code>, is the only primitive that fits.</p>
+<p>Every mode transform in this family takes an <a class="xref" href="../../api/Bodu.Security.Cryptography.IBlockCipher.html">IBlockCipher</a> as its primitive <strong>and assumes a 16-byte (128-bit) block size</strong>. That assumption is baked into the counter formats, the GHASH/POLYVAL field, and the offset schedules - so the library's other primitives (Skipjack and Blowfish at 8 bytes, Threefish-256/512/1024 at 32/64/128 bytes) are not eligible. Any 128-bit-block <code>IBlockCipher</code> fits - <a class="xref" href="../../api/Bodu.Security.Cryptography.CamelliaBlockCipher.html">CamelliaBlockCipher</a>, <a class="xref" href="../../api/Bodu.Security.Cryptography.TwofishBlockCipher.html">TwofishBlockCipher</a>, and <a class="xref" href="../../api/Bodu.Security.Cryptography.Serpent128Cipher.html">Serpent128Cipher</a> included - and <a class="xref" href="../../api/Bodu.Security.Cryptography.AesBlockCipher.html">AesBlockCipher</a>, which wraps the BCL's hardware-accelerated <code>Aes</code>, is the usual choice.</p>
 <!-- compile -->
 <pre><code class="lang-csharp">using System.Security.Cryptography;
 using Bodu.Security.Cryptography;
@@ -186,9 +186,9 @@ using var cipher = new AesBlockCipher(key);
 <p><code>AesBlockCipher</code> implements <code>IBlockCipher</code>, exposes a 16-byte block size, and forwards single-block encrypt / decrypt calls to <code>Aes.EncryptEcb</code> / <code>Aes.DecryptEcb</code>. It is the glue that makes every mode transform below usable.</p>
 <p>If you need authenticated encryption with one of the <em>non-128-bit</em> ciphers (Skipjack, Blowfish, or Threefish), see the <a href="composing-primitives.html">composing primitives guide</a> - you can still use the classic mode transforms (CBC, CTR, etc.) directly with their primitives, and layer your own MAC (HMAC, Poly1305) over the resulting ciphertext for an encrypt-then-MAC construction.</p>
 <h2 id="prerequisites---the-extension-methods">Prerequisites - the extension methods</h2>
-<p>Calling an <code>IAeadBlockCipherModeTransform</code> directly requires four steps:</p>
+<p>Calling an <code>IAeadBlockCipherModeTransform</code> directly takes up to four steps:</p>
 <ol>
-<li>Call <code>ProcessAssociatedData(aad)</code> (even if the AAD is empty).</li>
+<li>Call <code>ProcessAssociatedData(aad)</code> when there is associated data. Omitting the call means empty AAD, except on <code>AsconAead128</code>, which requires it (pass an empty span for no AAD).</li>
 <li>Size the output buffer to <code>plaintext.Length + TagSize / 8</code> (<code>TagSize</code> is in bits).</li>
 <li>Call <code>Encrypt(plaintext, output)</code> and inspect the returned byte count.</li>
 <li>For decrypt, size the output to <code>ciphertextWithTag.Length - TagSize / 8</code> and call <code>Decrypt</code>.</li>
@@ -230,7 +230,7 @@ using (var cipher = new AesBlockCipher(key))
 <h3 id="on-the-12-byte-nonce">On the 12-byte nonce</h3>
 <p><a class="xref" href="../../api/Bodu.Security.Cryptography.GcmModeTransform.html">GcmModeTransform</a> implements the standard 96-bit-nonce profile of NIST SP 800-38D: every constructor (<code>byte[]</code>, <code>ReadOnlySpan&lt;byte&gt;</code>, or <a class="xref" href="../../api/Bodu.Security.Cryptography.Nonce.html">Nonce</a>) requires <strong>exactly 12 bytes</strong> and throws <code>ArgumentException</code> for any other length. The transform derives the initial counter block J0 (<code>nonce ‖ 0x00000001</code>) internally - do not build J0 yourself or pass a 16-byte block.</p>
 <h2 id="ccm---a-two-pass-alternative">CCM - a two-pass alternative</h2>
-<p>CCM is the standard AEAD in constrained and legacy environments (Bluetooth LE, older IPsec profiles, IEEE 802.11i). It pairs CTR encryption with CBC-MAC over the formatted message. The library's implementation fixes the deployment profile most commonly used: 12-byte nonce, 16-byte tag, up to 2²⁴−1 byte messages.</p>
+<p>CCM is the standard AEAD in constrained and legacy environments (Bluetooth LE, older IPsec profiles, IEEE 802.11i). It pairs CTR encryption with CBC-MAC over the formatted message. The library's implementation fixes the deployment profile most commonly used: 12-byte nonce, 16-byte tag, up to 2²⁴−1 byte messages. Associated data is limited to 65,279 bytes by the 2-byte length encoding it implements; longer associated data makes <code>Encrypt</code> / <code>Decrypt</code> throw <code>NotSupportedException</code>.</p>
 <pre><code class="lang-csharp">byte[] key = RandomNumberGenerator.GetBytes(16);
 byte[] iv  = new byte[16];
 RandomNumberGenerator.Fill(iv.AsSpan(0, 12));  // first 12 bytes are the CCM nonce
@@ -422,7 +422,7 @@ using (var cipher = new AesBlockCipher(key))
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 57ffd22 · Built: 2026-10-12 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: b1517af · Built: 2026-10-13 (UTC)</span>
         </div>
       </div>
     </footer>

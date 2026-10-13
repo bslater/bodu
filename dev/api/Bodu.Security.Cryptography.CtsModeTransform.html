@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Security_Cryptography_CtsModeTransform" data-uid="Bodu.Security.Cryptography.CtsModeTransform" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 CtsModeTransform Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/57ffd226d9e9ef7e8929241eaa1622183519b311/Bodu.Security.Cryptography/src/Security.Cryptography/CtsModeTransform.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/b1517af8738e960d48bc10ce90398aa0ab6ef1c9/Bodu.Security.Cryptography/src/Security.Cryptography/CtsModeTransform.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -104,7 +104,7 @@ CtsModeTransform Class
   <dl><dt>Assembly</dt><dd>Bodu.Security.Cryptography.dll</dd></dl>
   <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Security.Cryptography">Bodu.Security.Cryptography</a> <span class="bodu-package-version">1.3.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/57ffd226d9e9ef7e8929241eaa1622183519b311/Bodu.Security.Cryptography/src/Security.Cryptography/CtsModeTransform.cs">CtsModeTransform.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/b1517af8738e960d48bc10ce90398aa0ab6ef1c9/Bodu.Security.Cryptography/src/Security.Cryptography/CtsModeTransform.cs">CtsModeTransform.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Applies Ciphertext Stealing (CTS) over CBC mode to an underlying <a class="xref" href="Bodu.Security.Cryptography.IBlockCipher.html">IBlockCipher</a>, allowing encryption of
@@ -188,7 +188,7 @@ inputs whose length is not a multiple of the block size without requiring paddin
   <pre><code class="lang-csharp">using System.Security.Cryptography;
 using Bodu.Security.Cryptography;
 
-// Most callers should set SymmetricAlgorithm.Mode = CipherBlockMode.CTS instead of using this directly.
+// CTS is available only as this direct transform; the SymmetricAlgorithm wrappers' BlockMode cannot build it.
 using IBlockCipher cipher = new AesBlockCipher(key);
 byte[] iv = RandomNumberGenerator.GetBytes(cipher.BlockSize / 8);
 IBlockCipherModeTransform cts = new CtsModeTransform(cipher, iv);
@@ -205,7 +205,7 @@ ciphertext block to complete the final partial block. For block-aligned inputs (
 of the block size), CTS behaves identically to CBC with no stealing.
 </p>
 <p>
-The CTS steal algorithm (CS3 / IEEE 1619 variant):
+The CTS steal algorithm (the CS2 variant of the NIST SP 800-38A Addendum), applied when the final block is partial:
 <ul><li>All complete blocks except the last two are processed normally in CBC mode.</li><li>
 Encrypt: the penultimate block is CBC-encrypted to E; the final partial block P_n is zero-padded and CBC-chained
 against E (that is, <code>(P_n || 0) XOR E</code> is encrypted) to produce C_n (full block); C_{n-1} = E[0:m]. Output: C_n
@@ -224,8 +224,9 @@ result is identical to standard CBC encryption or decryption.
 block-aligned - typical in fixed-size record formats, network frames with strict size budgets, and on-disk layouts
 where adding padding bytes is impossible. CTS shares CBC's lack of authentication and its sequential nature; for new
 general-purpose encryption an AEAD mode (<a class="xref" href="Bodu.Security.Cryptography.GcmModeTransform.html">GcmModeTransform</a>, <a class="xref" href="Bodu.Security.Cryptography.EaxModeTransform.html">EaxModeTransform</a>) is
-preferable. The variant implemented here is CS3 / IEEE 1619 (the order used by NIST SP 800-38A Addendum and most
-modern interop).
+preferable. The variant implemented here is CS2 of the NIST SP 800-38A Addendum: the final two ciphertext blocks are
+swapped only when the final block is partial, so block-aligned input is plain CBC. CS3 swaps them for every input of
+two or more blocks, so for block-aligned input its output differs from this transform's.
 </p>
 </div>
 
@@ -239,7 +240,7 @@ modern interop).
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_CtsModeTransform__ctor_Bodu_Security_Cryptography_IBlockCipher_System_Byte___" data-uid="Bodu.Security.Cryptography.CtsModeTransform.#ctor(Bodu.Security.Cryptography.IBlockCipher,System.Byte[])">
   CtsModeTransform(IBlockCipher, byte[])
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/57ffd226d9e9ef7e8929241eaa1622183519b311/Bodu.Security.Cryptography/src/Security.Cryptography/CtsModeTransform.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/b1517af8738e960d48bc10ce90398aa0ab6ef1c9/Bodu.Security.Cryptography/src/Security.Cryptography/CtsModeTransform.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -293,7 +294,7 @@ caller's array is not modified.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_CtsModeTransform_Dispose" data-uid="Bodu.Security.Cryptography.CtsModeTransform.Dispose">
   Dispose()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/57ffd226d9e9ef7e8929241eaa1622183519b311/Bodu.Security.Cryptography/src/Security.Cryptography/CtsModeTransform.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/b1517af8738e960d48bc10ce90398aa0ab6ef1c9/Bodu.Security.Cryptography/src/Security.Cryptography/CtsModeTransform.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -329,7 +330,7 @@ disposed by this type - ownership remains with the caller.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_CtsModeTransform_Transform_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Boolean_" data-uid="Bodu.Security.Cryptography.CtsModeTransform.Transform(System.ReadOnlySpan{System.Byte},System.Span{System.Byte},System.Boolean)">
   Transform(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/57ffd226d9e9ef7e8929241eaa1622183519b311/Bodu.Security.Cryptography/src/Security.Cryptography/CtsModeTransform.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/b1517af8738e960d48bc10ce90398aa0ab6ef1c9/Bodu.Security.Cryptography/src/Security.Cryptography/CtsModeTransform.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -345,7 +346,7 @@ disposed by this type - ownership remains with the caller.</p>
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>input</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
-    <dd><p>The input data to transform. Its length must be a positive multiple of the underlying cipher block size.</p>
+    <dd><p>The input data to transform.</p>
 </dd>
     <dt><code>output</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.span-1">Span</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
     <dd><p>The destination span. Its length must be greater than or equal to the length of <code class="paramref">input</code>.</p>
@@ -368,12 +369,24 @@ disposed by this type - ownership remains with the caller.</p>
 
 
 
+  <h4 class="section" id="Bodu_Security_Cryptography_CtsModeTransform_Transform_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Boolean__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The length rule depends on the mode: ECB, CBC, CFB, OFB, and XTS accept a whole number of blocks, zero included;
+<a class="xref" href="Bodu.Security.Cryptography.CtrModeTransform.html">CtrModeTransform</a> accepts any length; <a class="xref" href="Bodu.Security.Cryptography.CtsModeTransform.html">CtsModeTransform</a> accepts any length of at
+least one block.</p>
+</div>
 
   <h4 class="section">Exceptions</h4>
   <dl class="parameters">
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
-    <dd><p>Thrown when <code class="paramref">input</code>'s length is not a multiple of the block size or when
-<code class="paramref">output</code> is too small.</p>
+    <dd><p>Thrown when <code class="paramref">output</code> is shorter than <code class="paramref">input</code>, or, for
+<a class="xref" href="Bodu.Security.Cryptography.CtsModeTransform.html">CtsModeTransform</a>, when <code class="paramref">input</code> is shorter than one block.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.cryptographicexception">CryptographicException</a></dt>
+    <dd><p>Thrown when the mode accepts only whole blocks and the length of <code class="paramref">input</code> is not a multiple of
+the block size, or when <code class="paramref">input</code> and <code class="paramref">output</code> partially overlap.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>Thrown when the transform has been disposed.</p>
 </dd>
   </dl>
 
@@ -408,7 +421,7 @@ disposed by this type - ownership remains with the caller.</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 57ffd22 · Built: 2026-10-12 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: b1517af · Built: 2026-10-13 (UTC)</span>
         </div>
       </div>
     </footer>

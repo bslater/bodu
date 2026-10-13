@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Security_Cryptography_Threefish" data-uid="Bodu.Security.Cryptography.Threefish" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 Threefish Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/57ffd226d9e9ef7e8929241eaa1622183519b311/Bodu.Security.Cryptography/src/Security.Cryptography/Threefish.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/b1517af8738e960d48bc10ce90398aa0ab6ef1c9/Bodu.Security.Cryptography/src/Security.Cryptography/Threefish.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -104,7 +104,7 @@ Threefish Class
   <dl><dt>Assembly</dt><dd>Bodu.Security.Cryptography.dll</dd></dl>
   <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Security.Cryptography">Bodu.Security.Cryptography</a> <span class="bodu-package-version">1.3.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/57ffd226d9e9ef7e8929241eaa1622183519b311/Bodu.Security.Cryptography/src/Security.Cryptography/Threefish.cs">Threefish.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/b1517af8738e960d48bc10ce90398aa0ab6ef1c9/Bodu.Security.Cryptography/src/Security.Cryptography/Threefish.cs">Threefish.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Serves as the abstract base class for managed implementations of the Threefish tweakable symmetric block cipher
@@ -492,11 +492,12 @@ family (Threefish-256, Threefish-512, and Threefish-1024).</p>
 
   <h2 id="Bodu_Security_Cryptography_Threefish_examples">Examples</h2>
   <pre><code class="lang-csharp">// Use the recommended general-purpose variant - Threefish-512 over a CTR mode.
-using TweakableSymmetricAlgorithm alg = new Threefish512();
+using var alg = new Threefish512();
 alg.GenerateKey();
 alg.GenerateIV();
 alg.GenerateTweak();
 alg.BlockMode = CipherModeKind.CTR;
+// Padding stays PKCS7 (the default): through the wrapper, None needs block-aligned input.
 
 using ICryptoTransform encryptor = alg.CreateEncryptor(alg.Key, alg.IV, alg.Tweak);
 using var cipherText = new MemoryStream();
@@ -544,7 +545,7 @@ combinations as a <a href="https://learn.microsoft.com/dotnet/csharp/language-re
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Threefish__ctor_System_Int32_System_Int32_" data-uid="Bodu.Security.Cryptography.Threefish.#ctor(System.Int32,System.Int32)">
   Threefish(int, int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/57ffd226d9e9ef7e8929241eaa1622183519b311/Bodu.Security.Cryptography/src/Security.Cryptography/Threefish.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/b1517af8738e960d48bc10ce90398aa0ab6ef1c9/Bodu.Security.Cryptography/src/Security.Cryptography/Threefish.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -594,7 +595,7 @@ matching the BCL convention. Conversion to bytes occurs only at the byte-array p
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Threefish_BlockMode" data-uid="Bodu.Security.Cryptography.Threefish.BlockMode">
   BlockMode
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/57ffd226d9e9ef7e8929241eaa1622183519b311/Bodu.Security.Cryptography/src/Security.Cryptography/Threefish.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/b1517af8738e960d48bc10ce90398aa0ab6ef1c9/Bodu.Security.Cryptography/src/Security.Cryptography/Threefish.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -640,7 +641,7 @@ matching the BCL convention. Conversion to bytes occurs only at the byte-array p
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Threefish_CreateCipher_System_Byte___System_Byte___" data-uid="Bodu.Security.Cryptography.Threefish.CreateCipher(System.Byte[],System.Byte[])">
   CreateCipher(byte[], byte[])
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/57ffd226d9e9ef7e8929241eaa1622183519b311/Bodu.Security.Cryptography/src/Security.Cryptography/Threefish.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/b1517af8738e960d48bc10ce90398aa0ab6ef1c9/Bodu.Security.Cryptography/src/Security.Cryptography/Threefish.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -695,7 +696,7 @@ matching the BCL convention. Conversion to bytes occurs only at the byte-array p
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Threefish_CreateDecryptor_System_Byte___System_Byte___System_Byte___" data-uid="Bodu.Security.Cryptography.Threefish.CreateDecryptor(System.Byte[],System.Byte[],System.Byte[])">
   CreateDecryptor(byte[], byte[]?, byte[])
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/57ffd226d9e9ef7e8929241eaa1622183519b311/Bodu.Security.Cryptography/src/Security.Cryptography/Threefish.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/b1517af8738e960d48bc10ce90398aa0ab6ef1c9/Bodu.Security.Cryptography/src/Security.Cryptography/Threefish.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -741,11 +742,15 @@ block ciphers such as Threefish.</p>
   <h4 class="section">Exceptions</h4>
   <dl class="parameters">
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
-    <dd><p>Thrown if <code class="paramref">rgbKey</code>, <code class="paramref">rgbIV</code>, or <code class="paramref">tweak</code> is
-<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+    <dd><p>Thrown if <code class="paramref">rgbKey</code> or <code class="paramref">tweak</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
 </dd>
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.cryptographicexception">CryptographicException</a></dt>
-    <dd><p>Thrown if any input does not conform to the expected size, format, or algorithm-specific constraints.</p>
+    <dd><p>Thrown if any input does not conform to the expected size, format, or algorithm-specific constraints, including
+a <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> <code class="paramref">rgbIV</code> for a mode other than ECB.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notsupportedexception">NotSupportedException</a></dt>
+    <dd><p>Thrown if the configured block mode cannot be built; for the shipped Threefish and Serpent types, any
+<code>BlockMode</code> other than ECB, CBC, CFB, OFB, or CTR.</p>
 </dd>
   </dl>
 
@@ -758,7 +763,7 @@ block ciphers such as Threefish.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Threefish_CreateEncryptor_System_Byte___System_Byte___System_Byte___" data-uid="Bodu.Security.Cryptography.Threefish.CreateEncryptor(System.Byte[],System.Byte[],System.Byte[])">
   CreateEncryptor(byte[], byte[]?, byte[])
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/57ffd226d9e9ef7e8929241eaa1622183519b311/Bodu.Security.Cryptography/src/Security.Cryptography/Threefish.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/b1517af8738e960d48bc10ce90398aa0ab6ef1c9/Bodu.Security.Cryptography/src/Security.Cryptography/Threefish.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -804,11 +809,15 @@ block ciphers such as Threefish.</p>
   <h4 class="section">Exceptions</h4>
   <dl class="parameters">
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
-    <dd><p>Thrown if <code class="paramref">rgbKey</code>, <code class="paramref">rgbIV</code>, or <code class="paramref">tweak</code> is
-<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+    <dd><p>Thrown if <code class="paramref">rgbKey</code> or <code class="paramref">tweak</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
 </dd>
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.cryptographicexception">CryptographicException</a></dt>
-    <dd><p>Thrown if any input does not conform to the expected size, format, or algorithm-specific constraints.</p>
+    <dd><p>Thrown if any input does not conform to the expected size, format, or algorithm-specific constraints, including
+a <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> <code class="paramref">rgbIV</code> for a mode other than ECB.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.notsupportedexception">NotSupportedException</a></dt>
+    <dd><p>Thrown if the configured block mode cannot be built; for the shipped Threefish and Serpent types, any
+<code>BlockMode</code> other than ECB, CBC, CFB, OFB, or CTR.</p>
 </dd>
   </dl>
 
@@ -821,7 +830,7 @@ block ciphers such as Threefish.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Threefish_Dispose_System_Boolean_" data-uid="Bodu.Security.Cryptography.Threefish.Dispose(System.Boolean)">
   Dispose(bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/57ffd226d9e9ef7e8929241eaa1622183519b311/Bodu.Security.Cryptography/src/Security.Cryptography/Threefish.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/b1517af8738e960d48bc10ce90398aa0ab6ef1c9/Bodu.Security.Cryptography/src/Security.Cryptography/Threefish.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -862,7 +871,7 @@ to the base implementation.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Threefish_GenerateIV" data-uid="Bodu.Security.Cryptography.Threefish.GenerateIV">
   GenerateIV()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/57ffd226d9e9ef7e8929241eaa1622183519b311/Bodu.Security.Cryptography/src/Security.Cryptography/Threefish.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/b1517af8738e960d48bc10ce90398aa0ab6ef1c9/Bodu.Security.Cryptography/src/Security.Cryptography/Threefish.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -893,7 +902,7 @@ to the base implementation.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Threefish_GenerateKey" data-uid="Bodu.Security.Cryptography.Threefish.GenerateKey">
   GenerateKey()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/57ffd226d9e9ef7e8929241eaa1622183519b311/Bodu.Security.Cryptography/src/Security.Cryptography/Threefish.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/b1517af8738e960d48bc10ce90398aa0ab6ef1c9/Bodu.Security.Cryptography/src/Security.Cryptography/Threefish.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -924,7 +933,7 @@ to the base implementation.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_Threefish_GenerateTweak" data-uid="Bodu.Security.Cryptography.Threefish.GenerateTweak">
   GenerateTweak()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/57ffd226d9e9ef7e8929241eaa1622183519b311/Bodu.Security.Cryptography/src/Security.Cryptography/Threefish.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/b1517af8738e960d48bc10ce90398aa0ab6ef1c9/Bodu.Security.Cryptography/src/Security.Cryptography/Threefish.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -999,7 +1008,7 @@ current <a class="xref" href="Bodu.Security.Cryptography.TweakableSymmetricAlgor
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 57ffd22 · Built: 2026-10-12 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: b1517af · Built: 2026-10-13 (UTC)</span>
         </div>
       </div>
     </footer>

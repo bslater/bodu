@@ -87,7 +87,7 @@
         <article data-uid="">
 <h1 id="using-hashes-and-checksums">Using hashes and checksums</h1>
 
-<p><strong>Bodu.Security.Cryptography</strong> ships the library's keyed hashes (SipHash), one-time authenticators (Poly1305), cryptographic digests (Tiger, Snefru, CubeHash, Whirlpool, BLAKE2 / BLAKE3, Skein, ASCON-HASH256, ASCON-HASHA256), the XOFs (SHAKE, ASCON-XOF128 / CXOF128), and Merkle-tree hashing. The digests, MACs, and SHAKE plug into the standard <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm">HashAlgorithm</a> contract; the ASCON XOFs expose an absorb / squeeze sponge surface, and the Merkle tree hashes are factory-constructed one-shot <code>ComputeHash</code> types over any inner <code>HashAlgorithm</code>.</p>
+<p><strong>Bodu.Security.Cryptography</strong> ships the library's keyed hashes (SipHash), one-time authenticators (Poly1305), cryptographic digests (Tiger, Snefru, CubeHash, Whirlpool, BLAKE2 / BLAKE3, Skein, ASCON-HASH256, ASCON-HASHA256), the XOFs (SHAKE, ASCON-XOF128 / CXOF128), and Merkle-tree hashing. The digests, MACs, and SHAKE plug into the standard <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm">HashAlgorithm</a> contract; the ASCON XOFs expose an absorb / squeeze sponge surface, and <a class="xref" href="../../api/Bodu.Security.Cryptography.MerkleTree.html">MerkleTree</a> computes RFC 6962 roots, inclusion proofs, and consistency proofs over any <code>HashAlgorithm</code> its factory creates.</p>
 <p>This page is the cross-cutting overview - what guarantee a cryptographic hash actually makes, how the structural shapes (digest / XOF / tree) differ, which to choose for which job, and how to verify a digest safely. For the full per-algorithm walk-throughs, see:</p>
 <ul>
 <li><a href="siphash.html">Using SipHash</a> - keyed short-input PRF.</li>
@@ -99,7 +99,7 @@
 <li><a href="blake.html">Using BLAKE2 and BLAKE3</a> - BLAKE2b / BLAKE2s (keyed, configurable width) and the tree-structured BLAKE3.</li>
 <li><a href="skein.html">Using Skein</a> - Threefish-based UBI digests with a MAC mode.</li>
 <li><a href="shake.html">Using SHAKE</a> - Keccak extendable-output function (FIPS 202).</li>
-<li><a href="ascon.html">Using ASCON-HASH256 and ASCON-HASHA256</a> - NIST SP 800-232 sponge digests; two variants trading margin for throughput.</li>
+<li><a href="ascon.html">Using ASCON-HASH256 and ASCON-HASHA256</a> - sponge digests: the NIST SP 800-232 ASCON-HASH256 and the non-standard, faster Ascon v1.2 ASCON-HASHA256.</li>
 <li><a href="merkle-trees.html">Merkle trees and proofs</a> - the RFC 6962 tree over any inner <code>HashAlgorithm</code>: roots over entries, blocks, or a write-time accumulator; inclusion and consistency proofs; length-bound roots.</li>
 </ul>
 <blockquote>
@@ -170,7 +170,7 @@
 <h2 id="the-hashalgorithm-lifecycle">The HashAlgorithm lifecycle</h2>
 <p>Every cryptographic hash here is a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.hashalgorithm">HashAlgorithm</a>, so the BCL contract applies unchanged:</p>
 <ul>
-<li><strong>One-shot</strong> - <code>ComputeHash(byte[])</code>, <code>ComputeHash(ReadOnlySpan&lt;byte&gt;)</code>, or <code>ComputeHash(Stream)</code>. The instance is auto-reinitialised afterwards, so the same instance can hash the next message.</li>
+<li><strong>One-shot</strong> - <code>ComputeHash(byte[])</code>, <code>ComputeHash(Stream)</code>, or the span-based <code>TryComputeHash(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, out int)</code>. The instance is auto-reinitialised afterwards, so the same instance can hash the next message.</li>
 <li><strong>Streaming</strong> - <code>TransformBlock(...)</code> repeatedly, then <code>TransformFinalBlock(...)</code>; read the digest from the <code>Hash</code> property. Call <code>Initialize()</code> to reset between messages.</li>
 <li><code>CanReuseTransform</code> reports whether the instance survives a finalisation - <code>true</code> for the digests and for SipHash, <strong><code>false</code> for <code>Poly1305</code></strong> (its way of refusing key reuse at the API level).</li>
 </ul>
@@ -202,8 +202,8 @@
 </tr>
 <tr>
 <td>A NIST-standardized 256-bit digest with a small state footprint (SP 800-232)</td>
-<td><a class="xref" href="../../api/Bodu.Security.Cryptography.AsconHash256.html">AsconHash256</a>, <a class="xref" href="../../api/Bodu.Security.Cryptography.AsconHashA256.html">AsconHashA256</a></td>
-<td>Two variants: max margin (<code>ASCON-HASH256</code>) or higher throughput (<code>ASCON-HASHA256</code>).</td>
+<td><a class="xref" href="../../api/Bodu.Security.Cryptography.AsconHash256.html">AsconHash256</a></td>
+<td>The standardized variant, with maximum margin. <a class="xref" href="../../api/Bodu.Security.Cryptography.AsconHashA256.html">AsconHashA256</a> trades margin for throughput but is the Ascon v1.2 Hasha variant, not part of SP 800-232.</td>
 </tr>
 <tr>
 <td>A rolling integrity check over a long stream with partial re-verification</td>
@@ -345,7 +345,7 @@ byte[] root = merkle.ComputeRootOfBlocks(stream, blockSize: 4096);
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 57ffd22 · Built: 2026-10-12 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: b1517af · Built: 2026-10-13 (UTC)</span>
         </div>
       </div>
     </footer>

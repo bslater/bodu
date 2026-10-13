@@ -13603,7 +13603,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Security.Cryptography.AesBlockCipher",
-      "Summary": "<p sourcefile=\"api/Bodu.Security.Cryptography.AesBlockCipher.yml\" sourcestartlinenumber=\"1\">Exposes the BCL <xref href=\"System.Security.Cryptography.Aes\" data-throw-if-not-resolved=\"false\"></xref> algorithm as an <xref href=\"Bodu.Security.Cryptography.IBlockCipher\" data-throw-if-not-resolved=\"false\"></xref>, providing the single-block primitive\nthat the authenticated-mode transforms (<xref href=\"Bodu.Security.Cryptography.GcmModeTransform\" data-throw-if-not-resolved=\"false\"></xref>, <xref href=\"Bodu.Security.Cryptography.CcmModeTransform\" data-throw-if-not-resolved=\"false\"></xref>,\n<xref href=\"Bodu.Security.Cryptography.OcbModeTransform\" data-throw-if-not-resolved=\"false\"></xref>, <xref href=\"Bodu.Security.Cryptography.SivModeTransform\" data-throw-if-not-resolved=\"false\"></xref>, <xref href=\"Bodu.Security.Cryptography.GcmSivModeTransform\" data-throw-if-not-resolved=\"false\"></xref>) require.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Security.Cryptography.AesBlockCipher.yml\" sourcestartlinenumber=\"1\">Exposes the BCL <xref href=\"System.Security.Cryptography.Aes\" data-throw-if-not-resolved=\"false\"></xref> algorithm as an <xref href=\"Bodu.Security.Cryptography.IBlockCipher\" data-throw-if-not-resolved=\"false\"></xref>, providing the single-block primitive\nthat the mode transforms build on - the authenticated modes (<xref href=\"Bodu.Security.Cryptography.GcmModeTransform\" data-throw-if-not-resolved=\"false\"></xref>,\n<xref href=\"Bodu.Security.Cryptography.CcmModeTransform\" data-throw-if-not-resolved=\"false\"></xref>, <xref href=\"Bodu.Security.Cryptography.OcbModeTransform\" data-throw-if-not-resolved=\"false\"></xref>, <xref href=\"Bodu.Security.Cryptography.EaxModeTransform\" data-throw-if-not-resolved=\"false\"></xref>,\n<xref href=\"Bodu.Security.Cryptography.SivModeTransform\" data-throw-if-not-resolved=\"false\"></xref>, <xref href=\"Bodu.Security.Cryptography.GcmSivModeTransform\" data-throw-if-not-resolved=\"false\"></xref>) among them.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -13715,7 +13715,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Security.Cryptography.AsconCxof128",
-      "Summary": "<p sourcefile=\"api/Bodu.Security.Cryptography.AsconCxof128.yml\" sourcestartlinenumber=\"1\">Computes a variable-length output using the <code>Ascon-CXOF128</code> customizable extendable output function (CXOF) as\ndefined in NIST SP 800-232. Supports an optional customization string that domain-separates outputs from\n<xref href=\"Bodu.Security.Cryptography.AsconXof128\" data-throw-if-not-resolved=\"false\"></xref>. This class cannot be inherited.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Security.Cryptography.AsconCxof128.yml\" sourcestartlinenumber=\"1\">Computes a variable-length output using the <code>Ascon-CXOF128</code> customizable extendable output function (CXOF) as\ndefined in NIST SP 800-232. Absorbs a customization string that domain-separates its outputs from one another and\nfrom <xref href=\"Bodu.Security.Cryptography.AsconXof128\" data-throw-if-not-resolved=\"false\"></xref>. This class cannot be inherited.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -13757,7 +13757,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Security.Cryptography.AsconHashA256",
-      "Summary": "<p sourcefile=\"api/Bodu.Security.Cryptography.AsconHashA256.yml\" sourcestartlinenumber=\"1\">Computes a hash using the <code>ASCON-HASHA256</code> cryptographic hash algorithm as defined in NIST SP 800-232. Produces\na 256-bit (32-byte) digest using a reduced-round Ascon-p permutation during absorption over a 320-bit sponge state.\nThis class cannot be inherited.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Security.Cryptography.AsconHashA256.yml\" sourcestartlinenumber=\"1\">Computes a hash using the <code>ASCON-HASHA256</code> cryptographic hash algorithm, the round-reduced Hasha variant of the\nAscon v1.2 submission. Produces a 256-bit (32-byte) digest using a reduced-round Ascon-p permutation over a 320-bit\nsponge state. This class cannot be inherited.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -15423,7 +15423,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Security.Cryptography.Snefru",
-      "Summary": "<p sourcefile=\"api/Bodu.Security.Cryptography.Snefru.yml\" sourcestartlinenumber=\"1\">Base class for the <code>Snefru</code> family of unkeyed hash functions designed by Ralph Merkle, implementing the core\ncompression routine using S-box substitutions and word rotations over 512-bit blocks.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Security.Cryptography.Snefru.yml\" sourcestartlinenumber=\"1\">Base class for the <code>Snefru</code> family of unkeyed hash functions designed by Ralph Merkle, implementing the core\ncompression routine using S-box substitutions and word rotations over a 512-bit buffer: the running hash followed by\na 48-byte (Snefru-128) or 32-byte (Snefru-256) message block.</p>\n"
     },
     {
       "type": "ManagedReference",

@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Security_Cryptography_IBlockCipherModeTransform" data-uid="Bodu.Security.Cryptography.IBlockCipherModeTransform" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 IBlockCipherModeTransform Interface
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/57ffd226d9e9ef7e8929241eaa1622183519b311/Bodu.Security.Cryptography/src/Security.Cryptography/IBlockCipherModeTransform.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/b1517af8738e960d48bc10ce90398aa0ab6ef1c9/Bodu.Security.Cryptography/src/Security.Cryptography/IBlockCipherModeTransform.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -104,7 +104,7 @@ IBlockCipherModeTransform Interface
   <dl><dt>Assembly</dt><dd>Bodu.Security.Cryptography.dll</dd></dl>
   <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Security.Cryptography">Bodu.Security.Cryptography</a> <span class="bodu-package-version">1.3.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/57ffd226d9e9ef7e8929241eaa1622183519b311/Bodu.Security.Cryptography/src/Security.Cryptography/IBlockCipherModeTransform.cs">IBlockCipherModeTransform.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/b1517af8738e960d48bc10ce90398aa0ab6ef1c9/Bodu.Security.Cryptography/src/Security.Cryptography/IBlockCipherModeTransform.cs">IBlockCipherModeTransform.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Defines a stateful block cipher mode transformation that applies a chaining strategy (such as ECB, CBC, CFB, OFB, or
@@ -159,12 +159,17 @@ CTR) over a block cipher primitive.</p>
   <h2 id="Bodu_Security_Cryptography_IBlockCipherModeTransform_remarks">Remarks</h2>
   <div class="markdown level0 remarks"><p>
 Implementations wrap an <a class="xref" href="Bodu.Security.Cryptography.IBlockCipher.html">IBlockCipher</a> and own any mode state required between calls, such as the
-evolving initialization vector, feedback register, or counter. Successive calls to <a class="xref" href="Bodu.Security.Cryptography.IBlockCipherModeTransform.html#Bodu_Security_Cryptography_IBlockCipherModeTransform_Transform_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Boolean_">Transform(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, bool)</a> continue
-the stream from the state left by the previous call.
+evolving initialization vector, feedback register, or counter. For the chaining and stream-shaped modes, successive
+calls to <a class="xref" href="Bodu.Security.Cryptography.IBlockCipherModeTransform.html#Bodu_Security_Cryptography_IBlockCipherModeTransform_Transform_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Boolean_">Transform(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, bool)</a> continue the stream from the state left by the previous call (a CTR call that ends
+in a partial block discards the rest of that block's keystream). <a class="xref" href="Bodu.Security.Cryptography.EcbModeTransform.html">EcbModeTransform</a> is stateless, and
+<a class="xref" href="Bodu.Security.Cryptography.XtsModeTransform.html">XtsModeTransform</a> restarts at the first block of its data unit on every call, so one XTS call must
+cover a whole data unit.
 </p>
 <p>
-Padding is not handled by this interface. Callers must align input to the cipher block size using an
-<a class="xref" href="Bodu.Security.Cryptography.IPaddingStrategy.html">IPaddingStrategy</a> before invoking <a class="xref" href="Bodu.Security.Cryptography.IBlockCipherModeTransform.html#Bodu_Security_Cryptography_IBlockCipherModeTransform_Transform_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Boolean_">Transform(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, bool)</a>.
+Padding is not handled by this interface. ECB, CBC, CFB, OFB, and XTS accept only whole blocks, so callers align
+their input to the cipher block size using an <a class="xref" href="Bodu.Security.Cryptography.IPaddingStrategy.html">IPaddingStrategy</a> before invoking
+<a class="xref" href="Bodu.Security.Cryptography.IBlockCipherModeTransform.html#Bodu_Security_Cryptography_IBlockCipherModeTransform_Transform_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Boolean_">Transform(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, bool)</a>. <a class="xref" href="Bodu.Security.Cryptography.CtrModeTransform.html">CtrModeTransform</a> accepts any length, and <a class="xref" href="Bodu.Security.Cryptography.CtsModeTransform.html">CtsModeTransform</a>
+any length of at least one block.
 </p>
 <p>
 <strong>API surface.</strong> The library ships several implementations clustered into three groups:
@@ -178,10 +183,13 @@ Implement the richer <a class="xref" href="Bodu.Security.Cryptography.IAeadBlock
 <a class="xref" href="Bodu.Security.Cryptography.OcbModeTransform.html">OcbModeTransform</a>, <a class="xref" href="Bodu.Security.Cryptography.SivModeTransform.html">SivModeTransform</a>.
 </li></ul>
 <p>
-Most callers should configure modes through <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.symmetricalgorithm.mode">Mode</a>
-(which accepts a <a class="xref" href="Bodu.Security.Cryptography.CipherModeKind.html">CipherModeKind</a> and dispatches via <a class="xref" href="Bodu.Security.Cryptography.BlockCipherModeFactory.html">BlockCipherModeFactory</a>) rather than
-constructing this interface directly. Direct use is appropriate when wiring a custom block cipher into the existing
-mode infrastructure or building a higher-level construction on top.
+Most callers configure a mode through the <code>BlockMode</code> property of a block-cipher
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.symmetricalgorithm">SymmetricAlgorithm</a> wrapper (a <a class="xref" href="Bodu.Security.Cryptography.CipherModeKind.html">CipherModeKind</a> value, which
+the wrapper dispatches through <a class="xref" href="Bodu.Security.Cryptography.BlockCipherModeFactory.html">BlockCipherModeFactory</a> when <code>CreateEncryptor</code> or
+<code>CreateDecryptor</code> is called) rather than constructing this interface directly. That route covers ECB, CBC, CFB,
+OFB, and CTR; <a class="xref" href="Bodu.Security.Cryptography.CtsModeTransform.html">CtsModeTransform</a> and <a class="xref" href="Bodu.Security.Cryptography.XtsModeTransform.html">XtsModeTransform</a> exist only as direct transforms.
+Direct use is also appropriate when wiring a custom block cipher into the existing mode infrastructure or building a
+higher-level construction on top.
 </p>
 <p>
 Implementations are stateful and not thread-safe; share behind explicit synchronization, or allocate one per
@@ -199,7 +207,7 @@ consumer. Most modes reset cleanly when constructed afresh - there is no in-plac
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_IBlockCipherModeTransform_Transform_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Boolean_" data-uid="Bodu.Security.Cryptography.IBlockCipherModeTransform.Transform(System.ReadOnlySpan{System.Byte},System.Span{System.Byte},System.Boolean)">
   Transform(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/57ffd226d9e9ef7e8929241eaa1622183519b311/Bodu.Security.Cryptography/src/Security.Cryptography/IBlockCipherModeTransform.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/b1517af8738e960d48bc10ce90398aa0ab6ef1c9/Bodu.Security.Cryptography/src/Security.Cryptography/IBlockCipherModeTransform.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -215,7 +223,7 @@ consumer. Most modes reset cleanly when constructed afresh - there is no in-plac
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>input</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
-    <dd><p>The input data to transform. Its length must be a positive multiple of the underlying cipher block size.</p>
+    <dd><p>The input data to transform.</p>
 </dd>
     <dt><code>output</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.span-1">Span</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
     <dd><p>The destination span. Its length must be greater than or equal to the length of <code class="paramref">input</code>.</p>
@@ -238,12 +246,24 @@ consumer. Most modes reset cleanly when constructed afresh - there is no in-plac
 
 
 
+  <h4 class="section" id="Bodu_Security_Cryptography_IBlockCipherModeTransform_Transform_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Boolean__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The length rule depends on the mode: ECB, CBC, CFB, OFB, and XTS accept a whole number of blocks, zero included;
+<a class="xref" href="Bodu.Security.Cryptography.CtrModeTransform.html">CtrModeTransform</a> accepts any length; <a class="xref" href="Bodu.Security.Cryptography.CtsModeTransform.html">CtsModeTransform</a> accepts any length of at
+least one block.</p>
+</div>
 
   <h4 class="section">Exceptions</h4>
   <dl class="parameters">
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
-    <dd><p>Thrown when <code class="paramref">input</code>'s length is not a multiple of the block size or when
-<code class="paramref">output</code> is too small.</p>
+    <dd><p>Thrown when <code class="paramref">output</code> is shorter than <code class="paramref">input</code>, or, for
+<a class="xref" href="Bodu.Security.Cryptography.CtsModeTransform.html">CtsModeTransform</a>, when <code class="paramref">input</code> is shorter than one block.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.cryptographicexception">CryptographicException</a></dt>
+    <dd><p>Thrown when the mode accepts only whole blocks and the length of <code class="paramref">input</code> is not a multiple of
+the block size, or when <code class="paramref">input</code> and <code class="paramref">output</code> partially overlap.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>Thrown when the transform has been disposed.</p>
 </dd>
   </dl>
 
@@ -278,7 +298,7 @@ consumer. Most modes reset cleanly when constructed afresh - there is no in-plac
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 57ffd22 · Built: 2026-10-12 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: b1517af · Built: 2026-10-13 (UTC)</span>
         </div>
       </div>
     </footer>

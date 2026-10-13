@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Security_Cryptography_XtsModeTransform" data-uid="Bodu.Security.Cryptography.XtsModeTransform" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 XtsModeTransform Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/57ffd226d9e9ef7e8929241eaa1622183519b311/Bodu.Security.Cryptography/src/Security.Cryptography/XtsModeTransform.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/b1517af8738e960d48bc10ce90398aa0ab6ef1c9/Bodu.Security.Cryptography/src/Security.Cryptography/XtsModeTransform.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -104,7 +104,7 @@ XtsModeTransform Class
   <dl><dt>Assembly</dt><dd>Bodu.Security.Cryptography.dll</dd></dl>
   <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Security.Cryptography">Bodu.Security.Cryptography</a> <span class="bodu-package-version">1.3.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/57ffd226d9e9ef7e8929241eaa1622183519b311/Bodu.Security.Cryptography/src/Security.Cryptography/XtsModeTransform.cs">XtsModeTransform.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/b1517af8738e960d48bc10ce90398aa0ab6ef1c9/Bodu.Security.Cryptography/src/Security.Cryptography/XtsModeTransform.cs">XtsModeTransform.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Applies XEX-based Tweaked CodeBook mode with ciphertext Stealing (XTS) to an underlying pair of
@@ -254,7 +254,7 @@ AEAD-based alternatives (Adiantum, AES-XTS-HMAC, or storage-specific AEAD modes)
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_XtsModeTransform__ctor_Bodu_Security_Cryptography_IBlockCipher_Bodu_Security_Cryptography_IBlockCipher_System_Byte___" data-uid="Bodu.Security.Cryptography.XtsModeTransform.#ctor(Bodu.Security.Cryptography.IBlockCipher,Bodu.Security.Cryptography.IBlockCipher,System.Byte[])">
   XtsModeTransform(IBlockCipher, IBlockCipher, byte[])
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/57ffd226d9e9ef7e8929241eaa1622183519b311/Bodu.Security.Cryptography/src/Security.Cryptography/XtsModeTransform.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/b1517af8738e960d48bc10ce90398aa0ab6ef1c9/Bodu.Security.Cryptography/src/Security.Cryptography/XtsModeTransform.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -294,7 +294,8 @@ AEAD-based alternatives (Adiantum, AES-XTS-HMAC, or storage-specific AEAD modes)
     <dd><p>Any argument is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
 </dd>
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
-    <dd><p>Block sizes differ, or <code class="paramref">tweak</code> length does not equal the block size.</p>
+    <dd><p><code class="paramref">dataCipher</code> does not have a 128-bit block, the block sizes differ, or
+<code class="paramref">tweak</code> length does not equal the block size.</p>
 </dd>
   </dl>
 
@@ -311,7 +312,7 @@ AEAD-based alternatives (Adiantum, AES-XTS-HMAC, or storage-specific AEAD modes)
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_XtsModeTransform_Dispose" data-uid="Bodu.Security.Cryptography.XtsModeTransform.Dispose">
   Dispose()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/57ffd226d9e9ef7e8929241eaa1622183519b311/Bodu.Security.Cryptography/src/Security.Cryptography/XtsModeTransform.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/b1517af8738e960d48bc10ce90398aa0ab6ef1c9/Bodu.Security.Cryptography/src/Security.Cryptography/XtsModeTransform.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -347,7 +348,7 @@ disposed by this type - ownership remains with the caller.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_XtsModeTransform_Transform_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Boolean_" data-uid="Bodu.Security.Cryptography.XtsModeTransform.Transform(System.ReadOnlySpan{System.Byte},System.Span{System.Byte},System.Boolean)">
   Transform(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/57ffd226d9e9ef7e8929241eaa1622183519b311/Bodu.Security.Cryptography/src/Security.Cryptography/XtsModeTransform.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/b1517af8738e960d48bc10ce90398aa0ab6ef1c9/Bodu.Security.Cryptography/src/Security.Cryptography/XtsModeTransform.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -363,7 +364,7 @@ disposed by this type - ownership remains with the caller.</p>
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>input</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.readonlyspan-1">ReadOnlySpan</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
-    <dd><p>The input data to transform. Its length must be a positive multiple of the underlying cipher block size.</p>
+    <dd><p>The input data to transform.</p>
 </dd>
     <dt><code>output</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.span-1">Span</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.byte">byte</a>&gt;</dt>
     <dd><p>The destination span. Its length must be greater than or equal to the length of <code class="paramref">input</code>.</p>
@@ -387,17 +388,23 @@ disposed by this type - ownership remains with the caller.</p>
 
 
   <h4 class="section" id="Bodu_Security_Cryptography_XtsModeTransform_Transform_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Boolean__remarks">Remarks</h4>
-  <div class="markdown level1 remarks"><p>The tweaks for a run of up to 4 KiB are computed first, then the run is XORed with them, encrypted or decrypted
-with one multi-block call, and XORed with them again; the output is identical to transforming a block at a time.
-<code class="paramref">output</code> may be the same memory as <code class="paramref">input</code>. The tweak and scratch buffers
-are cleared before the call returns.</p>
+  <div class="markdown level1 remarks"><p>The length rule depends on the mode: ECB, CBC, CFB, OFB, and XTS accept a whole number of blocks, zero included;
+<a class="xref" href="Bodu.Security.Cryptography.CtrModeTransform.html">CtrModeTransform</a> accepts any length; <a class="xref" href="Bodu.Security.Cryptography.CtsModeTransform.html">CtsModeTransform</a> accepts any length of at
+least one block.</p>
 </div>
 
   <h4 class="section">Exceptions</h4>
   <dl class="parameters">
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
-    <dd><p>Thrown when <code class="paramref">input</code>'s length is not a multiple of the block size or when
-<code class="paramref">output</code> is too small.</p>
+    <dd><p>Thrown when <code class="paramref">output</code> is shorter than <code class="paramref">input</code>, or, for
+<a class="xref" href="Bodu.Security.Cryptography.CtsModeTransform.html">CtsModeTransform</a>, when <code class="paramref">input</code> is shorter than one block.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.cryptographicexception">CryptographicException</a></dt>
+    <dd><p>Thrown when the mode accepts only whole blocks and the length of <code class="paramref">input</code> is not a multiple of
+the block size, or when <code class="paramref">input</code> and <code class="paramref">output</code> partially overlap.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.objectdisposedexception">ObjectDisposedException</a></dt>
+    <dd><p>Thrown when the transform has been disposed.</p>
 </dd>
   </dl>
 
@@ -432,7 +439,7 @@ are cleared before the call returns.</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 57ffd22 · Built: 2026-10-12 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: b1517af · Built: 2026-10-13 (UTC)</span>
         </div>
       </div>
     </footer>
