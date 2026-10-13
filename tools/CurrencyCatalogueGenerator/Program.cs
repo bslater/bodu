@@ -144,7 +144,7 @@ internal static class Program
         builder.AppendLine("using global::System.Collections.Generic;");
         builder.AppendLine();
         builder.AppendLine("/// <summary>");
-        builder.AppendLine("/// Source-generated registration list of the shipped currency catalogue, consumed by");
+        builder.AppendLine("/// Source-generated registration list of the shipped currency catalog, consumed by");
         builder.AppendLine("/// <see cref=\"Bodu.Financial.Currencies.CurrencyRegistry\" /> at static-constructor time.");
         builder.AppendLine("/// </summary>");
         builder.AppendLine("internal static class GeneratedCurrencyRegistration");
