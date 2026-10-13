@@ -89,21 +89,21 @@ internal static class NotableDateDocumentReader
 
             policies.Add(new AdjustmentPolicy(
                 policy.Scalar("id") ?? string.Empty,
-                ParseInt(policy.Scalar("priority"), 0),
+                ParseInt(policy.Scalar("priority"), 0, "adjustment policy priority", diagnostics),
                 ReadScope(policy.Child("scope"), diagnostics),
                 ParseEnum(trigger?.Scalar("type"), AdjustmentTrigger.Always, "trigger type", diagnostics),
                 weekdays,
                 ParseEnum(action?.Scalar("type"), AdjustmentAction.None, "action type", diagnostics),
                 ParseNullableEnum<DayOfWeek>(action?.Scalar("dayOfWeek"), "action dayOfWeek", diagnostics),
-                ParseInt(action?.Scalar("days"), 0),
-                ParseNullableInt(action?.Scalar("maxSearchDays")),
-                ParseBool(action?.Scalar("skipWeekends"), true),
-                ParseBool(action?.Scalar("skipNonWorkingDates"), false),
+                ParseInt(action?.Scalar("days"), 0, "action days", diagnostics),
+                ParseNullableInt(action?.Scalar("maxSearchDays"), "action maxSearchDays", diagnostics),
+                ParseBool(action?.Scalar("skipWeekends"), true, "action skipWeekends", diagnostics),
+                ParseBool(action?.Scalar("skipNonWorkingDates"), false, "action skipNonWorkingDates", diagnostics),
                 ParseEnum(emission?.Scalar("mode"), EmissionMode.ActualOnly, "emission mode", diagnostics),
                 emission?.Scalar("reason"),
-                ParseNullableBool(emission?.Scalar("nonWorking")),
-                ParseTriggerMonth(trigger?.Scalar("month")),
-                ParseNullableInt(trigger?.Scalar("day")),
+                ParseNullableBool(emission?.Scalar("nonWorking"), "emission nonWorking", diagnostics),
+                ParseTriggerMonth(trigger?.Scalar("month"), "trigger month", diagnostics),
+                ParseNullableInt(trigger?.Scalar("day"), "trigger day", diagnostics),
                 ParseNullableEnum<WeekOrdinal>(trigger?.Scalar("weekOrdinal"), "trigger weekOrdinal", diagnostics),
                 action?.Scalar("notableDateRef"),
                 action?.Scalar("ruleRef"),
@@ -150,10 +150,10 @@ internal static class NotableDateDocumentReader
             node.ScalarList(null, "NotableDate", "ref", "notableDateRefs"),
             node.QualifiedReferenceList(null, "Rule", "notableDateRef", "ruleRef", "ruleRefs")
                 .Select(reference => AdjustmentScope.QualifyRuleRef(reference.Qualifier, reference.Name)),
-            ParseNullableInt(node.Scalar("fromYear")),
-            ParseNullableInt(node.Scalar("toYear")),
-            node.IntList(null, "OnlyYear", "value", "onlyYears"),
-            node.IntList(null, "ExceptYear", "value", "exceptYears"));
+            ParseNullableInt(node.Scalar("fromYear"), "scope fromYear", diagnostics),
+            ParseNullableInt(node.Scalar("toYear"), "scope toYear", diagnostics),
+            node.IntList(null, "OnlyYear", "value", "onlyYears", "scope onlyYears", diagnostics),
+            node.IntList(null, "ExceptYear", "value", "exceptYears", "scope exceptYears", diagnostics));
     }
 
     /// <summary>
@@ -174,8 +174,8 @@ internal static class NotableDateDocumentReader
                 id,
                 notableDate.Scalar("displayName") ?? string.Empty,
                 ParseEnum(notableDate.Scalar("category"), NotableDateCategory.None, "category", diagnostics),
-                ParseBool(notableDate.Scalar("defaultNonWorkingDay"), false),
-                ParseInt(notableDate.Scalar("defaultDurationDays"), 1),
+                ParseBool(notableDate.Scalar("defaultNonWorkingDay"), false, "defaultNonWorkingDay", diagnostics),
+                ParseInt(notableDate.Scalar("defaultDurationDays"), 1, "defaultDurationDays", diagnostics),
                 notableDate.ScalarList("Tags", "Tag", "value", "tags"),
                 ReadRules(notableDate, id, diagnostics)));
         }
@@ -224,9 +224,9 @@ internal static class NotableDateDocumentReader
         return recurrence is not null
             ? new NotableDateRule(
                 id,
-                ParseInt(node.Scalar("priority"), 0),
+                ParseInt(node.Scalar("priority"), 0, "rule priority", diagnostics),
                 ParseNullableEnum<NotableDateCategory>(node.Scalar("category"), "category", diagnostics),
-                ParseNullableBool(node.Scalar("nonWorking")),
+                ParseNullableBool(node.Scalar("nonWorking"), "rule nonWorking", diagnostics),
                 duration,
                 applicability,
                 recurrence,
@@ -234,9 +234,9 @@ internal static class NotableDateDocumentReader
                 tags)
             : new NotableDateRule(
                 id,
-                ParseInt(node.Scalar("priority"), 0),
+                ParseInt(node.Scalar("priority"), 0, "rule priority", diagnostics),
                 ParseNullableEnum<NotableDateCategory>(node.Scalar("category"), "category", diagnostics),
-                ParseNullableBool(node.Scalar("nonWorking")),
+                ParseNullableBool(node.Scalar("nonWorking"), "rule nonWorking", diagnostics),
                 duration,
                 applicability,
                 ReadStrategy(strategyNode, applicability.Calendar, notableDateId, id, diagnostics),
@@ -304,13 +304,13 @@ internal static class NotableDateDocumentReader
 
         return new RuleApplicability(
             ParseEnum(node.Scalar("calendar"), CalendarSystem.Gregorian, "calendar", diagnostics),
-            ParseNullableInt(node.Scalar("fromYear")),
-            ParseNullableInt(node.Scalar("toYear")),
+            ParseNullableInt(node.Scalar("fromYear"), "applicability fromYear", diagnostics),
+            ParseNullableInt(node.Scalar("toYear"), "applicability toYear", diagnostics),
             node.ScalarList(null, "Territory", "code", "territories"),
-            node.IntList(null, "OnlyYear", "value", "onlyYears"),
-            node.IntList(null, "ExceptYear", "value", "exceptYears"),
-            ParseNullableInt(node.Scalar("everyYears")),
-            ParseNullableInt(node.Scalar("anchorYear")));
+            node.IntList(null, "OnlyYear", "value", "onlyYears", "applicability onlyYears", diagnostics),
+            node.IntList(null, "ExceptYear", "value", "exceptYears", "applicability exceptYears", diagnostics),
+            ParseNullableInt(node.Scalar("everyYears"), "applicability everyYears", diagnostics),
+            ParseNullableInt(node.Scalar("anchorYear"), "applicability anchorYear", diagnostics));
     }
 
     /// <summary>
@@ -373,10 +373,10 @@ internal static class NotableDateDocumentReader
             (int month, string? monthAlias) = ParseFixedMonth(fixedStrategy.Scalar("month"), calendar, notableDateId, ruleId, diagnostics);
             return new FixedDateStrategy(
                 month,
-                Math.Clamp(ParseInt(fixedStrategy.Scalar("day"), 1), 1, 31),
+                Math.Clamp(ParseInt(fixedStrategy.Scalar("day"), 1, "fixed day", diagnostics), 1, 31),
                 calendar,
-                ParseBool(fixedStrategy.Scalar("sweepCalendarYears"), false),
-                ParseBool(fixedStrategy.Scalar("skipLeapMonth"), false),
+                ParseBool(fixedStrategy.Scalar("sweepCalendarYears"), false, "fixed sweepCalendarYears", diagnostics),
+                ParseBool(fixedStrategy.Scalar("skipLeapMonth"), false, "fixed skipLeapMonth", diagnostics),
                 monthAlias);
         }
 
@@ -392,7 +392,7 @@ internal static class NotableDateDocumentReader
         {
             return new WeekdayNearDateStrategy(
                 ParseMonth(weekdayNearDate.Scalar("month"), notableDateId, ruleId, diagnostics),
-                Math.Clamp(ParseInt(weekdayNearDate.Scalar("day"), 1), 1, 31),
+                Math.Clamp(ParseInt(weekdayNearDate.Scalar("day"), 1, "weekdayNearDate day", diagnostics), 1, 31),
                 ParseEnum(weekdayNearDate.Scalar("dayOfWeek"), DayOfWeek.Monday, "weekdayNearDate dayOfWeek", diagnostics),
                 ParseEnum(weekdayNearDate.Scalar("direction"), WeekdayProximity.OnOrAfter, "weekdayNearDate direction", diagnostics));
         }
@@ -413,7 +413,7 @@ internal static class NotableDateDocumentReader
             return new OffsetFromRuleStrategy(
                 offsetFromRule.Scalar("notableDateRef") ?? string.Empty,
                 string.IsNullOrEmpty(ruleRef) ? null : ruleRef,
-                ParseInt(offsetFromRule.Scalar("offsetDays"), 0));
+                ParseInt(offsetFromRule.Scalar("offsetDays"), 0, "offsetFromRule offsetDays", diagnostics));
         }
 
         if (node.Child("algorithm") is IDocumentNode algorithm)
@@ -427,7 +427,7 @@ internal static class NotableDateDocumentReader
                 string.IsNullOrEmpty(ruleRef) ? null : ruleRef,
                 ParseEnum(weekdayNearRule.Scalar("dayOfWeek"), DayOfWeek.Monday, "weekdayNearRule dayOfWeek", diagnostics),
                 ParseEnum(weekdayNearRule.Scalar("direction"), WeekdayProximity.OnOrAfter, "weekdayNearRule direction", diagnostics),
-                ParseInt(weekdayNearRule.Scalar("referenceYearOffset"), 0));
+                ParseInt(weekdayNearRule.Scalar("referenceYearOffset"), 0, "weekdayNearRule referenceYearOffset", diagnostics));
         }
 
         if (node.Child("nthWeekdayFromRule") is IDocumentNode nthWeekdayFromRule)
@@ -437,8 +437,8 @@ internal static class NotableDateDocumentReader
                 nthWeekdayFromRule.Scalar("notableDateRef") ?? string.Empty,
                 string.IsNullOrEmpty(ruleRef) ? null : ruleRef,
                 ParseEnum(nthWeekdayFromRule.Scalar("dayOfWeek"), DayOfWeek.Monday, "nthWeekdayFromRule dayOfWeek", diagnostics),
-                ParseInt(nthWeekdayFromRule.Scalar("ordinal"), 1),
-                ParseInt(nthWeekdayFromRule.Scalar("referenceYearOffset"), 0));
+                ParseInt(nthWeekdayFromRule.Scalar("ordinal"), 1, "nthWeekdayFromRule ordinal", diagnostics),
+                ParseInt(nthWeekdayFromRule.Scalar("referenceYearOffset"), 0, "nthWeekdayFromRule referenceYearOffset", diagnostics));
         }
 
         if (node.Child("workingDayOffsetFromRule") is IDocumentNode workingDayOffsetFromRule)
@@ -447,33 +447,33 @@ internal static class NotableDateDocumentReader
             return new WorkingDayOffsetFromRuleStrategy(
                 workingDayOffsetFromRule.Scalar("notableDateRef") ?? string.Empty,
                 string.IsNullOrEmpty(ruleRef) ? null : ruleRef,
-                ParseInt(workingDayOffsetFromRule.Scalar("offsetWorkingDays"), 0),
-                ParseInt(workingDayOffsetFromRule.Scalar("referenceYearOffset"), 0));
+                ParseInt(workingDayOffsetFromRule.Scalar("offsetWorkingDays"), 0, "workingDayOffsetFromRule offsetWorkingDays", diagnostics),
+                ParseInt(workingDayOffsetFromRule.Scalar("referenceYearOffset"), 0, "workingDayOffsetFromRule referenceYearOffset", diagnostics));
         }
 
         if (node.Child("workingDayInMonth") is IDocumentNode workingDayInMonth)
         {
             return new WorkingDayInMonthStrategy(
                 ParseMonth(workingDayInMonth.Scalar("month"), notableDateId, ruleId, diagnostics),
-                ParseInt(workingDayInMonth.Scalar("ordinal"), 1));
+                ParseInt(workingDayInMonth.Scalar("ordinal"), 1, "workingDayInMonth ordinal", diagnostics));
         }
 
         if (node.Child("ordinalDayOfMonth") is IDocumentNode ordinalDayOfMonth)
         {
             return new OrdinalDayOfMonthStrategy(
                 ParseMonth(ordinalDayOfMonth.Scalar("month"), notableDateId, ruleId, diagnostics),
-                ParseInt(ordinalDayOfMonth.Scalar("ordinal"), 1));
+                ParseInt(ordinalDayOfMonth.Scalar("ordinal"), 1, "ordinalDayOfMonth ordinal", diagnostics));
         }
 
         if (node.Child("isoWeekDate") is IDocumentNode isoWeekDate)
         {
             return new IsoWeekDateStrategy(
-                ParseInt(isoWeekDate.Scalar("week"), 1),
+                ParseInt(isoWeekDate.Scalar("week"), 1, "isoWeekDate week", diagnostics),
                 ParseEnum(isoWeekDate.Scalar("dayOfWeek"), DayOfWeek.Monday, "isoWeekDate dayOfWeek", diagnostics));
         }
 
         if (node.Child("dayOfYear") is IDocumentNode dayOfYear)
-            return new DayOfYearStrategy(ParseInt(dayOfYear.Scalar("ordinal"), 1));
+            return new DayOfYearStrategy(ParseInt(dayOfYear.Scalar("ordinal"), 1, "dayOfYear ordinal", diagnostics));
 
         return new FixedDateStrategy(1, 1);
     }
@@ -492,7 +492,7 @@ internal static class NotableDateDocumentReader
     /// </returns>
     private static NotableDateDurationDefinition? ReadDuration(IDocumentNode ruleNode, CalendarSystem calendar, string notableDateId, string ruleId, ICollection<NotableDateValidationDiagnostic> diagnostics)
     {
-        int? durationDays = ParseNullableInt(ruleNode.Scalar("durationDays"));
+        int? durationDays = ParseNullableInt(ruleNode.Scalar("durationDays"), "durationDays", diagnostics);
         IDocumentNode? untilDate = ruleNode.Child("duration")?.Child("untilDate");
 
         if (durationDays is int days && untilDate is not null)
@@ -563,8 +563,8 @@ internal static class NotableDateDocumentReader
             if (node.Child("dailyInterval") is IDocumentNode dailyInterval)
             {
                 return new DailyIntervalRecurrenceStrategy(
-                    ParseDate(dailyInterval.Scalar("anchorDate")) ?? default,
-                    ParseInt(dailyInterval.Scalar("intervalDays"), 1));
+                    ParseNullableDate(dailyInterval.Scalar("anchorDate"), "dailyInterval anchorDate", diagnostics) ?? default,
+                    ParseInt(dailyInterval.Scalar("intervalDays"), 1, "dailyInterval intervalDays", diagnostics));
             }
 
             if (node.Child("weekly") is IDocumentNode weekly)
@@ -572,16 +572,16 @@ internal static class NotableDateDocumentReader
                 List<DayOfWeek> days = ParseEnumList(weekly.ScalarList(null, "Day", "dayOfWeek", "days"), DayOfWeek.Monday, "weekly days", diagnostics);
                 return new WeeklyRecurrenceStrategy(
                     days,
-                    ParseInt(weekly.Scalar("intervalWeeks"), 1),
-                    ParseDate(weekly.Scalar("anchorDate")));
+                    ParseInt(weekly.Scalar("intervalWeeks"), 1, "weekly intervalWeeks", diagnostics),
+                    ParseNullableDate(weekly.Scalar("anchorDate"), "weekly anchorDate", diagnostics));
             }
 
             if (node.Child("monthlyDay") is IDocumentNode monthlyDay)
             {
                 return new MonthlyDayRecurrenceStrategy(
-                    ParseInt(monthlyDay.Scalar("dayOfMonth"), 1),
-                    ParseInt(monthlyDay.Scalar("intervalMonths"), 1),
-                    ParseDate(monthlyDay.Scalar("anchorDate")),
+                    ParseInt(monthlyDay.Scalar("dayOfMonth"), 1, "monthlyDay dayOfMonth", diagnostics),
+                    ParseInt(monthlyDay.Scalar("intervalMonths"), 1, "monthlyDay intervalMonths", diagnostics),
+                    ParseNullableDate(monthlyDay.Scalar("anchorDate"), "monthlyDay anchorDate", diagnostics),
                     ParseEnum(monthlyDay.Scalar("invalidDayBehavior"), InvalidDayOfMonthBehavior.Skip, "monthlyDay invalidDayBehavior", diagnostics));
             }
 
@@ -590,8 +590,8 @@ internal static class NotableDateDocumentReader
                 return new MonthlyWeekdayRecurrenceStrategy(
                     ParseEnum(monthlyWeekday.Scalar("dayOfWeek"), DayOfWeek.Monday, "monthlyWeekday dayOfWeek", diagnostics),
                     ParseEnum(monthlyWeekday.Scalar("weekOrdinal"), WeekOrdinal.First, "monthlyWeekday weekOrdinal", diagnostics),
-                    ParseInt(monthlyWeekday.Scalar("intervalMonths"), 1),
-                    ParseDate(monthlyWeekday.Scalar("anchorDate")));
+                    ParseInt(monthlyWeekday.Scalar("intervalMonths"), 1, "monthlyWeekday intervalMonths", diagnostics),
+                    ParseNullableDate(monthlyWeekday.Scalar("anchorDate"), "monthlyWeekday anchorDate", diagnostics));
             }
 
             return null;
@@ -605,16 +605,6 @@ internal static class NotableDateDocumentReader
             return null;
         }
     }
-
-    /// <summary>
-    /// Parses an ISO-8601 <c>yyyy-MM-dd</c> date token.
-    /// </summary>
-    /// <param name="value">The date token, or <see langword="null" />.</param>
-    /// <returns>The parsed date, or <see langword="null" /> when the token is absent or malformed.</returns>
-    private static DateOnly? ParseDate(string? value) =>
-        DateOnly.TryParseExact(value, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out DateOnly result)
-            ? result
-            : null;
 
     /// <summary>
     /// Reads the override operations declared by the resource.
@@ -687,9 +677,9 @@ internal static class NotableDateDocumentReader
         return new PatchRuleOverride(
             notableDateRef,
             ruleRef,
-            ParseNullableInt(operation.Scalar("priority")),
+            ParseNullableInt(operation.Scalar("priority"), "patch priority", diagnostics),
             ParseNullableEnum<NotableDateCategory>(operation.Scalar("category"), "category", diagnostics),
-            ParseNullableBool(operation.Scalar("nonWorking")),
+            ParseNullableBool(operation.Scalar("nonWorking"), "patch nonWorking", diagnostics),
             duration,
             applicability,
             strategyNode is null ? null : ReadStrategy(strategyNode, calendar, notableDateRef, ruleRef, diagnostics),
@@ -718,7 +708,7 @@ internal static class NotableDateDocumentReader
                     use.Scalar("as"),
                     use.Scalar("territory"),
                     ParseNullableEnum<NotableDateCategory>(use.Scalar("category"), "import use category", diagnostics),
-                    ParseNullableBool(use.Scalar("nonWorking")),
+                    ParseNullableBool(use.Scalar("nonWorking"), "import use nonWorking", diagnostics),
                     use.OptionalScalarList("Adjustments", "Adjustment", "policyRef", "adjustments")));
             }
 

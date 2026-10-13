@@ -73,7 +73,7 @@ internal sealed class JsonDocumentNode
         ReadScalarList(jsonProperty);
 
     /// <inheritdoc />
-    public IReadOnlyList<int> IntList(string? xmlWrapper, string xmlItem, string xmlAttribute, string jsonProperty)
+    public IReadOnlyList<int> IntList(string? xmlWrapper, string xmlItem, string xmlAttribute, string jsonProperty, string field, ICollection<NotableDateValidationDiagnostic> diagnostics)
     {
         if (!TryGetProperty(jsonProperty, out JsonElement array) || array.ValueKind != JsonValueKind.Array)
             return [];
@@ -81,7 +81,10 @@ internal sealed class JsonDocumentNode
         List<int> values = new();
         foreach (JsonElement item in array.EnumerateArray())
         {
-            if (item.ValueKind == JsonValueKind.Number && item.TryGetInt32(out int result))
+            // An item is read as a scalar property is, so a number in quotes is accepted and any other item, a fraction
+            // or a Boolean among them, is reported by its JSON text rather than dropped.
+            string text = item.ValueKind == JsonValueKind.String ? item.GetString() ?? string.Empty : item.GetRawText();
+            if (NotableDateDocumentParseHelpers.ParseNullableInt(text, field, diagnostics) is int result)
                 values.Add(result);
         }
 

@@ -78,7 +78,8 @@ internal interface IDocumentNode
     IReadOnlyList<string>? OptionalScalarList(string? xmlWrapper, string xmlItem, string xmlAttribute, string jsonProperty);
 
     /// <summary>
-    /// Reads a list of integer scalars, returning an empty list when absent.
+    /// Reads a list of integer scalars, returning an empty list when absent and recording an error diagnostic for each
+    /// item that is not a 32-bit integer.
     /// </summary>
     /// <param name="xmlWrapper">
     /// The XML wrapper element, or <see langword="null" /> to read this node's children.
@@ -86,8 +87,15 @@ internal interface IDocumentNode
     /// <param name="xmlItem">The XML item element local name.</param>
     /// <param name="xmlAttribute">The XML attribute on each item carrying the value.</param>
     /// <param name="jsonProperty">The JSON array property name.</param>
+    /// <param name="field">The name of the field the list belongs to, used in the diagnostics.</param>
+    /// <param name="diagnostics">The collection that receives the diagnostic for each malformed item.</param>
     /// <returns>The integer values; empty when absent.</returns>
-    IReadOnlyList<int> IntList(string? xmlWrapper, string xmlItem, string xmlAttribute, string jsonProperty);
+    /// <remarks>
+    /// An item that is not an integer is left out of the list after a <c>BODU-CAL-VALUE</c> error is recorded for it,
+    /// so the shortened list never reaches a loaded resource. A JSON item is read as a scalar is: a number by its
+    /// digits, a string by its text.
+    /// </remarks>
+    IReadOnlyList<int> IntList(string? xmlWrapper, string xmlItem, string xmlAttribute, string jsonProperty, string field, ICollection<NotableDateValidationDiagnostic> diagnostics);
 
     /// <summary>
     /// Reads a key/value map: XML item elements carrying a key attribute and a value attribute within a wrapper, or a

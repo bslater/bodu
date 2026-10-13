@@ -114,6 +114,18 @@
   <data name="Validation_InvalidEnumValue" xml:space="preserve">
     <value>The {0} value '{1}' is not recognized; expected one of: {2}.</value>
   </data>
+  <data name="Validation_InvalidIntegerValue" xml:space="preserve">
+    <value>The {0} value '{1}' is not a 32-bit integer.</value>
+  </data>
+  <data name="Validation_InvalidBooleanValue" xml:space="preserve">
+    <value>The {0} value '{1}' is not a Boolean; expected true, false, 1 or 0.</value>
+  </data>
+  <data name="Validation_InvalidDateValue" xml:space="preserve">
+    <value>The {0} value '{1}' is not a date in the form yyyy-MM-dd.</value>
+  </data>
+  <data name="Validation_InvalidTriggerMonth" xml:space="preserve">
+    <value>The {0} value '{1}' is not a month; expected a full English month name or an integer between 1 and 12.</value>
+  </data>
   <data name="Validation_OverrideNotableDateNotFound" xml:space="preserve">
     <value>Override operation targets notable date '{0}', which does not exist in the resolved resource.</value>
   </data>
