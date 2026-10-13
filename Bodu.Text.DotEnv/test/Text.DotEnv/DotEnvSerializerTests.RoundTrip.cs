@@ -94,4 +94,20 @@ public partial class DotEnvSerializerTests
         Assert.IsNull(restored.MaybeLarge);
         Assert.AreEqual(original.MaybeTime, restored.MaybeTime);
     }
+
+    /// <summary>
+    /// Verifies that a POCO whose member hides a base member with <see langword="new" /> reads back the text it is
+    /// serialized to, the hiding member keeping its value.
+    /// </summary>
+    [TestMethod]
+    public void SerializeDeserialize_WhenAMemberHidesABaseMemberWithNew_ShouldReadBackTheOutput()
+    {
+        var original = new PortNumberHidingConfig { Port = 5 };
+        ((PortTextBase)original).Port = "x";
+
+        string text = DotEnvSerializer.Serialize(original);
+        PortNumberHidingConfig restored = DotEnvSerializer.Deserialize<PortNumberHidingConfig>(text);
+
+        Assert.AreEqual(5, restored.Port);
+    }
 }

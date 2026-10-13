@@ -161,6 +161,50 @@ public partial class DotEnvSerializerTests
     }
 
     /// <summary>
+    /// A base POCO whose text <c>Port</c> property <see cref="PortNumberHidingConfig" /> hides.
+    /// </summary>
+    public class PortTextBase
+    {
+        /// <summary>Gets or sets the base port text, which a derived type hides.</summary>
+        /// <value>The port text.</value>
+        public string? Port { get; set; }
+    }
+
+    /// <summary>
+    /// A POCO whose <see cref="int" /> <c>Port</c> property hides the base type's text <c>Port</c> with the
+    /// <see langword="new" /> modifier.
+    /// </summary>
+    public sealed class PortNumberHidingConfig
+        : PortTextBase
+    {
+        /// <summary>Gets or sets the port, hiding the base type's.</summary>
+        /// <value>The port.</value>
+        public new int Port { get; set; }
+    }
+
+    /// <summary>
+    /// A base POCO whose <see cref="int" /> <c>Port</c> property <see cref="PortTextHidingConfig" /> hides.
+    /// </summary>
+    public class PortNumberBase
+    {
+        /// <summary>Gets or sets the base port number, which a derived type hides.</summary>
+        /// <value>The port number.</value>
+        public int Port { get; set; }
+    }
+
+    /// <summary>
+    /// A POCO whose text <c>Port</c> property hides the base type's <see cref="int" /> <c>Port</c> with the
+    /// <see langword="new" /> modifier.
+    /// </summary>
+    public sealed class PortTextHidingConfig
+        : PortNumberBase
+    {
+        /// <summary>Gets or sets the port text, hiding the base type's.</summary>
+        /// <value>The port text.</value>
+        public new string? Port { get; set; }
+    }
+
+    /// <summary>
     /// Gets scalar root values, each of which serialization must reject with <see cref="DotEnvSerializationException" /> naming its type.
     /// </summary>
     /// <value>The rows, each a named scalar value and the exception it raises.</value>

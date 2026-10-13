@@ -176,6 +176,46 @@ public partial class IniSerializerTests
     }
 
     /// <summary>
+    /// A base root model whose text <c>Port</c> global key <see cref="PortNumberHidingConfig" /> hides.
+    /// </summary>
+    private class PortTextBase
+    {
+        /// <summary>Gets or sets the base port text (a global key), which a derived type hides.</summary>
+        public string? Port { get; set; }
+    }
+
+    /// <summary>
+    /// A root model whose <see cref="int" /> <c>Port</c> global key hides the base type's text <c>Port</c> with the
+    /// <see langword="new" /> modifier.
+    /// </summary>
+    private sealed class PortNumberHidingConfig
+        : PortTextBase
+    {
+        /// <summary>Gets or sets the port (a global key), hiding the base type's.</summary>
+        public new int Port { get; set; }
+    }
+
+    /// <summary>
+    /// A base root model whose <see cref="int" /> <c>Port</c> global key <see cref="PortTextHidingConfig" /> hides.
+    /// </summary>
+    private class PortNumberBase
+    {
+        /// <summary>Gets or sets the base port number (a global key), which a derived type hides.</summary>
+        public int Port { get; set; }
+    }
+
+    /// <summary>
+    /// A root model whose text <c>Port</c> global key hides the base type's <see cref="int" /> <c>Port</c> with the
+    /// <see langword="new" /> modifier.
+    /// </summary>
+    private sealed class PortTextHidingConfig
+        : PortNumberBase
+    {
+        /// <summary>Gets or sets the port text (a global key), hiding the base type's.</summary>
+        public new string? Port { get; set; }
+    }
+
+    /// <summary>
     /// A root model whose section has no public parameterless constructor.
     /// </summary>
     private sealed class ConstructedSectionConfig

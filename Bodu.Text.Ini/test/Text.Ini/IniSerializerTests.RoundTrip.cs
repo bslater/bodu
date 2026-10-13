@@ -90,4 +90,21 @@ public partial class IniSerializerTests
         Assert.IsNull(restored.MaybeLarge);
         Assert.AreEqual(original.MaybeTime, restored.MaybeTime);
     }
+
+    /// <summary>
+    /// Verifies that under the <see cref="IniSerializerDefaults.Strict" /> defaults, which reject a duplicate key, a
+    /// root model whose member hides a base member with <see langword="new" /> reads back the text it is serialized to.
+    /// </summary>
+    [TestMethod]
+    public void SerializeDeserialize_WhenAMemberHidesABaseMemberWithNew_ForStrictDefaults_ShouldReadBackTheOutput()
+    {
+        var options = new IniSerializerOptions(IniSerializerDefaults.Strict);
+        var original = new PortNumberHidingConfig { Port = 5 };
+        ((PortTextBase)original).Port = "x";
+
+        string text = IniSerializer.Serialize(original, options);
+        PortNumberHidingConfig restored = IniSerializer.Deserialize<PortNumberHidingConfig>(text, options);
+
+        Assert.AreEqual(5, restored.Port);
+    }
 }

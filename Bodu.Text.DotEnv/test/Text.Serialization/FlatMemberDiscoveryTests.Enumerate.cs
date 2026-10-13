@@ -23,4 +23,19 @@ public sealed partial class FlatMemberDiscoveryTests
             new[] { nameof(MemberSample.Count), nameof(MemberSample.PublicField) },
             members.Select(static member => member.Name).ToArray());
     }
+
+    /// <summary>
+    /// Verifies that a property and a field hidden with <see langword="new" /> are not returned, and that the members
+    /// hiding them are, once each.
+    /// </summary>
+    [TestMethod]
+    public void Enumerate_WhenMembersAreHiddenWithNew_ShouldReturnOnlyTheMostDerivedDeclarations()
+    {
+        MemberInfo[] members = FlatMemberDiscovery.Enumerate(typeof(HidingSample), includeFields: true).ToArray();
+
+        CollectionAssert.AreEquivalent(
+            new[] { nameof(HidingSample.Port), nameof(HidingSample.Code) },
+            members.Select(static member => member.Name).ToArray());
+        Assert.IsTrue(members.All(static member => member.DeclaringType == typeof(HidingSample)));
+    }
 }

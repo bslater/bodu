@@ -260,4 +260,19 @@ public partial class IniSerializerTests
 
         Assert.IsTrue(ex.Message.Contains(kat.MessageContains!, StringComparison.Ordinal), ex.Message);
     }
+
+    /// <summary>
+    /// Verifies that a global key hiding a base member of the same name with <see langword="new" /> is written once,
+    /// from the most derived declaration, and that the hidden member is not written.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenAMemberHidesABaseMemberWithNew_ShouldWriteOnlyTheMostDerivedMember()
+    {
+        var config = new PortNumberHidingConfig { Port = 5 };
+        ((PortTextBase)config).Port = "x";
+
+        string text = IniSerializer.Serialize(config);
+
+        Assert.AreEqual("Port=5\n", text);
+    }
 }

@@ -103,4 +103,19 @@ public partial class DotEnvSerializerTests
         Assert.IsTrue(ex.Message.Contains("db.host", StringComparison.Ordinal), ex.Message);
         Assert.IsInstanceOfType<ArgumentException>(ex.InnerException);
     }
+
+    /// <summary>
+    /// Verifies that a member hiding a base member of the same name with <see langword="new" /> is written once, from
+    /// the most derived declaration, and that the hidden member is not written.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenAMemberHidesABaseMemberWithNew_ShouldWriteOnlyTheMostDerivedMember()
+    {
+        var config = new PortNumberHidingConfig { Port = 5 };
+        ((PortTextBase)config).Port = "x";
+
+        string text = DotEnvSerializer.Serialize(config);
+
+        Assert.AreEqual("Port=5\n", text);
+    }
 }

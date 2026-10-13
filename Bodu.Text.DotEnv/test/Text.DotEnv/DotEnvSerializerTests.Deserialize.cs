@@ -176,4 +176,17 @@ public partial class DotEnvSerializerTests
 
         Assert.IsTrue(ex.Message.Contains(nameof(AbstractConfig), StringComparison.Ordinal), ex.Message);
     }
+
+    /// <summary>
+    /// Verifies that a key binds only to the most derived member of its name, so that a base <see cref="int" /> member
+    /// hidden with <see langword="new" /> by a text member is not bound, and text it cannot convert does not throw.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenAMemberHidesABaseMemberWithNew_ShouldBindOnlyTheMostDerivedMember()
+    {
+        PortTextHidingConfig config = DotEnvSerializer.Deserialize<PortTextHidingConfig>("Port=abc\n");
+
+        Assert.AreEqual("abc", config.Port);
+        Assert.AreEqual(0, ((PortNumberBase)config).Port);
+    }
 }
