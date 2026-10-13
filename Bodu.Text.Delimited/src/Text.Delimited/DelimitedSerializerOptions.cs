@@ -231,6 +231,15 @@ public sealed class DelimitedSerializerOptions
         new() { Delimiter = _delimiter, Quote = _quote, CommentChar = _commentChar, NoHeader = _noHeader };
 
     /// <summary>
+    /// Gets the cache of the member descriptors of the record types serialized with these options.
+    /// </summary>
+    /// <value>
+    /// The cache, consulted only once the options are read-only, so that the naming policy and field inclusion that
+    /// shaped a type's descriptors cannot change.
+    /// </value>
+    internal FlatMemberCache MemberCache { get; } = new();
+
+    /// <summary>
     /// Creates the shared read-only default options.
     /// </summary>
     /// <returns>The default options.</returns>

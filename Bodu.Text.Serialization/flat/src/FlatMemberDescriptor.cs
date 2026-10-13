@@ -14,7 +14,7 @@ namespace Bodu.Text.Serialization;
 /// converts as, the attributes that shape it, and access to its value.
 /// </summary>
 /// <remarks>
-/// A descriptor is immutable once created, so it can be shared between calls and threads.
+/// A descriptor is immutable once created, so <see cref="FlatMemberCache" /> shares it between calls and threads.
 /// </remarks>
 internal sealed class FlatMemberDescriptor
 {

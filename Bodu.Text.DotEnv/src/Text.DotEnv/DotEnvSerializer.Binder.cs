@@ -365,10 +365,10 @@ public static partial class DotEnvSerializer
     }
 
     /// <summary>
-    /// Gets the mapped members of a type, applying naming, inclusion, and ordering rules.
+    /// Gets the mapped members of a type, applying naming, inclusion, and ordering rules, from the options' cache.
     /// </summary>
     /// <param name="type">The type whose members to map.</param>
-    /// <param name="options">The serializer options.</param>
+    /// <param name="options">The read-only serializer options.</param>
     /// <returns>The ordered member descriptors.</returns>
     /// <exception cref="DotEnvSerializationException">
     /// Thrown when two members of <paramref name="type" /> map to one key.
@@ -376,12 +376,10 @@ public static partial class DotEnvSerializer
     [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
     private static FlatMemberDescriptor[] GetMembers(
         [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.PublicFields)] Type type,
-        DotEnvSerializerOptions options)
-    {
-        FlatMemberDescriptor[] members = FlatMemberDiscovery.Describe(type, options.IncludeFields, options.PropertyNamingPolicy);
-        if (FlatMemberDiscovery.FindDuplicateName(members) is { } duplicate)
-            throw new DotEnvSerializationException(string.Format(CultureInfo.CurrentCulture, DotEnvResourceStrings.Op_Invalid_DotEnvDuplicateKey, type, duplicate));
-
-        return members;
-    }
+        DotEnvSerializerOptions options) =>
+        options.MemberCache.GetMembers(
+            type,
+            options.IncludeFields,
+            options.PropertyNamingPolicy,
+            static (type, key) => new DotEnvSerializationException(string.Format(CultureInfo.CurrentCulture, DotEnvResourceStrings.Op_Invalid_DotEnvDuplicateKey, type, key)));
 }
