@@ -4,6 +4,9 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Text;
+using System.Text.Unicode;
+
 namespace Bodu.Financial.ExchangeRates;
 
 /// <summary>
@@ -27,7 +30,14 @@ internal static class Utf8Content
     /// </returns>
     internal static ReadOnlySpan<byte> Normalize(ReadOnlySpan<byte> content)
     {
-        throw new NotImplementedException();
+        // Bytes 0xFE and 0xFF never occur in UTF-8, so a response led by a UTF-16 or UTF-32 byte-order mark is never
+        // valid UTF-8 and is decoded the way StreamReader decodes it.
+        ReadOnlySpan<byte> text = content.StartsWith((ReadOnlySpan<byte>)[0xEF, 0xBB, 0xBF]) ? content[3..] : content;
+        if (Utf8.IsValid(text))
+            return text;
+
+        using StreamReader reader = new(new MemoryStream(content.ToArray(), writable: false));
+        return Encoding.UTF8.GetBytes(reader.ReadToEnd());
     }
 
     /// <summary>
@@ -37,6 +47,11 @@ internal static class Utf8Content
     /// <returns>The bytes from the stream's position to its end.</returns>
     internal static byte[] ReadAll(Stream stream)
     {
-        throw new NotImplementedException();
+        using (stream)
+        {
+            using MemoryStream buffer = new();
+            stream.CopyTo(buffer);
+            return buffer.ToArray();
+        }
     }
 }

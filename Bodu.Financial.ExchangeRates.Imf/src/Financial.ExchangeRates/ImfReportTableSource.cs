@@ -48,8 +48,7 @@ internal sealed class ImfReportTableSource
 
         (byte[] bytes, DateTimeOffset? cachedAtUtc) = await GetReportBytesAsync(month, cancellationToken).ConfigureAwait(false);
 
-        using MemoryStream stream = new(bytes, writable: false);
-        ImfRateTable table = ImfReportParser.Parse(stream, _options);
+        ImfRateTable table = ImfReportParser.Parse(bytes, _options);
         table.CachedAtUtc = cachedAtUtc;
         return table;
     }

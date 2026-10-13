@@ -44,8 +44,7 @@ internal sealed class BoeCsvRateTableSource
     {
         (byte[] bytes, DateTimeOffset? cachedAtUtc) = await GetResponseBytesAsync(startDate, endDate, cancellationToken).ConfigureAwait(false);
 
-        using MemoryStream stream = new(bytes, writable: false);
-        BoeRateTable table = BoeRateCsvParser.Parse(stream, _options);
+        BoeRateTable table = BoeRateCsvParser.Parse(bytes, _options);
         table.CachedAtUtc = cachedAtUtc;
         return table;
     }
