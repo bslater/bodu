@@ -481,4 +481,84 @@ public partial class IniSerializerTests
 
         Assert.IsTrue(ex.Message.Contains("'inner'", StringComparison.Ordinal), ex.Message);
     }
+
+    /// <summary>
+    /// Verifies that a root dictionary entry whose value is not a scalar, such as a <see cref="List{T}" />, throws
+    /// <see cref="IniSerializationException" /> naming the key and the value's type, rather than writing the value's
+    /// <see cref="object.ToString" /> text as a global key, which does not read back.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenARootEntryIsNotAScalar_ShouldThrowIniSerializationException()
+    {
+        var root = new Dictionary<string, object> { ["name"] = "app", ["a"] = new List<int> { 1 } };
+
+        var ex = Assert.ThrowsExactly<IniSerializationException>(() =>
+        {
+            _ = IniSerializer.Serialize(root);
+        });
+
+        Assert.IsTrue(ex.Message.Contains("'a'", StringComparison.Ordinal), ex.Message);
+        Assert.IsTrue(ex.Message.Contains(typeof(List<int>).ToString(), StringComparison.Ordinal), ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that a section dictionary entry whose value is not a scalar, such as a <see cref="List{T}" />, throws
+    /// <see cref="IniSerializationException" /> naming the section, the key and the value's type, rather than writing
+    /// the value's <see cref="object.ToString" /> text.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenASectionEntryIsNotAScalar_ShouldThrowIniSerializationException()
+    {
+        var root = new Dictionary<string, Dictionary<string, object>>
+        {
+            ["db"] = new() { ["host"] = "x", ["ports"] = new List<int> { 1, 2 } },
+        };
+
+        var ex = Assert.ThrowsExactly<IniSerializationException>(() =>
+        {
+            _ = IniSerializer.Serialize(root);
+        });
+
+        Assert.IsTrue(ex.Message.Contains("'db'", StringComparison.Ordinal), ex.Message);
+        Assert.IsTrue(ex.Message.Contains("'ports'", StringComparison.Ordinal), ex.Message);
+        Assert.IsTrue(ex.Message.Contains(typeof(List<int>).ToString(), StringComparison.Ordinal), ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that a root dictionary entry whose value implements only a generic dictionary interface keyed by
+    /// <see cref="int" /> throws <see cref="IniSerializationException" /> naming the key, rather than writing the
+    /// value's <see cref="object.ToString" /> text as a global key.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenARootEntryIsAGenericOnlyDictionaryWhoseKeysAreNotStrings_ShouldThrowIniSerializationException()
+    {
+        var root = new Dictionary<string, object> { ["codes"] = new GenericOnlyIntKeyedDictionary { [1] = "a" } };
+
+        var ex = Assert.ThrowsExactly<IniSerializationException>(() =>
+        {
+            _ = IniSerializer.Serialize(root);
+        });
+
+        Assert.IsTrue(ex.Message.Contains("'codes'", StringComparison.Ordinal), ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that a dictionary entry whose value is <see langword="null" /> or a scalar, an enumeration and a
+    /// <see cref="Uri" /> included, is still written, at the root and in a section, as each value's own text.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenEntriesAreScalarsOrNull_ShouldWriteThemByTheirOwnType()
+    {
+        var options = new IniSerializerOptions { DefaultIgnoreCondition = IgnoreCondition.Never };
+        var root = new Dictionary<string, object?>
+        {
+            ["day"] = DayOfWeek.Monday,
+            ["none"] = null,
+            ["db"] = new Dictionary<string, object?> { ["uri"] = new Uri("https://example.com/"), ["count"] = 2 },
+        };
+
+        string text = IniSerializer.Serialize(root, options);
+
+        Assert.AreEqual("day=Monday\nnone=\n[db]\nuri=https://example.com/\ncount=2\n", text);
+    }
 }
