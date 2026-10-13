@@ -389,13 +389,14 @@ internal static class NotableDateDocumentReader
         if (node.Child("fixed") is IDocumentNode fixedStrategy)
         {
             fixedStrategy.CheckRequired(NotableDateSchemaType.FixedStrategy, diagnostics);
-            (int month, string? monthAlias) = ParseFixedMonth(fixedStrategy.Scalar("month"), calendar, notableDateId, ruleId, diagnostics);
+            bool skipLeapMonth = ParseBool(fixedStrategy.Scalar("skipLeapMonth"), false, "fixed skipLeapMonth", diagnostics);
+            (int month, string? monthAlias) = ParseFixedMonth(fixedStrategy.Scalar("month"), calendar, skipLeapMonth, notableDateId, ruleId, diagnostics);
             return new FixedDateStrategy(
                 month,
                 ReadBoundedInt(fixedStrategy, "day", NotableDateSchemaRange.DayValue, "fixed day", diagnostics) ?? 1,
                 calendar,
                 ParseBool(fixedStrategy.Scalar("sweepCalendarYears"), false, "fixed sweepCalendarYears", diagnostics),
-                ParseBool(fixedStrategy.Scalar("skipLeapMonth"), false, "fixed skipLeapMonth", diagnostics),
+                skipLeapMonth,
                 monthAlias);
         }
 

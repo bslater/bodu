@@ -481,15 +481,16 @@ public sealed class NotableDateRuleBuilder
     /// </para>
     /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="month" /> is outside 1 to 12 on a Gregorian rule, or outside 1 to 13 on a rule whose calendar,
-    /// set by <see cref="ForCalendar(CalendarSystem)" /> before this call, is another; or <paramref name="day" /> is
-    /// outside 1 to 31.
+    /// <paramref name="month" /> is outside the months of the rule's calendar, as set by
+    /// <see cref="ForCalendar(CalendarSystem)" /> before this call: 1 to 13 in the Hebrew calendar, and in the Chinese
+    /// lunisolar calendar unless <paramref name="skipLeapMonth" /> is <see langword="true" />, and 1 to 12 otherwise;
+    /// or <paramref name="day" /> is outside 1 to 31.
     /// </exception>
     /// <exception cref="InvalidOperationException">A strategy has already been configured on this rule.</exception>
     public NotableDateRuleBuilder Fixed(int month, int day, bool skipLeapMonth = false, bool sweepCalendarYears = false)
     {
         ThrowHelper.ThrowIfLessThan(month, 1);
-        ThrowHelper.ThrowIfGreaterThan(month, IsGregorian ? 12 : 13);
+        ThrowHelper.ThrowIfGreaterThan(month, IsGregorian ? 12 : NotableDateDocumentParseHelpers.GetFixedMonthCount(Calendar!.Value, skipLeapMonth));
         ThrowHelper.ThrowIfLessThan(day, 1);
         ThrowHelper.ThrowIfGreaterThan(day, 31);
 
@@ -501,13 +502,22 @@ public sealed class NotableDateRuleBuilder
     /// <summary>
     /// Configures the rule with a fixed day-of-month strategy using a month name or numeric month token.
     /// </summary>
-    /// <param name="month">The full English month name or numeric month token.</param>
+    /// <param name="month">The month name or numeric month token, in the form the rule's calendar takes.</param>
     /// <param name="day">The day of the month.</param>
     /// <param name="skipLeapMonth">A value indicating whether a leap month is skipped on lunisolar calendars.</param>
     /// <param name="sweepCalendarYears">
     /// A value indicating whether the date is swept across adjacent calendar years.
     /// </param>
     /// <returns>The same <see cref="NotableDateRuleBuilder" /> instance, enabling chained calls.</returns>
+    /// <remarks>
+    /// The month is written as given, and the loader reads it in the rule's calendar: a Gregorian month is a full
+    /// English month name, ignoring case, or an integer from 1 to 12; a Hebrew month is an integer from 1 to 13 or a
+    /// Hebrew month name (<c>Tishri</c>, <c>Heshvan</c>, <c>Kislev</c>, <c>Tevet</c>, <c>Shevat</c>, <c>AdarI</c>,
+    /// <c>AdarII</c>, <c>LastAdar</c>, <c>Nisan</c>, <c>Iyar</c>, <c>Sivan</c>, <c>Tammuz</c>, <c>Av</c> or <c>Elul</c>);
+    /// a Chinese lunisolar month is an integer from 1 to 13, or from 1 to 12 when <paramref name="skipLeapMonth" /> is
+    /// <see langword="true" />; and a Hijri, Umm al-Qura or Persian month is an integer from 1 to 12. Any other month
+    /// is reported with <c>BODU-CAL-MONTH</c> when the document is validated or built.
+    /// </remarks>
     /// <exception cref="ArgumentException">
     /// <paramref name="month" /> is <see langword="null" />, empty, or white-space.
     /// </exception>

@@ -109,7 +109,10 @@
     <value>Notable date '{0}', rule '{1}': '{2}' is not a valid month value. Expected a full English month name or an integer between 1 and 12.</value>
   </data>
   <data name="Validation_InvalidCalendarMonthValue" xml:space="preserve">
-    <value>Notable date '{0}', rule '{1}': '{2}' is not a valid month value in the {3} calendar. Expected an integer between 1 and 13 or a Hebrew month name: Tishri, Heshvan, Kislev, Tevet, Shevat, AdarI, AdarII, LastAdar, Nisan, Iyar, Sivan, Tammuz, Av or Elul.</value>
+    <value>Notable date '{0}', rule '{1}': '{2}' is not a valid month value in the {3} calendar. Expected an integer between 1 and {4}.</value>
+  </data>
+  <data name="Validation_InvalidHebrewMonthValue" xml:space="preserve">
+    <value>Notable date '{0}', rule '{1}': '{2}' is not a valid month value in the Hebrew calendar. Expected an integer between 1 and 13 or a Hebrew month name: Tishri, Heshvan, Kislev, Tevet, Shevat, AdarI, AdarII, LastAdar, Nisan, Iyar, Sivan, Tammuz, Av or Elul.</value>
   </data>
   <data name="Validation_InvalidWorkingDays" xml:space="preserve">
     <value>Resolution policy: workingDays '{0}' is not a seven-character, Sunday-first binary working-week pattern such as 0111110.</value>

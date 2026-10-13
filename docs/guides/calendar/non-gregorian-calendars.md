@@ -101,7 +101,7 @@ Resource: `calendars.xml`, concept `passover` (15 Nisan, `calendar="Hebrew"`, `s
 2. Candidate calendar years are **5784** and **5785**.
 3. The month name **Nisan** resolves to the correct numeric month in each candidate. `5784` projects 15 Nisan into Gregorian **2024** (late April) - match.
 
-Hebrew rules are authored with a stable month *name* (`Tishri`, `Kislev`, `Nisan`, `LastAdar`, …) rather than a numeric index, because the Hebrew calendar renumbers its months between leap and non-leap years. The resolver maps the name to the correct numeric month for each candidate year automatically.
+Hebrew rules are authored with a stable month *name* (`Tishri`, `Kislev`, `Nisan`, `LastAdar`, …) rather than a numeric index, because the Hebrew calendar renumbers its months between leap and non-leap years. The resolver maps the name to the correct numeric month for each candidate year automatically. The names are the Hebrew calendar's alone: a rule in another calendar names its months by number, and a Hebrew month name there fails with `BODU-CAL-MONTH`.
 
 | Month name | Notes |
 |---|---|
