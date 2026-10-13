@@ -268,6 +268,72 @@ public sealed partial class ParserValidationTests
         """.Replace("__DAYS__", workingDays, StringComparison.Ordinal);
 
     /// <summary>
+    /// Verifies that an adjustment trigger's <c>month</c>, which the schema types as free text, holding neither a month
+    /// name nor a number from 1 to 12 is rejected with the <c>BODU-CAL-VALUE</c> diagnostic rather than treated as
+    /// absent, which leaves the trigger unable to fire.
+    /// </summary>
+    /// <param name="month">The malformed month.</param>
+    [TestMethod]
+    [DataRow("Juneteenth")]
+    [DataRow("13")]
+    public void Load_WhenTriggerMonthMalformed_ShouldThrowValueDiagnostic(string month)
+    {
+        string xml = """
+            <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="test.trigger-month">
+              <AdjustmentPolicies>
+                <AdjustmentPolicy id="policy">
+                  <Trigger type="IfBeforeFixedDate" month="__MONTH__" day="15" />
+                  <Action type="AddDays" days="1" />
+                  <Emission mode="ObservedOnly" />
+                </AdjustmentPolicy>
+              </AdjustmentPolicies>
+              <NotableDates>
+                <NotableDate id="x" displayName="X" category="PublicHoliday">
+                  <Rules>
+                    <Rule id="r">
+                      <Strategy><Fixed month="March" day="1" /></Strategy>
+                      <Adjustments><Adjustment policyRef="policy" /></Adjustments>
+                    </Rule>
+                  </Rules>
+                </NotableDate>
+              </NotableDates>
+            </NotableDateResource>
+            """.Replace("__MONTH__", month, StringComparison.Ordinal);
+
+        NotableDateValidationException ex = Assert.ThrowsExactly<NotableDateValidationException>(() =>
+        {
+            _ = NotableDateResourceLoader.Load(xml);
+        });
+
+        Assert.Contains(d => d.Code == "BODU-CAL-VALUE" && d.Severity == NotableDateValidationSeverity.Error && d.Message.Contains(month, StringComparison.Ordinal), ex.Diagnostics, "BODU-CAL-VALUE");
+    }
+
+    /// <summary>
+    /// Verifies that an integer-valued XML attribute holding text that is not an integer is reported with the
+    /// <c>BODU-CAL-VALUE</c> diagnostic as well as the schema's, as the JSON loader reports it.
+    /// </summary>
+    [TestMethod]
+    public void Load_WhenIntegerValueMalformed_ShouldThrowValueDiagnostic()
+    {
+        const string xml = """
+            <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="test.priority">
+              <NotableDates>
+                <NotableDate id="x" displayName="X" category="PublicHoliday">
+                  <Rules><Rule id="r" priority="high"><Strategy><Fixed month="March" day="1" /></Strategy></Rule></Rules>
+                </NotableDate>
+              </NotableDates>
+            </NotableDateResource>
+            """;
+
+        NotableDateValidationException ex = Assert.ThrowsExactly<NotableDateValidationException>(() =>
+        {
+            _ = NotableDateResourceLoader.Load(xml);
+        });
+
+        Assert.Contains(d => d.Code == "BODU-CAL-VALUE" && d.Severity == NotableDateValidationSeverity.Error && d.Message.Contains("high", StringComparison.Ordinal), ex.Diagnostics, "BODU-CAL-VALUE");
+    }
+
+    /// <summary>
     /// Verifies that the v1 <c>Holiday</c> category token, renamed to <c>PublicHoliday</c> in v2, is rejected with a
     /// schema diagnostic.
     /// </summary>

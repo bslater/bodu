@@ -224,6 +224,26 @@ public sealed partial class NotableDateResourceLoaderTests
     }
 
     /// <summary>
+    /// Verifies that a JSON integer field holding text that is not an integer is reported as a <c>BODU-CAL-VALUE</c>
+    /// error diagnostic through the collect-mode entry point, so the load fails rather than reading the field's default.
+    /// </summary>
+    [TestMethod]
+    public void TryLoadJson_WhenIntegerValueMalformed_ShouldReportValueDiagnostic()
+    {
+        const string json = """
+            { "schemaVersion": "1.0", "resourceId": "test.trylad.priority",
+              "notableDates": [ { "id": "x", "displayName": "X", "category": "PublicHoliday",
+                "rules": [ { "id": "r", "priority": "high", "strategy": { "fixed": { "month": 3, "day": 1 } } } ] } ] }
+            """;
+
+        bool loaded = NotableDateResourceLoader.TryLoadJson(json, _ => null, out NotableDateResource? resource, out IReadOnlyList<NotableDateValidationDiagnostic> diagnostics);
+
+        Assert.IsFalse(loaded);
+        Assert.IsNull(resource);
+        Assert.Contains(d => d.Code == "BODU-CAL-VALUE" && d.Severity == NotableDateValidationSeverity.Error, diagnostics, "BODU-CAL-VALUE");
+    }
+
+    /// <summary>
     /// Verifies that <see langword="null" /> arguments are rejected - the <c>Try</c> contract covers data errors, not
     /// usage errors.
     /// </summary>
