@@ -10,11 +10,6 @@
         <PackageTags>$(PackageTags);text;yaml;configuration;serialization;serializer</PackageTags>
     </PropertyGroup>
 
-    <!-- Per-framework compilation symbols. -->
-    <PropertyGroup Condition="'$(TargetFramework)' == 'net8.0'">
-        <DefineConstants>$(DefineConstants);NET8_0_OR_GREATER</DefineConstants>
-    </PropertyGroup>
-
     <!-- Format selector for the shared serializer source compiled in below. -->
     <PropertyGroup>
         <DefineConstants>$(DefineConstants);YAML</DefineConstants>

@@ -10,11 +10,6 @@
         <PackageTags>$(PackageTags);text;bencode;bep3;bittorrent;torrent;serialization;serializer</PackageTags>
     </PropertyGroup>
 
-    <!-- Per-framework compilation symbols. -->
-    <PropertyGroup Condition="'$(TargetFramework)' == 'net8.0'">
-        <DefineConstants>$(DefineConstants);NET8_0_OR_GREATER</DefineConstants>
-    </PropertyGroup>
-
     <!-- Format selector for the shared serializer source (see Bodu.Text.Serialization/shared/). -->
     <PropertyGroup>
         <DefineConstants>$(DefineConstants);BENCODE</DefineConstants>
