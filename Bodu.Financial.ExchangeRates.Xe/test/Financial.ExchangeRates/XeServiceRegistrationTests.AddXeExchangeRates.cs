@@ -133,6 +133,25 @@ public partial class XeServiceRegistrationTests
     }
 
     /// <summary>
+    /// Verifies that the <see cref="OptionsValidationException" /> raised for invalid options carries the
+    /// package's resource-backed validation message.
+    /// </summary>
+    [TestMethod]
+    public void AddXeExchangeRates_WhenOptionsInvalid_ShouldThrowWithResourceMessage()
+    {
+        ServiceCollection services = new();
+        services.AddFinancialService().AddXeExchangeRates(configure: o => o.ChartingRatesPath = string.Empty);
+        using ServiceProvider provider = services.BuildServiceProvider();
+
+        OptionsValidationException ex = Assert.ThrowsExactly<OptionsValidationException>(() =>
+        {
+            _ = provider.GetRequiredService<XeRateProvider>();
+        });
+
+        Assert.AreEqual(XeResourceStrings.ResourceManager.GetString("Op_Invalid_XeOptions"), ex.Message);
+    }
+
+    /// <summary>
     /// Verifies that valid options pass <c>ValidateOnStart</c> and resolve the provider.
     /// </summary>
     [TestMethod]

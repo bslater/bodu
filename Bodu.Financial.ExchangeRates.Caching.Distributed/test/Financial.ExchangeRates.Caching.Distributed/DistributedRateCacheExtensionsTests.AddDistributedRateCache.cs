@@ -187,6 +187,27 @@ public sealed partial class DistributedRateCacheExtensionsTests
     }
 
     /// <summary>
+    /// Verifies that the <see cref="OptionsValidationException" /> raised for invalid options carries the
+    /// package's resource-backed validation message.
+    /// </summary>
+    [TestMethod]
+    public void AddDistributedRateCache_WhenOptionsInvalid_ShouldThrowWithResourceMessage()
+    {
+        ServiceProvider provider = BuildProvider(services =>
+        {
+            services.AddDistributedMemoryCache();
+            services.AddFinancialService().AddDistributedRateCache("RBA", configure: o => o.KeyPrefix = "   ");
+        });
+
+        OptionsValidationException ex = Assert.ThrowsExactly<OptionsValidationException>(() =>
+        {
+            _ = provider.GetRequiredService<IRateCache>();
+        });
+
+        Assert.AreEqual(CachingDistributedResourceStrings.ResourceManager.GetString("Op_Invalid_DistributedCacheOptions"), ex.Message);
+    }
+
+    /// <summary>
     /// Verifies that valid options pass <c>ValidateOnStart</c> and resolve the cache.
     /// </summary>
     [TestMethod]

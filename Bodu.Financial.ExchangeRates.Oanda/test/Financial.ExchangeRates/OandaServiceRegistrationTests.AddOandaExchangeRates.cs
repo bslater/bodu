@@ -135,6 +135,25 @@ public partial class OandaServiceRegistrationTests
     }
 
     /// <summary>
+    /// Verifies that the <see cref="OptionsValidationException" /> raised for invalid options carries the
+    /// package's resource-backed validation message.
+    /// </summary>
+    [TestMethod]
+    public void AddOandaExchangeRates_WhenOptionsInvalid_ShouldThrowWithResourceMessage()
+    {
+        ServiceCollection services = new();
+        services.AddFinancialService().AddOandaExchangeRates(configure: o => o.Price = "spot");
+        using ServiceProvider provider = services.BuildServiceProvider();
+
+        OptionsValidationException ex = Assert.ThrowsExactly<OptionsValidationException>(() =>
+        {
+            _ = provider.GetRequiredService<OandaRateProvider>();
+        });
+
+        Assert.AreEqual(OandaResourceStrings.ResourceManager.GetString("Op_Invalid_OandaOptions"), ex.Message);
+    }
+
+    /// <summary>
     /// Verifies that valid options pass <c>ValidateOnStart</c> and resolve the provider.
     /// </summary>
     [TestMethod]
