@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Numerics;
+
 namespace Bodu.Numerics;
 
 public partial class IntervalTests
@@ -106,5 +108,60 @@ public partial class IntervalTests
     {
         Assert.IsTrue(Interval<int>.Closed(3, 9).TryUnion(Interval<int>.Closed(1, 5), out Interval<int> result));
         Assert.AreEqual(Interval<int>.Closed(1, 9), result);
+    }
+
+    /// <summary>
+    /// Verifies that TryUnion over <see cref="double" /> succeeds exactly when the values of two catalogue intervals
+    /// form one run, and then returns those values, so an unbounded side meets a bounded infinite endpoint rather than
+    /// reaching past it.
+    /// </summary>
+    [TestMethod]
+    public void TryUnion_WhenOperandsReachInfinity_ForDouble_ShouldAgreeWithPointMembership() =>
+        AssertTryUnionAgreesWithMembership<double>();
+
+    /// <summary>
+    /// Verifies that TryUnion over <see cref="float" /> succeeds exactly when the values of two catalogue intervals
+    /// form one run, and then returns those values, so an unbounded side meets a bounded infinite endpoint rather than
+    /// reaching past it.
+    /// </summary>
+    [TestMethod]
+    public void TryUnion_WhenOperandsReachInfinity_ForSingle_ShouldAgreeWithPointMembership() =>
+        AssertTryUnionAgreesWithMembership<float>();
+
+    /// <summary>
+    /// Verifies that TryUnion over <see cref="Half" /> succeeds exactly when the values of two catalogue intervals form
+    /// one run, and then returns those values, so an unbounded side meets a bounded infinite endpoint rather than
+    /// reaching past it.
+    /// </summary>
+    [TestMethod]
+    public void TryUnion_WhenOperandsReachInfinity_ForHalf_ShouldAgreeWithPointMembership() =>
+        AssertTryUnionAgreesWithMembership<Half>();
+
+    /// <summary>
+    /// Asserts that <see cref="Interval{T}.TryUnion(Interval{T}, out Interval{T})" /> succeeds for every pair of
+    /// catalogue intervals whose values form one run, and only those, with a result that holds exactly those values.
+    /// </summary>
+    /// <typeparam name="T">The floating-point endpoint type.</typeparam>
+    private static void AssertTryUnionAgreesWithMembership<T>()
+        where T : IFloatingPointIeee754<T>
+    {
+        Interval<T>[] catalog = IntervalMembershipOracle.Catalog<T>();
+        var failures = new List<string>();
+
+        foreach (Interval<T> a in catalog)
+        {
+            int aMask = IntervalMembershipOracle.Mask(a);
+            foreach (Interval<T> b in catalog)
+            {
+                int expected = aMask | IntervalMembershipOracle.Mask(b);
+                bool united = a.TryUnion(b, out Interval<T> result);
+                bool expectedUnited = IntervalMembershipOracle.IsContiguous(expected);
+                int actual = IntervalMembershipOracle.Mask(result);
+                if (united != expectedUnited || (united && actual != expected) || (!united && !result.IsEmpty))
+                    failures.Add($"{a}.TryUnion({b}) returned {united} with {result}");
+            }
+        }
+
+        Assert.AreEqual(0, failures.Count, string.Join("; ", failures.Take(8)));
     }
 }

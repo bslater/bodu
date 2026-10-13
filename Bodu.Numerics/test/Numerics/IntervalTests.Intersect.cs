@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Numerics;
+
 namespace Bodu.Numerics;
 
 public partial class IntervalTests
@@ -100,5 +102,104 @@ public partial class IntervalTests
         Interval<int> result = Interval<int>.Closed(3, 8).Intersect(Interval<int>.Closed(1, 5));
 
         Assert.AreEqual(Interval<int>.Closed(3, 5), result);
+    }
+
+    /// <summary>
+    /// Verifies that Overlaps over <see cref="double" /> agrees with point membership for every pair of catalogue
+    /// intervals, so an unbounded side shares no value with a bounded infinite endpoint.
+    /// </summary>
+    [TestMethod]
+    public void Overlaps_WhenOperandsReachInfinity_ForDouble_ShouldAgreeWithPointMembership() =>
+        AssertOverlapsAgreesWithMembership<double>();
+
+    /// <summary>
+    /// Verifies that Overlaps over <see cref="float" /> agrees with point membership for every pair of catalogue
+    /// intervals, so an unbounded side shares no value with a bounded infinite endpoint.
+    /// </summary>
+    [TestMethod]
+    public void Overlaps_WhenOperandsReachInfinity_ForSingle_ShouldAgreeWithPointMembership() =>
+        AssertOverlapsAgreesWithMembership<float>();
+
+    /// <summary>
+    /// Verifies that Overlaps over <see cref="Half" /> agrees with point membership for every pair of catalogue
+    /// intervals, so an unbounded side shares no value with a bounded infinite endpoint.
+    /// </summary>
+    [TestMethod]
+    public void Overlaps_WhenOperandsReachInfinity_ForHalf_ShouldAgreeWithPointMembership() =>
+        AssertOverlapsAgreesWithMembership<Half>();
+
+    /// <summary>
+    /// Verifies that Intersect over <see cref="double" /> returns exactly the values both operands hold, for every pair
+    /// of catalogue intervals, so an unbounded side does not reach a bounded infinite endpoint.
+    /// </summary>
+    [TestMethod]
+    public void Intersect_WhenOperandsReachInfinity_ForDouble_ShouldAgreeWithPointMembership() =>
+        AssertIntersectAgreesWithMembership<double>();
+
+    /// <summary>
+    /// Verifies that Intersect over <see cref="float" /> returns exactly the values both operands hold, for every pair
+    /// of catalogue intervals, so an unbounded side does not reach a bounded infinite endpoint.
+    /// </summary>
+    [TestMethod]
+    public void Intersect_WhenOperandsReachInfinity_ForSingle_ShouldAgreeWithPointMembership() =>
+        AssertIntersectAgreesWithMembership<float>();
+
+    /// <summary>
+    /// Verifies that Intersect over <see cref="Half" /> returns exactly the values both operands hold, for every pair
+    /// of catalogue intervals, so an unbounded side does not reach a bounded infinite endpoint.
+    /// </summary>
+    [TestMethod]
+    public void Intersect_WhenOperandsReachInfinity_ForHalf_ShouldAgreeWithPointMembership() =>
+        AssertIntersectAgreesWithMembership<Half>();
+
+    /// <summary>
+    /// Asserts that <see cref="Interval{T}.Overlaps(Interval{T})" /> reports every pair of catalogue intervals that
+    /// share a value, and only those.
+    /// </summary>
+    /// <typeparam name="T">The floating-point endpoint type.</typeparam>
+    private static void AssertOverlapsAgreesWithMembership<T>()
+        where T : IFloatingPointIeee754<T>
+    {
+        Interval<T>[] catalog = IntervalMembershipOracle.Catalog<T>();
+        var failures = new List<string>();
+
+        foreach (Interval<T> a in catalog)
+        {
+            int aMask = IntervalMembershipOracle.Mask(a);
+            foreach (Interval<T> b in catalog)
+            {
+                bool expected = (aMask & IntervalMembershipOracle.Mask(b)) != 0;
+                if (a.Overlaps(b) != expected)
+                    failures.Add($"{a}.Overlaps({b}) returned {!expected}");
+            }
+        }
+
+        Assert.AreEqual(0, failures.Count, string.Join("; ", failures.Take(8)));
+    }
+
+    /// <summary>
+    /// Asserts that <see cref="Interval{T}.Intersect(Interval{T})" /> holds exactly the values both catalogue operands
+    /// hold, and is <see cref="Interval{T}.Empty" /> when they share none.
+    /// </summary>
+    /// <typeparam name="T">The floating-point endpoint type.</typeparam>
+    private static void AssertIntersectAgreesWithMembership<T>()
+        where T : IFloatingPointIeee754<T>
+    {
+        Interval<T>[] catalog = IntervalMembershipOracle.Catalog<T>();
+        var failures = new List<string>();
+
+        foreach (Interval<T> a in catalog)
+        {
+            int aMask = IntervalMembershipOracle.Mask(a);
+            foreach (Interval<T> b in catalog)
+            {
+                int expected = aMask & IntervalMembershipOracle.Mask(b);
+                Interval<T> result = a.Intersect(b);
+                if (IntervalMembershipOracle.Mask(result) != expected || (expected == 0 && !result.IsEmpty))
+                    failures.Add($"{a}.Intersect({b}) returned {result}");
+            }
+        }
+
+        Assert.AreEqual(0, failures.Count, string.Join("; ", failures.Take(8)));
     }
 }

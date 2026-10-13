@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Numerics;
+
 namespace Bodu.Numerics;
 
 /// <summary>
@@ -172,5 +174,108 @@ public partial class IntervalSetTests
         IntervalSet<int> set = IntervalSet<int>.Of(Interval<int>.Closed(1, 5), Interval<int>.Closed(8, 9));
 
         Assert.AreEqual("[1, 5] ∪ [8, 9]", set.ToString());
+    }
+
+    /// <summary>
+    /// Verifies that Of over <see cref="double" /> builds, from every pair of catalogue intervals, a set that holds
+    /// exactly their values in disjoint, non-adjacent pieces, so an unbounded side and a bounded infinite endpoint
+    /// coalesce only where they meet.
+    /// </summary>
+    [TestMethod]
+    public void Of_WhenOperandsReachInfinity_ForDouble_ShouldAgreeWithPointMembership() =>
+        AssertOfAgreesWithMembership<double>();
+
+    /// <summary>
+    /// Verifies that Of over <see cref="float" /> builds, from every pair of catalogue intervals, a set that holds
+    /// exactly their values in disjoint, non-adjacent pieces, so an unbounded side and a bounded infinite endpoint
+    /// coalesce only where they meet.
+    /// </summary>
+    [TestMethod]
+    public void Of_WhenOperandsReachInfinity_ForSingle_ShouldAgreeWithPointMembership() =>
+        AssertOfAgreesWithMembership<float>();
+
+    /// <summary>
+    /// Verifies that Of over <see cref="Half" /> builds, from every pair of catalogue intervals, a set that holds
+    /// exactly their values in disjoint, non-adjacent pieces, so an unbounded side and a bounded infinite endpoint
+    /// coalesce only where they meet.
+    /// </summary>
+    [TestMethod]
+    public void Of_WhenOperandsReachInfinity_ForHalf_ShouldAgreeWithPointMembership() =>
+        AssertOfAgreesWithMembership<Half>();
+
+    /// <summary>
+    /// Verifies that Encloses over <see cref="double" /> reports every catalogue interval a one-piece set holds
+    /// entirely, and only those, so an unbounded side does not enclose a bounded infinite endpoint.
+    /// </summary>
+    [TestMethod]
+    public void Encloses_WhenOperandsReachInfinity_ForDouble_ShouldAgreeWithPointMembership() =>
+        AssertEnclosesAgreesWithMembership<double>();
+
+    /// <summary>
+    /// Verifies that Encloses over <see cref="float" /> reports every catalogue interval a one-piece set holds
+    /// entirely, and only those, so an unbounded side does not enclose a bounded infinite endpoint.
+    /// </summary>
+    [TestMethod]
+    public void Encloses_WhenOperandsReachInfinity_ForSingle_ShouldAgreeWithPointMembership() =>
+        AssertEnclosesAgreesWithMembership<float>();
+
+    /// <summary>
+    /// Verifies that Encloses over <see cref="Half" /> reports every catalogue interval a one-piece set holds entirely,
+    /// and only those, so an unbounded side does not enclose a bounded infinite endpoint.
+    /// </summary>
+    [TestMethod]
+    public void Encloses_WhenOperandsReachInfinity_ForHalf_ShouldAgreeWithPointMembership() =>
+        AssertEnclosesAgreesWithMembership<Half>();
+
+    /// <summary>
+    /// Asserts that <see cref="IntervalSet{T}.Of(Interval{T}[])" /> builds, from every pair of catalogue intervals, a
+    /// set that holds exactly their values in disjoint, non-adjacent pieces.
+    /// </summary>
+    /// <typeparam name="T">The floating-point endpoint type.</typeparam>
+    private static void AssertOfAgreesWithMembership<T>()
+        where T : IFloatingPointIeee754<T>
+    {
+        Interval<T>[] catalog = IntervalMembershipOracle.Catalog<T>();
+        var failures = new List<string>();
+
+        foreach (Interval<T> a in catalog)
+        {
+            int aMask = IntervalMembershipOracle.Mask(a);
+            foreach (Interval<T> b in catalog)
+            {
+                var set = IntervalSet<T>.Of(a, b);
+                string? defect = IntervalMembershipOracle.FindPieceDefect(IntervalMembershipOracle.Pieces(set), requireGap: true);
+                if (IntervalMembershipOracle.Mask(set) != (aMask | IntervalMembershipOracle.Mask(b)) || defect is not null)
+                    failures.Add($"Of({a}, {b}) returned {set} {defect}");
+            }
+        }
+
+        Assert.AreEqual(0, failures.Count, string.Join("; ", failures.Take(8)));
+    }
+
+    /// <summary>
+    /// Asserts that <see cref="IntervalSet{T}.Encloses(Interval{T})" /> on a one-piece set reports every catalogue
+    /// interval whose values the set holds, and only those.
+    /// </summary>
+    /// <typeparam name="T">The floating-point endpoint type.</typeparam>
+    private static void AssertEnclosesAgreesWithMembership<T>()
+        where T : IFloatingPointIeee754<T>
+    {
+        Interval<T>[] catalog = IntervalMembershipOracle.Catalog<T>();
+        var failures = new List<string>();
+
+        foreach (Interval<T> a in catalog)
+        {
+            int aMask = IntervalMembershipOracle.Mask(a);
+            var set = IntervalSet<T>.Of(a);
+            foreach (Interval<T> b in catalog)
+            {
+                bool expected = (IntervalMembershipOracle.Mask(b) & ~aMask) == 0;
+                if (set.Encloses(b) != expected)
+                    failures.Add($"{set}.Encloses({b}) returned {!expected}");
+            }
+        }
+
+        Assert.AreEqual(0, failures.Count, string.Join("; ", failures.Take(8)));
     }
 }

@@ -252,4 +252,53 @@ public partial class IntervalTests
             "LessThan" => Interval<T>.LessThan(T.Zero),
             _ => throw new ArgumentOutOfRangeException(nameof(shape)),
         };
+
+    /// <summary>
+    /// Verifies that Contains(Interval) over <see cref="double" /> agrees with point membership for every pair of
+    /// catalogue intervals, so an unbounded side does not reach a bounded infinite endpoint.
+    /// </summary>
+    [TestMethod]
+    public void Contains_WhenOperandsReachInfinity_ForDouble_ShouldAgreeWithPointMembership() =>
+        AssertContainsIntervalAgreesWithMembership<double>();
+
+    /// <summary>
+    /// Verifies that Contains(Interval) over <see cref="float" /> agrees with point membership for every pair of
+    /// catalogue intervals, so an unbounded side does not reach a bounded infinite endpoint.
+    /// </summary>
+    [TestMethod]
+    public void Contains_WhenOperandsReachInfinity_ForSingle_ShouldAgreeWithPointMembership() =>
+        AssertContainsIntervalAgreesWithMembership<float>();
+
+    /// <summary>
+    /// Verifies that Contains(Interval) over <see cref="Half" /> agrees with point membership for every pair of
+    /// catalogue intervals, so an unbounded side does not reach a bounded infinite endpoint.
+    /// </summary>
+    [TestMethod]
+    public void Contains_WhenOperandsReachInfinity_ForHalf_ShouldAgreeWithPointMembership() =>
+        AssertContainsIntervalAgreesWithMembership<Half>();
+
+    /// <summary>
+    /// Asserts that <see cref="Interval{T}.Contains(Interval{T})" /> reports every catalogue interval that is a subset
+    /// of another, and only those.
+    /// </summary>
+    /// <typeparam name="T">The floating-point endpoint type.</typeparam>
+    private static void AssertContainsIntervalAgreesWithMembership<T>()
+        where T : IFloatingPointIeee754<T>
+    {
+        Interval<T>[] catalog = IntervalMembershipOracle.Catalog<T>();
+        var failures = new List<string>();
+
+        foreach (Interval<T> a in catalog)
+        {
+            int aMask = IntervalMembershipOracle.Mask(a);
+            foreach (Interval<T> b in catalog)
+            {
+                bool expected = (IntervalMembershipOracle.Mask(b) & ~aMask) == 0;
+                if (a.Contains(b) != expected)
+                    failures.Add($"{a}.Contains({b}) returned {!expected}");
+            }
+        }
+
+        Assert.AreEqual(0, failures.Count, string.Join("; ", failures.Take(8)));
+    }
 }
