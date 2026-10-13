@@ -169,7 +169,7 @@ namespace Bodu {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The document cannot be serialized to JSON because it uses the feature &apos;{0}&apos;, which the JSON subset schema cannot represent. Use XML serialization for full-fidelity documents..
+        ///   Looks up a localized string similar to The document cannot be serialized to JSON because it uses the feature &apos;{0}&apos;, which the JSON subset does not include. Use XML serialization for full-fidelity documents..
         /// </summary>
         internal static string Op_NotSupported_JsonFeature {
             get {

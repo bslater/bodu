@@ -17,9 +17,11 @@ namespace Bodu.Globalization.Calendar.Builder;
 /// </summary>
 /// <remarks>
 /// <para>
-/// The JSON form mirrors the companion JSON schema, which omits imports, restricts calendars to Gregorian, and exposes
-/// only the reduced trigger, action, and override surface. Serializing a document that uses a feature outside that
-/// subset throws <see cref="NotSupportedException" /> naming the offending feature.
+/// The JSON form <see cref="ToJson()" /> writes is a subset of the JSON form the loader reads, which the companion JSON
+/// schema describes in full. The subset omits imports, restricts calendars to Gregorian, and exposes only a reduced
+/// trigger, action, and override surface; serializing a document that uses a feature outside it throws
+/// <see cref="NotSupportedException" /> naming the offending feature, while <see cref="FromJson(string)" /> reads the
+/// full form.
 /// </para>
 /// </remarks>
 public sealed partial class NotableDateDocumentBuilder

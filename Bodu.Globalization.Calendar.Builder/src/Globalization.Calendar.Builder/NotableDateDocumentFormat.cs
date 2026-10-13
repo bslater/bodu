@@ -19,8 +19,9 @@ public enum NotableDateDocumentFormat
     Xml = 0,
 
     /// <summary>
-    /// The narrower JSON subset form, which omits imports, restricts calendars to Gregorian, and supports only the
-    /// reduced trigger, action, and override surface defined by the companion JSON schema.
+    /// The narrower JSON subset form, which omits imports, restricts calendars to Gregorian, and supports only a
+    /// reduced trigger, action, and override surface: a subset of the JSON form the loader reads, which the companion
+    /// JSON schema describes in full.
     /// </summary>
     Json = 1,
 

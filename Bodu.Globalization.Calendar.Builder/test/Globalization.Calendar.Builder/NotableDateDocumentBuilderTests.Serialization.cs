@@ -108,7 +108,7 @@ public partial class NotableDateDocumentBuilderTests
 
     /// <summary>
     /// Verifies that serializing a document with a non-Gregorian calendar rule to JSON throws
-    /// <see cref="NotSupportedException" />, because the JSON form only models the Gregorian calendar.
+    /// <see cref="NotSupportedException" />, because the JSON subset it writes models only the Gregorian calendar.
     /// </summary>
     [TestMethod]
     public void ToJson_WhenDocumentUsesNonGregorianCalendar_ShouldThrowNotSupportedException()

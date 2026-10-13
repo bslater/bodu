@@ -130,7 +130,7 @@ builder.Save("holidays.txt", NotableDateDocumentFormat.Xml);
 `Build()` serializes to XML and loads through <xref:Bodu.Globalization.Calendar.NotableDateResourceLoader>, so the built resource is exactly what the runtime would load - and the same validation applies (`Build()` throws <xref:Bodu.Globalization.Calendar.NotableDateValidationException> on an invalid document).
 
 > [!NOTE]
-> XML is the full-fidelity format. `ToJson()` / `Save(*.json)` emit the narrower JSON subset and throw <xref:System.NotSupportedException> when the document uses a feature the JSON schema cannot model - imports, a non-Gregorian calendar, an XML-only trigger/action value, handler parameters, or scope year-bounds. Serialize those documents as XML.
+> XML is the full-fidelity format. `ToJson()` / `Save(*.json)` emit the narrower JSON subset and throw <xref:System.NotSupportedException> when the document uses a feature outside that subset - imports, a non-Gregorian calendar, a trigger or an action the subset lacks, handler parameters, or scope year-bounds. Serialize those documents as XML.
 
 ## Round-tripping and cloning
 
