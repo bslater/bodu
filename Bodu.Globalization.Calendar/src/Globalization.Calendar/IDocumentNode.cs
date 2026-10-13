@@ -242,8 +242,9 @@ internal interface IDocumentNode
     /// <remarks>
     /// A JSON item that is neither a string nor an object is left out after a <c>BODU-CAL-VALUE</c> error naming its
     /// JSON kind is recorded for it, so the shortened list never reaches a loaded resource. A JSON object item is held
-    /// to the properties <paramref name="itemType" /> requires, as <see cref="CheckRequired" /> holds a node; a string
-    /// item, which carries the name alone, is a form only JSON has.
+    /// to the properties <paramref name="itemType" /> requires, as <see cref="CheckRequired" /> holds a node, and is
+    /// left out when it carries no name, which that check has reported; a string item, which carries the name alone, is
+    /// a form only JSON has.
     /// </remarks>
     IReadOnlyList<(string? Qualifier, string Name)> QualifiedReferenceList(string? xmlWrapper, string xmlItem, string qualifierName, string name, string jsonProperty, NotableDateSchemaType itemType, string field, ICollection<NotableDateValidationDiagnostic> diagnostics);
 }

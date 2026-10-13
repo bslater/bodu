@@ -162,7 +162,11 @@ internal sealed class JsonDocumentNode
             {
                 JsonDocumentNode reference = new(item, _diagnostics);
                 reference.CheckRequired(itemType, diagnostics);
-                references.Add((reference.Scalar(qualifierName), reference.Scalar(name) ?? string.Empty));
+
+                // An object without its name has just been reported as missing a required property; it is left out
+                // rather than read with an empty name that the reader would then report again against its pattern.
+                if (reference.Scalar(name) is string referenceName)
+                    references.Add((reference.Scalar(qualifierName), referenceName));
             }
             else
             {
