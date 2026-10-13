@@ -32,7 +32,7 @@ The `Bodu.Globalization.Calendar.Algorithms` namespace provides the `IDateCalcul
 
 ## Range resolution
 
-The `Bodu.Globalization.Calendar.RangeResolution` namespace defines how colliding occurrences collapse: `ResolutionPolicy` carries the same-day collision and priority-direction rules (`CollisionPolicy`, `PriorityDirection`), the category precedence, and the working week, with `INotableDateCollisionResolver` as the custom extension point; each `AdjustmentPolicy` carries its own `EmissionMode`. Its `DuplicatePolicy`, span collision policy, and `ObservedDateRangePolicy` are reserved: a document may set them and they are stored, but the engine does not apply them yet ([#1119](https://github.com/bslater/bodu/issues/1119)).
+The `Bodu.Globalization.Calendar.RangeResolution` namespace defines how colliding occurrences collapse: `ResolutionPolicy` carries the duplicate policy the loader applies to a document's own declarations (`DuplicatePolicy`), the same-day and span collision and priority-direction rules (`CollisionPolicy`, `PriorityDirection`), the span that controls range inclusion (`ObservedDateRangePolicy`), the category precedence, and the working week, with `INotableDateCollisionResolver` as the custom extension point; each `AdjustmentPolicy` carries its own `EmissionMode`.
 
 ## Working-day extensions
 

@@ -431,15 +431,14 @@ public sealed partial class NotableDateDocumentBuilder
     /// </exception>
     /// <exception cref="NotSupportedException">
     /// <paramref name="path" /> has a <c>.bcal</c> extension: a binary rule pack is compiled output that cannot be
-    /// reopened for editing (load it with <see cref="NotableDateResourceLoader.LoadBinary(Stream)" />).
+    /// reopened for editing (load it with <see cref="NotableDateResourceLoader.LoadBinary(Stream)" />); or a
+    /// <c>.json</c> file declares a field the builder's document model cannot hold; see <see cref="FromJson(string)" />.
     /// </exception>
     /// <exception cref="FormatException">
-    /// The file content is not a well-formed notable-date document, or an enumeration, integer, Boolean, trigger-month
-    /// or <c>workingDays</c> value does not parse.
-    /// </exception>
-    /// <exception cref="InvalidOperationException">
-    /// A <c>.json</c> file carries a value of the wrong JSON type (for example a string where a number belongs); see
-    /// <see cref="FromJson(string)" />.
+    /// The file content is not a well-formed notable-date document, an enumeration, integer, Boolean, trigger-month or
+    /// <c>workingDays</c> value does not parse, a JSON property that holds a value holds an object or an array, an item
+    /// of a JSON list of identifiers, territory codes or tags is not a string, or a JSON <c>PatchRule</c> override's
+    /// <c>strategy</c> or <c>recurrence</c> names no recognized kind or more than one.
     /// </exception>
     /// <remarks>
     /// Like <see cref="FromXml(string)" /> and <see cref="FromJson(string)" />, loading reads each value with the

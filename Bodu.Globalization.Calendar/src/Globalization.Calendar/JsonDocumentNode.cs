@@ -11,7 +11,7 @@ namespace Bodu.Globalization.Calendar;
 
 /// <summary>
 /// Adapts a <see cref="JsonElement" /> to <see cref="IDocumentNode" />, binding scalars to object properties (coercing
-/// numbers and booleans to their string form) and lists to JSON arrays.
+/// numbers and booleans to their string form, and reporting an object or an array) and lists to JSON arrays.
 /// </summary>
 internal sealed class JsonDocumentNode
     : IDocumentNode
@@ -19,35 +19,62 @@ internal sealed class JsonDocumentNode
     /// <summary>The wrapped element.</summary>
     private readonly JsonElement _element;
 
+    /// <summary>The collection that receives the diagnostic for a scalar property holding an object or an array.</summary>
+    private readonly ICollection<NotableDateValidationDiagnostic> _diagnostics;
+
+    /// <summary>The names of the properties already reported as holding an object or an array, so a property read twice is reported once; <see langword="null" /> until the first report.</summary>
+    private HashSet<string>? _reportedProperties;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="JsonDocumentNode" /> class.
     /// </summary>
     /// <param name="element">The wrapped element.</param>
-    public JsonDocumentNode(JsonElement element)
+    /// <param name="diagnostics">
+    /// The collection that receives the diagnostic for a scalar property holding an object or an array, shared with
+    /// every node read from this one.
+    /// </param>
+    public JsonDocumentNode(JsonElement element, ICollection<NotableDateValidationDiagnostic> diagnostics)
     {
         _element = element;
+        _diagnostics = diagnostics;
     }
 
     /// <inheritdoc />
+    /// <remarks>
+    /// A property holding an object or an array, which no scalar field accepts, records a <c>BODU-CAL-VALUE</c> error
+    /// naming the property and reads as absent; the JSON literal <c>null</c> reads as absent without a diagnostic.
+    /// </remarks>
     public string? Scalar(string name)
     {
         if (!TryGetProperty(name, out JsonElement value))
             return null;
 
-        return value.ValueKind switch
+        switch (value.ValueKind)
         {
-            JsonValueKind.String => value.GetString(),
-            JsonValueKind.Number => value.TryGetInt32(out int number) ? number.ToString(CultureInfo.InvariantCulture) : value.GetRawText(),
-            JsonValueKind.True => "true",
-            JsonValueKind.False => "false",
-            _ => null,
-        };
+            case JsonValueKind.String:
+                return value.GetString();
+
+            case JsonValueKind.Number:
+                return value.TryGetInt32(out int number) ? number.ToString(CultureInfo.InvariantCulture) : value.GetRawText();
+
+            case JsonValueKind.True:
+                return "true";
+
+            case JsonValueKind.False:
+                return "false";
+
+            default:
+                if ((_reportedProperties ??= new(StringComparer.OrdinalIgnoreCase)).Add(name))
+                    NotableDateDocumentParseHelpers.AddValueError(_diagnostics, CalendarResourceStrings.Validation_InvalidScalarValue, name, value.GetRawText());
+
+                return null;
+        }
     }
 
     /// <inheritdoc />
     public IDocumentNode? Child(string name) =>
         TryGetProperty(name, out JsonElement value) && value.ValueKind == JsonValueKind.Object
-            ? new JsonDocumentNode(value)
+            ? new JsonDocumentNode(value, _diagnostics)
             : null;
 
     /// <inheritdoc />
@@ -61,7 +88,7 @@ internal sealed class JsonDocumentNode
             yield break;
 
         foreach (JsonElement item in array.EnumerateArray())
-            yield return new JsonDocumentNode(item);
+            yield return new JsonDocumentNode(item, _diagnostics);
     }
 
     /// <inheritdoc />
@@ -114,7 +141,7 @@ internal sealed class JsonDocumentNode
             }
             else if (item.ValueKind == JsonValueKind.Object)
             {
-                JsonDocumentNode reference = new(item);
+                JsonDocumentNode reference = new(item, _diagnostics);
                 references.Add((reference.Scalar(qualifierName), reference.Scalar(name) ?? string.Empty));
             }
             else

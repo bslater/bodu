@@ -1127,4 +1127,71 @@ public sealed partial class ParserValidationTests
 
         return json;
     }
+
+    /// <summary>
+    /// Verifies that a JSON scalar field holding an object or an array, an integer, an enumeration name or a text value,
+    /// is rejected with the <c>BODU-CAL-VALUE</c> diagnostic naming the field, rather than read as absent and replaced
+    /// by the field's default.
+    /// </summary>
+    /// <param name="field">The JSON property holding the value.</param>
+    /// <param name="literal">The object or array, as a JSON literal.</param>
+    [TestMethod]
+    [DataRow("priority", "{}")]
+    [DataRow("priority", "[ 3 ]")]
+    [DataRow("category", "{}")]
+    [DataRow("category", "[ \"PublicHoliday\" ]")]
+    [DataRow("displayName", "{ \"en\": \"X\" }")]
+    [DataRow("displayName", "[]")]
+    [DataRow("day", "{}")]
+    public void LoadJson_WhenScalarValueIsObjectOrArray_ShouldThrowValueDiagnostic(string field, string literal)
+    {
+        string json = ScalarValueJson(field, literal);
+
+        NotableDateValidationException ex = Assert.ThrowsExactly<NotableDateValidationException>(() =>
+        {
+            _ = NotableDateResourceLoader.LoadJson(json);
+        });
+
+        Assert.Contains(d => d.Code == "BODU-CAL-VALUE" && d.Severity == NotableDateValidationSeverity.Error && d.Message.Contains("'" + field + "'", StringComparison.Ordinal), ex.Diagnostics, "BODU-CAL-VALUE");
+    }
+
+    /// <summary>
+    /// Verifies that a JSON scalar field holding the literal <c>null</c> reads as absent, loading as the document that
+    /// omits the field loads.
+    /// </summary>
+    /// <param name="field">The JSON property holding <c>null</c>.</param>
+    [TestMethod]
+    [DataRow("priority")]
+    [DataRow("category")]
+    [DataRow("displayName")]
+    public void LoadJson_WhenScalarValueIsNull_ShouldReadItAsAbsent(string field)
+    {
+        NotableDateResource withNull = NotableDateResourceLoader.LoadJson(ScalarValueJson(field, "null"));
+        NotableDateResource omitted = NotableDateResourceLoader.LoadJson(ScalarValueJson(field, null));
+
+        NotableDateDefinition expected = omitted.NotableDates[0];
+        NotableDateDefinition actual = withNull.NotableDates[0];
+        Assert.AreEqual(expected.DisplayName, actual.DisplayName);
+        Assert.AreEqual(expected.Category, actual.Category);
+        Assert.AreEqual(expected.Rules[0].Priority, actual.Rules[0].Priority);
+    }
+
+    /// <summary>
+    /// Builds a JSON document with one fixed concept whose named property, the rule's <c>priority</c>, the concept's
+    /// <c>category</c> or <c>displayName</c>, or the fixed strategy's <c>day</c>, holds the supplied JSON literal.
+    /// </summary>
+    /// <param name="field">The property that holds the literal.</param>
+    /// <param name="literal">The JSON literal, or <see langword="null" /> to omit the property.</param>
+    /// <returns>The JSON document.</returns>
+    private static string ScalarValueJson(string field, string? literal)
+    {
+        string Property(string name, string wellFormed) =>
+            name != field ? $"\"{name}\": {wellFormed}, " : literal is null ? string.Empty : $"\"{name}\": {literal}, ";
+
+        return $$"""
+            { "schemaVersion": "1.0", "resourceId": "test.objects",
+              "notableDates": [ { {{Property("displayName", "\"X\"")}}{{Property("category", "\"PublicHoliday\"")}}"id": "x",
+                "rules": [ { {{Property("priority", "3")}}"id": "r", "strategy": { "fixed": { {{Property("day", "1")}}"month": 3 } } } ] } ] }
+            """;
+    }
 }

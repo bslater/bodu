@@ -16,7 +16,7 @@ namespace Bodu.Globalization.Calendar;
 public class JsonDocumentNodeTests
 {
     private static JsonDocumentNode Node(string json) =>
-        new(JsonDocument.Parse(json).RootElement);
+        new(JsonDocument.Parse(json).RootElement, new List<NotableDateValidationDiagnostic>());
 
     /// <summary>
     /// Verifies that scalar reads coerce primitive tokens to text and return <see langword="null" /> for object,

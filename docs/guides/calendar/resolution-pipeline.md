@@ -45,6 +45,8 @@ The document (XML on the `urn:bodu:globalization:calendar` namespace, or JSON vi
 
 ### Stage 2 - Resolve `<Imports>`
 
+Before its imports are composed, the document's `duplicatePolicy` settles the concepts and rules it declares itself: `Error`, the default, leaves them for Stage 5 to report, while `KeepFirst`, `KeepLast` and `Merge` keep or merge them in document order (see [Duplicate identifiers](identity-and-resolution.md#duplicate-identifiers)).
+
 Each `<Import resource="…">` names a catalogue. The loader calls the supplied resolver with that name to obtain the imported document text and recursively loads it. An `<Import>` with no `<Use>` child imports every concept from the catalogue; `<Use notableDateRef="…">` cherry-picks a single concept and can rename it (`as`), re-scope it to a territory, override its category or non-working flag, and attach `<Adjustments>`. **Local concepts win over imported concepts of the same id**, so a document can import a baseline and selectively replace pieces of it.
 
 The bundled catalogues are resolved through <xref:Bodu.Globalization.Calendar.CommonNotableDateResources> (`Resolver` / `Resolve(name)`) - `global-core`, `christian-western`, `global-islamic`, `global-hindu`, and friends.
@@ -104,13 +106,14 @@ Triggers are evaluated against *actual* dates, independent of the order rules ar
 Once every applicable rule has produced its occurrence(s), the resource's <xref:Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy> settles collisions:
 
 - <xref:Bodu.Globalization.Calendar.RangeResolution.CollisionPolicy> (`KeepAll`, `HighestPriorityOnly`, `CategoryPriority`, `Custom`), as the resource's `SameDayCollisionPolicy`, settles *distinct* occurrences that share an emitted date, with ties broken by <xref:Bodu.Globalization.Calendar.RangeResolution.PriorityDirection> (`HigherWins` / `LowerWins`). A date is settled over every occurrence emitted on it, including one whose span ends before the requested window, and only then are the survivors restricted to the window, so a multi-day occurrence that loses on its emitted date is absent from every window it reaches into.
-- <xref:Bodu.Globalization.Calendar.RangeResolution.DuplicatePolicy> and `SpanCollisionPolicy` are **reserved** and take no part ([#1119](https://github.com/bslater/bodu/issues/1119)): duplicate identifiers have already failed validation (Stage 5), and occurrences whose multi-day spans overlap are all kept.
+- `SpanCollisionPolicy`, of the same type, then settles every chain of survivors connected through overlapping emitted spans that holds a multi-day occurrence, ranked as a same-day group is. `KeepAll`, the default, keeps every overlapping occurrence. A chain is settled whole: when one that reaches the window may continue past the civil years gathered, the query gathers one more year on that side, up to ten beyond the one-year margin.
+- <xref:Bodu.Globalization.Calendar.RangeResolution.DuplicatePolicy> takes no part here: it was applied when the document was loaded (Stage 2).
 
-Under `CollisionPolicy.Custom`, the supplied <xref:Bodu.Globalization.Calendar.RangeResolution.INotableDateCollisionResolver> (passed to the service constructor) settles the day via `Resolve(DateOnly date, IReadOnlyList<NotableDate> colliding)`. See [Rule identity, priority, and observed-date resolution](identity-and-resolution.md).
+Under `CollisionPolicy.Custom`, the supplied <xref:Bodu.Globalization.Calendar.RangeResolution.INotableDateCollisionResolver> (passed to the service constructor) settles the group via `Resolve(DateOnly date, IReadOnlyList<NotableDate> colliding)`: a same-day group with its shared date, an overlap chain with its earliest date. See [Rule identity, priority, and observed-date resolution](identity-and-resolution.md).
 
 ### Stage 9 - Emission and range inclusion
 
-The settled occurrences are emitted. A range query includes an occurrence when its emitted span - `Date` through `EndDate` - intersects the window; the resource's <xref:Bodu.Globalization.Calendar.RangeResolution.ObservedDateRangePolicy> is reserved and does not change this. A supplied `NotableDateFilter` is applied last as a predicate over the resolved occurrences (`Matches(NotableDate)`), and the surviving set is returned.
+The settled occurrences are emitted. A range query includes an occurrence when the span the resource's <xref:Bodu.Globalization.Calendar.RangeResolution.ObservedDateRangePolicy> names intersects the window: by default its emitted span, `Date` through `EndDate`; under `ActualOccurrenceControlsInclusion` its actual span, from `ActualDate` through the same duration; under `BothOccurrencesControlInclusion` either. A supplied `NotableDateFilter` is applied last as a predicate over the resolved occurrences (`Matches(NotableDate)`), and the surviving set is returned.
 
 ---
 
@@ -120,7 +123,7 @@ Two implementation details of the query path explain results that otherwise look
 
 **Two phases per query.** Resolution runs in two passes. The first pass computes every rule's *actual* (nominal) occurrence purely, seeds an occupied-day set with the actual dates of the non-working occurrences, and then selects each occurrence's firing policy against those actual dates. The second pass places observed dates in an explicit precedence order - earliest actual date first, then the higher rule `priority`, then stable rule identity - and each non-working observed occurrence claims its day, so that a later action which opts in to `skipNonWorkingDates` advances past it. This ordering is why Christmas, whose actual date is earlier, claims its substitute before Boxing Day looks for one, as traced below.
 
-**One civil year either side.** Inclusion is decided by the emitted (observed) date, so a single-day query and a range query covering the same span return consistent results. To capture an occurrence whose *actual* date lies just outside the requested window but whose *observed* date rolls inside it, the service scans one civil year either side of the window before testing each emitted span against it. A late-December holiday whose substitute rolls into early January is therefore found by a January range query without the caller widening the window.
+**One civil year either side.** Inclusion is decided by the span the observed-date range policy names, the emitted (observed) span by default, so a single-day query and a range query covering the same span return consistent results. To capture an occurrence whose *actual* date lies just outside the requested window but whose *observed* date rolls inside it, or the reverse, the service scans one civil year either side of the window before testing each occurrence against it, and widens that further only for an overlap chain the span collision policy settles. A late-December holiday whose substitute rolls into early January is therefore found by a January range query without the caller widening the window.
 
 ---
 

@@ -128,18 +128,17 @@ public sealed partial class NotableDateDocumentBuilder
     /// <paramref name="json" /> is <see langword="null" />, empty, or white-space.
     /// </exception>
     /// <exception cref="FormatException">
-    /// <paramref name="json" /> is not well-formed or is not a notable-date document, or an enumeration, integer,
-    /// Boolean, trigger-month or <c>workingDays</c> value does not parse.
-    /// </exception>
-    /// <exception cref="InvalidOperationException">
-    /// A property carries a value of the wrong JSON type, for example <c>"displayName": 5</c> (a number where text
-    /// belongs) or a numeric tag.
+    /// <paramref name="json" /> is not well-formed or is not a notable-date document, an enumeration, integer, Boolean,
+    /// trigger-month or <c>workingDays</c> value does not parse, a property that holds a value holds an object or an
+    /// array, an item of a list of identifiers, territory codes or tags is not a string, or a <c>PatchRule</c>
+    /// override's <c>strategy</c> or <c>recurrence</c> names no recognized kind or more than one.
     /// </exception>
     /// <exception cref="NotSupportedException">
     /// <paramref name="json" /> declares a field the builder's document model cannot hold: an empty <c>tags</c> or
     /// <c>adjustments</c> list on a <c>PatchRule</c> override, an empty <c>adjustments</c> list on an import use, a
-    /// scope rule reference that does not name its <c>notableDateRef</c>, or a handler parameter whose value is an
-    /// object or an array.
+    /// scope rule reference that does not name its <c>notableDateRef</c>, a handler parameter whose value is an object
+    /// or an array, or a metadata name, description or source, an adjustment policy's description or a rule's comment
+    /// that is an object or an array.
     /// </exception>
     /// <remarks>
     /// <para>
@@ -156,11 +155,25 @@ public sealed partial class NotableDateDocumentBuilder
     /// <c>BODU-CAL-VALUE</c> diagnostic.
     /// </para>
     /// <para>
+    /// Text is read as the loader reads it: a string verbatim, a number by its invariant digits, and a Boolean as
+    /// <c>true</c> or <c>false</c>, so <c>"displayName": 5</c> reads as the text <c>5</c>. An item of a list of
+    /// identifiers, territory codes or tags must be a string, and any other item throws a
+    /// <see cref="FormatException" /> carrying the message of the loader's <c>BODU-CAL-VALUE</c> diagnostic; an item of
+    /// a list of enumeration names is read by its JSON text, so a number there throws as a value that names no member.
+    /// The metadata, an adjustment policy's description and a rule's comment, which the loader does not read, accept
+    /// the same scalars. Any other property that holds a value, holding an object or an array, throws a
+    /// <see cref="FormatException" /> carrying the message of the loader's <c>BODU-CAL-VALUE</c> diagnostic, while the
+    /// JSON literal <c>null</c> reads as absent, as the loader reads it.
+    /// </para>
+    /// <para>
     /// Every field the loader's <c>LoadJson</c> reads is read, including those outside the JSON subset that
     /// <see cref="ToJson()" /> writes (imports, the trigger and action refinements, handler parameters, scope rule
     /// references and year bounds, and a <c>PatchRule</c> override's applicability, strategy, recurrence, duration,
     /// tags and adjustments), so the builder and the loader read the same document into the same resource. The few
-    /// fields the builder's model cannot hold throw a <see cref="NotSupportedException" /> rather than being dropped.
+    /// fields the builder's model cannot hold throw a <see cref="NotSupportedException" /> rather than being dropped. A
+    /// <c>PatchRule</c> override that carries a <c>strategy</c> or a <c>recurrence</c> must name exactly one recognized
+    /// kind between them, matched ignoring case as the loader matches it, or it throws a <see cref="FormatException" />
+    /// carrying the message of the loader's <c>BODU-CAL-RULE-SOURCE</c> diagnostic.
     /// </para>
     /// <para>
     /// Parsing does not otherwise validate the document: a document the loader would reject for a reason other than a
@@ -210,9 +223,11 @@ public sealed partial class NotableDateDocumentBuilder
     /// <returns>A new <see cref="NotableDateDocumentBuilder" /> populated from the object.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="json" /> is <see langword="null" />.</exception>
     /// <exception cref="FormatException">
-    /// An enumeration, integer, Boolean, trigger-month or <c>workingDays</c> value does not parse.
+    /// An enumeration, integer, Boolean, trigger-month or <c>workingDays</c> value does not parse, a property that
+    /// holds a value holds an object or an array, an item of a list of identifiers, territory codes or tags is not a
+    /// string, or a <c>PatchRule</c> override's <c>strategy</c> or <c>recurrence</c> names no recognized kind or more
+    /// than one.
     /// </exception>
-    /// <exception cref="InvalidOperationException">A property carries a value of the wrong JSON type.</exception>
     /// <exception cref="NotSupportedException">
     /// <paramref name="json" /> declares a field the builder's document model cannot hold; see
     /// <see cref="FromJson(string)" />.
@@ -226,8 +241,8 @@ public sealed partial class NotableDateDocumentBuilder
 
         NotableDateDocumentBuilder builder = new()
         {
-            _resourceId = (string?)json["resourceId"],
-            _schemaVersion = (string?)json["schemaVersion"] ?? BuilderXml.DefaultSchemaVersion,
+            _resourceId = ScalarText(json["resourceId"]),
+            _schemaVersion = ScalarText(json["schemaVersion"]) ?? BuilderXml.DefaultSchemaVersion,
         };
 
         builder.ReadMetadataJson(json["metadata"] as JsonObject);

@@ -12,8 +12,9 @@
     </PropertyGroup>
 
     <!--
-    Grant the companion test project access to internal members, and the builder package access to the document
-    parse rules, so that it reads enumeration values and the working week exactly as the loader does.
+    Grant the companion test project access to internal members, the builder package access to the document parse
+    rules, so that it reads enumeration values and the working week exactly as the loader does, and the caching package
+    access to the resolution policy a service resolves with, so that it clips a cached year as the service would.
     -->
     <ItemGroup>
         <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
@@ -21,6 +22,9 @@
         </AssemblyAttribute>
         <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
             <_Parameter1>Bodu.Globalization.Calendar.Builder</_Parameter1>
+        </AssemblyAttribute>
+        <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+            <_Parameter1>Bodu.Globalization.Calendar.Caching</_Parameter1>
         </AssemblyAttribute>
     </ItemGroup>
 

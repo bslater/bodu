@@ -7,23 +7,27 @@
 namespace Bodu.Globalization.Calendar.RangeResolution;
 
 /// <summary>
-/// Specifies how a resource asks for two rules that resolve to the same full identity to be treated. Reserved: the
-/// value is stored but not yet applied.
+/// Specifies how the loader treats two concepts, or two rules of one concept, that a document declares with the same
+/// identifier.
 /// </summary>
 /// <remarks>
 /// <para>
-/// <strong>Reserved.</strong> The value is read from a document's <c>duplicatePolicy</c> attribute, kept on
-/// <see cref="ResolutionPolicy.DuplicatePolicy" />, and written to binary packs, but neither the loader nor the service
-/// consults it, so every value behaves the same way: two concepts with the same identifier in one document, or two
-/// rules with the same identifier in one concept, are load errors (<c>BODU-CAL-DUP-ND</c> / <c>BODU-CAL-DUP-RULE</c>),
-/// and across imports the first import that supplies a concept wins and a local concept replaces an imported one with
-/// the same identifier. Implementing the policy is tracked by
-/// <see href="https://github.com/bslater/bodu/issues/1119">issue #1119</see>.
+/// The loader applies the policy of the document it loads, when it loads it, in document order, to the concepts and
+/// rules that document declares, before it composes the document's imports and applies its overrides. The policy
+/// reaches no further: across imports the first import that supplies a concept wins and a local concept replaces an
+/// imported one with the same identifier, an imported document's own policy is not applied, so two rules sharing an
+/// identifier in an imported concept stay <c>BODU-CAL-DUP-RULE</c>, and an <c>AddRule</c> override whose rule
+/// identifier already exists in its target concept is <c>BODU-CAL-DUP-RULE</c> under every value. Overrides apply to
+/// the concept the policy keeps.
+/// </para>
+/// <para>
+/// A value that settles duplicates reports nothing. A binary pack is written from a loaded resource, whose duplicates
+/// the policy has already settled, so the policy needs no pack format version of its own.
 /// </para>
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
-/// // Accepted and stored, but not yet applied: duplicate identifiers are load errors whatever the value.
+/// // Keep the first declaration of a concept or rule identifier and discard the later ones.
 /// NotableDateDocumentBuilder.Create("demo")
 ///     .WithResolutionPolicy(p => p.WithDuplicatePolicy(DuplicatePolicy.KeepFirst));
 ///]]>
@@ -35,22 +39,26 @@ namespace Bodu.Globalization.Calendar.RangeResolution;
 public enum DuplicatePolicy
 {
     /// <summary>
-    /// Report a duplicate identity as a validation error.
+    /// Report two concepts that share an identifier as <c>BODU-CAL-DUP-ND</c>, and two rules of one concept that share
+    /// one as <c>BODU-CAL-DUP-RULE</c>, both load errors. This is the default.
     /// </summary>
     Error = 0,
 
     /// <summary>
-    /// Keep the first rule encountered and discard later duplicates.
+    /// Keep the first declaration of a concept identifier, and within it the first declaration of a rule identifier,
+    /// each at its own position, and discard the later declarations.
     /// </summary>
     KeepFirst,
 
     /// <summary>
-    /// Keep the last rule encountered and discard earlier duplicates.
+    /// Keep the last declaration of a concept identifier, and within it the last declaration of a rule identifier, each
+    /// at its own position, and discard the earlier declarations.
     /// </summary>
     KeepLast,
 
     /// <summary>
-    /// Merge duplicate rules into a single rule.
+    /// Append the rules of each later declaration of a concept identifier to the first declaration, whose own fields
+    /// are kept. Rules are not merged: two rules that share an identifier remain a <c>BODU-CAL-DUP-RULE</c> error.
     /// </summary>
     Merge,
 }

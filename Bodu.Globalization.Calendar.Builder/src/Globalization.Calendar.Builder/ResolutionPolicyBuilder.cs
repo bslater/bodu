@@ -64,15 +64,14 @@ public sealed class ResolutionPolicyBuilder
     internal IReadOnlyList<NotableDateCategory>? CategoryPrecedence { get; private set; }
 
     /// <summary>
-    /// Sets the policy the document declares for duplicate concept definitions. Reserved: the engine stores the value
-    /// but does not apply it yet.
+    /// Sets the policy the loader applies to two concepts, or two rules of one concept, that the document declares with
+    /// one identifier.
     /// </summary>
     /// <param name="policy">The duplicate-resolution policy.</param>
     /// <returns>The same <see cref="ResolutionPolicyBuilder" /> instance, enabling chained calls.</returns>
     /// <remarks>
-    /// The value is written to the document and carried by the built resource, but duplicate concept and rule
-    /// identifiers are load errors whatever it is; see <see cref="DuplicatePolicy" />. Implementing it is tracked by
-    /// <see href="https://github.com/bslater/bodu/issues/1119">issue #1119</see>.
+    /// The policy is applied when the document is built, to the concepts and rules it declares; see
+    /// <see cref="DuplicatePolicy" />.
     /// </remarks>
     public ResolutionPolicyBuilder WithDuplicatePolicy(DuplicatePolicy policy)
     {
@@ -92,15 +91,12 @@ public sealed class ResolutionPolicyBuilder
     }
 
     /// <summary>
-    /// Sets the policy the document declares for overlapping multi-day spans. Reserved: the engine stores the value but
-    /// does not apply it yet.
+    /// Sets the policy that settles, after same-day collisions, occurrences connected through overlapping spans.
     /// </summary>
     /// <param name="policy">The span collision policy.</param>
     /// <returns>The same <see cref="ResolutionPolicyBuilder" /> instance, enabling chained calls.</returns>
     /// <remarks>
-    /// The value is written to the document and carried by the built resource, but overlapping spans are never
-    /// reconciled. Implementing it is tracked by
-    /// <see href="https://github.com/bslater/bodu/issues/1119">issue #1119</see>.
+    /// See <see cref="ResolutionPolicy.SpanCollisionPolicy" />.
     /// </remarks>
     public ResolutionPolicyBuilder WithSpanCollisionPolicy(CollisionPolicy policy)
     {
@@ -120,15 +116,13 @@ public sealed class ResolutionPolicyBuilder
     }
 
     /// <summary>
-    /// Sets the policy the document declares for whether an actual or observed occurrence controls inclusion in a date
-    /// range. Reserved: the engine stores the value but does not apply it yet.
+    /// Sets the policy that decides whether an occurrence's emitted span, its actual span, or either controls its
+    /// inclusion in a date range.
     /// </summary>
     /// <param name="policy">The observed-date range policy.</param>
     /// <returns>The same <see cref="ResolutionPolicyBuilder" /> instance, enabling chained calls.</returns>
     /// <remarks>
-    /// The value is written to the document and carried by the built resource, but a range query always includes an
-    /// occurrence whose emitted span intersects the window; see <see cref="ObservedDateRangePolicy" />. Implementing it
-    /// is tracked by <see href="https://github.com/bslater/bodu/issues/1119">issue #1119</see>.
+    /// See <see cref="ObservedDateRangePolicy" />.
     /// </remarks>
     public ResolutionPolicyBuilder WithObservedDateRangePolicy(ObservedDateRangePolicy policy)
     {

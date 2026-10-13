@@ -268,6 +268,15 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The &apos;{0}&apos; property holds {1}, which is not a string, number or Boolean..
+        /// </summary>
+        internal static string Validation_InvalidScalarValue {
+            get {
+                return ResourceManager.GetString("Validation_InvalidScalarValue", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Override operation targets notable date '{0}', which does not exist in the resolved resource..
         /// </summary>
         internal static string Validation_OverrideNotableDateNotFound {
