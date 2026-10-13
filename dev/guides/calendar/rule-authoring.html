@@ -166,7 +166,8 @@
 <p>A <code>&lt;Rule&gt;</code> is one calculation recipe. Its required <code>id</code> distinguishes it from its siblings under the same concept; the optional attributes (<code>priority</code>, <code>category</code>, <code>nonWorking</code>, <code>durationDays</code>, <code>comment</code>) override the concept defaults for that recipe. A rule contains, <strong>in order</strong>:</p>
 <ol>
 <li>an optional <code>&lt;Applicability&gt;</code> (calendar, year bounds, territory scope);</li>
-<li>exactly one <code>&lt;Strategy&gt;</code> (the calculation);</li>
+<li>exactly one <code>&lt;Strategy&gt;</code> (the calculation) or <code>&lt;Recurrence&gt;</code> (a repeating series);</li>
+<li>an optional <code>&lt;Duration&gt;</code> (a calculated end date for a multi-day span);</li>
 <li>an optional <code>&lt;Tags&gt;</code> block;</li>
 <li>an optional <code>&lt;Adjustments&gt;</code> block of <code>policyRef</code> references.</li>
 </ol>
@@ -312,7 +313,7 @@ NotableDateService service = new NotableDateService(resource);
 <p>Overrides run during loading and produce a normal immutable resource. <em>Runtime</em> change (swapping the rule set after the service is built) is a separate mechanism: load a new resource and hand it to a <a class="xref" href="../../api/Bodu.Globalization.Calendar.MutableNotableDateResourceProvider.html">MutableNotableDateResourceProvider</a>, then resolve through a <a class="xref" href="../../api/Bodu.Globalization.Calendar.ReloadableNotableDateService.html">ReloadableNotableDateService</a>. See <a href="notable-dates.html#pattern-9---swap-the-rule-set-at-runtime">Using NotableDateService</a>.</p>
 <hr>
 <h2 id="authoring-in-json">Authoring in JSON</h2>
-<p>JSON is an equivalent surface for the same document model; the choice is presentation-only. Load it with <a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateResourceLoader.html">NotableDateResourceLoader</a>'s <code>LoadJson</code> overloads (<code>LoadJson(json)</code>, <code>LoadJson(json, resolver)</code>, <code>LoadJson(Stream)</code>). The element names map directly to JSON property names:</p>
+<p>JSON is an equivalent surface for the same document model; the choice is presentation-only. Load it with <a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateResourceLoader.html">NotableDateResourceLoader</a>'s <code>LoadJson</code> overloads (<code>LoadJson(json)</code>, <code>LoadJson(json, resolver)</code>, <code>LoadJson(json, resolver, algorithms)</code>, <code>LoadJson(Stream)</code>). The element names map directly to JSON property names:</p>
 <pre><code class="lang-json">{
   &quot;schemaVersion&quot;: &quot;1.0&quot;,
   &quot;resourceId&quot;: &quot;demo&quot;,
@@ -376,12 +377,13 @@ NotableDateResource resource = NotableDateResourceLoader.LoadJson(json, CommonNo
 }
 </code></pre>
 <p>JSON and XML are accepted by separate loader entry points - <code>LoadJson</code> for JSON, <code>Load</code> for XML - and produce identical resources; there is no auto-detection.</p>
+<p>A JSON document is not validated against a schema the way an XML document is against the XSD, so a misspelled property name is ignored rather than reported. The semantic checks are shared: a rule that declares no recognized strategy or recurrence, or more than one, fails with <code>BODU-CAL-RULE-SOURCE</code> in either format.</p>
 <hr>
 <h2 id="year-periodicity">Year periodicity</h2>
 <p>Beyond <code>fromYear</code> / <code>toYear</code> bounds, <code>&lt;Applicability&gt;</code> supports a periodicity pair for rules that recur every <em>n</em>th year: <code>everyYears</code> sets the period and <code>anchorYear</code> the reference year it is counted from. A quadrennial civic day active from a known base year is <code>everyYears=&quot;4&quot;</code> with <code>anchorYear=&quot;2024&quot;</code>. They surface on the loaded <a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateRule.html">NotableDateRule</a>'s applicability alongside <code>OnlyYears</code> / <code>ExceptYears</code>. See <a href="rule-reference.html#applicability---calendar-year-and-territory-filtering">NotableDateRule and adjustment-policy reference</a>.</p>
 <hr>
 <h2 id="validation">Validation</h2>
-<p>Loading parses the document, resolves <code>&lt;Imports&gt;</code>, applies <code>&lt;Overrides&gt;</code>, assembles the concepts, and runs semantic validation. Any <strong>error</strong>-severity diagnostic throws a <a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateValidationException.html">NotableDateValidationException</a>; its <code>Diagnostics</code> collection carries every <a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateValidationDiagnostic.html">NotableDateValidationDiagnostic</a> ( <code>Severity</code>, <code>Code</code>, <code>Message</code>), so informational and warning diagnostics are visible even when the load succeeds:</p>
+<p>Loading parses the document, resolves <code>&lt;Imports&gt;</code>, applies <code>&lt;Overrides&gt;</code>, assembles the concepts, and runs semantic validation. Any <strong>error</strong>-severity diagnostic throws a <a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateValidationException.html">NotableDateValidationException</a>; its <code>Diagnostics</code> collection carries every <a class="xref" href="../../api/Bodu.Globalization.Calendar.NotableDateValidationDiagnostic.html">NotableDateValidationDiagnostic</a> (<code>Severity</code>, <code>Code</code>, <code>Message</code>), warnings and informational messages included. A successful <code>Load</code> returns only the resource, so to see the warnings of a document that loads, use <code>TryLoad</code> / <code>TryLoadJson</code>, which return every diagnostic either way:</p>
 <pre><code class="lang-csharp">using Bodu.Globalization.Calendar;
 
 try
@@ -426,7 +428,7 @@ catch (NotableDateValidationException ex)
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: b1517af · Built: 2026-10-13 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: a00d67b · Built: 2026-10-13 (UTC)</span>
         </div>
       </div>
     </footer>

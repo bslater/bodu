@@ -8913,7 +8913,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Globalization.Calendar.AmericasCalendarData",
-      "Summary": "<p sourcefile=\"api/Bodu.Globalization.Calendar.AmericasCalendarData.yml\" sourcestartlinenumber=\"1\">Provides access to the embedded Americas notable-date resource pack (Canada and the United States), built on the\nnotable-date schema.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Globalization.Calendar.AmericasCalendarData.yml\" sourcestartlinenumber=\"1\">Provides access to the embedded Americas notable-date resource pack (Argentina, Brazil, Canada, Chile, Colombia,\nMexico, Peru, and the United States; see <xref href=\"Bodu.Globalization.Calendar.AmericasCalendarData.SupportedCountries\" data-throw-if-not-resolved=\"false\"></xref>), built on the notable-date schema.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -8927,7 +8927,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Globalization.Calendar.AsiaPacificCalendarData",
-      "Summary": "<p sourcefile=\"api/Bodu.Globalization.Calendar.AsiaPacificCalendarData.yml\" sourcestartlinenumber=\"1\">Provides access to the embedded Asia-Pacific notable-date resource pack (Australia, China, Japan, New Zealand),\nbuilt on the notable-date schema.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Globalization.Calendar.AsiaPacificCalendarData.yml\" sourcestartlinenumber=\"1\">Provides access to the embedded Asia-Pacific notable-date resource pack (14 countries and territories, among them\nAustralia, China, India, Japan, and New Zealand; see <xref href=\"Bodu.Globalization.Calendar.AsiaPacificCalendarData.SupportedCountries\" data-throw-if-not-resolved=\"false\"></xref>), built on the notable-date\nschema.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -9515,7 +9515,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Globalization.Calendar.EuropeCalendarData",
-      "Summary": "<p sourcefile=\"api/Bodu.Globalization.Calendar.EuropeCalendarData.yml\" sourcestartlinenumber=\"1\">Provides access to the embedded Europe notable-date resource pack (United Kingdom, France, Germany), built on the\nnotable-date schema.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Globalization.Calendar.EuropeCalendarData.yml\" sourcestartlinenumber=\"1\">Provides access to the embedded Europe notable-date resource pack (the 27 EU member states and the United Kingdom;\nsee <xref href=\"Bodu.Globalization.Calendar.EuropeCalendarData.SupportedCountries\" data-throw-if-not-resolved=\"false\"></xref>), built on the notable-date schema.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -10285,7 +10285,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Globalization.Calendar.RangeResolution.CollisionPolicy",
-      "Summary": "<p sourcefile=\"api/Bodu.Globalization.Calendar.RangeResolution.CollisionPolicy.yml\" sourcestartlinenumber=\"1\">Determines how the resolver treats multiple distinct notable dates that resolve to the same day or overlapping span.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Globalization.Calendar.RangeResolution.CollisionPolicy.yml\" sourcestartlinenumber=\"1\">Determines how the resolver treats multiple distinct notable dates that resolve to the same day.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -10299,7 +10299,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Globalization.Calendar.RangeResolution.DuplicatePolicy",
-      "Summary": "<p sourcefile=\"api/Bodu.Globalization.Calendar.RangeResolution.DuplicatePolicy.yml\" sourcestartlinenumber=\"1\">Determines how the loader treats two rules that resolve to the same full identity within a resource graph.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Globalization.Calendar.RangeResolution.DuplicatePolicy.yml\" sourcestartlinenumber=\"1\">Specifies how a resource asks for two rules that resolve to the same full identity to be treated. Reserved: the\nvalue is stored but not yet applied.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -10341,7 +10341,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Globalization.Calendar.RangeResolution.ObservedDateRangePolicy",
-      "Summary": "<p sourcefile=\"api/Bodu.Globalization.Calendar.RangeResolution.ObservedDateRangePolicy.yml\" sourcestartlinenumber=\"1\">Determines which emitted occurrence controls whether a resolved notable date is included by a date-range query.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Globalization.Calendar.RangeResolution.ObservedDateRangePolicy.yml\" sourcestartlinenumber=\"1\">Specifies which occurrence date a resource asks to control whether a resolved notable date is included by a\ndate-range query. Reserved: the value is stored but not yet applied.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -10355,7 +10355,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Globalization.Calendar.RangeResolution.PriorityDirection",
-      "Summary": "<p sourcefile=\"api/Bodu.Globalization.Calendar.RangeResolution.PriorityDirection.yml\" sourcestartlinenumber=\"1\">Determines whether a higher or lower numeric priority value takes precedence during selection.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Globalization.Calendar.RangeResolution.PriorityDirection.yml\" sourcestartlinenumber=\"1\">Determines whether a higher or lower numeric priority value wins a same-day collision.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -10369,7 +10369,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy",
-      "Summary": "<p sourcefile=\"api/Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy.yml\" sourcestartlinenumber=\"1\">Captures the resource-level policies that govern duplicate handling, collision handling, priority direction, and\nobserved-date range inclusion.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy.yml\" sourcestartlinenumber=\"1\">Captures the resource-level policies that govern same-day collision handling, priority direction, category\nprecedence, and the working week, plus three settings reserved for later releases.</p>\n"
     },
     {
       "type": "ManagedReference",

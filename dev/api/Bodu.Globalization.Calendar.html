@@ -160,12 +160,12 @@
 <p><strong>Date-calculation strategies and algorithms - <code>Bodu.Globalization.Calendar.Algorithms</code></strong></p>
 <ul>
 <li><a class="xref" href="Bodu.Globalization.Calendar.Algorithms.IDateCalculationStrategy.html">IDateCalculationStrategy</a> and the strategies a rule maps to: <a class="xref" href="Bodu.Globalization.Calendar.Algorithms.FixedDateStrategy.html">FixedDateStrategy</a>, <a class="xref" href="Bodu.Globalization.Calendar.Algorithms.DayOfWeekInMonthStrategy.html">DayOfWeekInMonthStrategy</a>, <a class="xref" href="Bodu.Globalization.Calendar.Algorithms.RelativeWeekdayInMonthStrategy.html">RelativeWeekdayInMonthStrategy</a>, <a class="xref" href="Bodu.Globalization.Calendar.Algorithms.WeekdayNearDateStrategy.html">WeekdayNearDateStrategy</a>, <a class="xref" href="Bodu.Globalization.Calendar.Algorithms.OffsetFromRuleStrategy.html">OffsetFromRuleStrategy</a>, <a class="xref" href="Bodu.Globalization.Calendar.Algorithms.AlgorithmDateStrategy.html">AlgorithmDateStrategy</a>.</li>
-<li><a class="xref" href="Bodu.Globalization.Calendar.Algorithms.AlgorithmDateStrategy.html">AlgorithmDateStrategy</a> dispatches a named key (<code>western-easter</code>, <code>orthodox-easter</code>, <code>vernal-equinox</code>, <code>autumnal-equinox</code>, <code>qingming</code>, <code>vesak</code>, <code>asalha-puja</code>, <code>losar</code>, <code>matariki</code>, and the Hindu-festival keys) to the bundled astronomical calculators, falling through to a custom <a class="xref" href="Bodu.Globalization.Calendar.Algorithms.INotableDateAlgorithmRegistry.html">INotableDateAlgorithmRegistry</a> for unknown keys.</li>
+<li><a class="xref" href="Bodu.Globalization.Calendar.Algorithms.AlgorithmDateStrategy.html">AlgorithmDateStrategy</a> dispatches a named key (<code>western-easter</code>, <code>orthodox-easter</code>, <code>vernal-equinox</code>, <code>autumnal-equinox</code>, <code>qingming</code>, <code>vesak</code>, <code>asalha-puja</code>, <code>losar</code>, <code>matariki</code>, and the Hindu-festival keys) to the bundled astronomical calculators, after first consulting any custom <a class="xref" href="Bodu.Globalization.Calendar.Algorithms.INotableDateAlgorithmRegistry.html">INotableDateAlgorithmRegistry</a>, whose keys override built-in ones of the same name.</li>
 <li><a class="xref" href="Bodu.Globalization.Calendar.Algorithms.INotableDateAlgorithm.html">INotableDateAlgorithm</a>, <a class="xref" href="Bodu.Globalization.Calendar.Algorithms.INotableDateAlgorithmRegistry.html">INotableDateAlgorithmRegistry</a>, <a class="xref" href="Bodu.Globalization.Calendar.Algorithms.NotableDateAlgorithmRegistry.html">NotableDateAlgorithmRegistry</a> - the custom-algorithm contract (<code>DateOnly? Calculate(int year)</code>) and its chainable registry. <a class="xref" href="Bodu.Globalization.Calendar.Algorithms.StrategyResolutionContext.html">StrategyResolutionContext</a> is the per-resolution context passed to strategies.</li>
 </ul>
 <p><strong>Range resolution and observed-date policy - <code>Bodu.Globalization.Calendar.RangeResolution</code></strong></p>
 <ul>
-<li><a class="xref" href="Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy.html">ResolutionPolicy</a> - the resource-level policy bundle (<code>&lt;ResolutionPolicy&gt;</code> in the document) governing duplicates, same-day / span collisions, priority direction, range-inclusion of observed dates, and the working week.</li>
+<li><a class="xref" href="Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy.html">ResolutionPolicy</a> - the resource-level policy bundle (<code>&lt;ResolutionPolicy&gt;</code> in the document) governing same-day collisions, priority direction, category precedence, and the working week. Its duplicate, span-collision, and observed-date range settings are reserved: stored but not yet applied (<a href="https://github.com/bslater/bodu/issues/1119">#1119</a>).</li>
 <li><a class="xref" href="Bodu.Globalization.Calendar.RangeResolution.DuplicatePolicy.html">DuplicatePolicy</a>, <a class="xref" href="Bodu.Globalization.Calendar.RangeResolution.CollisionPolicy.html">CollisionPolicy</a>, <a class="xref" href="Bodu.Globalization.Calendar.RangeResolution.PriorityDirection.html">PriorityDirection</a>, <a class="xref" href="Bodu.Globalization.Calendar.RangeResolution.EmissionMode.html">EmissionMode</a>, <a class="xref" href="Bodu.Globalization.Calendar.RangeResolution.ObservedDateRangePolicy.html">ObservedDateRangePolicy</a> - the policy vocabulary.</li>
 <li><a class="xref" href="Bodu.Globalization.Calendar.RangeResolution.INotableDateCollisionResolver.html">INotableDateCollisionResolver</a> - a custom resolver consulted when two rules land on the same day under <code>CollisionPolicy.Custom</code>.</li>
 </ul>
@@ -301,14 +301,15 @@ Egypt, and Morocco), built on the notable-date schema.</p>
     </dl>
     <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Globalization.Calendar.AmericasCalendarData.html">AmericasCalendarData</a></dt>
-      <dd><p>Provides access to the embedded Americas notable-date resource pack (Canada and the United States), built on the
-notable-date schema.</p>
+      <dd><p>Provides access to the embedded Americas notable-date resource pack (Argentina, Brazil, Canada, Chile, Colombia,
+Mexico, Peru, and the United States; see <a class="xref" href="Bodu.Globalization.Calendar.AmericasCalendarData.html#Bodu_Globalization_Calendar_AmericasCalendarData_SupportedCountries">SupportedCountries</a>), built on the notable-date schema.</p>
 </dd>
     </dl>
     <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Globalization.Calendar.AsiaPacificCalendarData.html">AsiaPacificCalendarData</a></dt>
-      <dd><p>Provides access to the embedded Asia-Pacific notable-date resource pack (Australia, China, Japan, New Zealand),
-built on the notable-date schema.</p>
+      <dd><p>Provides access to the embedded Asia-Pacific notable-date resource pack (14 countries and territories, among them
+Australia, China, India, Japan, and New Zealand; see <a class="xref" href="Bodu.Globalization.Calendar.AsiaPacificCalendarData.html#Bodu_Globalization_Calendar_AsiaPacificCalendarData_SupportedCountries">SupportedCountries</a>), built on the notable-date
+schema.</p>
 </dd>
     </dl>
     <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
@@ -332,8 +333,8 @@ territory packs to import rather than redefine.</p>
     </dl>
     <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
       <dt><a class="xref" href="Bodu.Globalization.Calendar.EuropeCalendarData.html">EuropeCalendarData</a></dt>
-      <dd><p>Provides access to the embedded Europe notable-date resource pack (United Kingdom, France, Germany), built on the
-notable-date schema.</p>
+      <dd><p>Provides access to the embedded Europe notable-date resource pack (the 27 EU member states and the United Kingdom;
+see <a class="xref" href="Bodu.Globalization.Calendar.EuropeCalendarData.html#Bodu_Globalization_Calendar_EuropeCalendarData_SupportedCountries">SupportedCountries</a>), built on the notable-date schema.</p>
 </dd>
     </dl>
     <dl class="jumplist" data-bodu-frameworks="net8.0 net10.0">
@@ -636,7 +637,7 @@ document.</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: b1517af · Built: 2026-10-13 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: a00d67b · Built: 2026-10-13 (UTC)</span>
         </div>
       </div>
     </footer>

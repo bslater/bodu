@@ -78297,6 +78297,15 @@ references:
   fullName.vb: Bodu.Globalization.Calendar.NotableDateResourceLoader.LoadJson(String, Microsoft.Extensions.Logging.ILogger)
   nameWithType: NotableDateResourceLoader.LoadJson(string, ILogger?)
   nameWithType.vb: NotableDateResourceLoader.LoadJson(String, ILogger)
+- uid: Bodu.Globalization.Calendar.NotableDateResourceLoader.LoadJson(System.String,System.Func{System.String,System.String},Bodu.Globalization.Calendar.Algorithms.INotableDateAlgorithmRegistry,Microsoft.Extensions.Logging.ILogger)
+  name: LoadJson(string, Func<string, string?>, INotableDateAlgorithmRegistry?, ILogger?)
+  href: api/Bodu.Globalization.Calendar.NotableDateResourceLoader.html#Bodu_Globalization_Calendar_NotableDateResourceLoader_LoadJson_System_String_System_Func_System_String_System_String__Bodu_Globalization_Calendar_Algorithms_INotableDateAlgorithmRegistry_Microsoft_Extensions_Logging_ILogger_
+  commentId: M:Bodu.Globalization.Calendar.NotableDateResourceLoader.LoadJson(System.String,System.Func{System.String,System.String},Bodu.Globalization.Calendar.Algorithms.INotableDateAlgorithmRegistry,Microsoft.Extensions.Logging.ILogger)
+  name.vb: LoadJson(String, Func(Of String, String), INotableDateAlgorithmRegistry, ILogger)
+  fullName: Bodu.Globalization.Calendar.NotableDateResourceLoader.LoadJson(string, System.Func<string, string?>, Bodu.Globalization.Calendar.Algorithms.INotableDateAlgorithmRegistry?, Microsoft.Extensions.Logging.ILogger?)
+  fullName.vb: Bodu.Globalization.Calendar.NotableDateResourceLoader.LoadJson(String, System.Func(Of String, String), Bodu.Globalization.Calendar.Algorithms.INotableDateAlgorithmRegistry, Microsoft.Extensions.Logging.ILogger)
+  nameWithType: NotableDateResourceLoader.LoadJson(string, Func<string, string?>, INotableDateAlgorithmRegistry?, ILogger?)
+  nameWithType.vb: NotableDateResourceLoader.LoadJson(String, Func(Of String, String), INotableDateAlgorithmRegistry, ILogger)
 - uid: Bodu.Globalization.Calendar.NotableDateResourceLoader.LoadJson(System.String,System.Func{System.String,System.String},Microsoft.Extensions.Logging.ILogger)
   name: LoadJson(string, Func<string, string?>, ILogger?)
   href: api/Bodu.Globalization.Calendar.NotableDateResourceLoader.html#Bodu_Globalization_Calendar_NotableDateResourceLoader_LoadJson_System_String_System_Func_System_String_System_String__Microsoft_Extensions_Logging_ILogger_
@@ -78336,6 +78345,15 @@ references:
   commentId: Overload:Bodu.Globalization.Calendar.NotableDateResourceLoader.TryLoad
   fullName: Bodu.Globalization.Calendar.NotableDateResourceLoader.TryLoad
   nameWithType: NotableDateResourceLoader.TryLoad
+- uid: Bodu.Globalization.Calendar.NotableDateResourceLoader.TryLoadJson(System.String,System.Func{System.String,System.String},Bodu.Globalization.Calendar.Algorithms.INotableDateAlgorithmRegistry,Bodu.Globalization.Calendar.NotableDateResource@,System.Collections.Generic.IReadOnlyList{Bodu.Globalization.Calendar.NotableDateValidationDiagnostic}@)
+  name: TryLoadJson(string, Func<string, string?>, INotableDateAlgorithmRegistry?, out NotableDateResource?, out IReadOnlyList<NotableDateValidationDiagnostic>)
+  href: api/Bodu.Globalization.Calendar.NotableDateResourceLoader.html#Bodu_Globalization_Calendar_NotableDateResourceLoader_TryLoadJson_System_String_System_Func_System_String_System_String__Bodu_Globalization_Calendar_Algorithms_INotableDateAlgorithmRegistry_Bodu_Globalization_Calendar_NotableDateResource__System_Collections_Generic_IReadOnlyList_Bodu_Globalization_Calendar_NotableDateValidationDiagnostic___
+  commentId: M:Bodu.Globalization.Calendar.NotableDateResourceLoader.TryLoadJson(System.String,System.Func{System.String,System.String},Bodu.Globalization.Calendar.Algorithms.INotableDateAlgorithmRegistry,Bodu.Globalization.Calendar.NotableDateResource@,System.Collections.Generic.IReadOnlyList{Bodu.Globalization.Calendar.NotableDateValidationDiagnostic}@)
+  name.vb: TryLoadJson(String, Func(Of String, String), INotableDateAlgorithmRegistry, NotableDateResource, IReadOnlyList(Of NotableDateValidationDiagnostic))
+  fullName: Bodu.Globalization.Calendar.NotableDateResourceLoader.TryLoadJson(string, System.Func<string, string?>, Bodu.Globalization.Calendar.Algorithms.INotableDateAlgorithmRegistry?, out Bodu.Globalization.Calendar.NotableDateResource?, out System.Collections.Generic.IReadOnlyList<Bodu.Globalization.Calendar.NotableDateValidationDiagnostic>)
+  fullName.vb: Bodu.Globalization.Calendar.NotableDateResourceLoader.TryLoadJson(String, System.Func(Of String, String), Bodu.Globalization.Calendar.Algorithms.INotableDateAlgorithmRegistry, Bodu.Globalization.Calendar.NotableDateResource, System.Collections.Generic.IReadOnlyList(Of Bodu.Globalization.Calendar.NotableDateValidationDiagnostic))
+  nameWithType: NotableDateResourceLoader.TryLoadJson(string, Func<string, string?>, INotableDateAlgorithmRegistry?, out NotableDateResource?, out IReadOnlyList<NotableDateValidationDiagnostic>)
+  nameWithType.vb: NotableDateResourceLoader.TryLoadJson(String, Func(Of String, String), INotableDateAlgorithmRegistry, NotableDateResource, IReadOnlyList(Of NotableDateValidationDiagnostic))
 - uid: Bodu.Globalization.Calendar.NotableDateResourceLoader.TryLoadJson(System.String,System.Func{System.String,System.String},Bodu.Globalization.Calendar.NotableDateResource@,System.Collections.Generic.IReadOnlyList{Bodu.Globalization.Calendar.NotableDateValidationDiagnostic}@)
   name: TryLoadJson(string, Func<string, string?>, out NotableDateResource?, out IReadOnlyList<NotableDateValidationDiagnostic>)
   href: api/Bodu.Globalization.Calendar.NotableDateResourceLoader.html#Bodu_Globalization_Calendar_NotableDateResourceLoader_TryLoadJson_System_String_System_Func_System_String_System_String__Bodu_Globalization_Calendar_NotableDateResource__System_Collections_Generic_IReadOnlyList_Bodu_Globalization_Calendar_NotableDateValidationDiagnostic___
