@@ -21,9 +21,9 @@ namespace Bodu.Text.Bencode.Nodes;
 /// <see cref="Reader.Utf8BencodeReader" />. In-memory ordering is not contractual: the writer emits entries in
 /// canonical ascending bytewise key order regardless of insertion order. A value may be <see langword="null" /> in
 /// memory, but an object containing a <see langword="null" /> value cannot be written because Bencode has no null
-/// token. Adding a node that already belongs to another container throws an <see cref="InvalidOperationException" />;
-/// removing or replacing a value detaches it, clearing its <see cref="BencodeNode.Parent" /> so it can be added to
-/// another container.
+/// token. Adding a node that already belongs to a container, this one included, throws an
+/// <see cref="InvalidOperationException" />; removing or replacing a value detaches it, clearing its
+/// <see cref="BencodeNode.Parent" /> so it can be added to another container.
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
@@ -88,7 +88,7 @@ public sealed class BencodeObject
     /// </exception>
     /// <exception cref="ArgumentException">Thrown when two entries share a key.</exception>
     /// <exception cref="InvalidOperationException">
-    /// Thrown when a value already belongs to another container.
+    /// Thrown when a value already belongs to a container, or appears in <paramref name="items" /> more than once.
     /// </exception>
     /// <remarks>
     /// When an entry is rejected, construction fails and every value is left with the parent it had before, so the
@@ -141,10 +141,12 @@ public sealed class BencodeObject
     /// Thrown by the getter when <paramref name="key" /> is not present.
     /// </exception>
     /// <exception cref="InvalidOperationException">
-    /// Thrown when the assigned node already belongs to another container.
+    /// Thrown when the assigned node already belongs to a container, this object included, and is not the value mapped
+    /// to <paramref name="key" />.
     /// </exception>
     /// <remarks>
     /// Assigning over an existing entry detaches the replaced node, clearing its <see cref="BencodeNode.Parent" />.
+    /// Assigning an entry's value over itself leaves the object unchanged.
     /// </remarks>
     public new BencodeNode? this[string key]
     {
@@ -152,10 +154,13 @@ public sealed class BencodeObject
         set
         {
             ThrowHelper.ThrowIfNull(key);
-            value?.AssignParent(this);
 
-            if (_properties.TryGetValue(key, out BencodeNode? existing) && existing is not null && !ReferenceEquals(existing, value))
-                existing.Parent = null;
+            bool exists = _properties.TryGetValue(key, out BencodeNode? existing);
+            if (exists && ReferenceEquals(existing, value))
+                return;
+
+            value?.AssignParent(this);
+            existing?.Parent = null;
 
             _properties[key] = value;
         }
@@ -173,7 +178,11 @@ public sealed class BencodeObject
     public void Add(string key, BencodeNode? value)
     {
         ThrowHelper.ThrowIfNull(key);
-        value?.ThrowIfBelongsToOtherContainer(this);
+
+        // A value already held under this key falls through to the dictionary, which reports the duplicate key; a value
+        // held anywhere else, under another key of this dictionary included, is rejected before anything changes.
+        if (value is not null && !(ReferenceEquals(value.Parent, this) && _properties.ContainsKey(key)))
+            value.ThrowIfAttached();
 
         _properties.Add(key, value);
         value?.AssignParent(this);
