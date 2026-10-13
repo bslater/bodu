@@ -16501,7 +16501,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Text.Configuration.ConfigurationParseException",
-      "Summary": "<p sourcefile=\"api/Bodu.Text.Configuration.ConfigurationParseException.yml\" sourcestartlinenumber=\"1\">The exception raised when a configuration document cannot be parsed. Exposes the originating diagnostic (\n<xref href=\"Bodu.Text.Configuration.ConfigurationParseException.Diagnostic\" data-throw-if-not-resolved=\"false\"></xref>) together with any additional diagnostics gathered before the failure.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Text.Configuration.ConfigurationParseException.yml\" sourcestartlinenumber=\"1\">The exception raised when a configuration document cannot be parsed or resolved. Exposes the diagnostic that stopped\nthe operation as <xref href=\"Bodu.Text.Configuration.ConfigurationParseException.Diagnostic\" data-throw-if-not-resolved=\"false\"></xref>; the library raises it with that diagnostic alone.</p>\n"
     },
     {
       "type": "ManagedReference",
