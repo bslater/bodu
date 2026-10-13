@@ -95,8 +95,9 @@ internal static class WeekdayMath
             return lastDay.PreviousOrSameDateOfWeek(dayOfWeek);
         }
 
-        DateOnly firstMatch = new DateOnly(year, month, 1).NextOrSameDateOfWeek(dayOfWeek);
-        DateOnly result = firstMatch.AddDays(7 * ((int)ordinal - 1));
-        return result.Month == month ? result : null;
+        // Only a fifth occurrence can be missing. Comparing days of the month keeps it from ever becoming a date, which in
+        // December 9999 would lie outside the range of DateOnly.
+        int day = new DateOnly(year, month, 1).NextOrSameDateOfWeek(dayOfWeek).Day + (7 * ((int)ordinal - 1));
+        return day <= DateTime.DaysInMonth(year, month) ? new DateOnly(year, month, day) : null;
     }
 }
