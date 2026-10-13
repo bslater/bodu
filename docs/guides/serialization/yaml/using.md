@@ -35,7 +35,7 @@ ServerConfig fromBytes = YamlSerializer.Deserialize<ServerConfig>(utf8)!;
 | .NET | YAML |
 |---|---|
 | `string` / `char` / `Guid` / `Uri` | string scalar |
-| integer family (`byte` … `long`, `nint`/`nuint`; `ulong` above `long.MaxValue` as a quoted string) | integer scalar |
+| integer family (`byte` … `long`, `nint`/`nuint`; `ulong` above `long.MaxValue` as its plain decimal text, which YAML resolves as a string and the serializer reads back exactly) | integer scalar |
 | `double` / `float` | float scalar (`.nan` / `.inf` / `-.inf` for the special values) |
 | `decimal` | quoted string of the exact text |
 | `DateTime` / `DateTimeOffset` / `TimeSpan` | string scalar (ISO-8601 round-trip for the date kinds) |
@@ -234,7 +234,7 @@ while (reader.Read())
 
 `TokenType` reports the current <xref:Bodu.Text.Yaml.YamlTokenType> (the `StartMapping` / `EndMapping` / `StartSequence` / `EndSequence` brackets, `PropertyName`, and the `Null` / `String` / `Integer` / `Float` / `Boolean` scalar tokens), `CurrentDepth` the nesting level, and `ValueTextEquals(ReadOnlySpan<byte>)` compares the current key against UTF-8 text without allocating. The scalar getters throw `InvalidOperationException` if the current token is the wrong kind. <xref:Bodu.Text.Yaml.Reader.YamlReaderOptions> carries the same `SpecVersion`, `DuplicateKeyBehavior`, `MergeKeyBehavior`, and `MaxDepth` the document layer uses.
 
-The writer's surface is `WriteStartMapping` / `WriteEndMapping`, `WriteStartSequence` / `WriteEndSequence`, `WritePropertyName`, and the scalar writers `WriteString` / `WriteInteger` / `WriteDouble` / `WriteBoolean` / `WriteNull`. It always emits **block** collections, quoting a string scalar only when a plain rendering would be ambiguous (it would resolve as a non-string under YAML 1.2 or YAML 1.1, as `019` and `yes` do, read as a YAML 1.1 sexagesimal number such as `1:30` or as the merge key `<<`, begin with an indicator character, contain `": "`, and so on) and falling back to a double-quoted, escaped form otherwise. Empty mappings and sequences are written as flow `{}` / `[]` so they round-trip as empty rather than null. <xref:Bodu.Text.Yaml.Writer.YamlWriterOptions> sets `IndentSize` (default 2, capped at 16), `NewLine` (only `"\n"` or `"\r\n"`), and `MaxDepth`:
+The writer's surface is `WriteStartMapping` / `WriteEndMapping`, `WriteStartSequence` / `WriteEndSequence`, `WritePropertyName`, and the scalar writers `WriteString` / `WriteInteger` / `WriteDouble` / `WriteBoolean` / `WriteNull`. It always emits **block** collections, quoting a string scalar only when a plain rendering would be ambiguous (it would resolve as a non-string under YAML 1.2 or YAML 1.1, as `019` and `yes` do, read as a YAML 1.1 sexagesimal number such as `1:30` or as the merge key `<<`, begin with an indicator character, contain `": "`, and so on) and falling back to a double-quoted, escaped form otherwise. Empty mappings and sequences are written as flow `{}` / `[]` so they round-trip as empty rather than null. <xref:Bodu.Text.Yaml.Writer.YamlWriterOptions> sets `IndentSize` (default 2; a value above 16 throws `ArgumentOutOfRangeException` when the writer is created), `NewLine` (only `"\n"` or `"\r\n"`), and `MaxDepth`:
 
 ```csharp
 using Bodu.Text.Yaml.Writer;

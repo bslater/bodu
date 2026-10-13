@@ -14,7 +14,7 @@ title: Bodu serializers - Introduction
 | **Bodu.Text.Toml** | <xref:Bodu.Text.Toml> | [TOML](https://toml.io/) v1.0.0 / v1.1.0 (text) | <xref:Bodu.Text.Toml.TomlSerializer> |
 | **Bodu.Text.Yaml** | <xref:Bodu.Text.Yaml> | [YAML](https://yaml.org/) 1.2 core schema (text) | <xref:Bodu.Text.Yaml.YamlSerializer> |
 
-The libraries are built to the **same architecture**: the same three-tier layering, the same `System.Text.Json`-aligned vocabulary, and the same naming so that what you learn for one transfers to the next. They are *not* identical surfaces - Bencode and TOML are member-for-member twins, while YAML tunes its serializer surface to the format (more on this below) - but the mental model is shared across all three.
+The libraries are built to the **same architecture**: the same three-tier layering, the same `System.Text.Json`-aligned vocabulary, and the same naming so that what you learn for one transfers to the next. They share one serializer surface, but they are *not* identical - each tunes its options and defaults to its format (more on this below) - and the mental model is shared across all three.
 
 ## The three members
 
@@ -53,8 +53,10 @@ Reach for the **serializer** for object mapping, a **DOM** to inspect or edit a 
 
 The architecture is shared, but the serializer surfaces differ where the format warrants it:
 
-- **Bencode and TOML** expose the full `System.Text.Json`-style surface - converters and converter factories, the complete attribute family, serialization callbacks, naming policies, and the string/number enum converters.
-- **YAML** keeps the serializer, both DOMs, the reader/writer pair, and the shared attribute/naming/callback layer, shaping members exactly like its siblings. It adds YAML-specific richness on top - anchors and aliases, block and flow collections, block scalars, opt-in 1.1 merge keys, and multi-document streams.
+- **All three** expose the full `System.Text.Json`-style surface - the serializer, both DOMs, the reader/writer pair, converters and converter factories, the complete shared attribute family, serialization callbacks, naming policies with a `Web` defaults preset, and the string/number enum converters - and shape members the same way.
+- **The defaults differ.** `PropertyNameCaseInsensitive` is `true` by default in Bencode (its keys follow no casing convention) and `false` in TOML and YAML.
+- **The options and entry points follow the format.** Bencode adds `AllowUnsortedKeys` / `AllowDuplicateKeys` for lenient reading, `SerializeToNode` / `SerializeToDocument`, and a synchronous `Serialize` to a `Stream`. TOML adds `SpecVersion`, `ByteArrayHandling`, and `DecimalHandling`, and its converters read through the normalized `TomlDocumentReader`. YAML adds `SpecVersion`, `DuplicateKeyBehavior`, `MergeKeyBehavior`, `NumberHandling`, and `WriteEnumsAsStrings`, and non-generic `Serialize` / `Deserialize` overloads over a `Type`.
+- **YAML** adds format-specific richness on top - anchors and aliases, block and flow collections, block scalars, YAML 1.1 merge keys (expanded by default under either spec version), and multi-document streams - and keeps its scalar converters format-local, so implicit typing coerces across scalar kinds.
 
 Each library's own pages document its exact surface.
 

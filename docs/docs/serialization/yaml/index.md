@@ -68,7 +68,7 @@ YAML is edited by hand, so failures point at the offending location. A malformed
 |---|---|
 | Round-trip an object through YAML | `YamlSerializer.Serialize` / `Deserialize<T>` |
 | Read every document in a multi-document stream | <xref:Bodu.Text.Yaml.Document.YamlDocument.ParseAllDocuments*> |
-| Accept YAML 1.1 Booleans and merge keys | `SpecVersion = YamlSpecVersion.V1_1` on the options |
+| Accept YAML 1.1 Booleans (`yes` / `no` / `on` / `off`) | `SpecVersion = YamlSpecVersion.V1_1` on the options (merge keys expand by default under either version; see `MergeKeyBehavior`) |
 | Rename members on the wire | a naming policy or `[PropertyName]` |
 | Control how a tricky type is written | a custom <xref:Bodu.Text.Yaml.Serialization.YamlConverter`1> |
 | Edit a document in place without a model | the mutable <xref:Bodu.Text.Yaml.Nodes.YamlNode> DOM |

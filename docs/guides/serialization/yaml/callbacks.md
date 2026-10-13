@@ -40,7 +40,7 @@ For a type built through a parameterized constructor the callback necessarily ru
 
 ## Pattern 2 - Validate after deserialization
 
-`OnDeserialized` is the last step of deserialization for the instance, so it observes the fully materialized object - including required members, extension data, and populated collections. Throwing from it fails the deserialization, and the exception propagates as thrown:
+`OnDeserialized` is the last step of deserialization for the instance, so it observes the fully materialized object - including required members, extension data, and populated collections. Throwing from it fails the deserialization. An exception such as the `InvalidOperationException` below propagates as thrown, but a `FormatException` (other than `YamlFormatException`), `OverflowException`, `InvalidCastException`, or `ArgumentException` (including `ArgumentOutOfRangeException`) is wrapped in a <xref:Bodu.Text.Yaml.YamlSerializationException> (with the failing member's path when the instance is a member), as a converter's failure is:
 
 <!-- compile -->
 ```csharp
