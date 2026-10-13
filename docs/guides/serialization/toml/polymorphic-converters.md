@@ -135,6 +135,9 @@ using Bodu.Text.Toml.Writer;
 
 public sealed class ShapeConverter : TomlConverter<Shape>
 {
+    public override bool CanConvert(Type typeToConvert) =>
+        typeof(Shape).IsAssignableFrom(typeToConvert);
+
     public override Shape Read(ref TomlDocumentReader reader, Type typeToConvert, TomlSerializerOptions options)
     {
         if (reader.TokenType != TomlTokenType.StartTable)
@@ -197,6 +200,12 @@ public sealed class ShapeConverter : TomlConverter<Shape>
 
 The key moves:
 
+- **Override `CanConvert` on the converter too.** After a factory creates a
+  converter the serializer verifies that the *converter* accepts the
+  requested type. `TomlConverter<Shape>.CanConvert` defaults to an exact
+  match, which would reject `Circle` (with an `InvalidOperationException`)
+  when the factory is asked for a member declared as the subtype; widening
+  it to `IsAssignableFrom` keeps the factory and its product in agreement.
 - **Walk the normalized token stream.** `TomlDocumentReader` projects the
   document onto a uniform `StartTable` / `PropertyName` / value /
   `EndTable` sequence regardless of how the source spelled the table, so a

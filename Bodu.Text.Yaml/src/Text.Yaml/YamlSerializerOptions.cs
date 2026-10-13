@@ -295,7 +295,15 @@ public sealed partial class YamlSerializerOptions
     /// <summary>
     /// Gets or sets the maximum depth allowed when serializing an object graph and when parsing during deserialization.
     /// </summary>
-    /// <value>The maximum depth. A value of zero or less selects the default of 64.</value>
+    /// <value>
+    /// The maximum depth as set. A value of zero or less selects the default of 64, and a larger value is clamped to
+    /// the hard ceiling of 64.
+    /// </value>
+    /// <remarks>
+    /// The property returns the value as set, not the effective depth, so it reads <c>0</c> until it is set. Nesting
+    /// deeper than the effective depth throws <see cref="YamlSerializationException" /> while serializing and
+    /// <see cref="YamlFormatException" /> while deserializing.
+    /// </remarks>
     /// <exception cref="InvalidOperationException">The options instance is read-only.</exception>
     public int MaxDepth
     {

@@ -15,7 +15,7 @@ YAML carries the JSON-compatible core scalar kinds - string, integer, float, Boo
 | `string` | string scalar | string | The scalar style (plain / quoted / block) is chosen by the writer and recorded on read by <xref:Bodu.Text.Yaml.Document.YamlElement.ScalarStyle>. |
 | `char` | single-character string | single-character string | A source of any other length raises <xref:Bodu.Text.Yaml.YamlSerializationException>. |
 | `Guid` | string, canonical 36-character form | any `Guid.Parse`-accepted form | |
-| `Uri` | string, the original URI text | string | Relative and absolute URIs round-trip. |
+| `Uri` | string, the original URI text | a scalar whose text is an absolute or a relative URI | Relative and absolute URIs round-trip. Text that is neither raises <xref:Bodu.Text.Yaml.YamlSerializationException>. |
 | `bool` | Boolean (`true` / `false`) | Boolean | Under `SpecVersion = V1_1`, the read path also accepts `yes` / `no` / `on` / `off` and `y` / `n`. |
 | `sbyte` `byte` `short` `ushort` `int` `uint` `long` `nint` | integer scalar | integer | Checked conversions; a value outside the target type raises <xref:Bodu.Text.Yaml.YamlSerializationException>. |
 | `ulong` `nuint` `Int128` `UInt128` | integer scalar, or the invariant decimal text outside the signed 64-bit range | integer or string | A value the writer's signed 64-bit integer surface cannot hold is emitted as its exact decimal text (quoted only when a leading sign would otherwise resolve it numerically) and converts back exactly on read. |

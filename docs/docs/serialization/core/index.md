@@ -37,6 +37,8 @@ Every attribute derives from the abstract <xref:Bodu.Text.Serialization.Serializ
 | <xref:Bodu.Text.Serialization.ObjectCreationHandlingAttribute> | class, struct, interface, property, field | Chooses whether a collection, dictionary, or object member is replaced with a new instance or populated in place. |
 | <xref:Bodu.Text.Serialization.StringEnumMemberNameAttribute> | enum field | Sets the string written for one enumeration member when the enum is serialized by name. |
 
+`[NamingPolicy]`, `[UnmappedMemberHandling]`, and `[ObjectCreationHandling]` are permitted on an interface, but there they have no effect: the serializer reads a type-level attribute only from the class or struct it maps, never from a base type or an implemented interface.
+
 ## Naming policies
 
 <xref:Bodu.Text.Serialization.NamingPolicy> is the abstract base with a single `ConvertName(string)` method and five ready-made singletons: `CamelCase`, `SnakeCaseLower`, `SnakeCaseUpper`, `KebabCaseLower`, and `KebabCaseUpper`. Assign one to a serializer's `PropertyNamingPolicy` option, or select it declaratively on a type through `[NamingPolicy(KnownNamingPolicy.…)]` - the <xref:Bodu.Text.Serialization.KnownNamingPolicy> enum names each singleton (plus `Unspecified`). Subclass `NamingPolicy` for a convention of your own.

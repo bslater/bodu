@@ -11,8 +11,14 @@ namespace Bodu.Text.Serialization;
 /// deserialization, overriding the serializer-wide unmapped-member handling.
 /// </summary>
 /// <remarks>
+/// <para>
 /// When a type carries this attribute, its configured handling is used in place of the options-level default for that
 /// type. A type with an extension-data member still captures unmapped keys into that member regardless of this setting.
+/// </para>
+/// <para>
+/// The attribute is permitted on an interface but has no effect there: the serializer reads a type-level attribute only
+/// from the class or struct it maps, never from a base type or an implemented interface.
+/// </para>
 /// </remarks>
 /// <example>
 /// <code language="csharp">

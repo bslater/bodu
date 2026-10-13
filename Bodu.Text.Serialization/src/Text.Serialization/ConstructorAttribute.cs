@@ -11,8 +11,15 @@ namespace Bodu.Text.Serialization;
 /// a type declares more than one constructor.
 /// </summary>
 /// <remarks>
-/// When no constructor carries this attribute, the serializer uses a public parameterless constructor when one exists,
-/// otherwise the single declared constructor, otherwise the constructor with the most parameters.
+/// <para>
+/// The serializer considers public instance constructors only, so the marked constructor must be public: on an
+/// internal, protected, or private constructor the attribute is ignored, and the constructor is chosen as though no
+/// constructor carried it.
+/// </para>
+/// <para>
+/// When no public constructor carries this attribute, the serializer uses a public parameterless constructor when one
+/// exists, otherwise the single public constructor, otherwise the public constructor with the most parameters.
+/// </para>
 /// </remarks>
 /// <example>
 /// <code language="csharp">

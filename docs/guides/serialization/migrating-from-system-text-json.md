@@ -35,7 +35,7 @@ Every Bodu attribute lives in `Bodu.Text.Serialization` and derives from <xref:B
 | `[JsonRequired]` / C# `required` | <xref:Bodu.Text.Serialization.RequiredAttribute> `[Required]` / C# `required` | Not honored by Delimited. |
 | `[JsonConverter(typeof(…))]` | <xref:Bodu.Text.Serialization.ConverterAttribute> `[Converter(typeof(…))]` | Member, type, or enum placement. Structured serializers only. |
 | `[JsonExtensionData]` | <xref:Bodu.Text.Serialization.ExtensionDataAttribute> `[ExtensionData]` | The member's *type* differs per format - see [Pattern 8](#pattern-8---extension-data). Structured serializers only. |
-| `[JsonConstructor]` | <xref:Bodu.Text.Serialization.ConstructorAttribute> `[Constructor]` | Structured serializers only. |
+| `[JsonConstructor]` | <xref:Bodu.Text.Serialization.ConstructorAttribute> `[Constructor]` | Structured serializers only. The marked constructor must be public: unlike STJ, which honors `[JsonConstructor]` on a non-public constructor, Bodu ignores the attribute there and falls back to the public constructors. |
 | `[JsonUnmappedMemberHandling(…)]` | <xref:Bodu.Text.Serialization.UnmappedMemberHandlingAttribute> `[UnmappedMemberHandling(…)]` | `Skip` / `Disallow`. Structured serializers only. |
 | `[JsonObjectCreationHandling(…)]` | <xref:Bodu.Text.Serialization.ObjectCreationHandlingAttribute> `[ObjectCreationHandling(…)]` | `Replace` / `Populate`. Structured serializers only. Where `Populate` cannot apply (a parameterized constructor, an array, a struct member without a setter), Bodu replaces the value instead of throwing. |
 | `[JsonStringEnumMemberName("…")]` | <xref:Bodu.Text.Serialization.StringEnumMemberNameAttribute> `[StringEnumMemberName("…")]` | Structured serializers only. |
@@ -149,7 +149,7 @@ YamlSerializer.Deserialize<ServerConfig>("Name: edge\nlisten_port: 8443");
 | `PreferredObjectCreationHandling` | `PreferredObjectCreationHandling` | Structured serializers only. |
 | `NumberHandling` | YAML `NumberHandling` only | `YamlNumberHandling.Strict` / `AllowFloatToInteger`. |
 | `WriteIndented` | - | The formats are line-oriented and always readable; YAML indentation width is a writer option (`YamlWriterOptions.IndentSize`), not a serializer option. |
-| `System.Text.Json.Serialization.ReferenceHandler` | - | Object cycles are detected and fail the write (see the YAML callbacks guide's [invocation order](yaml/callbacks.md#invocation-order)); there is no reference-preserving mode. |
+| `System.Text.Json.Serialization.ReferenceHandler` | - | TOML and YAML detect a reference cycle and fail the write (see the YAML callbacks guide's [invocation order](yaml/callbacks.md#invocation-order)); Bencode does not track references, so a cycle fails only when it reaches the maximum write depth. There is no reference-preserving mode. |
 | `AllowTrailingCommas`, `ReadCommentHandling` | - | Comments are part of the TOML, YAML, DotEnv, and INI grammars and are always accepted. |
 | `System.Text.Json.JsonSerializerOptions.TypeInfoResolver` / source generation | - | The structured serializers are reflection-based (their `Serialize` / `Deserialize` carry `RequiresUnreferencedCode` and `RequiresDynamicCode`, so trimming and native AOT analysis warn where an application calls them). Reflection-free binding exists only for Delimited and INI through the [source generator](../formats/source-generator.md). |
 
@@ -262,16 +262,19 @@ Registered on the options above, a `Shape { Point Origin; string? Label }` write
 | `JsonNamingPolicy.KebabCaseUpper` | `NamingPolicy.KebabCaseUpper` |
 | subclass `JsonNamingPolicy`, override `ConvertName` | subclass `NamingPolicy`, override `ConvertName` |
 
-The five singletons produce the same names as their STJ counterparts:
+The separator singletons (`SnakeCase*` / `KebabCase*`) produce the same names as their STJ counterparts for ordinary PascalCase names. `CamelCase` does not always: it lowercases only the first character, where STJ lowercases a leading run of capitals, so `ID` becomes `iD` (STJ: `id`) and `HTTPServer` becomes `hTTPServer` (STJ: `httpServer`). A model whose member names start with an acronym changes its wire keys on migration unless you pin them with `[PropertyName]`:
 
 ```csharp
 JsonNamingPolicy.SnakeCaseLower.ConvertName("MaxRetryCount");   // max_retry_count
 NamingPolicy.SnakeCaseLower.ConvertName("MaxRetryCount");       // max_retry_count
 NamingPolicy.CamelCase.ConvertName("MaxRetryCount");            // maxRetryCount
 NamingPolicy.KebabCaseUpper.ConvertName("MaxRetryCount");       // MAX-RETRY-COUNT
+
+JsonNamingPolicy.CamelCase.ConvertName("HTTPServer");           // httpServer
+NamingPolicy.CamelCase.ConvertName("HTTPServer");               // hTTPServer
 ```
 
-Two additions have no STJ analogue: the type-level `[NamingPolicy(KnownNamingPolicy.…)]` attribute, which overrides the options-level policy for one type, and the <xref:Bodu.Text.Serialization.KnownNamingPolicy> enum that names the singletons for it. Enum member names are governed by the string-enum converters (`WriteEnumsAsStrings` in YAML; `<Format>StringEnumConverter` elsewhere), not by `PropertyNamingPolicy` - the same split STJ makes.
+Two additions have no STJ analogue: the type-level `[NamingPolicy(KnownNamingPolicy.…)]` attribute, which overrides the options-level policy for one type, and the <xref:Bodu.Text.Serialization.KnownNamingPolicy> enum that names the singletons for it. Enum member names are governed by the enum converters, not by `PropertyNamingPolicy` - the same split STJ makes; note, though, that the structured serializers write enums by name by default (see [Enums are written by name](#enums-are-written-by-name)).
 
 ## Pattern 6 - Callbacks
 
@@ -336,12 +339,12 @@ string editedToml = Encoding.UTF8.GetString(tn.ToUtf8Bytes());
 
 | Format | Accepted extension-data member types | Captured values |
 |---|---|---|
-| YAML | Any type assignable from `IDictionary<string, object?>` (`Dictionary<string, object?>` is the usual choice). | Loosely-typed scalars per YAML's implicit typing - `string`, `long`, `double`, `bool` - and nested `Dictionary` / `List` values. |
+| YAML | Any type that implements `IDictionary<string, object?>` (`Dictionary<string, object?>` is the usual choice). | Loosely-typed scalars per YAML's implicit typing - `string`, `long`, `double`, `bool` - and nested `Dictionary` / `List` values. |
 | TOML | `TomlObject`, `IDictionary<string, TomlNode?>`, or `Dictionary<string, TomlNode?>`. | DOM nodes. |
 | Bencode | `BencodeObject`, `IDictionary<string, BencodeNode?>`, or `Dictionary<string, BencodeNode?>`. | DOM nodes. |
 | Delimited · DotEnv · INI | Not supported. | - |
 
-A member of any other type fails at first use with `InvalidOperationException` (for TOML: *The extension-data member 'Extra' on type '…' must be a TomlObject or IDictionary<string, TomlNode?>.*). The YAML and TOML forms:
+A member of any other type fails at first use with `InvalidOperationException` in TOML and Bencode (for TOML: *The extension-data member 'Extra' on type '…' must be a TomlObject or IDictionary<string, TomlNode?>.*) and with `YamlSerializationException` in YAML. The YAML and TOML forms:
 
 ```csharp
 public sealed class ExtensibleYaml
@@ -422,15 +425,19 @@ Opting into `YamlSpecVersion.V1_1` on the options restores the 1.1 typing, under
 
 ### Two exception types instead of one
 
-`JsonException` covers both malformed text and failed binding. Every Bodu format splits the two: a `<Format>FormatException` for syntactically invalid input (a `FormatException` subclass carrying the position), and a `<Format>SerializationException` for a well-formed document that does not fit the target type - a missing `[Required]` member, an unmapped key under `Disallow`, a converter rejection, a depth overrun. Catch both when a caller cannot distinguish them; catch only the serialization exception around validation logic such as the `OnDeserialized` check above.
+`JsonException` covers both malformed text and failed binding. Every Bodu format splits the two: a `<Format>FormatException` for syntactically invalid input (a `FormatException` subclass carrying the position), and a `<Format>SerializationException` for a well-formed document that does not fit the target type - a missing `[Required]` member, an unmapped key under `Disallow`, a converter rejection, a depth overrun while writing (a depth overrun while reading is reported as the format exception). Catch both when a caller cannot distinguish them; catch only the serialization exception around validation logic such as the `OnDeserialized` check above.
 
 ### An empty YAML stream is `null`
 
 `JsonSerializer.Deserialize<T>("")` throws. `TomlSerializer.Deserialize<T>("")` returns an instance with every member at its initializer (an empty TOML document is an empty root table), while `YamlSerializer.Deserialize<T>("")` returns `null` - an empty YAML stream has no document. Use `{}` for an "empty mapping" in YAML, and note that the YAML `Deserialize<T>` signature is nullable (`T?`) for this reason.
 
+### Enums are written by name
+
+STJ writes an enum as its underlying number unless a `JsonStringEnumConverter` is registered. The structured serializers write an enum as its member name by default (YAML's `WriteEnumsAsStrings` defaults to `true`), so a migrated model's enum values change wire form. To keep numbers, register `<Format>NumberEnumConverter<TEnum>` for the enum, or set `WriteEnumsAsStrings = false` in YAML; `<Format>StringEnumConverter` is needed only to apply a naming policy to the names or to refuse integer input.
+
 ### Polymorphism is a converter, not an attribute
 
-There is no `[JsonPolymorphic]` / `[JsonDerivedType]`. On write, the structured serializers already dispatch on the *runtime* type of a value held in a base-typed or `object`-typed member; on read, a member typed as an abstract class or interface fails unless a converter factory supplies the concrete type from a discriminator. The recipe is in the per-format polymorphic-converter guides.
+There is no `[JsonPolymorphic]` / `[JsonDerivedType]`. On write, YAML dispatches on the *runtime* type of a value held in a base-typed or `object`-typed member; Bencode and TOML do so only for an `object`-typed member, and write a base-typed member with the base type's members, so members declared only on the derived type are dropped; on read, a member typed as an abstract class or interface fails unless a converter factory supplies the concrete type from a discriminator. The recipe is in the per-format polymorphic-converter guides.
 
 ## Where to go next
 

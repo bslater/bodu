@@ -15,7 +15,7 @@ string text = TomlSerializer.Serialize(config);
 ServerConfig back = TomlSerializer.Deserialize<ServerConfig>(text);
 ```
 
-`Serialize` also writes to an `IBufferWriter<byte>` (UTF-8) or a `Stream` (with `SerializeAsync`); `Deserialize` reads a `string`, a `ReadOnlySpan<byte>` (UTF-8), or a `Stream` (with `DeserializeAsync`). Output is canonical TOML in document order, so `[PropertyOrder]` is honored. See [Pattern 8](#pattern-8---streams-and-async) for the stream surface.
+`Serialize` also writes to an `IBufferWriter<byte>` (UTF-8) or a `Stream` (with `SerializeAsync`); `Deserialize` reads a `string`, a `ReadOnlySpan<byte>` (UTF-8), or a `Stream` (with `DeserializeAsync`). Output is normalized TOML in member order, so `[PropertyOrder]` is honored. It is deterministic for a given member order but not canonical: equal documents built in different orders serialize differently, so do not hash or sign it. See [Pattern 8](#pattern-8---streams-and-async) for the stream surface.
 
 ## Pattern 2 - Know the type mapping
 
@@ -37,7 +37,7 @@ ServerConfig back = TomlSerializer.Deserialize<ServerConfig>(text);
 | `object` members | runtime type on write, `TomlElement` on read |
 | `TomlNode` / `TomlElement` / `TomlDocument` | the value's own kind |
 
-TOML has no null: a null member is omitted by default. Dictionary keys may be strings, any integer type, an `enum`, a `Guid`, a `bool`, or a `char` - non-string keys are written as table keys in their invariant text (quoted when they fall outside the bare-key grammar) and parsed back on read, and a supported-key dictionary is valid at the document root. A `Stack<T>` round-trip reverses the stack: the writer emits pop order and the reader pushes in document order. The full per-type catalog, including each converter's read tolerances, is in the [built-in converter catalog](builtin-converters.md).
+TOML has no null: a null member is omitted by default. Dictionary keys may be strings, the fixed-width integer types `sbyte` through `ulong`, an `enum`, a `Guid`, a `bool`, or a `char` - non-string keys are written as table keys in their invariant text (quoted when they fall outside the bare-key grammar) and parsed back on read, and a supported-key dictionary is valid at the document root. A `Stack<T>` round-trip reverses the stack: the writer emits pop order and the reader pushes in document order. The full per-type catalog, including each converter's read tolerances, is in the [built-in converter catalog](builtin-converters.md).
 
 Choose the `byte[]` form with <xref:Bodu.Text.Toml.TomlByteArrayHandling> and the `decimal` form with <xref:Bodu.Text.Toml.TomlDecimalHandling> on the options:
 
@@ -154,7 +154,7 @@ node["Server"]!["Port"] = 9090;
 byte[] back = node.ToUtf8Bytes();
 ```
 
-The re-emitted document keeps the same canonical layout with only the value changed:
+The re-emitted document keeps the same normalized layout with only the value changed:
 
 ```toml
 [Server]
@@ -268,18 +268,21 @@ while (reader.Read())
 }
 ```
 
-To emit tokens, drive the <xref:Bodu.Text.Toml.Writer.Utf8TomlWriter> over an `IBufferWriter<byte>` or a `Stream`. Write a structural skeleton with `WriteStartTable` / `WritePropertyName` / a typed `Write*` per value, and `Flush` (or `Dispose`) when streaming:
+To emit tokens, drive the <xref:Bodu.Text.Toml.Writer.Utf8TomlWriter> over an `IBufferWriter<byte>` or a `Stream`. Open the root table with `WriteStartTable()`, write a structural skeleton with `WriteStartTable` / `WritePropertyName` / a typed `Write*` per value, and close the root: the writer buffers the document and emits it when the root table closes. `Flush` (or `Dispose`) when streaming:
 
 ```csharp
+using System.Buffers;
 using Bodu.Text.Toml.Writer;
 
 var buffer = new ArrayBufferWriter<byte>();
 var writer = new Utf8TomlWriter(buffer);
 
+writer.WriteStartTable();               // the required root table
 writer.WriteStartTable("server");
 writer.WriteString("host", "localhost");
 writer.WriteInteger("port", 8080);
 writer.WriteEndTable();
+writer.WriteEndTable();                 // closing the root emits the document
 // buffer.WrittenSpan now holds the UTF-8 bytes of:
 //   [server]
 //   host = "localhost"

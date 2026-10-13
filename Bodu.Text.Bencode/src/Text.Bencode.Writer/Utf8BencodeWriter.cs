@@ -106,9 +106,9 @@ public ref struct Utf8BencodeWriter
     /// </exception>
     /// <remarks>
     /// A <see cref="BencodeWriterOptions.MaxDepth" /> of zero or less selects the default maximum depth of 64, and a
-    /// larger value is clamped to <see cref="BencodeLimits.AbsoluteMaxDepth" /> so that an unbounded configured value
-    /// cannot drive the writer into a <see cref="StackOverflowException" />. Opening a list or dictionary past that
-    /// depth throws <see cref="BencodeSerializationException" />.
+    /// larger value is clamped to the hard ceiling of 64 so that an unbounded configured value cannot drive the writer
+    /// into a <see cref="StackOverflowException" />. Opening a list or dictionary past that depth throws
+    /// <see cref="BencodeSerializationException" />.
     /// </remarks>
     public Utf8BencodeWriter(IBufferWriter<byte> output, BencodeWriterOptions options)
     {

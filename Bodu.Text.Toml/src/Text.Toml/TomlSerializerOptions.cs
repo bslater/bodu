@@ -47,7 +47,7 @@ namespace Bodu.Text.Toml;
 /// </example>
 public sealed partial class TomlSerializerOptions
 {
-    /// <summary>The default maximum container nesting depth applied when <see cref="MaxDepth" /> is left at zero. It is also the library's hard ceiling (<see cref="TomlLimits.AbsoluteMaxDepth" />): a configured depth is never effective beyond this value, because the recursive reader, writer, and serializer must stay within a safe call-stack budget.</summary>
+    /// <summary>The default maximum container nesting depth applied when <see cref="MaxDepth" /> is left at zero. It is also the library's hard ceiling: a configured depth is never effective beyond this value, because the recursive reader, writer, and serializer must stay within a safe call-stack budget.</summary>
     public const int DefaultMaxDepth = 64;
 
     /// <summary>The user-registered converters, consulted before the built-in converters. The list rejects a <see langword="null" /> entry and refuses every mutation once the options have become read-only.</summary>
@@ -276,12 +276,11 @@ public sealed partial class TomlSerializerOptions
     /// </para>
     /// <para>
     /// Although any non-negative value is accepted here, the <em>effective</em> limit is clamped to the library's hard
-    /// ceiling, <see cref="TomlLimits.AbsoluteMaxDepth" /> (64); setting a larger value - even
-    /// <see cref="int.MaxValue" /> - does not raise it. The ceiling exists because the serializer and parser recurse
-    /// one call-stack frame per nested container, so an unbounded depth on hostile or malformed input would exhaust the
-    /// call stack and terminate the process with an uncatchable <see cref="StackOverflowException" />. Clamping
-    /// converts that into the catchable exceptions above. Lowering this value below the default tightens the limit;
-    /// raising it has no effect beyond the ceiling.
+    /// ceiling of 64; setting a larger value - even <see cref="int.MaxValue" /> - does not raise it. The ceiling exists
+    /// because the serializer and parser recurse one call-stack frame per nested container, so an unbounded depth on
+    /// hostile or malformed input would exhaust the call stack and terminate the process with an uncatchable
+    /// <see cref="StackOverflowException" />. Clamping converts that into the catchable exceptions above. Lowering this
+    /// value below the default tightens the limit; raising it has no effect beyond the ceiling.
     /// </para>
     /// </remarks>
     public int MaxDepth

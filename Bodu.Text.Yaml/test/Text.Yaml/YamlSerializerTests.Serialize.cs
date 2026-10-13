@@ -221,6 +221,30 @@ public partial class YamlSerializerTests
             writer.WriteString(value.ToUpperInvariant());
     }
 
+    /// <summary>
+    /// Verifies that an absolute <see cref="Uri" /> member is written as a string scalar holding its original text,
+    /// not as a mapping of the URI's properties.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenUriMemberIsAbsolute_ShouldWriteOriginalString()
+    {
+        string yaml = YamlSerializer.Serialize(new ValueModel<Uri> { Value = new Uri("https://example.com/a?b=c") });
+
+        Assert.AreEqual("Value: https://example.com/a?b=c\n", yaml);
+    }
+
+    /// <summary>
+    /// Verifies that a relative <see cref="Uri" /> member, whose absolute-only properties throw, is written as a string
+    /// scalar holding its original text.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenUriMemberIsRelative_ShouldWriteOriginalString()
+    {
+        string yaml = YamlSerializer.Serialize(new ValueModel<Uri> { Value = new Uri("../docs/index.html#top", UriKind.Relative) });
+
+        Assert.AreEqual("Value: ../docs/index.html#top\n", yaml);
+    }
+
     /// <summary>A custom converter that writes every <see cref="int" /> as the plain scalar <c>custom</c>.</summary>
     private sealed class MarkerInt32Converter
         : YamlConverter<int>

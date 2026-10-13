@@ -133,8 +133,7 @@ public sealed class BencodeObject
     /// Gets or sets the value associated with the specified property name.
     /// </summary>
     /// <param name="key">The property name.</param>
-    /// <value>The value associated with <paramref name="key" />.</value>
-    /// <returns>The value associated with <paramref name="key" />, which may be <see langword="null" />.</returns>
+    /// <value>The value associated with <paramref name="key" />, which may be <see langword="null" />.</value>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="key" /> is <see langword="null" />.
     /// </exception>

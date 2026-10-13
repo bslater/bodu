@@ -68,7 +68,7 @@ YAML is edited by hand, so failures point at the offending location. A malformed
 |---|---|
 | Round-trip an object through YAML | `YamlSerializer.Serialize` / `Deserialize<T>` |
 | Read every document in a multi-document stream | <xref:Bodu.Text.Yaml.Document.YamlDocument.ParseAllDocuments*> |
-| Accept YAML 1.1 Booleans and merge keys | `SpecVersion = YamlSpecVersion.V1_1` on the options |
+| Accept YAML 1.1 Booleans (`yes` / `no` / `on` / `off`) | `SpecVersion = YamlSpecVersion.V1_1` on the options (merge keys expand by default under either version; see `MergeKeyBehavior`) |
 | Rename members on the wire | a naming policy or `[PropertyName]` |
 | Control how a tricky type is written | a custom <xref:Bodu.Text.Yaml.Serialization.YamlConverter`1> |
 | Edit a document in place without a model | the mutable <xref:Bodu.Text.Yaml.Nodes.YamlNode> DOM |
@@ -81,6 +81,6 @@ YAML is edited by hand, so failures point at the offending location. A malformed
 - **[Getting started](getting-started.md)** - install and the first round trip.
 - **[Using YAML](../../../guides/serialization/yaml/using.md)** - worked patterns: type mapping, spec-version selection, both DOMs, and multi-document streams.
 - **[Writing converters](../../../guides/serialization/yaml/converters.md)** - custom shapes with `YamlConverter<T>`.
-- **[Bodu serializers introduction](../index.md)** - the family parent: the shared tiers and how to choose a format. The sibling [TOML](../toml/index.md) and [Bencode](../bencode/index.md) introductions cover the twin libraries.
+- **[Bodu serializers introduction](../index.md)** - the family parent: the shared tiers and how to choose a format. The sibling [TOML](../toml/index.md) and [Bencode](../bencode/index.md) introductions cover the sibling libraries.
 - **[Text & Serialization topic](../../topics/text-and-serialization.md)** - how the serializers sit alongside `Bodu.Text.Encoding` and `Bodu.Text.Formats`.
 - **API reference** - <xref:Bodu.Text.Yaml>.

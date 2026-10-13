@@ -18,7 +18,8 @@ namespace Bodu.Text.Yaml;
 /// </summary>
 /// <remarks>
 /// The serializer maps public properties (and optionally fields) of plain CLR types, the built-in scalar and collection
-/// types, dictionaries keyed by string, and enumerations. Mapping is driven by converters resolved through
+/// types, dictionaries keyed by <see cref="string" />, a fixed-width integer type, an enumeration, <see cref="Guid" />,
+/// <see cref="bool" />, or <see cref="char" />, and enumerations. Mapping is driven by converters resolved through
 /// <see cref="YamlSerializerOptions.GetConverter(Type)" /> over the shared serialization metadata; custom behaviour is
 /// supplied through <see cref="YamlConverter{T}" /> instances registered on <see cref="YamlSerializerOptions" />.
 /// </remarks>
@@ -34,6 +35,17 @@ public static partial class YamlSerializer
     /// <param name="value">The value to serialize.</param>
     /// <param name="options">The serializer options, or <see langword="null" /> for the defaults.</param>
     /// <returns>The YAML representation of <paramref name="value" />.</returns>
+    /// <exception cref="ArgumentException">A string or key in the value contains an unpaired surrogate.</exception>
+    /// <exception cref="NotSupportedException">No converter is configured for a type that is encountered.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// A type maps more than one member to the same YAML key, or a converter attribute or converter factory is
+    /// misconfigured.
+    /// </exception>
+    /// <exception cref="YamlSerializationException">
+    /// The value cannot be represented in YAML: it holds a reference cycle, nests deeper than
+    /// <see cref="YamlSerializerOptions.MaxDepth" />, maps more than one dictionary or extension-data entry to the same
+    /// key, or holds an enumeration value that its converter refuses to write.
+    /// </exception>
     [RequiresUnreferencedCode(YamlTrimming.RequiresUnreferencedCodeMessage)]
     [RequiresDynamicCode(YamlTrimming.RequiresDynamicCodeMessage)]
     public static string Serialize<T>(T value, YamlSerializerOptions? options = null) =>
@@ -47,6 +59,17 @@ public static partial class YamlSerializer
     /// <param name="options">The serializer options, or <see langword="null" /> for the defaults.</param>
     /// <returns>The YAML representation of <paramref name="value" />.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="inputType" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentException">A string or key in the value contains an unpaired surrogate.</exception>
+    /// <exception cref="NotSupportedException">No converter is configured for a type that is encountered.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// A type maps more than one member to the same YAML key, or a converter attribute or converter factory is
+    /// misconfigured.
+    /// </exception>
+    /// <exception cref="YamlSerializationException">
+    /// The value cannot be represented in YAML: it holds a reference cycle, nests deeper than
+    /// <see cref="YamlSerializerOptions.MaxDepth" />, maps more than one dictionary or extension-data entry to the same
+    /// key, or holds an enumeration value that its converter refuses to write.
+    /// </exception>
     [RequiresUnreferencedCode(YamlTrimming.RequiresUnreferencedCodeMessage)]
     [RequiresDynamicCode(YamlTrimming.RequiresDynamicCodeMessage)]
     public static string Serialize(object? value, Type inputType, YamlSerializerOptions? options = null)
@@ -67,6 +90,17 @@ public static partial class YamlSerializer
     /// <param name="options">The serializer options, or <see langword="null" /> for the defaults.</param>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="destination" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="ArgumentException">A string or key in the value contains an unpaired surrogate.</exception>
+    /// <exception cref="NotSupportedException">No converter is configured for a type that is encountered.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// A type maps more than one member to the same YAML key, or a converter attribute or converter factory is
+    /// misconfigured.
+    /// </exception>
+    /// <exception cref="YamlSerializationException">
+    /// The value cannot be represented in YAML: it holds a reference cycle, nests deeper than
+    /// <see cref="YamlSerializerOptions.MaxDepth" />, maps more than one dictionary or extension-data entry to the same
+    /// key, or holds an enumeration value that its converter refuses to write.
     /// </exception>
     [RequiresUnreferencedCode(YamlTrimming.RequiresUnreferencedCodeMessage)]
     [RequiresDynamicCode(YamlTrimming.RequiresDynamicCodeMessage)]
@@ -95,7 +129,18 @@ public static partial class YamlSerializer
     /// Thrown when <paramref name="destination" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="ArgumentException">
-    /// Thrown when <paramref name="destination" /> does not support writing.
+    /// Thrown when <paramref name="destination" /> does not support writing, or when a string or key in the value
+    /// contains an unpaired surrogate.
+    /// </exception>
+    /// <exception cref="NotSupportedException">No converter is configured for a type that is encountered.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// A type maps more than one member to the same YAML key, or a converter attribute or converter factory is
+    /// misconfigured.
+    /// </exception>
+    /// <exception cref="YamlSerializationException">
+    /// The value cannot be represented in YAML: it holds a reference cycle, nests deeper than
+    /// <see cref="YamlSerializerOptions.MaxDepth" />, maps more than one dictionary or extension-data entry to the same
+    /// key, or holds an enumeration value that its converter refuses to write.
     /// </exception>
     [RequiresUnreferencedCode(YamlTrimming.RequiresUnreferencedCodeMessage)]
     [RequiresDynamicCode(YamlTrimming.RequiresDynamicCodeMessage)]

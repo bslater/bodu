@@ -33,6 +33,6 @@ writer.WriteEndDictionary();
 ## Notes
 
 - **Canonical ordering is automatic.** Each dictionary's entries are buffered and sorted bytewise when it is closed; root values and list items stream straight to the destination. There is no `Flush` - bytes are committed as they are emitted.
-- **Grammar is enforced.** A property name outside a dictionary, a mismatched container end, a duplicate key, or a second root value (without `AllowMultipleRootValues`) throws <xref:System.InvalidOperationException>.
+- **Grammar is enforced.** A property name outside a dictionary, a mismatched container end, or a second root value (without `AllowMultipleRootValues`) throws <xref:System.InvalidOperationException>; a duplicate key throws <xref:Bodu.Text.Bencode.BencodeSerializationException> when its dictionary closes.
 - **No booleans, floats, or date-times.** Reduce such values to an integer or byte string in a converter before writing.
 - **See also:** the [Bodu.Text.Bencode introduction](~/docs/serialization/bencode/index.md) and the [Using Bencode](~/guides/serialization/bencode/using.md) guide (Pattern 9 - Process tokens by hand).

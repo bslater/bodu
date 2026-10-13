@@ -11,10 +11,16 @@ namespace Bodu.Text.Serialization;
 /// overriding the serializer-wide property naming policy for that type.
 /// </summary>
 /// <remarks>
+/// <para>
 /// The policy is chosen from the <see cref="KnownNamingPolicy" /> values, each of which maps to a static singleton on
 /// <see cref="Bodu.Text.Serialization.NamingPolicy" />. A member that carries an explicit
 /// <see cref="PropertyNameAttribute" /> is unaffected, since that attribute always takes precedence over any naming
 /// policy.
+/// </para>
+/// <para>
+/// The attribute is permitted on an interface but has no effect there: the serializer reads a type-level attribute only
+/// from the class or struct it maps, never from a base type or an implemented interface.
+/// </para>
 /// </remarks>
 /// <example>
 /// <code language="csharp">

@@ -20,9 +20,9 @@ namespace Bodu.Text.Toml.Writer;
 /// <para>
 /// The writer always emits text that is valid under both TOML v1.0.0 and v1.1.0, so <see cref="SpecVersion" /> has no
 /// effect on output today; <see cref="MaxDepth" /> bounds container nesting, guarding against stack-exhausting graphs.
-/// A value of <c>0</c> selects the default of 64, and a larger value is clamped to the hard ceiling
-/// <see cref="TomlLimits.AbsoluteMaxDepth" />; opening a table or array deeper than the effective limit throws
-/// <see cref="TomlSerializationException" /> rather than risking a <see cref="StackOverflowException" />.
+/// A value of <c>0</c> selects the default of 64, and a larger value is clamped to the hard ceiling of 64; opening a
+/// table or array deeper than the effective limit throws <see cref="TomlSerializationException" /> rather than risking
+/// a <see cref="StackOverflowException" />.
 /// </para>
 /// <example>
 /// <code language="csharp">
@@ -53,8 +53,8 @@ public struct TomlWriterOptions
     /// Gets or sets the maximum container nesting depth the writer will permit.
     /// </summary>
     /// <value>
-    /// The maximum container nesting depth; <c>0</c> selects the default of 64, clamped to
-    /// <see cref="TomlLimits.AbsoluteMaxDepth" />.
+    /// The maximum container nesting depth; <c>0</c> selects the default of 64, which is also the hard ceiling a larger
+    /// value is clamped to.
     /// </value>
     public int MaxDepth { get; set; }
 }

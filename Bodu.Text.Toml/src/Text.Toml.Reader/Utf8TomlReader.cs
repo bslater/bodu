@@ -182,8 +182,8 @@ public ref partial struct Utf8TomlReader
     /// </param>
     /// <remarks>
     /// A <see cref="TomlReaderOptions.MaxDepth" /> of zero or less selects the default maximum depth of 64, and a
-    /// larger value is clamped to <see cref="TomlLimits.AbsoluteMaxDepth" />; input nested deeper than the effective
-    /// limit throws <see cref="TomlFormatException" />.
+    /// larger value is clamped to the hard ceiling of 64; input nested deeper than the effective limit throws
+    /// <see cref="TomlFormatException" />.
     /// </remarks>
     public Utf8TomlReader(ReadOnlySpan<byte> utf8Toml, TomlReaderOptions options)
         : this(utf8Toml, isFinalBlock: true, new TomlReaderState(options))

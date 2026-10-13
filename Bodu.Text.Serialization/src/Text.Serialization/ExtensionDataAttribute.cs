@@ -12,10 +12,12 @@ namespace Bodu.Text.Serialization;
 /// </summary>
 /// <remarks>
 /// <para>
-/// The member must be a dictionary-shaped type keyed by <see cref="string" /> - the serializer's object node type, an
-/// <see cref="System.Collections.Generic.IDictionary{TKey, TValue}" />, or a
-/// <see cref="System.Collections.Generic.Dictionary{TKey, TValue}" /> whose value is the serializer's node type. A type
-/// may declare at most one extension-data member.
+/// The member must be a dictionary-shaped type keyed by <see cref="string" />, and the accepted types differ by
+/// serializer. For Bencode and TOML it is the format's object node type (<c>BencodeObject</c> or <c>TomlObject</c>), or
+/// an <see cref="System.Collections.Generic.IDictionary{TKey, TValue}" /> or
+/// <see cref="System.Collections.Generic.Dictionary{TKey, TValue}" /> whose value is the format's node type. For YAML
+/// it is any type that implements <c>IDictionary&lt;string, object?&gt;</c>, such as
+/// <c>Dictionary&lt;string, object?&gt;</c>. A type may declare at most one extension-data member.
 /// </para>
 /// <para>
 /// On serialization the captured entries are written alongside the type's other members.

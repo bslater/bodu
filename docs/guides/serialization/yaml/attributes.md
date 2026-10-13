@@ -115,7 +115,7 @@ public sealed class Counter
 }
 ```
 
-A property is **written** whenever it has a public getter, but it is only **read back** when it also has a public setter - a get-only property serialises out and is silently skipped on deserialisation. Members are emitted properties-first (in reflection order) and then fields, so a field never interleaves with the properties even when `IncludeFields` is set.
+A property is **written** whenever it has a public getter, but it is only **read back** through a public setter, a setter that `[Include]` opts in (a non-public one included), a matching constructor parameter, or `ObjectCreationHandling.Populate` (which fills a get-only collection or object in place). A property with none of these serialises out and is silently skipped on deserialisation. Members are ordered by `[PropertyOrder]` first, then properties before fields (each in reflection order), so without an explicit order a field never interleaves with the properties even when `IncludeFields` is set.
 
 ## The wider attribute family
 

@@ -12,9 +12,15 @@ namespace Bodu.Text.Serialization;
 /// object-creation handling.
 /// </summary>
 /// <remarks>
+/// <para>
 /// When applied to a member the attribute governs that member alone; when applied to a type it governs every member of
 /// the type that does not carry its own attribute. A member-level attribute takes precedence over a type-level one, and
 /// both take precedence over the options-level default.
+/// </para>
+/// <para>
+/// The attribute is permitted on an interface but has no effect there: the serializer reads a type-level attribute only
+/// from the class or struct it maps, never from a base type or an implemented interface.
+/// </para>
 /// </remarks>
 /// <example>
 /// <code language="csharp">

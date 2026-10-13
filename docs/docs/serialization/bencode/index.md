@@ -6,7 +6,7 @@ title: Bodu.Text.Bencode - Introduction
 
 # Bodu.Text.Bencode
 
-**Bodu.Text.Bencode** is a library for [Bencode (BEP 3)](https://www.bittorrent.org/beps/bep_0003.html), the compact binary encoding used by BitTorrent for `.torrent` metadata and tracker responses. It is one of the three [Bodu serializers](../index.md) and shares the architecture described in the [family introduction](../index.md) (the serializer / DOM / reader-writer tiers, converters, attributes, naming policies) member-for-member with its siblings [Bodu.Text.Toml](../toml/index.md) and [Bodu.Text.Yaml](../yaml/index.md). This page covers what is *specific* to Bencode.
+**Bodu.Text.Bencode** is a library for [Bencode (BEP 3)](https://www.bittorrent.org/beps/bep_0003.html), the compact binary encoding used by BitTorrent for `.torrent` metadata and tracker responses. It is one of the three [Bodu serializers](../index.md) and shares the architecture described in the [family introduction](../index.md) (the serializer / DOM / reader-writer tiers, converters, attributes, naming policies) with its siblings [Bodu.Text.Toml](../toml/index.md) and [Bodu.Text.Yaml](../yaml/index.md). This page covers what is *specific* to Bencode.
 
 ## The format in one paragraph
 

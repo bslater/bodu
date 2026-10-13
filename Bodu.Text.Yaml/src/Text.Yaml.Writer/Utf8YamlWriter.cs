@@ -102,23 +102,43 @@ public ref struct Utf8YamlWriter
     /// <summary>
     /// Begins a block mapping at the current value position.
     /// </summary>
+    /// <exception cref="InvalidOperationException">
+    /// The document root has already been written, the current container is a mapping with no pending key, or the
+    /// container would be nested deeper than the maximum depth.
+    /// </exception>
+    /// <exception cref="YamlSerializationException">
+    /// The container would be nested deeper than the maximum depth while the writer is driven by
+    /// <see cref="YamlSerializer" />, which reports the failure with the path to the value.
+    /// </exception>
     public void WriteStartMapping() => OpenContainer(isMapping: true);
 
     /// <summary>
     /// Ends the current block mapping.
     /// </summary>
-    /// <exception cref="InvalidOperationException">There is no open mapping to close.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// There is no open container, the innermost open container is a sequence, or a key is awaiting its value.
+    /// </exception>
     public void WriteEndMapping() => CloseContainer(isMapping: true);
 
     /// <summary>
     /// Begins a block sequence at the current value position.
     /// </summary>
+    /// <exception cref="InvalidOperationException">
+    /// The document root has already been written, the current container is a mapping with no pending key, or the
+    /// container would be nested deeper than the maximum depth.
+    /// </exception>
+    /// <exception cref="YamlSerializationException">
+    /// The container would be nested deeper than the maximum depth while the writer is driven by
+    /// <see cref="YamlSerializer" />, which reports the failure with the path to the value.
+    /// </exception>
     public void WriteStartSequence() => OpenContainer(isMapping: false);
 
     /// <summary>
     /// Ends the current block sequence.
     /// </summary>
-    /// <exception cref="InvalidOperationException">There is no open sequence to close.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// There is no open container, or the innermost open container is a mapping.
+    /// </exception>
     public void WriteEndSequence() => CloseContainer(isMapping: false);
 
     /// <summary>
@@ -131,6 +151,7 @@ public ref struct Utf8YamlWriter
     /// readable.
     /// </remarks>
     /// <exception cref="ArgumentNullException"><paramref name="name" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentException"><paramref name="name" /> contains an unpaired surrogate.</exception>
     /// <exception cref="InvalidOperationException">
     /// The current container is not a mapping, or a key is already pending.
     /// </exception>
@@ -152,6 +173,10 @@ public ref struct Utf8YamlWriter
     /// </summary>
     /// <param name="value">The string value.</param>
     /// <exception cref="ArgumentNullException"><paramref name="value" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentException"><paramref name="value" /> contains an unpaired surrogate.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// The document root has already been written, or the current container is a mapping with no pending key.
+    /// </exception>
     public void WriteString(string value)
     {
         Bodu.ThrowHelper.ThrowIfNull(value);
@@ -162,23 +187,35 @@ public ref struct Utf8YamlWriter
     /// Writes an integer scalar value.
     /// </summary>
     /// <param name="value">The integer value.</param>
+    /// <exception cref="InvalidOperationException">
+    /// The document root has already been written, or the current container is a mapping with no pending key.
+    /// </exception>
     public void WriteInteger(long value) => EmitScalar(value.ToString(CultureInfo.InvariantCulture));
 
     /// <summary>
     /// Writes a floating-point scalar value.
     /// </summary>
     /// <param name="value">The floating-point value.</param>
+    /// <exception cref="InvalidOperationException">
+    /// The document root has already been written, or the current container is a mapping with no pending key.
+    /// </exception>
     public void WriteDouble(double value) => EmitScalar(FormatDouble(value));
 
     /// <summary>
     /// Writes a boolean scalar value.
     /// </summary>
     /// <param name="value">The boolean value.</param>
+    /// <exception cref="InvalidOperationException">
+    /// The document root has already been written, or the current container is a mapping with no pending key.
+    /// </exception>
     public void WriteBoolean(bool value) => EmitScalar(value ? "true" : "false");
 
     /// <summary>
     /// Writes a null scalar value.
     /// </summary>
+    /// <exception cref="InvalidOperationException">
+    /// The document root has already been written, or the current container is a mapping with no pending key.
+    /// </exception>
     public void WriteNull() => EmitScalar("null");
 
     /// <summary>

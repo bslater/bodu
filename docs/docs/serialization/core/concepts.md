@@ -32,7 +32,7 @@ The wire key of a member is resolved once, when the type's metadata is built, in
 3. `PropertyNamingPolicy` on the options - converts the CLR name with the configured policy.
 4. Otherwise the CLR member name is used verbatim.
 
-Two members that resolve to the **same** wire key (ordinal comparison) are a model error: metadata resolution throws rather than emitting a document that cannot be canonical. Keys that differ only by case remain distinct on the wire; when `PropertyNameCaseInsensitive` is on, reads match either.
+Two members that resolve to the **same** wire key (ordinal comparison) are a model error: metadata resolution throws rather than emitting a document that cannot be canonical. Keys that differ only by case remain distinct on the wire, but when `PropertyNameCaseInsensitive` is on, either spelling binds to the member that comes later in member order (by `[PropertyOrder]`, then declaration), and the earlier member cannot be read.
 
 The policy converts *member* names. It does not rewrite `[PropertyName]` values, dictionary keys, or `[ExtensionData]` keys, and an enumeration member serialized by name takes `[StringEnumMemberName]` over anything else.
 
@@ -51,9 +51,9 @@ A member is **required** when it carries `[Required]`, when it is declared with 
 
 Constructor selection follows a fixed ladder:
 
-1. the constructor marked `[Constructor]`;
+1. the public constructor marked `[Constructor]` (only public constructors are considered, so the attribute on a non-public constructor is ignored);
 2. otherwise a public parameterless constructor (a value type always takes this branch);
-3. otherwise the single declared constructor, or the one with the most parameters.
+3. otherwise the single public constructor, or the public one with the most parameters.
 
 Parameters bind to members by **name, case-insensitively** - a `host` parameter binds the `Host` property. A bound member is passed to the constructor and not assigned again afterwards; an unbound parameter receives its declared default (or `default(T)`). Members with no constructor parameter are assigned through their setters after construction.
 
@@ -63,7 +63,7 @@ By default a property participates when it has a public getter, and is assigned 
 
 ## Extension data
 
-A type may declare at most one `[ExtensionData]` member - two is a metadata error. The member's type must be dictionary-shaped and keyed by `string`: for Bencode and TOML the format's object node (`BencodeObject` / `TomlObject`) or an `IDictionary<string, …Node?>` / `Dictionary<string, …Node?>` of the format's node type; for YAML any `IDictionary<string, object?>`. On read, every key that maps to no member lands in the dictionary - extension data takes precedence over `UnmappedMemberHandling`, so a captured key never triggers `Disallow`. On write, the captured entries are emitted after the type's declared members; an entry whose key collides with a declared member's wire key is a serialization error.
+A type may declare at most one `[ExtensionData]` member - two is a metadata error. The member's type must be dictionary-shaped and keyed by `string`: for Bencode and TOML the format's object node (`BencodeObject` / `TomlObject`) or an `IDictionary<string, …Node?>` / `Dictionary<string, …Node?>` of the format's node type; for YAML any `IDictionary<string, object?>`. On read, every key that maps to no member lands in the dictionary - extension data takes precedence over `UnmappedMemberHandling`, so a captured key never triggers `Disallow`. On write, the captured entries are emitted after the type's declared members. In YAML an entry whose key equals any declared member's wire key is a serialization error. TOML and Bencode check only the keys actually written: an entry that collides with a member written to the document is a serialization error, but an entry named like a member that was omitted (a `null` value, or one an ignore condition skipped) is written without error, and binds to that member when the document is read back.
 
 ## Unmapped members
 

@@ -224,7 +224,7 @@ public readonly partial struct BencodeElement
     /// Gets the element at the supplied index within this array element.
     /// </summary>
     /// <param name="index">The zero-based index of the element to retrieve.</param>
-    /// <returns>The element at <paramref name="index" />.</returns>
+    /// <value>The element at <paramref name="index" />.</value>
     /// <exception cref="ObjectDisposedException">Thrown when the owning document has been disposed.</exception>
     /// <exception cref="InvalidOperationException">
     /// Thrown when this element is not an <see cref="BencodeValueKind.Array" />.

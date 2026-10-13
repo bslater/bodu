@@ -229,12 +229,12 @@ internal static class MetadataResolver
 #if YAML
     /// <summary>
     /// Determines whether a type is a supported extension-data member type. YAML's extension data captures
-    /// loosely-typed values rather than DOM nodes, so any type assignable from a string-keyed object dictionary
+    /// loosely-typed values rather than DOM nodes, so any type that implements a string-keyed object dictionary
     /// qualifies.
     /// </summary>
     /// <param name="type">The member type to test.</param>
     /// <returns>
-    /// <see langword="true" /> when the type can hold an <c>IDictionary&lt;string, object?&gt;</c>; otherwise
+    /// <see langword="true" /> when the type implements <c>IDictionary&lt;string, object?&gt;</c>; otherwise
     /// <see langword="false" />.
     /// </returns>
     private static bool IsSupportedExtensionDataType(Type type) =>

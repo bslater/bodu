@@ -55,7 +55,7 @@ TOML files are edited by hand, so parse failures must point at the offending lin
 | You want to… | Use |
 |---|---|
 | Load an application's `.toml` configuration into a typed record | `TomlSerializer.Deserialize<T>` |
-| Emit configuration a human will edit | `TomlSerializer.Serialize` - canonical output in document order, `[PropertyOrder]` honored |
+| Emit configuration a human will edit | `TomlSerializer.Serialize` - normalized output in member order, `[PropertyOrder]` honored |
 | Patch one value in an existing file without a model | <xref:Bodu.Text.Toml.Nodes.TomlNode> - index, mutate, write back |
 | Inspect a document with minimal allocation | <xref:Bodu.Text.Toml.Document.TomlDocument> and `RootElement` |
 | Accept TOML v1.1.0 input | `SpecVersion = TomlSpecVersion.V1_1` on the options |
