@@ -176,6 +176,18 @@ public partial class MoneyOfTCurrencyTests
     }
 
     /// <summary>
+    /// A currency tag whose cash-rounding increment is a whole number of its minor units but large relative to them:
+    /// valid, although the increment scaled to minor units exceeds <see cref="decimal.MaxValue" />.
+    /// </summary>
+    private sealed class LargeCashIncrementCurrency
+        : ICurrency
+    {
+        public static string IsoCode => "XQL";
+        public static int MinorUnits => 28;
+        public static decimal CashRoundingIncrement => 8m;
+    }
+
+    /// <summary>
     /// Verifies that a negative cash-rounding increment throws at the construction boundary.
     /// </summary>
     [TestMethod]
@@ -197,6 +209,18 @@ public partial class MoneyOfTCurrencyTests
         {
             _ = new Money<FinerCashIncrementCurrency>(10m);
         });
+    }
+
+    /// <summary>
+    /// Verifies that a whole-number cash-rounding increment is accepted at the highest minor-unit precision, where the
+    /// increment scaled to minor units is too large for <see cref="decimal" />.
+    /// </summary>
+    [TestMethod]
+    public void Constructor_WhenCashRoundingIncrementIsWholeAtHighPrecision_ShouldConstruct()
+    {
+        var money = new Money<LargeCashIncrementCurrency>(1m);
+
+        Assert.AreEqual(1m, money.Amount);
     }
 
     // ---------------------------------------------------------------------------------------------------------------
