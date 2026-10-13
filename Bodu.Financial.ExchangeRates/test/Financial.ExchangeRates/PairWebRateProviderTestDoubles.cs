@@ -62,6 +62,12 @@ internal sealed class StubPairSource
     }
 
     /// <summary>
+    /// Gets or sets an exception the next fetch throws, after which the source serves normally again.
+    /// </summary>
+    /// <value>The exception the next fetch throws, or <see langword="null" />.</value>
+    public Exception? FailNext { get; set; }
+
+    /// <summary>
     /// Gets the number of times <see cref="GetPairAsync" /> has been invoked.
     /// </summary>
     /// <value>The invocation count.</value>
@@ -71,6 +77,12 @@ internal sealed class StubPairSource
     public ValueTask<PairRateData<string>> GetPairAsync(CurrencyPairRequest request, CancellationToken cancellationToken = default)
     {
         CallCount++;
+
+        if (FailNext is { } failure)
+        {
+            FailNext = null;
+            return ValueTask.FromException<PairRateData<string>>(failure);
+        }
 
         var inRange = _observations
             .Where(observation => observation.Date >= request.StartDate && observation.Date <= request.EndDate)
@@ -118,8 +130,13 @@ internal sealed class TestPairWebRateProvider
     /// <param name="source">The pair source.</param>
     /// <param name="options">The provider options.</param>
     /// <param name="logger">An optional logger receiving the provider diagnostics.</param>
-    public TestPairWebRateProvider(IPairRateSource<string> source, WebRateProviderOptions options, Microsoft.Extensions.Logging.ILogger? logger = null)
-        : base(source, options, logger, ownedHttpClient: null, timeProvider: null)
+    /// <param name="timeProvider">An optional time source; <see langword="null" /> selects the system clock.</param>
+    public TestPairWebRateProvider(
+        IPairRateSource<string> source,
+        WebRateProviderOptions options,
+        Microsoft.Extensions.Logging.ILogger? logger = null,
+        TimeProvider? timeProvider = null)
+        : base(source, options, logger, ownedHttpClient: null, timeProvider)
     {
     }
 
