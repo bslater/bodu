@@ -16,7 +16,7 @@ namespace Bodu.Extensions;
 /// of transformations on it directly. This class adds two operations: a free <see cref="Span{T}" /> -&gt;
 /// <see cref="ReadOnlySpan{T}" /> conversion that makes intent visible to callers, and a family of copy-and-reverse
 /// operators that accept either an index/count pair or a <see cref="Range" /> - matching the surface used by
-/// <c>ArrayExtensions.Reverse</c> so the same call shape works regardless of whether the caller holds a span or an
+/// <c>ArrayExtensions.ToReversed</c> so the same call shape works regardless of whether the caller holds a span or an
 /// array.
 /// </para>
 /// <para>

@@ -18,9 +18,10 @@ public static partial class NumericExtensions
     /// A <see cref="ushort" /> whose decimal digits appear in the reverse order of those in <paramref name="value" />.
     /// Leading zeros that emerge in the reversed value are not preserved.
     /// </returns>
+    /// <exception cref="OverflowException">The reversed value exceeds <see cref="ushort.MaxValue" />.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ushort ReverseDigits(this ushort value) =>
-        (ushort)ReverseDigitsCore(value);
+        checked((ushort)ReverseDigitsCore(value));
 
     /// <summary>
     /// Reverses the decimal digits of a <see cref="uint" /> value.
@@ -30,9 +31,10 @@ public static partial class NumericExtensions
     /// A <see cref="uint" /> whose decimal digits appear in the reverse order of those in <paramref name="value" />.
     /// Leading zeros that emerge in the reversed value are not preserved.
     /// </returns>
+    /// <exception cref="OverflowException">The reversed value exceeds <see cref="uint.MaxValue" />.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static uint ReverseDigits(this uint value) =>
-        (uint)ReverseDigitsCore(value);
+        checked((uint)ReverseDigitsCore(value));
 
     /// <summary>
     /// Reverses the decimal digits of a <see cref="ulong" /> value.
@@ -42,6 +44,7 @@ public static partial class NumericExtensions
     /// A <see cref="ulong" /> whose decimal digits appear in the reverse order of those in <paramref name="value" />.
     /// Leading zeros that emerge in the reversed value are not preserved.
     /// </returns>
+    /// <exception cref="OverflowException">The reversed value exceeds <see cref="ulong.MaxValue" />.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ulong ReverseDigits(this ulong value) =>
         ReverseDigitsCore(value);
@@ -51,9 +54,10 @@ public static partial class NumericExtensions
     /// </summary>
     /// <param name="value">The value whose digits are to be rotated.</param>
     /// <returns>The rotated value.</returns>
+    /// <exception cref="OverflowException">The rotated value exceeds <see cref="ushort.MaxValue" />.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ushort RotateDigitsLeft(this ushort value) =>
-        (ushort)RotateDigitsCore(value, -1);
+        checked((ushort)RotateDigitsCore(value, -1));
 
     /// <summary>
     /// Rotates the decimal digits of a <see cref="ushort" /> value the specified number of places to the left.
@@ -62,11 +66,12 @@ public static partial class NumericExtensions
     /// <param name="count">The non-negative number of positions to rotate.</param>
     /// <returns>The rotated value.</returns>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="count" /> is negative.</exception>
+    /// <exception cref="OverflowException">The rotated value exceeds <see cref="ushort.MaxValue" />.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ushort RotateDigitsLeft(this ushort value, int count)
     {
         ThrowHelper.ThrowIfNegative(count);
-        return (ushort)RotateDigitsCore(value, -count);
+        return checked((ushort)RotateDigitsCore(value, -count));
     }
 
     /// <summary>
@@ -74,9 +79,10 @@ public static partial class NumericExtensions
     /// </summary>
     /// <param name="value">The value whose digits are to be rotated.</param>
     /// <returns>The rotated value.</returns>
+    /// <exception cref="OverflowException">The rotated value exceeds <see cref="uint.MaxValue" />.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static uint RotateDigitsLeft(this uint value) =>
-        (uint)RotateDigitsCore(value, -1);
+        checked((uint)RotateDigitsCore(value, -1));
 
     /// <summary>
     /// Rotates the decimal digits of a <see cref="uint" /> value the specified number of places to the left.
@@ -85,11 +91,12 @@ public static partial class NumericExtensions
     /// <param name="count">The non-negative number of positions to rotate.</param>
     /// <returns>The rotated value.</returns>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="count" /> is negative.</exception>
+    /// <exception cref="OverflowException">The rotated value exceeds <see cref="uint.MaxValue" />.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static uint RotateDigitsLeft(this uint value, int count)
     {
         ThrowHelper.ThrowIfNegative(count);
-        return (uint)RotateDigitsCore(value, -count);
+        return checked((uint)RotateDigitsCore(value, -count));
     }
 
     /// <summary>
@@ -97,6 +104,7 @@ public static partial class NumericExtensions
     /// </summary>
     /// <param name="value">The value whose digits are to be rotated.</param>
     /// <returns>The rotated value.</returns>
+    /// <exception cref="OverflowException">The rotated value exceeds <see cref="ulong.MaxValue" />.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ulong RotateDigitsLeft(this ulong value) =>
         RotateDigitsCore(value, -1);
@@ -108,6 +116,7 @@ public static partial class NumericExtensions
     /// <param name="count">The non-negative number of positions to rotate.</param>
     /// <returns>The rotated value.</returns>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="count" /> is negative.</exception>
+    /// <exception cref="OverflowException">The rotated value exceeds <see cref="ulong.MaxValue" />.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ulong RotateDigitsLeft(this ulong value, int count)
     {
@@ -120,9 +129,10 @@ public static partial class NumericExtensions
     /// </summary>
     /// <param name="value">The value whose digits are to be rotated.</param>
     /// <returns>The rotated value.</returns>
+    /// <exception cref="OverflowException">The rotated value exceeds <see cref="ushort.MaxValue" />.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ushort RotateDigitsRight(this ushort value) =>
-        (ushort)RotateDigitsCore(value, 1);
+        checked((ushort)RotateDigitsCore(value, 1));
 
     /// <summary>
     /// Rotates the decimal digits of a <see cref="ushort" /> value the specified number of places to the right.
@@ -131,11 +141,12 @@ public static partial class NumericExtensions
     /// <param name="count">The non-negative number of positions to rotate.</param>
     /// <returns>The rotated value.</returns>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="count" /> is negative.</exception>
+    /// <exception cref="OverflowException">The rotated value exceeds <see cref="ushort.MaxValue" />.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ushort RotateDigitsRight(this ushort value, int count)
     {
         ThrowHelper.ThrowIfNegative(count);
-        return (ushort)RotateDigitsCore(value, count);
+        return checked((ushort)RotateDigitsCore(value, count));
     }
 
     /// <summary>
@@ -143,9 +154,10 @@ public static partial class NumericExtensions
     /// </summary>
     /// <param name="value">The value whose digits are to be rotated.</param>
     /// <returns>The rotated value.</returns>
+    /// <exception cref="OverflowException">The rotated value exceeds <see cref="uint.MaxValue" />.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static uint RotateDigitsRight(this uint value) =>
-        (uint)RotateDigitsCore(value, 1);
+        checked((uint)RotateDigitsCore(value, 1));
 
     /// <summary>
     /// Rotates the decimal digits of a <see cref="uint" /> value the specified number of places to the right.
@@ -154,11 +166,12 @@ public static partial class NumericExtensions
     /// <param name="count">The non-negative number of positions to rotate.</param>
     /// <returns>The rotated value.</returns>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="count" /> is negative.</exception>
+    /// <exception cref="OverflowException">The rotated value exceeds <see cref="uint.MaxValue" />.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static uint RotateDigitsRight(this uint value, int count)
     {
         ThrowHelper.ThrowIfNegative(count);
-        return (uint)RotateDigitsCore(value, count);
+        return checked((uint)RotateDigitsCore(value, count));
     }
 
     /// <summary>
@@ -166,6 +179,7 @@ public static partial class NumericExtensions
     /// </summary>
     /// <param name="value">The value whose digits are to be rotated.</param>
     /// <returns>The rotated value.</returns>
+    /// <exception cref="OverflowException">The rotated value exceeds <see cref="ulong.MaxValue" />.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ulong RotateDigitsRight(this ulong value) =>
         RotateDigitsCore(value, 1);
@@ -177,6 +191,7 @@ public static partial class NumericExtensions
     /// <param name="count">The non-negative number of positions to rotate.</param>
     /// <returns>The rotated value.</returns>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="count" /> is negative.</exception>
+    /// <exception cref="OverflowException">The rotated value exceeds <see cref="ulong.MaxValue" />.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ulong RotateDigitsRight(this ulong value, int count)
     {
@@ -259,13 +274,14 @@ public static partial class NumericExtensions
     /// </summary>
     /// <param name="value">The value to reverse.</param>
     /// <returns>The reversed value; <c>0</c> when <paramref name="value" /> is <c>0</c>.</returns>
+    /// <exception cref="OverflowException">The reversed value exceeds <see cref="ulong.MaxValue" />.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static ulong ReverseDigitsCore(ulong value)
     {
         ulong result = 0;
         while (value > 0)
         {
-            result = (result * 10) + (value % 10);
+            result = checked((result * 10) + (value % 10));
             value /= 10;
         }
 
@@ -284,6 +300,7 @@ public static partial class NumericExtensions
     /// The rotated value. Returns <paramref name="value" /> unchanged when it has fewer than two digits or when
     /// <paramref name="count" /> is congruent to zero modulo the digit length.
     /// </returns>
+    /// <exception cref="OverflowException">The rotated value exceeds <see cref="ulong.MaxValue" />.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static ulong RotateDigitsCore(ulong value, int count)
     {
@@ -298,7 +315,7 @@ public static partial class NumericExtensions
 
         ulong divisor = Pow10(count);
         ulong multiplier = Pow10(length - count);
-        return ((value % divisor) * multiplier) + (value / divisor);
+        return checked(((value % divisor) * multiplier) + (value / divisor));
     }
 
     /// <summary>

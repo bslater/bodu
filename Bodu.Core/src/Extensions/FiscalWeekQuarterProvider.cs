@@ -194,7 +194,7 @@ public sealed class FiscalWeekQuarterProvider
         // Resolve the fiscal year once and derive quarter, start, and 53-week length from the same context - the
         // delegating form re-ran the three-candidate year search and week alignments up to four times per call.
         (_, long startTicks, bool is53Week) = ResolveFiscalContext(dateTime);
-        return GetQuarterEndCore(startTicks, ComputeQuarter(dateTime.Ticks, startTicks), is53Week);
+        return GetQuarterEndCore(startTicks, ComputeQuarter(dateTime.Ticks, startTicks), is53Week, dateTime.Kind);
     }
 
     /// <inheritdoc />
@@ -205,7 +205,7 @@ public sealed class FiscalWeekQuarterProvider
         long startTicks = GetFiscalYearStartTicks(fiscalYear);
         bool is53Week = ComputeIs53WeekYear(startTicks, fiscalYear, _anchorMonth, _anchorDayOfWeek, _useNearestDayOfWeek);
 
-        return GetQuarterEndCore(startTicks, quarter, is53Week);
+        return GetQuarterEndCore(startTicks, quarter, is53Week, DateTimeKind.Unspecified);
     }
 
     /// <inheritdoc />
@@ -220,7 +220,7 @@ public sealed class FiscalWeekQuarterProvider
     public DateTime GetQuarterStart(DateTime dateTime)
     {
         (_, long startTicks, _) = ResolveFiscalContext(dateTime);
-        return GetQuarterStartCore(startTicks, ComputeQuarter(dateTime.Ticks, startTicks));
+        return GetQuarterStartCore(startTicks, ComputeQuarter(dateTime.Ticks, startTicks), dateTime.Kind);
     }
 
     /// <inheritdoc />
@@ -228,7 +228,7 @@ public sealed class FiscalWeekQuarterProvider
     {
         ThrowHelper.ThrowIfOutOfRange(quarter, 1, 4);
 
-        return GetQuarterStartCore(GetFiscalYearStartTicks(fiscalYear), quarter);
+        return GetQuarterStartCore(GetFiscalYearStartTicks(fiscalYear), quarter, DateTimeKind.Unspecified);
     }
 
     /// <inheritdoc />
@@ -386,11 +386,12 @@ public sealed class FiscalWeekQuarterProvider
     /// </summary>
     /// <param name="fiscalYearStartTicks">The tick value of the first day of the fiscal year.</param>
     /// <param name="quarter">The quarter number, from 1 through 4.</param>
-    /// <returns>Midnight on the first day of the quarter, with <see cref="DateTimeKind.Unspecified" />.</returns>
-    private static DateTime GetQuarterStartCore(long fiscalYearStartTicks, int quarter)
+    /// <param name="kind">The <see cref="DateTimeKind" /> of the result.</param>
+    /// <returns>Midnight on the first day of the quarter, with the specified <paramref name="kind" />.</returns>
+    private static DateTime GetQuarterStartCore(long fiscalYearStartTicks, int quarter, DateTimeKind kind)
     {
         long startTicks = fiscalYearStartTicks + ((long)(quarter - 1) * 13L * DateTimeExtensions.TicksPerWeek);
-        return new DateTime(DateTimeExtensions.GetDateAsTicks(startTicks), DateTimeKind.Unspecified);
+        return new DateTime(DateTimeExtensions.GetDateAsTicks(startTicks), kind);
     }
 
     /// <summary>
@@ -399,8 +400,9 @@ public sealed class FiscalWeekQuarterProvider
     /// <param name="fiscalYearStartTicks">The tick value of the first day of the fiscal year.</param>
     /// <param name="quarter">The quarter number, from 1 through 4.</param>
     /// <param name="is53WeekYear">Whether the fiscal year spans 53 weeks.</param>
-    /// <returns>Midnight on the last day of the quarter, with <see cref="DateTimeKind.Unspecified" />.</returns>
-    private static DateTime GetQuarterEndCore(long fiscalYearStartTicks, int quarter, bool is53WeekYear)
+    /// <param name="kind">The <see cref="DateTimeKind" /> of the result.</param>
+    /// <returns>Midnight on the last day of the quarter, with the specified <paramref name="kind" />.</returns>
+    private static DateTime GetQuarterEndCore(long fiscalYearStartTicks, int quarter, bool is53WeekYear, DateTimeKind kind)
     {
         long startTicks = fiscalYearStartTicks + ((long)(quarter - 1) * 13L * DateTimeExtensions.TicksPerWeek);
 
@@ -408,6 +410,6 @@ public sealed class FiscalWeekQuarterProvider
         int weeks = (quarter == 4 && is53WeekYear) ? 14 : 13;
         long endTicks = startTicks + ((long)weeks * DateTimeExtensions.TicksPerWeek) - DateTimeExtensions.TicksPerDay;
 
-        return new DateTime(DateTimeExtensions.GetDateAsTicks(endTicks), DateTimeKind.Unspecified);
+        return new DateTime(DateTimeExtensions.GetDateAsTicks(endTicks), kind);
     }
 }

@@ -108,6 +108,26 @@ public partial class BufferConverterTests
     }
 
     /// <summary>
+    /// Verifies that a negative count throws <see cref="ArgumentOutOfRangeException" /> naming <c>count</c>, rather
+    /// than letting the array allocation fail with <see cref="OverflowException" />.
+    /// </summary>
+    /// <param name="count">The negative element count.</param>
+    [TestMethod]
+    [DataRow(-1)]
+    [DataRow(int.MinValue)]
+    public void ToArray_WhenCountIsNegative_ForReadOnlySpan_ShouldThrowArgumentOutOfRangeException(int count)
+    {
+        byte[] data = AscendingBytes;
+
+        ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            ReadOnlySpan<byte> source = data;
+            _ = source.ToArray<byte>(count);
+        });
+        Assert.AreEqual("count", ex.ParamName);
+    }
+
+    /// <summary>
     /// Verifies that a count exceeding the available bytes in the span throws <see cref="ArgumentException" />
     /// from the span-length-insufficient guard.
     /// </summary>

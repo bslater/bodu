@@ -4,7 +4,7 @@ title: Evicting dictionary
 
 # Evicting dictionary
 
-`EvictingDictionary<TKey, TValue>` is a fixed-capacity dictionary that automatically removes the least-worthy entry when capacity is exceeded. It implements the full `IDictionary<TKey, TValue>` surface, so it is a drop-in replacement for `Dictionary<TKey, TValue>` wherever a bounded cache is wanted - the eviction is the only behavioural difference. The victim is selected by one of **six** eviction policies, fixed at construction:
+`EvictingDictionary<TKey, TValue>` is a fixed-capacity dictionary that automatically removes the least-worthy entry when capacity is exceeded. It implements the full `IDictionary<TKey, TValue>` surface, but it is not a drop-in replacement for `Dictionary<TKey, TValue>`: besides evicting, its `Add` adds or replaces rather than throwing on a duplicate key, and its reads update the eviction state. The victim is selected by one of **six** eviction policies, fixed at construction:
 
 | Policy | Evicts | Best for |
 |---|---|---|
@@ -116,7 +116,7 @@ var cache = new EvictingDictionary<string, byte[]>(
 
 ## Pattern 6 - random replacement
 
-`RandomReplacement` keeps no recency or frequency metadata at all - eviction is a uniformly random pick. It is the cheapest policy per write and is a reasonable default when the access pattern has no exploitable locality:
+`RandomReplacement` keeps no recency or frequency metadata at all - eviction is a uniformly random pick, so reads cost nothing extra. Picking the victim walks the keys to a random position, though, so each eviction is O(n) in the entry count. It is a reasonable choice when the access pattern has no exploitable locality and evictions are not the hot path:
 
 ```csharp
 using Bodu.Collections.Generic;
@@ -149,8 +149,10 @@ void OnHeartbeat(string sessionId)
 
 Two events fire around each eviction, both typed `Action<TKey, TValue>`:
 
-- `ItemEvicting` - raised immediately **before** the entry is removed (informational; it cannot cancel the eviction).
+- `ItemEvicting` - raised immediately **before** the entry is removed.
 - `ItemEvicted` - raised immediately **after** removal, when the key and value are no longer present.
+
+Handler exceptions are not caught. One thrown from `ItemEvicting` propagates before the victim is removed, and one thrown from `ItemEvicted` propagates after it; either way the add that triggered the eviction does not store its entry. Because expired entries are removed lazily, such an exception can also surface from a read such as `TryGetValue`.
 
 Use them to flush a dirty entry to its backing store, decrement a resource counter, or emit a metric:
 
@@ -241,17 +243,17 @@ bool alive = cache.ContainsKey("A");          // false - no real waiting
 
 ## Inspecting the next victim
 
-`PeekEvictionCandidate` returns the key that *would* be evicted on the next overflow, or `default` when the dictionary is empty. It is a pure read - it does not touch recency or frequency metadata - so it is safe to call in a monitoring loop:
+`PeekEvictionCandidate` returns the policy's current eviction candidate, or `default` when the dictionary is empty. Under every policy but `RandomReplacement` that is the key the next overflow evicts, unless an entry has expired first (capacity pressure purges expired entries before the policy runs); under `RandomReplacement` it is an arbitrary key, because each eviction draws its victim at random. It is a pure read - it does not touch recency or frequency metadata - so it is safe to call in a monitoring loop:
 
 ```csharp
 TKey? nextOut = cache.PeekEvictionCandidate();
 ```
 
-The `EvictionCount` and `TotalTouches` properties expose running totals of how many entries have been evicted and how many accesses have occurred since construction - useful for cache-effectiveness telemetry.
+The `EvictionCount` and `TotalTouches` properties expose running totals of how many entries have been evicted and how many accesses have occurred since construction or the last `Clear` - useful for cache-effectiveness telemetry.
 
 ## Pattern 9 - assignment semantics
 
-Unlike `Dictionary<TKey, TValue>.Add`, assigning to an existing key replaces the value **and** resets its eviction metadata. Note that `Add(key, value)` here is also add-*or-replace* - it does **not** throw on a duplicate key the way `Dictionary<TKey, TValue>.Add` does. There is no plain `TryAdd` or `GetOrAdd`; use the indexer or `Add` (the only `TryAdd` overload is the TTL-taking one described under [Time-based expiration](#time-based-expiration-ttl)):
+Assigning to an existing key replaces the value **and** counts as an access: LRU and MRU move the entry to the most-recent end, LFU increments its access count, SecondChance sets its flag, and FIFO keeps its position. The accumulated metadata is not reset. Note that `Add(key, value)` here is also add-*or-replace* - it does **not** throw on a duplicate key the way `Dictionary<TKey, TValue>.Add` does. There is no plain `TryAdd` or `GetOrAdd`; use the indexer or `Add` (the only `TryAdd` overload is the TTL-taking one described under [Time-based expiration](#time-based-expiration-ttl)):
 
 <!-- compile -->
 ```csharp
@@ -290,7 +292,7 @@ var cache = new EvictingDictionary<string, int>(
 
 ## Thread safety
 
-`EvictingDictionary<TKey, TValue>` is **not thread-safe**. Concurrent reads can mutate eviction metadata (LRU/MRU recency order, LFU access counts, SecondChance reference flags), so concurrent read-read is also not safe without external synchronization. Wrap with a lock or `ReaderWriterLockSlim` when multiple threads access the same instance, or use the thread-safe variant: [`ConcurrentEvictingDictionary<TKey,TValue>`](concurrent-collections.md) in the companion `Bodu.Collections.Concurrent` package supports all six policies over lock-striped segments, with optional TTL and single-flight `GetOrAdd`.
+`EvictingDictionary<TKey, TValue>` is **not thread-safe**. Concurrent reads can mutate eviction metadata (LRU/MRU recency order, LFU access counts, SecondChance reference flags), so concurrent read-read is also not safe without external synchronization. Wrap every access in an exclusive lock when multiple threads use the same instance (a `ReaderWriterLockSlim` read lock is not enough, because reads write), or use the thread-safe variant: [`ConcurrentEvictingDictionary<TKey,TValue>`](concurrent-collections.md) in the companion `Bodu.Collections.Concurrent` package supports all six policies over lock-striped segments, with optional TTL and single-flight `GetOrAdd`.
 
 ## `Keys` / `Values` enumeration order
 
@@ -303,7 +305,7 @@ Because reads reorder those structures, enumerators are invalidated not only by 
 | Member | Description |
 |---|---|
 | `this[TKey]` (get) | Returns the value; throws `KeyNotFoundException` if absent. Counts as an access (promotes in LRU / MRU / LFU / SecondChance). |
-| `this[TKey]` (set) | Adds or replaces the entry, resetting its eviction metadata. Evicts the policy's victim if capacity is exceeded. |
+| `this[TKey]` (set) | Adds or replaces the entry; a replacement counts as an access (the access count and FIFO position are not reset). Evicts the policy's victim if capacity is exceeded. |
 | `Add(TKey, TValue)` | Add-or-replace; does **not** throw on a duplicate key. Restarts the entry's lifetime when expiry is configured. |
 | `Add(TKey, TValue, TimeSpan)` | Add-or-replace with a per-entry TTL override. Requires an expiration configuration. |
 | `TryAdd(TKey, TValue, TimeSpan)` | Adds with a per-entry TTL only if no live entry exists; returns `false` otherwise. Requires an expiration configuration. |
@@ -313,14 +315,14 @@ Because reads reorder those structures, enumerators are invalidated not only by 
 | `Expiration` | The `EvictingDictionaryExpiration` configuration, or `null` when expiry is disabled (get only). |
 | `Touch(TKey)` | Promotes the key without reading the value; returns `false` if absent. |
 | `TouchOrThrow(TKey)` | As `Touch`, but throws `KeyNotFoundException` when the key is absent. |
-| `PeekEvictionCandidate()` | Returns the key that would be evicted next, or `default` when empty. Pure read. |
+| `PeekEvictionCandidate()` | Returns the policy's current eviction candidate (an arbitrary key under `RandomReplacement`), or `default` when empty. Pure read. |
 | `Remove(TKey)` | Removes the entry. |
 | `Clear()` | Removes all entries and resets the running counters. |
 | `Count` | Number of entries currently held. |
 | `Capacity` | Maximum entries before eviction (get only). |
 | `Policy` | The active `EvictingDictionaryPolicy` (get only). |
-| `EvictionCount` | Total entries evicted since construction. |
-| `TotalTouches` | Total accesses (reads + `Touch`) since construction. |
+| `EvictionCount` | Total entries evicted since construction or the last `Clear`. |
+| `TotalTouches` | Total accesses (reads + `Touch`) since construction or the last `Clear`. |
 | `Keys` / `Values` | Live views in current eviction order (see above). |
 | `ItemEvicting` / `ItemEvicted` | `Action<TKey, TValue>` events raised before / after each eviction. |
 

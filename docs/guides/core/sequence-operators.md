@@ -117,7 +117,7 @@ bool empty   = ((int[]?)null).IsNullOrEmpty();           // true
 a.ForEach(x => Console.Write(x * 10 + " "));             // 10 20 30
 ```
 
-`ZipLongest` continues until *both* sequences are exhausted, padding with `default` or the supplied fill values; `Interleave` takes one element from each sequence in turn and drops sequences as they run out. `Index` is the `(Index, Item)` tuple form of `Select((x, i) => …)`, and `source.Index()` binds cleanly on every framework this package targets. That is worth a note, because it did not use to. .NET 9 added `System.Linq.Enumerable.Index<TSource>` with the same signature as Bodu's, so while the package targeted `net8.0` alone, a consumer on .NET 9 or later resolved the `net8.0` asset - which *contains* Bodu's overload, because the polyfill is compiled out only from `net9.0` upward - and ended up with both in scope and an ambiguous call (`CS0121`), for which this guide used to recommend a fully-qualified static call. Multi-targeting removes the collision at the source: a consumer on .NET 10 resolves the `net10.0` asset, where the polyfill is absent and the BCL's overload is the only candidate, and a consumer on .NET 8 resolves the `net8.0` asset, where Bodu's is. Exactly one exists on either side, so the extension form is unambiguous and the fully-qualified workaround is no longer needed - it would in fact fail to compile against `net10.0`. `ContainsAll` / `ContainsAny` buffer `items` into a set and stream `source`; `IsNullOrEmpty` pulls at most one element.
+`ZipLongest` continues until *both* sequences are exhausted, padding with `default` or the supplied fill values; `Interleave` takes one element from each sequence in turn and drops sequences as they run out. `Index` is the `(Index, Item)` tuple form of `Select((x, i) => …)`, and `source.Index()` binds cleanly for a consumer on .NET 8 or .NET 10. That is worth a note, because .NET 9 added `System.Linq.Enumerable.Index<TSource>` with the same signature as Bodu's, and the polyfill is compiled out only from `net9.0` upward. A consumer on .NET 10 resolves the `net10.0` asset, where the polyfill is absent and the BCL's overload is the only candidate, and a consumer on .NET 8 resolves the `net8.0` asset, where Bodu's is; the fully-qualified static call `IEnumerableExtensions.Index(source)` would in fact fail to compile against `net10.0`. A consumer on .NET 9, which the package does not target, resolves the `net8.0` asset and so sees both overloads, and `source.Index()` is ambiguous there (`CS0121`): call `Enumerable.Index(source)` explicitly, or do not import `Bodu.Collections.Generic.Extensions` in that file. `ContainsAll` / `ContainsAny` buffer `items` into a set and stream `source`; `IsNullOrEmpty` pulls at most one element.
 
 ## Pattern 6 - multi-accumulator `Aggregate`
 
@@ -201,7 +201,7 @@ var untilDll = new[] { root }.RecursiveSelect(
 | `YieldAndBreak` / `SkipAndBreak` | `… \| Break` | Emit (or not) then stop the remaining siblings. |
 | `YieldAndExit` / `SkipAndExit` | `… \| Exit` | Emit (or not) then end the walk. |
 
-The walk is iterative (an explicit stack), so deep hierarchies do not overflow the call stack; the child selector must not return `null`.
+The walk is recursive - one nested iterator per level - so the stack depth and the work per element both grow with the depth of the hierarchy; a child selector may return `null` for a leaf.
 
 ## Pattern 8 - randomization: `Randomize`, `ShuffleHelpers`, and `IRandomGenerator`
 
@@ -293,9 +293,9 @@ var unbounded = SequenceGenerator.NextWhile(1L, _ => true, x => x * 3).Take(6); 
 | Member | Yields | Finite? |
 |---|---|---|
 | `Range(int start, int stop)` | consecutive integers from `start` to `stop` inclusive, ascending or descending | yes |
-| `Range(int start, int stop, int step)` | `start`, `start + step`, … while within `stop` | yes |
+| `Range(int start, int stop, int step)` | `start`, `start + step`, … while within `stop` (inclusive) | yes, unless `step` is 0, which repeats `start` forever |
 | `Range(long start, int count)` | `count` consecutive 64-bit integers | yes |
-| `NextWhile(initial, condition, successor)` (+ index-aware and custom-state overloads) | `initial`, then `successor(previous)` while `condition` holds | **only if `condition` eventually fails** - the one open-ended member; bound with `Take` |
+| `NextWhile(initial, condition, successor)` (+ index-aware and custom-state overloads) | `initial`, then `successor(previous)` while `condition` holds | **only if `condition` eventually fails** - open-ended, like `Range` at step 0 and `Leibniz` with `min` 0; bound with `Take` |
 | `Factory(Func<IEnumerator<T>>)` | whatever the factory's enumerator yields, fresh per enumeration | as finite as the enumerator you supply |
 | `Fibonacci(long min, long max)` | Fibonacci numbers in `[min, max)` | yes |
 | `Farey(int order)` | the Farey sequence Fₙ as `(Numerator, Denominator)` in lowest terms | yes |

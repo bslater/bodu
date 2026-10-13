@@ -16,9 +16,9 @@ namespace Bodu.Collections.Generic;
 /// <remarks>
 /// <para>
 /// <see cref="IndexedSet{T}" /> shares its backing storage with <see cref="OrderedSet{T}" /> via the internal
-/// <see cref="OrderedSetStorage{T}" /> engine: a contiguous element array for deterministic index order plus an
-/// open-addressing hash table for O(1) <see cref="Contains" /> and <see cref="IndexOf" />. No BCL collection types are
-/// used as backing storage.
+/// <see cref="OrderedSetStorage{T}" /> engine: a contiguous element array for deterministic index order plus a chained
+/// hash table for O(1) <see cref="Contains" /> and <see cref="IndexOf" />. No BCL collection types are used as backing
+/// storage.
 /// </para>
 /// <para>
 /// Use <see cref="IndexedSet{T}" /> when callers need positional mutation - <see cref="Insert" />,
@@ -155,7 +155,7 @@ public sealed partial class IndexedSet<T>
     /// Gets or replaces the element at the specified zero-based index.
     /// </summary>
     /// <param name="index">The zero-based index of the element to access.</param>
-    /// <returns>The element at <paramref name="index" />.</returns>
+    /// <value>The element at <paramref name="index" />.</value>
     /// <exception cref="ArgumentNullException">The replacement value is <see langword="null" />.</exception>
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="index" /> is negative or greater than or equal to <see cref="Count" />.

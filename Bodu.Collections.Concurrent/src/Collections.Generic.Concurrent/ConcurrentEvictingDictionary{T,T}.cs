@@ -506,8 +506,8 @@ public sealed partial class ConcurrentEvictingDictionary<TKey, TValue>
     }
 
     /// <summary>
-    /// Gets the total number of items evicted from the dictionary since creation, whether by capacity pressure or
-    /// time-based expiry.
+    /// Gets the total number of items evicted from the dictionary since creation or the last <see cref="Clear" />,
+    /// whether by capacity pressure or time-based expiry.
     /// </summary>
     /// <value>The cumulative eviction count. Reset to zero by <see cref="Clear" />.</value>
     public long EvictionCount => Interlocked.Read(ref _evictionCount);

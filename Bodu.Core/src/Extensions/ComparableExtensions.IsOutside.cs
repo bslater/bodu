@@ -23,7 +23,9 @@ public static partial class ComparableExtensions
     /// </returns>
     /// <remarks>
     /// <para>
-    /// If any of the parameters are <c>null</c>, the method returns <c>false</c>.
+    /// If either bound is <see langword="null" />, the method returns <see langword="false" />. A
+    /// <see langword="null" /> <paramref name="value" /> of a reference type throws
+    /// <see cref="NullReferenceException" />.
     /// </para>
     /// <para>
     /// The order of <paramref name="value1" /> and <paramref name="value2" /> does not matter.
@@ -53,7 +55,8 @@ public static partial class ComparableExtensions
     /// </exception>
     /// <remarks>
     /// <para>
-    /// If any of the parameters are <c>null</c>, the method returns <c>false</c>.
+    /// If <paramref name="value1" /> or <paramref name="value2" /> is <see langword="null" />, the method returns
+    /// <see langword="false" />.
     /// </para>
     /// <para>
     /// The order of <paramref name="value1" /> and <paramref name="value2" /> does not matter.

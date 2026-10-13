@@ -84,8 +84,9 @@ public static partial class DateOnlyExtensions
     /// </para>
     /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown if <paramref name="workingWeek" /> is not a defined <see cref="WorkingDaysOfWeek" /> value, -or- the
-    /// resulting date is earlier than <see cref="DateOnly.MinValue" />.
+    /// Thrown if <paramref name="workingWeek" /> is not a defined <see cref="WorkingDaysOfWeek" /> value or is
+    /// <see cref="WorkingDaysOfWeek.Custom" />, which names no first day of the week, -or- the resulting date is
+    /// earlier than <see cref="DateOnly.MinValue" />.
     /// </exception>
     public static DateOnly FirstDateOfWeek(this DateOnly date, WorkingDaysOfWeek workingWeek)
     {

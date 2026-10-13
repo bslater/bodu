@@ -117,7 +117,9 @@ public static partial class IEnumerableExtensions
     /// </summary>
     /// <param name="source">The root sequence to traverse recursively.</param>
     /// <param name="childSelector">A delegate that returns child elements for a given item.</param>
-    /// <param name="selector">A projection that receives each element and its zero-based index.</param>
+    /// <param name="selector">
+    /// A projection that receives each element and its zero-based index within its own sibling list.
+    /// </param>
     /// <returns>
     /// A depth-first, recursively flattened sequence with projected values using the element and its index.
     /// </returns>
@@ -138,7 +140,7 @@ public static partial class IEnumerableExtensions
     /// };
     ///
     /// var labeled = root.RecursiveSelect(n => ((Node)n).Children, (n, i) => $"{i}: {((Node)n).Name}");
-    /// // Yields: "0: A", "1: B", "2: C", "3: D"
+    /// // Yields: "0: A", "0: B", "1: C", "1: D" - the index counts within each sibling list
     ///]]>
     /// </code>
     /// </example>
@@ -165,7 +167,10 @@ public static partial class IEnumerableExtensions
     /// </summary>
     /// <param name="source">The root sequence to traverse recursively.</param>
     /// <param name="childSelector">A delegate that returns child elements for a given item.</param>
-    /// <param name="selector">A projection that receives the element, its index, and its recursion depth.</param>
+    /// <param name="selector">
+    /// A projection that receives the element, its zero-based index within its own sibling list, and its recursion
+    /// depth.
+    /// </param>
     /// <returns>A flattened sequence of projected elements with access to structural context (index, depth).</returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown if <paramref name="source" />, <paramref name="childSelector" />, or <paramref name="selector" /> is
@@ -188,9 +193,9 @@ public static partial class IEnumerableExtensions
     ///
     /// // Yields:
     /// // { Name = "A", Index = 0, Depth = 0 }
-    /// // { Name = "B", Index = 1, Depth = 1 }
-    /// // { Name = "C", Index = 2, Depth = 1 }
-    /// // { Name = "D", Index = 3, Depth = 0 }
+    /// // { Name = "B", Index = 0, Depth = 1 }
+    /// // { Name = "C", Index = 1, Depth = 1 }
+    /// // { Name = "D", Index = 1, Depth = 0 }
     ///]]>
     /// </code>
     /// </example>
@@ -213,15 +218,19 @@ public static partial class IEnumerableExtensions
     /// </summary>
     /// <param name="source">The root sequence to traverse recursively.</param>
     /// <param name="childSelector">A delegate that returns child elements for a given item.</param>
-    /// <param name="selector">A projection that receives the element, its index, and its recursion depth.</param>
+    /// <param name="selector">
+    /// A projection that receives the element, its zero-based index within its own sibling list, and its recursion
+    /// depth.
+    /// </param>
     /// <param name="recursionControl">
     /// A delegate that determines how each element in the sequence should be handled during recursion. It returns a
     /// <see cref="RecursiveSelectControl" /> value indicating whether to yield the element, recurse into its children,
     /// skip it, or terminate the traversal entirely.
     /// </param>
     /// <returns>
-    /// A sequence of projected elements, where children are included only if <paramref name="recursionControl" />
-    /// returns <see langword="true" />.
+    /// A sequence of projected elements, where an element's children are visited only when
+    /// <paramref name="recursionControl" /> returns a value that includes <see cref="RecursiveSelectControl.Recurse" />
+    /// for it.
     /// </returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown if <paramref name="source" />, <paramref name="childSelector" />, <paramref name="selector" />, or

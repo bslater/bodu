@@ -6,7 +6,7 @@ uid: Bodu.Extensions
 
 ## Purpose
 
-**Bodu.Extensions** is the extension-method surface of `Bodu.Core`. It carries 15+ static classes covering date / time, numeric, span, array, string, enum, comparable, sequence, and stream operations - the framework-style helpers that keep ceremony out of hot paths in the rest of the Bodu solution and in consumer code.
+**Bodu.Extensions** is the extension-method surface of `Bodu.Core`. It carries static classes covering date / time, numeric, span, array, string, enum, comparable, and stream operations - the framework-style helpers that keep ceremony out of hot paths in the rest of the Bodu solution and in consumer code.
 
 This is the single highest-leverage namespace in `Bodu.Core` by surface area. Reach for it when you need a `DateTime` calendar / week operation that the BCL doesn't ship, when you need a `decimal`-aware significant-digit rounding helper, when you need string `SliceSafe` / `Wrap` / `Quote` / `ToSlug` / case-conversion utilities, or when you need bit / byte rotation and reversal across the unsigned integer types.
 
@@ -35,7 +35,7 @@ This is the single highest-leverage namespace in `Bodu.Core` by surface area. Re
 
 **Numeric**
 
-- <xref:Bodu.Extensions.NumericExtensions> - `Digits`, `GetBytes`, `GreatestCommonDivisor`, `IsPrime`, `LeastCommonMultiple`, `ReverseBits`, `ReverseBytes`, `ReverseWords`, `RotateBitsLeft` / `Right`, `RoundToSignificantDigits`, unchecked arithmetic helpers.
+- <xref:Bodu.Extensions.NumericExtensions> - `GetBytes`, `GreatestCommonDivisor`, `IsPrime`, `LeastCommonMultiple`, `ReverseBits`, `ReverseBytes`, `ReverseDigits`, `ReverseWords`, `RotateBitsLeft` / `Right`, `RotateDigitsLeft` / `Right`, `RoundToSignificantDigits`, `ToDigitArray`.
 
 **Span, array, stream, buffer**
 
@@ -47,8 +47,8 @@ This is the single highest-leverage namespace in `Bodu.Core` by surface area. Re
 **Strings**
 
 - <xref:Bodu.Extensions.StringExtensions> - `After`, `Before`, `Between`, `Brace`, `Bracket`, `CollapseWhitespace`, `Contains` / `EndsWith` / `StartsWith` variants, `EnsureEndsWith` / `EnsureStartsWith`, `Indent`, `IsValidIdentifier`, `Keep` / `Remove` variants, `NormalizeLineEndings`, `Outdent`, `Parenthesize`, `Parse`, `PrefixLines`, `Quote`, `RemoveControlCharacters`, `RemoveDiacritics`, `SliceSafe`, case conversions (`ToCamelCase`, `ToPascalCase`, `ToSnakeCase`, `ToKebabCase`, …), `Truncate`, `Unwrap`, `Wrap`, slug generation.
-- <xref:Bodu.Extensions.IdentifierCase> - case convention enum used by `IsValidIdentifier` / case conversions.
-- <xref:Bodu.Extensions.SentenceCaseOptions>, <xref:Bodu.Extensions.TitleCaseOptions>, <xref:Bodu.Extensions.WordCasingOptions>, <xref:Bodu.Extensions.SlugOptions> - option flags consumed by the casing helpers.
+- <xref:Bodu.Extensions.IdentifierCase> - case convention enum consumed by `ToIdentifier(IdentifierCase)`.
+- <xref:Bodu.Extensions.SentenceCaseOptions>, <xref:Bodu.Extensions.TitleCaseOptions> - flag enums consumed by `ToSentenceCase` and `ToTitleCase`; <xref:Bodu.Extensions.WordCasingOptions>, <xref:Bodu.Extensions.SlugOptions> - option classes consumed by the casing helpers and `ToSlug`.
 
 **Comparable**
 
@@ -57,7 +57,8 @@ This is the single highest-leverage namespace in `Bodu.Core` by surface area. Re
 
 **Enums**
 
-- <xref:Bodu.Extensions.EnumExtensions> - flag operations: `SetFlag`, `ClearFlag`, `HasAllFlags`, `HasAnyFlag`, `ToggleFlag`, plus bit-conversion helpers between flag enums and their underlying integer representations.
+- <xref:Bodu.Extensions.EnumExtensions> - flag operations: `SetFlag`, `ClearFlag`, `HasAllFlags`, `HasAnyFlag`, `ToggleFlag`, plus the attribute readers `GetDescription`, `TryGetDescription`, and `GetDisplayName`.
+- <xref:Bodu.Extensions.Enums> - cached `GetValues`, `GetNames`, `TryParse`, and `TryParseDescription` per enumeration type.
 
 ## Example
 
@@ -67,7 +68,7 @@ using Bodu.Extensions;
 // Calendar arithmetic - first Monday of July, ISO week, age.
 DateTime monday = new DateTime(2026, 7, 1).FirstDateOfWeekInMonth(DayOfWeek.Monday);
 DateTime endQ   = DateTime.Today.LastDateOfQuarter();
-int isoWeek    = DateTime.Today.IsoWeekOfYear();
+int isoWeek    = DateTime.Today.IsoWeekOfYear;    // C# 14 extension property
 int age        = new DateOnly(1990, 5, 4).Age();
 
 // Numeric - bit operations and rounding.
@@ -83,8 +84,8 @@ string url = "https://example.com/a/b?x=1".Between("//", "/");  // "example.com"
 
 ## Notes
 
-- **Pure extensions.** Every type here is a static class. There are no instance types and no allocations on the helpers themselves; cost is the work they perform on their arguments.
-- **Culture-aware where it matters.** Date / time / culture-sensitive string helpers accept an `IFormatProvider` or `CultureInfo`. The defaults follow the BCL convention (current culture for parsing, invariant culture for format).
+- **Mostly static helpers.** Most types here are static classes of extension methods; the instance types are <xref:Bodu.Extensions.NaturalStringComparer>, <xref:Bodu.Extensions.FiscalWeekQuarterProvider>, <xref:Bodu.Extensions.WordCasingOptions>, and <xref:Bodu.Extensions.SlugOptions>, alongside the provider interfaces and the calendar-shape enums. Helpers that return a new array or string - `ToReversed`, `Slice`, `PadLeft`, the casing conversions - allocate their result.
+- **Culture-aware where it matters.** Date / time / culture-sensitive string helpers accept an `IFormatProvider` or `CultureInfo`. The defaults: `StringExtensions.Parse<T>` and the string casing helpers use the invariant culture; `DayName`, `MonthName`, and the culture week-numbering members use the current culture.
 - **Argument validation.** All public extension methods go through the centralised <xref:Bodu.ThrowHelper> validation surface for null / range / array-length checks.
 - **Companion namespaces.** Sequence-shaping helpers for `IEnumerable<T>` / `IList<T>` live in <xref:Bodu.Collections.Extensions> and <xref:Bodu.Collections.Generic.Extensions>. Globalisation-specific date helpers used by the calendar package live in <xref:Bodu.Globalization.Extensions>.
 - **See also:** the [Bodu.Core introduction](~/docs/core/index.md), the [`DateTimeExtensions`](xref:Bodu.Extensions.DateTimeExtensions) / [`StringExtensions`](xref:Bodu.Extensions.StringExtensions) / [`NumericExtensions`](xref:Bodu.Extensions.NumericExtensions) full references.

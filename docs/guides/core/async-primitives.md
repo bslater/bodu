@@ -223,7 +223,7 @@ public void OnSignalChanged()
 
 ## Where to go next
 
-- [Circular buffer](circular-buffer.md) - a fixed-capacity FIFO ring buffer, another Bodu.Core foundation type.
+- [Circular buffer](circular-buffer.md) - a fixed-capacity FIFO ring buffer from the Bodu.Collections package.
 - [Concurrent collections](concurrent-collections.md) - thread-safe collections that pair with these gates.
 - [Bodu.Core introduction](../../docs/core/index.md) - install notes and the headline types at a glance.
 - [Bodu.Threading API reference](xref:Bodu.Threading) - full namespace overview.

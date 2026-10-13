@@ -23,6 +23,21 @@ public partial class DateOnlyExtensionsTests
 
         Assert.AreEqual(start, next);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="DateOnlyExtensions.NextOccurrence(DateOnly, int, DateOnly)" /> returns the start when
+    /// <c>after</c> equals <c>start</c>, as the <see cref="DateTime" /> overload does.
+    /// </summary>
+    [TestMethod]
+    public void NextOccurrence_WhenAfterEqualsStart_ShouldReturnStart()
+    {
+        var start = new DateOnly(2024, 1, 10);
+
+        DateOnly next = start.NextOccurrence(intervalDays: 3, after: start);
+
+        Assert.AreEqual(start, next);
+    }
+
     /// <summary>
     /// Verifies that <see cref="DateOnlyExtensions.NextOccurrence(DateOnly, int, DateOnly)" /> returns the next aligned occurrence
     /// strictly after the supplied reference date.

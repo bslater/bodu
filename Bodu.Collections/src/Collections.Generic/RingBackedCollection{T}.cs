@@ -209,7 +209,7 @@ public abstract partial class RingBackedCollection<T>
     /// Gets the element at the specified zero-based logical index, where <c>0</c> refers to the head element.
     /// </summary>
     /// <param name="index">The zero-based, head-relative index. Must be in <c>[0, Count)</c>.</param>
-    /// <returns>The element at the given logical position.</returns>
+    /// <value>The element at the given logical position.</value>
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="index" /> is negative or not less than <see cref="Count" />.
     /// </exception>

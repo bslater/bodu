@@ -25,7 +25,8 @@ public sealed class SystemRandomAdapter
     /// <see cref="System.Random" /> instance.
     /// </summary>
     /// <remarks>
-    /// The <see cref="System.Random" /> default constructor is used, which seeds the generator from the system clock.
+    /// The <see cref="System.Random" /> default constructor is used, which produces an unpredictable, non-reproducible
+    /// seed.
     /// </remarks>
     public SystemRandomAdapter()
         : this(new Random()) { }

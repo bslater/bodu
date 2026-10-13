@@ -13,7 +13,9 @@ public static partial class GraphAlgorithms
     /// </summary>
     /// <typeparam name="T">The vertex type.</typeparam>
     /// <param name="graph">The graph to partition.</param>
-    /// <returns>A list of components, each containing the vertices that are mutually reachable.</returns>
+    /// <returns>
+    /// A list of components, each containing the vertices that are connected when edge direction is ignored.
+    /// </returns>
     /// <exception cref="ArgumentNullException"><paramref name="graph" /> is <see langword="null" />.</exception>
     /// <remarks>
     /// For a directed graph this yields the weakly connected components - vertices are grouped without regard to edge

@@ -34,6 +34,26 @@ public partial class FiscalWeekQuarterProviderTests
     public void GetQuarterEnd_WhenCalledWithQuarterAndFiscalYear_ShouldReturnUnspecifiedKind() => Assert.AreEqual(DateTimeKind.Unspecified, s_sunday52.GetQuarterEnd(1, Sunday52FiscalYear).Kind);
 
     /// <summary>
+    /// Verifies that <see cref="FiscalWeekQuarterProvider.GetQuarterEnd(DateTime)" /> preserves the
+    /// <see cref="DateTime.Kind" /> of the supplied date, as <see cref="IQuarterDefinitionProvider.GetQuarterEnd(DateTime)" />
+    /// documents.
+    /// </summary>
+    /// <param name="kind">The kind of the supplied date.</param>
+    [TestMethod]
+    [DataRow(DateTimeKind.Utc)]
+    [DataRow(DateTimeKind.Local)]
+    [DataRow(DateTimeKind.Unspecified)]
+    public void GetQuarterEnd_WhenDateTimeHasKind_ShouldPreserveKind(DateTimeKind kind)
+    {
+        var date = new DateTime(2024, 5, 15, 13, 45, 0, kind);
+
+        DateTime actual = s_sunday52.GetQuarterEnd(date);
+
+        Assert.AreEqual(kind, actual.Kind);
+        Assert.AreEqual(s_sunday52.GetQuarterEnd(new DateTime(2024, 5, 15)).Ticks, actual.Ticks);
+    }
+
+    /// <summary>
     /// Verifies that the end of each quarter is exactly one day before the start of the next quarter
     /// for Q1 through Q3, across all four providers.
     /// </summary>

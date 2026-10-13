@@ -41,7 +41,7 @@ namespace Bodu.Collections.Generic;
 /// </item>
 /// <item>
 /// <term><see cref="LeastRecentlyUsed" /></term>
-/// <description><c>"C"</c> - the item least recently accessed (A was accessed, C was not).</description>
+/// <description><c>"B"</c> - the item least recently accessed (A's access made it the most recent).</description>
 /// </item>
 /// <item>
 /// <term><see cref="LeastFrequentlyUsed" /></term>
@@ -58,7 +58,8 @@ namespace Bodu.Collections.Generic;
 /// <item>
 /// <term><see cref="SecondChance" /></term>
 /// <description>
-/// <c>"B"</c> - evicted after its reference bit is cleared; <c>"A"</c> is spared due to recent access.
+/// <c>"B"</c> - <c>"A"</c>, the oldest, has its reference bit cleared and moves to the back; <c>"B"</c>, never
+/// re-referenced, is evicted.
 /// </description>
 /// </item>
 /// </list>

@@ -142,8 +142,9 @@ public static partial class SequenceGenerator
     /// the final value emitted is <c><paramref name="start" /> + <paramref name="count" /> - 1</c>.
     /// </para>
     /// <para>
-    /// Overflow is rejected up-front by the argument validation, so the iterator never throws mid-enumeration.
-    /// Iteration is deferred, deterministic, and allocation-free apart from the iterator state.
+    /// Overflow is rejected by the argument validation, which runs on the first <c>MoveNext</c> - before any element is
+    /// produced - so the iterator never throws after it has started yielding. Iteration is deferred, deterministic, and
+    /// allocation-free apart from the iterator state.
     /// </para>
     /// </remarks>
     /// <example>

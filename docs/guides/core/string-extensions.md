@@ -254,7 +254,7 @@ string sentence = "the API of the iPhone. a second sentence".ToSentenceCase();
                                             // "The api of the iPhone. A second sentence"
 ```
 
-The parameterless overloads use <xref:Bodu.Extensions.WordCasingOptions.Default> - invariant culture, the built-in acronym list recognised for *splitting*, mixed-case brand words (`iPhone`, `eBay`) preserved, and every word re-cased (which is why `HTTP` becomes `Http` above). Pass a <xref:Bodu.Extensions.WordCasingOptions> to change that:
+The parameterless camel, Pascal, snake, kebab, constant, dot, and train overloads use <xref:Bodu.Extensions.WordCasingOptions.Default> - invariant culture, the built-in acronym list recognised for *splitting*, and mixed-case brand words (`iPhone`, `eBay`) preserved. `ToTitleCase()` and `ToSentenceCase()` instead use `TitleCaseOptions.None` / `SentenceCaseOptions.None`, which preserve no acronyms, so every word is re-cased - which is why `HTTP` becomes `Http` above; `ToTitleCase(WordCasingOptions.Default)` keeps `HTTP`. Pass a <xref:Bodu.Extensions.WordCasingOptions> to change any of this:
 
 <!-- compile -->
 ```csharp
@@ -321,7 +321,7 @@ string file = "report: q1/q2 <final>.pdf".ToSafeFileName();   // on Linux: "repo
 | `ToIdentifier(IdentifierCase)` | As above, then reshapes the detected words to <xref:Bodu.Extensions.IdentifierCase> `Camel`, `Pascal`, or `Snake` (`Preserve` is the default). |
 | `IsValidIdentifier()` | A letter or `_` followed by letters, digits, `_`, or connector punctuation. It is a syntactic check - it does not reject C# keywords. |
 | `ToSafeFileName()` | Replaces every character in <xref:System.IO.Path.GetInvalidFileNameChars> with `_`. The invalid set is **platform-dependent**: on Windows `:`, `<`, `>`, `"`, `|`, `?`, `*` and the control characters are replaced too; on Linux only `/` and NUL are. |
-| `ToSafePathSegment()` | The same set plus both directory separators, so the result can never escape into a parent or child segment. |
+| `ToSafePathSegment()` | The same set plus `/` and `\` on every platform, so the result can never escape into a parent or child segment. |
 
 ## Pattern 10 - truncation, slicing, Base64, and parsing
 

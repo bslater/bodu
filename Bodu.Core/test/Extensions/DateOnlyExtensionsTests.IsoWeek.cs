@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Globalization;
+
 namespace Bodu.Extensions;
 
 public partial class DateOnlyExtensionsTests
@@ -64,6 +66,36 @@ public partial class DateOnlyExtensionsTests
     [DataRow(2020, 53)]   // 2020-01-01 is Wednesday but Dec 31 is Thursday → 53
     [DataRow(2026, 53)]   // 2026-01-01 is Thursday → 53
     public void GetIsoWeeksInYear_ShouldReturnExpectedWeekCount(int year, int expected) => Assert.AreEqual(expected, DateOnlyExtensions.GetIsoWeeksInYear(year));
+
+    /// <summary>
+    /// Verifies that <see cref="DateOnlyExtensions.GetIsoWeeksInYear(int)" /> returns the week count that
+    /// <see cref="ISOWeek.GetWeeksInYear(int)" /> reports, for years whose first or last days straddle a Thursday.
+    /// </summary>
+    /// <param name="year">The ISO year to evaluate.</param>
+    [TestMethod]
+    [DataRow(2003)]   // 52 weeks
+    [DataRow(2004)]   // 53 weeks
+    [DataRow(2031)]   // 52 weeks
+    [DataRow(2032)]   // 53 weeks
+    public void GetIsoWeeksInYear_WhenComparedWithIsoWeek_ShouldReturnSameWeekCount(int year) =>
+        Assert.AreEqual(ISOWeek.GetWeeksInYear(year), DateOnlyExtensions.GetIsoWeeksInYear(year));
+
+    /// <summary>
+    /// Verifies that <see cref="DateOnlyExtensions.GetFirstDateOfIsoWeek(int, int)" /> and
+    /// <see cref="DateOnlyExtensions.GetLastDateOfIsoWeek(int, int)" /> return the Monday and Sunday that
+    /// <see cref="ISOWeek.ToDateTime(int, int, DayOfWeek)" /> reports for the last week of an ISO year.
+    /// </summary>
+    /// <param name="isoYear">The ISO year.</param>
+    /// <param name="isoWeek">The last ISO week of <paramref name="isoYear" />.</param>
+    [TestMethod]
+    [DataRow(2003, 52)]
+    [DataRow(2004, 53)]
+    [DataRow(2009, 53)]
+    public void GetFirstDateOfIsoWeek_WhenWeekIsLastOfIsoYear_ShouldMatchIsoWeekToDateTime(int isoYear, int isoWeek)
+    {
+        Assert.AreEqual(DateOnly.FromDateTime(ISOWeek.ToDateTime(isoYear, isoWeek, DayOfWeek.Monday)), DateOnlyExtensions.GetFirstDateOfIsoWeek(isoYear, isoWeek));
+        Assert.AreEqual(DateOnly.FromDateTime(ISOWeek.ToDateTime(isoYear, isoWeek, DayOfWeek.Sunday)), DateOnlyExtensions.GetLastDateOfIsoWeek(isoYear, isoWeek));
+    }
 
     /// <summary>
     /// Verifies that <see cref="DateOnlyExtensions.GetIsoWeeksInYear(int)" /> throws when the year is outside the

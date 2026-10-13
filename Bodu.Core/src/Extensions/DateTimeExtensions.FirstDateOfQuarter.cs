@@ -112,8 +112,10 @@ public static partial class DateTimeExtensions
     /// <paramref name="provider" /> - for example, 4-4-5 retail calendars or regional fiscal quarters.
     /// </para>
     /// <para>
-    /// The returned value has its time component normalized to midnight (00:00:00), and the original
-    /// <see cref="DateTime.Kind" /> is retained.
+    /// The value is returned exactly as <see cref="IQuarterDefinitionProvider.GetQuarterStart(DateTime)" /> supplies
+    /// it. That member is documented to return midnight (00:00:00) with the original <see cref="DateTime.Kind" />
+    /// preserved, as the built-in <see cref="FiscalWeekQuarterProvider" /> does; a custom provider is responsible for
+    /// the same.
     /// </para>
     /// </remarks>
     /// <exception cref="ArgumentNullException">
@@ -186,8 +188,10 @@ public static partial class DateTimeExtensions
     /// </para>
     /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown if <paramref name="quarter" /> is less than 1 or greater than 4, -or- <paramref name="definition" /> is
-    /// not a defined value of the <see cref="CalendarQuarterDefinition" /> enumeration.
+    /// Thrown if <paramref name="year" /> is less than 1 or greater than 9999, -or- <paramref name="quarter" /> is less
+    /// than 1 or greater than 4, -or- <paramref name="definition" /> is not a defined value of the
+    /// <see cref="CalendarQuarterDefinition" /> enumeration, -or- the first day of the quarter falls after 31 December
+    /// 9999.
     /// </exception>
     /// <exception cref="InvalidOperationException">
     /// Thrown if <paramref name="definition" /> is <see cref="CalendarQuarterDefinition.Custom" />; use a
@@ -195,6 +199,7 @@ public static partial class DateTimeExtensions
     /// </exception>
     public static DateTime GetFirstDateOfQuarter(int year, int quarter, CalendarQuarterDefinition definition)
     {
+        ThrowHelper.ThrowIfOutOfRange(year, MinYear, MaxYear);
         ThrowHelper.ThrowIfOutOfRange(quarter, 1, 4);
         ThrowHelper.ThrowIfEnumValueIsUndefined(definition);
 

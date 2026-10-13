@@ -106,8 +106,9 @@ public static partial class DateTimeExtensions
     /// </para>
     /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown if <paramref name="workingWeek" /> is not a defined <see cref="WorkingDaysOfWeek" /> value, -or- the
-    /// resulting date is earlier than <see cref="DateTime.MinValue" /> or later than <see cref="DateTime.MaxValue" />.
+    /// Thrown if <paramref name="workingWeek" /> is not a defined <see cref="WorkingDaysOfWeek" /> value or is
+    /// <see cref="WorkingDaysOfWeek.Custom" />, which names no first day of the week, -or- the resulting date is
+    /// earlier than <see cref="DateTime.MinValue" /> or later than <see cref="DateTime.MaxValue" />.
     /// </exception>
     public static DateTime LastDateOfWeek(this DateTime dateTime, WorkingDaysOfWeek workingWeek)
     {

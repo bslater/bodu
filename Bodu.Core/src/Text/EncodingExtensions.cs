@@ -32,8 +32,12 @@ namespace Bodu.Text;
 /// </item>
 /// </list>
 /// <para>
-/// Pooled allocation surfaces are aligned with <see cref="Buffers.PooledBufferBuilder{T}" /> so that all pool-returning
-/// extensions share a single implementation path and the same lifetime semantics.
+/// Pooled allocation surfaces come in three forms with different lifetimes. The <c>*Rented</c> methods return a bare
+/// array rented from <see cref="System.Buffers.ArrayPool{T}.Shared" />, which the caller returns. The <c>*Pooled</c>
+/// methods return a <see cref="Buffers.PooledBufferBuilder{T}" />, whose disposal returns its rental.
+/// <c>ToOwnedBytes</c> and the <c>*Owner</c> methods return an <see cref="System.Buffers.IMemoryOwner{T}" /> rented
+/// from a <see cref="System.Buffers.MemoryPool{T}" /> (<see cref="System.Buffers.MemoryPool{T}.Shared" /> by default)
+/// and sliced to the encoded length, whose disposal returns it.
 /// </para>
 /// </remarks>
 /// <example>

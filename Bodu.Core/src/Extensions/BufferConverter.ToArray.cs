@@ -50,18 +50,20 @@ public static partial class BufferConverter
     /// <param name="count">The number of elements to copy.</param>
     /// <returns>A new array of <typeparamref name="T" /> elements.</returns>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="count" /> is negative or exceeds the available bytes.
+    /// <paramref name="count" /> is negative, or <paramref name="count" /> multiplied by the size of
+    /// <typeparamref name="T" /> exceeds <see cref="int.MaxValue" />.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="sourceSpan" /> holds fewer than <paramref name="count" /> elements of <typeparamref name="T" />.
     /// </exception>
     /// <remarks>
     /// The method assumes that the span represents elements of type <typeparamref name="T" /> using platform-native
     /// endianness.
     /// </remarks>
-    /// <exception cref="ArgumentException">
-    /// Thrown when a span or array argument does not meet a length or offset precondition.
-    /// </exception>
     public static T[] ToArray<T>(this ReadOnlySpan<byte> sourceSpan, int count)
         where T : unmanaged
     {
+        ThrowHelper.ThrowIfNegative(count);
         int elementSize = Unsafe.SizeOf<T>();
         ThrowHelper.ThrowIfMultiplyOverflows(count, elementSize);
         ThrowHelper.ThrowIfSpanLengthIsInsufficient(sourceSpan, 0, count * elementSize);

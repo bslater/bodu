@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SequenceGenerator.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -20,8 +20,8 @@ namespace Bodu.Sequences;
 /// </para>
 /// <para>
 /// The general-purpose primitives cover numeric and value projections, stateful generation, and enumerator adaptation.
-/// <c>Range</c> overloads accept either an inclusive start / exclusive stop pair (with an inferred step direction) or
-/// an explicit step, and operate over <see cref="int" /> and <see cref="long" /> domains. For a fixed-length
+/// <c>Range</c> overloads accept either an inclusive start / inclusive stop pair (with an inferred step direction or an
+/// explicit step) over <see cref="int" />, or a start and an element count over <see cref="long" />. For a fixed-length
 /// single-value feed, use <see cref="System.Linq.Enumerable.Repeat{TResult}(TResult, int)" />. <c>NextWhile</c> drives
 /// a state-machine-style generator from an initial state and a transition delegate, terminating when the supplied
 /// predicate is no longer satisfied. <c>Factory</c> wraps a delegate-returned <see cref="IEnumerator{T}" /> so callers
@@ -30,9 +30,9 @@ namespace Bodu.Sequences;
 /// <para>
 /// The mathematical catalogue is intentionally narrow - it covers reference sequences that appear repeatedly in
 /// numerical recipes, algorithm exercises, and educational material, but it is not a general-purpose recurrence
-/// framework. Most of these generators take inclusive bounds over the value space (<c>min</c>, <c>max</c>) rather than
-/// element counts, while the Farey and look-and-say overloads accept an order or count parameter where bounds are not
-/// meaningful. Refer to each member's documentation for the exact bounding rule.
+/// framework. Bounding rules differ per generator: Fibonacci and Leibniz take a half-open value window (<c>min</c>
+/// inclusive, <c>max</c> exclusive), while Farey, Thue-Morse, and look-and-say take an order or count. Refer to each
+/// member's documentation for the exact bounding rule.
 /// </para>
 /// <para>
 /// All sequences returned by this type are single-pass with respect to side effects in their generator delegate:
@@ -45,7 +45,7 @@ namespace Bodu.Sequences;
 ///<![CDATA[
 /// // A counted descending range.
 /// foreach (int n in SequenceGenerator.Range(start: 10, stop: 0, step: -2))
-///     Console.WriteLine(n); // 10, 8, 6, 4, 2
+///     Console.WriteLine(n); // 10, 8, 6, 4, 2, 0
 ///
 /// // A stateful generator producing powers of two while the value fits in a positive int.
 /// IEnumerable<int> powers = SequenceGenerator.NextWhile(

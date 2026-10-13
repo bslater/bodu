@@ -18,7 +18,7 @@ These guides anchor the **Core Foundations** topic: the [topic guide landing](..
 | Namespace | What lives here | Guides |
 |---|---|---|
 | `Bodu.Collections.Generic` | Bounded ring-backed collections, sets, multisets, and range-keyed lookups - `CircularBuffer<T>`, `Deque<T>`, `EvictingDictionary<TKey,TValue>`, `SequencedDictionary<TKey,TValue>`, `BiDictionary<TKey,TValue>`, `LayeredDictionary<TKey,TValue>`, `DefaultingDictionary<TKey,TValue>`, `Table<TRow,TColumn,TValue>`, `IndexedPriorityQueue<TElement,TPriority>`, `IndexedSet<T>`, `OrderedSet<T>`, `NavigableSet<T>`, `NavigableDictionary<TKey,TValue>`, `Multiset<T>`, `MultiValueDictionary<TKey,TValue>`, `RangeDictionary<TKey,TValue>`, `RangeSet<T>`, `IntervalTree<T>`, `IntervalTree<TKey,TValue>`, `SegmentedBuffer<T>`, `RingBackedCollection<T>` base. | [Choosing a collection](choosing-a-collection.md) · [Circular buffer](circular-buffer.md) · [Deque](deque.md) · [Evicting dictionary](evicting-dictionary.md) · [Sequenced dictionary](sequenced-dictionary.md) · [Bidirectional dictionary](bi-dictionary.md) · [Layered and defaulting dictionaries](layered-and-defaulting-dictionaries.md) · [Table (two-key map)](table.md) · [Indexed priority queue](indexed-priority-queue.md) · [Indexed and ordered sets](ordered-sets.md) · [Navigable set](navigable-set.md) · [Navigable dictionary](navigable-dictionary.md) · [Multiset](multiset.md) · [Multi-value dictionary](multi-value-dictionary.md) · [Range-keyed lookups](range-dictionary.md) · [Interval tree](interval-tree.md) · [Segmented buffer](segmented-buffer.md) |
-| `Bodu.Collections.Generic.Concurrent` | Thread-safe collection variants - `ConcurrentCircularBuffer<T>`, `ConcurrentHashSet<T>`, and the lock-striped `ConcurrentEvictingDictionary<TKey,TValue>` bounded cache (ships in the `Bodu.Collections.Concurrent` package). | [Concurrent collections](concurrent-collections.md) |
+| `Bodu.Collections.Generic.Concurrent` | Thread-safe collection variants - `ConcurrentCircularBuffer<T>`, `ConcurrentHashSet<T>`, the lock-striped `ConcurrentEvictingDictionary<TKey,TValue>` bounded cache, and the read-optimized `ConcurrentLruCache<TKey,TValue>` (ships in the `Bodu.Collections.Concurrent` package). | [Concurrent collections](concurrent-collections.md) |
 | `Bodu.Collections.Specialized` | Specialised structures that are not general-purpose containers - the packed `BitSet`. | [Bit set](bit-set.md) |
 | `Bodu.Collections.Probabilistic` | Approximate sketch structures with quantified error bounds - `BloomFilter<T>` (membership, no false negatives), `CountMinSketch<T>` (frequencies, never underestimates), `HyperLogLog<T>` (distinct counts, ~1.04/√m standard error). | [Probabilistic collections (sketches)](probabilistic-collections.md) |
 | `Bodu.Collections.Generic.Graphs` | Graphs and graph algorithms - `Graph<T>`, the read-only `IReadOnlyGraph<T>` / `IReadOnlyWeightedGraph<T>` views, `GraphAlgorithms` (BFS/DFS, shortest path, topological sort, connected components), `ShortestPathResult<T>`, and the `DisjointSet<T>` union-find. | [Graphs and graph algorithms](graphs.md) |
@@ -29,7 +29,7 @@ These guides anchor the **Core Foundations** topic: the [topic guide landing](..
 | `Bodu.Buffers` | Pooled buffer infrastructure - `PooledBufferBuilder<T>`. | [Pooled buffer builder](pooled-buffer-builder.md) |
 | `Bodu.Extensions` | Date, numeric, span, array, string, enum, stream, and comparable extension methods - `DateTimeExtensions`, `DateOnlyExtensions`, `NumericExtensions`, `ArrayExtensions`, `BufferConverter`, `SpanExtensions`, `ComparableExtensions`, `StringExtensions`, `EnumExtensions`, `StreamExtensions` - the calendar-shape types (`CalendarQuarterDefinition`, `IQuarterDefinitionProvider`, `FiscalWeekQuarterProvider`, `IWeekendDefinitionProvider`), and the `NaturalStringComparer`. | [String extensions](string-extensions.md) · [Date and time extensions](date-extensions.md) · [Fiscal quarters, working weeks, and weekend providers](calendar-shapes-and-providers.md) · [Numeric, enum, array, span, and stream extensions](numeric-enum-stream-extensions.md) · [Natural string comparer](natural-string-comparer.md) |
 | `Bodu.Collections.Generic.Extensions`, `Bodu.Collections.Extensions`, `Bodu.Sequences` | The LINQ-style operator catalogue (`IEnumerableExtensions`, `IListExtensions`, `IDictionaryExtensions`, `RandomizationMode`, `RecursiveSelectControl`), `ShuffleHelpers`, and `SequenceGenerator`. | [Sequence operators and generators](sequence-operators.md) |
-| `Bodu.Text`, `Bodu.Xml.Linq` | Small text and XML helpers used internally. | - |
+| `Bodu.Text`, `Bodu.Xml.Linq` | Encoding helpers over `System.Text.Encoding` (`EncodingDetection`, `EncodingExtensions`, `StringEncodingExtensions`) and `XmlNamespaceResolver`, which lets `Element` / `Elements` lookups under a default namespace use local names. | [Encoding helpers](../text-encoding/encoding-helpers.md) |
 | *(cross-cutting)* | Which types are safe to share between threads, and how each enumerates under mutation. | [Thread-safety contracts across Core Foundations](thread-safety.md) |
 
 ## Guides
@@ -55,7 +55,7 @@ These guides anchor the **Core Foundations** topic: the [topic guide landing](..
 
 <div class="bodu-card">
   <h3><a href="evicting-dictionary.md">Evicting dictionary</a></h3>
-  <p>Capacity-bounded key-value store with FIFO, LRU, and LFU eviction policies.</p>
+  <p>Capacity-bounded key-value store with six eviction policies: FIFO, LRU, LFU, MRU, random replacement, and second chance.</p>
 </div>
 
 <div class="bodu-card">
@@ -141,7 +141,7 @@ These guides anchor the **Core Foundations** topic: the [topic guide landing](..
 
 <div class="bodu-card">
   <h3><a href="concurrent-collections.md">Concurrent collections</a></h3>
-  <p>Thread-safe peers - lock-free <code>ConcurrentCircularBuffer&lt;T&gt;</code> (Vyukov MPMC ring), lock-free split-ordered <code>ConcurrentHashSet&lt;T&gt;</code>, and the lock-striped <code>ConcurrentEvictingDictionary&lt;TKey,TValue&gt;</code> bounded cache with TTL and single-flight <code>GetOrAdd</code>.</p>
+  <p>Thread-safe peers - lock-free <code>ConcurrentCircularBuffer&lt;T&gt;</code> (Vyukov MPMC ring), lock-free split-ordered <code>ConcurrentHashSet&lt;T&gt;</code>, the lock-striped <code>ConcurrentEvictingDictionary&lt;TKey,TValue&gt;</code> bounded cache with TTL and single-flight <code>GetOrAdd</code>, and the read-optimized <code>ConcurrentLruCache&lt;TKey,TValue&gt;</code> with lock-free reads.</p>
 </div>
 
 </div>
@@ -212,7 +212,7 @@ These guides anchor the **Core Foundations** topic: the [topic guide landing](..
 
 <div class="bodu-card">
   <h3><a href="memoization.md">Memoization</a></h3>
-  <p><code>Memoizer</code> wraps a pure function in a thread-safe caching delegate - single- and multi-argument, with an optional key comparer.</p>
+  <p><code>Memoizer</code> wraps a pure function in a thread-safe caching delegate - single- and two-argument, with an optional key comparer.</p>
 </div>
 
 <div class="bodu-card">

@@ -242,7 +242,8 @@ public sealed class CircularBuffer<T>
 
     /// <summary>
     /// Materializes <paramref name="collection" /> into an array exactly once and enforces the no-overwrite overflow
-    /// policy before the base constructor sees the source. Returning a <c>T[]</c> avoids a second enumeration in the
+    /// policy before the base constructor sees the source, validating <paramref name="capacity" /> first so that an
+    /// invalid capacity is never reported as an overflow. Returning a <c>T[]</c> avoids a second enumeration in the
     /// base ctor.
     /// </summary>
     /// <param name="collection">The collection from which elements will be copied.</param>
@@ -250,6 +251,9 @@ public sealed class CircularBuffer<T>
     /// <param name="allowOverwrite">Whether eviction is permitted; controls whether the size check is enforced.</param>
     /// <returns>The materialized array; never <see langword="null" />.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="collection" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="capacity" /> is less than 1 or greater than <see cref="Array.MaxLength" />.
+    /// </exception>
     /// <exception cref="InvalidOperationException">
     /// <paramref name="allowOverwrite" /> is <see langword="false" /> and the collection size exceeds
     /// <paramref name="capacity" />.
@@ -262,6 +266,7 @@ public sealed class CircularBuffer<T>
     private static T[] MaterializeWithOverflowPolicy(IEnumerable<T> collection, int capacity, bool allowOverwrite)
     {
         ThrowHelper.ThrowIfNull(collection);
+        ThrowHelper.ThrowIfOutOfRange(capacity, 1, Array.MaxLength);
 
         if (allowOverwrite)
             return collection as T[] ?? [.. collection.TakeLast(capacity)];

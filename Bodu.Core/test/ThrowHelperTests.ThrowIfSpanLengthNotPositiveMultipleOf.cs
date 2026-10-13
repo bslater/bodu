@@ -127,4 +127,31 @@ public partial class ThrowHelperTests
             "span");
     }
 
+    /// <summary>
+    /// Verifies that both <see cref="ThrowHelper.ThrowIfSpanLengthNotPositiveMultipleOf{T}(System.Span{T}, int, bool, string)" />
+    /// and its <see cref="ReadOnlySpan{T}" /> overload throw <see cref="ArgumentOutOfRangeException" /> naming
+    /// <c>divisor</c> when the divisor is zero or negative.
+    /// </summary>
+    /// <param name="testName">The data-row label.</param>
+    /// <param name="divisor">The divisor that is not positive.</param>
+    [TestMethod]
+    [DataRow("zero divisor", 0)]
+    [DataRow("negative divisor", -2)]
+    public void ThrowIfSpanLengthNotPositiveMultipleOf_WhenDivisorIsNotPositive_ShouldThrowOnDivisor(string testName, int divisor)
+    {
+        int[] buffer = new int[4];
+
+        AssertGuard(
+            $"Span<T>: {testName}",
+            () => ThrowHelper.ThrowIfSpanLengthNotPositiveMultipleOf(buffer.AsSpan(), divisor),
+            typeof(ArgumentOutOfRangeException),
+            "divisor");
+
+        AssertGuard(
+            $"ReadOnlySpan<T>: {testName}",
+            () => ThrowHelper.ThrowIfSpanLengthNotPositiveMultipleOf((ReadOnlySpan<int>)buffer, divisor),
+            typeof(ArgumentOutOfRangeException),
+            "divisor");
+    }
+
 }

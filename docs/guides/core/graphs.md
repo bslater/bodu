@@ -178,7 +178,7 @@ else
 
 ## Pattern 5 - Connected components
 
-`ConnectedComponents` partitions the vertices into groups that are mutually reachable, treating every edge as undirected. For a directed graph this yields the weakly connected components.
+`ConnectedComponents` partitions the vertices into groups that are connected when edge direction is ignored, treating every edge as undirected. For a directed graph this yields the weakly connected components.
 
 <!-- compile -->
 ```csharp

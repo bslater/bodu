@@ -34,6 +34,18 @@ public sealed class IQuarterDefinitionProviderTests
     }
 
     /// <summary>
+    /// Verifies that the default <see cref="IQuarterDefinitionProvider.GetFiscalYear(DateTime)" /> returns the
+    /// bracketing year for a time of day on the last day of the fiscal year, whose Q4 end is midnight on that day.
+    /// </summary>
+    [TestMethod]
+    public void GetFiscalYear_WhenTimeOfDayOnLastFiscalDay_ShouldReturnBracketingYear()
+    {
+        int fiscalYear = Provider.GetFiscalYear(new DateTime(2024, 11, 30, 9, 30, 0));
+
+        Assert.AreEqual(2023, fiscalYear);
+    }
+
+    /// <summary>
     /// Verifies that the default <see cref="IQuarterDefinitionProvider.GetFiscalYear(DateTime)" /> throws
     /// <see cref="ArgumentOutOfRangeException" /> when no candidate year brackets the supplied date.
     /// </summary>

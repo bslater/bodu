@@ -12,10 +12,11 @@ namespace Bodu;
 /// </summary>
 /// <remarks>
 /// <para>
-/// The interface exists as a seam between consumers (helpers such as <c>IListExtensions.Shuffle</c> and
-/// <c>IEnumerableExtensions.Randomize</c>) and the underlying random source. By depending on the abstraction rather
-/// than on a concrete implementation, callers can substitute a deterministic generator in tests, supply a thread-local
-/// generator under contention, or plug in a domain-specific PRNG without touching the helpers.
+/// The interface exists as a seam between consumers (helpers such as
+/// <see cref="Bodu.Collections.Generic.ShuffleHelpers" /> and <c>IEnumerableExtensions.Randomize</c>) and the
+/// underlying random source. By depending on the abstraction rather than on a concrete implementation, callers can
+/// substitute a deterministic generator in tests, supply a thread-local generator under contention, or plug in a
+/// domain-specific PRNG without touching the helpers.
 /// </para>
 /// <para>
 /// Two implementations ship with the library: <see cref="XorShiftRandom" /> - a fast, lock-free xorshift generator

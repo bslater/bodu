@@ -21,9 +21,10 @@ namespace Bodu.Extensions;
 /// unchanged, and when both are <see langword="null" /> the result is <see langword="null" />.
 /// </para>
 /// <para>
-/// Each method accepts an optional <see cref="IComparer{T}" /> override; when omitted,
-/// <see cref="Comparer{T}.Default" /> is used. Because the ordering call only occurs when both operands are non-null,
-/// callers can supply comparers that throw on <see langword="null" /> input without guarding separately.
+/// <c>Min</c> and <c>Max</c> each have an overload that accepts an <see cref="IComparer{T}" />; the other overload
+/// orders the operands with <see cref="IComparable{T}.CompareTo(T)" />. Because the ordering call only occurs when both
+/// operands are non-null, callers can supply comparers that throw on <see langword="null" /> input without guarding
+/// separately. <c>Coalesce</c> does not compare and takes no comparer.
 /// </para>
 /// <para>
 /// These helpers complement <see cref="ComparableExtensions" />, which provides instance-style comparison predicates (

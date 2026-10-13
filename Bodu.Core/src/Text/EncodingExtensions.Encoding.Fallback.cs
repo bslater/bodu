@@ -38,16 +38,17 @@ public static partial class EncodingExtensions
     /// Thrown when <paramref name="encoding" /> is <see langword="null" />.
     /// </exception>
     /// <remarks>
-    /// The returned encoding is a fresh instance - singleton encodings such as <see cref="System.Text.Encoding.UTF8" />
-    /// are not mutated. Use this method to opt a specific call-site into strict validation without altering the global
-    /// default.
+    /// The returned encoding is a clone made with <see cref="System.Text.Encoding.Clone" />, so it keeps the type and
+    /// settings of <paramref name="encoding" /> (for example, whether a <see cref="System.Text.UTF8Encoding" /> emits a
+    /// byte order mark), and singleton encodings such as <see cref="System.Text.Encoding.UTF8" /> are not mutated. Use
+    /// this method to opt a specific call-site into strict validation without altering the global default.
     /// </remarks>
     public static System.Text.Encoding WithExceptionFallbacks(this System.Text.Encoding encoding)
     {
         ThrowHelper.ThrowIfNull(encoding);
 
-        return System.Text.Encoding.GetEncoding(
-            encoding.CodePage,
+        return CloneWithFallbacks(
+            encoding,
             System.Text.EncoderFallback.ExceptionFallback,
             System.Text.DecoderFallback.ExceptionFallback);
     }
@@ -63,9 +64,8 @@ public static partial class EncodingExtensions
     /// supported encoding can represent.
     /// </param>
     /// <param name="decoderReplacement">
-    /// The replacement string used when a decoder cannot interpret a sequence. Defaults to <c>"?"</c> rather than the
-    /// Unicode replacement character (<c>U+FFFD</c>) because non-Unicode encodings - including ASCII - cannot represent
-    /// <c>U+FFFD</c>.
+    /// The replacement string used when a decoder cannot interpret a sequence. Defaults to <c>"?"</c>, matching the
+    /// encoder replacement; pass <c>"\uFFFD"</c> to mark invalid input with the Unicode replacement character.
     /// </param>
     /// <returns>
     /// A new <see cref="System.Text.Encoding" /> instance configured with
@@ -80,6 +80,11 @@ public static partial class EncodingExtensions
     /// exception's <see cref="Exception.InnerException" /> is the <see cref="System.Text.EncoderFallbackException" />
     /// reported by a strict-fallback clone of <paramref name="encoding" /> when asked to encode the replacement.
     /// </exception>
+    /// <remarks>
+    /// The returned encoding is a clone made with <see cref="System.Text.Encoding.Clone" />, so it keeps the type and
+    /// settings of <paramref name="encoding" /> (for example, whether a <see cref="System.Text.UTF8Encoding" /> emits a
+    /// byte order mark), and singleton encodings such as <see cref="System.Text.Encoding.UTF8" /> are not mutated.
+    /// </remarks>
     public static System.Text.Encoding WithReplacementFallbacks(
         this System.Text.Encoding encoding,
         string encoderReplacement = "?",
@@ -91,10 +96,37 @@ public static partial class EncodingExtensions
 
         EnsureReplacementIsEncodable(encoding, encoderReplacement, nameof(encoderReplacement));
 
-        return System.Text.Encoding.GetEncoding(
-            encoding.CodePage,
+        return CloneWithFallbacks(
+            encoding,
             new System.Text.EncoderReplacementFallback(encoderReplacement),
             new System.Text.DecoderReplacementFallback(decoderReplacement));
+    }
+
+    /// <summary>
+    /// Returns a clone of <paramref name="encoding" /> configured with the specified encoder and decoder fallbacks.
+    /// </summary>
+    /// <param name="encoding">The encoding to clone.</param>
+    /// <param name="encoderFallback">The encoder fallback of the clone.</param>
+    /// <param name="decoderFallback">The decoder fallback of the clone.</param>
+    /// <returns>
+    /// A writable copy of <paramref name="encoding" />, of the same type and with the same settings, whose fallbacks
+    /// are <paramref name="encoderFallback" /> and <paramref name="decoderFallback" />.
+    /// </returns>
+    /// <remarks>
+    /// <see cref="System.Text.Encoding.Clone" /> is used rather than <c>Encoding.GetEncoding(codePage, ...)</c>, which
+    /// returns the registered default for the code page: that loses instance settings such as a
+    /// <see cref="System.Text.UTF8Encoding" />'s byte order mark, and fails for an encoding whose code page is not
+    /// registered.
+    /// </remarks>
+    private static System.Text.Encoding CloneWithFallbacks(
+        System.Text.Encoding encoding,
+        System.Text.EncoderFallback encoderFallback,
+        System.Text.DecoderFallback decoderFallback)
+    {
+        var clone = (System.Text.Encoding)encoding.Clone();
+        clone.EncoderFallback = encoderFallback;
+        clone.DecoderFallback = decoderFallback;
+        return clone;
     }
 
     /// <summary>
@@ -115,8 +147,8 @@ public static partial class EncodingExtensions
     {
         if (replacement.Length == 0) return;
 
-        var strict = System.Text.Encoding.GetEncoding(
-            encoding.CodePage,
+        System.Text.Encoding strict = CloneWithFallbacks(
+            encoding,
             System.Text.EncoderFallback.ExceptionFallback,
             System.Text.DecoderFallback.ExceptionFallback);
         try

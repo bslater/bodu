@@ -15,7 +15,7 @@ The backing array is allocated once. `Head` marks the oldest entry (the next `De
 `CircularBuffer<T>` derives from the shared <xref:Bodu.Collections.Generic.RingBackedCollection`1> base - the same base that backs <xref:Bodu.Collections.Generic.Deque`1> - and inherits `Count`, `Capacity`, `IsEmpty`, `IsFull`, the indexer, `Clear`, `Contains`, `CopyTo`, `ToArray`, and `TrimExcess` from it. The type accepts `null` for reference `T` and permits duplicate values.
 
 > [!NOTE]
-> Enumeration is **fail-fast**. The buffer keeps an internal structural-version counter; an enumerator created with `foreach` captures that token and throws <xref:System.InvalidOperationException> on the next `MoveNext` if the buffer is structurally mutated (including `Clear` and `TrimExcess`) while the enumerator is live. The enumerator is a `struct`, so a `foreach` loop allocates nothing. This is the single-threaded contract - `ConcurrentCircularBuffer<T>` is snapshot-based instead (see Pattern 5).
+> Enumeration is **fail-fast**. The buffer keeps an internal structural-version counter; an enumerator created with `foreach` captures that token and throws <xref:System.InvalidOperationException> on the next `MoveNext` if the buffer is structurally mutated (including `Clear` and `TrimExcess`) while the enumerator is live. The enumerator is a `struct`, so a `foreach` loop allocates nothing. This is the single-threaded contract - `ConcurrentCircularBuffer<T>` is snapshot-based instead (see Pattern 6).
 
 ## Pattern 1 - basic enqueue and dequeue
 

@@ -52,7 +52,7 @@ public static partial class DateTimeExtensions
     /// var result2 = dt2.Add(0, 1, 0); // → 2020-02-29 (leap year)
     ///
     /// var dt3 = new DateTime(2023, 3, 15, 10, 30, 0);
-    /// var result3 = dt3.Add(1, -2, 10.75); // → 2024-01-25 19:30:00
+    /// var result3 = dt3.Add(1, -2, 10.75); // → 2024-01-26 04:30:00
     ///
     /// var dt4 = new DateTime(2022, 10, 5, 8, 0, 0);
     /// var result4 = dt4.Add(0, 0, -2.5); // → 2022-10-02 20:00:00

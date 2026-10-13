@@ -32,10 +32,6 @@ public static partial class DateTimeExtensions
         /// <see cref="DateTime.DayOfWeek" />.
         /// </para>
         /// </remarks>
-        /// <exception cref="ArgumentOutOfRangeException">
-        /// Thrown if the calculated ordinal does not correspond to a defined value of the <see cref="WeekOrdinal" />
-        /// enumeration.
-        /// </exception>
         public WeekOrdinal WeekOrdinalOfMonth
         {
             get
@@ -71,10 +67,6 @@ public static partial class DateTimeExtensions
     /// <see cref="DateTime.DayOfWeek" />.
     /// </para>
     /// </remarks>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown if the calculated ordinal does not correspond to a defined value of the <see cref="WeekOrdinal" />
-    /// enumeration.
-    /// </exception>
     public static WeekOrdinal WeekOrdinalOfMonth(this DateTime dateTime)
     {
         int ordinal = ((dateTime.Day - 1) / 7) + 1;

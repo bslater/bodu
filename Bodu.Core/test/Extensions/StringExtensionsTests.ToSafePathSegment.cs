@@ -37,6 +37,17 @@ public partial class StringExtensionsTests
     }
 
     /// <summary>
+    /// Verifies that <see cref="StringExtensions.ToSafePathSegment(string)" /> replaces both the forward slash and
+    /// the backslash with an underscore on every platform, whichever separators the current platform uses.
+    /// </summary>
+    /// <param name="input">A candidate segment containing a separator.</param>
+    [TestMethod]
+    [DataRow("foo/bar")]
+    [DataRow("foo\\bar")]
+    public void ToSafePathSegment_WhenInputContainsEitherSlash_ShouldReplaceWithUnderscoreOnEveryPlatform(string input) =>
+        Assert.AreEqual("foo_bar", input.ToSafePathSegment());
+
+    /// <summary>
     /// Verifies that <see cref="StringExtensions.ToSafePathSegment(string)" /> returns the input unchanged
     /// when it contains no invalid characters and no path separators.
     /// </summary>

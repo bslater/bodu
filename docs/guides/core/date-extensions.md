@@ -4,18 +4,18 @@ title: Date and time extensions
 
 # Date and time extensions
 
-<xref:Bodu.Extensions.DateTimeExtensions> and <xref:Bodu.Extensions.DateOnlyExtensions> are two parallel families of extension methods - 66 and 56 partial files respectively - that answer the calendar questions `DateTime` and `DateOnly` leave to the caller: the first and last date of a week, month, quarter, or year; the next Friday; the third Monday of the month; the ISO week number; the fiscal quarter under a July-to-June year; whether a day is a rest day under a Sunday-to-Thursday working week; an age; a value truncated to the hour. The `DateOnly` family mirrors the `DateTime` family member for member, minus the time-of-day and conversion members that have no meaning for a date.
+<xref:Bodu.Extensions.DateTimeExtensions> and <xref:Bodu.Extensions.DateOnlyExtensions> are two parallel families of extension methods that answer the calendar questions `DateTime` and `DateOnly` leave to the caller: the first and last date of a week, month, quarter, or year; the next Friday; the third Monday of the month; the ISO week number; the fiscal quarter under a July-to-June year; whether a day is a rest day under a Sunday-to-Thursday working week; an age; a value truncated to the hour. The `DateOnly` family mirrors the `DateTime` family member for member, minus the time-of-day and conversion members that have no meaning for a date.
 
 Two rules apply everywhere:
 
-- **Boundary results are dates.** Every `First…` / `Last…` / `Next…` / `Previous…` member returns midnight (`TimeOfDay == 00:00`) with the receiver's <xref:System.DateTime.Kind> preserved.
+- **Boundary results are dates; relative steps keep the time.** Every `First…` / `Last…` member - the first or last date of a week, month, quarter, or year, and the `…OfWeekIn…` variants - returns midnight (`TimeOfDay == 00:00`) with the receiver's <xref:System.DateTime.Kind> preserved. The relative-day and recurrence members - `NextDateOfWeek`, `PreviousDateOfWeek`, `NextOrSameDateOfWeek`, `PreviousOrSameDateOfWeek`, `NearestDateOfWeek`, `NearestWeekdayInMonth`, `NextWeekday`, `PreviousWeekday`, `NextOccurrence`, and `PreviousOccurrence` - move the date and keep the receiver's time of day and `Kind`.
 - **Defaults are explicit.** A parameterless overload uses <xref:System.Globalization.CultureInfo.CurrentCulture> for week rules and names, a January-to-December calendar year for quarters, and a Saturday-Sunday weekend for weekday tests. Every one of those defaults has an overload that takes the rule as a parameter - see the [overload matrix](#overload-matrix) below.
 
 > [!NOTE]
 > Five members - `IsoWeekOfYear`, `IsoYear`, `WeekOrdinalOfMonth`, `IsFirstDateOfMonth`, and `IsLastDateOfMonth` - are C# 14 **extension properties** in the shipped library, so they are read without parentheses (`date.IsoWeekOfYear`). Consuming them needs `<LangVersion>14</LangVersion>` (or `latest` on the .NET 10 SDK); the API reference renders them in method form because DocFX cannot yet model extension blocks. Everything else is a classic extension method.
 
 > [!NOTE]
-> There is **no `TimeOnly` extension surface** in `Bodu.Core`. `TimeOnly` appears only as `TimeOnly.MinValue` when a `DateOnly` is lifted to a `DateTime` internally.
+> There is **no `TimeOnly` extension surface** in `Bodu.Core`. `TimeOnly` appears only internally: as `TimeOnly.MinValue` when a `DateOnly` is lifted to a `DateTime`, and as `TimeOnly.FromTimeSpan` when `AddFiscalYears` carries a `DateTime`'s time of day across.
 
 ## Pattern 1 - boundaries of a week, month, quarter, or year
 
@@ -116,7 +116,7 @@ using Bodu.Extensions;
 var date = new DateTime(2024, 12, 30);
 
 int cultureWeek = date.WeekOfYear(CultureInfo.GetCultureInfo("en-US"));                 // 53
-int ruleWeek    = date.WeekOfYear(CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday); // 53 - BCL numbering, not ISO
+int ruleWeek    = date.WeekOfYear(CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday); // 1 - four of its days fall in 2025
 int weekOfMonth = date.WeekOfMonth(CalendarWeekRule.FirstDay, DayOfWeek.Sunday);        // 5
 WeekOrdinal ordinal = date.WeekOrdinalOfMonth;                                          // Fifth (the 30th is in the 5th group of 7)
 WeekOrdinal third   = new DateTime(2024, 5, 15).WeekOrdinalOfMonth;                     // Third
@@ -125,7 +125,7 @@ DateTime week20 = DateTimeExtensions.GetStartDateOfWeek(2024, 20, CultureInfo.Ge
 ```
 
 > [!WARNING]
-> `WeekOfYear(CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday)` reproduces `Calendar.GetWeekOfYear`, which numbers the last days of December as week 53 even when ISO 8601 assigns them to week 1 of the next year. Use `IsoWeekOfYear` / `IsoYear` when you need ISO semantics.
+> `WeekOfYear` does not reproduce `Calendar.GetWeekOfYear` at the end of December. Under `CalendarWeekRule.FirstFourDayWeek` a week with four or more days in the next year is numbered 1, where `Calendar.GetWeekOfYear` numbers it 52 or 53 (the BCL returns 53 for 30 December 2024 above); `FirstFullWeek` can never meet that test, so it matches the BCL, and `FirstDay` follows the BCL's numbering, up to week 54. With a Monday first day, `FirstFourDayWeek` therefore gives the ISO 8601 week number, but the method returns only the number: use `IsoWeekOfYear` / `IsoYear` when you also need the ISO week-year.
 
 `WeekOrdinalOfMonth` is *not* a week number: it reports which seven-day group of the month the date falls in (days 1-7 → `First`, 8-14 → `Second`, …, 29-31 → `Fifth`), which is exactly the ordinal `NthDateOfWeekInMonth` would need to land on that date.
 
@@ -225,7 +225,7 @@ DateTime? maybe  = DateTimeExtensions.Min((DateTime?)null, utc);          // nul
 TimeSpan elapsed = utc.ElapsedTimeSince();                                // now - utc
 ```
 
-`ToDateTimeOffset(TimeSpan offset)` requires a non-UTC receiver - a `DateTimeKind.Utc` value with a non-zero offset throws `ArgumentException`, exactly as the <xref:System.DateTimeOffset> constructor does. `ToIsoString` has overloads for suppressing fractional seconds, for stamping a `DateTimeKind`, and for an arbitrary format plus culture.
+`ToDateTimeOffset(TimeSpan offset)` requires a non-UTC receiver - a `DateTimeKind.Utc` value with a non-zero offset throws `ArgumentException`, exactly as the <xref:System.DateTimeOffset> constructor does. `ToIsoString` has overloads for suppressing fractional seconds, for converting to a `DateTimeKind` first (a conversion of the instant through `ToUniversalTime` / `ToLocalTime`, not a relabel, so an `Unspecified` value converted to `Utc` is read as local time), and for an arbitrary format plus culture.
 
 Every `Get…` static on `DateTimeExtensions` is the year/month-addressed companion of an instance member, for when you have no `DateTime` to start from: `GetFirstDateOfMonth`, `GetLastDateOfMonth`, `GetFirstDateOfQuarter`, `GetLastDateOfQuarter` (each with an optional `CalendarQuarterDefinition`), `GetFirstDateOfWeekInMonth`, `GetLastDateOfWeekInMonth`, `GetFirstDateOfWeekInQuarter`, `GetLastDateOfWeekInQuarter`, `GetNthDateOfWeekInMonth`, `GetNearestDateOfWeek`, `GetFirstDateOfIsoWeek`, `GetLastDateOfIsoWeek`, `GetIsoWeeksInYear`, `GetStartDateOfWeek`, `GetMonthName`, `GetDayNumber`, `FromDayOfYear`, `FromUnixTimeSeconds` / `FromUnixTimeMilliseconds`, `FirstDateOfFiscalYear` / `LastDateOfFiscalYear`, and `Max` / `Min`.
 

@@ -18,9 +18,11 @@ public static partial class IEnumerableExtensions
     /// <returns>The number of elements in the sequence.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="source" /> is <see langword="null" />.</exception>
     /// <remarks>
-    /// When <paramref name="source" /> implements neither <see cref="ICollection" /> nor
-    /// <see cref="IReadOnlyCollection{T}" />, the sequence is fully enumerated to produce the count - a one-shot source
-    /// is consumed by the call.
+    /// When <paramref name="source" /> implements neither <see cref="ICollection" /> nor an
+    /// <see cref="IReadOnlyCollection{T}" /> of a reference type, the sequence is fully enumerated to produce the
+    /// count - a one-shot source is consumed by the call. The read-only fast path is a covariant test for
+    /// <see cref="IReadOnlyCollection{T}" /> of <see cref="object" />, so an <see cref="IReadOnlyCollection{T}" /> of a
+    /// value type that is not also an <see cref="ICollection" /> is enumerated.
     /// </remarks>
     public static int CountOrDefault(this IEnumerable source)
     {

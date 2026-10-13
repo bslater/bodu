@@ -48,7 +48,7 @@ DayOfWeekSet weekend  = DayOfWeekSet.Weekend;           // Sat-Sun
 DayOfWeekSet every    = DayOfWeekSet.All;               // all seven days
 DayOfWeekSet none     = DayOfWeekSet.Empty;             // no days
 
-// Regional working weeks, one preset per WorkingDaysOfWeek member.
+// Regional working weeks, one preset per named WorkingDaysOfWeek value.
 DayOfWeekSet gulf     = DayOfWeekSet.SundayToThursday;  // Sun-Thu
 DayOfWeekSet sixDay   = DayOfWeekSet.MondayToSaturday;  // Mon-Sat
 ```
@@ -229,7 +229,7 @@ To move a stored `WeekPattern.ToByte` value over, reverse its seven bits, or reb
 |---|---|
 | `Empty`, `All` | The set of no day and the set of all seven. |
 | `Weekdays`, `Weekend` | Monday to Friday, and Saturday and Sunday. |
-| `MondayToFriday`, `MondayToSaturday`, `MondayToThursdayAndSaturday`, `SaturdayToThursday`, `SaturdayToWednesday`, `SundayToFriday`, `SundayToThursday` | The regional working weeks, one per `WorkingDaysOfWeek` member. |
+| `MondayToFriday`, `MondayToSaturday`, `MondayToThursdayAndSaturday`, `SaturdayToThursday`, `SaturdayToWednesday`, `SundayToFriday`, `SundayToThursday` | The regional working weeks, one per named regional `WorkingDaysOfWeek` value (`AllDays` corresponds to `All`; `Custom` has none). |
 | `DayOfWeekSet(params DayOfWeek[])` | The set of the days given. |
 | `Count` | The number of days selected, 0 to 7. |
 | `Contains(DayOfWeek)` | Whether the day is selected; `false` for a value that is not a day. |

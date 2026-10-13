@@ -4,12 +4,12 @@ title: Indexed and ordered sets
 
 # Indexed and ordered sets
 
-`Bodu.Collections.Generic` ships two insertion-ordered, uniqueness-enforcing sets built on the same open-addressing hash engine. They differ only in the surface they expose:
+`Bodu.Collections.Generic` ships two insertion-ordered, uniqueness-enforcing sets built on the same chained hash engine. They differ only in the surface they expose:
 
 - <xref:Bodu.Collections.Generic.IndexedSet`1> implements `IList<T>` - a list that silently refuses duplicates, with O(1) `Contains`, `IndexOf`, and indexed read **and write**.
 - <xref:Bodu.Collections.Generic.OrderedSet`1> implements `ISet<T>` - the full set-algebra surface (`UnionWith`, `IntersectWith`, …) while preserving insertion order and exposing position only as a read-only index.
 
-Both keep elements in the order they were first added, both reject `null` only when the element type and comparer reject it, and both compare with an `IEqualityComparer<T>` you can supply at construction.
+Both keep elements in the order they were first added, both reject `null` elements with `ArgumentNullException`, and both compare with an `IEqualityComparer<T>` you can supply at construction.
 
 ## When to reach for which
 

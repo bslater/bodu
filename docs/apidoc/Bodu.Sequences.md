@@ -23,7 +23,7 @@ using Bodu.Sequences;
 
 // A counted descending range.
 foreach (int n in SequenceGenerator.Range(start: 10, stop: 0, step: -2))
-    Console.WriteLine(n); // 10, 8, 6, 4, 2
+    Console.WriteLine(n); // 10, 8, 6, 4, 2, 0
 
 // Fibonacci numbers within a value window (not a fixed count).
 long[] fibs = SequenceGenerator.Fibonacci(min: 0, max: 100).ToArray();

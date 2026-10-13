@@ -13,8 +13,8 @@ namespace Bodu.Collections.Generic;
 /// <typeparam name="T">The element type. Elements must not be <see langword="null" />.</typeparam>
 /// <remarks>
 /// <para>
-/// Elements live in a contiguous <see cref="Array" /> for deterministic insertion order. A hand-rolled open-addressing
-/// hash table over two parallel <see cref="int" /> arrays - one of bucket heads, one of chain links - provides O(1)
+/// Elements live in a contiguous <see cref="Array" /> for deterministic insertion order. A hand-rolled chained hash
+/// table over two parallel <see cref="int" /> arrays - one of bucket heads, one of chain links - provides O(1)
 /// average-case <see cref="Contains" /> and <see cref="IndexOf" />. The bucket count is always a power of two and the
 /// table is rehashed when the load factor exceeds three quarters.
 /// </para>
@@ -44,7 +44,7 @@ internal sealed class OrderedSetStorage<T>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Backing store of an internal sealed type shared by the ordered hash-set family: the owning collections and their enumerators index these fields directly on hot paths, and no code outside the assembly can reach them.")]
     internal readonly IEqualityComparer<T> _comparer;
 
-    /// <summary>The one-based bucket heads used by the open-addressing hash table.</summary>
+    /// <summary>The one-based bucket heads used by the chained hash table.</summary>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1401:FieldsMustBePrivate", Justification = "Backing store of an internal sealed type shared by the ordered hash-set family: the owning collections and their enumerators index these fields directly on hot paths, and no code outside the assembly can reach them.")]
     internal int[] _buckets;
 
@@ -589,7 +589,7 @@ internal sealed class OrderedSetStorage<T>
     }
 
     /// <summary>
-    /// Adds an item index to the open-addressing hash table.
+    /// Adds an item index to the chained hash table.
     /// </summary>
     /// <param name="item">The item whose bucket is being populated.</param>
     /// <param name="itemIndex">The index of the item in the contiguous storage.</param>

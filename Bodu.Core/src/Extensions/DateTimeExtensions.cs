@@ -610,18 +610,15 @@ public static partial class DateTimeExtensions
     /// A <see cref="long" /> value representing the number of ticks since 0001-01-01T00:00:00.000 that correspond to
     /// the specified date.
     /// </returns>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="year" />, <paramref name="month" />, or <paramref name="day" /> is outside the valid
-    /// range of the Gregorian calendar or does not form a valid date.
-    /// </exception>
     /// <remarks>
     /// <para>
-    /// This method performs full validation of the input parameters and throws an exception if the combination does not
-    /// represent a valid calendar date.
+    /// This method performs no validation; the caller must ensure that the components form a valid calendar date. It
+    /// scales <see cref="GetDayNumberUnchecked(int, int, int)" />, so an invalid combination either produces a wrong
+    /// value (a day past the end of a month rolls into the next month) or throws an unrelated exception.
     /// </para>
     /// <para>
-    /// It is equivalent in result to <c>new DateTime(year, month, day).Ticks</c> but avoids object allocation and is
-    /// optimized for high-performance internal date calculations.
+    /// For a valid date it is equivalent in result to <c>new DateTime(year, month, day).Ticks</c> but avoids object
+    /// allocation and is optimized for high-performance internal date calculations.
     /// </para>
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -647,8 +644,11 @@ public static partial class DateTimeExtensions
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static DayOfWeek GetDayOfWeekForJanuary1(int year)
     {
-        // Zeller’s-like congruence to determine the weekday of Jan 1
-        int weekdayIndex = (year + (year / 4) - (year / 100) + (year / 400)) % 7;
+        // y + y/4 - y/100 + y/400 (mod 7) is the weekday of 31 December of year y (0 = Sunday), because 1 January of
+        // year 1 is a Monday and each year advances the weekday by one day, or two in a leap year. 1 January of 'year'
+        // is therefore the day after 31 December of 'year - 1'.
+        int previousYear = year - 1;
+        int weekdayIndex = (previousYear + (previousYear / 4) - (previousYear / 100) + (previousYear / 400) + 1) % 7;
         return (DayOfWeek)((weekdayIndex + 7) % 7); // Ensure non-negative
     }
 

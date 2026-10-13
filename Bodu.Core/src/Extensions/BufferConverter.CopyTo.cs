@@ -61,6 +61,15 @@ public static partial class BufferConverter
     /// <param name="sourceIndex">The starting index in the <paramref name="sourceArray" />.</param>
     /// <param name="targetArray">The target array to receive the elements.</param>
     /// <param name="count">The number of elements of type <typeparamref name="T" /> to copy.</param>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="sourceArray" /> or <paramref name="targetArray" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="sourceIndex" /> or <paramref name="count" /> is out of range.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// The specified range exceeds the bounds of the source or target arrays.
+    /// </exception>
     public static void CopyTo<T>(this byte[] sourceArray, int sourceIndex, T[] targetArray, int count)
             where T : unmanaged => CopyTo(sourceArray, sourceIndex, targetArray, 0, count);
 
@@ -72,10 +81,12 @@ public static partial class BufferConverter
     /// <param name="targetSpan">The target span of <typeparamref name="T" /> elements.</param>
     /// <param name="count">The number of elements to copy.</param>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// The specified <paramref name="count" /> exceeds the available elements in the source or target span.
+    /// <paramref name="count" /> is negative, or <paramref name="count" /> multiplied by the size of
+    /// <typeparamref name="T" /> exceeds <see cref="int.MaxValue" />.
     /// </exception>
     /// <exception cref="ArgumentException">
-    /// Thrown when a span or array argument does not meet a length or offset precondition.
+    /// <paramref name="sourceSpan" /> holds fewer than <paramref name="count" /> elements of <typeparamref name="T" />,
+    /// or <paramref name="targetSpan" /> holds fewer than <paramref name="count" /> elements.
     /// </exception>
     public static void CopyTo<T>(this ReadOnlySpan<byte> sourceSpan, Span<T> targetSpan, int count)
         where T : unmanaged
@@ -99,6 +110,15 @@ public static partial class BufferConverter
     /// <param name="sourceMemory">The source memory of bytes.</param>
     /// <param name="targetMemory">The target memory of <typeparamref name="T" /> elements.</param>
     /// <param name="count">The number of elements to copy.</param>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="count" /> is negative, or <paramref name="count" /> multiplied by the size of
+    /// <typeparamref name="T" /> exceeds <see cref="int.MaxValue" />.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="sourceMemory" /> holds fewer than <paramref name="count" /> elements of
+    /// <typeparamref name="T" />, or <paramref name="targetMemory" /> holds fewer than <paramref name="count" />
+    /// elements.
+    /// </exception>
     public static void CopyTo<T>(this Memory<byte> sourceMemory, Memory<T> targetMemory, int count)
         where T : unmanaged => CopyTo(sourceMemory.Span, targetMemory.Span, count);
 
@@ -111,7 +131,12 @@ public static partial class BufferConverter
     /// <param name="index">The starting index in the <paramref name="targetArray" />.</param>
     /// <exception cref="ArgumentNullException"><paramref name="targetArray" /> is <see langword="null" />.</exception>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="index" /> is negative or exceeds the available space in <paramref name="targetArray" />.
+    /// <paramref name="index" /> is negative or greater than the length of <paramref name="targetArray" />, or the size
+    /// of <typeparamref name="T" /> is greater than the length of <paramref name="targetArray" />.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Fewer bytes than the size of <typeparamref name="T" /> remain in <paramref name="targetArray" /> from
+    /// <paramref name="index" />.
     /// </exception>
     public static void CopyTo<T>(this T value, byte[] targetArray, int index)
         where T : unmanaged

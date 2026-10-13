@@ -49,7 +49,7 @@ Functional helpers and railway primitives. See the [Memoization](../../guides/co
 
 | Type | Purpose |
 |---|---|
-| <xref:Bodu.Functional.Memoizer> | Wraps a pure function in a thread-safe caching delegate (single- and multi-argument). |
+| <xref:Bodu.Functional.Memoizer> | Wraps a pure function in a thread-safe caching delegate (single- and two-argument). |
 | <xref:Bodu.Functional.Option`1> | An optional value - `Some(value)` or `None` - with `Map` / `Bind` / `Filter` / `Match` combinators; `default` equals `None`. |
 | <xref:Bodu.Functional.Result>, <xref:Bodu.Functional.Result`1> | Success-or-failure outcomes carrying a value or a <xref:Bodu.Functional.ResultError>; `default` is a failure with an empty error. |
 | <xref:Bodu.Functional.ResultError> | The failure descriptor - optional code, never-null message, optional captured exception. |
@@ -79,8 +79,8 @@ Date, numeric, span, and array extension methods. Larger surface than the others
 |---|---|
 | <xref:Bodu.Extensions.DateTimeExtensions> | First / last / next / previous day-of-week within month / quarter / year, ISO week-of-year, day name, weekday tests, midday, end-of-day, truncation. |
 | <xref:Bodu.Extensions.DateOnlyExtensions> | `DateOnly`-specific equivalents plus `Age` calculation. |
-| <xref:Bodu.Extensions.NumericExtensions> | `ReverseBits`, `RotateBitsLeft` / `Right`, `ReverseBytes`, `GetBytes` for unsigned integer types. |
-| <xref:Bodu.Extensions.ArrayExtensions> | `Reverse`, `Clear`, and other in-place array helpers. |
+| <xref:Bodu.Extensions.NumericExtensions> | `ReverseBits`, `RotateBitsLeft` / `Right`, `ReverseBytes`, the decimal-digit helpers, and number theory over the integral types; `GetBytes` over the ten primitive numeric types `BitConverter` supports. |
+| <xref:Bodu.Extensions.ArrayExtensions> | `ToReversed`, `Slice`, `Copy`, `PadLeft` / `PadRight`, and `ToMatrix` (each returns a new array) and `Clear` (in place). |
 | <xref:Bodu.Extensions.BufferConverter> | Byte / structure conversion helpers. |
 | <xref:Bodu.Extensions.SpanExtensions> | Span-friendly helpers. |
 | <xref:Bodu.Extensions.ComparableExtensions>, <xref:Bodu.Extensions.ComparableHelper> | `Min`, `Max`, `Clamp`, `IsGreaterThan` / `IsGreaterThanOrEqual`. |
@@ -95,14 +95,14 @@ Culture-aware date / calendar helpers built on top of <xref:System.Globalization
 | <xref:Bodu.Globalization.Extensions.DateTimeFormatInfoExtensions> | A single helper, `LastDayOfWeek()` - the day that closes a culture's week, derived from the BCL `DateTimeFormatInfo.FirstDayOfWeek`. |
 
 ### `Bodu.Text` and `Bodu.Xml.Linq`
-Character-encoding helpers over `System.Text.Encoding` and an XML namespace helper; used internally by the other Bodu packages and available publicly when you need them. See the [Bodu.Text introduction](../text/index.md) and the [encoding helpers guide](../../guides/text-encoding/encoding-helpers.md).
+Character-encoding helpers over `System.Text.Encoding` and an XML namespace helper, public for when you need them. See the [Bodu.Text introduction](../text/index.md) and the [encoding helpers guide](../../guides/text-encoding/encoding-helpers.md).
 
 | Type | Purpose |
 |---|---|
 | <xref:Bodu.Text.EncodingDetection> | BOM sniffing - `TryDetectByPreamble(ReadOnlySpan<byte>, out Encoding?)`. |
 | <xref:Bodu.Text.EncodingExtensions> | Extension methods on `System.Text.Encoding` (preamble handling, UTF / ASCII classification, fallback configuration, rented / owned / pooled buffers), on `Encoder` / `Decoder` (chunked transcoding), and on spans (`ToBytes`, `ToChars`, `DecodeToString`, `Transcode`). |
 | <xref:Bodu.Text.StringEncodingExtensions> | `string` fast paths - `ToUtf8Bytes`, `ToBytes(encoding)`, `ToBytesWithPreamble`, `GetUtf8ByteCount`, `EncodeUtf8To`, `WriteUtf8To(IBufferWriter<byte>)`, and the pooled `GetUtf8BytesPooled` / `GetBytesPooled`. |
-| <xref:Bodu.Xml.Linq.XmlNamespaceResolver> | `IXmlNamespaceResolver` helper used by the calendar rule parsers. |
+| <xref:Bodu.Xml.Linq.XmlNamespaceResolver> | Captures a root element's default namespace so `Element`, `Elements`, and `Name` lookups can use local names. |
 
 The binary-to-text radix codecs (`Base16` … `Base85`) are **not** in this package - they ship in the companion [Bodu.Text.Encoding](../text-encoding/index.md) package.
 
@@ -125,7 +125,7 @@ The binary-to-text radix codecs (`Base16` … `Base85`) are **not** in this pack
 | Base16 / Base32 / Base58 / Base64 / Base85 encoding | The [Bodu.Text.Encoding](../text-encoding/index.md) package |
 | Centralized argument validation in your own code | <xref:Bodu.ThrowHelper> |
 | Fixed-capacity, evicting, navigable, graph, trie, and sketch collections | The [Bodu.Collections](../collections/index.md) package |
-| Thread-safe FIFO ring and unique set | The [Bodu.Collections.Concurrent](../collections-concurrent/index.md) package |
+| Thread-safe ring, set, and bounded caches | The [Bodu.Collections.Concurrent](../collections-concurrent/index.md) package |
 
 ## Design principles
 

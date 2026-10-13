@@ -6,9 +6,9 @@ title: Bodu.Collections - Introduction
 
 ![Bodu.Collections](../../images/hero-collections.svg)
 
-**Bodu.Collections** is the specialized generic-collection catalogue of the Bodu suite and a member of the **[Core Foundations](../topics/core-foundations.md)** topic. It ships the bounded, ordered, navigable, range-keyed, graph, tree, and probabilistic collections that were split out of `Bodu.Core` - the namespaces are unchanged (`Bodu.Collections.Generic` and its siblings), only the package boundary moved. The package depends on [`Bodu.Core`](../core/index.md) for shared primitives such as `ThrowHelper` and the `IRandomGenerator` abstraction; see the [package matrix](../package-matrix.md) for the full dependency map.
+**Bodu.Collections** is the specialized generic-collection catalogue of the Bodu suite and a member of the **[Core Foundations](../topics/core-foundations.md)** topic. It ships the bounded, ordered, navigable, range-keyed, graph, tree, and probabilistic collections that were split out of `Bodu.Core` - the namespaces are unchanged (`Bodu.Collections.Generic` and its siblings), only the package boundary moved. The package depends on [`Bodu.Core`](../core/index.md) only for its shared `ThrowHelper` argument validation; see the [package matrix](../package-matrix.md) for the full dependency map.
 
-The thread-safe variants - `ConcurrentCircularBuffer<T>`, `ConcurrentHashSet<T>`, and the lock-striped `ConcurrentEvictingDictionary<TKey,TValue>` bounded cache in the `Bodu.Collections.Generic.Concurrent` namespace - ship in the companion **[Bodu.Collections.Concurrent](../collections-concurrent/index.md)** package, which depends on this one.
+The thread-safe variants - `ConcurrentCircularBuffer<T>`, `ConcurrentHashSet<T>`, the lock-striped `ConcurrentEvictingDictionary<TKey,TValue>` bounded cache, and the read-optimized `ConcurrentLruCache<TKey,TValue>` in the `Bodu.Collections.Generic.Concurrent` namespace - ship in the companion **[Bodu.Collections.Concurrent](../collections-concurrent/index.md)** package, which depends on this one.
 
 ![Bodu.Collections namespace map - the generic catalogue plus the probabilistic, graph, and tree namespaces over the Bodu.Core dependency](../../images/diagrams/collections-namespace-map.svg)
 
@@ -23,7 +23,7 @@ Bounded, ordered, navigable, and range-keyed collections, many built around a sh
 | <xref:Bodu.Collections.Generic.Deque`1> | Double-ended queue with O(1) `AddFirst` / `AddLast` / `RemoveFirst` / `RemoveLast`. The `AllowGrow` flag toggles between auto-resize and fixed-capacity modes; when fixed, <xref:Bodu.Collections.Generic.DequeOverflowPolicy> selects reject-or-evict overflow behavior. |
 | <xref:Bodu.Collections.Generic.SegmentedBuffer`1> | Segmented buffer for streaming scenarios where total length is not known up front. |
 | <xref:Bodu.Collections.Generic.RingBackedCollection`1> | Abstract base shared by `CircularBuffer<T>` and `Deque<T>`. Extension point for new ring-backed collections. |
-| <xref:Bodu.Collections.Generic.EvictingDictionary`2> | Capacity-bounded dictionary with FIFO, LRU, LFU, MRU, Random, or Second-Chance eviction, plus optional time-based (TTL) expiry. Drop-in cache primitive with standard dictionary semantics. |
+| <xref:Bodu.Collections.Generic.EvictingDictionary`2> | Capacity-bounded dictionary with FIFO, LRU, LFU, MRU, Random, or Second-Chance eviction, plus optional time-based (TTL) expiry. Cache primitive implementing `IDictionary<TKey,TValue>`, with add-or-replace `Add` and reads that update eviction state. |
 | <xref:Bodu.Collections.Generic.EvictingDictionaryPolicy> | Enum selecting the eviction policy: `FirstInFirstOut`, `LeastRecentlyUsed`, `LeastFrequentlyUsed`, `MostRecentlyUsed`, `RandomReplacement`, `SecondChance`. |
 | <xref:Bodu.Collections.Generic.SequencedDictionary`2> | Unbounded insertion- or access-ordered dictionary (Java `LinkedHashMap` shape) with O(1) access to and removal of the first and last entries. Optional access-order mode underpins hand-built LRU caches. |
 | <xref:Bodu.Collections.Generic.BiDictionary`2> | Bidirectional one-to-one map (Guava `BiMap` shape) with O(1) lookup in both directions and a live `Inverse` view sharing the same storage. Duplicate-value conflicts resolve by a construction-time `Throw` / `Replace` policy. |
@@ -73,7 +73,7 @@ The trie family and an n-ary tree. See the [Tries and text search](../../guides/
 | <xref:Bodu.Collections.Generic.Trees.Tree`1> | A mutable n-ary tree node with stack-safe pre-/post-/level-order traversals. |
 
 ### `Bodu.Collections.Generic.Concurrent` (companion package)
-The thread-safe variants - the lock-free <xref:Bodu.Collections.Generic.Concurrent.ConcurrentCircularBuffer`1>, the lock-free split-ordered <xref:Bodu.Collections.Generic.Concurrent.ConcurrentHashSet`1>, and the lock-striped <xref:Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2> bounded cache (all six eviction policies, optional TTL, single-flight `GetOrAdd`) - ship in the companion **[Bodu.Collections.Concurrent](../collections-concurrent/index.md)** package, which depends on `Bodu.Collections`.
+The thread-safe variants - the lock-free <xref:Bodu.Collections.Generic.Concurrent.ConcurrentCircularBuffer`1>, the lock-free split-ordered <xref:Bodu.Collections.Generic.Concurrent.ConcurrentHashSet`1>, the lock-striped <xref:Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2> bounded cache (all six eviction policies, optional TTL, single-flight `GetOrAdd`), and the read-optimized <xref:Bodu.Collections.Generic.Concurrent.ConcurrentLruCache`2> bounded cache with lock-free reads - ship in the companion **[Bodu.Collections.Concurrent](../collections-concurrent/index.md)** package, which depends on `Bodu.Collections`.
 
 ## Scenarios this library covers
 
@@ -94,7 +94,7 @@ The thread-safe variants - the lock-free <xref:Bodu.Collections.Generic.Concurre
 | Find every occurrence of many patterns in one pass | <xref:Bodu.Collections.Generic.Trees.AhoCorasickAutomaton> |
 | Approximate membership / frequency / distinct counts in fixed memory | <xref:Bodu.Collections.Probabilistic.BloomFilter`1>, <xref:Bodu.Collections.Probabilistic.CountMinSketch`1>, <xref:Bodu.Collections.Probabilistic.HyperLogLog`1> |
 | Graph traversal, shortest path, topological sort | <xref:Bodu.Collections.Generic.Graphs.Graph`1> + <xref:Bodu.Collections.Generic.Graphs.GraphAlgorithms> |
-| Thread-safe FIFO ring, unique set, or bounded cache | <xref:Bodu.Collections.Generic.Concurrent.ConcurrentCircularBuffer`1>, <xref:Bodu.Collections.Generic.Concurrent.ConcurrentHashSet`1>, <xref:Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2> (in [Bodu.Collections.Concurrent](../collections-concurrent/index.md)) |
+| Thread-safe FIFO ring, unique set, or bounded cache | <xref:Bodu.Collections.Generic.Concurrent.ConcurrentCircularBuffer`1>, <xref:Bodu.Collections.Generic.Concurrent.ConcurrentHashSet`1>, <xref:Bodu.Collections.Generic.Concurrent.ConcurrentEvictingDictionary`2>, <xref:Bodu.Collections.Generic.Concurrent.ConcurrentLruCache`2> (in [Bodu.Collections.Concurrent](../collections-concurrent/index.md)) |
 
 ## Design principles
 
@@ -102,10 +102,10 @@ A handful of conventions run through the whole package; knowing them up front ex
 
 - **One toggle, not two classes.** Where a collection has to choose between *reject* and *make room* on overflow, that choice is a single settable property - `AllowOverwrite` on <xref:Bodu.Collections.Generic.CircularBuffer`1>, `AllowGrow` (with <xref:Bodu.Collections.Generic.DequeOverflowPolicy>) on <xref:Bodu.Collections.Generic.Deque`1> - rather than two parallel types. The toggle can be flipped at runtime (grow during warm-up, lock down for steady state), and every throwing operation has a `Try…` peer that substitutes a `false` return.
 - **Fail-fast where it is cheap, snapshot where it is not.** The single-threaded collections detect concurrent structural mutation with a version counter and throw <xref:System.InvalidOperationException> from the enumerator - the BCL contract. The lock-free <xref:Bodu.Collections.Generic.Concurrent.ConcurrentCircularBuffer`1> (in the companion [Bodu.Collections.Concurrent](../collections-concurrent/index.md) package) instead enumerates a coherent snapshot and never throws, because a fail-fast token cannot be maintained without a lock.
-- **Struct enumerators.** Every collection's `GetEnumerator()` returns a `struct`, so a `foreach` over a concrete-typed variable allocates nothing; enumerating through an `IEnumerable<T>` reference boxes as usual.
+- **Struct enumerators.** Most collections' `GetEnumerator()` returns a `struct`, so a `foreach` over a concrete-typed variable allocates nothing; enumerating through an `IEnumerable<T>` reference boxes as usual. `SegmentedBuffer<T>`, `BiDictionary<TKey,TValue>`, `DefaultingDictionary<TKey,TValue>`, `LayeredDictionary<TKey,TValue>`, `Table<TRow,TColumn,TValue>`, and the key and value views of the evicting, sequenced, and navigable dictionaries return `IEnumerator<T>` instead.
 - **Reads can mutate.** Recency-based caches (<xref:Bodu.Collections.Generic.EvictingDictionary`2> under LRU/MRU/LFU/SecondChance, <xref:Bodu.Collections.Generic.SequencedDictionary`2> in access-order mode) update ordering metadata on a successful lookup. That is why even concurrent read-read on these types needs external synchronisation.
 - **Validation flows through one helper.** Every public entry point validates its arguments through `Bodu.Core`'s <xref:Bodu.ThrowHelper>, so exception type, message, and parameter-name capture stay uniform across the suite.
-- **Pluggable randomness, never a global.** Helpers that need randomness (`RandomReplacement` eviction, shuffles) accept an <xref:Bodu.IRandomGenerator> rather than reaching for a static <xref:System.Random>, so tests can inject a deterministic source.
+- **Random replacement uses the shared generator.** The `RandomReplacement` eviction policy draws its victim from the process-wide `Random.Shared`, so its choices are neither deterministic nor injectable. (The shuffles that accept an <xref:Bodu.IRandomGenerator> are `Bodu.Core` extensions, not part of this package.)
 
 ## Where to go next
 

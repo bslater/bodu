@@ -72,7 +72,10 @@ public sealed partial class Trie
     /// <exception cref="ArgumentNullException">
     /// <paramref name="keys" /> is <see langword="null" />, or a key is <see langword="null" />.
     /// </exception>
-    /// <exception cref="ArgumentException">A duplicate key is supplied.</exception>
+    /// <remarks>
+    /// A key that occurs more than once in <paramref name="keys" /> is stored once; the duplicates are ignored, as
+    /// <see cref="Add(string)" /> ignores them.
+    /// </remarks>
     public Trie(IEnumerable<string> keys, IEqualityComparer<char>? charComparer = null)
         : this(charComparer)
     {

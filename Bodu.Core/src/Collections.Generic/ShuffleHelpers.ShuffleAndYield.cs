@@ -144,7 +144,7 @@ public static partial class ShuffleHelpers
     /// <param name="rng">The random number generator.</param>
     /// <returns>A shuffled sequence based on the array.</returns>
     /// <exception cref="ArgumentNullException">
-    /// Thrown when <paramref name="array" /> is <see langword="null" />.
+    /// Thrown when <paramref name="array" /> or <paramref name="rng" /> is <see langword="null" />.
     /// </exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static IEnumerable<T> ShuffleAndYield<T>(T[] array, IRandomGenerator rng)
@@ -160,6 +160,9 @@ public static partial class ShuffleHelpers
     /// <param name="span">The span to shuffle.</param>
     /// <param name="rng">The random number generator.</param>
     /// <returns>A shuffled sequence from the span.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="rng" /> is <see langword="null" />.
+    /// </exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static IEnumerable<T> ShuffleAndYield<T>(ReadOnlySpan<T> span, IRandomGenerator rng) => ShuffleAndYield(span, rng, span.Length);
 
@@ -171,6 +174,12 @@ public static partial class ShuffleHelpers
     /// <param name="rng">The random number generator to use.</param>
     /// <param name="count">The number of elements to yield.</param>
     /// <returns>A sequence of shuffled items from the span.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="rng" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown if <paramref name="count" /> is negative or exceeds the length of <paramref name="span" />.
+    /// </exception>
     /// <remarks>
     /// This method eagerly copies <paramref name="span" /> into a new array, which is then shuffled.
     /// </remarks>
@@ -184,6 +193,9 @@ public static partial class ShuffleHelpers
     /// <param name="memory">The memory block to shuffle.</param>
     /// <param name="rng">The random number generator.</param>
     /// <returns>A shuffled sequence from the memory block.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="rng" /> is <see langword="null" />.
+    /// </exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static IEnumerable<T> ShuffleAndYield<T>(Memory<T> memory, IRandomGenerator rng) => ShuffleAndYield(memory, rng, memory.Length);
 
@@ -195,6 +207,12 @@ public static partial class ShuffleHelpers
     /// <param name="rng">The random number generator to use.</param>
     /// <param name="count">The number of elements to yield.</param>
     /// <returns>A sequence of shuffled items from the memory block.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="rng" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown if <paramref name="count" /> is negative or exceeds the length of <paramref name="memory" />.
+    /// </exception>
     /// <remarks>
     /// This method eagerly copies <paramref name="memory" /> into a new array, which is then shuffled.
     /// </remarks>

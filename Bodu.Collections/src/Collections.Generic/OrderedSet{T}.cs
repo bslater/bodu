@@ -16,8 +16,8 @@ namespace Bodu.Collections.Generic;
 /// <remarks>
 /// <para>
 /// <see cref="OrderedSet{T}" /> shares its backing storage with <see cref="IndexedSet{T}" /> via the internal
-/// <see cref="OrderedSetStorage{T}" /> engine: a contiguous element array for deterministic insertion order plus an
-/// open-addressing hash table for O(1) <see cref="Contains" />. No BCL collection types are used as backing storage.
+/// <see cref="OrderedSetStorage{T}" /> engine: a contiguous element array for deterministic insertion order plus a
+/// chained hash table for O(1) <see cref="Contains" />. No BCL collection types are used as backing storage.
 /// </para>
 /// <para>
 /// The contract is strictly set-shaped: <see cref="ISet{T}" /> for mutation and set algebra,
@@ -42,7 +42,7 @@ namespace Bodu.Collections.Generic;
 /// Console.WriteLine(string.Join(", ", tags)); // alpha, beta, gamma
 /// Console.WriteLine(tags[0]);                 // "alpha" - positional read via IReadOnlyList<T>
 ///
-/// // Set algebra returns a new OrderedSet preserving the left operand's order.
+/// // Set algebra mutates in place; copy first to keep the original.
 /// var diff = new OrderedSet<string>(tags);
 /// diff.ExceptWith(new[] { "beta" });
 ///]]>
@@ -154,7 +154,7 @@ public sealed partial class OrderedSet<T>
     /// Gets the element at the specified zero-based index in insertion order.
     /// </summary>
     /// <param name="index">The zero-based index of the element to access.</param>
-    /// <returns>The element at <paramref name="index" />.</returns>
+    /// <value>The element at <paramref name="index" />.</value>
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="index" /> is negative or greater than or equal to <see cref="Count" />.
     /// </exception>

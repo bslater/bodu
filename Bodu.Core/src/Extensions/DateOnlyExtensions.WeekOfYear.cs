@@ -17,7 +17,9 @@ public static partial class DateOnlyExtensions
     /// </summary>
     /// <param name="date">The date value to evaluate.</param>
     /// <returns>
-    /// An integer in the range 1 - 53 representing the week of the year that contains <paramref name="date" />.
+    /// An integer in the range 1-54 representing the week of the year that contains <paramref name="date" />. The value
+    /// 54 occurs only under <see cref="CalendarWeekRule.FirstDay" />, in a leap year whose 1 January falls on the last
+    /// day of the week.
     /// </returns>
     /// <remarks>
     /// <para>
@@ -46,7 +48,9 @@ public static partial class DateOnlyExtensions
     /// used.
     /// </param>
     /// <returns>
-    /// An integer in the range 1 - 53 representing the week of the year that contains <paramref name="date" />.
+    /// An integer in the range 1-54 representing the week of the year that contains <paramref name="date" />. The value
+    /// 54 occurs only under <see cref="CalendarWeekRule.FirstDay" />, in a leap year whose 1 January falls on the last
+    /// day of the week.
     /// </returns>
     /// <remarks>
     /// <para>
@@ -69,7 +73,9 @@ public static partial class DateOnlyExtensions
     /// </param>
     /// <param name="weekStart">The <see cref="DayOfWeek" /> on which each week begins.</param>
     /// <returns>
-    /// An integer in the range 1 - 53 representing the week of the year that contains <paramref name="date" />.
+    /// An integer in the range 1-54 representing the week of the year that contains <paramref name="date" />. The value
+    /// 54 occurs only under <see cref="CalendarWeekRule.FirstDay" />, in a leap year whose 1 January falls on the last
+    /// day of the week.
     /// </returns>
     /// <remarks>
     /// <para>

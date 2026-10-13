@@ -65,9 +65,9 @@ The `Bodu.Threading` namespace provides the **async-friendly peers of the BCL sy
 
 - **Mutual exclusion and gating** - <xref:Bodu.Threading.AsyncLock> (an awaitable mutex whose `LockAsync` result releases on dispose), <xref:Bodu.Threading.AsyncSemaphore> (bounded concurrency), and <xref:Bodu.Threading.AsyncReaderWriterLock> (many readers / one writer).
 - **Signalling** - <xref:Bodu.Threading.AsyncManualResetEvent>, <xref:Bodu.Threading.AsyncAutoResetEvent>, and <xref:Bodu.Threading.AsyncCountdownEvent> re-express the BCL event types as awaitables.
-- **Flow shaping** - <xref:Bodu.Threading.AsyncLazy`1> (one-time async initialization with a single shared invocation), <xref:Bodu.Threading.AsyncDebouncer> (trailing-edge coalescing of bursts), and <xref:Bodu.Threading.RateGate> (N-operations-per-window rate limiting).
+- **Flow shaping** - <xref:Bodu.Threading.AsyncLazy`1> (one-time async initialization with a single shared invocation), <xref:Bodu.Threading.AsyncDebouncer> (trailing-edge coalescing of bursts), and <xref:Bodu.Threading.RateGate> (a synchronous gate whose `TryInvoke` admits at most one call per interval).
 
-The common contract: waiting never blocks a thread, cancellation is honoured through `CancellationToken` parameters, and lock releases are scoped by `IDisposable` so a `using` guarantees the release path. See the [Async coordination primitives](../../guides/core/async-primitives.md) guide.
+The common contract: waiting never blocks a thread, cancellation is honoured through `CancellationToken` parameters, and lock releases are scoped by `IDisposable` so a `using` guarantees the release path. `RateGate` is the exception: it never waits, so it has no awaitable and no token. See the [Async coordination primitives](../../guides/core/async-primitives.md) guide.
 
 ## ThrowHelper
 
@@ -82,9 +82,9 @@ public static double Average(IReadOnlyList<int> values)
 }
 ```
 
-The helpers are partitioned by concern across partial files: `Null`, `Numeric`, `Comparison`, `Equality`, `Array`, `Collection`, `Span`, `Type`, `String`, `Ascii`. Each helper accepts a `[CallerArgumentExpression(nameof(value))] string? paramName = null` parameter, so the call site does not need to repeat the argument name. Two parallel partial-class sets target the modern (.NET 8) and netstandard runtimes; the public surface is identical across both.
+The helpers are partitioned by concern across partial files: `Null`, `Numeric`, `Comparison`, `Equality`, `Array`, `Collection`, `Span`, `Stream`, `Type`, `String`, `Ascii`. Each helper accepts a `[CallerArgumentExpression(nameof(value))] string? paramName = null` parameter, so the call site does not need to repeat the argument name. The same surface ships for `net8.0` and `net10.0`.
 
-Centralising the guards means the exception messages, parameter-name capture, and `[StackTraceHidden]` behaviour stay consistent across every Bodu library - and `ThrowHelper` is the primary dependency the other Bodu packages take on `Bodu.Core`.
+Centralising the guards means the exception messages and parameter-name capture stay consistent across every Bodu library - and `ThrowHelper` is the primary dependency the other Bodu packages take on `Bodu.Core`.
 
 ## Random generator abstraction
 
@@ -105,10 +105,10 @@ The `Bodu.Extensions` namespace ships several enums that encode the *shape* of a
 
 | Type | Encodes |
 |---|---|
-| <xref:Bodu.Extensions.CalendarQuarterDefinition> | The start month of Q1 - `JanuaryToDecember`, `JulyToJune`, `AprilToMarch`, `April6ToApril5` (UK tax year), `March25ToMarch24` (Lady Day), `OctoberToSeptember`, `FebruaryToJanuary`, plus `Custom` for externally defined rules. Drives `FirstDateOfQuarter`, `LastDateOfQuarter`, `Quarter`, `FiscalYear`. |
+| <xref:Bodu.Extensions.CalendarQuarterDefinition> | The start month of Q1 - `JanuaryToDecember`, `JulyToJune`, `AprilToMarch`, `April6ToApril5` (UK tax year), `March25ToMarch24` (Lady Day), `OctoberToSeptember`, `FebruaryToJanuary`, plus `Custom` for externally defined rules. Drives `Quarter`, `FirstDateOfQuarter`, `LastDateOfQuarter`, and the other quarter members; the fiscal-year members (`FiscalYear`, `AddFiscalYears`, and their companions) take an <xref:Bodu.Extensions.IQuarterDefinitionProvider> instead. |
 | <xref:Bodu.Extensions.WeekOrdinal> | The ordinal position of a weekday in a month - `First`, `Second`, `Third`, `Fourth`, `Fifth`, `Last`. Drives `NthDateOfWeekInMonth` and the recurrence-rule patterns. |
 | <xref:Bodu.Extensions.FiscalWeekPattern> | The 4-4-5 / 4-5-4 / 5-4-4 split for retail-style 13-week fiscal quarters. Each quarter is always 13 weeks; the pattern only affects fiscal-period boundaries inside the quarter. The extra week in a 53-week fiscal year is always appended to the final period of Q4. |
-| <xref:Bodu.WorkingDaysOfWeek> | Named working-week presets - `MondayToFriday`, `MondayToSaturday`, `SaturdayToThursday`, `SaturdayToWednesday`, and others - plus `Custom` for caller-supplied `DayOfWeekSet` schedules. Drives `IsWeekday`, `IsWeekend`, `IsInWorkingWeek`, `NextWeekday`. |
+| <xref:Bodu.WorkingDaysOfWeek> | Named working-week presets - `MondayToFriday`, `MondayToSaturday`, `SaturdayToThursday`, `SaturdayToWednesday`, and others - plus `Custom`, a working week defined by an <xref:Bodu.Extensions.IWeekendDefinitionProvider>; a caller holding a `DayOfWeekSet` passes it directly to the `DayOfWeekSet` overloads instead. Drives `IsWeekday`, `IsWeekend`, `IsInWorkingWeek`, `NextWeekday`. |
 | <xref:Bodu.Extensions.IWeekendDefinitionProvider> | The injection seam for non-enumerable weekend rules - pass an implementation to override the built-in `WorkingDaysOfWeek` presets when an application needs hybrid, rotating, or domain-specific weekend logic. |
 
 These types are pure data carriers. The actual algorithms live on the extension classes (`DateTimeExtensions.*`, `DateOnlyExtensions.*`) so the same shapes can be passed to a `DateTime`, `DateOnly`, or any future date type without duplicating the enums.

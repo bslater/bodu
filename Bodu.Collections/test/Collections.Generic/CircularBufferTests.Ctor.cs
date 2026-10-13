@@ -154,6 +154,27 @@ public partial class CircularBufferTests
     }
 
     /// <summary>
+    /// Verifies that an invalid capacity with overwriting disabled throws an <see cref="ArgumentOutOfRangeException" />
+    /// rather than reporting the source as too large for the buffer.
+    /// </summary>
+    /// <param name="capacity">The invalid capacity.</param>
+    [TestMethod]
+    [DataRow(-1)]
+    [DataRow(0)]
+    [DataRow(int.MaxValue)]
+    public void Ctor_WhenCollectionCapacityIsInvalidAndOverwriteDisabled_ShouldThrowArgumentOutOfRangeException(int capacity)
+    {
+        int[] collection = [1];
+
+        var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = new CircularBuffer<int>(collection, capacity, false);
+        });
+
+        Assert.AreEqual("capacity", ex.ParamName);
+    }
+
+    /// <summary>
     /// Verifies that constructing from a collection containing null elements retains nulls at the correct positions.
     /// </summary>
     [TestMethod]

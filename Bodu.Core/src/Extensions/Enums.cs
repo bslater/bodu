@@ -82,8 +82,9 @@ public static class Enums
         Enum.TryParse(text, ignoreCase, out value);
 
     /// <summary>
-    /// Attempts to resolve the enumeration value whose <see cref="DescriptionAttribute" /> or
-    /// <see cref="DisplayAttribute" /> text matches the specified text.
+    /// Attempts to resolve the enumeration value whose resolved description matches the specified text: its
+    /// <see cref="DescriptionAttribute" /> text, or failing that its <see cref="DisplayAttribute" /> name, or failing
+    /// that its <see cref="DisplayAttribute" /> short name.
     /// </summary>
     /// <typeparam name="TEnum">The enumeration type.</typeparam>
     /// <param name="text">The description or display text to resolve.</param>
@@ -92,8 +93,10 @@ public static class Enums
     /// </param>
     /// <returns><see langword="true" /> if a matching value was found; otherwise, <see langword="false" />.</returns>
     /// <remarks>
-    /// Matching is ordinal. When more than one value declares the same description or display text, the first declaring
-    /// value in ascending underlying-value order wins; the lookup is therefore deterministic.
+    /// Matching is ordinal and uses only the resolved description, so a member that declares a
+    /// <see cref="DescriptionAttribute" /> is not matched by its <see cref="DisplayAttribute" /> text. When more than
+    /// one value resolves to the same description, the first declaring value in ascending underlying-value order wins;
+    /// the lookup is therefore deterministic.
     /// </remarks>
     public static bool TryParseDescription<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicFields)] TEnum>(string? text, out TEnum value)
         where TEnum : struct, Enum

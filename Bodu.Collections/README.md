@@ -2,7 +2,7 @@
 
 > **API stability - Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
 
-The specialized generic-collection catalogue for the Bodu solution and for general use on .NET 8 and .NET 10: bounded and ordered collections, bidirectional and layered dictionaries, navigable (order-statistic) sets and maps, interval and range-keyed lookups, graph and tree structures, and probabilistic sketches. The catalogue was split out of `Bodu.Core` with namespaces unchanged - code written against `Bodu.Collections.Generic` and its siblings keeps compiling; only the package reference changes. Every collection ships a struct enumerator for allocation-free iteration and implements the standard BCL interfaces (`IEnumerable<T>`, `ICollection<T>`, `IReadOnlyCollection<T>`, `ISet<T>`, `IList<T>`) so the types drop into existing code. The package references `Bodu.Core` for its shared primitives (`ThrowHelper` argument validation, `IRandomGenerator`, pooled buffers).
+The specialized generic-collection catalogue for the Bodu solution and for general use on .NET 8 and .NET 10: bounded and ordered collections, bidirectional and layered dictionaries, navigable (order-statistic) sets and maps, interval and range-keyed lookups, graph and tree structures, and probabilistic sketches. The catalogue was split out of `Bodu.Core` with namespaces unchanged - code written against `Bodu.Collections.Generic` and its siblings keeps compiling; only the package reference changes. Most collections ship a struct enumerator for allocation-free iteration, and the collections implement the standard BCL interfaces (`IEnumerable<T>`, `ICollection<T>`, `IReadOnlyCollection<T>`, `ISet<T>`, `IList<T>`) so the types drop into existing code. The package references `Bodu.Core` for its shared `ThrowHelper` argument validation.
 
 ## Installation
 
@@ -33,7 +33,7 @@ Targets `net8.0` and `net10.0`. Depends on `Bodu.Core`.
 | `RangeSet<T>` / `RangeDictionary<TKey,TValue>` | `Bodu.Collections.Generic` | Non-overlapping range containment / range-to-value mapping |
 | `IntervalTree<T>` / `IntervalTree<TKey,TValue>` | `Bodu.Collections.Generic` | Freely overlapping closed intervals with stabbing and overlap-window queries in O(log n + k) |
 | `Table<TRow,TColumn,TValue>` | `Bodu.Collections.Generic` | Two-dimensional map keyed by a row/column pair with live row and column projections |
-| `BitSet` | `Bodu.Collections.Generic` | Growable packed bit array with Java `BitSet` semantics and bulk logical operations |
+| `BitSet` | `Bodu.Collections.Specialized` | Growable packed bit array with Java `BitSet` semantics and bulk logical operations |
 | `SegmentedBuffer<T>` | `Bodu.Collections.Generic` | Append-only chunked buffer that grows without copying existing elements |
 
 ## Graphs
@@ -54,7 +54,7 @@ The `Bodu.Collections.Probabilistic` namespace ships three fixed-footprint appro
 
 All three hash through an `IEqualityComparer<T>`, merge with parameter-compatible instances, and round-trip their state through an opaque, version-checked export format. None is thread-safe.
 
-The thread-safe variants (`ConcurrentCircularBuffer<T>`, `ConcurrentHashSet<T>`) ship separately in the `Bodu.Collections.Concurrent` package.
+The thread-safe variants (`ConcurrentCircularBuffer<T>`, `ConcurrentHashSet<T>`, `ConcurrentEvictingDictionary<TKey,TValue>`, and `ConcurrentLruCache<TKey,TValue>`) ship separately in the `Bodu.Collections.Concurrent` package.
 
 ## Testing
 

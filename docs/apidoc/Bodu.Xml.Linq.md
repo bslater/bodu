@@ -6,29 +6,31 @@ uid: Bodu.Xml.Linq
 
 ## Purpose
 
-**Bodu.Xml.Linq** is a small XML / LINQ-to-XML helper namespace used internally by `Bodu.Globalization.Calendar`'s rule parsers and exposed for consumers who need the same primitives. Reach for it when you need to resolve namespace prefixes against a fragment of LINQ-to-XML without standing up a full `XmlNameTable`.
+**Bodu.Xml.Linq** is a small LINQ-to-XML helper namespace in `Bodu.Core`. Reach for it when a document declares a default namespace and you want to look up child elements by local name, instead of qualifying every `Element` / `Elements` call with that namespace.
 
 ## Key types
 
-- <xref:Bodu.Xml.Linq.XmlNamespaceResolver> - implements `IXmlNamespaceResolver` over an `XElement` so XPath / prefix-aware queries can be evaluated against a LINQ-to-XML fragment.
+- <xref:Bodu.Xml.Linq.XmlNamespaceResolver> - captures the namespace of a root `XElement` once and exposes `Element`, `Elements`, and `Name` helpers that qualify a local name with it. It holds no prefix map and implements no interface.
 
 ## Example
 
 ```csharp
 using System.Xml.Linq;
-using System.Xml.XPath;
 using Bodu.Xml.Linq;
 
-XElement root = XElement.Parse(xml);
-var resolver = new XmlNamespaceResolver(root);
+XDocument doc = XDocument.Parse(
+    "<library xmlns='urn:books'><book id='1'><title>Foundation</title></book></library>");
 
-IEnumerable<XElement> matches = root.XPathSelectElements(
-    "//bc:NotableDate[@territory='AU']",
-    resolver);
+var ns = new XmlNamespaceResolver(doc.Root!);
+
+XElement? book  = ns.Element(doc.Root!, "book");
+XElement? title = ns.Element(book!, "title");
+Console.WriteLine(title?.Value);               // Foundation
+Console.WriteLine(book!.Attribute("id")?.Value); // 1 - unprefixed attributes are in no namespace
 ```
 
 ## Notes
 
-- **Single-fragment scope.** The resolver reflects the element's in-scope namespaces only; declarations on ancestors outside the fragment are not visible.
-- **Calendar rule documents.** Authored notable-date rule files use the `urn:bodu:globalization:calendar` namespace; this helper resolves in-scope namespace prefixes when reading prefixed elements from such a fragment.
-- **See also:** the [Bodu.Core introduction](~/docs/core/index.md) and <xref:Bodu.Globalization.Calendar>.
+- **One namespace per resolver.** The resolver keeps only the root element's namespace (`XNamespace.None` when the root has none); it is fixed for the lifetime of the instance. Create a separate resolver for each namespace a document uses.
+- **Elements, not attributes.** An unprefixed attribute belongs to no namespace even under a default namespace, so look it up by plain name; use `Name` for an attribute only when the attribute is explicitly qualified with the resolver's namespace.
+- **See also:** the [Bodu.Core introduction](~/docs/core/index.md).

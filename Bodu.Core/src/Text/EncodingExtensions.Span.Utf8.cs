@@ -72,10 +72,10 @@ public static partial class EncodingExtensions
     /// </summary>
     /// <param name="bytes">The UTF-8 encoded byte span.</param>
     /// <returns>The decoded string.</returns>
-    /// <exception cref="System.Text.DecoderFallbackException">
-    /// Thrown when <paramref name="bytes" /> contains an invalid UTF-8 sequence (only when the default
-    /// <see cref="System.Text.Encoding.UTF8" /> instance has been configured with exception fallbacks).
-    /// </exception>
+    /// <remarks>
+    /// Decodes with <see cref="System.Text.Encoding.UTF8" />, whose fallbacks cannot be changed, so an invalid sequence
+    /// is replaced with U+FFFD rather than throwing.
+    /// </remarks>
     public static string FromUtf8(this ReadOnlySpan<byte> bytes) =>
         System.Text.Encoding.UTF8.GetString(bytes);
 

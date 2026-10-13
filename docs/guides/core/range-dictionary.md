@@ -73,7 +73,7 @@ Overlapping ranges throw `ArgumentException` on `Add`. Adjacent ranges are allow
 
 ```csharp
 brackets.Overlaps(40_000m, 50_000m);   // True - straddles the [18_200, 45_000) and [45_000, 120_000) seams
-brackets.Add(40_000m, 50_000m, "oops"); // throws ArgumentException
+brackets.Add(40_000m, 50_000m, 0.30m);  // throws ArgumentException
 ```
 
 `Overlaps` lets you test before adding so the failure path is `return false` rather than `catch`.
@@ -106,7 +106,7 @@ weekdays.Count;                                      // 1 - adjacent merged
 weekdays.Contains(new DateTime(2026, 1, 12));        // True
 ```
 
-`RangeSet<T>` differs from `RangeDictionary` in two ways: there is no value associated with each range, and *adjacent ranges automatically merge* on `Add`. Insertion-order is preserved internally only as far as merging permits.
+`RangeSet<T>` differs from `RangeDictionary` in two ways: there is no value associated with each range, and *adjacent ranges automatically merge* on `Add`. Ranges are kept sorted by start; insertion order is not preserved.
 
 ### Set algebra
 
@@ -119,10 +119,10 @@ var b = new RangeSet<int>(new[] { new Range<int>(30, 120) });
 
 RangeSet<int> union = a.Union(b);          // [0, 150)
 RangeSet<int> inter = a.Intersect(b);      // [30, 50), [100, 120)
-RangeSet<int> diff  = a.Except(b);         // [0, 30)
+RangeSet<int> diff  = a.Except(b);         // [0, 30), [120, 150)
 ```
 
-Each set operation returns a new `RangeSet<T>`; the operands are not mutated. The implementation is O(n + m) on the sizes of the operands - a single linear merge over the sorted range arrays.
+Each set operation returns a new `RangeSet<T>`; the operands are not mutated. `Intersect` is O(n + m) on the sizes of the operands - a single linear merge over the sorted range arrays. `Union` and `Except` copy the first operand and then add or remove each range of the second one at a time; each step can shift the sorted arrays, so they are O((n + m)²) in the worst case.
 
 ### Other operations
 
@@ -130,7 +130,7 @@ Each set operation returns a new `RangeSet<T>`; the operands are not mutated. Th
 set.Add(new Range<int>(20, 40));     // convenience overload
 set.Remove(10, 25);                   // remove or split intersecting range
 set.Contains(15);                     // point membership
-set.Contains(0, 10);                  // exact range membership
+set.Contains(0, 10);                  // true if one stored range covers all of [0, 10)
 set.Overlaps(0, 100);                 // overlap test
 set.ToArray();                        // snapshot in ascending order
 ```
@@ -144,10 +144,11 @@ set.ToArray();                        // snapshot in ascending order
 | Point lookup / containment | O(log n) | O(log n) |
 | `Add(range)` | O(n) worst-case (insert + validate non-overlap) | O(n) worst-case (insert + merge adjacent) |
 | `Remove` | O(n) worst-case | O(n) worst-case |
-| `Union` / `Intersect` / `Except` | - | O(n + m) |
+| `Intersect` | - | O(n + m) |
+| `Union` / `Except` | - | O((n + m)²) worst case |
 | Enumeration | O(n) | O(n) |
 
-For workloads that are dominated by point lookups, the binary search is the headline cost; insertion is rare. For workloads dominated by set algebra over many ranges, the linear merge sets the bound.
+For workloads that are dominated by point lookups, the binary search is the headline cost; insertion is rare. For workloads dominated by set algebra over many ranges, `Intersect` is a linear merge, but `Union` and `Except` can be quadratic.
 
 ## Worked example - version banding
 

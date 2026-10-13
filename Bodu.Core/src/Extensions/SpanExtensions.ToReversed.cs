@@ -52,8 +52,11 @@ public static partial class SpanExtensions
     /// all other elements are copied unchanged.
     /// </returns>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="index" /> is negative or greater than <see cref="ReadOnlySpan{T}.Length" />, or when
-    /// <paramref name="count" /> is negative or would extend the range beyond the end of <paramref name="source" />.
+    /// Thrown when <paramref name="index" /> or <paramref name="count" /> is negative or greater than
+    /// <see cref="ReadOnlySpan{T}.Length" />.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when <c>index + count</c> is greater than <see cref="ReadOnlySpan{T}.Length" />.
     /// </exception>
     /// <remarks>
     /// <para>
@@ -62,12 +65,14 @@ public static partial class SpanExtensions
     /// </para>
     /// <para>
     /// This is the canonical public implementation. The full-span overload (<see cref="ToReversed{T}(ReadOnlySpan{T})" />)
-    /// and the <see cref="Range" />-based overload (<see cref="ToReversed{T}(ReadOnlySpan{T}, Range)" />) both resolve
-    /// their arguments and delegate here after validation.
+    /// and the <see cref="Range" />-based overload (<see cref="ToReversed{T}(ReadOnlySpan{T}, Range)" />) resolve their
+    /// arguments and share its core, <see cref="ReverseCore{T}" />.
     /// </para>
     /// <para>
-    /// Bounds validation uses unsigned comparison so that a single branch catches both negative values and values that
-    /// exceed the span length, matching the pattern used throughout <see cref="MemoryExtensions" />.
+    /// Bounds validation is delegated to
+    /// <see cref="ThrowHelper.ThrowIfSpanOffsetOrCountInvalid{T}(ReadOnlySpan{T}, int, int, string, string, string)" />,
+    /// which checks <paramref name="index" /> and <paramref name="count" /> separately against the length and then
+    /// their sum.
     /// </para>
     /// <para>
     /// Once validated, execution is forwarded to <see cref="ReverseCore{T}" />, which performs the allocation and the
@@ -110,9 +115,9 @@ public static partial class SpanExtensions
     /// </returns>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown when <paramref name="range" /> resolves to a start index that is negative or to an end index that exceeds
-    /// <see cref="ReadOnlySpan{T}.Length" />. Resolution is performed by <see cref="Range.GetOffsetAndLength" />; the
-    /// resulting offset and length are then validated and forwarded to
-    /// <see cref="ToReversed{T}(ReadOnlySpan{T}, int, int)" />.
+    /// <see cref="ReadOnlySpan{T}.Length" />. Resolution and validation are performed by
+    /// <see cref="Range.GetOffsetAndLength" />; the resulting offset and length are forwarded directly to
+    /// <see cref="ReverseCore{T}" />.
     /// </exception>
     /// <remarks>
     /// <para>
@@ -121,8 +126,9 @@ public static partial class SpanExtensions
     /// </para>
     /// <para>
     /// Resolves <paramref name="range" /> to an offset and length via <see cref="Range.GetOffsetAndLength" /> and
-    /// delegates to <see cref="ToReversed{T}(ReadOnlySpan{T}, int, int)" />. Prefer that overload when the start and
-    /// length are already available as integers to avoid constructing an intermediate <see cref="Range" /> value.
+    /// delegates to <see cref="ReverseCore{T}" />. Prefer <see cref="ToReversed{T}(ReadOnlySpan{T}, int, int)" /> when
+    /// the start and length are already available as integers to avoid constructing an intermediate
+    /// <see cref="Range" /> value.
     /// </para>
     /// <para>
     /// This overload is most ergonomic when the range is expressed as a C# 8+ index expression at the call site (e.g.

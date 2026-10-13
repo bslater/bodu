@@ -182,15 +182,53 @@ public partial class XorShiftRandomTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="XorShiftRandom.Next" />, with MaxValueZero, throws <see cref="ArgumentOutOfRangeException" />.
+    /// Verifies that <see cref="XorShiftRandom.Next(int)" /> throws <see cref="ArgumentOutOfRangeException" /> when
+    /// <c>maxValue</c> is negative.
     /// </summary>
+    /// <param name="maxValue">The negative exclusive upper bound.</param>
     [TestMethod]
-    [DataRow(0)]
+    [DataRow(-1)]
     [DataRow(-5)]
-    public void Next_WithMaxValueZero_ShouldThrowExactly(int maxValue)
+    [DataRow(int.MinValue)]
+    public void Next_WhenMaxValueIsNegative_ShouldThrowExactly(int maxValue)
     {
         var rng = new XorShiftRandom();
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => rng.Next(maxValue));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="XorShiftRandom.Next(int)" /> returns zero when <c>maxValue</c> is zero, as
+    /// <see cref="System.Random.Next(int)" /> does.
+    /// </summary>
+    [TestMethod]
+    public void Next_WhenMaxValueIsZero_ShouldReturnZero()
+    {
+        var rng = new XorShiftRandom(seed: 1234);
+
+        Assert.AreEqual(0, rng.Next(0));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="XorShiftRandom.Next(int, int)" /> throws <see cref="ArgumentOutOfRangeException" />
+    /// naming <c>minValue</c> when <c>minValue</c> is greater than <c>maxValue</c>, as
+    /// <see cref="System.Random.Next(int, int)" /> does.
+    /// </summary>
+    /// <param name="minValue">The inclusive lower bound.</param>
+    /// <param name="maxValue">The exclusive upper bound, less than <paramref name="minValue" />.</param>
+    [TestMethod]
+    [DataRow(1, 0)]
+    [DataRow(10, 5)]
+    [DataRow(0, -1)]
+    [DataRow(int.MaxValue, int.MinValue)]
+    public void Next_WhenMinGreaterThanMax_ShouldThrowArgumentOutOfRangeException(int minValue, int maxValue)
+    {
+        var rng = new XorShiftRandom();
+
+        ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = rng.Next(minValue, maxValue);
+        });
+        Assert.AreEqual("minValue", ex.ParamName);
     }
 
     /// <summary>
@@ -205,21 +243,6 @@ public partial class XorShiftRandomTests
             int actual = rng.Next(10, 20);
             Assert.IsTrue(actual is >= 10 and < 20);
         }
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="XorShiftRandom.Next(int, int)" /> throws when
-    /// <paramref name="minValue" /> is strictly greater than <paramref name="maxValue" />.
-    /// </summary>
-    [TestMethod]
-    [DataRow(1, 0)]
-    [DataRow(10, 5)]
-    [DataRow(0, -1)]
-    [DataRow(int.MaxValue, int.MinValue)]
-    public void Next_WhenMinGreaterThanMax_ShouldThrowExactly(int minValue, int maxValue)
-    {
-        var rng = new XorShiftRandom();
-        Assert.ThrowsExactly<ArgumentException>(() => rng.Next(minValue, maxValue));
     }
 
     /// <summary>
