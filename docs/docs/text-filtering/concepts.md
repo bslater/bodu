@@ -76,7 +76,8 @@ happens; when unattached the evaluation path pays only a null check.
 Regular expressions always carry a match timeout (and prefer the linear-time `NonBacktracking`
 engine, under which the timeout is effectively unreachable). If a pattern does time out, the
 decision fails safe by action: a timed-out include does not admit the value; a timed-out exclude
-still vetoes it. The event is counted and visible to the observer.
+still vetoes it. The event is counted in `TextFilterStatistics.RegexTimeouts`; the observer sees
+only the fail-safe decision, with nothing to mark it as a timeout.
 
 ## Where to go next
 

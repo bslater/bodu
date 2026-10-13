@@ -22,6 +22,7 @@ public sealed partial class TextFilter
     /// <exception cref="ArgumentException">
     /// <paramref name="lines" /> contains a <see langword="null" /> entry, or a parsed pattern is empty or malformed.
     /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">A parsed pattern is longer than 4096 characters.</exception>
     /// <remarks>
     /// Each line is trimmed and parsed as a wildcard pattern: blank lines and lines starting with <c>#</c> are skipped,
     /// a leading <c>!</c> makes the pattern an exclude, and <c>\!</c> / <c>\#</c> escape a literal leading <c>!</c> or
@@ -44,7 +45,8 @@ public sealed partial class TextFilter
     /// <paramref name="lines" /> contains a <see langword="null" /> entry, or a parsed pattern is empty or malformed.
     /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// The options carry an invalid value; see <see cref="Build(IEnumerable{TextFilterPattern}, TextFilterOptions?)" />.
+    /// A parsed pattern is longer than 4096 characters, or the options carry an invalid value; see
+    /// <see cref="Build(IEnumerable{TextFilterPattern}, TextFilterOptions?)" />.
     /// </exception>
     /// <remarks>
     /// Each line is trimmed and parsed as a wildcard pattern: blank lines and lines starting with <c>#</c> are skipped,

@@ -63,7 +63,7 @@ public sealed class TextFilterBuilder
     /// <paramref name="globPattern" /> is empty or consists solely of white space.
     /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="globPattern" /> exceeds the maximum pattern length.
+    /// <paramref name="globPattern" /> is longer than 4096 characters.
     /// </exception>
     public TextFilterBuilder AddInclude(string globPattern)
     {
@@ -82,7 +82,7 @@ public sealed class TextFilterBuilder
     /// <paramref name="globPattern" /> is empty or consists solely of white space.
     /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="globPattern" /> exceeds the maximum pattern length.
+    /// <paramref name="globPattern" /> is longer than 4096 characters.
     /// </exception>
     public TextFilterBuilder AddExclude(string globPattern)
     {
@@ -101,7 +101,7 @@ public sealed class TextFilterBuilder
     /// <paramref name="regexPattern" /> is empty or consists solely of white space.
     /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="regexPattern" /> exceeds the maximum pattern length.
+    /// <paramref name="regexPattern" /> is longer than 4096 characters.
     /// </exception>
     public TextFilterBuilder AddIncludeRegex(string regexPattern)
     {
@@ -120,7 +120,7 @@ public sealed class TextFilterBuilder
     /// <paramref name="regexPattern" /> is empty or consists solely of white space.
     /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="regexPattern" /> exceeds the maximum pattern length.
+    /// <paramref name="regexPattern" /> is longer than 4096 characters.
     /// </exception>
     public TextFilterBuilder AddExcludeRegex(string regexPattern)
     {
@@ -151,6 +151,9 @@ public sealed class TextFilterBuilder
     /// <returns>This builder, for chaining.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="line" /> is <see langword="null" />.</exception>
     /// <exception cref="ArgumentException">The line's pattern text is empty (for example a lone <c>!</c>).</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// The line's pattern text is longer than 4096 characters.
+    /// </exception>
     /// <remarks>
     /// Blank lines and <c>#</c> comment lines are skipped; a leading <c>!</c> makes the pattern an exclude; <c>\!</c>
     /// and <c>\#</c> escape a literal leading character. See <see cref="TextFilter.Parse(IEnumerable{string})" />.
@@ -176,6 +179,7 @@ public sealed class TextFilterBuilder
     /// <exception cref="ArgumentException">
     /// <paramref name="lines" /> contains a <see langword="null" /> entry, or a line's pattern text is empty.
     /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">A line's pattern text is longer than 4096 characters.</exception>
     public TextFilterBuilder AddParsed(IEnumerable<string> lines)
     {
         ThrowHelper.ThrowIfNull(lines);
@@ -197,6 +201,11 @@ public sealed class TextFilterBuilder
     /// <returns>The compiled filter.</returns>
     /// <exception cref="ArgumentException">
     /// A wildcard pattern is malformed or a regular-expression pattern is not valid.
+    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// The options the builder was created with carry an undefined <see cref="TextFilterOptions.Mode" /> or a
+    /// <see cref="TextFilterOptions.RegexMatchTimeout" /> that is neither positive nor
+    /// <see cref="System.Text.RegularExpressions.Regex.InfiniteMatchTimeout" />.
     /// </exception>
     /// <remarks>
     /// The builder can keep accumulating patterns after a build; later builds include them.
