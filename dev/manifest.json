@@ -9221,7 +9221,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Globalization.Calendar.Caching.NotableDateCacheEntry",
-      "Summary": "<p sourcefile=\"api/Bodu.Globalization.Calendar.Caching.NotableDateCacheEntry.yml\" sourcestartlinenumber=\"1\">Represents one cached unit of notable-date resolution: every occurrence emitted within a single civil year for a\nsingle territory under a single resource version, together with the UTC instant the year was computed, which drives\nexpiry.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Globalization.Calendar.Caching.NotableDateCacheEntry.yml\" sourcestartlinenumber=\"1\">Represents one cached unit of notable-date resolution: every occurrence in effect during a single civil year for a\nsingle territory under a single resource version, together with the UTC instant the year was computed, which drives\nexpiry.</p>\n"
     },
     {
       "type": "ManagedReference",
