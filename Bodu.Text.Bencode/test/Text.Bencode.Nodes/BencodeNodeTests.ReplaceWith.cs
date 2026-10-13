@@ -87,4 +87,24 @@ public partial class BencodeNodeTests
             root["a"]!.ReplaceWith(other[0]);
         });
     }
+
+    /// <summary>
+    /// Verifies that replacing a node with one of its siblings throws <see cref="InvalidOperationException" /> rather
+    /// than holding the sibling twice, and leaves the container unchanged.
+    /// </summary>
+    [TestMethod]
+    public void ReplaceWith_WhenReplacementIsASibling_ShouldThrowInvalidOperationException()
+    {
+        var root = new BencodeArray(1, 2);
+        BencodeNode first = root[0]!;
+        BencodeNode second = root[1]!;
+
+        _ = Assert.ThrowsExactly<InvalidOperationException>(() =>
+        {
+            first.ReplaceWith(second);
+        });
+
+        Assert.AreSame(first, root[0], "The replaced slot after the rejected replacement.");
+        Assert.AreSame(root, first.Parent, "The parent of the node that was not replaced.");
+    }
 }

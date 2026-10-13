@@ -35,4 +35,23 @@ public partial class TomlArrayTests
         other.Add(item);
         Assert.AreSame(other, item.Parent, "The item's parent once added elsewhere.");
     }
+
+    /// <summary>
+    /// Verifies that inserting a node into the array that already holds it throws
+    /// <see cref="InvalidOperationException" /> and leaves a single occurrence attached to the array.
+    /// </summary>
+    [TestMethod]
+    public void Insert_WhenNodeIsAlreadyAnElement_ShouldThrowInvalidOperationException()
+    {
+        var value = TomlValue.Create(1L);
+        var array = new TomlArray(value);
+
+        _ = Assert.ThrowsExactly<InvalidOperationException>(() =>
+        {
+            array.Insert(0, value);
+        });
+
+        Assert.AreEqual(1, array.Count, "The array's count after the rejected insert.");
+        Assert.AreSame(array, value.Parent, "The parent of the element.");
+    }
 }

@@ -75,4 +75,21 @@ public partial class BencodeObjectTests
 
         Assert.IsNull(free.Parent);
     }
+
+    /// <summary>
+    /// Verifies that a construction given the same value under two keys throws <see cref="InvalidOperationException" />
+    /// and leaves the value without a parent, free to be added elsewhere.
+    /// </summary>
+    [TestMethod]
+    public void Ctor_WhenAValueRepeatsUnderAnotherKey_ShouldThrowInvalidOperationException()
+    {
+        var value = BencodeValue.Create(1L);
+
+        _ = Assert.ThrowsExactly<InvalidOperationException>(() =>
+        {
+            _ = new BencodeObject([new KeyValuePair<string, BencodeNode?>("a", value), new KeyValuePair<string, BencodeNode?>("b", value)]);
+        });
+
+        Assert.IsNull(value.Parent);
+    }
 }

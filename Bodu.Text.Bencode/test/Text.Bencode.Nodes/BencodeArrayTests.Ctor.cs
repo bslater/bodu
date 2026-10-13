@@ -32,4 +32,21 @@ public partial class BencodeArrayTests
         Assert.IsNull(free.Parent, "The parent of the item attached before the failure.");
         Assert.AreSame(owner, owned.Parent, "The parent of the item that belongs to another container.");
     }
+
+    /// <summary>
+    /// Verifies that a construction given the same node twice throws <see cref="InvalidOperationException" /> and
+    /// leaves the node without a parent, free to be added elsewhere.
+    /// </summary>
+    [TestMethod]
+    public void Ctor_WhenAnItemRepeats_ShouldThrowInvalidOperationException()
+    {
+        var value = BencodeValue.Create(1L);
+
+        _ = Assert.ThrowsExactly<InvalidOperationException>(() =>
+        {
+            _ = new BencodeArray(value, value);
+        });
+
+        Assert.IsNull(value.Parent);
+    }
 }

@@ -74,4 +74,21 @@ public partial class TomlObjectTests
 
         Assert.IsNull(free.Parent);
     }
+
+    /// <summary>
+    /// Verifies that a construction given the same value under two keys throws <see cref="InvalidOperationException" />
+    /// and leaves the value without a parent, free to be added elsewhere.
+    /// </summary>
+    [TestMethod]
+    public void Ctor_WhenAValueRepeatsUnderAnotherKey_ShouldThrowInvalidOperationException()
+    {
+        var value = TomlValue.Create(1L);
+
+        _ = Assert.ThrowsExactly<InvalidOperationException>(() =>
+        {
+            _ = new TomlObject([new KeyValuePair<string, TomlNode?>("a", value), new KeyValuePair<string, TomlNode?>("b", value)]);
+        });
+
+        Assert.IsNull(value.Parent);
+    }
 }
