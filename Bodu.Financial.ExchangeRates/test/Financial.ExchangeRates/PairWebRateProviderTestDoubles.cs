@@ -68,6 +68,13 @@ internal sealed class StubPairSource
     public Exception? FailNext { get; set; }
 
     /// <summary>
+    /// Gets or sets the last date the simulated source has published, or <see langword="null" /> to serve every
+    /// observation; an observation dated after it is withheld, as a source withholds a day it has not yet published.
+    /// </summary>
+    /// <value>The last published date, or <see langword="null" />.</value>
+    public DateOnly? PublishedThrough { get; set; }
+
+    /// <summary>
     /// Gets the windows the source was asked for, in order.
     /// </summary>
     /// <value>Each request's inclusive start and end.</value>
@@ -91,8 +98,10 @@ internal sealed class StubPairSource
             return ValueTask.FromException<PairRateData<string>>(failure);
         }
 
+        DateOnly? published = PublishedThrough;
         var inRange = _observations
             .Where(observation => observation.Date >= request.StartDate && observation.Date <= request.EndDate)
+            .Where(observation => published is not { } last || observation.Date <= last)
             .ToList();
 
         string series = $"{request.Pair.From}/{request.Pair.To}";
