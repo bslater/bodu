@@ -148,11 +148,13 @@ cache stores parsed, resolved rates in front of the provider.
 exchangerate.host, and FRED - plus the IMF options derive from the abstract
 <xref:Bodu.Financial.ExchangeRates.WebRateProviderOptions>, so they share its surface - the
 `BaseAddress`, `HttpTimeout` (default 30s), `UserAgent`, `AllowSynchronousNetworkAccess`,
-`DefaultLookback` (default 7 days), a `CurrencyAliases` map for non-ISO source symbols,
-and the per-event `*LogLevel` knobs. RBA, ECB, and BoE carry their own option types
-(`RbaRateProviderOptions` and friends) with source-specific settings such as the RBA's
-era list. The DI registration's `configureResilience` parameter tunes the standard
-Polly handler (`HttpStandardResilienceOptions`) wrapped around the named `HttpClient`.
+`DefaultLookback` (default 7 days), `RefreshInterval` (default 12 hours: how long a day
+the source could still publish, such as today, is served before it is fetched again), a
+`CurrencyAliases` map for non-ISO source symbols, and the per-event `*LogLevel` knobs.
+RBA, ECB, and BoE carry their own option types (`RbaRateProviderOptions` and friends)
+with source-specific settings such as the RBA's era list. The DI registration's
+`configureResilience` parameter tunes the standard Polly handler
+(`HttpStandardResilienceOptions`) wrapped around the named `HttpClient`.
 
 ## Reserve Bank of Australia (AUD)
 

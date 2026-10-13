@@ -205,7 +205,7 @@ public sealed class ImfRateProvider
     /// </exception>
     /// <remarks>
     /// A closed month's report never changes and is loaded once. A month loaded before the IMF published its last day's
-    /// rates is downloaded again once <see cref="ImfRateProviderOptions.RefreshInterval" /> has passed since it was
+    /// rates is downloaded again once <see cref="WebRateProviderOptions.RefreshInterval" /> has passed since it was
     /// loaded.
     /// </remarks>
     public Task LoadMonthAsync(ImfReportMonth month, CancellationToken cancellationToken = default)

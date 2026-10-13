@@ -40,4 +40,10 @@
         </Compile>
     </ItemGroup>
 
+    <!-- Shared load-tracking rules; compiled internally into PairWebRateProvider and each file feed that tracks what it has loaded. -->
+    <ItemGroup>
+        <Compile Include="..\shared\RatePublication.cs" Link="Shared\RatePublication.cs" />
+        <Compile Include="..\shared\LoadedRangeCoverage.cs" Link="Shared\LoadedRangeCoverage.cs" />
+    </ItemGroup>
+
 </Project>

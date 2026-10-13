@@ -108,7 +108,7 @@ binds to <xref:Bodu.Financial.ExchangeRates.EcbRateProviderOptions> (and its nes
 | `AllowSynchronousNetworkAccess` | `false` | Whether a *synchronous* lookup that misses may block to download. Off, a synchronous miss is reported as a miss and only the asynchronous surface or an explicit warm-up fetches. |
 | `EnableDiskCache` | `true` | Whether downloaded feed files are kept on disk so immutable history is not re-fetched. |
 | `CacheDirectory` | `null` | Where the payload cache lives. `null` or blank resolves to `bodu-ecb` under `Path.GetTempPath()`. |
-| `RefreshInterval` | 12 h | A cached file older than this is re-downloaded. |
+| `RefreshInterval` | 12 h | A cached file older than this is re-downloaded, and a loaded feed serves a day the ECB could still publish for this long before the next request that reaches it downloads the feed again. |
 | `CurrencyAliases` | `{}` | Feed currency label → ISO code, applied while the feed is parsed (the reverse of the pair providers' ISO code → request symbol map). Empty by default, because the ECB publishes ISO codes. |
 | `*LogLevel` | see block | The level each diagnostic is logged at; `None` suppresses it. |
 
@@ -133,7 +133,7 @@ builder.Services
 
 The pair providers (Yahoo, OFX, XE, OANDA, Fixer, exchangerate.host, FRED) fetch one currency
 pair per request, and their options all derive from
-<xref:Bodu.Financial.ExchangeRates.WebRateProviderOptions>, so the first twelve keys below are
+<xref:Bodu.Financial.ExchangeRates.WebRateProviderOptions>, so the first thirteen keys below are
 shared by every one of them (and by IMF, whose options derive from the same base). The last
 three are Fixer's own, from <xref:Bodu.Financial.ExchangeRates.FixerRateProviderOptions>:
 
@@ -147,6 +147,7 @@ three are Fixer's own, from <xref:Bodu.Financial.ExchangeRates.FixerRateProvider
       "UserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
       "AllowSynchronousNetworkAccess": false,
       "DefaultLookback": "7.00:00:00",
+      "RefreshInterval": "12:00:00",
       "CurrencyAliases": {},
       "DownloadStartingLogLevel": "Debug",
       "DownloadCompletedLogLevel": "Information",
@@ -169,6 +170,7 @@ three are Fixer's own, from <xref:Bodu.Financial.ExchangeRates.FixerRateProvider
 | `UserAgent` | a browser-like string | Several public endpoints reject requests without a recognizable user agent. |
 | `AllowSynchronousNetworkAccess` | `false` | As for the bulk providers. |
 | `DefaultLookback` | 7 days | The window a synchronous or undated lookup fetches on demand: it ends on the requested date and spans this duration. |
+| `RefreshInterval` | 12 h | How long a day the source could still publish (today, or a later day it returned no rate for) is served before the next request that reaches it fetches it again. A day that has passed, or that the source returned a rate for, is never fetched again. |
 | `CurrencyAliases` | `{}` | ISO code → source symbol; values must be alphanumeric (they are substituted into the request URL). |
 | `*LogLevel` | see block | As for the bulk providers. |
 | `ApiKey` | `""` | **Required** - a blank key fails validation. Sent as `access_key`. |
@@ -191,7 +193,7 @@ reaches the wire.
 | ECB | `Financial:Ecb` | `EcbRateProviderOptions` | bulk, nested `Endpoint` | `Endpoint` (`BaseUrl`, `HttpTimeout`, `UserAgent`), `EnableDiskCache` (`true`), `CacheDirectory` (`null` → `bodu-ecb`), `RefreshInterval` (12 h), `CurrencyAliases` (`{}`); `Feeds` code-only | none |
 | Bank of England | `Financial:Boe` | `BoeRateProviderOptions` | bulk, nested `Endpoint` | `Endpoint` (`BaseUrl` `https://www.bankofengland.co.uk/boeapps/database/`, `QueryPath` `_iadb-fromshowcolumns.asp`, `HttpTimeout` 30 s, `UserAgent` `Bodu.Financial.ExchangeRates.Boe`), `OnDemandWindowDays` (10 - replaces `DefaultLookback`), `EnableDiskCache` (`true`), `CacheDirectory` (`null` → `bodu-boe`), `RefreshInterval` (12 h); `Series` and `HistoryAvailability` code-only; no `CurrencyAliases`, no `SynchronousNetworkFetchLogLevel` | none |
 | RBA | `Financial:Rba` | `RbaRateProviderOptions` | bulk, flat | `BaseUrl` (`https://www.rba.gov.au/statistics/tables/xls-hist/`), `HttpTimeout` (30 s), `UserAgent` (`Bodu.Financial.ExchangeRates.Rba`), `EnableDiskCache` (**`false`**), `CacheDirectory` (`null` → `bodu-rba`), `CurrentEraRefreshInterval` (12 h), `CurrencyAliases` (`{ "SDR": "XDR" }`); `Eras` code-only; no `SynchronousNetworkFetchLogLevel` | none |
-| IMF | `Financial:Imf` | `ImfRateProviderOptions` | `WebRateProviderOptions` + report keys | `BaseAddress` (`https://www.imf.org/external/np/fin/data/`), `ReportPath` (`rms_mth.aspx`), `ReportType` (`REP`), `EnableDiskCache` (`true`), `CacheDirectory` (`null` → `bodu-imf`), `RefreshInterval` (12 h), `CurrencyNames` (report label → ISO code, ~35 defaults, merges) | none |
+| IMF | `Financial:Imf` | `ImfRateProviderOptions` | `WebRateProviderOptions` + report keys | `BaseAddress` (`https://www.imf.org/external/np/fin/data/`), `ReportPath` (`rms_mth.aspx`), `ReportType` (`REP`), `EnableDiskCache` (`true`), `CacheDirectory` (`null` → `bodu-imf`), `CurrencyNames` (report label → ISO code, ~35 defaults, merges); the shared `RefreshInterval` (12 h) also sets how long a cached copy of the current month's report stays fresh | none |
 | Yahoo Finance | `Financial:Yahoo` | `YahooRateProviderOptions` | pair | `BaseAddress` (`https://query1.finance.yahoo.com/`), `ChartPath` (`v8/finance/chart/{symbol}`), `SymbolFormat` (`{from}{to}=X`) | none |
 | OFX | `Financial:Ofx` | `OfxRateProviderOptions` | pair | `BaseAddress` (`https://api.ofx.com/`), `HistoryPath` (`PublicSite.ApiService/SpotRateHistory/{from}/{to}/{start}/{end}`), `DecimalPlaces` (6), `ReportingInterval` (`daily`), `FutureClampSkew` (`00:00:00`; subtracted from the current instant when capping a request's end bound) | none |
 | XE.com | `Financial:Xe` | `XeRateProviderOptions` | pair | `BaseAddress` (`https://www.xe.com/`), `ChartingRatesPath` (`api/protected/charting-rates/`), `AuthBootstrapUrl` (`https://www.xe.com/currencycharts`), `AuthScriptBaseUrl` (`https://www.xe.com/_next/`) | none (token scraped at runtime) |

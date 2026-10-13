@@ -42,6 +42,17 @@ public class WebRateProviderOptionsTests
     }
 
     /// <summary>
+    /// Verifies that <see cref="WebRateProviderOptions.RefreshInterval" /> defaults to 12 hours.
+    /// </summary>
+    [TestMethod]
+    public void RefreshInterval_WhenDefault_ShouldBeTwelveHours()
+    {
+        var options = new TestWebRateProviderOptions();
+
+        Assert.AreEqual(TimeSpan.FromHours(12), options.RefreshInterval);
+    }
+
+    /// <summary>
     /// Verifies that a null base address is rejected.
     /// </summary>
     [TestMethod]

@@ -26,11 +26,15 @@ The synchronous getters (`GetRate`, `TryGetRate`, `GetRates`) resolve against th
 
 <xref:Bodu.Financial.ExchangeRates.WebRateProvider> is the root base. A **bulk** provider (RBA, ECB, BoE, IMF) derives from it directly: the feed publishes one base currency against many quotes, so a load brings in every pair at once and the provider tracks coverage per feed, era, or window. Only direct (`base→X`) and inverse (`X→base`) pairs resolve. The range and warm-up members (`GetRates`, `GetRatesAsync`, `LoadPairAsync`) reject a cross pair such as `USD→JPY` on the ECB provider with <xref:Bodu.Financial.ExchangeRates.RateSeriesNotFoundException> before any download; a single-date `GetRateAsync` downloads first and then throws a plain `KeyNotFoundException`, and the synchronous point lookups report a miss.
 
-<xref:Bodu.Financial.ExchangeRates.PairWebRateProvider`1> is the **pair** specialization (Yahoo, OFX, XE, OANDA, Fixer, exchangerate.host, FRED). It implements coverage tracking with a gap-aware per-pair <xref:Bodu.Financial.ExchangeRates.DateRangeCoverage> set - a request that straddles an unfetched interior gap is treated as uncovered, and only the span from its first unfetched day to its last is fetched - and delegates the actual fetch-and-parse to an <xref:Bodu.Financial.ExchangeRates.IPairRateSource`1>. The `TSeries` type parameter is the feed-specific series metadata (`YahooSeriesInfo`, `FixerSeriesInfo`, …) that `GetAvailablePairs()` returns.
+<xref:Bodu.Financial.ExchangeRates.PairWebRateProvider`1> is the **pair** specialization (Yahoo, OFX, XE, OANDA, Fixer, exchangerate.host, FRED). It implements coverage tracking with a gap-aware per-pair record of the days fetched - a request that straddles an unfetched interior gap is treated as uncovered, and only the span from its first unfetched day to its last is fetched - and delegates the actual fetch-and-parse to an <xref:Bodu.Financial.ExchangeRates.IPairRateSource`1>. The `TSeries` type parameter is the feed-specific series metadata (`YahooSeriesInfo`, `FixerSeriesInfo`, …) that `GetAvailablePairs()` returns.
 
 ## `DefaultLookback`
 
 When a single-date asynchronous lookup must fetch on demand, the provider fetches the window ending on the requested date and spanning `DefaultLookback` (7 days by default on <xref:Bodu.Financial.ExchangeRates.WebRateProviderOptions>), so a `PreviousWithin` resolution has observations to fall back to. Bulk providers override it: the ECB provider uses `TimeSpan.Zero` because a feed load already brings the surrounding dates.
+
+## Days the source has not yet published
+
+A request whose window reaches today can arrive before the source has published today's rate, so every web provider tells apart the days of a load the source can no longer change from those it still can. A day is **final** once it has passed (any day before the UTC date of the download) or once the source has returned a rate for it, and a final day is never downloaded again. Today, and any later day the source returned no rate for, is **open**: it is served for the provider's refresh interval, and the next request that reaches it after that downloads it again - the open days themselves on a pair provider and on BoE, the feed, era or month that holds them on ECB, RBA and IMF - so a rate published later the same day is picked up rather than missed for the life of the provider. The pair providers and IMF take the interval from `WebRateProviderOptions.RefreshInterval`, BoE and ECB from the `RefreshInterval` of their own options, and RBA from `CurrentEraRefreshInterval`; each defaults to 12 hours.
 
 ## `RateRangeResult`
 
@@ -68,7 +72,7 @@ Two caches with different jobs:
 | Stores | The **raw bytes** of a downloaded file, keyed by download unit (an ECB feed, an RBA era, an IMF report month) | **Parsed, resolved rates** plus the fetched-window coverage, per provider and pair |
 | Purpose | Avoid re-downloading immutable history across process restarts | Serve repeated lookups without consulting the provider at all; share across processes and machines |
 | Freshness | A file older than the options' `RefreshInterval` is re-downloaded - except that RBA refreshes only its current era, on `CurrentEraRefreshInterval`, and closed RBA eras and closed IMF months never refresh | Per-provider expiry, jitter, and refresh-ahead |
-| Configured by | `EnableDiskCache`, `CacheDirectory`, `RefreshInterval` on the bulk providers' options | `AddCachedRateProvider` and the `IRateCache` backends |
+| Configured by | `EnableDiskCache`, `CacheDirectory`, `RefreshInterval` (RBA: `CurrentEraRefreshInterval`) on the bulk providers' options; the same interval governs their [in-memory refresh](#days-the-source-has-not-yet-published) | `AddCachedRateProvider` and the `IRateCache` backends |
 
 The payload cache is **best-effort**: an I/O failure while reading is a miss, a failure while writing is swallowed (and logged when a logger is supplied), so a cache problem never breaks rate retrieval. Pair providers keep no payload cache - each pair-and-window request is a distinct query - and rely on in-memory coverage and, optionally, the rate cache.
 
