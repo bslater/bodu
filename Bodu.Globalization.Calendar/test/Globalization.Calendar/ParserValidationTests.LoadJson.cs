@@ -1501,4 +1501,114 @@ public sealed partial class ParserValidationTests
 
         return json;
     }
+
+    /// <summary>
+    /// Verifies that a JSON override whose <c>operation</c> names no operation, or is absent, is rejected with a single
+    /// error diagnostic, as the schema rejects the unknown element in XML, rather than dropped without a report.
+    /// </summary>
+    /// <param name="operation">The <c>operation</c> property, as a JSON member, or empty to omit it.</param>
+    [TestMethod]
+    [DataRow("\"operation\": \"Patch\",")]
+    [DataRow("\"operation\": \"UpdateRule\",")]
+    [DataRow("\"operation\": \"\",")]
+    [DataRow("\"operation\": 5,")]
+    [DataRow("")]
+    public void LoadJson_WhenOverrideOperationIsUnrecognized_ShouldThrowValidationException(string operation)
+    {
+        string json = OverrideJson($$"""{ {{operation}} "notableDateRef": "x", "ruleRef": "r", "priority": 7 }""");
+
+        NotableDateValidationException ex = Assert.ThrowsExactly<NotableDateValidationException>(() =>
+        {
+            _ = NotableDateResourceLoader.LoadJson(json);
+        });
+
+        Assert.ContainsSingle(d => d.Severity == NotableDateValidationSeverity.Error, ex.Diagnostics);
+    }
+
+    /// <summary>
+    /// Verifies that a JSON <c>AddRule</c> override without a <c>rule</c>, or whose <c>rule</c> is the literal
+    /// <c>null</c>, is rejected with a single error diagnostic, as the schema rejects it in XML, rather than dropped
+    /// without a report.
+    /// </summary>
+    /// <param name="rule">The <c>rule</c> property, as a JSON member, or empty to omit it.</param>
+    [TestMethod]
+    [DataRow("")]
+    [DataRow(", \"rule\": null")]
+    public void LoadJson_WhenAddRuleHasNoRule_ShouldThrowValidationException(string rule)
+    {
+        string json = OverrideJson($$"""{ "operation": "AddRule", "notableDateRef": "x"{{rule}} }""");
+
+        NotableDateValidationException ex = Assert.ThrowsExactly<NotableDateValidationException>(() =>
+        {
+            _ = NotableDateResourceLoader.LoadJson(json);
+        });
+
+        Assert.ContainsSingle(d => d.Severity == NotableDateValidationSeverity.Error, ex.Diagnostics);
+    }
+
+    /// <summary>
+    /// Verifies that a JSON <c>PatchRule</c> operation named in another case, which the loader matches ignoring case as
+    /// it matches every other name, patches the rule rather than being dropped.
+    /// </summary>
+    /// <param name="operation">The operation's name.</param>
+    [TestMethod]
+    [DataRow("patchRule")]
+    [DataRow("PATCHRULE")]
+    public void LoadJson_WhenPatchRuleOperationDiffersInCase_ShouldPatchTheRule(string operation)
+    {
+        string json = OverrideJson($$"""{ "operation": "{{operation}}", "notableDateRef": "x", "ruleRef": "r", "priority": 7 }""");
+
+        NotableDateResource resource = NotableDateResourceLoader.LoadJson(json);
+
+        Assert.AreEqual(7, resource.NotableDates.Single(d => d.Id == "x").Rules.Single(r => r.Id == "r").Priority);
+    }
+
+    /// <summary>
+    /// Verifies that a JSON <c>RemoveRule</c> operation named in another case, which the loader matches ignoring case as
+    /// it matches every other name, removes the rule rather than being dropped.
+    /// </summary>
+    /// <param name="operation">The operation's name.</param>
+    [TestMethod]
+    [DataRow("removeRule")]
+    [DataRow("removerule")]
+    public void LoadJson_WhenRemoveRuleOperationDiffersInCase_ShouldRemoveTheRule(string operation)
+    {
+        string json = OverrideJson($$"""{ "operation": "{{operation}}", "notableDateRef": "x", "ruleRef": "s" }""");
+
+        NotableDateResource resource = NotableDateResourceLoader.LoadJson(json);
+
+        Assert.DoesNotContain(r => r.Id == "s", resource.NotableDates.Single(d => d.Id == "x").Rules);
+    }
+
+    /// <summary>
+    /// Verifies that a JSON <c>AddRule</c> operation named in another case, which the loader matches ignoring case as it
+    /// matches every other name, adds the rule rather than being dropped.
+    /// </summary>
+    /// <param name="operation">The operation's name.</param>
+    [TestMethod]
+    [DataRow("addRule")]
+    [DataRow("ADDRULE")]
+    public void LoadJson_WhenAddRuleOperationDiffersInCase_ShouldAddTheRule(string operation)
+    {
+        string json = OverrideJson($$"""{ "operation": "{{operation}}", "notableDateRef": "x", "rule": { "id": "t", "strategy": { "fixed": { "month": 5, "day": 1 } } } }""");
+
+        NotableDateResource resource = NotableDateResourceLoader.LoadJson(json);
+
+        Assert.Contains(r => r.Id == "t", resource.NotableDates.Single(d => d.Id == "x").Rules);
+    }
+
+    /// <summary>
+    /// Builds a JSON document whose one concept, <c>x</c>, holds the rules <c>r</c> (1 March) and <c>s</c> (1 April),
+    /// with the supplied override.
+    /// </summary>
+    /// <param name="operation">The override, as a JSON object.</param>
+    /// <returns>The JSON document.</returns>
+    private static string OverrideJson(string operation) =>
+        """
+        { "schemaVersion": "1.0", "resourceId": "test.overrides",
+          "notableDates": [ { "id": "x", "displayName": "X", "category": "Observance",
+            "rules": [ { "id": "r", "strategy": { "fixed": { "month": 3, "day": 1 } } },
+                       { "id": "s", "strategy": { "fixed": { "month": 4, "day": 1 } } } ] } ],
+          "overrides": [ @operation@ ] }
+        """.Replace("@operation@", operation, StringComparison.Ordinal);
 }

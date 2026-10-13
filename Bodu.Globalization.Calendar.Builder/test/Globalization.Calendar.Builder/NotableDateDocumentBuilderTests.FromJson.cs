@@ -1452,4 +1452,100 @@ public partial class NotableDateDocumentBuilderTests
 
         return json;
     }
+
+    /// <summary>
+    /// Verifies that an override whose <c>operation</c> names no operation, or is absent, which the loader rejects, is
+    /// rejected with a <see cref="FormatException" /> carrying the loader's message, rather than read as a
+    /// <c>PatchRule</c>.
+    /// </summary>
+    /// <param name="operation">The <c>operation</c> property, as a JSON member, or empty to omit it.</param>
+    [TestMethod]
+    [DataRow("\"operation\": \"Patch\",")]
+    [DataRow("\"operation\": \"UpdateRule\",")]
+    [DataRow("\"operation\": \"\",")]
+    [DataRow("\"operation\": 5,")]
+    [DataRow("")]
+    public void FromJson_WhenOverrideOperationIsUnrecognized_ShouldThrowFormatException(string operation)
+    {
+        string json = OverrideOperationJson($$"""{ {{operation}} "notableDateRef": "x", "ruleRef": "r", "priority": 7 }""");
+        string expected = LoaderErrorMessage(json);
+
+        FormatException ex = Assert.ThrowsExactly<FormatException>(() =>
+        {
+            _ = NotableDateDocumentBuilder.FromJson(json);
+        });
+
+        Assert.AreEqual(expected, ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that an <c>AddRule</c> override without a <c>rule</c>, or whose <c>rule</c> is the literal <c>null</c>,
+    /// which the loader rejects, is rejected with a <see cref="FormatException" /> carrying the loader's message,
+    /// rather than read as a rule with an empty identifier.
+    /// </summary>
+    /// <param name="rule">The <c>rule</c> property, as a JSON member, or empty to omit it.</param>
+    [TestMethod]
+    [DataRow("")]
+    [DataRow(", \"rule\": null")]
+    public void FromJson_WhenAddRuleHasNoRule_ShouldThrowFormatException(string rule)
+    {
+        string json = OverrideOperationJson($$"""{ "operation": "AddRule", "notableDateRef": "x"{{rule}} }""");
+        string expected = LoaderErrorMessage(json);
+
+        FormatException ex = Assert.ThrowsExactly<FormatException>(() =>
+        {
+            _ = NotableDateDocumentBuilder.FromJson(json);
+        });
+
+        Assert.AreEqual(expected, ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that an override whose operation is named in another case, which the loader matches ignoring case,
+    /// builds through the builder into the same resource the loader loads.
+    /// </summary>
+    /// <param name="operation">The override, as a JSON object.</param>
+    [TestMethod]
+    [DataRow("""{ "operation": "patchRule", "notableDateRef": "x", "ruleRef": "r", "priority": 7 }""")]
+    [DataRow("""{ "operation": "REMOVERULE", "notableDateRef": "x", "ruleRef": "s" }""")]
+    [DataRow("""{ "operation": "addrule", "notableDateRef": "x", "rule": { "id": "t", "strategy": { "fixed": { "month": 5, "day": 1 } } } }""")]
+    public void FromJson_WhenOverrideOperationDiffersInCase_ShouldBuildWhatLoadJsonLoads(string operation)
+    {
+        string json = OverrideOperationJson(operation);
+
+        NotableDateResource loaded = NotableDateResourceLoader.LoadJson(json);
+        NotableDateResource built = NotableDateDocumentBuilder.FromJson(json).Build();
+
+        CollectionAssert.AreEqual(PackBytes(loaded), PackBytes(built), operation);
+    }
+
+    /// <summary>
+    /// Returns the message of the one error diagnostic the loader reports for a JSON document.
+    /// </summary>
+    /// <param name="json">The JSON document.</param>
+    /// <returns>The diagnostic's message.</returns>
+    private static string LoaderErrorMessage(string json)
+    {
+        NotableDateValidationException ex = Assert.ThrowsExactly<NotableDateValidationException>(() =>
+        {
+            _ = NotableDateResourceLoader.LoadJson(json);
+        });
+
+        return ex.Diagnostics.Single(d => d.Severity == NotableDateValidationSeverity.Error).Message;
+    }
+
+    /// <summary>
+    /// Builds a JSON document whose one concept, <c>x</c>, holds the rules <c>r</c> (1 March) and <c>s</c> (1 April),
+    /// with the supplied override.
+    /// </summary>
+    /// <param name="operation">The override, as a JSON object.</param>
+    /// <returns>The JSON document.</returns>
+    private static string OverrideOperationJson(string operation) =>
+        """
+        { "schemaVersion": "1.0", "resourceId": "test.overrides",
+          "notableDates": [ { "id": "x", "displayName": "X", "category": "Observance",
+            "rules": [ { "id": "r", "strategy": { "fixed": { "month": 3, "day": 1 } } },
+                       { "id": "s", "strategy": { "fixed": { "month": 4, "day": 1 } } } ] } ],
+          "overrides": [ @operation@ ] }
+        """.Replace("@operation@", operation, StringComparison.Ordinal);
 }
