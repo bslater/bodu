@@ -175,8 +175,9 @@ and the first two have bitten:
 - **Some code runs only on ARM64.** `build-test.yml`'s `build-test-arm64` job runs the two
   cryptography test projects on GitHub's hosted ARM64 runner, the only place the Argon2 AdvSimd shim
   executes; on x64 its tests report inconclusive. A green x64 run says nothing about that path.
-- **CI treats warnings as errors.** `build-test.yml` builds every test project, and then every sample
-  and the docs project (`docs/doc.csproj`), with `-p:TreatWarningsAsErrors=true`, so any compiler or
+- **CI treats warnings as errors.** `build-test.yml` builds every test project, and then every sample,
+  the maintenance generators under `tools/` (which `bodu.slnx` leaves out) and the docs project
+  (`docs/doc.csproj`), with `-p:TreatWarningsAsErrors=true`, so any compiler or
   analyzer warning - StyleCop, Roslynator, the .NET analyzers, the BODU XML-doc rules - fails the pull
   request, and `release.yml`'s test gate builds the test projects the same way, so the same warning
   stops a release. The release's pack step goes further and also fails on

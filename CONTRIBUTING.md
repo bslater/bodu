@@ -131,10 +131,10 @@ change's scope belongs in its own issue and its own pull request.
 
 Every pull request runs:
 
-- **Build and Test** - every test project, every sample and the docs project, built with warnings as
-  errors on Linux x64, where the tests and samples then run; the cryptography tests on Linux ARM64; and
-  the solution packed as the release packs it, without the test assemblies' access to internals and with
-  package validation.
+- **Build and Test** - every test project, every sample, the maintenance tools under `tools/` and the
+  docs project, built with warnings as errors on Linux x64, where the tests and samples then run; the
+  cryptography tests on Linux ARM64; and the solution packed as the release packs it, without the test
+  assemblies' access to internals and with package validation.
 - **Policy Gate** - the deterministic checks in `bld/check-policy.sh` and the folder and namespace
   alignment check.
 - **Claude Policy Review** - an automated review against the judgment-based conventions in `CLAUDE.md`.
