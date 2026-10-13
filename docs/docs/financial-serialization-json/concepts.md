@@ -66,7 +66,7 @@ A <xref:Bodu.Financial.MoneyBag> is a wrapped ISO-keyed map under `Strict` / `Le
 { "EUR": 50, "USD": 100 }
 ```
 
-Balances are written in lexicographic ISO order and may be read as numbers or numeric strings. Because the bag prunes zero balances on every operation, a bag deserializes to its canonical form - a `"JPY": 0` entry on the wire does not survive the round trip.
+Balances are written in lexicographic ISO order and may be read as numbers or numeric strings. A map that names a currency twice is rejected under every policy rather than summed. Because the bag prunes zero balances on every operation, a bag deserializes to its canonical form - a `"JPY": 0` entry on the wire does not survive the round trip.
 
 ## Rate and pair shapes
 
@@ -94,7 +94,7 @@ Every malformed payload surfaces as `JsonException`; the converters never coerce
 |---|---|
 | A token that is not an object under `Strict` / `Lenient`, or not a string under `Compact` | `JsonException` naming the expected form. |
 | Missing `amount` or `currency`; a missing required `ExchangeRate` property | `JsonException` naming the missing property. |
-| Duplicate `amount`, `currency`, `scale`, or any `ExchangeRate` property; a repeated `balances` property or a currency named twice in it (`Strict` / `Lenient`) | `JsonException` - duplicates are rejected. |
+| Duplicate `amount`, `currency`, `scale`, or any `ExchangeRate` property, or a repeated `balances` property (`Strict` / `Lenient`); a currency named twice in a bag's map (every policy) | `JsonException` - duplicates are rejected. |
 | `amount` that is neither a number nor a numeric string; `currency` that is not a string | `JsonException` reporting the type mismatch. |
 | `currency` that does not match `TCurrency.IsoCode` on `Money<TCurrency>` | `JsonException` - currency mismatch. |
 | A code that is not three uppercase letters, or is not in the shipped ISO 4217 catalogue (`Money`, `CalculatedMoney`, `MoneyBag`) | `JsonException` - unknown currency rejected. |

@@ -47,7 +47,8 @@ public enum FinancialJsonPolicy
     /// serialize as a single JSON string of the form <c>"&lt;amount&gt; &lt;ISO&gt;"</c> (for example
     /// <c>"19.99 USD"</c>); <see cref="Bodu.Financial.MoneyBag" /> serializes as a flat object mapping ISO codes to
     /// amounts (for example <c>{ "USD": 19.99, "EUR": 12.34 }</c>). Reads accept either ISO-prefix or ISO-suffix string
-    /// forms and reuse the type's <c>TryParse</c> path for the numeric component.
+    /// forms and reuse the type's <c>TryParse</c> path for the numeric component, and reject a bag map that names a
+    /// currency twice.
     /// </summary>
     Compact = 2,
 }

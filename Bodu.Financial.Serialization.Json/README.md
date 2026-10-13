@@ -45,7 +45,7 @@ One policy value shapes every registered converter:
 |---|---|---|---|---|
 | `Strict` (default) | object `{ "amount": 19.99, "currency": "USD" }`; duplicate properties, mismatched or lowercase ISO codes rejected | object with a `"balances"` map; a repeated `balances` property or ISO key rejected | canonical object shapes (`from` / `to` / `date` / `rate` / `provider`; `from` / `to`) | Ledger, persistence, and audit data. |
 | `Lenient` | as `Strict`, plus lowercase ISO codes and surrounding whitespace accepted on read | as `Strict`, with the same read tolerance for the ISO keys | as `Strict`, with the same read tolerance | External-feed ingest. Writes as `Strict`. |
-| `Compact` | string `"19.99 USD"` | flat ISO→amount object | `ExchangeRate` object with a combined `"pair"`; `CurrencyPair` string `"USD/JPY"` | Compact payloads for APIs and logs. |
+| `Compact` | string `"19.99 USD"` | flat ISO→amount object; a repeated ISO key rejected | `ExchangeRate` object with a combined `"pair"`; `CurrencyPair` string `"USD/JPY"` | Compact payloads for APIs and logs. |
 
 Converters can also be registered individually (for example only the typed money form) via `options.Converters.Add(new MoneyOfTCurrencyJsonConverterFactory(FinancialJsonPolicy.Compact))`.
 
