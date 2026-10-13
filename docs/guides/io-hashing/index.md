@@ -36,7 +36,7 @@ For the auto-generated API reference, see the [Bodu.IO.Hashing namespace page](x
 
 <div class="bodu-card">
   <h3><a href="cityhash.md">Using CityHash</a></h3>
-  <p>32-, 64-, and 128-bit CityHash - Google's SIMD-friendly fingerprint for long inputs.</p>
+  <p>32-, 64-, and 128-bit CityHash - Google's block-oriented fingerprint for in-memory data; buffers its whole input.</p>
 </div>
 
 <div class="bodu-card">
@@ -77,7 +77,7 @@ For the auto-generated API reference, see the [Bodu.IO.Hashing namespace page](x
 
 <div class="bodu-card">
   <h3><a href="adler.md">Using Adler</a></h3>
-  <p>Adler-32 (zlib), Adler-32C (SIMD), Adler-64.</p>
+  <p>Adler-32 (zlib), Adler-32C (power-of-two modulus), Adler-64.</p>
 </div>
 
 <div class="bodu-card">
@@ -105,7 +105,7 @@ For the auto-generated API reference, see the [Bodu.IO.Hashing namespace page](x
 
 ## Common lifecycle
 
-Everything in this package derives from <xref:System.IO.Hashing.NonCryptographicHashAlgorithm?displayProperty=nameWithType>, so the lifecycle is identical regardless of which algorithm you pick:
+Every fingerprint and checksum in this package derives from <xref:System.IO.Hashing.NonCryptographicHashAlgorithm?displayProperty=nameWithType>, so the lifecycle is identical regardless of which one you pick (the check digits work on text through their own `CheckValueAlgorithm` root):
 
 ```csharp
 using Bodu.IO.Hashing;

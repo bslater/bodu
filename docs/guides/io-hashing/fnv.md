@@ -4,7 +4,7 @@ title: Using FNV
 
 # Using FNV
 
-Fowler-Noll-Vo is a simple, very fast non-cryptographic hash: each input byte multiplies the running state by a prime and then XORs (FNV-1a) or XORs first then multiplies (FNV-1). It has excellent distribution for short strings and is the default hash in a long list of scripting languages, serializers, and hash tables.
+Fowler-Noll-Vo is a simple, very fast non-cryptographic hash: each input byte multiplies the running state by a prime and then XORs (FNV-1) or XORs first then multiplies (FNV-1a). It has excellent distribution for short strings and is the default hash in a long list of scripting languages, serializers, and hash tables.
 
 ![FNV hash update order: FNV-1a XORs the input byte into the state before multiplying by the prime, while FNV-1 multiplies first then XORs, both starting from the FNV offset basis](../../images/diagrams/fnv-loop.svg)
 
@@ -107,13 +107,13 @@ fnv.Reset();                          // back to FNV offset basis
 ## FNV vs the other non-cryptographic hashes in this package
 
 - **vs <xref:Bodu.IO.Hashing.Checksums.Adler32>** - FNV distributes shorter inputs more evenly; Adler is marginally faster on long buffers and is the checksum specified by zlib / PNG.
-- **vs <xref:Bodu.IO.Hashing.CityHash64>** - CityHash is substantially faster on long inputs (SIMD-friendly by design) and distributes better on both short and long data. FNV wins on code simplicity and on determinism across languages/libraries.
+- **vs <xref:Bodu.IO.Hashing.CityHash64>** - CityHash processes long inputs in wide blocks rather than byte by byte, and distributes better on both short and long data, but it buffers the whole input until the digest is read. FNV wins on constant memory, code simplicity, and determinism across languages/libraries.
 - **vs <xref:Bodu.IO.Hashing.Checksums.Crc>** - CRC is specified for wire formats and has provably good burst-error detection; FNV is a better default for in-memory fingerprinting where you control both ends.
 - **vs <xref:Bodu.Security.Cryptography.SipHash64>** - SipHash is keyed and resists adversarial collisions; FNV does not. Pick SipHash whenever untrusted input can reach the hash function.
 
 ## Where to go next
 
-- [Using CityHash](cityhash.md) - the SIMD-friendly modern alternative.
+- [Using CityHash](cityhash.md) - the modern block-oriented alternative for in-memory data.
 - [Using Adler](adler.md) - twin-accumulator checksum with the same `NonCryptographicHashAlgorithm` shape.
 - [Cryptography hashing guide](../cryptography/hashing.md) - when FNV is not enough.
 - [Bodu.IO.Hashing namespace page](xref:Bodu.IO.Hashing) - key types and design notes.

@@ -50,8 +50,9 @@ public static class NonCryptoHashes
                 var algorithm = factory();
                 algorithm.Append(System.Text.Encoding.UTF8.GetBytes(key));
 
-                // Digest bytes follow the System.IO.Hashing little-endian convention, so read them
-                // back as a little-endian integer before taking the shard modulus.
+                // Read each digest as a little-endian integer before taking the shard modulus. Murmur3 and
+                // CityHash write their digests little-endian, so this recovers their hash values; FNV writes
+                // big-endian, so for FNV-1a this reads the byte-reversed value, which is just as stable a key.
                 var hash = BinaryPrimitives.ReadUInt32LittleEndian(algorithm.GetHashAndReset());
                 return $"{key}->{hash % shards}";
             });

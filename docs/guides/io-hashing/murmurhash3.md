@@ -15,7 +15,7 @@ MurmurHash3 is a non-cryptographic hash family designed by Austin Appleby (2011)
 | `MurmurHash3_32` | 32 bits | All platforms | General-purpose 32-bit fingerprint. |
 | `MurmurHash3_128` | 128 bits | 64-bit platforms | 128-bit fingerprint; the highest-quality variant. |
 
-Both derive from <xref:System.IO.Hashing.NonCryptographicHashAlgorithm?displayProperty=nameWithType> via a shared `MurmurHash3` base. Both buffer their input internally, consistent with MurmurHash3's one-shot design.
+Both derive from <xref:System.IO.Hashing.NonCryptographicHashAlgorithm?displayProperty=nameWithType> via a shared `MurmurHash3` base. Both stream in constant memory: input is mixed one block at a time, and only a partial trailing block is held between `Append` calls.
 
 > **Not cryptographic.** MurmurHash3 must not be used for password hashing, digital signatures, or any application that requires adversarial collision resistance. An attacker who can choose inputs can construct collisions. For adversary-facing use, reach for <xref:Bodu.Security.Cryptography.SipHash64>.
 
@@ -70,7 +70,7 @@ The seed is not a cryptographic key - it does not provide adversarial resistance
 
 ## Pattern 4 - `Append` / `GetCurrentHash` / `Reset` lifecycle
 
-MurmurHash3 is a one-shot algorithm internally. The `Append` calls accumulate bytes in an internal buffer; `GetCurrentHash` applies the full mixing pass once all data is available. The call is non-destructive - the buffer is preserved so you can continue appending after a snapshot.
+MurmurHash3 is block-streamable. Each `Append` mixes whole blocks into the running accumulators and keeps only a partial trailing block; `GetCurrentHash` applies the tail and finalization mix to a copy of the accumulators. The call is non-destructive, so you can continue appending after a snapshot.
 
 ```csharp
 using Bodu.IO.Hashing;
@@ -83,11 +83,11 @@ byte[] partial = murmur.GetCurrentHash();   // snapshot - mixes all bytes append
 murmur.Append(trailer);
 byte[] full = murmur.GetCurrentHash();
 
-murmur.Reset();                             // discards the buffer and resets to seed
+murmur.Reset();                             // discards the trailing block and resets to seed
 ```
 
 > [!NOTE]
-> The internal buffer grows with each `Append`. For very large inputs (hundreds of MB) where you do not want to hold the entire payload in memory, prefer a constant-memory streaming algorithm such as <xref:Bodu.IO.Hashing.Fnv1a64>, <xref:Bodu.IO.Hashing.Checksums.Crc>, or <xref:Bodu.IO.Hashing.Checksums.Fletcher32>.
+> Memory use does not grow with the input: a 32-bit instance holds at most 3 pending bytes and a 128-bit instance at most 15, so MurmurHash3 suits very large inputs as well as short keys.
 
 ## Pattern 5 - Bloom filter with two hash functions
 
@@ -139,11 +139,11 @@ bool MightContain(string item)
 |---|---|---|---|---|
 | Output widths | 32 · 128-bit | 32 · 64-bit | 32 · 64 · 128-bit | 32 · 64 · 128-bit |
 | Seed support | Yes | No (fixed offset basis) | No | Limited (BCL contract) |
-| Streaming (constant memory) | No - buffers input | Yes | No - buffers input | No - buffers input |
+| Streaming (constant memory) | Yes | Yes | No - buffers input | Yes |
 | Relative throughput (large inputs) | Good | Moderate | Excellent | Excellent |
 | Distribution quality | Excellent | Good | Excellent | Excellent |
 
-Reach for **MurmurHash3** when you need a seeded 32- or 128-bit fingerprint with high-quality avalanche - for Bloom filters, consistent hashing, and bucketing. For the fastest throughput on large buffers, prefer **CityHash** (in Bodu) or `System.IO.Hashing.XxHash64` (in the BCL). For constant-memory streaming, prefer **FNV-1a** or **CRC**.
+Reach for **MurmurHash3** when you need a seeded 32- or 128-bit fingerprint with high-quality avalanche - for Bloom filters, consistent hashing, and bucketing. For the fastest throughput on large buffers, prefer **CityHash** (in Bodu) or `System.IO.Hashing.XxHash64` (in the BCL). CityHash buffers its whole input, so for large streams prefer MurmurHash3, **FNV-1a**, xxHash, or **CRC**, which all run in constant memory.
 
 ## Where to go next
 

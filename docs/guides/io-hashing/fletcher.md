@@ -11,7 +11,7 @@ The Fletcher checksum family maintains two running accumulators, **A** and **B**
 **Bodu.IO.Hashing** provides three widths: <xref:Bodu.IO.Hashing.Checksums.Fletcher16>, <xref:Bodu.IO.Hashing.Checksums.Fletcher32>, and <xref:Bodu.IO.Hashing.Checksums.Fletcher64>. All three derive from <xref:System.IO.Hashing.NonCryptographicHashAlgorithm?displayProperty=nameWithType>, share the abstract `Fletcher` base, and live in the `Bodu.IO.Hashing.Checksums` namespace.
 
 > [!NOTE]
-> Bodu's modulus is `2^(N ⁄ 2) − 1`, not a prime. Some descriptions of Fletcher use a prime modulus; this implementation uses the original `2^k − 1` form, which reduces with a fast fold rather than a division. All three widths consume input **one byte at a time** regardless of *N* - there is no word-size blocking.
+> Bodu's modulus is `2^(N ⁄ 2) − 1`, not a prime. Some descriptions of Fletcher use a prime modulus; this implementation uses the original `2^k − 1` form, and reduces both accumulators with `%` once per 4096 bytes rather than after every byte, which gives the same result. All three widths consume input **one byte at a time** regardless of *N* - there is no word-size blocking.
 
 ## Pattern 1 - compute a digest in one call
 
@@ -81,10 +81,10 @@ All three widths consume input one byte at a time, so any chunk boundary is safe
 
 ## What Fletcher catches - and what it misses
 
-Fletcher detects every single-bit error and every adjacent-byte transposition, at a fraction of CRC's per-byte cost. It does not match a CRC's burst guarantee, and the `2^k − 1` modulus introduces a documented blind spot:
+Fletcher detects every single-bit error and every adjacent-byte transposition (except, in Fletcher-16, a swap of `0x00` and `0xFF`, which are congruent modulo 255), at a fraction of CRC's per-byte cost. It does not match a CRC's burst guarantee, and the `2^k − 1` modulus introduces a documented blind spot:
 
 - Because `0` and `M` are congruent under the modulus, a byte that should drive an accumulator to `M` leaves it at `0` instead. A run of bytes whose contribution is a multiple of `M` can therefore go undetected.
-- A block of all-`0x00` bytes is indistinguishable from an absent block of the same length - both leave `A` and `B` unchanged. Fletcher cannot detect the insertion or deletion of zero bytes.
+- A zero byte leaves `A` unchanged but still adds `A` to `B`, so inserting or deleting zero bytes goes undetected only while `A` is `0` modulo `M`. Since `A` starts at `0`, that includes every zero byte before the first non-zero one: `00 00 05 06` and `05 06` have the same digest.
 - There is no per-position burst guarantee of the kind a polynomial CRC provides.
 
 These are acceptable when you control both endpoints and the channel is benign; they are why a wire format that must survive an arbitrary physical link specifies a CRC instead.
