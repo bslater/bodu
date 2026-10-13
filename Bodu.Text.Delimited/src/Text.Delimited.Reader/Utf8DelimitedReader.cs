@@ -7,6 +7,7 @@
 using System.Buffers;
 using System.Globalization;
 using System.Text;
+using Bodu.Text.Serialization;
 
 namespace Bodu.Text.Delimited.Reader;
 
@@ -118,7 +119,7 @@ public ref struct Utf8DelimitedReader
         _fieldRanges = [];
 
         // Skip a leading UTF-8 byte-order mark so a BOM-prefixed file does not corrupt the first header column.
-        _position = data.StartsWith(Utf8Bom) ? Utf8Bom.Length : 0;
+        _position = Utf8LineCursor.ByteOrderMarkLength(data);
         _line = 1;
         _stage = Stage.Start;
         _tokenType = DelimitedTokenType.None;
@@ -153,11 +154,6 @@ public ref struct Utf8DelimitedReader
         if (firstOffset != 0)
             _position = 0;
     }
-
-    /// <summary>
-    /// Gets the UTF-8 byte-order mark.
-    /// </summary>
-    private static ReadOnlySpan<byte> Utf8Bom => [0xEF, 0xBB, 0xBF];
 
     /// <summary>
     /// Gets the number of bytes consumed so far.
@@ -481,14 +477,7 @@ public ref struct Utf8DelimitedReader
     private void ParseUnquotedField()
     {
         int start = _position;
-        while (_position < _data.Length)
-        {
-            byte b = _data[_position];
-            if (b == (byte)_options.EffectiveDelimiter || b is (byte)'\r' or (byte)'\n')
-                break;
-
-            _position++;
-        }
+        _position = Utf8LineCursor.EndOfLineOr(_data, _position, (byte)_options.EffectiveDelimiter);
 
         int end = _position;
         if (_options.TrimFields)
@@ -549,7 +538,7 @@ public ref struct Utf8DelimitedReader
 
             // A line feed ends a line, and so does a carriage return that no line feed follows; the line feed of a
             // CRLF is counted on its own, so the pair counts once.
-            if (b == (byte)'\n' || _position + 1 >= _data.Length || _data[_position + 1] != (byte)'\n')
+            if (Utf8LineCursor.EndsLine(_data, _position))
                 _line++;
 
             _position++;
@@ -572,7 +561,7 @@ public ref struct Utf8DelimitedReader
         // Only the delimiter, a line ending or the end of the input may follow a closing quote.
         return _position >= _data.Length
             || _data[_position] == (byte)_options.EffectiveDelimiter
-            || _data[_position] is (byte)'\r' or (byte)'\n';
+            || Utf8LineCursor.IsLineEnding(_data[_position]);
     }
 
     /// <summary>
@@ -634,7 +623,7 @@ public ref struct Utf8DelimitedReader
         {
             byte b = _data[_position];
 
-            if (b is (byte)'\r' or (byte)'\n')
+            if (Utf8LineCursor.IsLineEnding(b))
             {
                 SkipLineEnding();
                 continue;
@@ -642,9 +631,7 @@ public ref struct Utf8DelimitedReader
 
             if (_options.AllowComments && b == (byte)_options.EffectiveCommentChar)
             {
-                while (_position < _data.Length && _data[_position] is not ((byte)'\n' or (byte)'\r'))
-                    _position++;
-
+                _position = Utf8LineCursor.EndOfLine(_data, _position);
                 continue;
             }
 
@@ -668,34 +655,15 @@ public ref struct Utf8DelimitedReader
     /// </summary>
     private void SkipRestOfLine()
     {
-        while (_position < _data.Length && _data[_position] is not ((byte)'\r' or (byte)'\n'))
-            _position++;
-
+        _position = Utf8LineCursor.EndOfLine(_data, _position);
         SkipLineEnding();
     }
 
     /// <summary>
     /// Consumes a <c>\r\n</c>, <c>\r</c>, or <c>\n</c> line terminator and increments <see cref="_line" />.
     /// </summary>
-    private void SkipLineEnding()
-    {
-        if (_position >= _data.Length)
-            return;
-
-        if (_data[_position] == (byte)'\r')
-        {
-            _position++;
-            if (_position < _data.Length && _data[_position] == (byte)'\n')
-                _position++;
-
-            _line++;
-        }
-        else if (_data[_position] == (byte)'\n')
-        {
-            _position++;
-            _line++;
-        }
-    }
+    private void SkipLineEnding() =>
+        _line += Utf8LineCursor.ConsumeLineEnding(_data, ref _position);
 
     /// <summary>
     /// Sets the current token to a structural kind with no text.

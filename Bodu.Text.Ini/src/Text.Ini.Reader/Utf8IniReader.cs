@@ -94,17 +94,12 @@ public ref struct Utf8IniReader
         _options = options;
 
         // Skip a leading UTF-8 byte-order mark so a BOM-prefixed file does not corrupt the first section or key.
-        _position = data.StartsWith(Utf8Bom) ? Utf8Bom.Length : 0;
+        _position = Utf8LineCursor.ByteOrderMarkLength(data);
         _line = 1;
         _tokenLine = 1;
         _tokenStart = _position;
         _tokenType = IniTokenType.None;
     }
-
-    /// <summary>
-    /// Gets the UTF-8 byte-order mark.
-    /// </summary>
-    private static ReadOnlySpan<byte> Utf8Bom => [0xEF, 0xBB, 0xBF];
 
     /// <summary>
     /// Gets the number of bytes consumed so far.
@@ -181,7 +176,7 @@ public ref struct Utf8IniReader
 
             byte b = _data[_position];
 
-            if (b is (byte)'\r' or (byte)'\n')
+            if (Utf8LineCursor.IsLineEnding(b))
             {
                 SkipLineEnding();
                 continue;
@@ -215,9 +210,7 @@ public ref struct Utf8IniReader
     private bool ReadComment()
     {
         int textStart = _position + 1;
-        int end = textStart;
-        while (end < _data.Length && _data[end] is not ((byte)'\n' or (byte)'\r'))
-            end++;
+        int end = Utf8LineCursor.EndOfLine(_data, textStart);
 
         _position = end;
 
@@ -340,8 +333,7 @@ public ref struct Utf8IniReader
         int entryLine = _line;
         int keyStart = _position;
 
-        while (_position < _data.Length && _data[_position] is not ((byte)'=' or (byte)'\n' or (byte)'\r'))
-            _position++;
+        _position = Utf8LineCursor.EndOfLineOr(_data, _position, (byte)'=');
 
         if (_position >= _data.Length || _data[_position] != (byte)'=')
             throw Error(string.Format(CultureInfo.CurrentCulture, IniResourceStrings.Format_Invalid_IniMissingAssignment, entryLine), entryLine);
@@ -353,8 +345,7 @@ public ref struct Utf8IniReader
         _position++; // consume '='
 
         int valueStart = _position;
-        while (_position < _data.Length && _data[_position] is not ((byte)'\n' or (byte)'\r'))
-            _position++;
+        _position = Utf8LineCursor.EndOfLine(_data, _position);
 
         (int trimmedValueStart, int valueLength) = Trim(valueStart, _position);
         SkipLineEnding();

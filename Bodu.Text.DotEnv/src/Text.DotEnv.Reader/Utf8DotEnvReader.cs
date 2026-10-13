@@ -119,17 +119,12 @@ public ref struct Utf8DotEnvReader
         _options = options;
 
         // Skip a leading UTF-8 byte-order mark so a BOM-prefixed file does not corrupt the first key.
-        _position = data.StartsWith(Utf8Bom) ? Utf8Bom.Length : 0;
+        _position = Utf8LineCursor.ByteOrderMarkLength(data);
         _line = 1;
         _tokenLine = 1;
         _phase = Phase.Start;
         _tokenType = DotEnvTokenType.None;
     }
-
-    /// <summary>
-    /// Gets the UTF-8 byte-order mark.
-    /// </summary>
-    private static ReadOnlySpan<byte> Utf8Bom => [0xEF, 0xBB, 0xBF];
 
     /// <summary>
     /// Gets the number of bytes consumed so far.
@@ -346,7 +341,7 @@ public ref struct Utf8DotEnvReader
 
             byte b = _data[_position];
 
-            if (b is (byte)'\r' or (byte)'\n')
+            if (Utf8LineCursor.IsLineEnding(b))
             {
                 SkipLineEnding();
                 continue;
@@ -355,9 +350,7 @@ public ref struct Utf8DotEnvReader
             if (b == (byte)'#')
             {
                 int textStart = _position + 1;
-                int end = textStart;
-                while (end < _data.Length && _data[end] is not ((byte)'\n' or (byte)'\r'))
-                    end++;
+                int end = Utf8LineCursor.EndOfLine(_data, textStart);
 
                 _position = end;
 
@@ -537,12 +530,10 @@ public ref struct Utf8DotEnvReader
                     case (byte)'t': sb.Append('\t'); break;
                     case (byte)'v': sb.Append('\v'); break;
                     case (byte)'$': sb.Append('$'); break;
-                    case (byte)'\n': _line++; break; // line continuation
-                    case (byte)'\r':
-                        _line++;
-                        if (_position + 1 < _data.Length && _data[_position + 1] == (byte)'\n')
-                            _position++;
-                        break;
+                    case (byte)'\n' or (byte)'\r':
+                        // A line continuation: the backslash and the line ending are dropped.
+                        _line += Utf8LineCursor.ConsumeLineEnding(_data, ref _position);
+                        continue;
                     default:
                         // Not an escape: keep the backslash, and leave the character after it to the loop, which
                         // decodes it whatever its UTF-8 length.
@@ -555,7 +546,7 @@ public ref struct Utf8DotEnvReader
             }
 
             // A line ends at a LF, a CR LF pair or a lone CR, as it does between entries; a CR LF counts at its LF.
-            if (c == (byte)'\n' || (c == (byte)'\r' && (_position + 1 == _data.Length || _data[_position + 1] != (byte)'\n')))
+            if (Utf8LineCursor.EndsLine(_data, _position))
                 _line++;
 
             _position += AppendByte(sb, c);
@@ -577,22 +568,13 @@ public ref struct Utf8DotEnvReader
         _position++; // consume opening '\''
         rawStart = _position;
 
-        for (int i = _position; i < _data.Length; i++)
-        {
-            byte c = _data[i];
+        // The value ends at its closing quote; a line ending or the end of the input before one leaves it unterminated.
+        int end = Utf8LineCursor.EndOfLineOr(_data, _position, (byte)'\'');
+        if (end >= _data.Length || _data[end] != (byte)'\'')
+            throw UnterminatedSingleQuote(startLine, quoteOffset);
 
-            if (c == (byte)'\'')
-            {
-                rawLength = i - rawStart;
-                _position = i + 1; // consume closing '\''
-                return;
-            }
-
-            if (c is (byte)'\n' or (byte)'\r')
-                throw UnterminatedSingleQuote(startLine, quoteOffset);
-        }
-
-        throw UnterminatedSingleQuote(startLine, quoteOffset);
+        rawLength = end - rawStart;
+        _position = end + 1; // consume closing '\''
     }
 
     /// <summary>
@@ -603,9 +585,7 @@ public ref struct Utf8DotEnvReader
     /// <param name="rawLength">The source length of the trimmed value.</param>
     private void ReadUnquoted(out int rawStart, out int rawLength)
     {
-        int lineEnd = _position;
-        while (lineEnd < _data.Length && _data[lineEnd] is not ((byte)'\n' or (byte)'\r'))
-            lineEnd++;
+        int lineEnd = Utf8LineCursor.EndOfLine(_data, _position);
 
         int start = _position;
         int end = lineEnd;
@@ -613,13 +593,18 @@ public ref struct Utf8DotEnvReader
         // Honour an inline comment: a '#' preceded by whitespace, including the whitespace after '=', ends the value.
         if (_options.AllowInlineComments)
         {
-            for (int i = start; i < end; i++)
+            int from = start;
+            int hash;
+            while ((hash = _data[from..end].IndexOf((byte)'#')) >= 0)
             {
-                if (_data[i] == (byte)'#' && WhitespaceLengthBefore(i, 0) > 0)
+                int i = from + hash;
+                if (WhitespaceLengthBefore(i, 0) > 0)
                 {
                     end = i;
                     break;
                 }
+
+                from = i + 1;
             }
         }
 
@@ -744,7 +729,7 @@ public ref struct Utf8DotEnvReader
     {
         SkipWhitespace();
 
-        if (_position < _data.Length && _data[_position] is not ((byte)'\n' or (byte)'\r' or (byte)'#'))
+        if (_position < _data.Length && !Utf8LineCursor.IsLineEnding(_data[_position]) && _data[_position] != (byte)'#')
             throw TextAfterClosingQuoteError();
     }
 
@@ -811,14 +796,8 @@ public ref struct Utf8DotEnvReader
     /// A line starts after a <c>\n</c> or <c>\r</c> byte, matching the line endings the reader recognizes. The column
     /// is computed only when an error is raised, so the hot path keeps no line-start state.
     /// </remarks>
-    private readonly int ColumnAt(int offset)
-    {
-        int lineStart = _data[..offset].LastIndexOfAny((byte)'\n', (byte)'\r') + 1;
-        if (lineStart == 0 && _data.StartsWith(Utf8Bom))
-            lineStart = Utf8Bom.Length;
-
-        return offset - lineStart + 1;
-    }
+    private readonly int ColumnAt(int offset) =>
+        offset - Utf8LineCursor.LineStart(_data, offset) + 1;
 
     /// <summary>
     /// Describes the character at a source offset for an error message: the character as written, or its first byte in
