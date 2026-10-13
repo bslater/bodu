@@ -73,4 +73,27 @@ public sealed partial class Base16Tests
     [TestMethod]
     public void IsValid_WhenStrictAndOddLength_ShouldReturnFalse() => Assert.IsFalse(Base16.IsValid("abc".AsSpan()));
 
+    /// <summary>
+    /// Verifies that <see cref="Base16.IsValid" /> returns <see langword="true" /> exactly when
+    /// <see cref="Base16.Decode(string, BaseFormatStyles)" /> succeeds with the same styles, over plain, prefixed,
+    /// spaced, odd-length, and malformed input in every combination of styles.
+    /// </summary>
+    [TestMethod]
+    public void IsValid_WhenSweptAcrossStyles_ShouldAgreeWithDecode()
+    {
+        var disagreements = new List<string>();
+
+        foreach (var input in GetValidationSweepInputs())
+        {
+            foreach (BaseFormatStyles styles in DecodeAgreement.AllStyles)
+            {
+                var decodes = DecodeAgreement.TryDecode(() => Base16.Decode(input, styles), out _);
+                if (Base16.IsValid(input, styles) != decodes)
+                    disagreements.Add($"[{styles}] {DecodeAgreement.Quote(input)}: Decode succeeds = {decodes}");
+            }
+        }
+
+        DecodeAgreement.AssertNone(disagreements);
+    }
+
 }

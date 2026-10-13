@@ -100,4 +100,31 @@ public sealed partial class Base45Tests
 
         Assert.AreEqual("base45", encoding.Name);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="Base45.IsValid" /> returns <see langword="true" /> exactly when
+    /// <see cref="Base45.Decode(string, BaseFormatStyles)" /> succeeds with the same styles, over well-formed,
+    /// overflowing, truncated, decorated, and malformed input in every combination of styles.
+    /// </summary>
+    [TestMethod]
+    public void IsValid_WhenSweptAcrossStyles_ShouldAgreeWithDecode()
+    {
+        const string symbols = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ $%*+-./:a";
+        var inputs = new HashSet<string>(StringComparer.Ordinal) { "GGW", "FGW", ":::", "::", "\t" };
+        foreach (var payload in DecodeAgreement.Payloads(8))
+            inputs.UnionWith(DecodeAgreement.Mutations(Base45.Encode(payload), symbols));
+
+        var disagreements = new List<string>();
+        foreach (var input in inputs)
+        {
+            foreach (BaseFormatStyles styles in DecodeAgreement.AllStyles)
+            {
+                var decodes = DecodeAgreement.TryDecode(() => Base45.Decode(input, styles), out _);
+                if (Base45.IsValid(input, styles) != decodes)
+                    disagreements.Add($"[{styles}] {DecodeAgreement.Quote(input)}: Decode succeeds = {decodes}");
+            }
+        }
+
+        DecodeAgreement.AssertNone(disagreements);
+    }
 }

@@ -46,4 +46,24 @@ public sealed partial class Base16Tests
         _ => throw new ArgumentException($"Unknown pattern key: {key}", nameof(key)),
     };
 
+    /// <summary>
+    /// Returns the inputs the validation sweeps hold to <see cref="Base16.Decode(string, BaseFormatStyles)" />: plain,
+    /// prefixed, and spaced encodings of every payload up to five bytes, each with the mutations of
+    /// <see cref="DecodeAgreement.Mutations" />.
+    /// </summary>
+    /// <returns>The distinct inputs.</returns>
+    private static HashSet<string> GetValidationSweepInputs()
+    {
+        const string symbols = "0123456789abcdefABCDEFgxX";
+        var inputs = new HashSet<string>(StringComparer.Ordinal) { "0x", "0X", "0xdead", " 0xde ad", "0x0x00" };
+
+        foreach (var payload in DecodeAgreement.Payloads(5))
+        {
+            foreach (BaseFormattingOptions options in new[] { BaseFormattingOptions.None, BaseFormattingOptions.IncludePrefix, BaseFormattingOptions.InsertSpacing })
+                inputs.UnionWith(DecodeAgreement.Mutations(Base16.Encode(payload, options), symbols));
+        }
+
+        return inputs;
+    }
+
 }

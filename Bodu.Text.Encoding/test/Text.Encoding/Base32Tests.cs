@@ -21,4 +21,29 @@ public sealed partial class Base32Tests
     /// <returns>The ASCII byte representation.</returns>
     private static byte[] Ascii(string value) => System.Text.Encoding.ASCII.GetBytes(value);
 
+    /// <summary>
+    /// Returns the inputs the validation sweeps hold to <see cref="Base32.Decode(string, Base32Variant, BaseFormatStyles)" />:
+    /// padded and unpadded encodings of every payload up to eleven bytes (every terminal-quantum length), each with
+    /// the mutations of <see cref="DecodeAgreement.Mutations" />, plus hand-picked partially padded, over-padded, and
+    /// misplaced-padding inputs.
+    /// </summary>
+    /// <param name="variant">The variant whose encodings seed the inputs.</param>
+    /// <returns>The distinct inputs.</returns>
+    private static HashSet<string> GetValidationSweepInputs(Base32Variant variant)
+    {
+        const string symbols = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567" + "0189" + "abcdefghijklmnopqrstuvwxyz";
+        var inputs = new HashSet<string>(StringComparer.Ordinal)
+        {
+            "MY======", "MY=", "MY", "MZ======", "MY========", "MZXW6YTBOI=", "MZ=XW6YT", "D1G2=", "ybnd=", "========",
+        };
+
+        foreach (var payload in DecodeAgreement.Payloads(11))
+        {
+            foreach (BaseFormattingOptions options in new[] { BaseFormattingOptions.None, BaseFormattingOptions.OmitPadding })
+                inputs.UnionWith(DecodeAgreement.Mutations(Base32.Encode(payload, variant, options), symbols));
+        }
+
+        return inputs;
+    }
+
 }

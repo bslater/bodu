@@ -31,6 +31,51 @@ public sealed partial class Base85Tests
         Assert.IsFalse(Base85.IsBase85Digit('z')); // 'z' is shortcut, not a digit
         Assert.IsFalse(Base85.IsBase85Digit('\x01'));
     }
+
+    /// <summary>
+    /// Verifies that <see cref="Base85.IsValid" /> returns <see langword="true" /> exactly when
+    /// <see cref="Base85.Decode(string, Base85Variant, BaseFormatStyles)" /> succeeds with the same variant and styles,
+    /// over well-formed, overflowing, truncated, decorated, and malformed input in every variant and every combination
+    /// of styles.
+    /// </summary>
+    [TestMethod]
+    public void IsValid_WhenSweptAcrossVariantsAndStyles_ShouldAgreeWithDecode()
+    {
+        // Every printable ASCII character, so each variant's last symbol is replaced by every digit of its alphabet
+        // (the high digits overflow a group whose other digits are already high) and by characters outside it.
+        var symbols = string.Concat(Enumerable.Range('!', '~' - '!' + 1).Select(c => (char)c));
+        var disagreements = new List<string>();
+
+        foreach (Base85Variant variant in Enum.GetValues<Base85Variant>())
+        {
+            var inputs = new HashSet<string>(StringComparer.Ordinal)
+            {
+                "uuuuu", "s8W-!", "s8W-\"", "uu", "uuu", "uuuu", "z", "zz", "!z", "z!!!!", "<~~>", "<~z~>", "<~s8W-\"~>",
+                "~~~~~", "|NsC0", "|NsC1", "%nSc0", "%nSc1", "{{{{{",
+            };
+
+            foreach (var payload in DecodeAgreement.Payloads(9))
+            {
+                if (variant == Base85Variant.Z85 && payload.Length % 4 != 0)
+                    continue;
+
+                inputs.UnionWith(DecodeAgreement.Mutations(Base85.Encode(payload, variant), symbols));
+            }
+
+            foreach (var input in inputs)
+            {
+                foreach (BaseFormatStyles styles in DecodeAgreement.AllStyles)
+                {
+                    var decodes = DecodeAgreement.TryDecode(() => Base85.Decode(input, variant, styles), out _);
+                    if (Base85.IsValid(input, variant, styles) != decodes)
+                        disagreements.Add($"{variant} [{styles}] {DecodeAgreement.Quote(input)}: Decode succeeds = {decodes}");
+                }
+            }
+        }
+
+        DecodeAgreement.AssertNone(disagreements);
+    }
+
     /// <summary>
     /// Verifies that <see cref="Base85.IsValid" /> returns <see langword="true" /> for canonical Ascii85 input.
     /// </summary>

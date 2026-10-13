@@ -129,4 +129,31 @@ public sealed class Base64UrlTests
         Assert.IsTrue(original.AsSpan().SequenceEqual(byteBuffer[..bytesWritten]));
     }
 
+    /// <summary>
+    /// Verifies that <see cref="Base64Url.IsValid" /> returns <see langword="true" /> exactly when
+    /// <see cref="Base64Url.Decode(string)" /> succeeds, over unpadded, padded, partially padded, over-padded,
+    /// non-canonical, and malformed input.
+    /// </summary>
+    [TestMethod]
+    public void IsValid_WhenSweptAcrossInputs_ShouldAgreeWithDecode()
+    {
+        const string symbols = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_+/";
+        var inputs = new HashSet<string>(StringComparer.Ordinal) { "GA=", "QQ=", "QQ", "Q", "QQ==", "QQ===" };
+        foreach (var payload in DecodeAgreement.Payloads(10))
+        {
+            inputs.UnionWith(DecodeAgreement.Mutations(Base64Url.Encode(payload), symbols));
+            inputs.UnionWith(DecodeAgreement.Mutations(Base64.Encode(payload, Base64Variant.UrlSafe, BaseFormattingOptions.None), symbols));
+        }
+
+        var disagreements = new List<string>();
+        foreach (var input in inputs)
+        {
+            var decodes = DecodeAgreement.TryDecode(() => Base64Url.Decode(input), out _);
+            if (Base64Url.IsValid(input) != decodes)
+                disagreements.Add($"{DecodeAgreement.Quote(input)}: Decode succeeds = {decodes}");
+        }
+
+        DecodeAgreement.AssertNone(disagreements);
+    }
+
 }

@@ -61,6 +61,36 @@ public sealed partial class Base64Tests
     }
 
     /// <summary>
+    /// Verifies that <see cref="Base64.IsValid" /> returns <see langword="true" /> exactly when
+    /// <see cref="Base64.Decode(string, Base64Variant, BaseFormatStyles)" /> succeeds with the same variant and styles,
+    /// over canonical, non-canonical, partially padded, over-padded, decorated, and malformed input in every variant
+    /// and every combination of styles.
+    /// </summary>
+    [TestMethod]
+    public void IsValid_WhenSweptAcrossVariantsAndStyles_ShouldAgreeWithDecode()
+    {
+        var disagreements = new List<string>();
+
+        foreach (Base64Variant variant in Enum.GetValues<Base64Variant>())
+        {
+            foreach (var input in GetValidationSweepInputs(variant))
+            {
+                foreach (BaseFormatStyles styles in DecodeAgreement.AllStyles)
+                {
+                    if (IsShortPaddedStrictInput(input, variant, styles))
+                        continue;
+
+                    var decodes = DecodeAgreement.TryDecode(() => Base64.Decode(input, variant, styles), out _);
+                    if (Base64.IsValid(input, variant, styles) != decodes)
+                        disagreements.Add($"{variant} [{styles}] {DecodeAgreement.Quote(input)}: Decode succeeds = {decodes}");
+                }
+            }
+        }
+
+        DecodeAgreement.AssertNone(disagreements);
+    }
+
+    /// <summary>
     /// Verifies that <see cref="Base64.IsValid" /> returns <see langword="true" /> for empty input.
     /// </summary>
     [TestMethod]
