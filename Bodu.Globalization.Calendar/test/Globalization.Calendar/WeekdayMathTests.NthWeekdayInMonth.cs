@@ -71,4 +71,83 @@ public partial class WeekdayMathTests
 
         Assert.IsNull(result);
     }
+
+    /// <summary>
+    /// Verifies that the nth weekday of every month of the grid years, for every weekday and ordinal, is the occurrence
+    /// a day-by-day scan of the month finds, or <see langword="null" /> when the month has no such occurrence; the
+    /// grid covers both ends of the date range, common and leap years, and both kinds of century.
+    /// </summary>
+    [TestMethod]
+    public void NthWeekdayInMonth_WhenComparedWithAScanOfTheMonth_ShouldAgreeForEveryWeekdayAndOrdinal()
+    {
+        foreach (int year in new[] { 1, 1900, 2000, 2023, 2024, 9999 })
+        {
+            for (int month = 1; month <= 12; month++)
+            {
+                for (DayOfWeek dayOfWeek = DayOfWeek.Sunday; dayOfWeek <= DayOfWeek.Saturday; dayOfWeek++)
+                {
+                    var matches = new List<DateOnly>();
+                    for (int day = 1; day <= DateTime.DaysInMonth(year, month); day++)
+                    {
+                        var date = new DateOnly(year, month, day);
+                        if (date.DayOfWeek == dayOfWeek)
+                            matches.Add(date);
+                    }
+
+                    for (WeekOrdinal ordinal = WeekOrdinal.First; ordinal <= WeekOrdinal.Last; ordinal++)
+                    {
+                        DateOnly? expected = ordinal == WeekOrdinal.Last
+                            ? matches[^1]
+                            : (int)ordinal <= matches.Count ? matches[(int)ordinal - 1] : null;
+
+                        Assert.AreEqual(expected, WeekdayMath.NthWeekdayInMonth(year, month, dayOfWeek, ordinal), $"{ordinal} {dayOfWeek} of {year}-{month:D2}");
+                    }
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// Verifies that a year or month outside the calendar yields no date rather than throwing.
+    /// </summary>
+    /// <param name="year">The year.</param>
+    /// <param name="month">The month.</param>
+    [TestMethod]
+    [DataRow(0, 1)]
+    [DataRow(10000, 1)]
+    [DataRow(2023, 0)]
+    [DataRow(2023, 13)]
+    public void NthWeekdayInMonth_WhenYearOrMonthIsOutOfRange_ShouldReturnNull(int year, int month)
+    {
+        Assert.IsNull(WeekdayMath.NthWeekdayInMonth(year, month, DayOfWeek.Monday, WeekOrdinal.First));
+    }
+
+    /// <summary>
+    /// Verifies that a weekday <see cref="DayOfWeek" /> does not define, with a defined ordinal, throws
+    /// <see cref="ArgumentOutOfRangeException" /> naming <c>dayOfWeek</c>.
+    /// </summary>
+    /// <param name="ordinal">The defined ordinal.</param>
+    [TestMethod]
+    [DataRow(WeekOrdinal.First)]
+    [DataRow(WeekOrdinal.Fifth)]
+    [DataRow(WeekOrdinal.Last)]
+    public void NthWeekdayInMonth_WhenDayOfWeekIsUndefined_ShouldThrowArgumentOutOfRangeException(WeekOrdinal ordinal)
+    {
+        var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = WeekdayMath.NthWeekdayInMonth(2023, 1, (DayOfWeek)7, ordinal);
+        });
+
+        Assert.AreEqual("dayOfWeek", ex.ParamName);
+    }
+
+    /// <summary>
+    /// Verifies that when both the weekday and the ordinal are undefined the ordinal decides first, so the call yields
+    /// no date rather than throwing for the weekday.
+    /// </summary>
+    [TestMethod]
+    public void NthWeekdayInMonth_WhenOrdinalAndDayOfWeekAreBothUndefined_ShouldReturnNull()
+    {
+        Assert.IsNull(WeekdayMath.NthWeekdayInMonth(2023, 1, (DayOfWeek)7, (WeekOrdinal)0));
+    }
 }
