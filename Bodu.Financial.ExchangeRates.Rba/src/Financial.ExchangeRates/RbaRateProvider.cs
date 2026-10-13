@@ -378,13 +378,17 @@ public sealed class RbaRateProvider
             logUnexpectedFailure: ex => Log.EraLoadUnexpectedError(_logger, era.Label, ex),
             publish: (table, fetchedAt) =>
             {
-                if (!_loadedEras.Add(era.Label))
+                if (_loadedEras.Contains(era.Label))
                     return null;
 
                 foreach (RbaSeriesInfo info in table.GetSeriesInfo())
                     _series[info.Pair] = info;
 
-                return AddObservations(table.EnumerateRates(), fetchedAt);
+                // Record the era as loaded only once its observations are in, so a publish that fails part-way leaves
+                // it unloaded and the next request downloads it again.
+                int count = AddObservations(table.EnumerateRates(), fetchedAt);
+                _loadedEras.Add(era.Label);
+                return count;
             },
             logCompleted: count => Log.EraLoaded(_logger, _options.DownloadCompletedLogLevel, era.Label, count),
             cancellationToken: cancellationToken);

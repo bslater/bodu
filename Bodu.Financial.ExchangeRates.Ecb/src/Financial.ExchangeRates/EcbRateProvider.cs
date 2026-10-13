@@ -367,13 +367,17 @@ public sealed class EcbRateProvider
             logUnexpectedFailure: ex => Log.FeedLoadUnexpectedError(_logger, feed.Name, ex),
             publish: (table, fetchedAt) =>
             {
-                if (!_loadedFeeds.Add(feed.Name))
+                if (_loadedFeeds.Contains(feed.Name))
                     return null;
 
                 foreach (EcbSeriesInfo info in table.GetSeriesInfo())
                     _series[info.Pair] = info;
 
-                return AddObservations(table.EnumerateRates(), fetchedAt);
+                // Record the feed as loaded only once its observations are in, so a publish that fails part-way leaves
+                // it unloaded and the next request downloads it again.
+                int count = AddObservations(table.EnumerateRates(), fetchedAt);
+                _loadedFeeds.Add(feed.Name);
+                return count;
             },
             logCompleted: count => Log.FeedLoaded(_logger, _options.DownloadCompletedLogLevel, feed.Name, count),
             cancellationToken: cancellationToken);

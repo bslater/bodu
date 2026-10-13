@@ -355,13 +355,17 @@ public sealed class ImfRateProvider
             logUnexpectedFailure: ex => Log.ReportLoadUnexpectedError(_logger, month.Key, ex),
             publish: (table, fetchedAt) =>
             {
-                if (!_loadedMonths.Add((month.Year, month.Month)))
+                if (_loadedMonths.Contains((month.Year, month.Month)))
                     return null;
 
                 foreach (ImfSeriesInfo info in table.GetSeriesInfo())
                     _series[info.Pair] = info;
 
-                return AddObservations(table.EnumerateRates(), fetchedAt);
+                // Record the month as loaded only once its observations are in, so a publish that fails part-way leaves
+                // it unloaded and the next request downloads it again.
+                int count = AddObservations(table.EnumerateRates(), fetchedAt);
+                _loadedMonths.Add((month.Year, month.Month));
+                return count;
             },
             logCompleted: count => Log.ReportLoaded(_logger, _options.DownloadCompletedLogLevel, month.Key, count),
             cancellationToken: cancellationToken);

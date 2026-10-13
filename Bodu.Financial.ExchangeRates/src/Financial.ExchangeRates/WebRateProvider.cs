@@ -449,6 +449,11 @@ public abstract class WebRateProvider
     /// completion log (the loaded key was already committed by another operation). The timestamp is captured
     /// immediately after fetching, before entering the publication lock.
     /// </para>
+    /// <para>
+    /// <paramref name="publish" /> should record its unit as loaded only after
+    /// <see cref="AddObservations(IEnumerable{ExchangeRate}, DateTimeOffset?)" /> has returned, so that a failure
+    /// part-way through publishing leaves the unit unloaded and the next request downloads it again.
+    /// </para>
     /// </remarks>
     /// <typeparam name="TTable">The provider's parsed feed-table type.</typeparam>
     /// <param name="alreadyLoaded">Coverage predicate, called while holding the shared lock.</param>
