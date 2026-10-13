@@ -62,8 +62,8 @@ public static partial class IniSerializer
     /// <param name="options">The serializer options.</param>
     /// <exception cref="IniSerializationException">
     /// Thrown when a section nests beyond INI's two levels, when an entry's value is a dictionary whose keys are not
-    /// strings, which cannot be a section, or when a key, section name or value cannot be written so that it reads back
-    /// unchanged.
+    /// strings, which cannot be a section, when a global entry's value is not a scalar, or when a key, section name or
+    /// value cannot be written so that it reads back unchanged.
     /// </exception>
     [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
     [RequiresDynamicCode(RequiresDynamicCodeMessage)]
@@ -87,6 +87,7 @@ public static partial class IniSerializer
             if (FlatBinding.ShouldSkipDictionaryValue(entry.Value, options.DefaultIgnoreCondition))
                 continue;
 
+            ThrowIfNotScalar(entry.Value, string.Empty, key);
             WriteEntry(ref writer, string.Empty, key, ValueToString(entry.Value));
         }
 
@@ -216,7 +217,8 @@ public static partial class IniSerializer
     /// <param name="options">The serializer options.</param>
     /// <exception cref="IniSerializationException">
     /// Thrown when an entry value is itself a dictionary, whatever its keys, which INI cannot represent inside a
-    /// section, or when an entry's key or value cannot be written so that it reads back unchanged.
+    /// section, when an entry value is not a scalar, or when an entry's key or value cannot be written so that it reads
+    /// back unchanged.
     /// </exception>
     [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
     [RequiresDynamicCode(RequiresDynamicCodeMessage)]
@@ -230,8 +232,31 @@ public static partial class IniSerializer
             if (FlatBinding.ShouldSkipDictionaryValue(entry.Value, options.DefaultIgnoreCondition))
                 continue;
 
-            WriteEntry(ref writer, sectionName, KeyToString(entry.Key), ValueToString(entry.Value));
+            string key = KeyToString(entry.Key);
+            ThrowIfNotScalar(entry.Value, sectionName, key);
+            WriteEntry(ref writer, sectionName, key, ValueToString(entry.Value));
         }
+    }
+
+    /// <summary>
+    /// Throws when a dictionary entry's value is not a scalar, which no INI value reads back as, so that it is not
+    /// written as its <see cref="object.ToString" /> text.
+    /// </summary>
+    /// <param name="value">The entry's value.</param>
+    /// <param name="sectionName">The section the entry is written in, or an empty string for a global entry.</param>
+    /// <param name="key">The entry's key.</param>
+    /// <exception cref="IniSerializationException">
+    /// Thrown when <paramref name="value" /> is not <see langword="null" /> and its type is not a scalar.
+    /// </exception>
+    /// <remarks>
+    /// A dictionary entry is a section or a key by its value, not by the dictionary's declared value type, so a value
+    /// is tested by its own type, as a member declared as <see cref="object" /> is: a <see langword="null" /> value and
+    /// a scalar are written, and anything else is rejected.
+    /// </remarks>
+    private static void ThrowIfNotScalar(object? value, string sectionName, string key)
+    {
+        if (InvariantScalarCodec.GetUnmappedType(value, typeof(object), FlatScalarKind.None) is { } unmapped)
+            throw new IniSerializationException(string.Format(CultureInfo.CurrentCulture, IniResourceStrings.Op_Invalid_IniValueNotScalar, sectionName, key, unmapped));
     }
 
     /// <summary>

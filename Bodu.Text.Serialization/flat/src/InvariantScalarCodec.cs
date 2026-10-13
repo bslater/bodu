@@ -171,8 +171,8 @@ internal static class InvariantScalarCodec
     /// <remarks>
     /// A value whose declared type is a scalar is formatted as that scalar, as <see cref="Format(object?, Policy)" />
     /// formats it; any other value, such as one declared as <see cref="object" />, is formatted by its own type. The
-    /// Delimited and DotEnv serializers first reject, through
-    /// <see cref="GetUnmappedType(object?, Type, FlatScalarKind)" />, a value that maps to no scalar.
+    /// serializers first reject, through <see cref="GetUnmappedType(object?, Type, FlatScalarKind)" />, a value that
+    /// maps to no scalar.
     /// </remarks>
     internal static string Format(object? value, FlatScalarKind declaredKind, Policy policy) =>
         value is null ? string.Empty

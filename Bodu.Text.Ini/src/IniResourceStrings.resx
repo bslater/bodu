@@ -139,4 +139,7 @@
   <data name="Op_Invalid_IniUnwritableSectionName" xml:space="preserve">
     <value>The INI section name '{0}' cannot be written so that it reads back unchanged.</value>
   </data>
+  <data name="Op_Invalid_IniValueNotScalar" xml:space="preserve">
+    <value>The INI section '{0}' has a value for the key '{1}' of type '{2}', which is not a scalar and cannot be written so that it reads back.</value>
+  </data>
 </root>
