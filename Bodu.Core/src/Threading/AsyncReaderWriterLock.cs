@@ -22,8 +22,10 @@ namespace Bodu.Threading;
 /// <para>
 /// <b>Fairness.</b> The lock is <b>writer-preferring</b>: while a writer is active or queued, newly arriving readers
 /// wait, and queued writers are granted in strict FIFO order. When a writer releases and no writer is queued, all
-/// waiting readers are admitted together (batch admission). This prevents writer starvation, but a sustained stream of
-/// writers can starve readers; choose this lock only when that trade-off is acceptable.
+/// waiting readers are admitted together (batch admission). When the last queued writer cancels, the readers that
+/// queued behind it are admitted at once, alongside any readers already active, so a reader never waits on readers that
+/// arrived after it. This prevents writer starvation, but a sustained stream of writers can starve readers; choose this
+/// lock only when that trade-off is acceptable.
 /// </para>
 /// <para>
 /// <b>Reentrancy and upgrade.</b> The lock is <b>not reentrant</b> and provides <b>no upgradeable read mode</b>. A
@@ -272,9 +274,9 @@ public sealed partial class AsyncReaderWriterLock
         {
             _readersActive--;
 
-            // A queued writer may have canceled while readers were active, leaving readers queued behind it. When the
-            // last reader releases and no writer can be granted, those readers must be admitted here - nothing else
-            // will ever drain the reader queue (mirrors the fallback in ReleaseWriter and CancelWriter).
+            // Hand off to the next queued writer when the last reader leaves. Readers queue only behind a writer, and a
+            // writer that cancels with none left queued admits them itself (OnWriterCanceledUnderLock), so the reader
+            // queue is normally empty here; admitting it anyway keeps a reader from ever being stranded.
             if (_readersActive == 0 && !GrantNextWriter())
                 GrantAllReaders();
         }
@@ -374,9 +376,20 @@ public sealed partial class AsyncReaderWriterLock
     /// <summary>
     /// Re-evaluates writer preference after removing a canceled writer. Called under the common synchronization gate.
     /// </summary>
+    /// <remarks>
+    /// With no writer active, a writer still queued is granted once no reader holds the lock. When no writer remains
+    /// queued, every queued reader is admitted at once, however many readers are active: a newly arriving reader is
+    /// admitted immediately in that state, so leaving the queued readers to wait for the active ones to leave would let
+    /// later readers overtake them indefinitely.
+    /// </remarks>
     private void OnWriterCanceledUnderLock()
     {
-        if (!_writerActive && _readersActive == 0 && !GrantNextWriter())
+        if (_writerActive)
+            return;
+
+        if (_waitingWriters.Count == 0)
             GrantAllReaders();
+        else if (_readersActive == 0)
+            GrantNextWriter();
     }
 }
