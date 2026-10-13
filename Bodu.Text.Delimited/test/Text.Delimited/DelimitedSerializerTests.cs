@@ -439,6 +439,52 @@ public partial class DelimitedSerializerTests
     }
 
     /// <summary>
+    /// A record POCO of ten number columns, which the allocation tests write and read in thousands.
+    /// </summary>
+    public sealed class TenNumberRecord
+    {
+        /// <summary>Gets or sets the value of column <c>A</c>.</summary>
+        /// <value>The value.</value>
+        public int A { get; set; } = 0;
+
+        /// <summary>Gets or sets the value of column <c>B</c>.</summary>
+        /// <value>The value.</value>
+        public int B { get; set; } = 1;
+
+        /// <summary>Gets or sets the value of column <c>C</c>.</summary>
+        /// <value>The value.</value>
+        public int C { get; set; } = 2;
+
+        /// <summary>Gets or sets the value of column <c>D</c>.</summary>
+        /// <value>The value.</value>
+        public int D { get; set; } = 3;
+
+        /// <summary>Gets or sets the value of column <c>E</c>.</summary>
+        /// <value>The value.</value>
+        public int E { get; set; } = 4;
+
+        /// <summary>Gets or sets the value of column <c>F</c>.</summary>
+        /// <value>The value.</value>
+        public int F { get; set; } = 5;
+
+        /// <summary>Gets or sets the value of column <c>G</c>.</summary>
+        /// <value>The value.</value>
+        public int G { get; set; } = 6;
+
+        /// <summary>Gets or sets the value of column <c>H</c>.</summary>
+        /// <value>The value.</value>
+        public int H { get; set; } = 7;
+
+        /// <summary>Gets or sets the value of column <c>I</c>.</summary>
+        /// <value>The value.</value>
+        public int I { get; set; } = 8;
+
+        /// <summary>Gets or sets the value of column <c>J</c>.</summary>
+        /// <value>The value.</value>
+        public int J { get; set; } = 9;
+    }
+
+    /// <summary>
     /// A record POCO whose two properties are both mapped to the column <c>X</c>.
     /// </summary>
     public sealed class DuplicateColumnRecord
