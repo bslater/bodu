@@ -14,7 +14,7 @@ namespace Bodu.Financial;
 /// options.
 /// </summary>
 [TestClass]
-public class MoneyFormatterBuilderTests
+public partial class MoneyFormatterBuilderTests
 {
     /// <summary>
     /// Verifies that the builder produces a formatter rendering the numeric-only, ungrouped form.

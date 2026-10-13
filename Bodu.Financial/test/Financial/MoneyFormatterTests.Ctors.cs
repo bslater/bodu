@@ -20,4 +20,25 @@ public partial class MoneyFormatterTests
             _ = new MoneyFormatter(new MoneyFormatOptions { CurrencyDisplay = (CurrencyDisplay)99 });
         });
     }
+
+    /// <summary>
+    /// Verifies that the constructor rejects a <see cref="MoneyFormatOptions.MinorUnitsOverride" /> outside 0 to 28
+    /// with <see cref="ArgumentOutOfRangeException" /> naming the options, rather than deferring the failure to the
+    /// <c>Format</c> methods.
+    /// </summary>
+    /// <param name="minorUnitsOverride">The out-of-range precision override.</param>
+    [TestMethod]
+    [DataRow(-1)]
+    [DataRow(29)]
+    public void Constructor_WhenMinorUnitsOverrideOutOfRange_ShouldThrowArgumentOutOfRangeException(int minorUnitsOverride)
+    {
+        var options = new MoneyFormatOptions { MinorUnitsOverride = minorUnitsOverride };
+
+        ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = new MoneyFormatter(options);
+        });
+
+        Assert.AreEqual("options", ex.ParamName);
+    }
 }
