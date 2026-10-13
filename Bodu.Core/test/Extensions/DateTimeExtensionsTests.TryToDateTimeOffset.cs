@@ -95,4 +95,37 @@ public partial class DateTimeExtensionsTests
         Assert.IsFalse(input.TryToDateTimeOffset(incompatibleOffset, out DateTimeOffset invalid));
         Assert.AreEqual(default(DateTimeOffset), invalid);
     }
+
+    /// <summary>
+    /// Verifies that a conversion that fails, under each rule the conversion applies, reports <see langword="false" />
+    /// without throwing and catching an exception internally, so it allocates nothing.
+    /// </summary>
+    [TestMethod]
+    public void TryToDateTimeOffset_WhenConversionFails_ShouldNotAllocate()
+    {
+        DateTime late = DateTime.SpecifyKind(DateTime.MaxValue.AddHours(-1), DateTimeKind.Unspecified);
+        DateTime early = DateTime.SpecifyKind(DateTime.MinValue.AddHours(1), DateTimeKind.Unspecified);
+        var unspecified = new DateTime(2024, 4, 18, 12, 0, 0, DateTimeKind.Unspecified);
+        var utc = new DateTime(2024, 4, 18, 12, 0, 0, DateTimeKind.Utc);
+        var local = new DateTime(2024, 4, 18, 12, 0, 0, DateTimeKind.Local);
+        TimeSpan localOffset = TimeZoneInfo.Local.GetUtcOffset(local);
+        TimeSpan otherOffset = localOffset == TimeSpan.Zero ? TimeSpan.FromHours(1) : TimeSpan.Zero;
+
+        int CountFailures() =>
+            (late.TryToDateTimeOffset(TimeSpan.FromHours(-2), out _) ? 0 : 1)
+            + (early.TryToDateTimeOffset(TimeSpan.FromHours(2), out _) ? 0 : 1)
+            + (unspecified.TryToDateTimeOffset(TimeSpan.FromSeconds(90), out _) ? 0 : 1)
+            + (unspecified.TryToDateTimeOffset(TimeSpan.FromHours(15), out _) ? 0 : 1)
+            + (utc.TryToDateTimeOffset(TimeSpan.FromHours(1), out _) ? 0 : 1)
+            + (local.TryToDateTimeOffset(otherOffset, out _) ? 0 : 1);
+
+        Assert.AreEqual(6, CountFailures());
+
+        long before = GC.GetAllocatedBytesForCurrentThread();
+        int failures = CountFailures();
+        long allocated = GC.GetAllocatedBytesForCurrentThread() - before;
+
+        Assert.AreEqual(6, failures);
+        Assert.AreEqual(0L, allocated, $"Six failed conversions allocated {allocated} bytes.");
+    }
 }
