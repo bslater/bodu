@@ -37,6 +37,12 @@ public class EcbXmlRateTableSourceTests
         public int StoreCount { get; private set; }
 
         /// <summary>
+        /// Gets the refresh interval of the last lookup.
+        /// </summary>
+        /// <value>The interval, or <see langword="null" /> before any lookup.</value>
+        public TimeSpan? LastRefreshInterval { get; private set; }
+
+        /// <summary>
         /// Seeds the cache with a feed's bytes without counting it as a store.
         /// </summary>
         /// <param name="feed">The feed.</param>
@@ -45,8 +51,11 @@ public class EcbXmlRateTableSourceTests
             _entries[feed] = bytes;
 
         /// <inheritdoc />
-        public bool TryGet(EcbRateFeed key, TimeSpan refreshInterval, out byte[] bytes) =>
-            _entries.TryGetValue(key, out bytes!);
+        public bool TryGet(EcbRateFeed key, TimeSpan refreshInterval, out byte[] bytes)
+        {
+            LastRefreshInterval = refreshInterval;
+            return _entries.TryGetValue(key, out bytes!);
+        }
 
         /// <inheritdoc />
         public void Store(EcbRateFeed key, byte[] bytes)
@@ -173,5 +182,38 @@ public class EcbXmlRateTableSourceTests
         _ = Assert.ThrowsExactly<ArgumentNullException>(() => _ = new EcbXmlRateTableSource(null!, options, cache));
         _ = Assert.ThrowsExactly<ArgumentNullException>(() => _ = new EcbXmlRateTableSource(client, null!, cache));
         _ = Assert.ThrowsExactly<ArgumentNullException>(() => _ = new EcbXmlRateTableSource(client, options, null!));
+    }
+
+    /// <summary>
+    /// Verifies that a failed download propagates and leaves nothing in the cache.
+    /// </summary>
+    /// <returns>A task that completes when the assertion has run.</returns>
+    [TestMethod]
+    public async Task GetTableAsync_WhenDownloadFails_ShouldCacheNothing()
+    {
+        RecordingCache cache = new();
+        using HttpClient client = new(new StubHttpMessageHandler([], System.Net.HttpStatusCode.ServiceUnavailable));
+        EcbXmlRateTableSource source = new(client, new EcbRateProviderOptions(), cache);
+
+        _ = await Assert.ThrowsExactlyAsync<HttpRequestException>(async () =>
+        {
+            _ = await source.GetTableAsync(EcbRateFeed.Full);
+        });
+
+        Assert.AreEqual(0, cache.StoreCount);
+    }
+
+    /// <summary>
+    /// Verifies that the cache is consulted with the configured refresh interval.
+    /// </summary>
+    /// <returns>A task that completes when the assertion has run.</returns>
+    [TestMethod]
+    public async Task GetTableAsync_ShouldConsultTheCacheWithTheRefreshInterval()
+    {
+        EcbXmlRateTableSource source = CreateSource(out _, out RecordingCache cache, new EcbRateProviderOptions { RefreshInterval = TimeSpan.FromHours(5) });
+
+        _ = await source.GetTableAsync(EcbRateFeed.Full);
+
+        Assert.AreEqual(TimeSpan.FromHours(5), cache.LastRefreshInterval);
     }
 }
