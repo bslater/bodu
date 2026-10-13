@@ -205,4 +205,38 @@ public partial class IntervalTests
         Assert.IsTrue(value.TryFormat(buffer, out int written, default, CultureInfo.InvariantCulture));
         Assert.AreEqual(value, Interval<int>.Parse(buffer[..written], CultureInfo.InvariantCulture));
     }
+
+    /// <summary>
+    /// Verifies that an interval whose closed side carries an infinite endpoint formats to text that parses back to the
+    /// same bounded interval: an infinity token beside a closed bracket is the endpoint value, since an unbounded side
+    /// is always open.
+    /// </summary>
+    /// <param name="lower">The lower endpoint.</param>
+    /// <param name="upper">The upper endpoint.</param>
+    /// <param name="lowerInclusive">Whether the lower endpoint is included.</param>
+    /// <param name="upperInclusive">Whether the upper endpoint is included.</param>
+    /// <param name="cultureName">The culture to format and parse under, or empty for the invariant culture.</param>
+    [TestMethod]
+    [DataRow(0.0, double.PositiveInfinity, true, true, "", DisplayName = "[0, +inf], invariant")]
+    [DataRow(double.NegativeInfinity, 0.0, true, true, "", DisplayName = "[-inf, 0], invariant")]
+    [DataRow(double.NegativeInfinity, 5.5, true, false, "", DisplayName = "[-inf, 5.5), invariant")]
+    [DataRow(double.NegativeInfinity, double.PositiveInfinity, true, true, "", DisplayName = "[-inf, +inf], invariant")]
+    [DataRow(0.0, double.PositiveInfinity, true, true, "en-US", DisplayName = "[0, +inf], en-US")]
+    [DataRow(double.NegativeInfinity, 2.5, true, true, "de-DE", DisplayName = "[-inf, 2.5], de-DE")]
+    public void Parse_WhenClosedEndpointIsInfinite_ShouldRoundTripTheBoundedInterval(
+        double lower,
+        double upper,
+        bool lowerInclusive,
+        bool upperInclusive,
+        string cultureName)
+    {
+        CultureInfo culture = cultureName.Length == 0 ? CultureInfo.InvariantCulture : CultureInfo.GetCultureInfo(cultureName);
+        var original = new Interval<double>(lower, upper, lowerInclusive, upperInclusive);
+
+        string text = original.ToString(null, culture);
+        Interval<double> parsed = Interval<double>.Parse(text, culture);
+
+        Assert.AreEqual(original, parsed, $"Text '{text}' did not parse back to the same interval.");
+        Assert.IsTrue(parsed.IsBounded);
+    }
 }
