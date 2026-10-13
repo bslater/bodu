@@ -540,6 +540,53 @@ public sealed partial class ParserValidationTests
     }
 
     /// <summary>
+    /// Verifies that a JSON resolution policy whose <c>workingDays</c> is a letter mask, which
+    /// <see cref="DayOfWeekSet" /> reads but the schema's binary pattern rejects, is reported with the
+    /// <c>BODU-CAL-WORKING-DAYS</c> diagnostic, as the XML loader rejects it.
+    /// </summary>
+    /// <param name="workingDays">The letter mask.</param>
+    [TestMethod]
+    [DataRow("_MTWTF_")]
+    [DataRow("MTWTF__")]
+    [DataRow("-MTWTF-")]
+    public void LoadJson_WhenWorkingDaysIsLetterMask_ShouldThrowWorkingDaysDiagnostic(string workingDays)
+    {
+        string json = WorkingDaysJson(workingDays);
+
+        NotableDateValidationException ex = Assert.ThrowsExactly<NotableDateValidationException>(() =>
+        {
+            _ = NotableDateResourceLoader.LoadJson(json);
+        });
+
+        Assert.Contains(d => d.Code == "BODU-CAL-WORKING-DAYS" && d.Severity == NotableDateValidationSeverity.Error, ex.Diagnostics, "BODU-CAL-WORKING-DAYS");
+    }
+
+    /// <summary>
+    /// Verifies that a JSON resolution policy whose <c>workingDays</c> is the documented Sunday-first binary pattern
+    /// loads as that working week.
+    /// </summary>
+    [TestMethod]
+    public void LoadJson_WhenWorkingDaysIsBinary_ShouldLoadTheWorkingWeek()
+    {
+        NotableDateResource resource = NotableDateResourceLoader.LoadJson(WorkingDaysJson("1111100"));
+
+        Assert.AreEqual(DayOfWeekSet.SundayToThursday, resource.ResolutionPolicy.WorkingWeek);
+    }
+
+    /// <summary>
+    /// Builds a JSON document with one fixed rule whose resolution policy declares the supplied working week.
+    /// </summary>
+    /// <param name="workingDays">The <c>workingDays</c> value.</param>
+    /// <returns>The JSON document.</returns>
+    private static string WorkingDaysJson(string workingDays) =>
+        """
+        { "schemaVersion": "1.0", "resourceId": "test.working-days",
+          "resolutionPolicy": { "workingDays": "__DAYS__" },
+          "notableDates": [ { "id": "x", "displayName": "X", "category": "PublicHoliday",
+            "rules": [ { "id": "r", "strategy": { "fixed": { "month": 3, "day": 1 } } } ] } ] }
+        """.Replace("__DAYS__", workingDays, StringComparison.Ordinal);
+
+    /// <summary>
     /// Builds a JSON document whose one rule, a fixed 1 March, is patched by a <c>PatchRule</c> override.
     /// </summary>
     /// <param name="patch">The JSON <c>PatchRule</c> override object.</param>
