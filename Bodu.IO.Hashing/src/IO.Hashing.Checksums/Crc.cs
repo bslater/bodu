@@ -45,9 +45,8 @@ namespace Bodu.IO.Hashing.Checksums;
 /// <item>
 /// <term><see cref="CrcStandard.FromName(string)" /></term>
 /// <description>
-/// Resolves the canonical RevEng names - <c>"CRC-32/ISO-HDLC"</c> returns the same instance as
-/// <see cref="CrcStandard.CRC32_ISOHDLC" />. Published aliases such as <c>"CRC-32"</c> or <c>"PKZIP"</c> are not
-/// resolved.
+/// Resolves the canonical RevEng names and the aliases the catalogue publishes - <c>"CRC-32/ISO-HDLC"</c>,
+/// <c>"CRC-32"</c>, and <c>"PKZIP"</c> all return the same instance as <see cref="CrcStandard.CRC32_ISOHDLC" />.
 /// </description>
 /// </item>
 /// </list>

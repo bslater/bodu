@@ -44,14 +44,15 @@ Instances are memoized inside <xref:Bodu.IO.Hashing.Checksums.CrcStandard>, so r
 
 ## Pattern 3 - look up by name
 
-`FromName` resolves the canonical RevEng name to the same instance that the strongly-typed property returns. Published aliases such as `CRC-32` or `PKZIP` are not resolved; pass the canonical name instead.
+`FromName` resolves the canonical RevEng name, or any alias the catalogue publishes beside it, to the same instance that the strongly-typed property returns. The [CRC catalogue](crc-catalogue.md) lists every alias.
 
 ```csharp
 var a = new Crc(CrcStandard.FromName("CRC-32/ISO-HDLC"));
 bool same = ReferenceEquals(CrcStandard.FromName("CRC-32/ISO-HDLC"), CrcStandard.CRC32_ISOHDLC);   // true
+bool alias = ReferenceEquals(CrcStandard.FromName("PKZIP"), CrcStandard.CRC32_ISOHDLC);            // true
 ```
 
-`FromName` is ordinal and case-sensitive. `TryFromName` returns `false` instead of throwing when the name is unknown, which is the safer choice for user-supplied configuration.
+`FromName` is ordinal and case-sensitive, for aliases as for canonical names. `TryFromName` returns `false` instead of throwing when the name is unknown, which is the safer choice for user-supplied configuration.
 
 ## Pattern 4 - a custom parameter set
 

@@ -6,10 +6,9 @@
 .DESCRIPTION
     Emits two files:
       * `CrcStandards.cs` - a `public enum CrcStandards` with one value per canonical catalogue
-        entry, ordered to match the JSON. Published aliases are not exposed as enum values;
-        when crc-specs.json records them, they resolve to their canonical instance through
-        `CrcStandard.FromName`. It records none at present, so `FromName` resolves canonical
-        names only, and the generated documentation says so.
+        entry, ordered to match the JSON. Published aliases are not exposed as enum values; the
+        aliases crc-specs.json records resolve to their canonical instance through
+        `CrcStandard.FromName`. A name given to two standards stops the generator.
       * `CrcStandard.Catalog.cs` - the packed data table (`CatalogEntry[] s_catalog`) and the
         lazy lookup plumbing: `Get(CrcStandards)`, `FromName(string)`, `TryFromName`, `All`.
         A per-entry cache publishes the first materialised `CrcStandard` via
@@ -349,11 +348,24 @@ else {
 [void]$catBuilder.AppendLine('    }')
 [void]$catBuilder.AppendLine()
 
-$entryCount = 0
+# Every canonical name and alias must name exactly one standard: the generated map assigns by indexer, so a repeated
+# name would otherwise resolve silently to whichever standard came last.
+$owners = [System.Collections.Generic.Dictionary[string, string]]::new([System.StringComparer]::Ordinal)
 foreach ($spec in $supported) {
-    $entryCount++
-    foreach ($a in (Get-AliasesFrom $spec)) { $entryCount++ }
+    $names = [System.Collections.Generic.List[string]]::new()
+    $names.Add([string]$spec.name)
+    foreach ($a in (Get-AliasesFrom $spec)) { $names.Add($a) }
+
+    foreach ($n in $names) {
+        if ($owners.ContainsKey($n)) {
+            throw "The name '$n' is given to both $($owners[$n]) and $($spec.name) in $SpecsPath; each name must identify one standard."
+        }
+
+        $owners[$n] = $spec.name
+    }
 }
+
+$entryCount = $owners.Count
 
 [void]$catBuilder.AppendLine('    private static Dictionary<string, CrcStandards> BuildNameLookup()')
 [void]$catBuilder.AppendLine('    {')

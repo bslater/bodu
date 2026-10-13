@@ -44,7 +44,9 @@
     "class": "academic",
     "created": "7 October 2008",
     "updated": "21 November 2018",
-    "aliases": [],
+    "aliases": [
+      "CRC-4/ITU"
+    ],
     "codewords": []
   },
   {
@@ -76,7 +78,9 @@
     "class": "attested",
     "created": "20 May 2009",
     "updated": "28 December 2019",
-    "aliases": [],
+    "aliases": [
+      "CRC-5/EPC"
+    ],
     "codewords": []
   },
   {
@@ -92,7 +96,9 @@
     "class": "academic",
     "created": "7 October 2008",
     "updated": "21 November 2018",
-    "aliases": [],
+    "aliases": [
+      "CRC-5/ITU"
+    ],
     "codewords": []
   },
   {
@@ -172,7 +178,9 @@
     "class": "academic",
     "created": "7 October 2008",
     "updated": "21 November 2018",
-    "aliases": [],
+    "aliases": [
+      "CRC-6/ITU"
+    ],
     "codewords": []
   },
   {
@@ -204,7 +212,9 @@
     "class": "academic",
     "created": "7 October 2008",
     "updated": "11 January 2022",
-    "aliases": [],
+    "aliases": [
+      "CRC-7"
+    ],
     "codewords": []
   },
   {
@@ -380,7 +390,9 @@
     "class": "academic",
     "created": "19 April 2009",
     "updated": "2 August 2023",
-    "aliases": [],
+    "aliases": [
+      "CRC-8/ITU"
+    ],
     "codewords": []
   },
   {
@@ -428,7 +440,10 @@
     "class": "attested",
     "created": "26 April 2009",
     "updated": "2 January 2021",
-    "aliases": [],
+    "aliases": [
+      "CRC-8/MAXIM",
+      "DOW-CRC"
+    ],
     "codewords": []
   },
   {
@@ -524,7 +539,9 @@
     "class": "attested",
     "created": "30 March 2005",
     "updated": "8 August 2024",
-    "aliases": [],
+    "aliases": [
+      "CRC-8"
+    ],
     "codewords": []
   },
   {
@@ -540,7 +557,10 @@
     "class": "attested",
     "created": "19 July 2012",
     "updated": "21 November 2018",
-    "aliases": [],
+    "aliases": [
+      "CRC-8/AES",
+      "CRC-8/EBU"
+    ],
     "codewords": []
   },
   {
@@ -572,7 +592,10 @@
     "class": "attested",
     "created": "19 April 2009",
     "updated": "7 May 2022",
-    "aliases": [],
+    "aliases": [
+      "CRC-10",
+      "CRC-10/I-610"
+    ],
     "codewords": []
   },
   {
@@ -620,7 +643,9 @@
     "class": "attested",
     "created": "3 November 2007",
     "updated": "7 May 2022",
-    "aliases": [],
+    "aliases": [
+      "CRC-11"
+    ],
     "codewords": []
   },
   {
@@ -668,7 +693,9 @@
     "class": "academic",
     "created": "29 July 2010",
     "updated": "15 February 2017",
-    "aliases": [],
+    "aliases": [
+      "X-CRC-12"
+    ],
     "codewords": []
   },
   {
@@ -700,7 +727,9 @@
     "class": "academic",
     "created": "10 December 2009",
     "updated": "5 August 2023",
-    "aliases": [],
+    "aliases": [
+      "CRC-12/3GPP"
+    ],
     "codewords": []
   },
   {
@@ -764,7 +793,9 @@
     "class": "academic",
     "created": "2 November 2007",
     "updated": "7 May 2022",
-    "aliases": [],
+    "aliases": [
+      "CRC-15"
+    ],
     "codewords": []
   },
   {
@@ -796,7 +827,12 @@
     "class": "attested",
     "created": "30 March 2005",
     "updated": "2 August 2023",
-    "aliases": [],
+    "aliases": [
+      "ARC",
+      "CRC-16",
+      "CRC-16/LHA",
+      "CRC-IBM"
+    ],
     "codewords": []
   },
   {
@@ -860,7 +896,9 @@
     "class": "attested",
     "created": "7 December 2009",
     "updated": "3 August 2023",
-    "aliases": [],
+    "aliases": [
+      "R-CRC-16"
+    ],
     "codewords": []
   },
   {
@@ -876,7 +914,9 @@
     "class": "attested",
     "created": "30 July 2010",
     "updated": "2 January 2021",
-    "aliases": [],
+    "aliases": [
+      "X-CRC-16"
+    ],
     "codewords": []
   },
   {
@@ -924,7 +964,12 @@
     "class": "attested",
     "created": "2 November 2007",
     "updated": "3 January 2021",
-    "aliases": [],
+    "aliases": [
+      "CRC-16/DARC",
+      "CRC-16/EPC",
+      "CRC-16/EPC-C1G2",
+      "CRC-16/I-CODE"
+    ],
     "codewords": []
   },
   {
@@ -956,7 +1001,10 @@
     "class": "attested",
     "created": "30 March 2005",
     "updated": "3 August 2023",
-    "aliases": [],
+    "aliases": [
+      "CRC-16/AUTOSAR",
+      "CRC-16/CCITT-FALSE"
+    ],
     "codewords": []
   },
   {
@@ -972,7 +1020,13 @@
     "class": "attested",
     "created": "10 September 2005",
     "updated": "4 August 2023",
-    "aliases": [],
+    "aliases": [
+      "CRC-16/ISO-HDLC",
+      "CRC-16/ISO-IEC-14443-3-B",
+      "CRC-16/X-25",
+      "CRC-B",
+      "X-25"
+    ],
     "codewords": []
   },
   {
@@ -988,7 +1042,9 @@
     "class": "attested",
     "created": "30 April 2011",
     "updated": "3 August 2023",
-    "aliases": [],
+    "aliases": [
+      "CRC-A"
+    ],
     "codewords": []
   },
   {
@@ -1004,7 +1060,14 @@
     "class": "attested",
     "created": "10 September 2005",
     "updated": "4 August 2023",
-    "aliases": [],
+    "aliases": [
+      "CRC-16/BLUETOOTH",
+      "CRC-16/CCITT",
+      "CRC-16/CCITT-TRUE",
+      "CRC-16/V-41-LSB",
+      "CRC-CCITT",
+      "KERMIT"
+    ],
     "codewords": []
   },
   {
@@ -1052,7 +1115,9 @@
     "class": "attested",
     "created": "26 April 2009",
     "updated": "28 December 2019",
-    "aliases": [],
+    "aliases": [
+      "CRC-16/MAXIM"
+    ],
     "codewords": []
   },
   {
@@ -1084,7 +1149,9 @@
     "class": "attested",
     "created": "27 February 2007",
     "updated": "2 January 2021",
-    "aliases": [],
+    "aliases": [
+      "MODBUS"
+    ],
     "codewords": []
   },
   {
@@ -1148,7 +1215,9 @@
     "class": "attested",
     "created": "5 July 2016",
     "updated": "7 May 2022",
-    "aliases": [],
+    "aliases": [
+      "CRC-16/IEC-61158-2"
+    ],
     "codewords": []
   },
   {
@@ -1180,7 +1249,9 @@
     "class": "attested",
     "created": "30 October 2007",
     "updated": "4 August 2023",
-    "aliases": [],
+    "aliases": [
+      "CRC-16/AUG-CCITT"
+    ],
     "codewords": []
   },
   {
@@ -1244,7 +1315,10 @@
     "class": "attested",
     "created": "4 June 2008",
     "updated": "8 August 2024",
-    "aliases": [],
+    "aliases": [
+      "CRC-16/BUYPASS",
+      "CRC-16/VERIFONE"
+    ],
     "codewords": []
   },
   {
@@ -1276,7 +1350,13 @@
     "class": "attested",
     "created": "30 March 2005",
     "updated": "5 August 2023",
-    "aliases": [],
+    "aliases": [
+      "CRC-16/ACORN",
+      "CRC-16/LTE",
+      "CRC-16/V-41-MSB",
+      "XMODEM",
+      "ZMODEM"
+    ],
     "codewords": []
   },
   {
@@ -1420,7 +1500,9 @@
     "class": "attested",
     "created": "2 November 2007",
     "updated": "4 August 2023",
-    "aliases": [],
+    "aliases": [
+      "CRC-24"
+    ],
     "codewords": []
   },
   {
@@ -1484,7 +1566,9 @@
     "class": "attested",
     "created": "29 April 2009",
     "updated": "2 January 2021",
-    "aliases": [],
+    "aliases": [
+      "CRC-32Q"
+    ],
     "codewords": []
   },
   {
@@ -1516,7 +1600,9 @@
     "class": "confirmed",
     "created": "28 November 2008",
     "updated": "8 August 2024",
-    "aliases": [],
+    "aliases": [
+      "CRC-32D"
+    ],
     "codewords": []
   },
   {
@@ -1532,7 +1618,11 @@
     "class": "attested",
     "created": "8 October 2008",
     "updated": "22 August 2022",
-    "aliases": [],
+    "aliases": [
+      "CRC-32/AAL5",
+      "CRC-32/DECT-B",
+      "B-CRC-32"
+    ],
     "codewords": []
   },
   {
@@ -1564,7 +1654,10 @@
     "class": "attested",
     "created": "30 March 2005",
     "updated": "8 August 2024",
-    "aliases": [],
+    "aliases": [
+      "CKSUM",
+      "CRC-32/POSIX"
+    ],
     "codewords": []
   },
   {
@@ -1580,7 +1673,13 @@
     "class": "attested",
     "created": "10 September 2005",
     "updated": "8 August 2024",
-    "aliases": [],
+    "aliases": [
+      "CRC-32/BASE91-C",
+      "CRC-32/CASTAGNOLI",
+      "CRC-32/INTERLAKEN",
+      "CRC-32C",
+      "CRC-32/NVME"
+    ],
     "codewords": []
   },
   {
@@ -1596,7 +1695,13 @@
     "class": "attested",
     "created": "30 March 2005",
     "updated": "11 December 2024",
-    "aliases": [],
+    "aliases": [
+      "CRC-32",
+      "CRC-32/ADCCP",
+      "CRC-32/V-42",
+      "CRC-32/XZ",
+      "PKZIP"
+    ],
     "codewords": []
   },
   {
@@ -1612,7 +1717,9 @@
     "class": "confirmed",
     "created": "30 March 2005",
     "updated": "21 November 2018",
-    "aliases": [],
+    "aliases": [
+      "JAMCRC"
+    ],
     "codewords": []
   },
   {
@@ -1660,7 +1767,9 @@
     "class": "confirmed",
     "created": "30 March 2005",
     "updated": "2 January 2021",
-    "aliases": [],
+    "aliases": [
+      "XFER"
+    ],
     "codewords": []
   },
   {
@@ -1692,7 +1801,9 @@
     "class": "academic",
     "created": "6 April 2009",
     "updated": "7 May 2022",
-    "aliases": [],
+    "aliases": [
+      "CRC-64"
+    ],
     "codewords": []
   },
   {
@@ -1788,7 +1899,9 @@
     "class": "attested",
     "created": "4 July 2011",
     "updated": "29 August 2024",
-    "aliases": [],
+    "aliases": [
+      "CRC-64/GO-ECMA"
+    ],
     "codewords": []
   },
   {

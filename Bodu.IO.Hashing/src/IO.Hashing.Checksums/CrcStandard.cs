@@ -45,9 +45,9 @@ namespace Bodu.IO.Hashing.Checksums;
 /// <item>
 /// <term><see cref="FromName(string)" /></term>
 /// <description>
-/// Resolves a canonical RevEng name - <c>"CRC-32/ISO-HDLC"</c> returns the same instance as
-/// <see cref="CRC32_ISOHDLC" />. The comparison is ordinal and case-sensitive, and published aliases such as
-/// <c>"CRC-32"</c> or <c>"PKZIP"</c> are not resolved.
+/// Resolves a canonical RevEng name or any alias the catalogue publishes - <c>"CRC-32/ISO-HDLC"</c>, <c>"CRC-32"</c>,
+/// and <c>"PKZIP"</c> all return the same instance as <see cref="CRC32_ISOHDLC" />. The comparison is ordinal and
+/// case-sensitive.
 /// </description>
 /// </item>
 /// <item>
@@ -92,8 +92,9 @@ namespace Bodu.IO.Hashing.Checksums;
 /// CrcStandards configured = Enum.Parse<CrcStandards>(config["CrcVariant"]);
 /// var configuredCrc = new Crc(CrcStandard.Get(configured));
 ///
-/// // 3. Look-up by canonical RevEng name - for example a name read from configuration.
+/// // 3. Look-up by RevEng name or alias - for example a name read from configuration.
 /// CrcStandard iso    = CrcStandard.FromName("CRC-32/ISO-HDLC");  // same instance as CRC32_ISOHDLC
+/// CrcStandard pkzip  = CrcStandard.FromName("PKZIP");            // an alias: the same instance again
 /// CrcStandard kermit = CrcStandard.FromName("CRC-16/KERMIT");    // same instance as CRC16_KERMIT
 ///
 /// // 4. Custom variant (not in the RevEng catalogue): a 12-bit CRC with bespoke parameters.
