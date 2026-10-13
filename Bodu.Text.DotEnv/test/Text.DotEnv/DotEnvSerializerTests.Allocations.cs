@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Text.Serialization;
+
 namespace Bodu.Text.DotEnv;
 
 /// <summary>
@@ -68,6 +70,52 @@ public partial class DotEnvSerializerTests
     }
 
     /// <summary>
+    /// A POCO of ten numbers, none of them zero, which an allocation test serializes under two ignore conditions.
+    /// </summary>
+    public sealed class TenNumberConfig
+    {
+        /// <summary>Gets or sets the value of key <c>A</c>.</summary>
+        /// <value>The value.</value>
+        public int A { get; set; } = 1;
+
+        /// <summary>Gets or sets the value of key <c>B</c>.</summary>
+        /// <value>The value.</value>
+        public int B { get; set; } = 2;
+
+        /// <summary>Gets or sets the value of key <c>C</c>.</summary>
+        /// <value>The value.</value>
+        public int C { get; set; } = 3;
+
+        /// <summary>Gets or sets the value of key <c>D</c>.</summary>
+        /// <value>The value.</value>
+        public int D { get; set; } = 4;
+
+        /// <summary>Gets or sets the value of key <c>E</c>.</summary>
+        /// <value>The value.</value>
+        public int E { get; set; } = 5;
+
+        /// <summary>Gets or sets the value of key <c>F</c>.</summary>
+        /// <value>The value.</value>
+        public int F { get; set; } = 6;
+
+        /// <summary>Gets or sets the value of key <c>G</c>.</summary>
+        /// <value>The value.</value>
+        public int G { get; set; } = 7;
+
+        /// <summary>Gets or sets the value of key <c>H</c>.</summary>
+        /// <value>The value.</value>
+        public int H { get; set; } = 8;
+
+        /// <summary>Gets or sets the value of key <c>I</c>.</summary>
+        /// <value>The value.</value>
+        public int I { get; set; } = 9;
+
+        /// <summary>Gets or sets the value of key <c>J</c>.</summary>
+        /// <value>The value.</value>
+        public int J { get; set; } = 10;
+    }
+
+    /// <summary>
     /// Verifies that serializing a POCO of ten text members allocates no more than serializing a dictionary of the same
     /// entries, within 1 KiB, rather than reflecting over the POCO's members on every call.
     /// </summary>
@@ -81,6 +129,24 @@ public partial class DotEnvSerializerTests
         long dictionaryBytes = MeasureAllocations(() => DotEnvSerializer.Serialize(dictionary));
 
         Assert.IsLessThanOrEqualTo(dictionaryBytes + 1024, pocoBytes, $"POCO: {pocoBytes} B; dictionary: {dictionaryBytes} B; .NET {Environment.Version}.");
+    }
+
+    /// <summary>
+    /// Verifies that serializing a POCO of ten non-zero numbers with <see cref="IgnoreCondition.WhenWritingDefault" />
+    /// allocates no more than with <see cref="IgnoreCondition.Never" />, within 64 bytes, rather than boxing a new
+    /// default value for every member it tests.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenTheConditionIsWhenWritingDefault_ShouldAllocateNoMoreThanWithNever()
+    {
+        var poco = new TenNumberConfig();
+        var whenWritingDefault = new DotEnvSerializerOptions { DefaultIgnoreCondition = IgnoreCondition.WhenWritingDefault };
+        var never = new DotEnvSerializerOptions { DefaultIgnoreCondition = IgnoreCondition.Never };
+
+        long whenWritingDefaultBytes = MeasureAllocations(() => DotEnvSerializer.Serialize(poco, whenWritingDefault));
+        long neverBytes = MeasureAllocations(() => DotEnvSerializer.Serialize(poco, never));
+
+        Assert.IsLessThanOrEqualTo(neverBytes + 64, whenWritingDefaultBytes, $"WhenWritingDefault: {whenWritingDefaultBytes} B; Never: {neverBytes} B; .NET {Environment.Version}.");
     }
 
     /// <summary>

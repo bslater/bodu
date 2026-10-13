@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Text.Serialization;
+
 namespace Bodu.Text.Ini;
 
 /// <summary>
@@ -58,6 +60,42 @@ public partial class IniSerializerTests
     }
 
     /// <summary>
+    /// A POCO of ten numbers, none of them zero, which an allocation test serializes under two ignore conditions.
+    /// </summary>
+    private sealed class TenNumberConfig
+    {
+        /// <summary>Gets or sets the value of key <c>A</c>.</summary>
+        public int A { get; set; } = 1;
+
+        /// <summary>Gets or sets the value of key <c>B</c>.</summary>
+        public int B { get; set; } = 2;
+
+        /// <summary>Gets or sets the value of key <c>C</c>.</summary>
+        public int C { get; set; } = 3;
+
+        /// <summary>Gets or sets the value of key <c>D</c>.</summary>
+        public int D { get; set; } = 4;
+
+        /// <summary>Gets or sets the value of key <c>E</c>.</summary>
+        public int E { get; set; } = 5;
+
+        /// <summary>Gets or sets the value of key <c>F</c>.</summary>
+        public int F { get; set; } = 6;
+
+        /// <summary>Gets or sets the value of key <c>G</c>.</summary>
+        public int G { get; set; } = 7;
+
+        /// <summary>Gets or sets the value of key <c>H</c>.</summary>
+        public int H { get; set; } = 8;
+
+        /// <summary>Gets or sets the value of key <c>I</c>.</summary>
+        public int I { get; set; } = 9;
+
+        /// <summary>Gets or sets the value of key <c>J</c>.</summary>
+        public int J { get; set; } = 10;
+    }
+
+    /// <summary>
     /// Verifies that serializing a POCO of ten text members allocates no more than serializing a dictionary of the same
     /// entries, within 1 KiB, rather than reflecting over the POCO's members on every call.
     /// </summary>
@@ -71,6 +109,24 @@ public partial class IniSerializerTests
         long dictionaryBytes = MeasureAllocations(() => IniSerializer.Serialize(dictionary));
 
         Assert.IsLessThanOrEqualTo(dictionaryBytes + 1024, pocoBytes, $"POCO: {pocoBytes} B; dictionary: {dictionaryBytes} B; .NET {Environment.Version}.");
+    }
+
+    /// <summary>
+    /// Verifies that serializing a POCO of ten non-zero numbers with <see cref="IgnoreCondition.WhenWritingDefault" />
+    /// allocates no more than with <see cref="IgnoreCondition.Never" />, within 64 bytes, rather than boxing a new
+    /// default value for every member it tests.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenTheConditionIsWhenWritingDefault_ShouldAllocateNoMoreThanWithNever()
+    {
+        var poco = new TenNumberConfig();
+        var whenWritingDefault = new IniSerializerOptions { DefaultIgnoreCondition = IgnoreCondition.WhenWritingDefault };
+        var never = new IniSerializerOptions { DefaultIgnoreCondition = IgnoreCondition.Never };
+
+        long whenWritingDefaultBytes = MeasureAllocations(() => IniSerializer.Serialize(poco, whenWritingDefault));
+        long neverBytes = MeasureAllocations(() => IniSerializer.Serialize(poco, never));
+
+        Assert.IsLessThanOrEqualTo(neverBytes + 64, whenWritingDefaultBytes, $"WhenWritingDefault: {whenWritingDefaultBytes} B; Never: {neverBytes} B; .NET {Environment.Version}.");
     }
 
     /// <summary>
