@@ -665,6 +665,15 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The node already belongs to a container; remove it from that container before adding it to another..
+        /// </summary>
+        internal static string Op_Invalid_YamlNodeAlreadyHasParent {
+            get {
+                return ResourceManager.GetString("Op_Invalid_YamlNodeAlreadyHasParent", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The current token cannot be read as the requested value type..
         /// </summary>
         internal static string Op_Invalid_YamlReaderValueType {

@@ -16,9 +16,16 @@ namespace Bodu.Text.Yaml.Nodes;
 /// <see cref="System.Text.Json.Nodes.JsonNode" />.
 /// </summary>
 /// <remarks>
+/// <para>
 /// The node tree is fully mutable: mappings (<see cref="YamlObject" />), sequences (<see cref="YamlArray" />), and
-/// scalars (<see cref="YamlValue" />) can be created, edited, and re-serialized. A node may appear at most once in a
-/// tree.
+/// scalars (<see cref="YamlValue" />) can be created, edited, and re-serialized.
+/// </para>
+/// <para>
+/// A node may appear at most once in a tree: it belongs to at most one container, and appears in that container once.
+/// Adding, inserting, or assigning a node that already belongs to a container, including the container it is being
+/// added to, throws an <see cref="InvalidOperationException" />; assigning a node over itself is the one exception.
+/// Removing or replacing a node, or clearing its container, detaches it, so that it can be added elsewhere.
+/// </para>
 /// </remarks>
 public abstract class YamlNode
 {
@@ -30,11 +37,22 @@ public abstract class YamlNode
     }
 
     /// <summary>
+    /// Gets or sets the container that holds this node.
+    /// </summary>
+    /// <value>
+    /// The <see cref="YamlObject" /> or <see cref="YamlArray" /> that holds this node, or <see langword="null" /> when
+    /// the node is detached or is the root of its tree.
+    /// </value>
+    internal YamlNode? Parent { get; set; }
+
+    /// <summary>
     /// Gets or sets the child node at the specified sequence index.
     /// </summary>
     /// <param name="index">The zero-based index.</param>
     /// <value>The child node, or <see langword="null" />.</value>
-    /// <exception cref="InvalidOperationException">The node is not a sequence.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// The node is not a sequence, or the assigned node already belongs to a container.
+    /// </exception>
     public virtual YamlNode? this[int index]
     {
         get => throw new InvalidOperationException(YamlResourceStrings.Op_Invalid_YamlValueKind);
@@ -46,7 +64,9 @@ public abstract class YamlNode
     /// </summary>
     /// <param name="key">The mapping key.</param>
     /// <value>The mapped node, or <see langword="null" />.</value>
-    /// <exception cref="InvalidOperationException">The node is not a mapping.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// The node is not a mapping, or the assigned node already belongs to a container.
+    /// </exception>
     public virtual YamlNode? this[string key]
     {
         get => throw new InvalidOperationException(YamlResourceStrings.Op_Invalid_YamlValueKind);
@@ -194,6 +214,15 @@ public abstract class YamlNode
 
                 return obj;
         }
+    }
+
+    /// <summary>
+    /// Enforces the rule that a node appears at most once in a tree, before a container takes ownership of it.
+    /// </summary>
+    /// <exception cref="InvalidOperationException">This node already belongs to a container.</exception>
+    internal void ThrowIfAttached()
+    {
+        if (Parent is not null) throw new InvalidOperationException(YamlResourceStrings.Op_Invalid_YamlNodeAlreadyHasParent);
     }
 
     /// <summary>

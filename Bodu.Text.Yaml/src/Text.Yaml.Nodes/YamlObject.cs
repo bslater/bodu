@@ -12,6 +12,11 @@ namespace Bodu.Text.Yaml.Nodes;
 /// <summary>
 /// Represents a mutable YAML mapping node whose entries preserve insertion order.
 /// </summary>
+/// <remarks>
+/// A node may appear at most once in a tree. Adding or assigning a value that already belongs to a container, this
+/// mapping included, throws an <see cref="InvalidOperationException" />; removing an entry or replacing its value
+/// detaches the value so that it can be added elsewhere.
+/// </remarks>
 public sealed class YamlObject
     : YamlNode,
     IEnumerable<KeyValuePair<string, YamlNode?>>
@@ -40,6 +45,13 @@ public sealed class YamlObject
     /// <param name="key">The mapping key.</param>
     /// <value>The mapped node, or <see langword="null" />.</value>
     /// <exception cref="ArgumentNullException"><paramref name="key" /> is <see langword="null" />.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// The assigned node already belongs to a container, and is not the value mapped to <paramref name="key" />.
+    /// </exception>
+    /// <remarks>
+    /// Assigning over an entry detaches the replaced node, so that it can be added elsewhere. Assigning an entry's
+    /// value over itself leaves the mapping unchanged.
+    /// </remarks>
     public override YamlNode? this[string key]
     {
         get
@@ -51,10 +63,19 @@ public sealed class YamlObject
         set
         {
             Bodu.ThrowHelper.ThrowIfNull(key);
-            if (!_entries.ContainsKey(key))
+
+            bool exists = _entries.TryGetValue(key, out YamlNode? existing);
+            if (exists && ReferenceEquals(existing, value))
+                return;
+
+            value?.ThrowIfAttached();
+
+            if (!exists)
                 _order.Add(key);
 
             _entries[key] = value;
+            value?.Parent = this;
+            existing?.Parent = null;
         }
     }
 
@@ -65,14 +86,20 @@ public sealed class YamlObject
     /// <param name="value">The entry value.</param>
     /// <exception cref="ArgumentNullException"><paramref name="key" /> is <see langword="null" />.</exception>
     /// <exception cref="ArgumentException">An entry with the same key already exists.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// <paramref name="value" /> already belongs to a container.
+    /// </exception>
     public void Add(string key, YamlNode? value)
     {
         Bodu.ThrowHelper.ThrowIfNull(key);
         if (_entries.ContainsKey(key))
             throw new ArgumentException(YamlResourceStrings.Arg_Invalid_YamlDuplicateKey, nameof(key));
 
+        value?.ThrowIfAttached();
+
         _order.Add(key);
         _entries[key] = value;
+        value?.Parent = this;
     }
 
     /// <summary>
@@ -83,16 +110,17 @@ public sealed class YamlObject
     public bool ContainsKey(string key) => _entries.ContainsKey(key);
 
     /// <summary>
-    /// Removes the entry with the specified key.
+    /// Removes the entry with the specified key, detaching its value.
     /// </summary>
     /// <param name="key">The key to remove.</param>
     /// <returns><see langword="true" /> when an entry was removed.</returns>
     public bool Remove(string key)
     {
-        if (!_entries.Remove(key))
+        if (!_entries.Remove(key, out YamlNode? removed))
             return false;
 
         _order.Remove(key);
+        removed?.Parent = null;
         return true;
     }
 

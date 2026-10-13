@@ -30,5 +30,6 @@ string yaml = root.ToYamlString();
 ## Notes
 
 - **Explicit scalar creation.** Unlike the TOML and Bencode node DOMs there are no implicit conversions; wrap scalars with `YamlValue.Create` so the value kind is unambiguous under YAML's implicit typing.
+- **A node appears at most once.** Adding, inserting, or assigning a node that already belongs to a container, the same one included, throws <xref:System.InvalidOperationException>; removing or replacing a node detaches it so that it can be added elsewhere.
 - **Presentation is normalized.** Comments, anchors, aliases, and the original scalar styles are not retained; `ToYamlString` re-emits the tree in block style.
 - **See also:** the [Bodu.Text.Yaml introduction](~/docs/serialization/yaml/index.md) and the [Using YAML](~/guides/serialization/yaml/using.md) guide (Pattern 4 - Edit a document with the mutable DOM).
