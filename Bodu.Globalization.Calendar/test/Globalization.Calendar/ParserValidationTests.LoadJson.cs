@@ -1335,4 +1335,170 @@ public sealed partial class ParserValidationTests
 
         return json;
     }
+
+    /// <summary>
+    /// The well-formed value, as a JSON literal, of every object- and list-valued property the JSON document under the
+    /// value-kind tests holds, keyed by the placeholder that stands for it, in the order the placeholders are replaced:
+    /// a value that holds other placeholders precedes them.
+    /// </summary>
+    private static readonly (string Key, string WellFormed)[] s_kindFieldValues =
+    [
+        ("resolutionPolicy", """{ "categoryPrecedence": @categoryPrecedence@ }"""),
+        ("categoryPrecedence", """[ "PublicHoliday" ]"""),
+        ("adjustmentPolicies", """[ { "id": "policy", "scope": @scope@, "trigger": @trigger@, "action": @action@, "emission": @emission@, "parameters": @parameters@ } ]"""),
+        ("scope", """{ "territories": @scope.territories@, "calendars": @scope.calendars@, "categories": @scope.categories@, "notableDateRefs": @scope.notableDateRefs@, "ruleRefs": @scope.ruleRefs@, "onlyYears": @scope.onlyYears@ }"""),
+        ("scope.territories", """[ "AU" ]"""),
+        ("scope.calendars", """[ "Gregorian" ]"""),
+        ("scope.categories", """[ "PublicHoliday" ]"""),
+        ("scope.notableDateRefs", """[ "anchor" ]"""),
+        ("scope.ruleRefs", """[ { "notableDateRef": "anchor", "ruleRef": "r" } ]"""),
+        ("scope.onlyYears", """[ 2026 ]"""),
+        ("trigger", """{ "type": "IfDayOfWeek", "weekdays": @trigger.weekdays@ }"""),
+        ("trigger.weekdays", """[ "Saturday" ]"""),
+        ("action", """{ "type": "MoveToNextWeekday", "dayOfWeek": "Monday" }"""),
+        ("emission", """{ "mode": "ObservedOnly" }"""),
+        ("parameters", """{ "region": "north" }"""),
+        ("imports", """[ { "resource": "lib", "uses": @uses@ } ]"""),
+        ("uses", """[ { "notableDateRef": "lib-day", "adjustments": @use.adjustments@ } ]"""),
+        ("use.adjustments", """[ "policy" ]"""),
+        ("notableDates", """[ { "id": "anchor", "displayName": "Anchor", "category": "PublicHoliday", "tags": @notableDate.tags@, "rules": @rules@ }, @weekly.concept@, @other.concept@ ]"""),
+        ("weekly.concept", """{ "id": "weekly", "displayName": "W", "category": "Observance", "rules": [ { "id": "r", "recurrence": @recurrence@ } ] }"""),
+        ("other.concept", """{ "id": "other", "displayName": "O", "category": "Observance", "rules": [ { "id": "r", "strategy": { "fixed": { "month": 4, "day": 1 } } } ] }"""),
+        ("notableDate.tags", """[ "civic" ]"""),
+        ("rules", """[ { "id": "r", "applicability": @applicability@, "strategy": @strategy@, "duration": @duration@, "tags": @rule.tags@, "adjustments": @rule.adjustments@ } ]"""),
+        ("applicability", """{ "territories": @applicability.territories@, "exceptYears": @applicability.exceptYears@ }"""),
+        ("applicability.territories", """[ "AU" ]"""),
+        ("applicability.exceptYears", """[ 2027 ]"""),
+        ("strategy", """{ "fixed": @fixed@ }"""),
+        ("fixed", """{ "month": 3, "day": 1 }"""),
+        ("duration", """{ "untilDate": @untilDate@ }"""),
+        ("untilDate", """{ "strategy": @untilDate.strategy@ }"""),
+        ("untilDate.strategy", """{ "fixed": { "month": 3, "day": 5 } }"""),
+        ("rule.tags", """[ "civic" ]"""),
+        ("rule.adjustments", """[ "policy" ]"""),
+        ("recurrence", """{ "weekly": @weekly@ }"""),
+        ("weekly", """{ "days": @weekly.days@ }"""),
+        ("weekly.days", """[ "Thursday" ]"""),
+        ("overrides", """[ { "operation": "PatchRule", "notableDateRef": "other", "ruleRef": "r", "applicability": @patch.applicability@, "tags": @patch.tags@, "adjustments": @patch.adjustments@ } ]"""),
+        ("patch.applicability", """{ "territories": [ "AU" ] }"""),
+        ("patch.tags", """[ "civic" ]"""),
+        ("patch.adjustments", """[ "policy" ]"""),
+    ];
+
+    /// <summary>
+    /// Verifies that the value-kind test document loads when every object- and list-valued property holds a value of
+    /// its kind, so each rejection the per-property tests observe is caused by the one value they replace.
+    /// </summary>
+    [TestMethod]
+    public void LoadJson_WhenEveryObjectAndListValueIsOfItsKind_ShouldLoad()
+    {
+        NotableDateResource resource = NotableDateResourceLoader.LoadJson(KindFieldJson(null, null), EnumImportResolver);
+
+        Assert.AreEqual("test.kinds", resource.ResourceId);
+    }
+
+    /// <summary>
+    /// Verifies that a JSON property that must hold an object or an array, holding a value of another kind, is rejected
+    /// with the <c>BODU-CAL-VALUE</c> diagnostic naming the property, rather than read as absent.
+    /// </summary>
+    /// <param name="field">The placeholder of the property holding the value.</param>
+    /// <param name="property">The JSON name of the property.</param>
+    /// <param name="literal">The value of the wrong kind, as a JSON literal.</param>
+    [TestMethod]
+    [DataRow("resolutionPolicy", "resolutionPolicy", "5")]
+    [DataRow("categoryPrecedence", "categoryPrecedence", "\"PublicHoliday\"")]
+    [DataRow("adjustmentPolicies", "adjustmentPolicies", "{}")]
+    [DataRow("scope", "scope", "[]")]
+    [DataRow("scope.territories", "territories", "\"AU\"")]
+    [DataRow("scope.calendars", "calendars", "\"Gregorian\"")]
+    [DataRow("scope.categories", "categories", "\"PublicHoliday\"")]
+    [DataRow("scope.notableDateRefs", "notableDateRefs", "\"anchor\"")]
+    [DataRow("scope.ruleRefs", "ruleRefs", "{ \"notableDateRef\": \"anchor\", \"ruleRef\": \"r\" }")]
+    [DataRow("scope.onlyYears", "onlyYears", "2026")]
+    [DataRow("trigger", "trigger", "\"IfWeekend\"")]
+    [DataRow("trigger.weekdays", "weekdays", "\"Saturday\"")]
+    [DataRow("action", "action", "true")]
+    [DataRow("emission", "emission", "[]")]
+    [DataRow("parameters", "parameters", "[ \"north\" ]")]
+    [DataRow("imports", "imports", "\"lib\"")]
+    [DataRow("uses", "uses", "{}")]
+    [DataRow("use.adjustments", "adjustments", "\"policy\"")]
+    [DataRow("notableDates", "notableDates", "{}")]
+    [DataRow("notableDate.tags", "tags", "\"civic\"")]
+    [DataRow("rules", "rules", "{}")]
+    [DataRow("applicability", "applicability", "5")]
+    [DataRow("applicability.territories", "territories", "\"AU\"")]
+    [DataRow("applicability.exceptYears", "exceptYears", "2027")]
+    [DataRow("strategy", "strategy", "[]")]
+    [DataRow("fixed", "fixed", "5")]
+    [DataRow("duration", "duration", "\"P3D\"")]
+    [DataRow("untilDate", "untilDate", "[]")]
+    [DataRow("untilDate.strategy", "strategy", "\"fixed\"")]
+    [DataRow("rule.tags", "tags", "\"civic\"")]
+    [DataRow("rule.adjustments", "adjustments", "\"policy\"")]
+    [DataRow("recurrence", "recurrence", "[]")]
+    [DataRow("weekly", "weekly", "\"Thursday\"")]
+    [DataRow("weekly.days", "days", "\"Thursday\"")]
+    [DataRow("overrides", "overrides", "{}")]
+    [DataRow("patch.applicability", "applicability", "[]")]
+    [DataRow("patch.tags", "tags", "\"civic\"")]
+    [DataRow("patch.adjustments", "adjustments", "\"policy\"")]
+    public void LoadJson_WhenObjectOrListValueIsOfAnotherKind_ShouldThrowValueDiagnostic(string field, string property, string literal)
+    {
+        string json = KindFieldJson(field, literal);
+
+        NotableDateValidationException ex = Assert.ThrowsExactly<NotableDateValidationException>(() =>
+        {
+            _ = NotableDateResourceLoader.LoadJson(json, EnumImportResolver);
+        });
+
+        Assert.Contains(d => d.Code == "BODU-CAL-VALUE" && d.Severity == NotableDateValidationSeverity.Error && d.Message.Contains("'" + property + "'", StringComparison.Ordinal), ex.Diagnostics, "BODU-CAL-VALUE");
+    }
+
+    /// <summary>
+    /// Verifies that an optional JSON object- or list-valued property holding the literal <c>null</c> reads as absent,
+    /// without a diagnostic.
+    /// </summary>
+    /// <param name="field">The placeholder of the property holding <c>null</c>.</param>
+    [TestMethod]
+    [DataRow("resolutionPolicy")]
+    [DataRow("categoryPrecedence")]
+    [DataRow("scope")]
+    [DataRow("scope.territories")]
+    [DataRow("parameters")]
+    [DataRow("notableDate.tags")]
+    [DataRow("applicability")]
+    [DataRow("applicability.exceptYears")]
+    [DataRow("duration")]
+    [DataRow("rule.tags")]
+    [DataRow("rule.adjustments")]
+    [DataRow("patch.applicability")]
+    [DataRow("patch.tags")]
+    [DataRow("overrides")]
+    public void LoadJson_WhenObjectOrListValueIsNull_ShouldReadItAsAbsent(string field)
+    {
+        NotableDateResource resource = NotableDateResourceLoader.LoadJson(KindFieldJson(field, "null"), EnumImportResolver);
+
+        Assert.AreEqual("test.kinds", resource.ResourceId);
+    }
+
+    /// <summary>
+    /// Builds a JSON document holding every object- and list-valued property the loader reads, each holding a value of
+    /// its kind except the one named, which holds the supplied JSON literal.
+    /// </summary>
+    /// <param name="field">The placeholder of the property to set, or <see langword="null" /> to set none.</param>
+    /// <param name="literal">The JSON literal the named property holds.</param>
+    /// <returns>The JSON document.</returns>
+    private static string KindFieldJson(string? field, string? literal)
+    {
+        string json = """
+            { "schemaVersion": "1.0", "resourceId": "test.kinds", "resolutionPolicy": @resolutionPolicy@,
+              "adjustmentPolicies": @adjustmentPolicies@, "imports": @imports@, "notableDates": @notableDates@, "overrides": @overrides@ }
+            """;
+
+        foreach ((string key, string wellFormed) in s_kindFieldValues)
+            json = json.Replace("@" + key + "@", key == field ? literal : wellFormed, StringComparison.Ordinal);
+
+        return json;
+    }
 }
