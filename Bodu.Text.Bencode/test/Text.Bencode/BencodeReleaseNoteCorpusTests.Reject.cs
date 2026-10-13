@@ -12,10 +12,10 @@ namespace Bodu.Text.Bencode;
 public sealed partial class BencodeReleaseNoteCorpusTests
 {
     /// <summary>
-    /// Verifies that each catalogued input a fix established as malformed is rejected by the selected surface with
+    /// Verifies that each cataloged input a fix established as malformed is rejected by the selected surface with
     /// <see cref="BencodeFormatException" />, the exception the row names.
     /// </summary>
-    /// <param name="fix">The catalogue row.</param>
+    /// <param name="fix">The catalog row.</param>
     [TestMethod]
     [TestCategory("Regression")]
     [DynamicData(

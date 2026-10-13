@@ -10,7 +10,7 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 
 /// <summary>
 /// Verifies that a range lookup that misses the direct pair's coverage is served from a complete inverse-pair coverage
-/// by reciprocating each rate, matching the single-date surface, and that the behaviour is gated by the provider's
+/// by reciprocating each rate, matching the single-date surface, and that the behavior is gated by the provider's
 /// default lookup options.
 /// </summary>
 public sealed partial class CachingRateProviderTests

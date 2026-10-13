@@ -72,7 +72,7 @@ public partial class NavigableSetTests
     /// </summary>
     /// <param name="sut">The set under test.</param>
     /// <param name="mirror">The mirrored <see cref="SortedSet{T}" />.</param>
-    /// <param name="op">The operation ordinal, for failure labelling.</param>
+    /// <param name="op">The operation ordinal, for failure labeling.</param>
     private static void AssertMatchesOracles(NavigableSet<int> sut, SortedSet<int> mirror, int op)
     {
         int[] oracle = mirror.ToArray();
@@ -118,7 +118,7 @@ public partial class NavigableSetTests
     /// <param name="sut">The set under test.</param>
     /// <param name="oracle">The sorted, distinct oracle array.</param>
     /// <param name="probe">The probe value.</param>
-    /// <param name="op">The operation ordinal, for failure labelling.</param>
+    /// <param name="op">The operation ordinal, for failure labeling.</param>
     private static void AssertNavigationMatchesOracle(NavigableSet<int> sut, int[] oracle, int probe, int op)
     {
         int position = Array.BinarySearch(oracle, probe);

@@ -448,7 +448,7 @@ public partial class MoneyOfTCurrencyTests
     }
 
     /// <summary>
-    /// Verifies banker's-rounding behaviour on midpoint values across all three currency precision categories.
+    /// Verifies banker's-rounding behavior on midpoint values across all three currency precision categories.
     /// JPY rounds <c>8.5 → 8</c> (down to even); USD rounds <c>0.225 → 0.22</c> (down to even);
     /// BHD rounds <c>0.0025 → 0.002</c> (down to even).
     /// </summary>

@@ -17,7 +17,7 @@ namespace Bodu.Security.Cryptography;
 /// via <c>TransformBlock</c>, and pseudo-random chunk streaming - must produce identical 256-bit digests
 /// for the same input. The fixed input pattern <c>(i % 251)</c> matches the official BLAKE3
 /// <c>test_vectors.json</c> generator, so the resulting digest can be cross-checked against any external
-/// BLAKE3 implementation by anyone running this corpus offline. Categorised as <c>Regression</c> so the
+/// BLAKE3 implementation by anyone running this corpus offline. Categorized as <c>Regression</c> so the
 /// default BVT tier stays fast.
 /// </remarks>
 public partial class Blake3Tests

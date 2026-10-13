@@ -9,7 +9,7 @@ namespace Bodu.Text.Encoding;
 /// <summary>
 /// Pins the URL-safe Base64 contract for the padding and alphabet edge cases that JWT, OAuth, and related
 /// consumers rely on. Each vector is documented explicitly so a regression that changed Base64Url's default
-/// leniency or canonicalisation would be caught.
+/// leniency or canonicalization would be caught.
 /// </summary>
 [TestClass]
 public sealed class Base64UrlTests_PaddingVectors

@@ -7,7 +7,7 @@
 namespace Bodu.Test.Contracts;
 
 /// <summary>
-/// Reusable behavioural contract test base for types that expose the <see cref="ISet{T}" /> surface.
+/// Reusable behavioral contract test base for types that expose the <see cref="ISet{T}" /> surface.
 /// Concrete subclasses override <see cref="CreateSet(TItem[])" /> and <see cref="CreateItem" /> to plug
 /// their type into the inherited contract tests.
 /// </summary>

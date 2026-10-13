@@ -7,14 +7,14 @@
 namespace Bodu.Text.Encoding;
 
 /// <summary>
-/// Behavioural tests for <see cref="BinaryEncodings" /> and the <see cref="IBinaryEncoding" /> contract.
+/// Behavioral tests for <see cref="BinaryEncodings" /> and the <see cref="IBinaryEncoding" /> contract.
 /// </summary>
 [TestClass]
 public sealed class BinaryEncodingsTests
 {
 
     /// <summary>
-    /// Verifies that <see cref="BinaryEncodings.Get(string)" /> recognises both the canonical name and any common
+    /// Verifies that <see cref="BinaryEncodings.Get(string)" /> recognizes both the canonical name and any common
     /// aliases.
     /// </summary>
     /// <param name="alias">An alias for an encoding.</param>
@@ -141,7 +141,7 @@ public sealed class BinaryEncodingsTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="BinaryEncodings.Z85" /> requires a 4-byte-aligned input - characterising the
+    /// Verifies that <see cref="BinaryEncodings.Z85" /> requires a 4-byte-aligned input - characterizing the
     /// difference from <see cref="BinaryEncodings.Ascii85" />.
     /// </summary>
     [TestMethod]

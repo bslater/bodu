@@ -21,7 +21,7 @@ public partial class FiscalWeekQuarterProviderTests
     }
 
     /// <summary>
-    /// Verifies that a provider constructed with <c>isFiscalYearEnd: true</c> successfully initialises
+    /// Verifies that a provider constructed with <c>isFiscalYearEnd: true</c> successfully initializes
     /// without throwing, confirming that the end-month path of the constructor is reachable.
     /// </summary>
     [TestMethod]

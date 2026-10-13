@@ -7,7 +7,7 @@
 namespace Bodu.Text.Configuration;
 
 /// <summary>
-/// Golden behaviour tests that pin the Bodu, EditorConfigCompatible, Strict, and Relaxed profiles against a
+/// Golden behavior tests that pin the Bodu, EditorConfigCompatible, Strict, and Relaxed profiles against a
 /// single shared fixture. The fixture is designed so each profile produces a *different* observable outcome
 /// for at least one switch - preamble layering, inline comments, duplicate keys, <c>unset</c> handling, or
 /// section-header trailing content. If a profile's preset drifts, exactly one of these tests fails and the

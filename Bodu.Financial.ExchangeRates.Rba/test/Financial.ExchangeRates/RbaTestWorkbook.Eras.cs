@@ -123,7 +123,7 @@ internal static partial class RbaTestWorkbook
     /// Thrown when <paramref name="era" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="ArgumentException">
-    /// Thrown when no era of the default catalogue has the label of <paramref name="era" />.
+    /// Thrown when no era of the default catalog has the label of <paramref name="era" />.
     /// </exception>
     public static byte[] Build(RbaEraWorkbook era) =>
         Build(CreateSheet(era));
@@ -137,7 +137,7 @@ internal static partial class RbaTestWorkbook
     /// Thrown when <paramref name="era" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="ArgumentException">
-    /// Thrown when no era of the default catalogue has the label of <paramref name="era" />.
+    /// Thrown when no era of the default catalog has the label of <paramref name="era" />.
     /// </exception>
     public static RbaTestSheet CreateSheet(RbaEraWorkbook era)
     {
@@ -163,7 +163,7 @@ internal static partial class RbaTestWorkbook
     /// <param name="label">The era label.</param>
     /// <returns>The units of each value column, in column order.</returns>
     /// <exception cref="ArgumentException">
-    /// Thrown when no era of the default catalogue has <paramref name="label" />.
+    /// Thrown when no era of the default catalog has <paramref name="label" />.
     /// </exception>
     private static string[] GetColumns(string label) => label switch
     {
@@ -423,9 +423,9 @@ internal static partial class RbaTestWorkbook
     /// </summary>
     /// <param name="value">The published rate.</param>
     /// <param name="up">Whether to step towards positive infinity rather than towards zero.</param>
-    /// <returns>The neighbouring double.</returns>
+    /// <returns>The neighboring double.</returns>
     /// <exception cref="InvalidOperationException">
-    /// Thrown when the neighbour does not convert back to <paramref name="value" />.
+    /// Thrown when the neighbor does not convert back to <paramref name="value" />.
     /// </exception>
     private static double NextDouble(decimal value, bool up)
     {
@@ -468,7 +468,7 @@ internal static partial class RbaTestWorkbook
     }
 
     /// <summary>
-    /// Mixes a 64-bit value with the SplitMix64 finalizer, so neighbouring inputs give unrelated outputs.
+    /// Mixes a 64-bit value with the SplitMix64 finalizer, so neighboring inputs give unrelated outputs.
     /// </summary>
     /// <param name="value">The value.</param>
     /// <returns>The mixed value.</returns>
@@ -483,10 +483,10 @@ internal static partial class RbaTestWorkbook
     }
 
     /// <summary>
-    /// Creates the catalogue of value columns: each column's header cells, keyed by its units, and the level about
+    /// Creates the catalog of value columns: each column's header cells, keyed by its units, and the level about
     /// which its rates move.
     /// </summary>
-    /// <returns>The catalogue.</returns>
+    /// <returns>The catalog.</returns>
     private static Dictionary<string, (RbaTestColumn Template, decimal Level)> CreateCatalogue()
     {
         Dictionary<string, (RbaTestColumn Template, decimal Level)> catalogue = new(StringComparer.Ordinal)
@@ -543,9 +543,9 @@ internal static partial class RbaTestWorkbook
     }
 
     /// <summary>
-    /// Adds a currency column to the catalogue.
+    /// Adds a currency column to the catalog.
     /// </summary>
-    /// <param name="catalogue">The catalogue.</param>
+    /// <param name="catalogue">The catalog.</param>
     /// <param name="units">The currency's units, the RBA's label for it.</param>
     /// <param name="seriesId">The column's series identifier, or <see langword="null" /> for a legacy currency.</param>
     /// <param name="decimals">The number of decimal places the column shows.</param>

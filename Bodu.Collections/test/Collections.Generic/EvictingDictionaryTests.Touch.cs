@@ -40,7 +40,7 @@ public partial class EvictingDictionaryTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Touch" /> updates access order and affects LeastRecentlyUsed eviction behaviour.
+    /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Touch" /> updates access order and affects LeastRecentlyUsed eviction behavior.
     /// </summary>
     [TestMethod]
     public void Touch_WhenKeyIsAccessed_ShouldAffectLRUEvictionOrder()

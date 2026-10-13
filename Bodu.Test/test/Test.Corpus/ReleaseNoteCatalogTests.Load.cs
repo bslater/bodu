@@ -45,7 +45,7 @@ public sealed partial class ReleaseNoteCatalogTests
     }
 
     /// <summary>
-    /// Verifies that a well-formed catalogue is read in full: its header lines, notes included, and every row's fields
+    /// Verifies that a well-formed catalog is read in full: its header lines, notes included, and every row's fields
     /// and line number, with no problems.
     /// </summary>
     [TestMethod]
@@ -114,7 +114,7 @@ public sealed partial class ReleaseNoteCatalogTests
     }
 
     /// <summary>
-    /// Verifies that a catalogue that does not end with a line feed is reported.
+    /// Verifies that a catalog that does not end with a line feed is reported.
     /// </summary>
     [TestMethod]
     public void Load_WhenFileDoesNotEndWithALineFeed_ShouldReportIt()
@@ -172,7 +172,7 @@ public sealed partial class ReleaseNoteCatalogTests
     }
 
     /// <summary>
-    /// Verifies that a catalogue whose column line is wrong is reported, and that no rows are read from it.
+    /// Verifies that a catalog whose column line is wrong is reported, and that no rows are read from it.
     /// </summary>
     [TestMethod]
     public void Load_WhenColumnLineIsWrong_ShouldReportItAndReadNoRows()

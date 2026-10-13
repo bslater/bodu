@@ -51,7 +51,7 @@ public partial class ComparableExtensionsTests
     // =========================================================================
 
     /// <summary>
-    /// Verifies that the comparer overload of <c>Max</c> honours the supplied comparer's ordering.
+    /// Verifies that the comparer overload of <c>Max</c> honors the supplied comparer's ordering.
     /// Under a reverse comparer the numerically smaller value is considered the maximum.
     /// </summary>
     [TestMethod]

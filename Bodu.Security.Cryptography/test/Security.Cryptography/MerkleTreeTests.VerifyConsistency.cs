@@ -296,7 +296,7 @@ public partial class MerkleTreeTests
     /// <param name="secondRoot">The later tree's correct root.</param>
     /// <param name="secondSize">The later tree's correct size.</param>
     /// <param name="valid">The correct proof.</param>
-    /// <returns>The labelled probes, each of which must return <see langword="false" />.</returns>
+    /// <returns>The labeled probes, each of which must return <see langword="false" />.</returns>
     private static IEnumerable<(string Label, Func<bool> Probe)> CorruptConsistencyProbes(
         MerkleTree tree,
         byte[] firstRoot,

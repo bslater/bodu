@@ -18,7 +18,7 @@ namespace Bodu.Text.Formats.Generators;
 public partial class FormatFactoryGeneratorTests
 {
     /// <summary>
-    /// Verifies that the generated factory resolves headers in declaration order, honouring
+    /// Verifies that the generated factory resolves headers in declaration order, honoring
     /// <c>[PropertyName]</c> and excluding the <c>[Ignore]</c> member.
     /// </summary>
     [TestMethod]

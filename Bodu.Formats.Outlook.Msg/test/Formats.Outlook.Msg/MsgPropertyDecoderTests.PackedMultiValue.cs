@@ -16,7 +16,7 @@ namespace Bodu.Formats.Outlook.Msg;
 /// elements, with the width implied by the type - so the decoder is a table of element widths and a switch of readers
 /// that must agree with it. Only the 32-bit integer arm was covered, which is the one case where a wrong width in the
 /// table would still produce plausible output for the wrong reason. Each type is asserted against values that would
-/// decode differently under a neighbouring width or a different signedness.
+/// decode differently under a neighboring width or a different signedness.
 /// </remarks>
 public partial class MsgPropertyDecoderTests
 {

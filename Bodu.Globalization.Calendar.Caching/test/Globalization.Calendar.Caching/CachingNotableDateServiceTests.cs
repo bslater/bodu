@@ -7,7 +7,7 @@
 namespace Bodu.Globalization.Calendar.Caching;
 
 /// <summary>
-/// Verifies the read-through, freshness, and version behaviour of <see cref="CachingNotableDateService" />.
+/// Verifies the read-through, freshness, and version behavior of <see cref="CachingNotableDateService" />.
 /// </summary>
 [TestClass]
 public sealed partial class CachingNotableDateServiceTests

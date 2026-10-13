@@ -9,7 +9,7 @@ using System.Reflection;
 namespace Bodu.Test.Corpus;
 
 /// <summary>
-/// Provides the checks an area's governance tests run over its release-note catalogues, beyond those
+/// Provides the checks an area's governance tests run over its release-note catalogs, beyond those
 /// <see cref="ReleaseNoteCatalog.Load" /> makes of each file on its own.
 /// </summary>
 public static class ReleaseNoteGovernance

@@ -9,7 +9,7 @@ using Bodu.Text.Bencode.Reader;
 namespace Bodu.Text.Bencode;
 
 /// <summary>
-/// Verifies the <see cref="Utf8BencodeReader.Skip" /> behaviour: that scalars are unaffected, that container starts
+/// Verifies the <see cref="Utf8BencodeReader.Skip" /> behavior: that scalars are unaffected, that container starts
 /// advance to their matching end token, and that reading continues correctly from the post-skip position.
 /// </summary>
 public partial class Utf8BencodeReaderTests

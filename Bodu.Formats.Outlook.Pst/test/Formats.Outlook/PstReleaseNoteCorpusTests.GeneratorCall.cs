@@ -22,8 +22,8 @@ public sealed partial class PstReleaseNoteCorpusTests
     /// </para>
     /// <para>
     /// A generator reads each key it knows with <see cref="Get" />, which allows it at most once, or with
-    /// <see cref="GetAll" /> for the keys the catalogue README marks repeatable; <see cref="EnsureAllRead" /> then
-    /// rejects any key it did not read, so a misspelt key fails its row instead of being ignored.
+    /// <see cref="GetAll" /> for the keys the catalog README marks repeatable; <see cref="EnsureAllRead" /> then
+    /// rejects any key it did not read, so a misspelled key fails its row instead of being ignored.
     /// </para>
     /// </remarks>
     private sealed class GeneratorCall

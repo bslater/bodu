@@ -9,7 +9,7 @@ using Bodu.Financial.Currencies;
 namespace Bodu.Financial.ExchangeRates.Caching;
 
 /// <summary>
-/// Verifies the grouping, routing, and both-surface behaviour of <see cref="AggregatingRateProvider" />.
+/// Verifies the grouping, routing, and both-surface behavior of <see cref="AggregatingRateProvider" />.
 /// </summary>
 [TestClass]
 public sealed partial class AggregatingRateProviderTests

@@ -7,7 +7,7 @@
 namespace Bodu.Test.Corpus;
 
 /// <summary>
-/// Verifies <see cref="CorpusEscapes" />: decoding every escape the catalogues use, rejecting malformed ones, and
+/// Verifies <see cref="CorpusEscapes" />: decoding every escape the catalogs use, rejecting malformed ones, and
 /// encoding bytes back into a form that decodes to them.
 /// </summary>
 [TestClass]

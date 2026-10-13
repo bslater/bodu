@@ -37,7 +37,7 @@ public partial class StringExtensionsTests
 
     /// <summary>
     /// Verifies that <see cref="StringExtensions.ToSlug(string, SlugOptions)" /> strips accented Latin
-    /// characters when diacritic normalisation is enabled.
+    /// characters when diacritic normalization is enabled.
     /// </summary>
     [TestMethod]
     public void ToSlug_WhenNormalizeDiacriticsEnabled_ShouldStripAccents()
@@ -49,7 +49,7 @@ public partial class StringExtensionsTests
 
     /// <summary>
     /// Verifies that <see cref="StringExtensions.ToSlug(string, SlugOptions)" /> transliterates the German
-    /// sharp-s to <c>ss</c> when diacritic normalisation is enabled.
+    /// sharp-s to <c>ss</c> when diacritic normalization is enabled.
     /// </summary>
     [TestMethod]
     public void ToSlug_WhenNormalizeDiacriticsEnabled_ShouldTransliterateSharpS()
@@ -60,7 +60,7 @@ public partial class StringExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="StringExtensions.ToSlug(string, SlugOptions)" /> honours a custom separator.
+    /// Verifies that <see cref="StringExtensions.ToSlug(string, SlugOptions)" /> honors a custom separator.
     /// </summary>
     [TestMethod]
     public void ToSlug_WhenSeparatorIsUnderscore_ShouldJoinWithUnderscore()

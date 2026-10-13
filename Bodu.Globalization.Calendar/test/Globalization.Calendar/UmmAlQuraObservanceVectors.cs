@@ -11,7 +11,7 @@ namespace Bodu.Globalization.Calendar;
 
 /// <summary>
 /// Loads the embedded Umm al-Qura observance vector table - fifty Gregorian years of dates for every
-/// <c>global-islamic-umm-al-qura</c> catalogue observance - as KAT rows for <c>[DynamicData]</c> binding.
+/// <c>global-islamic-umm-al-qura</c> catalog observance - as KAT rows for <c>[DynamicData]</c> binding.
 /// </summary>
 /// <remarks>
 /// <para>

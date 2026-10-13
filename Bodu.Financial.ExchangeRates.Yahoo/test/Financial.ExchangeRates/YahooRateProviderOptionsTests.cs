@@ -7,7 +7,7 @@
 namespace Bodu.Financial.ExchangeRates;
 
 /// <summary>
-/// Verifies the validation behaviour of <see cref="YahooRateProviderOptions" />.
+/// Verifies the validation behavior of <see cref="YahooRateProviderOptions" />.
 /// </summary>
 [TestClass]
 public partial class YahooRateProviderOptionsTests

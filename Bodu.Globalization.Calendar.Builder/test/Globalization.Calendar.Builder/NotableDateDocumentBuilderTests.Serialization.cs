@@ -94,7 +94,7 @@ public partial class NotableDateDocumentBuilderTests
     }
 
     /// <summary>
-    /// Verifies that serializing a document that imports a catalogue to JSON throws
+    /// Verifies that serializing a document that imports a catalog to JSON throws
     /// <see cref="NotSupportedException" />, because the JSON form does not model imports.
     /// </summary>
     [TestMethod]

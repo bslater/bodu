@@ -11,7 +11,7 @@ using System.Text;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Validates the behavioural contract of the HPKE surface (<see cref="Hpke" />, <see cref="HpkeSender" />,
+/// Validates the behavioral contract of the HPKE surface (<see cref="Hpke" />, <see cref="HpkeSender" />,
 /// <see cref="HpkeReceiver" />, and <see cref="HpkeSuite" />): round-trip correctness across every suite and mode,
 /// authentication failure handling, sequence ordering, secret export agreement, export-only restrictions, argument
 /// validation, and disposal.

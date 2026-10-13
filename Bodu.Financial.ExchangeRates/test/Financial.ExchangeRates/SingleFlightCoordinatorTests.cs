@@ -352,7 +352,7 @@ public sealed class SingleFlightCoordinatorTests
     }
 
     /// <summary>
-    /// Verifies that when the winner abandons its wait by cancelling, the shared operation still runs to completion and
+    /// Verifies that when the winner abandons its wait by canceling, the shared operation still runs to completion and
     /// a joiner receives the shared result.
     /// </summary>
     [TestMethod]
@@ -386,7 +386,7 @@ public sealed class SingleFlightCoordinatorTests
     }
 
     /// <summary>
-    /// Verifies that a caller cancelling its wait does not signal the token handed to the operation, proving the shared
+    /// Verifies that a caller canceling its wait does not signal the token handed to the operation, proving the shared
     /// work is decoupled from any single caller's cancellation.
     /// </summary>
     [TestMethod]
@@ -423,7 +423,7 @@ public sealed class SingleFlightCoordinatorTests
 
     /// <summary>
     /// Verifies that the cancellation-aware void overload coalesces concurrent same-key callers into a single run and
-    /// that a caller's already-cancelled token abandons only that caller's wait.
+    /// that a caller's already-canceled token abandons only that caller's wait.
     /// </summary>
     [TestMethod]
     public async Task RunAsync_WhenCancellableVoidOverloadJoinerCancels_ShouldCancelOnlyJoinerAndRunOnce()

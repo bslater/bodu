@@ -10,7 +10,7 @@ public partial class DayOfWeekSetTests
 {
 
     /// <summary>
-    /// Verifies that all recognised binary format specifiers (<c>'0'</c>, <c>'1'</c>, <c>'B'</c>,
+    /// Verifies that all recognized binary format specifiers (<c>'0'</c>, <c>'1'</c>, <c>'B'</c>,
     /// <c>"01"</c>) produce identical results when applied to the same input string.
     /// </summary>
     [TestMethod]
@@ -31,7 +31,7 @@ public partial class DayOfWeekSetTests
     /// <summary>
     /// Verifies that <see cref="DayOfWeekSet.ParseExact(string, string)" /> correctly parses a binary
     /// string when the format specifier is <c>'0'</c>. This is a regression test for a defect where this
-    /// documented specifier was not recognised and caused a <see cref="FormatException" /> to be thrown.
+    /// documented specifier was not recognized and caused a <see cref="FormatException" /> to be thrown.
     /// </summary>
     [TestMethod]
     public void ParseExact_WhenBinaryFormatSpecifierIs0_ShouldParseBinaryString()
@@ -186,7 +186,7 @@ public partial class DayOfWeekSetTests
 
     /// <summary>
     /// Verifies that <see cref="DayOfWeekSet.ParseExact(string, string)" /> throws
-    /// <see cref="FormatException" /> when the format string is unrecognised.
+    /// <see cref="FormatException" /> when the format string is unrecognized.
     /// </summary>
     [TestMethod]
     public void ParseExact_WhenFormatIsUnrecognised_ShouldThrowExactly() => Assert.ThrowsExactly<FormatException>(() => { _ = DayOfWeekSet.ParseExact("_M_W_F_", "Z"); });

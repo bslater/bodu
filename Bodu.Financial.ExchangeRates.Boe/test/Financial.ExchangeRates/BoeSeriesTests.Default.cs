@@ -9,7 +9,7 @@ namespace Bodu.Financial.ExchangeRates;
 public partial class BoeSeriesTests
 {
     /// <summary>
-    /// Verifies that the default catalogue maps the US dollar to its IADB series code.
+    /// Verifies that the default catalog maps the US dollar to its IADB series code.
     /// </summary>
     [TestMethod]
     public void Default_ShouldMapUsdToXudluss()
@@ -20,7 +20,7 @@ public partial class BoeSeriesTests
     }
 
     /// <summary>
-    /// Verifies that the default catalogue is non-empty and free of duplicate currencies.
+    /// Verifies that the default catalog is non-empty and free of duplicate currencies.
     /// </summary>
     [TestMethod]
     public void Default_ShouldHaveDistinctCurrencies()

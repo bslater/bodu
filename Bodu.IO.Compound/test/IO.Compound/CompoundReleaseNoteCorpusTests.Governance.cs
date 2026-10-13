@@ -11,7 +11,7 @@ namespace Bodu.IO.Compound;
 public sealed partial class CompoundReleaseNoteCorpusTests
 {
     /// <summary>
-    /// Verifies that every embedded catalogue loads without a problem: printable ASCII, the header lines, the column
+    /// Verifies that every embedded catalog loads without a problem: printable ASCII, the header lines, the column
     /// line, a reason on every row, known classes and kinds, valid escapes, and no repeated row name.
     /// </summary>
     [TestMethod]
@@ -23,11 +23,11 @@ public sealed partial class CompoundReleaseNoteCorpusTests
     }
 
     /// <summary>
-    /// Verifies that each library's catalogue holds the number of rows in each class that
+    /// Verifies that each library's catalog holds the number of rows in each class that
     /// <c>corpus/compound/README.md</c> records.
     /// </summary>
     /// <remarks>
-    /// A catalogue that silently lost rows, or moved a fix from <c>applies</c> to <c>n/a</c>, would quietly shrink the
+    /// A catalog that silently lost rows, or moved a fix from <c>applies</c> to <c>n/a</c>, would quietly shrink the
     /// fixes this suite holds Bodu to.
     /// </remarks>
     [TestMethod]
@@ -111,7 +111,7 @@ public sealed partial class CompoundReleaseNoteCorpusTests
     }
 
     /// <summary>
-    /// Verifies that the embedded catalogues are byte-for-byte copies of the files in <c>corpus/compound/fixes/</c>.
+    /// Verifies that the embedded catalogs are byte-for-byte copies of the files in <c>corpus/compound/fixes/</c>.
     /// </summary>
     [TestMethod]
     public void FixCatalogues_WhenComparedWithTheCorpusTree_ShouldMatchByteForByte()

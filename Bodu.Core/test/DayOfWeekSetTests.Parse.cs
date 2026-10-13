@@ -13,7 +13,7 @@ public partial class DayOfWeekSetTests
 
     /// <summary>
     /// Verifies that <see cref="DayOfWeekSet.Parse(string)" /> throws <see cref="FormatException" />
-    /// when the input contains an unrecognised character.
+    /// when the input contains an unrecognized character.
     /// </summary>
     [TestMethod]
     public void Parse_WhenInputContainsInvalidCharacter_ShouldThrowExactly() => Assert.ThrowsExactly<FormatException>(() => { _ = DayOfWeekSet.Parse("SMTWTFX"); });

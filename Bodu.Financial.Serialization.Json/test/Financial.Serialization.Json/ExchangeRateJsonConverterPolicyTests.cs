@@ -11,7 +11,7 @@ using Bodu.Financial.ExchangeRates;
 namespace Bodu.Financial.Serialization.Json;
 
 /// <summary>
-/// Verifies that <see cref="ExchangeRateJsonConverter" /> honours each <see cref="FinancialJsonPolicy" /> on both
+/// Verifies that <see cref="ExchangeRateJsonConverter" /> honors each <see cref="FinancialJsonPolicy" /> on both
 /// the read and write paths.
 /// </summary>
 [TestClass]

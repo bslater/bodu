@@ -39,8 +39,8 @@ public sealed partial class IEnumerableExtensionsTests_Cache
     }
 
     /// <summary>
-    /// Verifies that disposing a cached sequence after it has been fully materialised resets the wrapper's internal
-    /// initialisation state, so that a fresh <see cref="IEnumerable{T}.GetEnumerator" /> call after the dispose
+    /// Verifies that disposing a cached sequence after it has been fully materialized resets the wrapper's internal
+    /// initialization state, so that a fresh <see cref="IEnumerable{T}.GetEnumerator" /> call after the dispose
     /// triggers a brand-new source enumeration rather than returning the previously cached prefix.
     /// </summary>
     [TestMethod]
@@ -70,7 +70,7 @@ public sealed partial class IEnumerableExtensionsTests_Cache
 
     /// <summary>
     /// Verifies that disposing a cached sequence before any element has been requested releases the wrapper's state
-    /// without throwing - the constructor-only state must be safe to release even when initialisation has not begun.
+    /// without throwing - the constructor-only state must be safe to release even when initialization has not begun.
     /// </summary>
     [TestMethod]
     public void Dispose_WhenCalledBeforeEnumeration_ShouldNotThrow()

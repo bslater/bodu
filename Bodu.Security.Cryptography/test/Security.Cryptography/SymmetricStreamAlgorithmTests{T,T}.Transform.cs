@@ -191,7 +191,7 @@ public abstract partial class SymmetricStreamAlgorithmTests<TTest, TAlgorithm>
     }
 
     /// <summary>
-    /// Verifies that disposing a stream-cipher transform more than once is safe and does not throw, honouring the
+    /// Verifies that disposing a stream-cipher transform more than once is safe and does not throw, honoring the
     /// idempotent <see cref="IDisposable.Dispose" /> contract.
     /// </summary>
     [TestMethod]

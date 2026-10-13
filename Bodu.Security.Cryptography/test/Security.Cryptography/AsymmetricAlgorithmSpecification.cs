@@ -9,7 +9,7 @@ namespace Bodu.Security.Cryptography;
 /// <summary>
 /// Describes the expected observable properties of a single
 /// <see cref="System.Security.Cryptography.AsymmetricAlgorithm" /> implementation for use in constructor and
-/// behavioural tests.
+/// behavioral tests.
 /// </summary>
 public record AsymmetricAlgorithmSpecification
 {

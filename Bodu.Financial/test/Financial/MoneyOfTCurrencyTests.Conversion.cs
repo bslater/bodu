@@ -104,7 +104,7 @@ public partial class MoneyOfTCurrencyTests
 
     /// <summary>
     /// Verifies that <see cref="Money{TCurrency}.ToMoney" /> throws <see cref="InvalidOperationException" /> for a
-    /// currency tag outside the shipped catalogue, rather than returning a currency-less <see cref="Money" />.
+    /// currency tag outside the shipped catalog, rather than returning a currency-less <see cref="Money" />.
     /// </summary>
     [TestMethod]
     public void ToMoney_WhenCurrencyTagIsOutsideCatalogue_ShouldThrowInvalidOperationException()
@@ -119,7 +119,7 @@ public partial class MoneyOfTCurrencyTests
 
     /// <summary>
     /// Verifies that the implicit conversion to <see cref="Money" /> throws <see cref="InvalidOperationException" />
-    /// for a currency tag outside the shipped catalogue, rather than producing a currency-less value.
+    /// for a currency tag outside the shipped catalog, rather than producing a currency-less value.
     /// </summary>
     [TestMethod]
     public void ImplicitOperator_WhenCurrencyTagIsOutsideCatalogue_ShouldThrowInvalidOperationException()
@@ -135,7 +135,7 @@ public partial class MoneyOfTCurrencyTests
 
     /// <summary>
     /// Verifies that <see cref="Money{TCurrency}.ToCalculated" /> throws <see cref="InvalidOperationException" /> for a
-    /// currency tag outside the shipped catalogue, as <see cref="Money{TCurrency}.ToMoney" /> does.
+    /// currency tag outside the shipped catalog, as <see cref="Money{TCurrency}.ToMoney" /> does.
     /// </summary>
     [TestMethod]
     public void ToCalculated_WhenCurrencyTagIsOutsideCatalogue_ShouldThrowInvalidOperationException()
@@ -149,7 +149,7 @@ public partial class MoneyOfTCurrencyTests
     }
 
     /// <summary>
-    /// A valid custom currency tag whose ISO code is not in the shipped <see cref="CurrencyCode" /> catalogue.
+    /// A valid custom currency tag whose ISO code is not in the shipped <see cref="CurrencyCode" /> catalog.
     /// </summary>
     private sealed class OutsideCatalogueCurrency
         : ICurrency

@@ -29,7 +29,7 @@ namespace Bodu.Collections.Generic;
 /// </para>
 /// <para>
 /// All tests in this base operate on <see langword="int"/> elements to keep the contract simple and to avoid
-/// adding a third generic parameter for the element type. Type-specific behaviours
+/// adding a third generic parameter for the element type. Type-specific behaviors
 /// (e.g. <c>CircularBuffer.AllowOverwrite</c>, <c>Deque.AllowGrow</c>, <c>Deque.IsFull</c>) belong on the
 /// concrete test class, not here.
 /// </para>

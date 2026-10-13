@@ -16,7 +16,7 @@ namespace Bodu.Security.Cryptography;
 /// <remarks>
 /// <para>
 /// <see cref="SimpleReversingSymmetricAlgorithm" /> provides a deterministic, inspectable transform that makes it
-/// straightforward to verify block alignment, padding behaviour, mode-of-operation chaining, and streaming correctness
+/// straightforward to verify block alignment, padding behavior, mode-of-operation chaining, and streaming correctness
 /// without cryptographic complexity.
 /// </para>
 /// <para>
@@ -90,7 +90,7 @@ public sealed class SimpleReversingSymmetricAlgorithm
     // ── Constructor ───────────────────────────────────────────────────────────────────────────
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="SimpleReversingSymmetricAlgorithm" /> class with default
+    /// Initializes a new instance of the <see cref="SimpleReversingSymmetricAlgorithm" /> class with default
     /// parameters: 128-bit block, 128-bit key, CBC cipher mode, and PKCS7 padding.
     /// </summary>
     public SimpleReversingSymmetricAlgorithm()
@@ -201,7 +201,7 @@ public sealed class SimpleReversingSymmetricAlgorithm
     // ── Key and IV generation ─────────────────────────────────────────────────────────────────
 
     /// <summary>
-    /// Generates a cryptographically random initialisation vector of the configured block size and assigns it to
+    /// Generates a cryptographically random initialization vector of the configured block size and assigns it to
     /// <see cref="SymmetricAlgorithm.IV" />.
     /// </summary>
     /// <exception cref="ObjectDisposedException">This instance has been disposed.</exception>

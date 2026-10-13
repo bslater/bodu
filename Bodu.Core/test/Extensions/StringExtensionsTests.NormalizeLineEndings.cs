@@ -29,7 +29,7 @@ public partial class StringExtensionsTests
 
     /// <summary>
     /// Verifies that <see cref="StringExtensions.NormalizeLineEndings(string, string)" /> replaces every
-    /// recognised line terminator with the supplied <c>newline</c> sequence.
+    /// recognized line terminator with the supplied <c>newline</c> sequence.
     /// </summary>
     /// <param name="value">The candidate string.</param>
     /// <param name="newline">The replacement newline.</param>

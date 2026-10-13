@@ -12,7 +12,7 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
 {
 
     /// <summary>
-    /// Verifies that a cancelled token passed to
+    /// Verifies that a canceled token passed to
     /// <see cref="NonCryptographicHashAlgorithm.AppendAsync(Stream, CancellationToken)" /> surfaces a
     /// <see cref="TaskCanceledException" /> without consuming the stream.
     /// </summary>

@@ -133,7 +133,7 @@ public sealed class SimpleReversingDiagnostics
     public sealed class BlockOperation
     {
         /// <summary>
-        /// Initialises a new instance of the <see cref="BlockOperation" /> class.
+        /// Initializes a new instance of the <see cref="BlockOperation" /> class.
         /// </summary>
         /// <param name="input">The input bytes for this operation.</param>
         /// <param name="output">The output bytes produced by this operation.</param>

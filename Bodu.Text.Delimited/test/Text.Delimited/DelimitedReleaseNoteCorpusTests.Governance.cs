@@ -15,7 +15,7 @@ namespace Bodu.Text.Delimited;
 public sealed partial class DelimitedReleaseNoteCorpusTests
 {
     /// <summary>
-    /// Verifies that every embedded catalogue loads without a problem: printable ASCII, the header lines, the column
+    /// Verifies that every embedded catalog loads without a problem: printable ASCII, the header lines, the column
     /// line, a reason on every row, known classes and kinds, valid escapes, and no repeated row name.
     /// </summary>
     [TestMethod]
@@ -27,11 +27,11 @@ public sealed partial class DelimitedReleaseNoteCorpusTests
     }
 
     /// <summary>
-    /// Verifies that each library's catalogue holds the number of fixes, of rows in each class, and of runnable rows
+    /// Verifies that each library's catalog holds the number of fixes, of rows in each class, and of runnable rows
     /// that <c>corpus/delimited/README.md</c> records.
     /// </summary>
     /// <remarks>
-    /// A catalogue that silently lost rows, moved a fix from <c>applies</c> to <c>n/a</c>, or turned a runnable row
+    /// A catalog that silently lost rows, moved a fix from <c>applies</c> to <c>n/a</c>, or turned a runnable row
     /// into a <c>unit</c> row would quietly shrink the fixes this suite holds Bodu to.
     /// </remarks>
     [TestMethod]
@@ -145,7 +145,7 @@ public sealed partial class DelimitedReleaseNoteCorpusTests
     }
 
     /// <summary>
-    /// Verifies that the embedded catalogues are byte-for-byte copies of the files in <c>corpus/delimited/fixes/</c>.
+    /// Verifies that the embedded catalogs are byte-for-byte copies of the files in <c>corpus/delimited/fixes/</c>.
     /// </summary>
     [TestMethod]
     public void FixCatalogues_WhenComparedWithTheCorpusTree_ShouldMatchByteForByte()
@@ -211,7 +211,7 @@ public sealed partial class DelimitedReleaseNoteCorpusTests
     }
 
     /// <summary>
-    /// Counts the fixes a catalogue's rows describe.
+    /// Counts the fixes a catalog's rows describe.
     /// </summary>
     /// <param name="rows">The rows, in file order.</param>
     /// <returns>The number of runs of adjacent rows that belong to the same fix.</returns>
@@ -239,9 +239,9 @@ public sealed partial class DelimitedReleaseNoteCorpusTests
         && string.Equals(first.Summary, second.Summary, StringComparison.Ordinal);
 
     /// <summary>
-    /// Reads the lines of a catalogue embedded in this assembly.
+    /// Reads the lines of a catalog embedded in this assembly.
     /// </summary>
-    /// <param name="fileName">The catalogue's file name.</param>
+    /// <param name="fileName">The catalog's file name.</param>
     /// <returns>The lines, the first at index zero, so that a row's line is at its line number less one.</returns>
     private static string[] ReadEmbeddedLines(string fileName)
     {
@@ -255,7 +255,7 @@ public sealed partial class DelimitedReleaseNoteCorpusTests
     }
 
     /// <summary>
-    /// Joins fields into a catalogue line in canonical RFC 4180 form.
+    /// Joins fields into a catalog line in canonical RFC 4180 form.
     /// </summary>
     /// <param name="fields">The fields, in column order.</param>
     /// <returns>
@@ -271,7 +271,7 @@ public sealed partial class DelimitedReleaseNoteCorpusTests
     /// </summary>
     /// <param name="fix">The row.</param>
     /// <exception cref="FormatException">
-    /// The expected result is empty, or is not in the catalogue's escape notation.
+    /// The expected result is empty, or is not in the catalog's escape notation.
     /// </exception>
     private static void RequireExpected(ReleaseNoteFix fix)
     {

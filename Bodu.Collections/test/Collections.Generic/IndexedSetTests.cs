@@ -48,7 +48,7 @@ public partial class IndexedSetTests
     }
 
     /// <summary>
-    /// Materialises the elements of <paramref name="set" /> using the public indexer.
+    /// Materializes the elements of <paramref name="set" /> using the public indexer.
     /// </summary>
     /// <param name="set">The set to snapshot.</param>
     /// <returns>An array containing the elements in insertion order.</returns>

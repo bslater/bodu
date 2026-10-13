@@ -12,7 +12,7 @@ namespace Bodu.Security.Cryptography;
 
 /// <summary>
 /// Tests for the root-only block computations over streams, spans, memories and arrays: shape coverage against the
-/// additive oracle, overload agreement, and stream behaviours.
+/// additive oracle, overload agreement, and stream behaviors.
 /// </summary>
 public partial class MerkleTreeTests
 {

@@ -9,7 +9,7 @@ using System.Text.Json;
 namespace Bodu.Numerics.Serialization.Json;
 
 /// <summary>
-/// Verifies the policy-specific read behaviour of <see cref="ComplexJsonConverter{T}" />.
+/// Verifies the policy-specific read behavior of <see cref="ComplexJsonConverter{T}" />.
 /// </summary>
 [TestClass]
 public class ComplexJsonConverterPolicyTests

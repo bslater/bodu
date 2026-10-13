@@ -8,7 +8,7 @@ namespace Bodu.Globalization.Calendar;
 
 /// <summary>
 /// Verifies the floating Oriental Orthodox observances authored in the bundled <c>christian-oriental-orthodox</c>
-/// catalogue. The Pascha cluster is anchored by the engine's <c>orthodox-easter</c> algorithm (the Alexandrian /
+/// catalog. The Pascha cluster is anchored by the engine's <c>orthodox-easter</c> algorithm (the Alexandrian /
 /// Julian-paschalion computus shared by the Coptic, Ethiopian, Armenian and related traditions) with the remaining
 /// feasts authored as <see cref="OffsetFromRuleStrategy" /> day-offsets from it, so every date is deterministic.
 /// Expected Pascha dates are the published Orthodox Easter Sundays for 2023-2027.
@@ -17,7 +17,7 @@ namespace Bodu.Globalization.Calendar;
 /// <para>
 /// The fixed civil observances (Armenian Christmas, Oriental Christmas, Theophany, Coptic New Year, Meskel) use their
 /// common Gregorian-era dates. Coptic New Year and Meskel are pinned at 11 and 27 September; in practice both fall a day
-/// later (12 / 28 September) in the Gregorian year preceding a leap year, a rite-specific shift the common catalogue
+/// later (12 / 28 September) in the Gregorian year preceding a leap year, a rite-specific shift the common catalog
 /// intentionally leaves to territory packs and which is recorded in the verification report.
 /// </para>
 /// </remarks>
@@ -25,9 +25,9 @@ namespace Bodu.Globalization.Calendar;
 public sealed class OrientalOrthodoxKnownAnswerTests
 {
     /// <summary>
-    /// Builds a service over the bundled <c>christian-oriental-orthodox</c> catalogue.
+    /// Builds a service over the bundled <c>christian-oriental-orthodox</c> catalog.
     /// </summary>
-    /// <returns>A service for the catalogue.</returns>
+    /// <returns>A service for the catalog.</returns>
     private static NotableDateService CreateService() =>
         CommonCatalogues.Service("christian-oriental-orthodox");
 

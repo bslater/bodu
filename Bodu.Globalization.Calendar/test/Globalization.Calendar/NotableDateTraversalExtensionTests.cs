@@ -15,7 +15,7 @@ namespace Bodu.Globalization.Calendar;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Reversed-range behaviour follows v2 semantics, which differ from v1: the ascending enumerators iterate
+/// Reversed-range behavior follows v2 semantics, which differ from v1: the ascending enumerators iterate
 /// <c>start..end</c> and yield nothing when the bounds are reversed, and the date-range notable-date query throws
 /// <see cref="ArgumentOutOfRangeException" /> for a reversed range rather than yielding an ascending sequence.
 /// </para>

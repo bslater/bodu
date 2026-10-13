@@ -15,12 +15,12 @@ namespace Bodu.IO.Hashing.CheckDigits;
 
 /// <summary>
 /// Describes the expected observable properties of a <see cref="CheckDigitAlgorithm" /> implementation for use in
-/// behavioural and known-answer tests.
+/// behavioral and known-answer tests.
 /// </summary>
 /// <remarks>
 /// Instances are supplied by derived test classes via
 /// <see cref="CheckDigitAlgorithmTests{TTest, TAlgorithm}.GetSpecification" /> and drive assertions common across every
-/// check-digit algorithm under test - algorithm-name exposure, empty-body behaviour, and known-answer evaluation.
+/// check-digit algorithm under test - algorithm-name exposure, empty-body behavior, and known-answer evaluation.
 /// </remarks>
 public sealed record CheckDigitAlgorithmSpecification
 {

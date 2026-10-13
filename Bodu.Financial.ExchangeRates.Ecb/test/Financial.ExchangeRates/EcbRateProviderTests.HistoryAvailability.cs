@@ -9,7 +9,7 @@ namespace Bodu.Financial.ExchangeRates;
 public partial class EcbRateProviderTests
 {
     /// <summary>
-    /// Verifies that with the default feed catalogue - which includes the full-history feed - the provider advertises
+    /// Verifies that with the default feed catalog - which includes the full-history feed - the provider advertises
     /// a fixed floor at the euro reference-rate epoch, 4 January 1999.
     /// </summary>
     [TestMethod]
@@ -23,7 +23,7 @@ public partial class EcbRateProviderTests
     }
 
     /// <summary>
-    /// Verifies that when the feed catalogue is restricted to rolling feeds, the provider advertises a rolling window
+    /// Verifies that when the feed catalog is restricted to rolling feeds, the provider advertises a rolling window
     /// matching the deepest configured feed.
     /// </summary>
     [TestMethod]

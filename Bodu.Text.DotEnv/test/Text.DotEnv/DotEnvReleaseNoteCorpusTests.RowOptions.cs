@@ -13,7 +13,7 @@ namespace Bodu.Text.DotEnv;
 public sealed partial class DotEnvReleaseNoteCorpusTests
 {
     /// <summary>
-    /// Represents the options a catalogue row runs with, and maps them onto the reader and writer options.
+    /// Represents the options a catalog row runs with, and maps them onto the reader and writer options.
     /// </summary>
     /// <param name="DisallowExportPrefix">Whether the read leaves a leading <c>export</c> keyword unrecognized.</param>
     /// <param name="DisallowInlineComments">

@@ -9,7 +9,7 @@ using Bodu.Financial.Currencies;
 namespace Bodu.Financial.ExchangeRates.Caching;
 
 /// <summary>
-/// Verifies the caching behaviour of <see cref="CachingRateProvider" /> over a counting inner source and an
+/// Verifies the caching behavior of <see cref="CachingRateProvider" /> over a counting inner source and an
 /// in-memory cache with a controllable clock.
 /// </summary>
 [TestClass]

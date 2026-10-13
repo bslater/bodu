@@ -7,7 +7,7 @@
 namespace Bodu.Test.Corpus;
 
 /// <summary>
-/// Verifies <see cref="CorpusTree" />: finding the repository root, and checking embedded catalogues against their
+/// Verifies <see cref="CorpusTree" />: finding the repository root, and checking embedded catalogs against their
 /// sources in <c>corpus/</c>.
 /// </summary>
 [TestClass]
@@ -25,9 +25,9 @@ public sealed partial class CorpusTreeTests
     }
 
     /// <summary>
-    /// Reads the sample catalogue this assembly embeds.
+    /// Reads the sample catalog this assembly embeds.
     /// </summary>
-    /// <returns>The catalogue's bytes.</returns>
+    /// <returns>The catalog's bytes.</returns>
     private static byte[] EmbeddedSample()
     {
         string resource = typeof(CorpusTreeTests).Assembly.GetManifestResourceNames()

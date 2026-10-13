@@ -9,7 +9,7 @@ using System.Text.Json;
 namespace Bodu.Financial.Serialization.Json;
 
 /// <summary>
-/// Verifies that <see cref="MoneyJsonConverter" /> honours each <see cref="FinancialJsonPolicy" />.
+/// Verifies that <see cref="MoneyJsonConverter" /> honors each <see cref="FinancialJsonPolicy" />.
 /// </summary>
 [TestClass]
 public partial class MoneyJsonConverterPolicyTests

@@ -12,10 +12,10 @@ namespace Bodu.Text.Delimited;
 public sealed partial class DelimitedReleaseNoteCorpusTests
 {
     /// <summary>
-    /// Verifies that each catalogued input a fix established as readable is read by <c>Utf8DelimitedReader</c> into the
+    /// Verifies that each cataloged input a fix established as readable is read by <c>Utf8DelimitedReader</c> into the
     /// expected records, or the expected header names when the row renders them.
     /// </summary>
-    /// <param name="fix">The catalogue row.</param>
+    /// <param name="fix">The catalog row.</param>
     [TestMethod]
     [TestCategory("Regression")]
     [DynamicData(

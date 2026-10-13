@@ -10,7 +10,7 @@ public partial class MultiValueDictionaryTests
 {
 
     /// <summary>
-    /// Verifies that <see cref="MultiValueDictionary{TKey,TValue}.ContainsKey"/> honours the custom key
+    /// Verifies that <see cref="MultiValueDictionary{TKey,TValue}.ContainsKey"/> honors the custom key
     /// comparer, returning <see langword="true"/> for a key that differs only in case.
     /// </summary>
     [TestMethod]

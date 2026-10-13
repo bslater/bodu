@@ -12,10 +12,10 @@ namespace Bodu.Text.Toml;
 public sealed partial class TomlReleaseNoteCorpusTests
 {
     /// <summary>
-    /// Verifies that writing the value each catalogued tagged JSON describes through <c>Utf8TomlWriter</c> writes
+    /// Verifies that writing the value each cataloged tagged JSON describes through <c>Utf8TomlWriter</c> writes
     /// exactly the expected text.
     /// </summary>
-    /// <param name="fix">The catalogue row.</param>
+    /// <param name="fix">The catalog row.</param>
     [TestMethod]
     [TestCategory("Regression")]
     [Timeout(RowTimeout)]

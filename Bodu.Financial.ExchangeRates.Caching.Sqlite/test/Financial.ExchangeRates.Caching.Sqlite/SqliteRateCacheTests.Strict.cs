@@ -9,7 +9,7 @@ using Microsoft.Data.Sqlite;
 namespace Bodu.Financial.ExchangeRates.Caching.Sqlite;
 
 /// <summary>
-/// Verifies the opt-in strict-failure behaviour of <see cref="SqliteRateCache" />: when
+/// Verifies the opt-in strict-failure behavior of <see cref="SqliteRateCache" />: when
 /// <see cref="RateCacheOptions.ValidateStorageOnStart" /> or
 /// <see cref="RateCacheOptions.ThrowOnStorageFailure" /> is set, a database that cannot be opened or initialized
 /// surfaces from the constructor rather than degrading to empty reads and skipped writes.

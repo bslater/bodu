@@ -16,7 +16,7 @@ using Bodu.Text.DotEnv.Writer;
 namespace Bodu.Text.DotEnv;
 
 /// <summary>
-/// Holds Bodu.Text.DotEnv to the defect fixes other dotenv libraries list in their release notes, as catalogued in
+/// Holds Bodu.Text.DotEnv to the defect fixes other dotenv libraries list in their release notes, as cataloged in
 /// <c>corpus/dotenv/fixes/</c> and embedded under <c>Fixtures/ReleaseNotes/</c>.
 /// </summary>
 /// <remarks>
@@ -37,23 +37,23 @@ namespace Bodu.Text.DotEnv;
 /// then reads what was written.
 /// </para>
 /// <para>
-/// Renderings and written bytes are compared in the catalogue escapes, each side decoded to bytes and encoded again by
+/// Renderings and written bytes are compared in the catalog escapes, each side decoded to bytes and encoded again by
 /// <see cref="CorpusEscapes" />, so the comparison is byte for byte and a failure prints only printable ASCII.
 /// </para>
 /// </remarks>
 [TestClass]
 public sealed partial class DotEnvReleaseNoteCorpusTests
 {
-    /// <summary>The corpus area whose catalogues this class runs.</summary>
+    /// <summary>The corpus area whose catalogs this class runs.</summary>
     private const string Area = "dotenv";
 
-    /// <summary>The option names a catalogue row may use, each mapped by <see cref="RowOptions.Parse" />.</summary>
+    /// <summary>The option names a catalog row may use, each mapped by <see cref="RowOptions.Parse" />.</summary>
     private static readonly string[] s_optionNames =
     [
         "DisallowExportPrefix", "DisallowInlineComments", "SkipComments", "WriteExportPrefix",
     ];
 
-    /// <summary>The catalogues embedded in this test assembly, loaded once.</summary>
+    /// <summary>The catalogs embedded in this test assembly, loaded once.</summary>
     private static readonly Lazy<IReadOnlyList<ReleaseNoteCatalog>> s_catalogs =
         new(() => ReleaseNoteCatalog.LoadEmbedded(typeof(DotEnvReleaseNoteCorpusTests).Assembly));
 
@@ -86,9 +86,9 @@ public sealed partial class DotEnvReleaseNoteCorpusTests
         RunnableRows("roundtrip");
 
     /// <summary>
-    /// Gets every row of every embedded catalogue.
+    /// Gets every row of every embedded catalog.
     /// </summary>
-    /// <value>The rows, catalogue by catalogue in file order.</value>
+    /// <value>The rows, catalog by catalog in file order.</value>
     private static IEnumerable<ReleaseNoteFix> AllRows =>
         s_catalogs.Value.SelectMany(catalog => catalog.Rows);
 

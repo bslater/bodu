@@ -88,7 +88,7 @@ public partial class StringExtensionsTests
     public void Unwrap_WhenOnlySuffixMatches_ShouldReturnInputUnchanged() => Assert.AreEqual("hello</b>", "hello</b>".Unwrap("<b>", "</b>"));
 
     /// <summary>
-    /// Verifies that <see cref="StringExtensions.Unwrap(string, string, string, StringComparison)" /> honours
+    /// Verifies that <see cref="StringExtensions.Unwrap(string, string, string, StringComparison)" /> honors
     /// the supplied <see cref="StringComparison" />.
     /// </summary>
     [TestMethod]

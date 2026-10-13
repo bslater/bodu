@@ -131,7 +131,7 @@ public sealed partial class CalendarToolTests
     }
 
     /// <summary>
-    /// Verifies that imports resolve from the resolver directory ahead of the bundled catalogues.
+    /// Verifies that imports resolve from the resolver directory ahead of the bundled catalogs.
     /// </summary>
     [TestMethod]
     public void Run_WhenLintingWithResolverDirectory_ShouldResolveImports()

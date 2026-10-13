@@ -12,10 +12,10 @@ namespace Bodu.Formats.Outlook;
 public sealed partial class PstReleaseNoteCorpusTests
 {
     /// <summary>
-    /// Verifies that each catalogued file a fix established as readable is read on the selected surface into the
+    /// Verifies that each cataloged file a fix established as readable is read on the selected surface into the
     /// expected rendering.
     /// </summary>
-    /// <param name="fix">The catalogue row.</param>
+    /// <param name="fix">The catalog row.</param>
     [TestMethod]
     [TestCategory("Regression")]
     [DynamicData(

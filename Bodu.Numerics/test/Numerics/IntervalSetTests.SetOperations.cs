@@ -123,24 +123,24 @@ public partial class IntervalSetTests
     }
 
     /// <summary>
-    /// Verifies that both Union overloads over <see cref="double" /> hold exactly the values of a catalogue interval
-    /// and another catalogue interval or set, in disjoint, non-adjacent pieces.
+    /// Verifies that both Union overloads over <see cref="double" /> hold exactly the values of a catalog interval
+    /// and another catalog interval or set, in disjoint, non-adjacent pieces.
     /// </summary>
     [TestMethod]
     public void Union_WhenOperandsReachInfinity_ForDouble_ShouldAgreeWithPointMembership() =>
         AssertSetUnionAgreesWithMembership<double>();
 
     /// <summary>
-    /// Verifies that both Union overloads over <see cref="float" /> hold exactly the values of a catalogue interval and
-    /// another catalogue interval or set, in disjoint, non-adjacent pieces.
+    /// Verifies that both Union overloads over <see cref="float" /> hold exactly the values of a catalog interval and
+    /// another catalog interval or set, in disjoint, non-adjacent pieces.
     /// </summary>
     [TestMethod]
     public void Union_WhenOperandsReachInfinity_ForSingle_ShouldAgreeWithPointMembership() =>
         AssertSetUnionAgreesWithMembership<float>();
 
     /// <summary>
-    /// Verifies that both Union overloads over <see cref="Half" /> hold exactly the values of a catalogue interval and
-    /// another catalogue interval or set, in disjoint, non-adjacent pieces.
+    /// Verifies that both Union overloads over <see cref="Half" /> hold exactly the values of a catalog interval and
+    /// another catalog interval or set, in disjoint, non-adjacent pieces.
     /// </summary>
     [TestMethod]
     public void Union_WhenOperandsReachInfinity_ForHalf_ShouldAgreeWithPointMembership() =>
@@ -148,7 +148,7 @@ public partial class IntervalSetTests
 
     /// <summary>
     /// Verifies that both Intersect overloads over <see cref="double" /> hold exactly the values a one-piece set shares
-    /// with another catalogue interval or set, in disjoint, non-adjacent pieces.
+    /// with another catalog interval or set, in disjoint, non-adjacent pieces.
     /// </summary>
     [TestMethod]
     public void Intersect_WhenOperandsReachInfinity_ForDouble_ShouldAgreeWithPointMembership() =>
@@ -156,7 +156,7 @@ public partial class IntervalSetTests
 
     /// <summary>
     /// Verifies that both Intersect overloads over <see cref="float" /> hold exactly the values a one-piece set shares
-    /// with another catalogue interval or set, in disjoint, non-adjacent pieces.
+    /// with another catalog interval or set, in disjoint, non-adjacent pieces.
     /// </summary>
     [TestMethod]
     public void Intersect_WhenOperandsReachInfinity_ForSingle_ShouldAgreeWithPointMembership() =>
@@ -164,7 +164,7 @@ public partial class IntervalSetTests
 
     /// <summary>
     /// Verifies that both Intersect overloads over <see cref="Half" /> hold exactly the values a one-piece set shares
-    /// with another catalogue interval or set, in disjoint, non-adjacent pieces.
+    /// with another catalog interval or set, in disjoint, non-adjacent pieces.
     /// </summary>
     [TestMethod]
     public void Intersect_WhenOperandsReachInfinity_ForHalf_ShouldAgreeWithPointMembership() =>
@@ -172,7 +172,7 @@ public partial class IntervalSetTests
 
     /// <summary>
     /// Verifies that both Except overloads over <see cref="double" /> hold exactly the values of a one-piece set that
-    /// another catalogue interval or set lacks, in disjoint, non-adjacent pieces that each hold a value.
+    /// another catalog interval or set lacks, in disjoint, non-adjacent pieces that each hold a value.
     /// </summary>
     [TestMethod]
     public void Except_WhenOperandsReachInfinity_ForDouble_ShouldAgreeWithPointMembership() =>
@@ -180,7 +180,7 @@ public partial class IntervalSetTests
 
     /// <summary>
     /// Verifies that both Except overloads over <see cref="float" /> hold exactly the values of a one-piece set that
-    /// another catalogue interval or set lacks, in disjoint, non-adjacent pieces that each hold a value.
+    /// another catalog interval or set lacks, in disjoint, non-adjacent pieces that each hold a value.
     /// </summary>
     [TestMethod]
     public void Except_WhenOperandsReachInfinity_ForSingle_ShouldAgreeWithPointMembership() =>
@@ -188,7 +188,7 @@ public partial class IntervalSetTests
 
     /// <summary>
     /// Verifies that both Except overloads over <see cref="Half" /> hold exactly the values of a one-piece set that
-    /// another catalogue interval or set lacks, in disjoint, non-adjacent pieces that each hold a value.
+    /// another catalog interval or set lacks, in disjoint, non-adjacent pieces that each hold a value.
     /// </summary>
     [TestMethod]
     public void Except_WhenOperandsReachInfinity_ForHalf_ShouldAgreeWithPointMembership() =>
@@ -196,7 +196,7 @@ public partial class IntervalSetTests
 
     /// <summary>
     /// Verifies that Complement over <see cref="double" /> holds exactly the values of the whole line that a set of two
-    /// catalogue intervals lacks, in disjoint, non-adjacent pieces that each hold a value.
+    /// catalog intervals lacks, in disjoint, non-adjacent pieces that each hold a value.
     /// </summary>
     [TestMethod]
     public void Complement_WhenOperandsReachInfinity_ForDouble_ShouldAgreeWithPointMembership() =>
@@ -204,7 +204,7 @@ public partial class IntervalSetTests
 
     /// <summary>
     /// Verifies that Complement over <see cref="float" /> holds exactly the values of the whole line that a set of two
-    /// catalogue intervals lacks, in disjoint, non-adjacent pieces that each hold a value.
+    /// catalog intervals lacks, in disjoint, non-adjacent pieces that each hold a value.
     /// </summary>
     [TestMethod]
     public void Complement_WhenOperandsReachInfinity_ForSingle_ShouldAgreeWithPointMembership() =>
@@ -212,19 +212,19 @@ public partial class IntervalSetTests
 
     /// <summary>
     /// Verifies that Complement over <see cref="Half" /> holds exactly the values of the whole line that a set of two
-    /// catalogue intervals lacks, in disjoint, non-adjacent pieces that each hold a value.
+    /// catalog intervals lacks, in disjoint, non-adjacent pieces that each hold a value.
     /// </summary>
     [TestMethod]
     public void Complement_WhenOperandsReachInfinity_ForHalf_ShouldAgreeWithPointMembership() =>
         AssertSetComplementAgreesWithMembership<Half>();
 
     /// <summary>
-    /// Asserts that a set built by <paramref name="operation" /> from each pair of catalogue intervals holds the values
+    /// Asserts that a set built by <paramref name="operation" /> from each pair of catalog intervals holds the values
     /// <paramref name="expectedMask" /> selects, in disjoint, non-adjacent pieces that each hold a value.
     /// </summary>
     /// <typeparam name="T">The floating-point endpoint type.</typeparam>
     /// <param name="name">The operation name used in failure messages.</param>
-    /// <param name="operation">Builds the set under test from the two catalogue intervals.</param>
+    /// <param name="operation">Builds the set under test from the two catalog intervals.</param>
     /// <param name="expectedMask">Computes the expected probe mask from the operands' probe masks.</param>
     private static void AssertSetOperationAgreesWithMembership<T>(
         string name,
@@ -253,7 +253,7 @@ public partial class IntervalSetTests
 
     /// <summary>
     /// Asserts that <see cref="IntervalSet{T}.Union(Interval{T})" /> and <see cref="IntervalSet{T}.Union(IntervalSet{T})" />
-    /// agree with point membership over the catalogue.
+    /// agree with point membership over the catalog.
     /// </summary>
     /// <typeparam name="T">The floating-point endpoint type.</typeparam>
     private static void AssertSetUnionAgreesWithMembership<T>()
@@ -265,7 +265,7 @@ public partial class IntervalSetTests
 
     /// <summary>
     /// Asserts that <see cref="IntervalSet{T}.Intersect(Interval{T})" /> and
-    /// <see cref="IntervalSet{T}.Intersect(IntervalSet{T})" /> agree with point membership over the catalogue.
+    /// <see cref="IntervalSet{T}.Intersect(IntervalSet{T})" /> agree with point membership over the catalog.
     /// </summary>
     /// <typeparam name="T">The floating-point endpoint type.</typeparam>
     private static void AssertSetIntersectAgreesWithMembership<T>()
@@ -277,7 +277,7 @@ public partial class IntervalSetTests
 
     /// <summary>
     /// Asserts that <see cref="IntervalSet{T}.Except(Interval{T})" /> and <see cref="IntervalSet{T}.Except(IntervalSet{T})" />
-    /// agree with point membership over the catalogue.
+    /// agree with point membership over the catalog.
     /// </summary>
     /// <typeparam name="T">The floating-point endpoint type.</typeparam>
     private static void AssertSetExceptAgreesWithMembership<T>()
@@ -288,7 +288,7 @@ public partial class IntervalSetTests
     }
 
     /// <summary>
-    /// Asserts that <see cref="IntervalSet{T}.Complement" /> of a set of two catalogue intervals agrees with point
+    /// Asserts that <see cref="IntervalSet{T}.Complement" /> of a set of two catalog intervals agrees with point
     /// membership relative to <see cref="Interval{T}.All" />.
     /// </summary>
     /// <typeparam name="T">The floating-point endpoint type.</typeparam>

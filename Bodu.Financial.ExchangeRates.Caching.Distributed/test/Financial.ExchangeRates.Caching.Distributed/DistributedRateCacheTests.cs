@@ -12,7 +12,7 @@ using Microsoft.Extensions.Options;
 namespace Bodu.Financial.ExchangeRates.Caching.Distributed;
 
 /// <summary>
-/// Verifies the distributed-cache-specific behaviour of <see cref="DistributedRateCache" /> beyond the shared
+/// Verifies the distributed-cache-specific behavior of <see cref="DistributedRateCache" /> beyond the shared
 /// cache contract: the stable key format, state sharing across instances over one backing store, storage-failure
 /// resilience, and lossless round-tripping through the JSON blob.
 /// </summary>

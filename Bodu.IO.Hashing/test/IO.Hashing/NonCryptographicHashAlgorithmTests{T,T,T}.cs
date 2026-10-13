@@ -21,7 +21,7 @@ namespace Bodu.IO.Hashing;
 /// </typeparam>
 /// <typeparam name="TVariant">The enumeration type used to represent algorithm configuration variants.</typeparam>
 /// <remarks>
-/// This class supplies a standardised infrastructure for testing non-cryptographic hash algorithms across one or
+/// This class supplies a standardized infrastructure for testing non-cryptographic hash algorithms across one or
 /// more configurations - variant differentiation, incremental-append parity, reset semantics, and data-driven
 /// known-answer evaluation via the typed <see cref="NonCryptographicHashKnownAnswers" /> record.
 /// </remarks>
@@ -58,7 +58,7 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
         int byteCount);
 
     /// <summary>
-    /// Gets the default variant to use in non-parameterised test scenarios.
+    /// Gets the default variant to use in non-parameterized test scenarios.
     /// </summary>
     /// <remarks>
     /// The default variant represents the canonical or most common configuration of the algorithm under test.
@@ -156,7 +156,7 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
 
     /// <summary>
     /// Returns test data that combines algorithm variants, named inputs, and expected hash results for
-    /// parameterised known-answer tests.
+    /// parameterized known-answer tests.
     /// </summary>
     /// <returns>A sequence of test case arguments: variant, input name, input bytes, expected hash output.</returns>
     public static IEnumerable<object[]> KnownAnswerTestData()
@@ -228,7 +228,7 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
     /// <summary>
     /// Creates a new instance of the algorithm under test using <see cref="DefaultVariant" />.
     /// </summary>
-    /// <returns>A fully initialised instance of <typeparamref name="TAlgorithm" />.</returns>
+    /// <returns>A fully initialized instance of <typeparamref name="TAlgorithm" />.</returns>
     protected TAlgorithm CreateAlgorithm() => CreateAlgorithm(DefaultVariant);
 
     /// <summary>
@@ -408,7 +408,7 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
     /// Returns the merged set of field names excluded from the disposal field-zero test. Combines
     /// <see cref="ExcludedFieldNames" /> with the disposal-state flags shared across Bodu and BCL hashing types.
     /// </summary>
-    /// <returns>A distinct, materialised collection of field names to exclude.</returns>
+    /// <returns>A distinct, materialized collection of field names to exclude.</returns>
     private IReadOnlyCollection<string> GetExcludedFieldNames() =>
         ExcludedFieldNames
             .Concat([
@@ -425,7 +425,7 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
     /// <see cref="ExcludedReadablePropertyNames" /> with inherited properties on
     /// <see cref="NonCryptographicHashAlgorithm" /> that are not expected to throw after disposal.
     /// </summary>
-    /// <returns>A distinct, materialised collection of property names to exclude.</returns>
+    /// <returns>A distinct, materialized collection of property names to exclude.</returns>
     private IReadOnlyCollection<string> GetExcludedReadablePropertyNames() =>
         ExcludedReadablePropertyNames
             .Concat([
@@ -441,7 +441,7 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
     /// Currently a pass-through of <see cref="ExcludedWritablePropertyNames" />; preserved as a hook for future
     /// inherited write-protected members.
     /// </summary>
-    /// <returns>A distinct, materialised collection of property names to exclude.</returns>
+    /// <returns>A distinct, materialized collection of property names to exclude.</returns>
     private IReadOnlyCollection<string> GetExcludedWritablePropertyNames() =>
         ExcludedWritablePropertyNames
             .Distinct()

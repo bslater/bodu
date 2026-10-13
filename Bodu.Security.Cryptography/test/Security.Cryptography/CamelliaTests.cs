@@ -8,7 +8,7 @@ namespace Bodu.Security.Cryptography;
 
 /// <summary>
 /// Exercises the <see cref="Camellia" /> algorithm class against the shared <see cref="SymmetricAlgorithmTests{TTest,TAlgorithm}" />
-/// suite, verifying constructor defaults, key and IV generation, encryptor and decryptor creation, and disposal behaviour.
+/// suite, verifying constructor defaults, key and IV generation, encryptor and decryptor creation, and disposal behavior.
 /// </summary>
 [TestClass]
 public sealed partial class CamelliaTests

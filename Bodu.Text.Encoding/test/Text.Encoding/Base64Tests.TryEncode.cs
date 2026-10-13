@@ -102,7 +102,7 @@ public sealed partial class Base64Tests
     }
 
     /// <summary>
-    /// Verifies that <see cref="Base64.TryEncode" /> honours <see cref="BaseFormattingOptions.OmitPadding" />.
+    /// Verifies that <see cref="Base64.TryEncode" /> honors <see cref="BaseFormattingOptions.OmitPadding" />.
     /// </summary>
     [TestMethod]
     public void TryEncode_WhenOmitPadding_ShouldWriteFewerCharacters()

@@ -22,10 +22,10 @@ public sealed partial class CompoundReleaseNoteCorpusTests
     };
 
     /// <summary>
-    /// Verifies that running each catalogued edit script a fix established as refused, or committing it, throws exactly
+    /// Verifies that running each cataloged edit script a fix established as refused, or committing it, throws exactly
     /// the exception the row names.
     /// </summary>
-    /// <param name="fix">The catalogue row.</param>
+    /// <param name="fix">The catalog row.</param>
     [TestMethod]
     [TestCategory("Regression")]
     [DynamicData(

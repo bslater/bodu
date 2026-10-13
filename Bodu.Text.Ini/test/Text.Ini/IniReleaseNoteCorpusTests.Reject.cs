@@ -12,10 +12,10 @@ namespace Bodu.Text.Ini;
 public sealed partial class IniReleaseNoteCorpusTests
 {
     /// <summary>
-    /// Verifies that each catalogued input a fix established as malformed is rejected by the view the row selects with
+    /// Verifies that each cataloged input a fix established as malformed is rejected by the view the row selects with
     /// <see cref="IniFormatException" />, the exception the row names.
     /// </summary>
-    /// <param name="fix">The catalogue row.</param>
+    /// <param name="fix">The catalog row.</param>
     [TestMethod]
     [TestCategory("Regression")]
     [DynamicData(

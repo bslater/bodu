@@ -7,7 +7,7 @@
 namespace Bodu.Financial.ExchangeRates;
 
 /// <summary>
-/// Verifies the freshness and resilience behaviour of <see cref="FileSystemImfReportCache" />, in particular the
+/// Verifies the freshness and resilience behavior of <see cref="FileSystemImfReportCache" />, in particular the
 /// permanent freshness of a closed month's report.
 /// </summary>
 [TestClass]

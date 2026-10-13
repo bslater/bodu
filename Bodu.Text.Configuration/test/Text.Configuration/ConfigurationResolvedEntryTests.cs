@@ -16,7 +16,7 @@ public class ConfigurationResolvedEntryTests
 {
     /// <summary>
     /// Verifies that a preamble entry produces a <see cref="ConfigurationResolvedEntry" /> with no section
-    /// pattern (preamble origins are signalled by <see cref="ConfigurationResolvedEntry.SectionPattern" />
+    /// pattern (preamble origins are signaled by <see cref="ConfigurationResolvedEntry.SectionPattern" />
     /// being <see langword="null" />).
     /// </summary>
     [TestMethod]

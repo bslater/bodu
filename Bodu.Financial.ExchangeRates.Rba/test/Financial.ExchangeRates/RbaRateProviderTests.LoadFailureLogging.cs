@@ -33,7 +33,7 @@ public partial class RbaRateProviderTests
     /// <summary>
     /// Verifies that an unexpected exception type thrown by the source - indicating a provider bug rather than a
     /// transport or data failure - is logged as a distinct unexpected error at <see cref="LogLevel.Error" /> and
-    /// rethrown, without being relabelled as an ordinary era-load failure.
+    /// rethrown, without being relabeled as an ordinary era-load failure.
     /// </summary>
     [TestMethod]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2201:Do not raise reserved exception types", Justification = "The NullReferenceException stands in for a provider bug, the one failure the provider must log as unexpected rather than relabel as a load failure.")]

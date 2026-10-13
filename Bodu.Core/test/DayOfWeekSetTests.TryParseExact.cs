@@ -14,7 +14,7 @@ public partial class DayOfWeekSetTests
     /// <summary>
     /// Verifies that <see cref="DayOfWeekSet.TryParseExact" /> returns <see langword="true" /> and
     /// correctly parses a binary string when the format specifier is <c>'0'</c>. This is a regression
-    /// test for a defect where this documented specifier was not recognised, causing the method to return
+    /// test for a defect where this documented specifier was not recognized, causing the method to return
     /// <see langword="false" />.
     /// </summary>
     [TestMethod]
@@ -120,7 +120,7 @@ public partial class DayOfWeekSetTests
 
     /// <summary>
     /// Verifies that <see cref="DayOfWeekSet.TryParseExact" /> returns <see langword="false" /> and sets
-    /// the result to <see cref="DayOfWeekSet.Empty" /> when the format is unrecognised.
+    /// the result to <see cref="DayOfWeekSet.Empty" /> when the format is unrecognized.
     /// </summary>
     [TestMethod]
     public void TryParseExact_WhenFormatIsUnrecognised_ShouldReturnFalseAndSetEmpty()

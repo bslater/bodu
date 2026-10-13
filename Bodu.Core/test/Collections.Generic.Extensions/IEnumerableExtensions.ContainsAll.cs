@@ -79,7 +79,7 @@ public sealed partial class IEnumerableExtensionsTests_ContainsAll
     }
 
     /// <summary>
-    /// Verifies that <c>ContainsAll</c> honours the default comparer when no custom comparer is supplied.
+    /// Verifies that <c>ContainsAll</c> honors the default comparer when no custom comparer is supplied.
     /// </summary>
     [TestMethod]
     public void ContainsAll_WhenUsingDefaultStringComparer_ShouldDistinguishCase()

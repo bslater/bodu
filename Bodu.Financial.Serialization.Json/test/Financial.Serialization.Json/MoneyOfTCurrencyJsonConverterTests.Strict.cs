@@ -54,7 +54,7 @@ public partial class MoneyOfTCurrencyJsonConverterTests
 
     /// <summary>
     /// Verifies that the reader accepts a numeric <c>"amount"</c> emitted as a JSON string - documented lenient
-    /// behaviour for systems lacking arbitrary-precision number support.
+    /// behavior for systems lacking arbitrary-precision number support.
     /// </summary>
     [TestMethod]
     public void Strict_WhenAmountIsNumericString_ShouldAcceptIt()

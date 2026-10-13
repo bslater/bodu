@@ -16,7 +16,7 @@ namespace Bodu.Text.Bencode;
 public sealed partial class BencodeReleaseNoteCorpusTests
 {
     /// <summary>
-    /// Represents the options a catalogue row runs with, and maps them onto the reader, document and writer options.
+    /// Represents the options a catalog row runs with, and maps them onto the reader, document and writer options.
     /// </summary>
     /// <param name="Surface">What reads the input: <c>Reader</c>, <c>Document</c> or <c>Node</c>.</param>
     /// <param name="MaxDepth">The maximum depth, or zero for each surface's default.</param>

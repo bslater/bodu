@@ -75,7 +75,7 @@ public partial class HashAlgorithmExtensionsTests
 
     /// <summary>
     /// Verifies that <see cref="HashAlgorithmExtensions.AppendDataAsync" /> with an empty stream
-    /// does not contribute any bytes to the hash, so that finalising immediately after produces
+    /// does not contribute any bytes to the hash, so that finalizing immediately after produces
     /// the same result as hashing an empty input.
     /// </summary>
     [TestMethod]
@@ -95,7 +95,7 @@ public partial class HashAlgorithmExtensionsTests
 
     /// <summary>
     /// Verifies that <see cref="HashAlgorithmExtensions.AppendDataAsync" /> feeds all stream
-    /// bytes into the accumulator, so that finalising produces the same result as
+    /// bytes into the accumulator, so that finalizing produces the same result as
     /// <see cref="HashAlgorithm.ComputeHash(byte[])" /> on the same data.
     /// </summary>
     [TestMethod]
@@ -276,7 +276,7 @@ public partial class HashAlgorithmExtensionsTests
 
     /// <summary>
     /// Verifies that <see cref="HashAlgorithmExtensions.AppendDataAsync" /> throws
-    /// <see cref="OperationCanceledException" /> when the token is already cancelled before the
+    /// <see cref="OperationCanceledException" /> when the token is already canceled before the
     /// call.
     /// </summary>
     [TestMethod]

@@ -9,7 +9,7 @@ namespace Bodu.Globalization.Calendar;
 /// <summary>
 /// Ports the v1 fiscal boundary working-day coverage to the v2 explicit-service surface, sweeping the configurable
 /// fiscal-year start month and verifying the first and last working day of the fiscal year and the fiscal quarter that
-/// contains a date, including the weekend-snap behaviour at a boundary and the start-month range guard.
+/// contains a date, including the weekend-snap behavior at a boundary and the start-month range guard.
 /// </summary>
 /// <remarks>
 /// <para>

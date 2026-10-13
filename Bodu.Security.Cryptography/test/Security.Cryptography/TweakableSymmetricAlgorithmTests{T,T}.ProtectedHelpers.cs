@@ -12,7 +12,7 @@ namespace Bodu.Security.Cryptography;
 /// Tests for the protected helpers declared on <see cref="TweakableSymmetricAlgorithm" /> -
 /// <see cref="TweakableSymmetricAlgorithm.ThrowIfInvalidTweakSize(byte[])" />,
 /// <see cref="TweakableSymmetricAlgorithm.ThrowIfTweakNotSet" />, and the
-/// <see cref="TweakableSymmetricAlgorithm.LegalTweakSizes" /> getter when the backing field is uninitialised.
+/// <see cref="TweakableSymmetricAlgorithm.LegalTweakSizes" /> getter when the backing field is uninitialized.
 /// </summary>
 [TestClass]
 public sealed class TweakableSymmetricAlgorithmProtectedHelperTests
@@ -157,7 +157,7 @@ public sealed class TweakableSymmetricAlgorithmProtectedHelperTests
         : TweakableSymmetricAlgorithm
     {
         /// <summary>
-        /// Initialises a new instance with no legal tweak sizes by default.
+        /// Initializes a new instance with no legal tweak sizes by default.
         /// </summary>
         /// <param name="legalTweakSizes">An optional set of legal tweak sizes. When omitted, the backing field remains <see langword="null" />.</param>
         public BareTweakableAlgorithm(KeySizes[]? legalTweakSizes = null)

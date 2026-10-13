@@ -187,7 +187,7 @@ public partial class AggregatingRateProviderTests
 
     /// <summary>
     /// Verifies that disabling <see cref="RateAggregationOptions.RespectHistoryAvailability" /> offers a
-    /// declared-unavailable child to the strategy unchanged, restoring the unfiltered behaviour.
+    /// declared-unavailable child to the strategy unchanged, restoring the unfiltered behavior.
     /// </summary>
     [TestMethod]
     public void TryGetRate_WhenRespectHistoryAvailabilityDisabled_ShouldConsultDeclaredUnavailableChild()

@@ -7,7 +7,7 @@
 namespace Bodu.Text.Encoding;
 
 /// <summary>
-/// Behavioural tests for the <see cref="BaseFormattingOptions" /> flag enum.
+/// Behavioral tests for the <see cref="BaseFormattingOptions" /> flag enum.
 /// </summary>
 [TestClass]
 public sealed class BaseFormattingOptionsTests

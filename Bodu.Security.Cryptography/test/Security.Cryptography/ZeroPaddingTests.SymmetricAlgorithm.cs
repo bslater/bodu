@@ -13,7 +13,7 @@ namespace Bodu.Security.Cryptography;
 /// declared in the library. Zero padding is non-self-describing - when the trailing plaintext
 /// bytes happen to be zero, <see cref="ZeroPadding.Unpad" /> cannot tell padding from data - so
 /// these tests focus on the contract for already-aligned inputs (no padding added, pure
-/// round-trip) and the documented partial-block behaviour where the prefix is preserved but
+/// round-trip) and the documented partial-block behavior where the prefix is preserved but
 /// trailing zero bytes are appended to make the input block-aligned.
 /// </summary>
 public sealed partial class ZeroPaddingTests

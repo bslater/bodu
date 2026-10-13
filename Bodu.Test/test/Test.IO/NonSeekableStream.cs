@@ -31,7 +31,7 @@ public sealed class NonSeekableStream
     private readonly MemoryStream inner;
 
     /// <summary>
-    /// Initialises a new instance of <see cref="NonSeekableStream" /> backed by <paramref name="data" />.
+    /// Initializes a new instance of <see cref="NonSeekableStream" /> backed by <paramref name="data" />.
     /// </summary>
     /// <param name="data">The byte array to expose as a forward-only readable stream.</param>
     /// <exception cref="ArgumentNullException"><paramref name="data" /> is <see langword="null" />.</exception>

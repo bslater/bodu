@@ -12,7 +12,7 @@ namespace Bodu.IO.Hashing.Contracts;
 /// Drives <see cref="NonCryptographicHashAlgorithmContractTests{TAlgorithm}" /> against
 /// <see cref="Fletcher64" /> with the documented "abc" and quick-brown-fox known-answer values plus
 /// streaming-parity vectors. Bespoke Fletcher-specific tests (block-boundary handling, incremental
-/// 31-byte sequence, full RevEng catalogue) remain in <c>FletcherTests.64.cs</c>.
+/// 31-byte sequence, full RevEng catalog) remain in <c>FletcherTests.64.cs</c>.
 /// </summary>
 [TestClass]
 public sealed class Fletcher64ContractTests

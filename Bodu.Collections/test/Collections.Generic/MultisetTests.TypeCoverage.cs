@@ -92,7 +92,7 @@ public partial class MultisetTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="Multiset{T}.Remove"/> honours the custom equality comparer when locating
+    /// Verifies that <see cref="Multiset{T}.Remove"/> honors the custom equality comparer when locating
     /// the element to remove.
     /// </summary>
     [TestMethod]

@@ -22,13 +22,13 @@ namespace Bodu.Security.Cryptography;
 /// The constructor-validation tests and shared mode metadata
 /// (<see cref="CipherModeTestsBase{TTransform}.ExpectedBlockSize" />,
 /// <see cref="CipherModeTestsBase{TTransform}.IvParameterName" />,
-/// <see cref="CipherModeTestsBase{TTransform}.UsesInitializationVector" />, and the expected initialisation-value
+/// <see cref="CipherModeTestsBase{TTransform}.UsesInitializationVector" />, and the expected initialization-value
 /// size) live in <see cref="CipherModeTestsBase{TTransform}" /> and are inherited here.
 /// </para>
 /// <para>
-/// AEAD modes use a 128-bit block cipher, but their public initialisation value is mode-specific. For example,
+/// AEAD modes use a 128-bit block cipher, but their public initialization value is mode-specific. For example,
 /// GCM accepts a 96-bit nonce rather than a 128-bit block-sized IV. Concrete tests should override the inherited
-/// initialisation-value metadata where required.
+/// initialization-value metadata where required.
 /// </para>
 /// <para>
 /// Concrete test classes, such as <c>GcmModeTransformTests</c>, must live in their own files and inherit from
@@ -52,7 +52,7 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
     protected override int ExpectedBlockSize => 16;
 
     /// <summary>
-    /// Gets a value indicating whether changing the initialisation vector (nonce) under a fixed key
+    /// Gets a value indicating whether changing the initialization vector (nonce) under a fixed key
     /// changes the produced ciphertext and tag. Defaults to <see langword="true" /> for nonce-based
     /// AEADs (GCM, CCM, EAX, OCB, GCM-SIV).
     /// </summary>
@@ -102,13 +102,13 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
             .ToArray();
 
     /// <summary>
-    /// Creates a zero-filled initialisation value using the expected size for the transform under test.
+    /// Creates a zero-filled initialization value using the expected size for the transform under test.
     /// </summary>
     /// <returns>
-    /// A new initialisation value suitable for constructing the transform under test.
+    /// A new initialization value suitable for constructing the transform under test.
     /// </returns>
     /// <remarks>
-    /// Most AEAD modes use a block-sized initialisation value. GCM overrides the expected size to 12 bytes because
+    /// Most AEAD modes use a block-sized initialization value. GCM overrides the expected size to 12 bytes because
     /// its public constructor accepts a 96-bit nonce.
     /// </remarks>
     protected virtual byte[] CreateInitializationVector() =>
@@ -116,7 +116,7 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
 
     /// <summary>
     /// Returns a transform constructed with the default test cipher, using a correctly-sized all-zero
-    /// initialisation value for the transform under test.
+    /// initialization value for the transform under test.
     /// </summary>
     /// <returns>A new transform instance.</returns>
     protected TTransform MakeTransform() =>
@@ -126,10 +126,10 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
 
     /// <summary>
     /// Returns a fresh transform constructed with the default test cipher and the supplied
-    /// initialisation value, allowing concrete tests to share state between encrypting and
+    /// initialization value, allowing concrete tests to share state between encrypting and
     /// decrypting instances built atop the same monitoring cipher and IV.
     /// </summary>
-    /// <param name="iv">The initialisation value to seed the transform with.</param>
+    /// <param name="iv">The initialization value to seed the transform with.</param>
     /// <returns>A new transform instance.</returns>
     private TTransform MakeTransform(byte[] iv) =>
         CreateTransform(

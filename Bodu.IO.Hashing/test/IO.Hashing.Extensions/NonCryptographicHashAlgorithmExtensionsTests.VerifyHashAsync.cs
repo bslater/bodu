@@ -197,7 +197,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     // ─── Cancellation ─────────────────────────────────────────────────────────────────────────
 
     /// <summary>
-    /// Verifies that an already-cancelled token causes <see cref="OperationCanceledException" /> before any I/O.
+    /// Verifies that an already-canceled token causes <see cref="OperationCanceledException" /> before any I/O.
     /// </summary>
     [TestMethod]
     public async Task VerifyHashAsync_WhenTokenAlreadyCancelled_ShouldThrowExactly()

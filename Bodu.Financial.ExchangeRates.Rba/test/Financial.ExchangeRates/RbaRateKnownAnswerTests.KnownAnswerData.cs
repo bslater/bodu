@@ -9,7 +9,7 @@ namespace Bodu.Financial.ExchangeRates;
 public partial class RbaRateKnownAnswerTests
 {
     /// <summary>
-    /// Verifies that the known answers cover every workbook of the RBA era catalogue and reference no other.
+    /// Verifies that the known answers cover every workbook of the RBA era catalog and reference no other.
     /// </summary>
     [TestMethod]
     public void KnownAnswerData_ShouldMapEveryRowToAKnownWorkbook()

@@ -108,7 +108,7 @@ public sealed class DistributedNotableDateCacheExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that a non-default section name is honoured.
+    /// Verifies that a non-default section name is honored.
     /// </summary>
     [TestMethod]
     public void AddDistributedNotableDateCache_WhenSectionNameProvided_ShouldBindFromThatSection()

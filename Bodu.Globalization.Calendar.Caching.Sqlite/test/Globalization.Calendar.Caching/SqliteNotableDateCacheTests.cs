@@ -9,7 +9,7 @@ using Bodu.Test;
 namespace Bodu.Globalization.Calendar.Caching;
 
 /// <summary>
-/// Verifies the SQLite-specific persistence and option behaviour of <see cref="SqliteNotableDateCache" />.
+/// Verifies the SQLite-specific persistence and option behavior of <see cref="SqliteNotableDateCache" />.
 /// </summary>
 [TestClass]
 public sealed class SqliteNotableDateCacheTests

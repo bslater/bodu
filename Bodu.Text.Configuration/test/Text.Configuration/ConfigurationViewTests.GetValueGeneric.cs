@@ -67,7 +67,7 @@ public partial class ConfigurationViewTests
 
     /// <summary>
     /// Verifies that <see cref="ConfigurationView.GetValue{T}(string)" /> normalizes dotted keys to
-    /// colon-delimited form, matching the indexer's lookup behaviour.
+    /// colon-delimited form, matching the indexer's lookup behavior.
     /// </summary>
     [TestMethod]
     public void GetValueGeneric_WhenKeyUsesDottedForm_ShouldResolveToSameValue()

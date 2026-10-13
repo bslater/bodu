@@ -10,7 +10,7 @@ namespace Bodu.Security.Cryptography;
 
 /// <summary>
 /// Describes the expected observable properties of a single <typeparamref name="TBlockCipher" /> variant for use in
-/// constructor and behavioural tests, and carries the variant's known-answer vectors through the inherited
+/// constructor and behavioral tests, and carries the variant's known-answer vectors through the inherited
 /// <see cref="AlgorithmSpecification{TKat}.KnownAnswers" /> slot.
 /// </summary>
 public sealed record BlockCipherSpecification

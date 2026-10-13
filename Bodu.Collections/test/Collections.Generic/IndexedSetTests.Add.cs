@@ -10,7 +10,7 @@ public partial class IndexedSetTests
 {
 
     /// <summary>
-    /// Verifies that a custom comparer is honoured when detecting duplicates.
+    /// Verifies that a custom comparer is honored when detecting duplicates.
     /// </summary>
     [TestMethod]
     public void Add_WhenCustomComparerProvided_ShouldDeduplicateAccordingly()

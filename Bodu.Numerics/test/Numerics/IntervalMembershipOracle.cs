@@ -10,17 +10,17 @@ namespace Bodu.Numerics;
 
 /// <summary>
 /// Provides a point-membership oracle for the interval and interval-set operations over floating-point endpoints: a
-/// catalogue of intervals whose endpoints lie in { -Infinity, 0, 1, +Infinity }, and one probe value for each of those
+/// catalog of intervals whose endpoints lie in { -Infinity, 0, 1, +Infinity }, and one probe value for each of those
 /// endpoints and for each open gap between consecutive ones.
 /// </summary>
 /// <remarks>
 /// <para>
-/// Every catalogue interval is a union of the atoms the probes stand for, so the probes it contains, read through
+/// Every catalog interval is a union of the atoms the probes stand for, so the probes it contains, read through
 /// <see cref="Interval{T}.Contains(T)" />, decide every subset, overlap, difference and contiguity question about the
-/// catalogue exactly. A probe mask holds bit <c>i</c> when probe <c>i</c> is a member.
+/// catalog exactly. A probe mask holds bit <c>i</c> when probe <c>i</c> is a member.
 /// </para>
 /// <para>
-/// The catalogue includes the four half-bounded intervals anchored at the far infinity (<c>AtLeast(+Infinity)</c>,
+/// The catalog includes the four half-bounded intervals anchored at the far infinity (<c>AtLeast(+Infinity)</c>,
 /// <c>GreaterThan(+Infinity)</c>, <c>AtMost(-Infinity)</c> and <c>LessThan(-Infinity)</c>), which hold no value, so every
 /// operation is also held to the empty interval.
 /// </para>
@@ -28,7 +28,7 @@ namespace Bodu.Numerics;
 internal static class IntervalMembershipOracle
 {
     /// <summary>
-    /// Returns the probe values in ascending order: each catalogue endpoint, and one value inside each open gap between
+    /// Returns the probe values in ascending order: each catalog endpoint, and one value inside each open gap between
     /// consecutive endpoints.
     /// </summary>
     /// <typeparam name="T">The floating-point endpoint type.</typeparam>
@@ -46,11 +46,11 @@ internal static class IntervalMembershipOracle
         ];
 
     /// <summary>
-    /// Returns the catalogue: bounded intervals with an infinite endpoint, open or closed, on either side or both, the
+    /// Returns the catalog: bounded intervals with an infinite endpoint, open or closed, on either side or both, the
     /// unbounded shapes anchored at a finite value or at either infinity, and finite controls.
     /// </summary>
     /// <typeparam name="T">The floating-point endpoint type.</typeparam>
-    /// <returns>The catalogue intervals; the four anchored at the far infinity hold no value.</returns>
+    /// <returns>The catalog intervals; the four anchored at the far infinity hold no value.</returns>
     public static Interval<T>[] Catalog<T>()
         where T : IFloatingPointIeee754<T>
     {

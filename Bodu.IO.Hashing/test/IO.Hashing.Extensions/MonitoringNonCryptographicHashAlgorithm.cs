@@ -24,7 +24,7 @@ public sealed class MonitoringNonCryptographicHashAlgorithm
     private uint _sum;
 
     /// <summary>
-    /// Initialises a new instance of <see cref="MonitoringNonCryptographicHashAlgorithm" /> with a 4-byte output.
+    /// Initializes a new instance of <see cref="MonitoringNonCryptographicHashAlgorithm" /> with a 4-byte output.
     /// </summary>
     public MonitoringNonCryptographicHashAlgorithm()
         : base(hashLengthInBytes: sizeof(uint))

@@ -39,7 +39,7 @@ namespace Bodu.Test;
 /// </list>
 /// <para>
 /// A test method that carries no category attribute is treated as part of the BVT tier - the default build run
-/// executes every uncategorised test plus everything in <see cref="Smoke" />.
+/// executes every uncategorized test plus everything in <see cref="Smoke" />.
 /// </para>
 /// </remarks>
 public static class TestCategories
@@ -52,7 +52,7 @@ public static class TestCategories
 
     /// <summary>
     /// Identifies tests that are excluded from the default build/BVT run because they are exhaustive (full
-    /// known-answer vectors, full algorithm catalogues, large parameter sweeps, multi-decade calendar tables).
+    /// known-answer vectors, full algorithm catalogs, large parameter sweeps, multi-decade calendar tables).
     /// They run in the full regression suite.
     /// </summary>
     public const string Regression = "Regression";

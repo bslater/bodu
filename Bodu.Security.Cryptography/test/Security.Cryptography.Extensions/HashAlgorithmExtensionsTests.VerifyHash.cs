@@ -16,7 +16,7 @@ namespace Bodu.Security.Cryptography.Extensions;
 /// <remarks>
 /// <c>VerifyHash</c> throws on any null argument (algorithm, input, expected hash, encoding) and
 /// returns a simple <see langword="true" />/<see langword="false" /> result for valid inputs;
-/// exception-swallowing behaviour belongs to the <c>TryVerifyHash</c> family instead.
+/// exception-swallowing behavior belongs to the <c>TryVerifyHash</c> family instead.
 /// </remarks>
 public partial class HashAlgorithmExtensionsTests
 {

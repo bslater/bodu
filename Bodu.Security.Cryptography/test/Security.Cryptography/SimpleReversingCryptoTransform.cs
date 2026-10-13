@@ -15,7 +15,7 @@ namespace Bodu.Security.Cryptography;
 /// <remarks>
 /// <para>
 /// This transform is intended exclusively for use in test harnesses and diagnostic scenarios. It provides a
-/// deterministic, inspectable transform that makes it straightforward to verify block alignment, padding behaviour,
+/// deterministic, inspectable transform that makes it straightforward to verify block alignment, padding behavior,
 /// mode-of-operation chaining, and streaming correctness without cryptographic complexity.
 /// </para>
 /// <para>
@@ -44,12 +44,12 @@ public sealed class SimpleReversingCryptoTransform
     private bool _disposed;
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="SimpleReversingCryptoTransform" /> class.
+    /// Initializes a new instance of the <see cref="SimpleReversingCryptoTransform" /> class.
     /// </summary>
     /// <param name="cipher">The configured <see cref="SimpleReversingBlockCipher" /> engine.</param>
     /// <param name="cipherMode">The block cipher mode of operation.</param>
     /// <param name="paddingMode">The padding scheme to apply to the final block.</param>
-    /// <param name="iv">The initialisation vector. Required for all modes except ECB.</param>
+    /// <param name="iv">The initialization vector. Required for all modes except ECB.</param>
     /// <param name="encrypt">
     /// <see langword="true" /> to configure for encryption; <see langword="false" /> for decryption.
     /// </param>

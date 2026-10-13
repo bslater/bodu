@@ -9,7 +9,7 @@ using Microsoft.Extensions.Logging;
 namespace Bodu.Financial.ExchangeRates;
 
 /// <summary>
-/// Verifies the best-effort file-system behaviour of <see cref="FileSystemByteCache{TKey}" />, including the
+/// Verifies the best-effort file-system behavior of <see cref="FileSystemByteCache{TKey}" />, including the
 /// degradation logging emitted when a swallowed failure occurs.
 /// </summary>
 [TestClass]

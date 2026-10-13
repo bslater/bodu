@@ -13,7 +13,7 @@ namespace Bodu.Security.Cryptography.Infrastructure;
 /// <summary>
 /// Parses the XChaCha test vectors from <c>draft-arciszewski-xchacha-03</c>. The Section 2.2.1 HChaCha20 block-function
 /// vector is expressed as single <c>Key = / Nonce = / Subkey =</c> hex lines; the Appendix A.3 "developer-friendly"
-/// vectors are labelled blocks (<c>Key:</c>, <c>IV:</c>, <c>Plaintext:</c>, <c>Keystream:</c>, <c>Ciphertext:</c>, …)
+/// vectors are labeled blocks (<c>Key:</c>, <c>IV:</c>, <c>Plaintext:</c>, <c>Keystream:</c>, <c>Ciphertext:</c>, …)
 /// whose values are indented, multi-line continuous hex.
 /// </summary>
 public static partial class XChaChaDraftVectorReader
@@ -55,7 +55,7 @@ public static partial class XChaChaDraftVectorReader
     }
 
     /// <summary>
-    /// Reads the labelled hex fields of the Appendix A.3 developer-friendly section whose heading starts with
+    /// Reads the labeled hex fields of the Appendix A.3 developer-friendly section whose heading starts with
     /// <paramref name="sectionTitle" />.
     /// </summary>
     /// <param name="stream">A readable stream over the draft source.</param>

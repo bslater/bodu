@@ -38,7 +38,7 @@ public partial class PublicApiTests
     /// each public method of <see cref="NumericsJsonSerializerOptionsExtensions" /> and
     /// <see cref="FractionJsonExtensions" />, which register the factories.
     /// </summary>
-    /// <returns>The entry-point rows, each labelled with the entry point's signature.</returns>
+    /// <returns>The entry-point rows, each labeled with the entry point's signature.</returns>
     public static IEnumerable<object[]> DynamicCodeEntryPointCases()
     {
         const BindingFlags PublicStatic = BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly;

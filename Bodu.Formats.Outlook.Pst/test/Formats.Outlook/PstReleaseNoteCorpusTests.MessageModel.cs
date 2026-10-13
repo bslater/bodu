@@ -9,7 +9,7 @@ namespace Bodu.Formats.Outlook;
 public sealed partial class PstReleaseNoteCorpusTests
 {
     /// <summary>
-    /// Represents one modelled message: a property context, and the recipient and attachment tables and attachment
+    /// Represents one modeled message: a property context, and the recipient and attachment tables and attachment
     /// objects in its subnode tree.
     /// </summary>
     private sealed class MessageModel

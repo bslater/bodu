@@ -44,7 +44,7 @@ public sealed partial class RecurrenceCorpusTests
         ("zslayton", "zslayton"),
     ];
 
-    /// <summary>The assertion kinds the cron library tables and fix catalogues may record.</summary>
+    /// <summary>The assertion kinds the cron library tables and fix catalogs may record.</summary>
     private static readonly string[] s_cronLibraryKinds =
     [
         "next", "next-inclusive", "previous", "previous-inclusive", "next-sequence", "previous-sequence",
@@ -54,91 +54,91 @@ public sealed partial class RecurrenceCorpusTests
     /// <summary>
     /// Gets the in-scope rows that assert a next occurrence through the <see cref="DateTime" /> overload.
     /// </summary>
-    /// <value>The rows, from every library table and fix catalogue.</value>
+    /// <value>The rows, from every library table and fix catalog.</value>
     public static IEnumerable<object[]> CronLibraryNextOccurrences =>
         CronLibraryRows("next", "next-inclusive").Where(r => !r.HasOffset).Select(r => new object[] { r });
 
     /// <summary>
     /// Gets the in-scope rows that assert a next occurrence through the <see cref="DateTimeOffset" /> overload.
     /// </summary>
-    /// <value>The rows, from every library table and fix catalogue.</value>
+    /// <value>The rows, from every library table and fix catalog.</value>
     public static IEnumerable<object[]> CronLibraryNextOffsetOccurrences =>
         CronLibraryRows("next", "next-inclusive").Where(r => r.HasOffset).Select(r => new object[] { r });
 
     /// <summary>
     /// Gets the in-scope rows that assert a previous occurrence through the <see cref="DateTime" /> overload.
     /// </summary>
-    /// <value>The rows, from every library table and fix catalogue.</value>
+    /// <value>The rows, from every library table and fix catalog.</value>
     public static IEnumerable<object[]> CronLibraryPreviousOccurrences =>
         CronLibraryRows("previous", "previous-inclusive").Where(r => !r.HasOffset).Select(r => new object[] { r });
 
     /// <summary>
     /// Gets the in-scope rows that assert a previous occurrence through the <see cref="DateTimeOffset" /> overload.
     /// </summary>
-    /// <value>The rows, from every library table and fix catalogue.</value>
+    /// <value>The rows, from every library table and fix catalog.</value>
     public static IEnumerable<object[]> CronLibraryPreviousOffsetOccurrences =>
         CronLibraryRows("previous", "previous-inclusive").Where(r => r.HasOffset).Select(r => new object[] { r });
 
     /// <summary>
     /// Gets the in-scope rows that assert a run of successive next occurrences.
     /// </summary>
-    /// <value>The rows, from every library table and fix catalogue.</value>
+    /// <value>The rows, from every library table and fix catalog.</value>
     public static IEnumerable<object[]> CronLibraryNextSequences =>
         CronLibraryRows("next-sequence").Select(r => new object[] { r });
 
     /// <summary>
     /// Gets the in-scope rows that assert a run of successive previous occurrences.
     /// </summary>
-    /// <value>The rows, from every library table and fix catalogue.</value>
+    /// <value>The rows, from every library table and fix catalog.</value>
     public static IEnumerable<object[]> CronLibraryPreviousSequences =>
         CronLibraryRows("previous-sequence").Select(r => new object[] { r });
 
     /// <summary>
     /// Gets the in-scope rows whose next occurrence must not exist.
     /// </summary>
-    /// <value>The rows, from every library table and fix catalogue.</value>
+    /// <value>The rows, from every library table and fix catalog.</value>
     public static IEnumerable<object[]> CronLibraryUnreachableNext =>
         CronLibraryRows("unreachable-next").Select(r => new object[] { r });
 
     /// <summary>
     /// Gets the in-scope rows whose previous occurrence must not exist.
     /// </summary>
-    /// <value>The rows, from every library table and fix catalogue.</value>
+    /// <value>The rows, from every library table and fix catalog.</value>
     public static IEnumerable<object[]> CronLibraryUnreachablePrevious =>
         CronLibraryRows("unreachable-previous").Select(r => new object[] { r });
 
     /// <summary>
     /// Gets the in-scope rows whose expression must be rejected.
     /// </summary>
-    /// <value>The rows, from every library table and fix catalogue.</value>
+    /// <value>The rows, from every library table and fix catalog.</value>
     public static IEnumerable<object[]> CronLibraryMalformed =>
         CronLibraryRows("invalid").Select(r => new object[] { r });
 
     /// <summary>
     /// Gets the in-scope rows whose expression must be accepted.
     /// </summary>
-    /// <value>The rows, from every library table and fix catalogue.</value>
+    /// <value>The rows, from every library table and fix catalog.</value>
     public static IEnumerable<object[]> CronLibraryWellFormed =>
         CronLibraryRows("valid").Select(r => new object[] { r });
 
     /// <summary>
     /// Gets the in-scope rows that pair two spellings of the same schedule.
     /// </summary>
-    /// <value>The rows, from every library table and fix catalogue.</value>
+    /// <value>The rows, from every library table and fix catalog.</value>
     public static IEnumerable<object[]> CronLibraryEquivalent =>
         CronLibraryRows("equal").Select(r => new object[] { r });
 
     /// <summary>
     /// Gets the in-scope rows that pair two expressions denoting different schedules.
     /// </summary>
-    /// <value>The rows, from every library table and fix catalogue.</value>
+    /// <value>The rows, from every library table and fix catalog.</value>
     public static IEnumerable<object[]> CronLibraryDistinct =>
         CronLibraryRows("not-equal").Select(r => new object[] { r });
 
     /// <summary>
     /// Gets the in-scope rows that assert an expression's canonical text.
     /// </summary>
-    /// <value>The rows, from every library table and fix catalogue.</value>
+    /// <value>The rows, from every library table and fix catalog.</value>
     public static IEnumerable<object[]> CronLibraryCanonicalText =>
         CronLibraryRows("to-string").Select(r => new object[] { r });
 
@@ -472,8 +472,8 @@ public sealed partial class RecurrenceCorpusTests
     }
 
     /// <summary>
-    /// Verifies that every row of every library table and fix catalogue records an assertion kind the reconciliation
-    /// runs, so no row is dropped from every data source by a misspelt kind.
+    /// Verifies that every row of every library table and fix catalog records an assertion kind the reconciliation
+    /// runs, so no row is dropped from every data source by a misspelled kind.
     /// </summary>
     [TestMethod]
     public void CronLibraryTables_ShouldRecordOnlyKindsTheReconciliationRuns()
@@ -489,7 +489,7 @@ public sealed partial class RecurrenceCorpusTests
     }
 
     /// <summary>
-    /// Returns the in-scope rows of the given kinds from every library table and fix catalogue.
+    /// Returns the in-scope rows of the given kinds from every library table and fix catalog.
     /// </summary>
     /// <param name="kinds">The assertion kinds to keep.</param>
     /// <returns>The rows, library tables first, each in file order.</returns>

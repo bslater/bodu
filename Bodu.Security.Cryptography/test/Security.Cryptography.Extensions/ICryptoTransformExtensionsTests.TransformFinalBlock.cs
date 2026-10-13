@@ -28,7 +28,7 @@ public partial class ICryptoTransformExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="ICryptoTransformExtensions.TransformFinalBlock(ICryptoTransform)" /> finalises
+    /// Verifies that <see cref="ICryptoTransformExtensions.TransformFinalBlock(ICryptoTransform)" /> finalizes
     /// the transform without processing any data and returns a non-null byte array.
     /// </summary>
     [TestMethod]

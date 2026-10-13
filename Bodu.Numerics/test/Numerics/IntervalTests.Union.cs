@@ -111,7 +111,7 @@ public partial class IntervalTests
     }
 
     /// <summary>
-    /// Verifies that TryUnion over <see cref="double" /> succeeds exactly when the values of two catalogue intervals
+    /// Verifies that TryUnion over <see cref="double" /> succeeds exactly when the values of two catalog intervals
     /// form one run, and then returns those values, so an unbounded side meets a bounded infinite endpoint rather than
     /// reaching past it.
     /// </summary>
@@ -120,7 +120,7 @@ public partial class IntervalTests
         AssertTryUnionAgreesWithMembership<double>();
 
     /// <summary>
-    /// Verifies that TryUnion over <see cref="float" /> succeeds exactly when the values of two catalogue intervals
+    /// Verifies that TryUnion over <see cref="float" /> succeeds exactly when the values of two catalog intervals
     /// form one run, and then returns those values, so an unbounded side meets a bounded infinite endpoint rather than
     /// reaching past it.
     /// </summary>
@@ -129,7 +129,7 @@ public partial class IntervalTests
         AssertTryUnionAgreesWithMembership<float>();
 
     /// <summary>
-    /// Verifies that TryUnion over <see cref="Half" /> succeeds exactly when the values of two catalogue intervals form
+    /// Verifies that TryUnion over <see cref="Half" /> succeeds exactly when the values of two catalog intervals form
     /// one run, and then returns those values, so an unbounded side meets a bounded infinite endpoint rather than
     /// reaching past it.
     /// </summary>
@@ -139,7 +139,7 @@ public partial class IntervalTests
 
     /// <summary>
     /// Asserts that <see cref="Interval{T}.TryUnion(Interval{T}, out Interval{T})" /> succeeds for every pair of
-    /// catalogue intervals whose values form one run or none, and only those, with a result that holds exactly those
+    /// catalog intervals whose values form one run or none, and only those, with a result that holds exactly those
     /// values.
     /// </summary>
     /// <typeparam name="T">The floating-point endpoint type.</typeparam>
@@ -167,7 +167,7 @@ public partial class IntervalTests
     }
 
     /// <summary>
-    /// Verifies that uniting two catalogue intervals over <see cref="double" />, <see cref="float" /> and
+    /// Verifies that uniting two catalog intervals over <see cref="double" />, <see cref="float" /> and
     /// <see cref="Half" /> gives the same outcome and an equal result in either operand order, including where an
     /// unbounded side meets an open endpoint at the same infinity.
     /// </summary>
@@ -201,7 +201,7 @@ public partial class IntervalTests
 
     /// <summary>
     /// Asserts that <see cref="Interval{T}.TryUnion(Interval{T}, out Interval{T})" /> gives the same outcome and an
-    /// equal result for every pair of catalogue intervals in either order.
+    /// equal result for every pair of catalog intervals in either order.
     /// </summary>
     /// <typeparam name="T">The floating-point endpoint type.</typeparam>
     private static void AssertTryUnionIsCommutative<T>()

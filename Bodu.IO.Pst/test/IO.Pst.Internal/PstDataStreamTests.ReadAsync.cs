@@ -55,7 +55,7 @@ public partial class PstDataStreamTests
     }
 
     /// <summary>
-    /// Verifies that an already-cancelled token cancels the read before any byte is produced.
+    /// Verifies that an already-canceled token cancels the read before any byte is produced.
     /// </summary>
     [TestMethod]
     public async Task ReadAsync_WhenTokenCancelled_ShouldCancel()

@@ -10,7 +10,7 @@ public sealed partial class ReleaseNoteGovernanceTests
 {
     /// <summary>
     /// Verifies that nothing is reported when every <c>unit</c> row names an existing test; the embedded sample
-    /// catalogue's unit row names this test.
+    /// catalog's unit row names this test.
     /// </summary>
     [TestMethod]
     public void FindMissingUnitTests_WhenEveryNamedTestExists_ShouldReportNothing()

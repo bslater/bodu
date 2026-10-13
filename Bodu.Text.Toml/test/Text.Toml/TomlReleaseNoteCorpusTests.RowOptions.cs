@@ -16,7 +16,7 @@ namespace Bodu.Text.Toml;
 public sealed partial class TomlReleaseNoteCorpusTests
 {
     /// <summary>
-    /// Represents the options a catalogue row runs with, and maps them onto the reader, document and writer options.
+    /// Represents the options a catalog row runs with, and maps them onto the reader, document and writer options.
     /// </summary>
     /// <param name="SpecVersion">The TOML version the reader and the document parse under.</param>
     /// <param name="MaxDepth">The maximum nesting depth, or zero for each surface's default.</param>

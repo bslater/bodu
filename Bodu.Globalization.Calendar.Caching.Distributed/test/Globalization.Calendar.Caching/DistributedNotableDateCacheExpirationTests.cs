@@ -11,7 +11,7 @@ namespace Bodu.Globalization.Calendar.Caching;
 
 /// <summary>
 /// Verifies the server-side absolute expiration <see cref="DistributedNotableDateCache" /> stamps onto each written
-/// territory blob: on by default with a one-hour margin, honouring a custom margin, and absent when the margin is
+/// territory blob: on by default with a one-hour margin, honoring a custom margin, and absent when the margin is
 /// disabled.
 /// </summary>
 [TestClass]
@@ -40,7 +40,7 @@ public sealed class DistributedNotableDateCacheExpirationTests
     }
 
     /// <summary>
-    /// Verifies that a custom margin is honoured, and that a version-superseding rewrite re-stamps the lifetime.
+    /// Verifies that a custom margin is honored, and that a version-superseding rewrite re-stamps the lifetime.
     /// </summary>
     [TestMethod]
     public void StoreYear_WhenVersionSupersedes_ShouldRestampExpirationOnTheRewrite()

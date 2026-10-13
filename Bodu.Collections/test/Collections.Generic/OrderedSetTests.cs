@@ -49,7 +49,7 @@ public partial class OrderedSetTests
     }
 
     /// <summary>
-    /// Materialises the elements of <paramref name="set" /> using the public enumerator.
+    /// Materializes the elements of <paramref name="set" /> using the public enumerator.
     /// </summary>
     /// <param name="set">The set to snapshot.</param>
     /// <returns>A list containing the elements in enumeration order.</returns>
@@ -64,7 +64,7 @@ public partial class OrderedSetTests
     }
 
     /// <summary>
-    /// Materialises the elements of <paramref name="set" /> using the public read-only list indexer.
+    /// Materializes the elements of <paramref name="set" /> using the public read-only list indexer.
     /// </summary>
     /// <param name="set">The set to snapshot.</param>
     /// <returns>An array containing the elements in insertion order.</returns>

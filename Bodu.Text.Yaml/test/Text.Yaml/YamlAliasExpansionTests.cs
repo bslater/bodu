@@ -87,7 +87,7 @@ public class YamlAliasExpansionTests
 
     /// <summary>
     /// Verifies that a deep - but within-budget - linear alias chain parses successfully, so the explicit-stack cycle
-    /// and budget walks preserve the recursive traversal's accepting behaviour at depths native recursion also
+    /// and budget walks preserve the recursive traversal's accepting behavior at depths native recursion also
     /// handles.
     /// </summary>
     [TestMethod]

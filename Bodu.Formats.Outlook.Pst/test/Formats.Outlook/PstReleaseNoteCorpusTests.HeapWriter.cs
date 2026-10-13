@@ -14,7 +14,7 @@ public sealed partial class PstReleaseNoteCorpusTests
 {
     /// <summary>
     /// Fills a heap-on-node item by item over <see cref="PstLtpFixtureBuilder" />, starting a new heap block whenever
-    /// an item would not fit, by the catalogue README's heap rule.
+    /// an item would not fit, by the catalog README's heap rule.
     /// </summary>
     /// <remarks>
     /// An item goes in the current block unless <c>used + length + 4 + 2 * (items + 2)</c> exceeds the block payload,

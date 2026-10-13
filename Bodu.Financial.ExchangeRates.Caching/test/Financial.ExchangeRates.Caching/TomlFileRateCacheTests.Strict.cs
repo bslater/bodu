@@ -7,7 +7,7 @@
 namespace Bodu.Financial.ExchangeRates.Caching;
 
 /// <summary>
-/// Verifies the opt-in strict-failure behaviour of <see cref="TomlFileRateCache" /> (through the shared file
+/// Verifies the opt-in strict-failure behavior of <see cref="TomlFileRateCache" /> (through the shared file
 /// base): when <see cref="RateCacheOptions.ThrowOnStorageFailure" /> or
 /// <see cref="RateCacheOptions.ValidateStorageOnStart" /> is set, a file-system failure is surfaced rather than
 /// degraded to a skipped write or empty read.

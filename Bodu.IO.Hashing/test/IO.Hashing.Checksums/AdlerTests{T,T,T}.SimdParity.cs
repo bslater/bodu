@@ -44,7 +44,7 @@ public abstract partial class AdlerTests<TTest, TAlgorithm, TModulo>
 }
 
 /// <summary>
-/// Provides shared regression inputs used to pin Adler-style checksum behaviour against known canonical
+/// Provides shared regression inputs used to pin Adler-style checksum behavior against known canonical
 /// (zlib-cross-checked) digests on the SIMD-accelerated path.
 /// </summary>
 /// <remarks>

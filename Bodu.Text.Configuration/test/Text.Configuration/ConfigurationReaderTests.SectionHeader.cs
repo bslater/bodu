@@ -130,7 +130,7 @@ public class ConfigurationReaderSectionHeaderTests
     }
 
     /// <summary>
-    /// Verifies the existing behaviour that a section name containing <c>]</c> is preserved verbatim - the
+    /// Verifies the existing behavior that a section name containing <c>]</c> is preserved verbatim - the
     /// parser scans back for the final <c>]</c>, allowing patterns such as <c>[abc]def]</c>. This test pins
     /// the lenient default's contract.
     /// </summary>

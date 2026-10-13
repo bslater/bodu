@@ -19,7 +19,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     /// <param name="property">The property to test for post-disposal read access.</param>
     /// <remarks>
     /// This test uses reflection to invoke each property getter after calling <see cref="HashAlgorithm.Dispose" />. This
-    /// ensures concrete <see cref="HashAlgorithm" /> implementations enforce correct disposal behaviour on all readable
+    /// ensures concrete <see cref="HashAlgorithm" /> implementations enforce correct disposal behavior on all readable
     /// properties, and that the thrown <see cref="ObjectDisposedException" /> correctly identifies the disposed type.
     /// </remarks>
     [TestMethod]
@@ -81,7 +81,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     /// <remarks>
     /// This test uses reflection to read each property's current value before disposal, then attempts to reassign that
     /// same value after calling <see cref="HashAlgorithm.Dispose" />. This ensures concrete <see cref="HashAlgorithm" />
-    /// implementations enforce correct disposal behaviour on all writable properties, and that the thrown
+    /// implementations enforce correct disposal behavior on all writable properties, and that the thrown
     /// <see cref="ObjectDisposedException" /> correctly identifies the disposed type.
     /// </remarks>
     [TestMethod]

@@ -52,7 +52,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     }
 
     /// <summary>
-    /// Verifies behaviour when <see cref="HashAlgorithmExtensions.ComputeHashAsync" /> is cancelled before the await begins.
+    /// Verifies behavior when <see cref="HashAlgorithmExtensions.ComputeHashAsync" /> is canceled before the await begins.
     /// </summary>
     [TestMethod]
     public async Task ComputeHashAsync_WhenCancelledBeforeAwait_ShouldThrowExactly()
@@ -191,7 +191,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     /// <summary>
     /// Verifies that <see cref="HashAlgorithm.ComputeHashAsync" /> correctly interacts with a stream by tracking all read operations
     /// using <see cref="MonitoringStream" />. Ensures the total number of bytes read matches the expected length, and that multiple
-    /// reads were issued (i.e., streaming behaviour).
+    /// reads were issued (i.e., streaming behavior).
     /// </summary>
     [TestMethod]
     public async Task ComputeHashAsync_WithMonitoringStream_ShouldTrackAllReads()

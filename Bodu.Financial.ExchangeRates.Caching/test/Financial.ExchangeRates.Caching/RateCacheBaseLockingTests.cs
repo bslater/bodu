@@ -137,7 +137,7 @@ public sealed class RateCacheBaseLockingTests
         {
         }
 
-        /// <summary>Signalled when a write has entered and is blocked on the gate.</summary>
+        /// <summary>Signaled when a write has entered and is blocked on the gate.</summary>
         /// <value>The write-entered event.</value>
         public ManualResetEventSlim WriteEntered { get; } = new(initialState: false);
 

@@ -12,10 +12,10 @@ namespace Bodu.Text.Bencode;
 public sealed partial class BencodeReleaseNoteCorpusTests
 {
     /// <summary>
-    /// Verifies that copying each catalogued input token by token from the reader to the writer writes the expected
+    /// Verifies that copying each cataloged input token by token from the reader to the writer writes the expected
     /// bytes, when the row gives them, and bytes that read back to the same transcript as the input.
     /// </summary>
-    /// <param name="fix">The catalogue row.</param>
+    /// <param name="fix">The catalog row.</param>
     [TestMethod]
     [TestCategory("Regression")]
     [DynamicData(

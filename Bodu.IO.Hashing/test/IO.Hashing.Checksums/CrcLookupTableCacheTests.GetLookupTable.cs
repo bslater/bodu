@@ -52,7 +52,7 @@ public partial class CrcLookupTableCacheTests
     /// <summary>
     /// Verifies that repeated lookups with identical parameters return content-equivalent read-only views and
     /// observe the same underlying cached array, so callers see the precomputed table without paying for repeated
-    /// allocation or initialisation.
+    /// allocation or initialization.
     /// </summary>
     [TestMethod]
     public void GetLookupTable_WhenCalledWithSameParameters_ShouldReturnCachedInstance()

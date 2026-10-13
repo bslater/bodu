@@ -10,7 +10,7 @@ namespace Bodu.IO.Hashing;
 /// Contains unit tests for <see cref="BlockNonCryptographicHashAlgorithm{T}" /> that exercise branches not
 /// reachable through the production <see cref="Bodu.IO.Hashing.Checksums.Fletcher{TSelf}" /> derivatives -
 /// specifically the <c>blockSize &lt;= 0</c> constructor guard, the <c>CopyResidualStateFrom(null)</c> guard,
-/// and both padded-finalisation code paths governed by
+/// and both padded-finalization code paths governed by
 /// <see cref="BlockNonCryptographicHashAlgorithm{T}" />'s <c>ShouldPadFinalBlock</c> and
 /// <c>AllowUnalignedFinalBlock</c> virtual members.
 /// </summary>

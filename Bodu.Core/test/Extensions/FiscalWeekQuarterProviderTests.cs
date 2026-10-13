@@ -14,7 +14,7 @@ namespace Bodu.Extensions;
 /// <see cref="FiscalWeekQuarterProvider" /> describes a recurring fiscal calendar rule; year-specific
 /// values (fiscal year start, 53-week detection, quarter boundaries) are computed on demand from
 /// either an explicit <c>fiscalYear</c> argument or from the input date via an internal cross-year
-/// search. Dates near a fiscal year boundary therefore resolve to the correct neighbouring fiscal
+/// search. Dates near a fiscal year boundary therefore resolve to the correct neighboring fiscal
 /// year rather than throwing.
 /// </para>
 /// <para>

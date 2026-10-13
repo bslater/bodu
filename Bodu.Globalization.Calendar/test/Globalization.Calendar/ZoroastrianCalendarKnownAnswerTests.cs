@@ -10,7 +10,7 @@ namespace Bodu.Globalization.Calendar;
 
 /// <summary>
 /// Verifies the year-by-year known-answer table for the Zoroastrian (Fasli / Iranian) observances authored in the
-/// bundled <c>global-zoroastrian</c> catalogue. Each observance is a <see cref="FixedDateStrategy" /> at a fixed
+/// bundled <c>global-zoroastrian</c> catalog. Each observance is a <see cref="FixedDateStrategy" /> at a fixed
 /// month/day of the <see cref="CalendarSystem.Persian" /> calendar with a calendar-year sweep, projected onto the
 /// Gregorian year by the base class library's <see cref="System.Globalization.PersianCalendar" />.
 /// </summary>
@@ -29,9 +29,9 @@ public sealed class ZoroastrianCalendarKnownAnswerTests
     private static readonly Lazy<NotableDateService> s_sweepService = new(CreateService);
 
     /// <summary>
-    /// Builds a service over the bundled <c>global-zoroastrian</c> catalogue.
+    /// Builds a service over the bundled <c>global-zoroastrian</c> catalog.
     /// </summary>
-    /// <returns>A service for the catalogue.</returns>
+    /// <returns>A service for the catalog.</returns>
     private static NotableDateService CreateService() =>
         CommonCatalogues.Service("global-zoroastrian");
 

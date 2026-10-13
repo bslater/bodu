@@ -51,7 +51,7 @@ public partial class ConcurrentCircularBufferTests
     }
 
     /// <summary>
-    /// Verifies that a collection-initialised buffer reports the explicitly supplied capacity, even when the source is trimmed to fit.
+    /// Verifies that a collection-initialized buffer reports the explicitly supplied capacity, even when the source is trimmed to fit.
     /// </summary>
     [TestMethod]
     public void Capacity_Get_WhenConstructedFromCollection_ShouldUseProvidedCapacity()

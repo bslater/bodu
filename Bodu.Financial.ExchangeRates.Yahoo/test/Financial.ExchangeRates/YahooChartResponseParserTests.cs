@@ -10,7 +10,7 @@ using Bodu.Financial.Currencies;
 namespace Bodu.Financial.ExchangeRates;
 
 /// <summary>
-/// Verifies the behaviour of <see cref="YahooChartResponseParser" /> over fixture and malformed input.
+/// Verifies the behavior of <see cref="YahooChartResponseParser" /> over fixture and malformed input.
 /// </summary>
 [TestClass]
 public class YahooChartResponseParserTests

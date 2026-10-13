@@ -11,7 +11,7 @@ namespace Bodu.Financial;
 
 /// <summary>
 /// Verifies <see cref="MoneyBag" /> aggregation, conversion to a single target currency, equality, enumeration,
-/// and JSON serialisation.
+/// and JSON serialization.
 /// </summary>
 [TestClass]
 public partial class MoneyBagTests

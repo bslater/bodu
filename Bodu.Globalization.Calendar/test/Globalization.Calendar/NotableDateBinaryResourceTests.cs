@@ -44,7 +44,7 @@ public sealed partial class NotableDateBinaryResourceTests
 
     /// <summary>
     /// Computes a resolved-occurrence fingerprint over every supported territory for 2024-2026, so two resources can
-    /// be compared by behaviour rather than by reference.
+    /// be compared by behavior rather than by reference.
     /// </summary>
     /// <param name="resource">The resource to fingerprint.</param>
     /// <returns>The ordered fingerprint tuples.</returns>

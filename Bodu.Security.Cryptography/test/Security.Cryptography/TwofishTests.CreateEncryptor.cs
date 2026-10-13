@@ -12,7 +12,7 @@ public sealed partial class TwofishTests
 {
     /// <summary>
     /// Verifies that <see cref="Twofish.CreateEncryptor(byte[], byte[])" /> with an IV that is shorter than
-    /// the block size reports the IV bit-length (not the key bit-length) in the exception message. Parameterised
+    /// the block size reports the IV bit-length (not the key bit-length) in the exception message. Parameterized
     /// over all three supported key sizes to guard against confusion between key length and IV length in
     /// validation diagnostics. Twofish-specific because the message format is not part of the shared
     /// <see cref="SymmetricAlgorithmTests{TTest, TAlgorithm}" /> contract.
@@ -43,7 +43,7 @@ public sealed partial class TwofishTests
 
     /// <summary>
     /// Verifies that <see cref="Twofish.CreateDecryptor(byte[], byte[])" /> with an IV that is shorter than
-    /// the block size reports the IV bit-length (not the key bit-length) in the exception message. Parameterised
+    /// the block size reports the IV bit-length (not the key bit-length) in the exception message. Parameterized
     /// over all three supported key sizes. Twofish-specific for the same reason as
     /// <see cref="CreateEncryptor_WhenIvIsTooShort_ShouldReportIvBitLength" />.
     /// </summary>

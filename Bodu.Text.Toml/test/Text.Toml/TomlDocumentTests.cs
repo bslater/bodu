@@ -12,7 +12,7 @@ namespace Bodu.Text.Toml;
 
 /// <summary>
 /// Verifies the read-only TOML document object model (<see cref="TomlDocument" />, <see cref="TomlElement" />, and
-/// <see cref="TomlProperty" />), the <see cref="System.Text.Json.JsonDocument" /> analogue for TOML.
+/// <see cref="TomlProperty" />), the <see cref="System.Text.Json.JsonDocument" /> analog for TOML.
 /// </summary>
 [TestClass]
 public partial class TomlDocumentTests

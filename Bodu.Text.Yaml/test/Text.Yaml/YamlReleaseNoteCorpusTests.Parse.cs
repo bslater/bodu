@@ -15,10 +15,10 @@ namespace Bodu.Text.Yaml;
 public sealed partial class YamlReleaseNoteCorpusTests
 {
     /// <summary>
-    /// Verifies that each catalogued input a fix established as readable reads as the documents the row expects, one
+    /// Verifies that each cataloged input a fix established as readable reads as the documents the row expects, one
     /// JSON value per document, with integers told apart from floats.
     /// </summary>
-    /// <param name="fix">The catalogue row.</param>
+    /// <param name="fix">The catalog row.</param>
     [TestMethod]
     [TestCategory("Regression")]
     [DynamicData(

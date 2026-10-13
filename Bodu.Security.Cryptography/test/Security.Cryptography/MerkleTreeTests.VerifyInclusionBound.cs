@@ -19,7 +19,7 @@ public partial class MerkleTreeTests
     /// </summary>
     /// <remarks>
     /// <para>
-    /// This is the requirements document's appendix D, and both halves are required behaviour. The acceptance on line
+    /// This is the requirements document's appendix D, and both halves are required behavior. The acceptance on line
     /// one is <strong>not a defect to be fixed</strong> - it is RFC 6962's verifier working exactly as specified. A
     /// four-block tree's path for block 0 has precisely the length a three-block tree's first path wants and walks to
     /// the same head, so the size check alone cannot tell them apart.
@@ -71,7 +71,7 @@ public partial class MerkleTreeTests
 
     /// <summary>
     /// Verifies that the bound roots of a sixteen-byte and a twelve-byte input differ, which is the arithmetic the
-    /// fail-closed behaviour rests on.
+    /// fail-closed behavior rests on.
     /// </summary>
     [TestMethod]
     public void VerifyInclusionBound_WhenComparedAcrossLengths_ShouldProduceDistinctBoundRoots()

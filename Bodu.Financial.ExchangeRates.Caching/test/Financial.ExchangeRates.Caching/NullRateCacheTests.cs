@@ -7,7 +7,7 @@
 namespace Bodu.Financial.ExchangeRates.Caching;
 
 /// <summary>
-/// Verifies the no-op behaviour of <see cref="NullRateCache" />.
+/// Verifies the no-op behavior of <see cref="NullRateCache" />.
 /// </summary>
 [TestClass]
 public sealed partial class NullRateCacheTests

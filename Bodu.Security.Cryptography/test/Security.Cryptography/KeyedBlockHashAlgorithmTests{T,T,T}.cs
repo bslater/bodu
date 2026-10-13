@@ -31,12 +31,12 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
     /// Creates a new instance of the hash algorithm under test, preconfigured with a deterministic key.
     /// </summary>
     /// <returns>
-    /// A newly constructed instance of <typeparamref name="TAlgorithm" />, initialised with the
+    /// A newly constructed instance of <typeparamref name="TAlgorithm" />, initialized with the
     /// result of <see cref="GetDeterministicKey" /> to ensure repeatable hash output across runs.
     /// </returns>
     /// <remarks>
     /// Override this method if the algorithm under test requires special construction (for example,
-    /// constructor parameters, clamping, or post-initialisation setup).
+    /// constructor parameters, clamping, or post-initialization setup).
     /// </remarks>
     protected override TAlgorithm CreateAlgorithm() =>
         new()
@@ -51,12 +51,12 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
     /// The key to assign to the newly constructed algorithm instance.
     /// </param>
     /// <returns>
-    /// A newly constructed instance of <typeparamref name="TAlgorithm" />, initialised with
+    /// A newly constructed instance of <typeparamref name="TAlgorithm" />, initialized with
     /// <paramref name="key" />.
     /// </returns>
     /// <remarks>
     /// Override this method if the algorithm under test requires special construction, such as constructor
-    /// parameters, key clamping, key normalisation, or post-initialisation setup.
+    /// parameters, key clamping, key normalization, or post-initialization setup.
     /// </remarks>
     protected virtual TAlgorithm CreateAlgorithm(byte[] key) =>
         new()
@@ -81,7 +81,7 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
     /// </summary>
     /// <returns>A non-null, non-empty <see cref="byte" /> array containing a randomly generated key suitable for the algorithm.</returns>
     /// <remarks>
-    /// Used by test cases that verify key-dependent behaviour, such as confirming that different
+    /// Used by test cases that verify key-dependent behavior, such as confirming that different
     /// keys yield different hash outputs or that key isolation is preserved across instances.
     /// </remarks>
     protected virtual byte[] GenerateUniqueKey(int size)

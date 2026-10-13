@@ -9,7 +9,7 @@ namespace Bodu.Financial.ExchangeRates;
 public partial class RbaRateProviderTests
 {
     /// <summary>
-    /// Verifies that with the default era catalogue the provider advertises a fixed floor at the start of the first
+    /// Verifies that with the default era catalog the provider advertises a fixed floor at the start of the first
     /// historical workbook era, 1 January 1983.
     /// </summary>
     [TestMethod]
@@ -22,8 +22,8 @@ public partial class RbaRateProviderTests
     }
 
     /// <summary>
-    /// Verifies that a custom era catalogue narrows the advertised floor to its earliest era start, regardless of
-    /// catalogue order.
+    /// Verifies that a custom era catalog narrows the advertised floor to its earliest era start, regardless of
+    /// catalog order.
     /// </summary>
     [TestMethod]
     public void HistoryAvailability_WhenCustomEras_ShouldReportEarliestEraStart()

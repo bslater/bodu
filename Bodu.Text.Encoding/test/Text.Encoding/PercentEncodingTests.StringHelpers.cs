@@ -42,7 +42,7 @@ public sealed partial class PercentEncodingTests
     }
 
     /// <summary>
-    /// Verifies that an explicit text encoding is honoured by the string helpers.
+    /// Verifies that an explicit text encoding is honored by the string helpers.
     /// </summary>
     [TestMethod]
     public void EncodeString_WhenAsciiEncodingSupplied_ShouldUseIt()
@@ -67,7 +67,7 @@ public sealed partial class PercentEncodingTests
 
     /// <summary>
     /// Verifies that <see cref="PercentEncoding.DecodeString(ReadOnlySpan{char}, System.Text.Encoding, PercentEncodingMode, PercentDecodingOptions)" />
-    /// honours a throwing decoder fallback for invalid UTF-8.
+    /// honors a throwing decoder fallback for invalid UTF-8.
     /// </summary>
     [TestMethod]
     public void DecodeString_WhenInvalidUtf8AndThrowingFallback_ShouldThrowDecoderFallbackException()

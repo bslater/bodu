@@ -9,7 +9,7 @@ namespace Bodu.Security.Cryptography;
 public partial class AsconCxof128Tests
 {
     /// <summary>
-    /// Verifies that the output of <see cref="AsconCxof128" /> with an empty customisation string
+    /// Verifies that the output of <see cref="AsconCxof128" /> with an empty customization string
     /// differs from the output of <see cref="AsconXof128" /> for the same message. The domain-
     /// separation constant ensures the two algorithms always produce distinct outputs.
     /// </summary>
@@ -30,7 +30,7 @@ public partial class AsconCxof128Tests
     }
 
     /// <summary>
-    /// Verifies that different customisation strings produce different outputs for the same message.
+    /// Verifies that different customization strings produce different outputs for the same message.
     /// </summary>
     [TestMethod]
     public void GetHash_WithDifferentCustomizations_ShouldProduceDifferentOutputs()
@@ -52,7 +52,7 @@ public partial class AsconCxof128Tests
     }
 
     /// <summary>
-    /// Verifies that the same customisation string and message always produce the same output
+    /// Verifies that the same customization string and message always produce the same output
     /// (determinism).
     /// </summary>
     [TestMethod]
@@ -76,7 +76,7 @@ public partial class AsconCxof128Tests
     }
 
     /// <summary>
-    /// Verifies that customising then absorbing the same bytes in the opposite order produces
+    /// Verifies that customizing then absorbing the same bytes in the opposite order produces
     /// different output, confirming the domain separation is order-sensitive.
     /// </summary>
     [TestMethod]
@@ -103,7 +103,7 @@ public partial class AsconCxof128Tests
     /// <summary>
     /// Verifies that skipping <see cref="AsconCxof128.Customize" /> and directly calling
     /// <see cref="AsconXof{T}.Absorb" /> succeeds and produces output that differs from the
-    /// explicitly customised case.
+    /// explicitly customized case.
     /// </summary>
     [TestMethod]
     public void GetHash_WithoutCustomize_ShouldSucceedAndDifferFromCustomizedOutput()

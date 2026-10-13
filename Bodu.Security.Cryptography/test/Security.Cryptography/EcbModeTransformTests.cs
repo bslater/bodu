@@ -15,7 +15,7 @@ public sealed partial class EcbModeTransformTests
         => new(cipher);
 
     /// <inheritdoc />
-    /// <remarks>ECB processes every block independently and takes no initialisation vector.</remarks>
+    /// <remarks>ECB processes every block independently and takes no initialization vector.</remarks>
     protected override bool UsesInitializationVector => false;
 
     /// <inheritdoc />

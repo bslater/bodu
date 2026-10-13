@@ -153,7 +153,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that the async stream overload returns <see langword="false" /> when an already-cancelled token is
+    /// Verifies that the async stream overload returns <see langword="false" /> when an already-canceled token is
     /// supplied - cancellation is caught and surfaced as a non-match.
     /// </summary>
     [TestMethod]

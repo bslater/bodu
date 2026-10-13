@@ -24,7 +24,7 @@ public partial class ConfigurationResolveOptionsTests
 
     /// <summary>
     /// Verifies that the EditorConfig-compatible preset skips non-root preamble values, requires a path
-    /// root, and honours the <c>unset</c> sentinel.
+    /// root, and honors the <c>unset</c> sentinel.
     /// </summary>
     [TestMethod]
     public void EditorConfigCompatible_WhenAccessed_ShouldFollowEditorConfigSemantics()

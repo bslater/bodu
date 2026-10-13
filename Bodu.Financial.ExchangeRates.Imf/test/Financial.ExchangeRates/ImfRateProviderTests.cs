@@ -7,7 +7,7 @@
 namespace Bodu.Financial.ExchangeRates;
 
 /// <summary>
-/// Verifies the loading and lookup behaviour of <see cref="ImfRateProvider" /> against the embedded April 2026 report.
+/// Verifies the loading and lookup behavior of <see cref="ImfRateProvider" /> against the embedded April 2026 report.
 /// </summary>
 [TestClass]
 public partial class ImfRateProviderTests

@@ -9,7 +9,7 @@ using System.Text;
 namespace Bodu.IO.Hashing.Checksums;
 /// <summary>
 /// Contains unit tests for the <see cref="Crc" /> non-cryptographic hash algorithm. Extended by partial files
-/// covering the catalogue parity vectors and resume-from-hash semantics.
+/// covering the catalog parity vectors and resume-from-hash semantics.
 /// </summary>
 [TestClass]
 public partial class CrcTests
@@ -39,7 +39,7 @@ public partial class CrcTests
 
     /// <inheritdoc />
     /// <remarks>
-    /// The common incremental test is skipped for CRC; the catalogue partial provides exhaustive coverage of
+    /// The common incremental test is skipped for CRC; the catalog partial provides exhaustive coverage of
     /// the canonical check vectors against all 100+ RevEng standards instead.
     /// </remarks>
     protected override IReadOnlyList<string> GetExpectedHashesForIncrementalInput(CrcTestVariant variant) => variant switch
@@ -98,9 +98,9 @@ public partial class CrcTests
     /// <inheritdoc />
     /// <remarks>
     /// Each variant seeds <see cref="NonCryptographicHashKnownAnswers.Empty" /> with the algorithm's empty-input
-    /// digest and contributes the RevEng catalogue <c>"123456789"</c> check vector via
+    /// digest and contributes the RevEng catalog <c>"123456789"</c> check vector via
     /// <see cref="NonCryptographicHashKnownAnswers.Additional" />. Broader shared-input coverage for CRC is
-    /// deferred to <c>CrcTests.Catalog.cs</c>, which exercises every catalogued CRC standard in one pass.
+    /// deferred to <c>CrcTests.Catalog.cs</c>, which exercises every cataloged CRC standard in one pass.
     /// </remarks>
     protected override NonCryptographicHashAlgorithmSpecification GetSpecification(CrcTestVariant variant) => variant switch
     {

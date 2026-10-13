@@ -58,7 +58,7 @@ public sealed partial class CfbModeTransformTests
     }
 
     /// <summary>
-    /// Verifies that encrypting in CFB mode does not mutate the caller-supplied initialisation vector.
+    /// Verifies that encrypting in CFB mode does not mutate the caller-supplied initialization vector.
     /// </summary>
     [TestMethod]
     public void Transform_WhenEncrypting_ShouldNotMutateIv()
@@ -78,7 +78,7 @@ public sealed partial class CfbModeTransformTests
 
     /// <summary>
     /// Verifies that CFB uses the cipher's encrypt primitive on both encryption and decryption paths. This is a defining
-    /// property of CFB (it turns the block cipher into a self-synchronising stream cipher).
+    /// property of CFB (it turns the block cipher into a self-synchronizing stream cipher).
     /// </summary>
     [TestMethod]
     public void Transform_WhenDecrypting_ShouldUseCipherEncryptPrimitive()

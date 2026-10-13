@@ -7,12 +7,12 @@
 namespace Bodu.Financial.ExchangeRates;
 
 /// <summary>
-/// Selects the labelled header rows a synthetic F11.1 data sheet carries.
+/// Selects the labeled header rows a synthetic F11.1 data sheet carries.
 /// </summary>
 /// <remarks>
 /// Each row keeps its F11.1 position whether or not the others are written: the title in row 1, the description in
 /// row 2, the frequency in row 3, the type in row 4, the units in row 5, the source in row 8, the publication date in
-/// row 9 and the series identifier in row 10, each labelled in column 0.
+/// row 9 and the series identifier in row 10, each labeled in column 0.
 /// </remarks>
 [Flags]
 internal enum RbaTestHeaderRows

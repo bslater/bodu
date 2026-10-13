@@ -7,7 +7,7 @@
 namespace Bodu.Test.Contracts;
 
 /// <summary>
-/// Reusable behavioural contract test base for types that expose the <see cref="IReadOnlyCollection{T}" />
+/// Reusable behavioral contract test base for types that expose the <see cref="IReadOnlyCollection{T}" />
 /// surface but not <see cref="ICollection{T}" />. Concrete subclasses override <see cref="CreateEmpty" />
 /// and <see cref="Create(TItem[])" /> to plug their type into the inherited contract tests.
 /// </summary>

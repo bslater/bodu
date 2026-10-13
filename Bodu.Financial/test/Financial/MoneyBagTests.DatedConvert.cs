@@ -46,7 +46,7 @@ public partial class MoneyBagTests
     }
 
     /// <summary>
-    /// Verifies that the dated convert path honours <see cref="MoneyBagConversionRoundingPolicy.RoundEachCurrencyThenSum" />
+    /// Verifies that the dated convert path honors <see cref="MoneyBagConversionRoundingPolicy.RoundEachCurrencyThenSum" />
     /// for ledger workflows where each per-currency line must settle before aggregation.
     /// </summary>
     [TestMethod]

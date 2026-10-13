@@ -90,7 +90,7 @@ public partial class MoneyTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="Money.TrimScale" /> on a default-initialised, currency-less value throws
+    /// Verifies that <see cref="Money.TrimScale" /> on a default-initialized, currency-less value throws
     /// <see cref="InvalidOperationException" />.
     /// </summary>
     [TestMethod]

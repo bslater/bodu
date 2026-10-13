@@ -11,7 +11,7 @@ namespace Bodu.Globalization.Calendar;
 
 /// <summary>
 /// Loads the embedded Hebrew-calendar observance vector table - fifty Gregorian years of independently computed dates
-/// for every <c>global-jewish</c> catalogue observance - as KAT rows for <c>[DynamicData]</c> binding.
+/// for every <c>global-jewish</c> catalog observance - as KAT rows for <c>[DynamicData]</c> binding.
 /// </summary>
 /// <remarks>
 /// <para>

@@ -9,7 +9,7 @@ using System.IO.Hashing;
 namespace Bodu.IO.Hashing.Contracts;
 
 /// <summary>
-/// Reusable behavioural contract test base for a <see cref="NonCryptographicHashAlgorithm" /> implementation.
+/// Reusable behavioral contract test base for a <see cref="NonCryptographicHashAlgorithm" /> implementation.
 /// Concrete subclasses override <see cref="Create" />, <see cref="KnownAnswers" />, and
 /// <see cref="StreamingCases" /> to plug their algorithm into the inherited contract tests.
 /// </summary>
@@ -63,7 +63,7 @@ public abstract class NonCryptographicHashAlgorithmContractTests<TAlgorithm>
     /// <summary>
     /// Verifies that every <see cref="HashKat" /> row in <see cref="KnownAnswers" /> reproduces its
     /// expected hex digest when fed to a fresh algorithm instance via a single <c>Append</c> call and
-    /// finalised with <c>GetHashAndReset</c>.
+    /// finalized with <c>GetHashAndReset</c>.
     /// </summary>
     [TestMethod]
     public void GetHashAndReset_WhenKnownAnswer_ShouldMatchExpectedHex()

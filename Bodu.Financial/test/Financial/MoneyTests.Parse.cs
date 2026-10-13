@@ -41,7 +41,7 @@ public partial class MoneyTests
 
     /// <summary>
     /// Verifies that text at or below the currency's registered precision parses at the registry precision, unchanged
-    /// from the historical behaviour.
+    /// from the historical behavior.
     /// </summary>
     [TestMethod]
     [DataRow("USD 19.99", DisplayName = "Exactly registry precision")]

@@ -93,7 +93,7 @@ public partial class IntervalTests
     }
 
     /// <summary>
-    /// Verifies that Difference over <see cref="double" /> leaves exactly the values of the first catalogue interval
+    /// Verifies that Difference over <see cref="double" /> leaves exactly the values of the first catalog interval
     /// that the second lacks, in ordered pieces that each hold a value, so an unbounded side removes no bounded
     /// infinite endpoint.
     /// </summary>
@@ -102,7 +102,7 @@ public partial class IntervalTests
         AssertDifferenceAgreesWithMembership<double>();
 
     /// <summary>
-    /// Verifies that Difference over <see cref="float" /> leaves exactly the values of the first catalogue interval
+    /// Verifies that Difference over <see cref="float" /> leaves exactly the values of the first catalog interval
     /// that the second lacks, in ordered pieces that each hold a value, so an unbounded side removes no bounded
     /// infinite endpoint.
     /// </summary>
@@ -111,7 +111,7 @@ public partial class IntervalTests
         AssertDifferenceAgreesWithMembership<float>();
 
     /// <summary>
-    /// Verifies that Difference over <see cref="Half" /> leaves exactly the values of the first catalogue interval that
+    /// Verifies that Difference over <see cref="Half" /> leaves exactly the values of the first catalog interval that
     /// the second lacks, in ordered pieces that each hold a value, so an unbounded side removes no bounded infinite
     /// endpoint.
     /// </summary>
@@ -120,7 +120,7 @@ public partial class IntervalTests
         AssertDifferenceAgreesWithMembership<Half>();
 
     /// <summary>
-    /// Asserts that <see cref="Interval{T}.Difference(Interval{T})" /> leaves exactly the values of each catalogue
+    /// Asserts that <see cref="Interval{T}.Difference(Interval{T})" /> leaves exactly the values of each catalog
     /// interval that the other lacks, as disjoint ordered pieces that each hold a value.
     /// </summary>
     /// <typeparam name="T">The floating-point endpoint type.</typeparam>

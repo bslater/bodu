@@ -11,7 +11,7 @@ namespace Bodu.Extensions;
 public partial class StringExtensionsTests
 {
     /// <summary>
-    /// Builds a <see cref="WordCasingOptions" /> instance recognising a small fixed acronym catalogue for
+    /// Builds a <see cref="WordCasingOptions" /> instance recognizing a small fixed acronym catalog for
     /// the acronym-aware overload tests.
     /// </summary>
     /// <returns>The configured options instance.</returns>
@@ -23,7 +23,7 @@ public partial class StringExtensionsTests
 
     /// <summary>
     /// Verifies that <see cref="StringExtensions.ToCamelCase(string, WordCasingOptions)" /> lower-cases a
-    /// leading acronym while capitalising subsequent acronym words.
+    /// leading acronym while capitalizing subsequent acronym words.
     /// </summary>
     [TestMethod]
     public void ToCamelCase_WhenGivenAcronymOptions_ShouldDecomposeAdjacentAcronyms() => Assert.AreEqual("jsonRpcApi", "JSONRPCAPI".ToCamelCase(AcronymAwareOptions()));
@@ -37,7 +37,7 @@ public partial class StringExtensionsTests
 
     /// <summary>
     /// Verifies that <see cref="StringExtensions.ToPascalCase(string, WordCasingOptions)" /> preserves a
-    /// recognised mixed-case word verbatim.
+    /// recognized mixed-case word verbatim.
     /// </summary>
     [TestMethod]
     public void ToPascalCase_WhenWordIsMixedCase_ShouldPreserveMixedCaseWord() => Assert.AreEqual("OAuthTokenExchange", "OAuth token exchange".ToPascalCase(AcronymAwareOptions()));
@@ -71,14 +71,14 @@ public partial class StringExtensionsTests
     public void ToDotCase_WhenGivenAcronymOptions_ShouldJoinLowerCaseWords() => Assert.AreEqual("customer.display.name", "CustomerDisplayName".ToDotCase(AcronymAwareOptions()));
 
     /// <summary>
-    /// Verifies that <see cref="StringExtensions.ToTrainCase(string, WordCasingOptions)" /> capitalises every
+    /// Verifies that <see cref="StringExtensions.ToTrainCase(string, WordCasingOptions)" /> capitalizes every
     /// word and joins with hyphens.
     /// </summary>
     [TestMethod]
     public void ToTrainCase_WhenGivenAcronymOptions_ShouldCapitaliseWords() => Assert.AreEqual("Json-Rpc-Api", "JSONRPCAPI".ToTrainCase(AcronymAwareOptions()));
 
     /// <summary>
-    /// Verifies that <see cref="StringExtensions.ToTitleCase(string, WordCasingOptions)" /> canonicalises a
+    /// Verifies that <see cref="StringExtensions.ToTitleCase(string, WordCasingOptions)" /> canonicalizes a
     /// known acronym and down-cases an interior minor word.
     /// </summary>
     [TestMethod]
@@ -95,7 +95,7 @@ public partial class StringExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="StringExtensions.ToTitleCase(string, WordCasingOptions)" /> capitalises the
+    /// Verifies that <see cref="StringExtensions.ToTitleCase(string, WordCasingOptions)" /> capitalizes the
     /// letter after an apostrophe in a personal name.
     /// </summary>
     [TestMethod]
@@ -113,7 +113,7 @@ public partial class StringExtensionsTests
 
     /// <summary>
     /// Verifies that <see cref="StringExtensions.ToTitleCase(string, WordCasingOptions)" /> applies the
-    /// supplied culture when capitalising.
+    /// supplied culture when capitalizing.
     /// </summary>
     [TestMethod]
     public void ToTitleCase_WhenCultureIsTurkish_ShouldUseCultureCasing()
@@ -128,7 +128,7 @@ public partial class StringExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="StringExtensions.ToSentenceCase(string, WordCasingOptions)" /> capitalises
+    /// Verifies that <see cref="StringExtensions.ToSentenceCase(string, WordCasingOptions)" /> capitalizes
     /// the first letter of each sentence and preserves known acronyms.
     /// </summary>
     [TestMethod]

@@ -9,7 +9,7 @@ using Bodu.Financial.Currencies;
 namespace Bodu.Financial.ExchangeRates.Caching;
 
 /// <summary>
-/// Verifies the first-available behaviour of <see cref="PriorityFallbackStrategy" />.
+/// Verifies the first-available behavior of <see cref="PriorityFallbackStrategy" />.
 /// </summary>
 [TestClass]
 public sealed partial class PriorityFallbackStrategyTests

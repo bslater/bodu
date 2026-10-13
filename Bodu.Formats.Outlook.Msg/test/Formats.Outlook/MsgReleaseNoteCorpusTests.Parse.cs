@@ -12,10 +12,10 @@ namespace Bodu.Formats.Outlook;
 public sealed partial class MsgReleaseNoteCorpusTests
 {
     /// <summary>
-    /// Verifies that each catalogued input a fix established as readable is read through the selected surface into the
+    /// Verifies that each cataloged input a fix established as readable is read through the selected surface into the
     /// expected rendering.
     /// </summary>
-    /// <param name="fix">The catalogue row.</param>
+    /// <param name="fix">The catalog row.</param>
     [TestMethod]
     [TestCategory("Regression")]
     [DynamicData(

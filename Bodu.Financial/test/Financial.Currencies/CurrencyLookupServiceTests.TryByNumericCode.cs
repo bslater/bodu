@@ -25,7 +25,7 @@ public partial class CurrencyLookupServiceTests
 
     /// <summary>
     /// Verifies that every active currency's numeric code resolves back to itself, confirming numeric-code uniqueness
-    /// across the shipped catalogue.
+    /// across the shipped catalog.
     /// </summary>
     [TestMethod]
     [TestCategory("Regression")]

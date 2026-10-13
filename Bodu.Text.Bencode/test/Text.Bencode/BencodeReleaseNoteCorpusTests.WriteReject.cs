@@ -12,10 +12,10 @@ namespace Bodu.Text.Bencode;
 public sealed partial class BencodeReleaseNoteCorpusTests
 {
     /// <summary>
-    /// Verifies that replaying each catalogued write transcript a fix established as unwritable throws
+    /// Verifies that replaying each cataloged write transcript a fix established as unwritable throws
     /// <see cref="BencodeFormatException" />, the exception the row names.
     /// </summary>
-    /// <param name="fix">The catalogue row.</param>
+    /// <param name="fix">The catalog row.</param>
     [TestMethod]
     [TestCategory("Regression")]
     [DynamicData(

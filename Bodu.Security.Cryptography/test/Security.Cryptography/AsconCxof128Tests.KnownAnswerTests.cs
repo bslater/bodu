@@ -21,9 +21,9 @@ public partial class AsconCxof128Tests
 
     /// <summary>
     /// Verifies that <see cref="AsconCxof128" /> produces exactly the requested number of output
-    /// bytes for various combinations of customisation and message lengths.
+    /// bytes for various combinations of customization and message lengths.
     /// </summary>
-    /// <param name="customizationLength">Length of the sequential customisation string.</param>
+    /// <param name="customizationLength">Length of the sequential customization string.</param>
     /// <param name="messageLength">Length of the sequential message.</param>
     /// <param name="outputLength">Requested output length in bytes.</param>
     [TestMethod]
@@ -57,10 +57,10 @@ public partial class AsconCxof128Tests
     }
 
     /// <summary>
-    /// Verifies that <see cref="AsconCxof128" /> is deterministic: the same customisation and
+    /// Verifies that <see cref="AsconCxof128" /> is deterministic: the same customization and
     /// message always produce the same output.
     /// </summary>
-    /// <param name="customizationLength">Length of the sequential customisation string.</param>
+    /// <param name="customizationLength">Length of the sequential customization string.</param>
     /// <param name="messageLength">Length of the sequential message.</param>
     [TestMethod]
 
@@ -162,8 +162,8 @@ public partial class AsconCxof128Tests
     /// <summary>
     /// Verifies that <see cref="AsconCxof128" /> reproduces, byte-for-byte, the exact output of every vector in the
     /// official ascon-c <c>LWC_CXOF_KAT_128_512</c> reference file - the full 1089-row corpus, loaded dynamically from
-    /// the embedded resource. The file's customisation <c>Z</c> begins at <c>0x10</c>, so this exercises the SP 800-232
-    /// length-prefixed customisation-absorb path across the entire published KAT.
+    /// the embedded resource. The file's customization <c>Z</c> begins at <c>0x10</c>, so this exercises the SP 800-232
+    /// length-prefixed customization-absorb path across the entire published KAT.
     /// </summary>
     /// <param name="vector">The CXOF known-answer vector under test.</param>
     [TestMethod]

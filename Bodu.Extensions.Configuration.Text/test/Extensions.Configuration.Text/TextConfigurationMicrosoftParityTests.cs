@@ -137,7 +137,7 @@ public class TextConfigurationMicrosoftParityTests
 
     /// <summary>
     /// Verifies that a malformed required file throws <see cref="InvalidDataException" /> for both Bodu and
-    /// JSON. INI accepts loose syntax so it is not a useful parity target for malformed-file behaviour.
+    /// JSON. INI accepts loose syntax so it is not a useful parity target for malformed-file behavior.
     /// </summary>
     [TestMethod]
     public void Build_WhenMalformedRequiredFile_ShouldThrowInvalidDataException_ForBoduAndJson()

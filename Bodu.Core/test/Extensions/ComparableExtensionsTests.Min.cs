@@ -51,7 +51,7 @@ public partial class ComparableExtensionsTests
     // =========================================================================
 
     /// <summary>
-    /// Verifies that the comparer overload of <c>Min</c> honours the supplied comparer's ordering.
+    /// Verifies that the comparer overload of <c>Min</c> honors the supplied comparer's ordering.
     /// Under a reverse comparer the numerically larger value is considered the minimum.
     /// </summary>
     [TestMethod]

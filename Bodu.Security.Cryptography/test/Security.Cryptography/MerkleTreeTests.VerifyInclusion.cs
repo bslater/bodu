@@ -276,7 +276,7 @@ public partial class MerkleTreeTests
     /// <param name="treeSize">The correct tree size.</param>
     /// <param name="leafIndex">The correct leaf index.</param>
     /// <param name="valid">The correct path.</param>
-    /// <returns>The labelled probes, each of which must return <see langword="false" />.</returns>
+    /// <returns>The labeled probes, each of which must return <see langword="false" />.</returns>
     private static IEnumerable<(string Label, Func<bool> Probe)> CorruptInclusionProbes(
         MerkleTree tree,
         byte[] root,

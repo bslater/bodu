@@ -10,11 +10,11 @@ namespace Bodu.Security.Cryptography;
 
 /// <summary>
 /// Concrete test class that exercises the <see cref="BlockCipherTransformTests{TTest, TCryptoTransform}" /> base tests against the
-/// wide-block tweakable <see cref="BlockCipherTransform" /> implementation, distinct from the standardised 128-bit
+/// wide-block tweakable <see cref="BlockCipherTransform" /> implementation, distinct from the standardized 128-bit
 /// <see cref="BlockCipherTransform" /> covered by <see cref="Serpent128TransformTests" />. KAT coverage for the wide-block
 /// variants is provided at the block-cipher tier by <see cref="Serpent256CipherTests" /> /
 /// <see cref="Serpent512CipherTests" /> / <see cref="Serpent1024CipherTests" />, whose rows are cross-validated against
-/// <c>tools/cipher-vectors/wide_serpent.py</c>; this transform-tier test class therefore only exercises the behavioural
+/// <c>tools/cipher-vectors/wide_serpent.py</c>; this transform-tier test class therefore only exercises the behavioral
 /// surface (construction, raw-block transform, disposal).
 /// </summary>
 [TestClass]

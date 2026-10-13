@@ -42,7 +42,7 @@ public partial class CrcTests
         Assert.AreEqual("value", ex.ParamName);
     }
     /// <summary>
-    /// Verifies that <see cref="Crc.GlobalCache" /> is lazily initialised on first access and returns a usable,
+    /// Verifies that <see cref="Crc.GlobalCache" /> is lazily initialized on first access and returns a usable,
     /// non-null instance even when no explicit cache has been assigned.
     /// </summary>
     [TestMethod]

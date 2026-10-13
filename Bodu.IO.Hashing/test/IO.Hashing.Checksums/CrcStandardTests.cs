@@ -17,8 +17,8 @@ public partial class CrcStandardTests
 {
 
     /// <summary>
-    /// The aliases the CRC RevEng catalogue publishes for the standards <see cref="CrcStandards" /> covers, each with
-    /// the standard it names: 74 aliases of 39 standards, as the catalogue lists them beside each canonical name.
+    /// The aliases the CRC RevEng catalog publishes for the standards <see cref="CrcStandards" /> covers, each with
+    /// the standard it names: 74 aliases of 39 standards, as the catalog lists them beside each canonical name.
     /// </summary>
     private static readonly ValidKat<string, CrcStandards>[] s_publishedAliases =
     [

@@ -10,7 +10,7 @@ public sealed partial class Base85Tests
 {
 
     /// <summary>
-    /// Verifies that <see cref="Base85.IsBase85Digit" /> with the Z85 variant recognises Z85-specific characters.
+    /// Verifies that <see cref="Base85.IsBase85Digit" /> with the Z85 variant recognizes Z85-specific characters.
     /// </summary>
     [TestMethod]
     public void IsBase85Digit_ForZ85Variant_ShouldRecogniseAlphabet()
@@ -21,7 +21,7 @@ public sealed partial class Base85Tests
     }
 
     /// <summary>
-    /// Verifies that <see cref="Base85.IsBase85Digit" /> recognises alphabet characters and rejects shortcuts.
+    /// Verifies that <see cref="Base85.IsBase85Digit" /> recognizes alphabet characters and rejects shortcuts.
     /// </summary>
     [TestMethod]
     public void IsBase85Digit_ShouldRecogniseAlphabet()

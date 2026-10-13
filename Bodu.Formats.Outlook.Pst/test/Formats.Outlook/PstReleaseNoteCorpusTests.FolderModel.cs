@@ -9,7 +9,7 @@ namespace Bodu.Formats.Outlook;
 public sealed partial class PstReleaseNoteCorpusTests
 {
     /// <summary>
-    /// Represents one modelled folder: a property context, a hierarchy table naming its child folders, a contents table
+    /// Represents one modeled folder: a property context, a hierarchy table naming its child folders, a contents table
     /// naming its messages, and the messages themselves.
     /// </summary>
     /// <remarks>

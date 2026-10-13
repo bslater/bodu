@@ -18,14 +18,14 @@ namespace Bodu.Text.Configuration.Test.Infrastructure;
 /// glob matcher, resolver, typed accessors, and Microsoft.Extensions.Configuration bridge.
 /// </para>
 /// <para>
-/// The format is EditorConfig-inspired, not EditorConfig-compliant. Where behaviour differs from the EditorConfig
-/// specification, the KAT explicitly identifies the expected Bodu behaviour.
+/// The format is EditorConfig-inspired, not EditorConfig-compliant. Where behavior differs from the EditorConfig
+/// specification, the KAT explicitly identifies the expected Bodu behavior.
 /// </para>
 /// </remarks>
 public static class ConfigurationKnownAnswerData
 {
     /// <summary>
-    /// Gets the full KAT catalogue.
+    /// Gets the full KAT catalog.
     /// </summary>
     public static IReadOnlyList<ConfigurationKat> All { get; } = CreateAll();
 
@@ -1044,42 +1044,42 @@ public static class ConfigurationKnownAnswerData
 public enum ConfigurationKatKind
 {
     /// <summary>
-    /// Parser or lexer behaviour.
+    /// Parser or lexer behavior.
     /// </summary>
     Parse,
 
     /// <summary>
-    /// Writer behaviour.
+    /// Writer behavior.
     /// </summary>
     Write,
 
     /// <summary>
-    /// Parse-write-parse round-trip behaviour.
+    /// Parse-write-parse round-trip behavior.
     /// </summary>
     RoundTrip,
 
     /// <summary>
-    /// Key mapping behaviour.
+    /// Key mapping behavior.
     /// </summary>
     KeyMapping,
 
     /// <summary>
-    /// Glob/pattern matching behaviour.
+    /// Glob/pattern matching behavior.
     /// </summary>
     Pattern,
 
     /// <summary>
-    /// Document resolution behaviour.
+    /// Document resolution behavior.
     /// </summary>
     Resolve,
 
     /// <summary>
-    /// Typed value getter behaviour.
+    /// Typed value getter behavior.
     /// </summary>
     TypedValue,
 
     /// <summary>
-    /// Microsoft.Extensions.Configuration bridge behaviour.
+    /// Microsoft.Extensions.Configuration bridge behavior.
     /// </summary>
     ConfigurationBridge,
 }
@@ -1260,7 +1260,7 @@ public sealed record ConfigurationKat
     public int? ExpectedDiagnosticCount { get; init; }
 
     /// <summary>
-    /// Gets a mutation that should be applied after resolution to validate snapshot behaviour.
+    /// Gets a mutation that should be applied after resolution to validate snapshot behavior.
     /// </summary>
     public ExpectedMutation? Mutation { get; init; }
 

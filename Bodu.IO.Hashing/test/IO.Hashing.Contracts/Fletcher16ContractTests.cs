@@ -11,7 +11,7 @@ namespace Bodu.IO.Hashing.Contracts;
 /// <summary>
 /// Drives <see cref="NonCryptographicHashAlgorithmContractTests{TAlgorithm}" /> against
 /// <see cref="Fletcher16" /> with a representative set of one-shot and streaming-parity vectors. Bespoke
-/// Fletcher-specific tests (block-boundary handling, oversized inputs, the full RevEng catalogue) live in
+/// Fletcher-specific tests (block-boundary handling, oversized inputs, the full RevEng catalog) live in
 /// the existing <c>Bodu.IO.Hashing/test</c> partials.
 /// </summary>
 [TestClass]

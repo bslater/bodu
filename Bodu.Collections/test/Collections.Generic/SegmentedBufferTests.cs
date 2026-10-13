@@ -46,7 +46,7 @@ public sealed partial class SegmentedBufferTests
         Assert.AreSame(c, buffer[2]);
     }
     /// <summary>
-    /// Verifies that the default constructor initialises an empty buffer.
+    /// Verifies that the default constructor initializes an empty buffer.
     /// </summary>
     [TestMethod]
     public void Ctor_Default_ShouldInitialiseEmptyBuffer()
@@ -71,7 +71,7 @@ public sealed partial class SegmentedBufferTests
     }
 
     /// <summary>
-    /// Verifies that the segment-size constructor initialises an empty buffer.
+    /// Verifies that the segment-size constructor initializes an empty buffer.
     /// </summary>
     [TestMethod]
     public void Ctor_WithSegmentSize_ShouldInitialiseEmptyBuffer()

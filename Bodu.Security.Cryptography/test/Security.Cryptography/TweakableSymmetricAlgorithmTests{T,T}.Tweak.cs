@@ -62,7 +62,7 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
     }
 
     /// <summary>
-    /// Verifies that accessing <see cref="TweakableSymmetricAlgorithm.Tweak" /> before it is initialised throws.
+    /// Verifies that accessing <see cref="TweakableSymmetricAlgorithm.Tweak" /> before it is initialized throws.
     /// </summary>
     [TestMethod]
     public void Tweak_WhenNotInitialized_ShouldReturnExpectedValue()
@@ -127,7 +127,7 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
     /// <summary>
     /// Verifies that setting <see cref="TweakableSymmetricAlgorithm.Tweak" /> to a wrongly-sized
     /// byte array throws <see cref="CryptographicException" /> whose message contains no
-    /// rename-refactor artefacts (such as the unrelated literal <c>"TweakSchedule"</c> that the
+    /// rename-refactor artifacts (such as the unrelated literal <c>"TweakSchedule"</c> that the
     /// original <c>[CallerArgumentExpression]</c> attribute on
     /// <c>ThrowIfInvalidTweakSize</c> referenced).
     /// </summary>

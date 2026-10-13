@@ -50,7 +50,7 @@ public partial class ComparableExtensionsTests
     // =========================================================================
 
     /// <summary>
-    /// Verifies that the comparer overload of <c>AtMost</c> honours the supplied comparer's ordering.
+    /// Verifies that the comparer overload of <c>AtMost</c> honors the supplied comparer's ordering.
     /// Under a reverse comparer the numerically larger value is treated as the ceiling.
     /// </summary>
     [TestMethod]

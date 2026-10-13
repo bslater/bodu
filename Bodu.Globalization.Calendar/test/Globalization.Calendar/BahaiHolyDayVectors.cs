@@ -15,7 +15,7 @@ namespace Bodu.Globalization.Calendar;
 /// </summary>
 /// <remarks>
 /// <para>
-/// The table carries the nine holy days the <c>global-bahai</c> catalogue models; the full eleven-id transcription
+/// The table carries the nine holy days the <c>global-bahai</c> catalog models; the full eleven-id transcription
 /// including the Twin Birthdays lives at <c>corpus/bahai/uhj-holy-days-172-221-be.csv</c>, and the file's provenance
 /// header records the source chain, the pre-commit verification, and the measured engine relationship.
 /// </para>

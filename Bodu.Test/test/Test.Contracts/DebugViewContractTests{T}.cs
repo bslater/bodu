@@ -10,7 +10,7 @@ using System.Reflection;
 namespace Bodu.Test.Contracts;
 
 /// <summary>
-/// Reusable behavioural contract test base for the debugger-display surface of a collection. Concrete
+/// Reusable behavioral contract test base for the debugger-display surface of a collection. Concrete
 /// subclasses override <see cref="Create" /> to plug their type into the inherited tests.
 /// </summary>
 /// <typeparam name="TCollection">The collection type under test.</typeparam>

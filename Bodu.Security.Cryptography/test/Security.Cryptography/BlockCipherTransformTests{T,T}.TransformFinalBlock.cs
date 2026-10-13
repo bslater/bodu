@@ -36,7 +36,7 @@ public abstract partial class BlockCipherTransformTests<TTest, TCryptoTransform>
     /// incompatible with the <see cref="System.Security.Cryptography.CryptoStream.FlushFinalBlock" />
     /// contract that hands off whatever residual sits in its buffer (typically <c>1..blockSize-1</c> bytes
     /// after the last aligned chunk has flowed through <c>TransformBlock</c>). #208 moved the alignment
-    /// check off the encrypt path entirely; this test pins the corrected behaviour.
+    /// check off the encrypt path entirely; this test pins the corrected behavior.
     /// </remarks>
     [TestMethod]
     public void TransformFinalBlock_WhenInputCountIsNotMultipleOfInputBlockSize_ShouldPadAndEncrypt()
@@ -60,7 +60,7 @@ public abstract partial class BlockCipherTransformTests<TTest, TCryptoTransform>
     /// <summary>
     /// Verifies that <see cref="ICryptoTransform.TransformFinalBlock(byte[], int, int)" /> reads only the
     /// selected input range when <c>inputOffset</c> is non-zero - the produced ciphertext matches the result
-    /// of finalising the same payload at <c>inputOffset</c> 0.
+    /// of finalizing the same payload at <c>inputOffset</c> 0.
     /// </summary>
     [TestMethod]
     public void TransformFinalBlock_WhenInputOffsetIsNonZero_ShouldReadOnlySelectedInputRange()
@@ -88,7 +88,7 @@ public abstract partial class BlockCipherTransformTests<TTest, TCryptoTransform>
     /// <summary>
     /// Verifies that a transform which reports <see cref="ICryptoTransform.CanReuseTransform" /> as
     /// <see langword="false" /> rejects a second
-    /// <see cref="ICryptoTransform.TransformFinalBlock(byte[], int, int)" /> call after finalisation has
+    /// <see cref="ICryptoTransform.TransformFinalBlock(byte[], int, int)" /> call after finalization has
     /// completed.
     /// </summary>
     [TestMethod]

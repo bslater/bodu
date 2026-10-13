@@ -24,7 +24,7 @@ public partial class DateTimeExtensionsTests
 
     /// <summary>
     /// Verifies that <see cref="DateTimeExtensions.GetWeekStartDay" /> throws <see cref="ArgumentOutOfRangeException" /> when the
-    /// supplied weekend definition is not a recognised enumeration value.
+    /// supplied weekend definition is not a recognized enumeration value.
     /// </summary>
     [TestMethod]
     public void GetWeekStartDay_WhenDefinitionIsUndefined_ShouldThrowExactly()

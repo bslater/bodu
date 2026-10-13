@@ -49,7 +49,7 @@ public partial class NavigableDictionaryTests
     }
 
     /// <summary>
-    /// Materialises the entries of <paramref name="dictionary" /> using the public struct enumerator.
+    /// Materializes the entries of <paramref name="dictionary" /> using the public struct enumerator.
     /// </summary>
     /// <typeparam name="TKey">The key type of the dictionary.</typeparam>
     /// <typeparam name="TValue">The value type of the dictionary.</typeparam>

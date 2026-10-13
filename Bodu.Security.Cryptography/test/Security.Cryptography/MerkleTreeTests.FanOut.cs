@@ -120,7 +120,7 @@ public partial class MerkleTreeTests
 
     /// <summary>
     /// Verifies that a wide fan-out produces a different root from the binary tree over the same three leaves - the
-    /// mode is a distinct commitment, not a relabelling.
+    /// mode is a distinct commitment, not a relabeling.
     /// </summary>
     [TestMethod]
     public void ComputeRoot_WhenFanOutIsWide_ShouldDifferFromTheBinaryRoot()

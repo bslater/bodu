@@ -19,12 +19,12 @@ namespace Bodu.IO.Hashing.Contracts;
 /// The digest size in bits, used by tests that assert on the algorithm's declared <c>HashLengthInBytes</c>.
 /// </param>
 /// <param name="Seed">
-/// An optional seed or initialisation vector consumed by algorithms that accept one (CityHash, MurmurHash3, etc.).
+/// An optional seed or initialization vector consumed by algorithms that accept one (CityHash, MurmurHash3, etc.).
 /// <see langword="null" /> uses the algorithm's default seed.
 /// </param>
 /// <param name="Variant">
 /// An optional variant tag consumed by algorithms that expose multiple parameter sets (CRC standards, BLAKE2
-/// personalisation, Skein output sizes).
+/// personalization, Skein output sizes).
 /// </param>
 public sealed record HashKat(
     string Name,

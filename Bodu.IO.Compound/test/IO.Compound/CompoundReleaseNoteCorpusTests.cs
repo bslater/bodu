@@ -15,7 +15,7 @@ using Bodu.Test.Corpus;
 namespace Bodu.IO.Compound;
 
 /// <summary>
-/// Holds Bodu.IO.Compound to the defect fixes other compound-file libraries list in their release notes, as catalogued
+/// Holds Bodu.IO.Compound to the defect fixes other compound-file libraries list in their release notes, as cataloged
 /// in <c>corpus/compound/fixes/</c> and embedded under <c>Fixtures/ReleaseNotes/</c>.
 /// </summary>
 /// <remarks>
@@ -37,7 +37,7 @@ namespace Bodu.IO.Compound;
 [TestClass]
 public sealed partial class CompoundReleaseNoteCorpusTests
 {
-    /// <summary>The corpus area whose catalogues this class runs.</summary>
+    /// <summary>The corpus area whose catalogs this class runs.</summary>
     private const string Area = "compound";
 
     /// <summary>The separator between a container and its edit script.</summary>
@@ -46,7 +46,7 @@ public sealed partial class CompoundReleaseNoteCorpusTests
     /// <summary>The prefix of a <c>gen:</c> pipeline input.</summary>
     private const string GeneratorPrefix = "gen:";
 
-    /// <summary>The prefix of a literal container input, whose bytes follow in the catalogue escapes.</summary>
+    /// <summary>The prefix of a literal container input, whose bytes follow in the catalog escapes.</summary>
     private const string BytesPrefix = "bytes:";
 
     /// <summary>The end-of-chain sentinel of an allocation table.</summary>
@@ -64,7 +64,7 @@ public sealed partial class CompoundReleaseNoteCorpusTests
     /// <summary>The number of FAT sector numbers the header holds.</summary>
     private const int HeaderDifatSlots = 109;
 
-    /// <summary>The option names a catalogue row may use, each mapped by <see cref="RowOptions.Parse" />.</summary>
+    /// <summary>The option names a catalog row may use, each mapped by <see cref="RowOptions.Parse" />.</summary>
     private static readonly string[] s_optionNames = ["ValidationLevel", "ReadStrategy"];
 
     /// <summary>The bases an edit script may start from instead of a container.</summary>
@@ -141,7 +141,7 @@ public sealed partial class CompoundReleaseNoteCorpusTests
         ["Reopen"] = 0,
     };
 
-    /// <summary>The catalogues embedded in this test assembly, loaded once.</summary>
+    /// <summary>The catalogs embedded in this test assembly, loaded once.</summary>
     private static readonly Lazy<IReadOnlyList<ReleaseNoteCatalog>> s_catalogs =
         new(() => ReleaseNoteCatalog.LoadEmbedded(typeof(CompoundReleaseNoteCorpusTests).Assembly));
 
@@ -174,9 +174,9 @@ public sealed partial class CompoundReleaseNoteCorpusTests
         RunnableRows("roundtrip");
 
     /// <summary>
-    /// Gets every row of every embedded catalogue.
+    /// Gets every row of every embedded catalog.
     /// </summary>
-    /// <value>The rows, catalogue by catalogue in file order.</value>
+    /// <value>The rows, catalog by catalog in file order.</value>
     private static IEnumerable<ReleaseNoteFix> AllRows =>
         s_catalogs.Value.SelectMany(catalog => catalog.Rows);
 
@@ -529,7 +529,7 @@ public sealed partial class CompoundReleaseNoteCorpusTests
     /// Produces the bytes a content specification names.
     /// </summary>
     /// <param name="specification">
-    /// <c>&lt;n&gt;</c> for the <c>n</c> bytes of the catalogue pattern, whose byte <c>i</c> is
+    /// <c>&lt;n&gt;</c> for the <c>n</c> bytes of the catalog pattern, whose byte <c>i</c> is
     /// <c>(i * 31 + 7) mod 256</c>, or <c>&lt;n&gt;*&lt;b&gt;</c> for <c>n</c> copies of the byte <c>b</c>.
     /// </param>
     /// <returns>The content.</returns>

@@ -9,7 +9,7 @@ using System.Reflection;
 namespace Bodu.Test.Kat;
 
 /// <summary>
-/// Verifies the behaviour of <see cref="KatDisplayName.GetDisplayName" /> across the row shapes it must
+/// Verifies the behavior of <see cref="KatDisplayName.GetDisplayName" /> across the row shapes it must
 /// handle: a single <see cref="IKat" /> payload, a non-KAT payload, an empty payload, and a null
 /// <see cref="MethodInfo" />.
 /// </summary>

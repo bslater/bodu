@@ -42,7 +42,7 @@ public partial class ComparableExtensionsTests
 
     /// <summary>
     /// Verifies that <c>Clamp</c> restricts a nullable integer value to the inclusive [min, max] range,
-    /// honouring unbounded (<see langword="null" />) bounds and returning <see langword="null" /> when the value is null.
+    /// honoring unbounded (<see langword="null" />) bounds and returning <see langword="null" /> when the value is null.
     /// </summary>
     [TestMethod]
     [DataRow(0, 1, 10, 1, DisplayName = "Value below min returns min")]
@@ -86,7 +86,7 @@ public partial class ComparableExtensionsTests
 
     /// <summary>
     /// Verifies that swapped bounds (min greater than max) throw <see cref="ArgumentException" />, matching the
-    /// behaviour of <see cref="Math.Clamp(int, int, int)" />.
+    /// behavior of <see cref="Math.Clamp(int, int, int)" />.
     /// </summary>
     [TestMethod]
     public void Clamp_WhenMinGreaterThanMax_ShouldThrowExactly()

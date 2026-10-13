@@ -10,7 +10,7 @@ namespace Bodu.Security.Cryptography;
 /// Verifies the deferred-final-block buffering contract exposed by
 /// <see cref="DeferredFinalBlockHashAlgorithm{T}" />: the rule that the residual block is not compressed at the
 /// point it fills (so that <c>isFinal: true</c> can be raised on it later), the per-block counter values, and the
-/// behaviour of the finalisation pad-and-compress step across empty, sub-block, exact-block, and multi-block inputs.
+/// behavior of the finalization pad-and-compress step across empty, sub-block, exact-block, and multi-block inputs.
 /// </summary>
 [TestClass]
 public sealed class DeferredFinalBlockHashAlgorithmTests
@@ -137,8 +137,8 @@ public sealed class DeferredFinalBlockHashAlgorithmTests
     }
 
     /// <summary>
-    /// Verifies that recomputing the same input after the algorithm has been re-initialised produces an identical
-    /// invocation sequence (same block payloads, counters, and finalisation flags), confirming that
+    /// Verifies that recomputing the same input after the algorithm has been re-initialized produces an identical
+    /// invocation sequence (same block payloads, counters, and finalization flags), confirming that
     /// <c>Initialize</c> resets the inherited residual buffer and counter via the grandparent.
     /// </summary>
     [TestMethod]

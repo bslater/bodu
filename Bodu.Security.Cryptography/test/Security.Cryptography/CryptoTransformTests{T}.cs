@@ -19,7 +19,7 @@ public abstract partial class CryptoTransformTests<TCryptoTransform>
     /// Creates a new instance of the cryptographic transform under test.
     /// </summary>
     /// <returns>
-    /// A newly constructed and fully initialised instance of <typeparamref name="TCryptoTransform" />, ready for use in test scenarios.
+    /// A newly constructed and fully initialized instance of <typeparamref name="TCryptoTransform" />, ready for use in test scenarios.
     /// </returns>
     protected abstract TCryptoTransform CreateAlgorithm();
 

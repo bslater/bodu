@@ -31,7 +31,7 @@ public sealed class MonitoringBufferedBlockHashAlgorithm
     /// Number of times this test instance has observed the first call to <see cref="Dispose(bool)" />.
     /// </summary>
     /// <remarks>
-    /// The value is latched so it preserves the old template-hook behaviour where disposal observation occurred at most
+    /// The value is latched so it preserves the old template-hook behavior where disposal observation occurred at most
     /// once per instance.
     /// </remarks>
     public int OnDisposeCallCount { get; private set; }
@@ -46,7 +46,7 @@ public sealed class MonitoringBufferedBlockHashAlgorithm
     public override string AlgorithmName => nameof(MonitoringBufferedBlockHashAlgorithm);
 
     /// <summary>
-    /// Initialises a new instance with the default 8-byte (64-bit) block size.
+    /// Initializes a new instance with the default 8-byte (64-bit) block size.
     /// </summary>
     public MonitoringBufferedBlockHashAlgorithm()
         : this(8)
@@ -54,7 +54,7 @@ public sealed class MonitoringBufferedBlockHashAlgorithm
     }
 
     /// <summary>
-    /// Initialises a new instance with the specified block size.
+    /// Initializes a new instance with the specified block size.
     /// </summary>
     /// <param name="blockSize">
     /// The block size, in bytes, to forward to the base constructor (converted to bits).

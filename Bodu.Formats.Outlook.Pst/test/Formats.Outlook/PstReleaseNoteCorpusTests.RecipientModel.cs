@@ -9,7 +9,7 @@ namespace Bodu.Formats.Outlook;
 public sealed partial class PstReleaseNoteCorpusTests
 {
     /// <summary>
-    /// Represents one recipient of a modelled message: a row of its recipient table.
+    /// Represents one recipient of a modeled message: a row of its recipient table.
     /// </summary>
     private sealed class RecipientModel
     {

@@ -16,7 +16,7 @@ public partial class CrcTests
     /// digest as a single-shot hash of the concatenated input, exercising the bit-wise processing path
     /// (<c>hashSizeBits &lt; 8</c>) under resumption.
     /// </summary>
-    /// <param name="standardId">A sub-byte CRC catalogue entry under test.</param>
+    /// <param name="standardId">A sub-byte CRC catalog entry under test.</param>
     [TestMethod]
     [TestCategory("Regression")]
     [DataRow(CrcStandards.CRC3_GSM)]
@@ -54,7 +54,7 @@ public partial class CrcTests
     /// non-destructive: calling it between appends returns the snapshot digest for the data processed so far and
     /// leaves the accumulator intact so that a subsequent append continues from the same position.
     /// </summary>
-    /// <param name="standardId">A sub-byte CRC catalogue entry under test.</param>
+    /// <param name="standardId">A sub-byte CRC catalog entry under test.</param>
     [TestMethod]
     [TestCategory("Regression")]
     [DataRow(CrcStandards.CRC3_GSM)]

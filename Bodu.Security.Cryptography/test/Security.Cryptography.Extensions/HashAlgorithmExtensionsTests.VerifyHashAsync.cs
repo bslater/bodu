@@ -11,12 +11,12 @@ namespace Bodu.Security.Cryptography.Extensions;
 
 /// <summary>
 /// Tests for <see cref="HashAlgorithmExtensions.VerifyHashAsync" /> covering expected-hash
-/// variants (byte array, hex, memory), stream-shape behaviours, and error propagation.
+/// variants (byte array, hex, memory), stream-shape behaviors, and error propagation.
 /// </summary>
 /// <remarks>
 /// <c>VerifyHashAsync</c> propagates all exceptions - <see cref="IOException" />,
 /// <see cref="OperationCanceledException" />, and null-argument errors - to the caller.
-/// Swallow-and-return-<see langword="false" /> behaviour belongs to <c>TryVerifyHashAsync</c>.
+/// Swallow-and-return-<see langword="false" /> behavior belongs to <c>TryVerifyHashAsync</c>.
 /// </remarks>
 public partial class HashAlgorithmExtensionsTests
 {
@@ -242,7 +242,7 @@ public partial class HashAlgorithmExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that a <see cref="CancellationTriggerStream" /> cancelling the token mid-stream
+    /// Verifies that a <see cref="CancellationTriggerStream" /> canceling the token mid-stream
     /// causes the method to throw <see cref="OperationCanceledException" /> (or its async
     /// subtype <see cref="TaskCanceledException" />).
     /// </summary>
@@ -268,7 +268,7 @@ public partial class HashAlgorithmExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that a cancellation token already in the cancelled state causes the method to
+    /// Verifies that a cancellation token already in the canceled state causes the method to
     /// throw without attempting any read.
     /// </summary>
     [TestMethod]

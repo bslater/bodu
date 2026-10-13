@@ -146,7 +146,7 @@ public partial class CrcTests
     }
     /// <summary>
     /// Verifies that <see cref="Crc.ComputeHashFrom(System.ReadOnlySpan{byte}, System.ReadOnlySpan{byte})" />
-    /// continues a prior hash by undoing finalisation and hashing additional data, yielding the same digest as
+    /// continues a prior hash by undoing finalization and hashing additional data, yielding the same digest as
     /// a single-shot hash over the combined input. Covers each reflection branch:
     /// <list type="bullet">
     ///   <item><c>CRC32_ISOHDLC</c> - fully reflecting (<c>ReflectIn = ReflectOut = true</c>).</item>
@@ -155,7 +155,7 @@ public partial class CrcTests
     ///   <see cref="Crc.TryComputeHashFrom" /> is exercised.</item>
     /// </list>
     /// </summary>
-    /// <param name="standardId">The CRC catalogue entry under test.</param>
+    /// <param name="standardId">The CRC catalog entry under test.</param>
     [TestMethod]
     [DataRow(CrcStandards.CRC32_ISOHDLC)]
     [DataRow(CrcStandards.CRC16_XMODEM)]

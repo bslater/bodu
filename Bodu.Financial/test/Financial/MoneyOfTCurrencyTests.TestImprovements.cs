@@ -205,8 +205,8 @@ public partial class MoneyOfTCurrencyTests
     // ---------------------------------------------------------------------------------------------------------------
 
     /// <summary>
-    /// Verifies that the centralised metadata validator catches invalid currency metadata at every
-    /// metadata-dependent surface - Money static properties, Money instance methods, and JSON serialisation -
+    /// Verifies that the centralized metadata validator catches invalid currency metadata at every
+    /// metadata-dependent surface - Money static properties, Money instance methods, and JSON serialization -
     /// not only at the constructor.
     /// </summary>
     [TestMethod]

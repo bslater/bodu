@@ -7,7 +7,7 @@
 namespace Bodu.Financial.Currencies;
 
 /// <summary>
-/// Verifies the shipped ISO 4217 currency catalogue exposes the expected metadata for representative samples,
+/// Verifies the shipped ISO 4217 currency catalog exposes the expected metadata for representative samples,
 /// including boundary cases on the minor-unit precision (0, 2, 3).
 /// </summary>
 [TestClass]

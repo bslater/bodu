@@ -11,7 +11,7 @@ namespace Bodu.Text.Configuration;
 public sealed partial class ConfigurationReleaseNoteCorpusTests
 {
     /// <summary>
-    /// Represents the options a catalogue row runs with: the profile whose presets parse, resolve and write the input,
+    /// Represents the options a catalog row runs with: the profile whose presets parse, resolve and write the input,
     /// and the path the document is resolved for.
     /// </summary>
     /// <param name="Profile">The profile passed to the <c>For</c> method of each options type.</param>

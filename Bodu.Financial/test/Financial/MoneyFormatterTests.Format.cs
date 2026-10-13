@@ -23,7 +23,7 @@ public partial class MoneyFormatterTests
     }
 
     /// <summary>
-    /// Verifies that the numeric-only display honours the grouping option.
+    /// Verifies that the numeric-only display honors the grouping option.
     /// </summary>
     [TestMethod]
     [DataRow(true, "1,234.56")]

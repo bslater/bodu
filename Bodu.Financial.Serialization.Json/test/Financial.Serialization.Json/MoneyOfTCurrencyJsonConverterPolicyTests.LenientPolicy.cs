@@ -13,7 +13,7 @@ public partial class MoneyOfTCurrencyJsonConverterPolicyTests
 {
 
     /// <summary>
-    /// Verifies that <see cref="FinancialJsonPolicy.Lenient" /> normalises lowercase ISO codes during read.
+    /// Verifies that <see cref="FinancialJsonPolicy.Lenient" /> normalizes lowercase ISO codes during read.
     /// </summary>
     [TestMethod]
     public void LenientPolicy_WhenReadingLowercaseCurrency_ShouldSucceed()

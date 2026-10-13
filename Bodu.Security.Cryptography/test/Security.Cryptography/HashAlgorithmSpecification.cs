@@ -10,7 +10,7 @@ namespace Bodu.Security.Cryptography;
 
 /// <summary>
 /// Describes the expected observable properties of a single <typeparamref name="TAlgorithm" /> variant for use in
-/// constructor and behavioural tests, and carries the variant's curated message-digest known-answer vectors through the
+/// constructor and behavioral tests, and carries the variant's curated message-digest known-answer vectors through the
 /// inherited <see cref="AlgorithmSpecification{TKat}.KnownAnswers" /> slot.
 /// </summary>
 public record HashAlgorithmSpecification

@@ -156,7 +156,7 @@ public partial class OrderedSetTests
     // --------------------------------------------------------
 
     /// <summary>
-    /// Verifies that set operations honour the configured comparer when matching elements against the source.
+    /// Verifies that set operations honor the configured comparer when matching elements against the source.
     /// </summary>
     [TestMethod]
     public void SetOperations_WhenCustomComparerProvided_ShouldHonourComparer()

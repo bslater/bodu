@@ -9,7 +9,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace Bodu.Test.Corpus;
 
 /// <summary>
-/// Parses the <c>options</c> field of a release-note fix catalogue row, written <c>Name=Value;Name=Value</c>.
+/// Parses the <c>options</c> field of a release-note fix catalog row, written <c>Name=Value;Name=Value</c>.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -27,7 +27,7 @@ public static class ReleaseNoteOptions
     /// <summary>
     /// Attempts to parse an <c>options</c> field.
     /// </summary>
-    /// <param name="text">The field, as it appears in the catalogue; empty for a row that uses the defaults.</param>
+    /// <param name="text">The field, as it appears in the catalog; empty for a row that uses the defaults.</param>
     /// <param name="options">
     /// When the method returns <see langword="true" />, the name and decoded value of each option, in the order
     /// written.
@@ -98,7 +98,7 @@ public static class ReleaseNoteOptions
     /// <summary>
     /// Parses an <c>options</c> field.
     /// </summary>
-    /// <param name="text">The field, as it appears in the catalogue; empty for a row that uses the defaults.</param>
+    /// <param name="text">The field, as it appears in the catalog; empty for a row that uses the defaults.</param>
     /// <returns>The name and decoded value of each option, in the order written.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="text" /> is <see langword="null" />.</exception>
     /// <exception cref="FormatException"><paramref name="text" /> is not well formed.</exception>

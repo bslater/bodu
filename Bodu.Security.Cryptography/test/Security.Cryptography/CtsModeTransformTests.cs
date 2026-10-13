@@ -21,7 +21,7 @@ public sealed partial class CtsModeTransformTests
 
     /// <summary>
     /// CTS explicitly rejects sub-block input - it requires at least one full block by design.
-    /// The empty-input no-op contract that <see cref="CbcModeTransform" /> honours therefore does
+    /// The empty-input no-op contract that <see cref="CbcModeTransform" /> honors therefore does
     /// not apply here.
     /// </summary>
     protected override bool AcceptsEmptyInput => false;

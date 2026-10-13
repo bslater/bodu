@@ -7,14 +7,14 @@
 namespace Bodu.Financial.Currencies;
 
 /// <summary>
-/// Verifies the runtime <see cref="CurrencyRegistry" /> - shipped-catalogue lookup, custom registration,
+/// Verifies the runtime <see cref="CurrencyRegistry" /> - shipped-catalog lookup, custom registration,
 /// enumeration, and thread safety.
 /// </summary>
 [TestClass]
 public partial class CurrencyRegistryTests
 {
     /// <summary>
-    /// Verifies that the shipped catalogue resolves representative currencies across all three minor-unit
+    /// Verifies that the shipped catalog resolves representative currencies across all three minor-unit
     /// categories.
     /// </summary>
     [TestMethod]
@@ -148,7 +148,7 @@ public partial class CurrencyRegistryTests
     }
 
     /// <summary>
-    /// Verifies that the shipped catalogue contains at least 180 currencies, matching the source-generator
+    /// Verifies that the shipped catalog contains at least 180 currencies, matching the source-generator
     /// output.
     /// </summary>
     [TestMethod]

@@ -13,10 +13,10 @@ namespace Bodu.Text.Yaml;
 public sealed partial class YamlReleaseNoteCorpusTests
 {
     /// <summary>
-    /// Verifies that writing back the documents each catalogued input reads as, and reading the written text again,
+    /// Verifies that writing back the documents each cataloged input reads as, and reading the written text again,
     /// gives the same values, and that the written text is exactly the text the row expects when it gives one.
     /// </summary>
-    /// <param name="fix">The catalogue row.</param>
+    /// <param name="fix">The catalog row.</param>
     [TestMethod]
     [TestCategory("Regression")]
     [DynamicData(

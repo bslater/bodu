@@ -10,7 +10,7 @@ public sealed partial class CustomAlgorithmTests
 {
     /// <summary>
     /// Verifies that the built-in <c>western-easter</c> algorithm resolves without any custom registry, confirming the
-    /// built-in catalogue is available through the default registry.
+    /// built-in catalog is available through the default registry.
     /// </summary>
     [TestMethod]
     public void BuiltInAlgorithm_WhenNoCustomRegistry_ResolvesFromDefaultCatalogue()

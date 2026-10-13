@@ -427,7 +427,7 @@ public partial class TomlObjectTests
     }
 
     /// <summary>
-    /// Verifies that property lookups honour the case-insensitive comparison selected through
+    /// Verifies that property lookups honor the case-insensitive comparison selected through
     /// <see cref="TomlNodeOptions" /> while serialization preserves the stored key spelling.
     /// </summary>
     [TestMethod]

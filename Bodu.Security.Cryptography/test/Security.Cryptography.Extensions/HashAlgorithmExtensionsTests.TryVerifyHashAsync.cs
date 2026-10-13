@@ -10,7 +10,7 @@ namespace Bodu.Security.Cryptography.Extensions;
 
 /// <summary>
 /// Tests for <see cref="HashAlgorithmExtensions.TryVerifyHashAsync" /> covering matching-input
-/// variants, stream-shape behaviours, and graceful handling of stream faults and cancellation.
+/// variants, stream-shape behaviors, and graceful handling of stream faults and cancellation.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -27,7 +27,7 @@ namespace Bodu.Security.Cryptography.Extensions;
 /// <para>
 /// The byte-array and string overloads run synchronously: they delegate to the corresponding
 /// <c>TryVerifyHash</c> method and complete via <see cref="Task.FromResult{TResult}" />. A
-/// pre-cancelled <see cref="CancellationToken" /> is honoured by short-circuiting to
+/// pre-canceled <see cref="CancellationToken" /> is honored by short-circuiting to
 /// <see langword="false" />.
 /// </para>
 /// </remarks>
@@ -291,7 +291,7 @@ public partial class HashAlgorithmExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that a <see cref="CancellationTriggerStream" /> cancelling the token mid-stream
+    /// Verifies that a <see cref="CancellationTriggerStream" /> canceling the token mid-stream
     /// is swallowed and surfaces as <see langword="false" />.
     /// </summary>
     [TestMethod]
@@ -322,7 +322,7 @@ public partial class HashAlgorithmExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that a pre-cancelled token short-circuits the byte-array overload to
+    /// Verifies that a pre-canceled token short-circuits the byte-array overload to
     /// <see langword="false" /> instead of executing the verification.
     /// </summary>
     [TestMethod]

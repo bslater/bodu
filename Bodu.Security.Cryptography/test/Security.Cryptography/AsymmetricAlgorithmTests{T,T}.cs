@@ -10,7 +10,7 @@ namespace Bodu.Security.Cryptography;
 
 /// <summary>
 /// Provides unit tests for asymmetric algorithms derived from <see cref="AsymmetricAlgorithm" />, verifying
-/// construction defaults, key-size reporting, raw key import/export behaviour, defensive copying, and disposal
+/// construction defaults, key-size reporting, raw key import/export behavior, defensive copying, and disposal
 /// semantics. Operation-specific contracts live in the derived <see cref="KeyAgreementAlgorithmTests{TTest, TAlgorithm}" />,
 /// <see cref="SignatureAlgorithmTests{TTest, TAlgorithm}" />, and <see cref="KemAlgorithmTests{TTest, TAlgorithm}" />
 /// bases.

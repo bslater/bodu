@@ -7,7 +7,7 @@
 namespace Bodu.IO.Hashing.Contracts;
 
 /// <summary>
-/// Reusable behavioural contract test base for a multi-character check-digit algorithm (ISO 7064
+/// Reusable behavioral contract test base for a multi-character check-digit algorithm (ISO 7064
 /// MOD 97-10, IBAN, LEI, …). Concrete subclasses override <see cref="Compute" />, <see cref="IsValid" />,
 /// and <see cref="KnownAnswers" /> to plug their algorithm into the inherited tests.
 /// </summary>

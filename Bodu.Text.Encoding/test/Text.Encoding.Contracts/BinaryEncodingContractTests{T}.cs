@@ -7,7 +7,7 @@
 namespace Bodu.Text.Encoding.Contracts;
 
 /// <summary>
-/// Reusable behavioural contract test base for a binary encoding (Base16, Base32, Base58, Base64,
+/// Reusable behavioral contract test base for a binary encoding (Base16, Base32, Base58, Base64,
 /// Base64Url, Base85, hex, etc.). Concrete subclasses override the four <c>Encode</c>/<c>Decode</c>/
 /// <c>TryEncode</c>/<c>TryDecode</c> adapter methods plus <see cref="KnownAnswers" /> and
 /// <see cref="InvalidInputs" /> to plug their encoding into the inherited tests.

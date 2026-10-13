@@ -10,7 +10,7 @@ public sealed partial class Base58Tests
 {
 
     /// <summary>
-    /// Verifies that <see cref="Base58.IsBase58Digit" /> recognises Bitcoin alphabet characters.
+    /// Verifies that <see cref="Base58.IsBase58Digit" /> recognizes Bitcoin alphabet characters.
     /// </summary>
     [TestMethod]
     public void IsBase58Digit_WhenBitcoinFlickrSymbol_ShouldReturnTrue()
@@ -82,7 +82,7 @@ public sealed partial class Base58Tests
     public void IsValid_WhenInputContainsWhitespaceWithoutFlag_ShouldReturnFalse() => Assert.IsFalse(Base58.IsValid("9 Ajdvzr".AsSpan()));
 
     /// <summary>
-    /// Verifies that <see cref="Base58.IsValid" /> recognises the Ripple variant alphabet - driving the variant
+    /// Verifies that <see cref="Base58.IsValid" /> recognizes the Ripple variant alphabet - driving the variant
     /// branch independently from the Bitcoin default.
     /// </summary>
     [TestMethod]

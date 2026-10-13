@@ -118,7 +118,7 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
     }
 
     /// <summary>
-    /// Verifies that the algorithm initialises a non-null default key on construction whose length falls within the
+    /// Verifies that the algorithm initializes a non-null default key on construction whose length falls within the
     /// valid range declared in the specification.
     /// </summary>
     [TestMethod]
@@ -132,7 +132,7 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
     }
 
     /// <summary>
-    /// Verifies the correct get/set behaviour of the <see cref="KeyedHashAlgorithm.Key" /> property.
+    /// Verifies the correct get/set behavior of the <see cref="KeyedHashAlgorithm.Key" /> property.
     /// </summary>
     [TestMethod]
     [DynamicData(nameof(HashAlgorithmVariants), DynamicDataDisplayName = nameof(VariantDisplayNameHelper.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(VariantDisplayNameHelper))]
@@ -216,7 +216,7 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
     }
 
     /// <summary>
-    /// Verifies that reassigning the same key hashValue multiple times does not throw or alter behaviour.
+    /// Verifies that reassigning the same key hashValue multiple times does not throw or alter behavior.
     /// </summary>
     [TestMethod]
     [DynamicData(nameof(HashAlgorithmVariants), DynamicDataDisplayName = nameof(VariantDisplayNameHelper.GetDisplayName), DynamicDataDisplayNameDeclaringType = typeof(VariantDisplayNameHelper))]

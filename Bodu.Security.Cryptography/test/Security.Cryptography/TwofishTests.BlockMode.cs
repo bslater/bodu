@@ -13,7 +13,7 @@ public sealed partial class TwofishTests
     /// <summary>
     /// Verifies that setting <see cref="Twofish.BlockMode" /> to a value that maps to a standard
     /// <see cref="CipherMode" /> (ECB, CBC, CFB, OFB) also updates <see cref="SymmetricAlgorithm.Mode" />.
-    /// This Mode-synchronisation behaviour is Twofish-specific and is not part of the broader
+    /// This Mode-synchronization behavior is Twofish-specific and is not part of the broader
     /// <c>BlockMode</c> contract shared by other Bodu ciphers (e.g. Serpent / Threefish use a plain
     /// auto-property and do not sync to <see cref="SymmetricAlgorithm.Mode" />).
     /// </summary>

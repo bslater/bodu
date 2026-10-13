@@ -89,7 +89,7 @@ public abstract partial class SymmetricAlgorithmTests<TTest, TAlgorithm>
     /// <summary>
     /// Verifies that disposing a freshly-constructed <typeparamref name="TAlgorithm" /> instance -
     /// one that has never had any property accessed or transform created - completes without
-    /// throwing. Regression guard for disposal paths that touch lazily-initialised state without
+    /// throwing. Regression guard for disposal paths that touch lazily-initialized state without
     /// null checks.
     /// </summary>
     [TestMethod]

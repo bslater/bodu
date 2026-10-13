@@ -11,7 +11,7 @@ namespace Bodu.Security.Cryptography.Extensions;
 
 /// <summary>
 /// Tests for <see cref="SymmetricAlgorithmExtensions.EncryptAsync" /> covering argument
-/// validation, correctness, stream-shape behaviours, cancellation, and error propagation.
+/// validation, correctness, stream-shape behaviors, cancellation, and error propagation.
 /// </summary>
 /// <remarks>
 /// <c>EncryptAsync</c> propagates all exceptions - <see cref="IOException" />,
@@ -259,7 +259,7 @@ public partial class SymmetricAlgorithmExtensionTests
     }
 
     /// <summary>
-    /// Verifies that a cancellation token signalled by its timeout raises
+    /// Verifies that a cancellation token signaled by its timeout raises
     /// <see cref="TaskCanceledException" />.
     /// </summary>
     [TestMethod]
@@ -278,7 +278,7 @@ public partial class SymmetricAlgorithmExtensionTests
     }
 
     /// <summary>
-    /// Verifies that a <see cref="CancellationTriggerStream" /> cancelling mid-stream causes the
+    /// Verifies that a <see cref="CancellationTriggerStream" /> canceling mid-stream causes the
     /// method to throw <see cref="OperationCanceledException" /> (or its subtype
     /// <see cref="TaskCanceledException" />).
     /// </summary>

@@ -13,7 +13,7 @@ namespace Bodu.Security.Cryptography;
 /// <see cref="SymmetricAlgorithm" /> declared in the library. <see cref="PaddingMode.None" />
 /// is a pass-through scheme that adds nothing: empty input produces empty ciphertext,
 /// already-aligned input round-trips at its original length, and unaligned input is rejected
-/// at finalisation time. These tests pin those contracts across every cipher in the library.
+/// at finalization time. These tests pin those contracts across every cipher in the library.
 /// </summary>
 public sealed partial class NoPaddingTests
 {

@@ -7,7 +7,7 @@
 namespace Bodu.Globalization.Calendar;
 
 /// <summary>
-/// Loads embedded notable-date document fixtures by file name for the v2 test catalogue.
+/// Loads embedded notable-date document fixtures by file name for the v2 test catalog.
 /// </summary>
 internal static class NotableDateFixtures
 {

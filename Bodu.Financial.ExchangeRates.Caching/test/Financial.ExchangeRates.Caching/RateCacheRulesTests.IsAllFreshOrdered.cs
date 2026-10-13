@@ -63,7 +63,7 @@ public sealed partial class RateCacheRulesTests
 
     /// <summary>
     /// Verifies that a qualifying list is exactly what <see cref="RateCacheRules.SelectFresh" /> would produce, so the
-    /// zero-copy serve is behaviourally equivalent.
+    /// zero-copy serve is behaviorally equivalent.
     /// </summary>
     [TestMethod]
     public void IsAllFreshOrdered_WhenTrue_ShouldMatchSelectFreshOutput()

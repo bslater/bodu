@@ -120,7 +120,7 @@ public partial class ConcurrentCircularBufferTests
     }
     /// <summary>
     /// Verifies that the explicit <see cref="ICollection.IsSynchronized" /> property on a
-    /// <see cref="ConcurrentCircularBuffer{T}" /> reports <see langword="false" /> - the type manages its own synchronisation.
+    /// <see cref="ConcurrentCircularBuffer{T}" /> reports <see langword="false" /> - the type manages its own synchronization.
     /// </summary>
     [TestMethod]
     public void IsSynchronized_WhenAccessed_ShouldReturnFalse()
@@ -216,7 +216,7 @@ public partial class ConcurrentCircularBufferTests
 
     /// <summary>
     /// Verifies that the explicit <see cref="ICollection.SyncRoot" /> property on a
-    /// <see cref="ConcurrentCircularBuffer{T}" /> throws <see cref="NotSupportedException" />, matching the behaviour of the BCL
+    /// <see cref="ConcurrentCircularBuffer{T}" /> throws <see cref="NotSupportedException" />, matching the behavior of the BCL
     /// concurrent collections.
     /// </summary>
     [TestMethod]

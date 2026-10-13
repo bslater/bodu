@@ -99,7 +99,7 @@ public sealed partial class EitherTests
     }
 
     /// <summary>
-    /// Verifies that the boxed Equals overload recognises an equal either and rejects other types and
+    /// Verifies that the boxed Equals overload recognizes an equal either and rejects other types and
     /// <see langword="null" />.
     /// </summary>
     [TestMethod]

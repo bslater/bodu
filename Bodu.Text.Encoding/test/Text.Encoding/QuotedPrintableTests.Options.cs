@@ -9,7 +9,7 @@ namespace Bodu.Text.Encoding;
 public sealed partial class QuotedPrintableTests
 {
     /// <summary>
-    /// Verifies that the default options normalise to binary mode, 76-column wrapping, and a CRLF newline.
+    /// Verifies that the default options normalize to binary mode, 76-column wrapping, and a CRLF newline.
     /// </summary>
     [TestMethod]
     public void Encode_WhenDefaultOptions_ShouldUseBinaryModeAndCrlf()
@@ -34,7 +34,7 @@ public sealed partial class QuotedPrintableTests
     }
 
     /// <summary>
-    /// Verifies that a zero <see cref="QuotedPrintableEncodingOptions.MaxLineLength" /> is normalised to the RFC
+    /// Verifies that a zero <see cref="QuotedPrintableEncodingOptions.MaxLineLength" /> is normalized to the RFC
     /// default of 76 rather than meaning unlimited.
     /// </summary>
     [TestMethod]

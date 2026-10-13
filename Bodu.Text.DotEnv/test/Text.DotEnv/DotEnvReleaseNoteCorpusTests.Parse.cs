@@ -12,10 +12,10 @@ namespace Bodu.Text.DotEnv;
 public sealed partial class DotEnvReleaseNoteCorpusTests
 {
     /// <summary>
-    /// Verifies that each catalogued input a fix established as readable is read by <c>Utf8DotEnvReader</c> into the
+    /// Verifies that each cataloged input a fix established as readable is read by <c>Utf8DotEnvReader</c> into the
     /// expected entries.
     /// </summary>
-    /// <param name="fix">The catalogue row.</param>
+    /// <param name="fix">The catalog row.</param>
     [TestMethod]
     [TestCategory("Regression")]
     [DynamicData(

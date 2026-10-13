@@ -9,7 +9,7 @@ using Bodu.Text.Configuration.Test.Infrastructure;
 namespace Bodu.Text.Configuration.Kat;
 
 /// <summary>
-/// Drives the data-driven known-answer-test (KAT) catalogue defined in
+/// Drives the data-driven known-answer-test (KAT) catalog defined in
 /// <see cref="ConfigurationKnownAnswerData" />. Each <c>[DataTestMethod]</c> consumes one
 /// <see cref="ConfigurationKatKind" />'s data source and dispatches to a kind-specific executor.
 /// </summary>

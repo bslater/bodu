@@ -15,7 +15,7 @@ namespace Bodu.IO.Hashing;
 /// </summary>
 /// <remarks>
 /// Instances populate the <see cref="NonCryptographicHashKnownAnswers.Additional" /> collection and let concrete test
-/// classes contribute algorithm-specific vectors (for example, the RevEng catalogue <c>"123456789"</c> CRC check value)
+/// classes contribute algorithm-specific vectors (for example, the RevEng catalog <c>"123456789"</c> CRC check value)
 /// without bespoke <c>[DataRow]</c> plumbing. Common shared inputs - empty, <c>"ABC"</c>, the quick-brown-fox sentence,
 /// sixteen zero bytes, and the 0x00..0xFE sequence - are already covered by the typed slots on
 /// <see cref="NonCryptographicHashKnownAnswers" /> and should not be duplicated here.

@@ -11,7 +11,7 @@ namespace Bodu.Financial;
 public partial class MoneyTests
 {
     /// <summary>
-    /// Verifies that a default-initialised <see cref="Money" /> reports <see cref="Money.IsDefault" /> as
+    /// Verifies that a default-initialized <see cref="Money" /> reports <see cref="Money.IsDefault" /> as
     /// <see langword="true" />.
     /// </summary>
     [TestMethod]
@@ -37,7 +37,7 @@ public partial class MoneyTests
     }
 
     /// <summary>
-    /// Verifies that multiplying a default-initialised, currency-less <see cref="Money" /> throws
+    /// Verifies that multiplying a default-initialized, currency-less <see cref="Money" /> throws
     /// <see cref="InvalidOperationException" /> rather than silently producing a currency-less value.
     /// </summary>
     [TestMethod]
@@ -52,7 +52,7 @@ public partial class MoneyTests
     }
 
     /// <summary>
-    /// Verifies that dividing a default-initialised, currency-less <see cref="Money" /> throws
+    /// Verifies that dividing a default-initialized, currency-less <see cref="Money" /> throws
     /// <see cref="InvalidOperationException" />.
     /// </summary>
     [TestMethod]
@@ -67,7 +67,7 @@ public partial class MoneyTests
     }
 
     /// <summary>
-    /// Verifies that negating a default-initialised, currency-less <see cref="Money" /> throws
+    /// Verifies that negating a default-initialized, currency-less <see cref="Money" /> throws
     /// <see cref="InvalidOperationException" />.
     /// </summary>
     [TestMethod]
@@ -82,7 +82,7 @@ public partial class MoneyTests
     }
 
     /// <summary>
-    /// Verifies that taking the absolute value of a default-initialised, currency-less <see cref="Money" /> throws
+    /// Verifies that taking the absolute value of a default-initialized, currency-less <see cref="Money" /> throws
     /// <see cref="InvalidOperationException" />.
     /// </summary>
     [TestMethod]
@@ -97,7 +97,7 @@ public partial class MoneyTests
     }
 
     /// <summary>
-    /// Verifies that allocating a default-initialised, currency-less <see cref="Money" /> throws
+    /// Verifies that allocating a default-initialized, currency-less <see cref="Money" /> throws
     /// <see cref="InvalidOperationException" />.
     /// </summary>
     [TestMethod]
@@ -112,7 +112,7 @@ public partial class MoneyTests
     }
 
     /// <summary>
-    /// Verifies that converting a default-initialised, currency-less <see cref="Money" /> to a currency named by its
+    /// Verifies that converting a default-initialized, currency-less <see cref="Money" /> to a currency named by its
     /// ISO code throws <see cref="InvalidOperationException" /> rather than producing a zero in the target currency.
     /// </summary>
     [TestMethod]
@@ -127,7 +127,7 @@ public partial class MoneyTests
     }
 
     /// <summary>
-    /// Verifies that converting a default-initialised, currency-less <see cref="Money" /> to a strongly-typed currency
+    /// Verifies that converting a default-initialized, currency-less <see cref="Money" /> to a strongly-typed currency
     /// throws <see cref="InvalidOperationException" /> rather than producing a typed zero.
     /// </summary>
     [TestMethod]
@@ -142,7 +142,7 @@ public partial class MoneyTests
     }
 
     /// <summary>
-    /// Verifies that equality remains usable on default-initialised values: two defaults compare equal and neither
+    /// Verifies that equality remains usable on default-initialized values: two defaults compare equal and neither
     /// comparison throws.
     /// </summary>
     [TestMethod]
@@ -156,7 +156,7 @@ public partial class MoneyTests
     }
 
     /// <summary>
-    /// Verifies that formatting a default-initialised value does not throw, so diagnostic surfaces (debugger, logging)
+    /// Verifies that formatting a default-initialized value does not throw, so diagnostic surfaces (debugger, logging)
     /// remain safe.
     /// </summary>
     [TestMethod]

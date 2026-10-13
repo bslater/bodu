@@ -13,7 +13,7 @@ public partial class MoneyJsonConverterPolicyTests
 {
 
     /// <summary>
-    /// Verifies that the lenient policy accepts lowercase currency in the object form and normalises it.
+    /// Verifies that the lenient policy accepts lowercase currency in the object form and normalizes it.
     /// </summary>
     [TestMethod]
     public void LenientPolicy_WhenReadingLowercaseCurrency_ShouldSucceed()

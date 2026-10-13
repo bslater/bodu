@@ -12,7 +12,7 @@ using Bodu.Test.Corpus;
 namespace Bodu.Text.Configuration;
 
 /// <summary>
-/// Holds Bodu.Text.Configuration to the defect fixes EditorConfig cores list in their release notes, as catalogued in
+/// Holds Bodu.Text.Configuration to the defect fixes EditorConfig cores list in their release notes, as cataloged in
 /// <c>corpus/configuration/fixes/</c> and embedded under <c>Fixtures/ReleaseNotes/</c>.
 /// </summary>
 /// <remarks>
@@ -34,13 +34,13 @@ namespace Bodu.Text.Configuration;
 [TestClass]
 public sealed partial class ConfigurationReleaseNoteCorpusTests
 {
-    /// <summary>The corpus area whose catalogues this class runs.</summary>
+    /// <summary>The corpus area whose catalogs this class runs.</summary>
     private const string Area = "configuration";
 
-    /// <summary>The option names a catalogue row may use, each mapped by <see cref="RowOptions.Parse" />.</summary>
+    /// <summary>The option names a catalog row may use, each mapped by <see cref="RowOptions.Parse" />.</summary>
     private static readonly string[] s_optionNames = ["Profile", "Target"];
 
-    /// <summary>The catalogues embedded in this test assembly, loaded once.</summary>
+    /// <summary>The catalogs embedded in this test assembly, loaded once.</summary>
     private static readonly Lazy<IReadOnlyList<ReleaseNoteCatalog>> s_catalogs =
         new(() => ReleaseNoteCatalog.LoadEmbedded(typeof(ConfigurationReleaseNoteCorpusTests).Assembly));
 
@@ -66,9 +66,9 @@ public sealed partial class ConfigurationReleaseNoteCorpusTests
         RunnableRows("roundtrip");
 
     /// <summary>
-    /// Gets every row of every embedded catalogue.
+    /// Gets every row of every embedded catalog.
     /// </summary>
-    /// <value>The rows, catalogue by catalogue in file order.</value>
+    /// <value>The rows, catalog by catalog in file order.</value>
     private static IEnumerable<ReleaseNoteFix> AllRows =>
         s_catalogs.Value.SelectMany(catalog => catalog.Rows);
 

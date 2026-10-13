@@ -10,7 +10,7 @@ public partial class CurrencyCatalogueTests
 {
 
     /// <summary>
-    /// Verifies that the catalogue contains the full set of shipped tag types so the source generator is in
+    /// Verifies that the catalog contains the full set of shipped tag types so the source generator is in
     /// sync with <c>currencies.json</c>.
     /// </summary>
     [TestMethod]

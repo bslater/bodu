@@ -9,12 +9,12 @@ using Bodu.Test.Kat;
 namespace Bodu.Test.Corpus;
 
 /// <summary>
-/// Represents one row of a release-note fix catalogue: a defect fix another library shipped, how it bears on Bodu, and,
+/// Represents one row of a release-note fix catalog: a defect fix another library shipped, how it bears on Bodu, and,
 /// for a row that runs, the scenario Bodu must handle.
 /// </summary>
-/// <param name="FileName">The catalogue the row came from, such as <c>tomli-fixes.csv</c>.</param>
-/// <param name="LineNumber">The one-based line of the row in its catalogue.</param>
-/// <param name="Library">The library that shipped the fix, as the catalogue's file name gives it.</param>
+/// <param name="FileName">The catalog the row came from, such as <c>tomli-fixes.csv</c>.</param>
+/// <param name="LineNumber">The one-based line of the row in its catalog.</param>
+/// <param name="Library">The library that shipped the fix, as the catalog's file name gives it.</param>
 /// <param name="Version">The release that shipped the fix, or <c>unreleased</c>.</param>
 /// <param name="Reference">The issue, pull request, commit or CVE behind the fix, or the empty string.</param>
 /// <param name="Summary">A short paraphrase of the release-note entry.</param>
@@ -75,7 +75,7 @@ public sealed record ReleaseNoteFix(
         Class is "applies" or "dialect" && Kind is "parse" or "reject" or "write" or "write-reject" or "roundtrip";
 
     /// <summary>
-    /// Returns the row's <see cref="Name" /> and its position in its catalogue.
+    /// Returns the row's <see cref="Name" /> and its position in its catalog.
     /// </summary>
     /// <returns>The label, followed by the file name and line number.</returns>
     public override string ToString() =>

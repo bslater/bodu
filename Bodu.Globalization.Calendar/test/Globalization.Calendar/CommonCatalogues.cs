@@ -7,29 +7,29 @@
 namespace Bodu.Globalization.Calendar;
 
 /// <summary>
-/// Loads the bundled common notable-date catalogues (the shipped <c>Resources\*.xml</c> files) into a resolvable
-/// <see cref="NotableDateService" />, so the known-answer tests validate the exact catalogues that territory packs
+/// Loads the bundled common notable-date catalogs (the shipped <c>Resources\*.xml</c> files) into a resolvable
+/// <see cref="NotableDateService" />, so the known-answer tests validate the exact catalogs that territory packs
 /// inherit rather than a test-local copy.
 /// </summary>
 /// <remarks>
 /// <para>
-/// A catalogue concept is authored without a territory scope, so it resolves for any territory; the tests resolve with
-/// the neutral placeholder territory <c>"XX"</c>. Catalogues that declare <c>&lt;Imports&gt;</c> (for example
+/// A catalog concept is authored without a territory scope, so it resolves for any territory; the tests resolve with
+/// the neutral placeholder territory <c>"XX"</c>. Catalogs that declare <c>&lt;Imports&gt;</c> (for example
 /// <c>christian-protestant</c>) are loaded through <see cref="CommonNotableDateResources.Resolver" /> so the imported
-/// concepts resolve against the sibling catalogues.
+/// concepts resolve against the sibling catalogs.
 /// </para>
 /// </remarks>
 internal static class CommonCatalogues
 {
-    /// <summary>The neutral placeholder territory used to resolve unscoped catalogue concepts.</summary>
+    /// <summary>The neutral placeholder territory used to resolve unscoped catalog concepts.</summary>
     public const string NeutralTerritory = "XX";
 
     /// <summary>
-    /// Loads a bundled common catalogue and returns a service over it.
+    /// Loads a bundled common catalog and returns a service over it.
     /// </summary>
-    /// <param name="catalogueName">The catalogue name, for example <c>global-bahai</c>.</param>
-    /// <returns>A service for the loaded catalogue.</returns>
-    /// <exception cref="InvalidOperationException">The catalogue is not a bundled resource.</exception>
+    /// <param name="catalogueName">The catalog name, for example <c>global-bahai</c>.</param>
+    /// <returns>A service for the loaded catalog.</returns>
+    /// <exception cref="InvalidOperationException">The catalog is not a bundled resource.</exception>
     public static NotableDateService Service(string catalogueName)
     {
         string content = CommonNotableDateResources.Resolve(catalogueName)

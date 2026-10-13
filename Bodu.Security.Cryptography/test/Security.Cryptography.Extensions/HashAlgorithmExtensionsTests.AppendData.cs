@@ -62,7 +62,7 @@ public partial class HashAlgorithmExtensionsTests
 
     /// <summary>
     /// Verifies that the supplied bytes contribute to the final hash when the transform is
-    /// subsequently finalised.
+    /// subsequently finalized.
     /// </summary>
     [TestMethod]
     public void AppendData_WhenSpanContainsData_ShouldContributeToFinalHash()

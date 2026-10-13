@@ -7,7 +7,7 @@
 namespace Bodu.Financial.ExchangeRates;
 
 /// <summary>
-/// Verifies the validation and default behaviour of <see cref="OandaRateProviderOptions" />.
+/// Verifies the validation and default behavior of <see cref="OandaRateProviderOptions" />.
 /// </summary>
 [TestClass]
 public partial class OandaRateProviderOptionsTests

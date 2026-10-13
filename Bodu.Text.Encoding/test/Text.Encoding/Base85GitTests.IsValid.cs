@@ -63,7 +63,7 @@ public sealed partial class Base85GitTests
     }
 
     /// <summary>
-    /// Verifies that the Git variant does not honour the Adobe <c>&lt;~ ... ~&gt;</c> delimiter convention: because
+    /// Verifies that the Git variant does not honor the Adobe <c>&lt;~ ... ~&gt;</c> delimiter convention: because
     /// <c>&lt;</c>, <c>~</c>, and <c>&gt;</c> are ordinary Git alphabet digits, <see cref="BaseFormatStyles.AllowPrefix" />
     /// does not strip them and they decode as payload rather than framing.
     /// </summary>

@@ -13,12 +13,12 @@ namespace Bodu.Text.Toml;
 public sealed partial class TomlDocumentReaderTests
 {
     /// <summary>
-    /// Yields a broad catalogue of malformed TOML documents that the reader must reject by raising
+    /// Yields a broad catalog of malformed TOML documents that the reader must reject by raising
     /// <see cref="TomlFormatException" /> from its constructor.
     /// </summary>
     /// <returns>One <c>[DynamicData]</c> row per malformed-input scenario.</returns>
     /// <remarks>
-    /// The catalogue sweeps the grammar dimensions - key/value structure, strings and escapes, numbers, date-times,
+    /// The catalog sweeps the grammar dimensions - key/value structure, strings and escapes, numbers, date-times,
     /// tables, arrays, inline tables, and comments - to confirm that each documented rejection rule fires. The rows
     /// are derived from the TOML v1.0.0 grammar.
     /// </remarks>
@@ -90,7 +90,7 @@ public sealed partial class TomlDocumentReaderTests
     }
 
     /// <summary>
-    /// Verifies that each malformed TOML document in the catalogue is rejected by the constructor with
+    /// Verifies that each malformed TOML document in the catalog is rejected by the constructor with
     /// <see cref="TomlFormatException" />, and that the recorded source location is populated.
     /// </summary>
     /// <param name="kat">The malformed-input scenario under test.</param>

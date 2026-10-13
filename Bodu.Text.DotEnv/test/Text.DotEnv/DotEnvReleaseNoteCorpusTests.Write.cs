@@ -12,10 +12,10 @@ namespace Bodu.Text.DotEnv;
 public sealed partial class DotEnvReleaseNoteCorpusTests
 {
     /// <summary>
-    /// Verifies that writing the entries each catalogued write row describes with <c>Utf8DotEnvWriter</c> emits exactly
+    /// Verifies that writing the entries each cataloged write row describes with <c>Utf8DotEnvWriter</c> emits exactly
     /// the expected bytes.
     /// </summary>
-    /// <param name="fix">The catalogue row.</param>
+    /// <param name="fix">The catalog row.</param>
     [TestMethod]
     [TestCategory("Regression")]
     [DynamicData(

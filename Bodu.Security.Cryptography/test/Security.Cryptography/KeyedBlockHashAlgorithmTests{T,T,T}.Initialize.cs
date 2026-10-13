@@ -13,7 +13,7 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
     /// <summary>
     /// Verifies that calling <see cref="HashAlgorithm.Initialise" /> on a keyed-hash instance
     /// whose key has been cleared does not silently regenerate a fresh random key. A keyed MAC
-    /// that swaps keys on Initialise would violate its security contract. Implementations that
+    /// that swaps keys on Initialize would violate its security contract. Implementations that
     /// permit silent regeneration may opt out by returning <see langword="true" /> from
     /// <see cref="AllowsKeyRegenerationOnInitialize" />.
     /// </summary>

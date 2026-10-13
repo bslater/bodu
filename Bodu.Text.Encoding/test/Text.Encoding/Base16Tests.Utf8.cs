@@ -410,7 +410,7 @@ public sealed partial class Base16Tests
 
     /// <summary>
     /// Verifies that <see cref="Base16.TryEncodeToUtf8(ReadOnlySpan{byte}, Span{byte}, out int, BaseFormattingOptions)" />
-    /// honours <see cref="BaseFormattingOptions.UpperCase" />.
+    /// honors <see cref="BaseFormattingOptions.UpperCase" />.
     /// </summary>
     [TestMethod]
     public void TryEncodeToUtf8_WhenUpperCaseFlag_ShouldWriteUpperCaseDigits()

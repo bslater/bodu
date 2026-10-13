@@ -12,10 +12,10 @@ namespace Bodu.Formats.Excel;
 public sealed partial class ExcelBinaryReleaseNoteCorpusTests
 {
     /// <summary>
-    /// Verifies that each catalogued input a fix established as readable renders, through the surface its row selects,
+    /// Verifies that each cataloged input a fix established as readable renders, through the surface its row selects,
     /// to the expected sheets and cells or records.
     /// </summary>
-    /// <param name="fix">The catalogue row.</param>
+    /// <param name="fix">The catalog row.</param>
     [TestMethod]
     [TestCategory("Regression")]
     [Timeout(RowTimeout)]

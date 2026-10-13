@@ -22,7 +22,7 @@ public sealed partial class Base16Tests
     public void IsHexDigit_WhenNotValid_ShouldReturnFalse(char value) => Assert.IsFalse(Base16.IsHexDigit(value));
 
     /// <summary>
-    /// Verifies that <see cref="Base16.IsHexDigit(char)" /> recognises all valid hex digit characters.
+    /// Verifies that <see cref="Base16.IsHexDigit(char)" /> recognizes all valid hex digit characters.
     /// </summary>
     /// <param name="value">The character to test.</param>
     [TestMethod]

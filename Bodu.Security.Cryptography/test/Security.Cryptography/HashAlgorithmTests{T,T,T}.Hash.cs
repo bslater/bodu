@@ -66,7 +66,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
 
     /// <summary>
     /// Verifies that calling <see cref="HashAlgorithm.TransformBlock(byte[], int, int, byte[]?, int)" />
-    /// with a zero-length input does not finalise the hash computation.
+    /// with a zero-length input does not finalize the hash computation.
     /// </summary>
     [TestMethod]
     public void Hash_Get_WhenOnlyZeroLengthTransformBlockCalled_ShouldThrowExactly()

@@ -15,7 +15,7 @@ namespace Bodu.Formats.Outlook;
 
 /// <summary>
 /// Holds Bodu.Formats.Outlook.Msg to the defect fixes other <c>.msg</c> libraries list in their release notes, as
-/// catalogued in <c>corpus/msg/fixes/</c> and embedded under <c>Fixtures/ReleaseNotes/</c>.
+/// cataloged in <c>corpus/msg/fixes/</c> and embedded under <c>Fixtures/ReleaseNotes/</c>.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -34,7 +34,7 @@ namespace Bodu.Formats.Outlook;
 [TestClass]
 public sealed partial class MsgReleaseNoteCorpusTests
 {
-    /// <summary>The corpus area whose catalogues this class runs.</summary>
+    /// <summary>The corpus area whose catalogs this class runs.</summary>
     private const string Area = "msg";
 
     /// <summary>The longest string or body value, in UTF-8 bytes, rendered in full; a longer value renders as a hash.</summary>
@@ -43,14 +43,14 @@ public sealed partial class MsgReleaseNoteCorpusTests
     /// <summary>The longest binary value, in bytes, rendered as hexadecimal; a longer value renders as a hash.</summary>
     private const int MaxBinaryBytes = 32;
 
-    /// <summary>The option names a catalogue row may use, each mapped by <see cref="RowOptions.Parse" />.</summary>
+    /// <summary>The option names a catalog row may use, each mapped by <see cref="RowOptions.Parse" />.</summary>
     private static readonly string[] s_optionNames =
     [
         "Surface", "ValidationLevel", "ReadStrategy", "DecompressRtf", "MaxEmbeddedMessageDepth",
         "MaxDecompressedRtfBytes", "MaxInlineAttachmentBytes",
     ];
 
-    /// <summary>The catalogues embedded in this test assembly, loaded once.</summary>
+    /// <summary>The catalogs embedded in this test assembly, loaded once.</summary>
     private static readonly Lazy<IReadOnlyList<ReleaseNoteCatalog>> s_catalogs =
         new(() => ReleaseNoteCatalog.LoadEmbedded(typeof(MsgReleaseNoteCorpusTests).Assembly));
 
@@ -69,9 +69,9 @@ public sealed partial class MsgReleaseNoteCorpusTests
         RunnableRows("reject");
 
     /// <summary>
-    /// Gets every row of every embedded catalogue.
+    /// Gets every row of every embedded catalog.
     /// </summary>
-    /// <value>The rows, catalogue by catalogue in file order.</value>
+    /// <value>The rows, catalog by catalog in file order.</value>
     private static IEnumerable<ReleaseNoteFix> AllRows =>
         s_catalogs.Value.SelectMany(catalog => catalog.Rows);
 

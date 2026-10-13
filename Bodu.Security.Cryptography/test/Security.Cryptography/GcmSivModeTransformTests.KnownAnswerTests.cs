@@ -19,7 +19,7 @@ namespace Bodu.Security.Cryptography;
 /// The complete C.1 and C.2 vector sets (24 vectors each) and both C.3 vectors are pinned, covering empty, block-aligned, and non-block-aligned
 /// plaintext/AAD lengths and multiple key/nonce pairs. These verify the exact ciphertext and tag against the
 /// published values - which a symmetric encrypt/decrypt round-trip cannot - and guard the POLYVAL (reflected-key
-/// <c>mulX</c>) and CTR (first-32-bit little-endian counter) behaviour required by RFC 8452 Sections 3 and 4. The
+/// <c>mulX</c>) and CTR (first-32-bit little-endian counter) behavior required by RFC 8452 Sections 3 and 4. The
 /// AES-256 vectors also pin Section 4's key derivation for a 32-byte key-generating key, whose message-encryption key is
 /// 32 bytes from six cipher calls rather than 16 bytes from four.
 /// </remarks>

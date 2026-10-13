@@ -10,7 +10,7 @@ namespace Bodu.Security.Cryptography;
 
 /// <summary>
 /// Describes the expected observable properties of a single <see cref="SymmetricStreamAlgorithm" /> implementation for
-/// use in constructor and behavioural tests, and carries the algorithm's known-answer vectors through the inherited
+/// use in constructor and behavioral tests, and carries the algorithm's known-answer vectors through the inherited
 /// <see cref="AlgorithmSpecification{TKat}.KnownAnswers" /> slot.
 /// </summary>
 public record SymmetricStreamAlgorithmSpecification
@@ -29,7 +29,7 @@ public record SymmetricStreamAlgorithmSpecification
     public required int NonceSizeBits { get; init; }
 
     /// <summary>
-    /// Gets the set of key sizes in bits to exercise in parameterised tests. For fixed-key ciphers this contains a
+    /// Gets the set of key sizes in bits to exercise in parameterized tests. For fixed-key ciphers this contains a
     /// single entry equal to <see cref="DefaultKeySizeBits" />. For multi-size ciphers (such as Salsa20) it enumerates
     /// every discrete legal key size.
     /// </summary>

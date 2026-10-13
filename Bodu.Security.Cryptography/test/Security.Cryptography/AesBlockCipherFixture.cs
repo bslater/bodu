@@ -25,7 +25,7 @@ internal sealed class AesBlockCipherFixture
     private bool _disposed;
 
     /// <summary>
-    /// Initialises a new instance using <paramref name="key" /> as the AES key. Supported key lengths are 16, 24, and
+    /// Initializes a new instance using <paramref name="key" /> as the AES key. Supported key lengths are 16, 24, and
     /// 32 bytes (AES-128 / 192 / 256).
     /// </summary>
     /// <exception cref="ArgumentNullException"><paramref name="key" /> is <see langword="null" />.</exception>

@@ -78,7 +78,7 @@ public sealed partial class SqliteRateCacheTests
     }
 
     /// <summary>
-    /// Verifies that a connection string targeting a shared in-memory database is honoured and serves a stored rate
+    /// Verifies that a connection string targeting a shared in-memory database is honored and serves a stored rate
     /// while at least one connection is held open.
     /// </summary>
     [TestMethod]

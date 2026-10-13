@@ -66,7 +66,7 @@ public sealed partial class OfbModeTransformTests
     }
 
     /// <summary>
-    /// Verifies that encrypting in OFB mode does not mutate the caller-supplied initialisation vector.
+    /// Verifies that encrypting in OFB mode does not mutate the caller-supplied initialization vector.
     /// </summary>
     [TestMethod]
     public void Transform_WhenEncrypting_ShouldNotMutateIv()

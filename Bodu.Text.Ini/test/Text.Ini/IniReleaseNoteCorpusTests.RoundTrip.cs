@@ -12,10 +12,10 @@ namespace Bodu.Text.Ini;
 public sealed partial class IniReleaseNoteCorpusTests
 {
     /// <summary>
-    /// Verifies that writing each catalogued input back with the writer writes the expected text, when the row gives it,
+    /// Verifies that writing each cataloged input back with the writer writes the expected text, when the row gives it,
     /// and text that reads back to the same rendering as the input.
     /// </summary>
-    /// <param name="fix">The catalogue row.</param>
+    /// <param name="fix">The catalog row.</param>
     [TestMethod]
     [TestCategory("Regression")]
     [DynamicData(

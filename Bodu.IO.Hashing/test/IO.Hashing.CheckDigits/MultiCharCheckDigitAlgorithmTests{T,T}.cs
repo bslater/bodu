@@ -72,7 +72,7 @@ public abstract partial class MultiCharCheckDigitAlgorithmTests<TTest, TAlgorith
     /// </summary>
     /// <returns>
     /// A non-null sequence of <see cref="MultiCharCheckDigitIsValidKnownAnswer" /> records. The default
-    /// implementation synthesises a positive vector from each <see cref="GetSpecification" /> entry by
+    /// implementation synthesizes a positive vector from each <see cref="GetSpecification" /> entry by
     /// concatenating <c>Body + ExpectedCheck</c>, then appends one negative vector per entry that flips the final
     /// check character to a different decimal digit. Algorithms whose canonical form rearranges those characters
     /// (for example IBAN) must override to supply the canonical text directly.

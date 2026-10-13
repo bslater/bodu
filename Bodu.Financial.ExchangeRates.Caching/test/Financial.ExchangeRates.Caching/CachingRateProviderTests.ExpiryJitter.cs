@@ -10,7 +10,7 @@ using Bodu.Financial.Currencies;
 namespace Bodu.Financial.ExchangeRates.Caching;
 
 /// <summary>
-/// Verifies the deterministic expiry jitter of the caching decorator: disabled by default (bit-identical behaviour),
+/// Verifies the deterministic expiry jitter of the caching decorator: disabled by default (bit-identical behavior),
 /// shortening-only when enabled, keyed stably per provider and pair, and identical across provider instances.
 /// </summary>
 public sealed partial class CachingRateProviderTests

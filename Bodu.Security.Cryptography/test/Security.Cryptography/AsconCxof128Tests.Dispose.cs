@@ -35,7 +35,7 @@ public partial class AsconCxof128Tests
 
     /// <summary>
     /// Verifies that disposing a freshly-constructed <see cref="AsconCxof128" /> instance - one
-    /// that has never been customised, absorbed, or squeezed - completes without throwing.
+    /// that has never been customized, absorbed, or squeezed - completes without throwing.
     /// </summary>
     [TestMethod]
     public void Dispose_WhenInstanceUntouched_ShouldNotThrow()

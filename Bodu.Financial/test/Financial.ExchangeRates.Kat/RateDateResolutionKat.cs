@@ -10,7 +10,7 @@ namespace Bodu.Financial.ExchangeRates.Kat;
 
 /// <summary>
 /// Represents a single known-answer test row exercising <see cref="RateSeries.TryGetRate" /> over a synthetic series
-/// whose dates are supplied directly, focusing on date-resolution behaviour rather than rate value.
+/// whose dates are supplied directly, focusing on date-resolution behavior rather than rate value.
 /// </summary>
 /// <param name="Name">The short label identifying the scenario.</param>
 /// <param name="RequestedDate">The date the caller asks about.</param>

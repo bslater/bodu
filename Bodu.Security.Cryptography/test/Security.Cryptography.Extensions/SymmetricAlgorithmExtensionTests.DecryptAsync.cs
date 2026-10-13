@@ -11,7 +11,7 @@ namespace Bodu.Security.Cryptography.Extensions;
 
 /// <summary>
 /// Tests for <see cref="SymmetricAlgorithmExtensions.DecryptAsync" /> covering argument
-/// validation, padding-mode behaviour for empty input, correctness against throttled streams,
+/// validation, padding-mode behavior for empty input, correctness against throttled streams,
 /// stream-shape coverage, cancellation, and error propagation.
 /// </summary>
 /// <remarks>
@@ -267,7 +267,7 @@ public partial class SymmetricAlgorithmExtensionTests
     }
 
     /// <summary>
-    /// Verifies that a cancellation token signalled by its timeout raises
+    /// Verifies that a cancellation token signaled by its timeout raises
     /// <see cref="TaskCanceledException" />.
     /// </summary>
     [TestMethod]
@@ -289,7 +289,7 @@ public partial class SymmetricAlgorithmExtensionTests
     }
 
     /// <summary>
-    /// Verifies that a <see cref="CancellationTriggerStream" /> cancelling mid-stream causes the
+    /// Verifies that a <see cref="CancellationTriggerStream" /> canceling mid-stream causes the
     /// method to throw <see cref="OperationCanceledException" /> (or its subtype
     /// <see cref="TaskCanceledException" />).
     /// </summary>

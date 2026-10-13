@@ -13,7 +13,7 @@ namespace Bodu.Security.Cryptography;
 /// <summary>
 /// Locks the <see cref="Rabbit" /> stream cipher against the published RFC 4503 Appendix A conformance vectors and
 /// Appendix B internal-state debugging vectors, and inherits the shared
-/// <see cref="SymmetricStreamAlgorithmTests{TTest, TAlgorithm}" /> behavioural contract.
+/// <see cref="SymmetricStreamAlgorithmTests{TTest, TAlgorithm}" /> behavioral contract.
 /// </summary>
 /// <remarks>
 /// RFC 4503 octet strings follow the I2OSP (big-endian) convention: the key and IV are big-endian integers and each

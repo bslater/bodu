@@ -9,7 +9,7 @@ using System.Numerics;
 namespace Bodu.Contracts;
 
 /// <summary>
-/// Provides the behavioural contract shared by the calendar value sets, each a set of the values of a small, fixed
+/// Provides the behavioral contract shared by the calendar value sets, each a set of the values of a small, fixed
 /// domain held one bit per value.
 /// </summary>
 /// <typeparam name="TSet">The set type under test.</typeparam>

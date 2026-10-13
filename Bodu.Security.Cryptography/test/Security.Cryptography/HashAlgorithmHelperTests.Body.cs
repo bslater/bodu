@@ -101,7 +101,7 @@ public sealed class HashAlgorithmHelperBodyTests
 
     /// <summary>
     /// Verifies that <see cref="HashAlgorithmHelper.HashDataAsync{T}(IHashAlgorithmFactory{T}, Stream, CancellationToken)" />
-    /// surfaces an <see cref="OperationCanceledException" /> when an already-cancelled token is supplied. The exact
+    /// surfaces an <see cref="OperationCanceledException" /> when an already-canceled token is supplied. The exact
     /// derived type (<see cref="TaskCanceledException" /> vs <see cref="OperationCanceledException" />) depends on
     /// the underlying stream implementation, so the test asserts on the base type.
     /// </summary>

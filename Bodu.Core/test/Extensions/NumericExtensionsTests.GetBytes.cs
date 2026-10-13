@@ -15,7 +15,7 @@ public partial class NumericExtensionsTests
 
     /// <summary>
     /// Verifies that the big-endian output is the exact byte-reversal of the little-endian output for
-    /// <see cref="int" /> values, confirming that <c>asBigEndian</c> is consistently honoured.
+    /// <see cref="int" /> values, confirming that <c>asBigEndian</c> is consistently honored.
     /// </summary>
     [TestMethod]
     [DataRow(0x12345678)]

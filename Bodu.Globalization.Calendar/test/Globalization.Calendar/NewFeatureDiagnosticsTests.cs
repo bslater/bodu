@@ -7,7 +7,7 @@
 namespace Bodu.Globalization.Calendar;
 
 /// <summary>
-/// Verifies the negative and integration behaviour of the new occurrence-source, duration, and business-day features:
+/// Verifies the negative and integration behavior of the new occurrence-source, duration, and business-day features:
 /// mutual-exclusivity and reference diagnostics, override duration replacement, and resource-order independence.
 /// </summary>
 [TestClass]

@@ -96,7 +96,7 @@ public class MoneyCompactFormattingExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that negative compact amounts honour the culture's negative-currency pattern with the magnitude
+    /// Verifies that negative compact amounts honor the culture's negative-currency pattern with the magnitude
     /// suffix bound to the numeric portion. Asserted under <see cref="CultureInfo.InvariantCulture" /> where the
     /// pattern (<c>($n)</c>) is deterministic across .NET runtimes.
     /// </summary>
@@ -112,7 +112,7 @@ public class MoneyCompactFormattingExtensionsTests
 
     /// <summary>
     /// Verifies that the <c>"G"</c> specifier renders negative compact amounts with a leading minus sign rather than
-    /// the culture's parenthesised negative pattern, keeping the ISO-prefix form unambiguous.
+    /// the culture's parenthesized negative pattern, keeping the ISO-prefix form unambiguous.
     /// </summary>
     [TestMethod]
     public void ToCompactString_WhenGSpecifierAndNegative_ShouldUseLeadingMinusSign()
@@ -178,7 +178,7 @@ public class MoneyCompactFormattingExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that explicit precision is honoured on the scaled portion.
+    /// Verifies that explicit precision is honored on the scaled portion.
     /// </summary>
     [TestMethod]
     public void ToCompactString_WhenPrecisionIsTwo_ShouldRenderTwoFractionalDigits()

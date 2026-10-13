@@ -8,7 +8,7 @@ namespace Bodu.Security.Cryptography;
 
 /// <summary>
 /// Provides unit tests for additive (symmetric, shared-key) stream ciphers derived from
-/// <see cref="SymmetricStreamAlgorithm" />, verifying key and nonce property behaviours, transform lifecycle,
+/// <see cref="SymmetricStreamAlgorithm" />, verifying key and nonce property behaviors, transform lifecycle,
 /// buffer-overlap handling, key and nonce generation, and disposal semantics.
 /// </summary>
 /// <typeparam name="TTest">The concrete test class, used to resolve specification data for <see cref="DynamicDataAttribute" /> sources.</typeparam>
@@ -91,7 +91,7 @@ public abstract partial class SymmetricStreamAlgorithmTests<TTest, TAlgorithm>
 
     /// <summary>
     /// Returns one row per entry in <see cref="SymmetricStreamAlgorithmSpecification.LegalKeySizesBits" /> for use as a
-    /// <see cref="DynamicDataAttribute" /> source in parameterised tests.
+    /// <see cref="DynamicDataAttribute" /> source in parameterized tests.
     /// </summary>
     /// <returns>A sequence of single-element arrays, each containing a key size in bits.</returns>
     public static IEnumerable<object[]> LegalKeySizeBitsData() =>

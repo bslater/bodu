@@ -71,7 +71,7 @@ public partial class ComparableExtensionsTests
     // =========================================================================
 
     /// <summary>
-    /// Verifies that the comparer overload of <c>IsBetween</c> honours the supplied comparer's ordering.
+    /// Verifies that the comparer overload of <c>IsBetween</c> honors the supplied comparer's ordering.
     /// A reverse comparer changes which boundary is considered lower, so the same numeric arguments
     /// yield the same logical in-range result regardless of which boundary ordering is passed.
     /// </summary>

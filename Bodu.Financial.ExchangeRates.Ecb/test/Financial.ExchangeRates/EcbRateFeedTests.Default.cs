@@ -9,7 +9,7 @@ namespace Bodu.Financial.ExchangeRates;
 public partial class EcbRateFeedTests
 {
     /// <summary>
-    /// Verifies that the default catalogue is ordered from the narrowest look-back to the full history.
+    /// Verifies that the default catalog is ordered from the narrowest look-back to the full history.
     /// </summary>
     [TestMethod]
     public void Default_ShouldBeOrderedNarrowestToWidest()

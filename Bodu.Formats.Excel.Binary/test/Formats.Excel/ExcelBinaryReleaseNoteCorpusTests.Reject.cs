@@ -14,10 +14,10 @@ namespace Bodu.Formats.Excel;
 public sealed partial class ExcelBinaryReleaseNoteCorpusTests
 {
     /// <summary>
-    /// Verifies that each catalogued input a fix established as malformed or unsupported is rejected, through the
+    /// Verifies that each cataloged input a fix established as malformed or unsupported is rejected, through the
     /// surface its row selects, with exactly the exception the row names.
     /// </summary>
-    /// <param name="fix">The catalogue row.</param>
+    /// <param name="fix">The catalog row.</param>
     [TestMethod]
     [TestCategory("Regression")]
     [Timeout(RowTimeout)]

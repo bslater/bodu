@@ -14,13 +14,13 @@ namespace Bodu.Globalization.Calendar;
 /// <see cref="CalendarSystem.Persian" /> calendar with a calendar-year sweep, projected onto the Gregorian year
 /// through the service. Expected dates are sourced from the Iranian civil calendar (time.ir) and reproduced by the
 /// base class library's <see cref="System.Globalization.PersianCalendar" />, ported from the v1 <c>global-persian.xml</c>
-/// resource tests. The fifty-year sweep additionally pins the bundled <c>global-persian</c> catalogue against the
+/// resource tests. The fifty-year sweep additionally pins the bundled <c>global-persian</c> catalog against the
 /// independently computed vector table.
 /// </summary>
 [TestClass]
 public sealed class PersianCalendarKnownAnswerTests
 {
-    /// <summary>The shared sweep service over the bundled catalogue, built once for the fifty-year vector rows.</summary>
+    /// <summary>The shared sweep service over the bundled catalog, built once for the fifty-year vector rows.</summary>
     private static readonly Lazy<NotableDateService> s_sweepService = new(() => CommonCatalogues.Service("global-persian"));
 
     /// <summary>
@@ -31,7 +31,7 @@ public sealed class PersianCalendarKnownAnswerTests
         NotableDateFixtures.Resolver("persian.xml");
 
     /// <summary>
-    /// Verifies that each Persian observance in the bundled <c>global-persian</c> catalogue resolves to the
+    /// Verifies that each Persian observance in the bundled <c>global-persian</c> catalog resolves to the
     /// independently computed vector date across the full fifty-year sweep (Gregorian 1990-2039), pinning the
     /// equinox-anchored Solar Hijri projection against the Meeus-derived arithmetic recorded in the embedded vector
     /// table.

@@ -85,7 +85,7 @@ public partial class MerkleTreeTests
     /// count from zero to sixty-four, which is where the two constructions could most easily disagree.
     /// </summary>
     /// <remarks>
-    /// The fold pushes each leaf as a one-leaf subtree and combines equal-sized neighbours, then folds the remainder
+    /// The fold pushes each leaf as a one-leaf subtree and combines equal-sized neighbors, then folds the remainder
     /// right to left. That reproduces RFC 6962's shape only if every pending entry is a perfect subtree, so a
     /// disagreement at any non-power-of-two count would reveal a broken merge condition.
     /// </remarks>
@@ -341,7 +341,7 @@ public partial class MerkleTreeTests
     }
 
     /// <summary>
-    /// Verifies that a cancelled token stops the read with <see cref="OperationCanceledException" />.
+    /// Verifies that a canceled token stops the read with <see cref="OperationCanceledException" />.
     /// </summary>
     [TestMethod]
     public void ComputeBlocked_WhenCancellationIsRequested_ShouldThrowOperationCanceledException()

@@ -9,7 +9,7 @@ using Bodu.Test.Kat;
 namespace Bodu.IO.Hashing.Contracts;
 
 /// <summary>
-/// Represents a RevEng-style CRC catalogue row carrying every parameter required to fully describe a CRC variant:
+/// Represents a RevEng-style CRC catalog row carrying every parameter required to fully describe a CRC variant:
 /// width, polynomial, initial value, reflect-in/reflect-out flags, final XOR mask, and the reference
 /// <see cref="Check" /> value computed for the canonical input <c>"123456789"</c>.
 /// </summary>
@@ -22,7 +22,7 @@ namespace Bodu.IO.Hashing.Contracts;
 /// <param name="XorOut">The final XOR mask applied to the output register.</param>
 /// <param name="Check">
 /// The reference CRC value over the ASCII string <c>"123456789"</c>, used as the canonical conformance vector for every
-/// catalogue entry.
+/// catalog entry.
 /// </param>
 public sealed record CrcCatalogKat(
     string Name,

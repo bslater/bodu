@@ -9,11 +9,11 @@ using System.Reflection;
 namespace Bodu.Test.Corpus;
 
 /// <summary>
-/// Locates the repository's <c>corpus/</c> tree and checks that a test project's embedded release-note catalogues are
+/// Locates the repository's <c>corpus/</c> tree and checks that a test project's embedded release-note catalogs are
 /// byte-for-byte copies of their sources there.
 /// </summary>
 /// <remarks>
-/// A catalogue's source of truth is <c>corpus/&lt;area&gt;/fixes/&lt;library&gt;-fixes.csv</c>; the test project embeds
+/// A catalog's source of truth is <c>corpus/&lt;area&gt;/fixes/&lt;library&gt;-fixes.csv</c>; the test project embeds
 /// a copy under <c>Fixtures/ReleaseNotes/</c> so its tests run without the repository. The check keeps the two from
 /// drifting apart. It reports inconclusive, rather than failing, when the tests run outside a checkout.
 /// </remarks>
@@ -22,7 +22,7 @@ public static class CorpusTree
     /// <summary>The solution file that marks the repository root.</summary>
     private const string SolutionFileName = "bodu.slnx";
 
-    /// <summary>The part of an embedded resource name that marks a catalogue copied into a test project.</summary>
+    /// <summary>The part of an embedded resource name that marks a catalog copied into a test project.</summary>
     private const string ResourceMarker = ".Fixtures.ReleaseNotes.";
 
     /// <summary>
@@ -44,10 +44,10 @@ public static class CorpusTree
     }
 
     /// <summary>
-    /// Asserts that the catalogues an assembly embeds under <c>Fixtures/ReleaseNotes/</c> are exactly the files in
+    /// Asserts that the catalogs an assembly embeds under <c>Fixtures/ReleaseNotes/</c> are exactly the files in
     /// <c>corpus/&lt;area&gt;/fixes/</c>, byte for byte.
     /// </summary>
-    /// <param name="assembly">The test assembly that embeds the catalogues.</param>
+    /// <param name="assembly">The test assembly that embeds the catalogs.</param>
     /// <param name="area">The corpus area, such as <c>toml</c>.</param>
     /// <param name="repositoryRoot">
     /// The repository root; found with <see cref="FindRepositoryRoot" /> when <see langword="null" />.
@@ -57,7 +57,7 @@ public static class CorpusTree
     /// </exception>
     /// <exception cref="AssertInconclusiveException">The repository root cannot be found.</exception>
     /// <exception cref="AssertFailedException">
-    /// The area's <c>fixes</c> directory does not exist, or a catalogue is missing from one side or differs between
+    /// The area's <c>fixes</c> directory does not exist, or a catalog is missing from one side or differs between
     /// them.
     /// </exception>
     public static void AssertEmbeddedCopiesMatch(Assembly assembly, string area, string? repositoryRoot = null)

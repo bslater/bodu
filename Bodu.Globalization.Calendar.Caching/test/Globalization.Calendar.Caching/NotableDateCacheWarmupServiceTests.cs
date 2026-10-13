@@ -85,7 +85,7 @@ public sealed class NotableDateCacheWarmupServiceTests
     }
 
     /// <summary>
-    /// Verifies that a token cancelled before the run starts aborts the warm-up quietly without computing anything.
+    /// Verifies that a token canceled before the run starts aborts the warm-up quietly without computing anything.
     /// </summary>
     [TestMethod]
     public async Task StartAsync_WhenTokenAlreadyCancelled_ShouldAbortQuietly()

@@ -102,7 +102,7 @@ public partial class ShuffleHelpersTests
 
     /// <summary>
     /// Verifies that <see cref="ShuffleHelpers.Shuffle" /> produces the same permutation when called with an identically seeded
-    /// <see cref="XorShiftRandom" />, confirming deterministic behaviour.
+    /// <see cref="XorShiftRandom" />, confirming deterministic behavior.
     /// </summary>
     [TestMethod]
     public void Shuffle_WithFixedSeed_ShouldProduceDeterministicOutput()

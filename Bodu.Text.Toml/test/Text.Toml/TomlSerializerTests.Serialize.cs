@@ -248,7 +248,7 @@ public partial class TomlSerializerTests
 
     /// <summary>
     /// Verifies that an <see cref="object" />-typed member holding a bare <see cref="object" /> serializes as an empty
-    /// table - the TOML analogue of the empty JSON object - which the writer canonically emits as an empty header
+    /// table - the TOML analog of the empty JSON object - which the writer canonically emits as an empty header
     /// section.
     /// </summary>
     [TestMethod]

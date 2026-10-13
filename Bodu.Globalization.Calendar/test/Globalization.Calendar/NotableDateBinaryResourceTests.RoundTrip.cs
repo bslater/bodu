@@ -70,10 +70,10 @@ public sealed partial class NotableDateBinaryResourceTests
     }
 
     /// <summary>
-    /// Verifies that every bundled common catalogue round-trips through the binary format with resolved-occurrence
+    /// Verifies that every bundled common catalog round-trips through the binary format with resolved-occurrence
     /// parity and byte-stable output.
     /// </summary>
-    /// <param name="catalog">The bundled catalogue to round-trip.</param>
+    /// <param name="catalog">The bundled catalog to round-trip.</param>
     [TestMethod]
     [TestCategory("Regression")]
     [DynamicData(nameof(BundledCatalogues))]
@@ -91,7 +91,7 @@ public sealed partial class NotableDateBinaryResourceTests
     }
 
     /// <summary>
-    /// Supplies every bundled catalogue as a test row.
+    /// Supplies every bundled catalog as a test row.
     /// </summary>
     public static IEnumerable<object[]> BundledCatalogues =>
         Enum.GetValues<CommonNotableDateCatalog>().Select(catalog => new object[] { catalog });

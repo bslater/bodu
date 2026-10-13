@@ -19,13 +19,13 @@ public sealed class CancellationTriggerStream
     private int _readCount;
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="CancellationTriggerStream" /> class.
+    /// Initializes a new instance of the <see cref="CancellationTriggerStream" /> class.
     /// </summary>
     /// <param name="inner">The underlying stream to read from.</param>
     /// <param name="cts">The cancellation token source to cancel after the specified number of reads.</param>
     /// <param name="cancelAfterRead">
-    /// The number of successful reads (returning &gt; 0 bytes) after which <paramref name="cts" /> is cancelled. The
-    /// cancellation fires after the read completes, so subsequent calls to <c>ReadAsync</c> detect the cancelled token
+    /// The number of successful reads (returning &gt; 0 bytes) after which <paramref name="cts" /> is canceled. The
+    /// cancellation fires after the read completes, so subsequent calls to <c>ReadAsync</c> detect the canceled token
     /// before invoking the next synchronous read.
     /// </param>
     public CancellationTriggerStream(Stream inner, CancellationTokenSource cts, int cancelAfterRead)

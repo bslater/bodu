@@ -29,10 +29,10 @@ internal sealed class LateJoinerNotableDateCache
     /// <summary>The cache the decorator delegates every operation to.</summary>
     private readonly INotableDateCache _inner;
 
-    /// <summary>Signalled once the first lookup has run and is parked.</summary>
+    /// <summary>Signaled once the first lookup has run and is parked.</summary>
     private readonly ManualResetEventSlim _parked = new(initialState: false);
 
-    /// <summary>Signalled by the test to let the parked lookup return.</summary>
+    /// <summary>Signaled by the test to let the parked lookup return.</summary>
     private readonly ManualResetEventSlim _released = new(initialState: false);
 
     /// <summary>The number of lookups started.</summary>

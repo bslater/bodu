@@ -11,7 +11,7 @@ namespace Bodu.Security.Cryptography;
 /// <summary>
 /// Concrete test class that exercises the <see cref="BlockCipherTransformTests{TTest, TCryptoTransform}" /> base tests against the
 /// <see cref="BlockCipherTransform" /> implementation. The contract suite runs against <see cref="Threefish256" /> - the smallest
-/// of the three Threefish variants - because every variant shares the same transform type and the contract behaviour is
+/// of the three Threefish variants - because every variant shares the same transform type and the contract behavior is
 /// independent of block size. Crypto-correctness for all three variants is anchored at the block-cipher tier through
 /// <see cref="Threefish256CipherTests" /> / <see cref="Threefish512CipherTests" /> / <see cref="Threefish1024CipherTests" />.
 /// </summary>

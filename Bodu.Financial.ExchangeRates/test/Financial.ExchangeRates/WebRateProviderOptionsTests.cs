@@ -10,7 +10,7 @@ using Microsoft.Extensions.Logging;
 namespace Bodu.Financial.ExchangeRates;
 
 /// <summary>
-/// Verifies the shared validation behaviour of <see cref="WebRateProviderOptions" />, including delegation to
+/// Verifies the shared validation behavior of <see cref="WebRateProviderOptions" />, including delegation to
 /// the source-specific <c>TryValidateCore</c> override.
 /// </summary>
 [TestClass]

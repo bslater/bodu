@@ -7,7 +7,7 @@
 namespace Bodu.Financial.ExchangeRates;
 
 /// <summary>
-/// Verifies the default catalogue and construction guards of <see cref="BoeSeries" />.
+/// Verifies the default catalog and construction guards of <see cref="BoeSeries" />.
 /// </summary>
 [TestClass]
 public partial class BoeSeriesTests

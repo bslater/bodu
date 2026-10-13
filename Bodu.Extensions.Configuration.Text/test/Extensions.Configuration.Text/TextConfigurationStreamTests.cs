@@ -41,7 +41,7 @@ logging.level.default = Warning
     }
 
     /// <summary>
-    /// Verifies that the stream overload honours a supplied target path and applies the matching glob-anchored
+    /// Verifies that the stream overload honors a supplied target path and applies the matching glob-anchored
     /// section override.
     /// </summary>
     [TestMethod]

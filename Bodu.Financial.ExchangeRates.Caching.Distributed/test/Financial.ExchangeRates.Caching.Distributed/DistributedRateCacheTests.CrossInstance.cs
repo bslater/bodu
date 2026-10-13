@@ -9,7 +9,7 @@ using Microsoft.Extensions.Caching.Distributed;
 namespace Bodu.Financial.ExchangeRates.Caching.Distributed;
 
 /// <summary>
-/// Verifies the cross-process behaviour of <see cref="DistributedRateCache" /> using two independent instances
+/// Verifies the cross-process behavior of <see cref="DistributedRateCache" /> using two independent instances
 /// over one shared backing store - the multi-writer case any real <see cref="IDistributedCache" /> (Redis, SQL Server)
 /// presents. Same-pair writes are last-write-wins across instances, but because a fetched range is one atomic blob set a
 /// reader never observes coverage without its rows even when a concurrent writer overwrites it.

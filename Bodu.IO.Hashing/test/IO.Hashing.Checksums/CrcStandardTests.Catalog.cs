@@ -66,9 +66,9 @@ public partial class CrcStandardTests
 
     /// <summary>
     /// Verifies that <see cref="CrcStandard.FromName(string)" /> returns the canonical instance for a known
-    /// catalogue name and that the returned reference is the same as <see cref="CrcStandard.Get(CrcStandards)" />.
+    /// catalog name and that the returned reference is the same as <see cref="CrcStandard.Get(CrcStandards)" />.
     /// </summary>
-    /// <param name="name">The canonical catalogue name to resolve.</param>
+    /// <param name="name">The canonical catalog name to resolve.</param>
     /// <param name="expected">The enum value matched by <paramref name="name" />.</param>
     [DataRow("CRC-32/ISO-HDLC", CrcStandards.CRC32_ISOHDLC)]
     [DataRow("CRC-32/ISCSI", CrcStandards.CRC32_ISCSI)]
@@ -108,7 +108,7 @@ public partial class CrcStandardTests
 
     /// <summary>
     /// Verifies that <see cref="CrcStandard.FromName(string)" /> throws
-    /// <see cref="KeyNotFoundException" /> when the supplied name does not match any catalogue entry.
+    /// <see cref="KeyNotFoundException" /> when the supplied name does not match any catalog entry.
     /// </summary>
     [TestMethod]
     public void FromName_WhenNameIsUnknown_ShouldThrowExactly()
@@ -135,7 +135,7 @@ public partial class CrcStandardTests
     /// <summary>
     /// Verifies that <see cref="CrcStandard.Get(CrcStandards)" /> throws
     /// <see cref="ArgumentOutOfRangeException" /> with <c>ParamName</c> equal to <c>standard</c> when the supplied
-    /// enum value is outside the declared catalogue range.
+    /// enum value is outside the declared catalog range.
     /// </summary>
     [TestMethod]
     public void Get_WhenStandardIsUndefined_ShouldThrowExactly()
@@ -148,9 +148,9 @@ public partial class CrcStandardTests
     }
 
     /// <summary>
-    /// Verifies that each named static catalogue property returns the canonical instance for its corresponding
+    /// Verifies that each named static catalog property returns the canonical instance for its corresponding
     /// <see cref="CrcStandards" /> value, and that its <see cref="CrcStandard.Name" /> matches the expected
-    /// catalogue label.
+    /// catalog label.
     /// </summary>
     [TestMethod]
     public void StaticProperties_WhenAccessed_ShouldReturnCanonicalCatalogInstances()
@@ -197,7 +197,7 @@ public partial class CrcStandardTests
 
     /// <summary>
     /// Verifies that <see cref="CrcStandard.TryFromName(string, out CrcStandard)" /> returns <see langword="true" />
-    /// and produces the canonical instance for a known catalogue name.
+    /// and produces the canonical instance for a known catalog name.
     /// </summary>
     [TestMethod]
     public void TryFromName_WhenNameIsCanonical_ShouldReturnTrueAndProduceCanonicalInstance()
@@ -224,7 +224,7 @@ public partial class CrcStandardTests
 
     /// <summary>
     /// Verifies that <see cref="CrcStandard.TryFromName(string, out CrcStandard)" /> returns <see langword="false" />
-    /// and a <see langword="null" /> standard when the supplied name does not match any catalogue entry.
+    /// and a <see langword="null" /> standard when the supplied name does not match any catalog entry.
     /// </summary>
     [TestMethod]
     public void TryFromName_WhenNameIsUnknown_ShouldReturnFalseAndNull()

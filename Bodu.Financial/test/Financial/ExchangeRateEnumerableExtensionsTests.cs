@@ -11,7 +11,7 @@ using Bodu.Financial.Extensions;
 namespace Bodu.Financial;
 
 /// <summary>
-/// Verifies the behaviour of the <see cref="ExchangeRateEnumerableExtensions" /> materializers.
+/// Verifies the behavior of the <see cref="ExchangeRateEnumerableExtensions" /> materializers.
 /// </summary>
 [TestClass]
 public partial class ExchangeRateEnumerableExtensionsTests

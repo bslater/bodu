@@ -10,7 +10,7 @@ namespace Bodu.Globalization.Calendar;
 
 /// <summary>
 /// Verifies the year-by-year known-answer table for the Hebrew observances authored in the bundled <c>global-jewish</c>
-/// catalogue, including the observances added in the latest pass (Tu BiShvat, Tisha B'Av, Lag BaOmer, Shemini Atzeret
+/// catalog, including the observances added in the latest pass (Tu BiShvat, Tisha B'Av, Lag BaOmer, Shemini Atzeret
 /// and both Simchat Torah variants). The anchors are <see cref="FixedDateStrategy" /> rules in the
 /// <see cref="CalendarSystem.Hebrew" /> calendar with a calendar-year sweep; the remaining observances are invariant
 /// <see cref="OffsetFromRuleStrategy" /> offsets from those anchors. Expected Gregorian dates are the published Hebcal
@@ -24,15 +24,15 @@ public sealed class GlobalJewishCatalogueKnownAnswerTests
     private static readonly Lazy<NotableDateService> s_sweepService = new(CreateService);
 
     /// <summary>
-    /// Builds a service over the bundled <c>global-jewish</c> catalogue.
+    /// Builds a service over the bundled <c>global-jewish</c> catalog.
     /// </summary>
-    /// <returns>A service for the catalogue.</returns>
+    /// <returns>A service for the catalog.</returns>
     private static NotableDateService CreateService() =>
         CommonCatalogues.Service("global-jewish");
 
     /// <summary>
     /// Verifies that each Hebrew observance resolves to the independently computed vector date across the full fifty-year
-    /// sweep (Gregorian 1990-2039), pinning every catalogue anchor and offset against the Dershowitz-Reingold arithmetic
+    /// sweep (Gregorian 1990-2039), pinning every catalog anchor and offset against the Dershowitz-Reingold arithmetic
     /// recorded in the embedded vector table.
     /// </summary>
     /// <param name="kat">The vector row carrying the (year, observance) input and the expected date.</param>

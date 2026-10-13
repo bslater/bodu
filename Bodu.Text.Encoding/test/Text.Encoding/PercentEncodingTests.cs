@@ -7,7 +7,7 @@
 namespace Bodu.Text.Encoding;
 
 /// <summary>
-/// Behavioural tests for <see cref="PercentEncoding" />. Partial files split coverage by member or subject contract.
+/// Behavioral tests for <see cref="PercentEncoding" />. Partial files split coverage by member or subject contract.
 /// </summary>
 [TestClass]
 public sealed partial class PercentEncodingTests

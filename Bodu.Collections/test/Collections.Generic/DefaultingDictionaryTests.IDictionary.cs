@@ -103,7 +103,7 @@ public partial class DefaultingDictionaryTests
     }
 
     /// <summary>
-    /// Verifies that keys are resolved through the supplied comparer, mirroring the inner dictionary's behaviour.
+    /// Verifies that keys are resolved through the supplied comparer, mirroring the inner dictionary's behavior.
     /// </summary>
     [TestMethod]
     public void Indexer_WhenComparerIsCaseInsensitive_ShouldResolveEitherCasing()

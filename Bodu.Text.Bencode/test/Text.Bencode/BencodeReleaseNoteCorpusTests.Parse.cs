@@ -12,10 +12,10 @@ namespace Bodu.Text.Bencode;
 public sealed partial class BencodeReleaseNoteCorpusTests
 {
     /// <summary>
-    /// Verifies that each catalogued input a fix established as readable is read by the selected surface into the
+    /// Verifies that each cataloged input a fix established as readable is read by the selected surface into the
     /// expected token transcript.
     /// </summary>
-    /// <param name="fix">The catalogue row.</param>
+    /// <param name="fix">The catalog row.</param>
     [TestMethod]
     [TestCategory("Regression")]
     [DynamicData(

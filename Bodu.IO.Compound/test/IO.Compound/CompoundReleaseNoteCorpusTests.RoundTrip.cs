@@ -13,12 +13,12 @@ namespace Bodu.IO.Compound;
 public sealed partial class CompoundReleaseNoteCorpusTests
 {
     /// <summary>
-    /// Verifies that each catalogued container, or the result of each catalogued edit script, reads, and that copying
+    /// Verifies that each cataloged container, or the result of each cataloged edit script, reads, and that copying
     /// it through <see cref="CompoundStorageBuilder.FromFile(CompoundFile, bool)" /> and
     /// <see cref="CompoundStorageBuilder.ToArray(CompoundBuildOptions)" /> reads back to the same listing, which equals
     /// the expected one when the row gives it.
     /// </summary>
-    /// <param name="fix">The catalogue row.</param>
+    /// <param name="fix">The catalog row.</param>
     /// <remarks>
     /// An edit script runs on a writable <see cref="CompoundFile" /> and is committed; the committed file must render
     /// the expected listing before it is copied.

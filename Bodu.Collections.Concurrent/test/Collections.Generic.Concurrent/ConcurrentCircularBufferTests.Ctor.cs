@@ -33,7 +33,7 @@ public partial class ConcurrentCircularBufferTests
     }
 
     /// <summary>
-    /// Verifies that <c>allowOverwrite: false</c> is honoured by every instance when the constructor is invoked from many threads concurrently.
+    /// Verifies that <c>allowOverwrite: false</c> is honored by every instance when the constructor is invoked from many threads concurrently.
     /// </summary>
     [TestMethod]
     public void Ctor_WhenAllowOverwriteFalse_ShouldRespectFlagAcrossParallelConstruction()
@@ -131,7 +131,7 @@ public partial class ConcurrentCircularBufferTests
     }
 
     /// <summary>
-    /// Verifies that a capacity-taking constructor, invoked from many threads, initialises each instance consistently.
+    /// Verifies that a capacity-taking constructor, invoked from many threads, initializes each instance consistently.
     /// </summary>
     [TestMethod]
     public void Ctor_WhenCapacityProvided_AndConstructedInParallel_ShouldInitializeConsistently()

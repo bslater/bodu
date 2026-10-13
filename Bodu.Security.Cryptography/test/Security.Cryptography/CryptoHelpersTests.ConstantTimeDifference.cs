@@ -43,7 +43,7 @@ public partial class CryptoHelpersTests
 
     /// <summary>
     /// Verifies that the accumulator is the OR of the byte-wise XOR differences, so multiple differing bytes fold
-    /// together rather than cancelling out.
+    /// together rather than canceling out.
     /// </summary>
     [TestMethod]
     public void ConstantTimeDifference_WhenMultipleBytesDiffer_ShouldAccumulateXorDifferences()

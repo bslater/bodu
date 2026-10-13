@@ -9,10 +9,10 @@ namespace Bodu.Security.Cryptography;
 public abstract partial class CipherModeTestsBase<TTransform>
 {
     /// <summary>
-    /// Gets the expected initialisation vector, nonce, or initial counter value size, in bytes.
+    /// Gets the expected initialization vector, nonce, or initial counter value size, in bytes.
     /// </summary>
     /// <remarks>
-    /// Most block cipher modes require an initialisation vector whose size matches the cipher block size.
+    /// Most block cipher modes require an initialization vector whose size matches the cipher block size.
     /// AEAD modes such as GCM may override this value because their public constructor accepts a nonce rather
     /// than a block-sized IV.
     /// </remarks>
@@ -21,9 +21,9 @@ public abstract partial class CipherModeTestsBase<TTransform>
     // ── Constructor validation tests ──────────────────────────────────────────────────────────
 
     /// <summary>
-    /// Verifies that constructing the mode transform with a <see langword="null" /> initialisation value throws
+    /// Verifies that constructing the mode transform with a <see langword="null" /> initialization value throws
     /// <see cref="ArgumentNullException" /> whose <see cref="ArgumentException.ParamName" /> equals
-    /// <see cref="IvParameterName" />. Skipped for modes that do not accept an initialisation value, such as ECB.
+    /// <see cref="IvParameterName" />. Skipped for modes that do not accept an initialization value, such as ECB.
     /// </summary>
     [TestMethod]
     public void Ctor_WhenIvIsNull_ShouldThrowExactly()
@@ -45,9 +45,9 @@ public abstract partial class CipherModeTestsBase<TTransform>
     }
 
     /// <summary>
-    /// Verifies that constructing the mode transform with an initialisation value whose length is invalid throws
+    /// Verifies that constructing the mode transform with an initialization value whose length is invalid throws
     /// <see cref="ArgumentException" /> whose <see cref="ArgumentException.ParamName" /> equals
-    /// <see cref="IvParameterName" />. Skipped for modes that do not accept an initialisation value, such as ECB.
+    /// <see cref="IvParameterName" />. Skipped for modes that do not accept an initialization value, such as ECB.
     /// </summary>
     [TestMethod]
     public void Ctor_WhenIvLengthDoesNotMatchExpectedSize_ShouldThrowExactly()
@@ -94,7 +94,7 @@ public abstract partial class CipherModeTestsBase<TTransform>
     }
 
     /// <summary>
-    /// Verifies that constructing the mode transform with a valid cipher and a correctly-sized initialisation value
+    /// Verifies that constructing the mode transform with a valid cipher and a correctly-sized initialization value
     /// completes without throwing.
     /// </summary>
     [TestMethod]

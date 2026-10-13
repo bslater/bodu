@@ -12,10 +12,10 @@ namespace Bodu.Text.DotEnv;
 public sealed partial class DotEnvReleaseNoteCorpusTests
 {
     /// <summary>
-    /// Verifies that writing back the entries read from each catalogued input emits bytes that read back to the same
+    /// Verifies that writing back the entries read from each cataloged input emits bytes that read back to the same
     /// entries, and the expected bytes when the row gives them.
     /// </summary>
-    /// <param name="fix">The catalogue row.</param>
+    /// <param name="fix">The catalog row.</param>
     [TestMethod]
     [TestCategory("Regression")]
     [DynamicData(

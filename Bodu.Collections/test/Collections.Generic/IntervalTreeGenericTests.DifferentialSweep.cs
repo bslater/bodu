@@ -110,7 +110,7 @@ public partial class IntervalTreeGenericTests
     /// <param name="sut">The tree under test.</param>
     /// <param name="oracle">The mirrored brute-force entry list, in insertion order.</param>
     /// <param name="random">The seeded probe source.</param>
-    /// <param name="op">The operation ordinal, for failure labelling.</param>
+    /// <param name="op">The operation ordinal, for failure labeling.</param>
     private static void AssertMatchesOracle(
         IntervalTree<int, int> sut, List<(int Low, int High, int Value)> oracle, Random random, int op)
     {

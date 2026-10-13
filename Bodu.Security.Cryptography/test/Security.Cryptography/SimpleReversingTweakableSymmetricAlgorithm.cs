@@ -114,7 +114,7 @@ public sealed class SimpleReversingTweakableSymmetricAlgorithm
     // ── Constructor ───────────────────────────────────────────────────────────────────────────
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="SimpleReversingTweakableSymmetricAlgorithm" /> class with default
+    /// Initializes a new instance of the <see cref="SimpleReversingTweakableSymmetricAlgorithm" /> class with default
     /// parameters: 128-bit block, 128-bit key, 128-bit tweak, CBC cipher mode, and PKCS7 padding.
     /// </summary>
     public SimpleReversingTweakableSymmetricAlgorithm()
@@ -177,7 +177,7 @@ public sealed class SimpleReversingTweakableSymmetricAlgorithm
 
     /// <summary>
     /// Creates a <see cref="SimpleReversingCryptoTransform" /> configured for encryption using the specified key,
-    /// initialisation vector, and tweak.
+    /// initialization vector, and tweak.
     /// </summary>
     /// <param name="rgbKey">The key bytes. Must match the configured <see cref="SymmetricAlgorithm.KeySize" />.</param>
     /// <param name="rgbIV">The IV bytes. Must match the configured <see cref="SymmetricAlgorithm.BlockSize" />.</param>
@@ -207,7 +207,7 @@ public sealed class SimpleReversingTweakableSymmetricAlgorithm
 
     /// <summary>
     /// Creates a <see cref="SimpleReversingCryptoTransform" /> configured for decryption using the specified key,
-    /// initialisation vector, and tweak.
+    /// initialization vector, and tweak.
     /// </summary>
     /// <param name="rgbKey">The key bytes. Must match the configured <see cref="SymmetricAlgorithm.KeySize" />.</param>
     /// <param name="rgbIV">The IV bytes. Must match the configured <see cref="SymmetricAlgorithm.BlockSize" />.</param>
@@ -238,7 +238,7 @@ public sealed class SimpleReversingTweakableSymmetricAlgorithm
     // ── Key, IV, and tweak generation ─────────────────────────────────────────────────────────
 
     /// <summary>
-    /// Generates a cryptographically random initialisation vector of the configured block size and assigns it to
+    /// Generates a cryptographically random initialization vector of the configured block size and assigns it to
     /// <see cref="SymmetricAlgorithm.IV" />.
     /// </summary>
     /// <exception cref="ObjectDisposedException">This instance has been disposed.</exception>

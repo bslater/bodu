@@ -11,7 +11,7 @@ namespace Bodu.Globalization.Calendar;
 /// whose integer index depends on whether the Hebrew year is a leap year are exercised by a calendar-year sweep across
 /// Gregorian 2026 (Hebrew 5786 regular and 5787 leap). Ported from the v1
 /// <c>NotableDateRuleResolverTests.HebrewAlias</c> tests, with the v1 "unknown alias returns null" case adapted to the
-/// v2 model where an unrecognised month token is a load-time validation error.
+/// v2 model where an unrecognized month token is a load-time validation error.
 /// </summary>
 [TestClass]
 public sealed class StrategyResolutionHebrewAliasTests
@@ -54,8 +54,8 @@ public sealed class StrategyResolutionHebrewAliasTests
     }
 
     /// <summary>
-    /// Verifies that a Hebrew fixed-date rule whose month token is not a recognised Hebrew month name or alias fails to
-    /// load with a <see cref="NotableDateValidationException" /> carrying an error diagnostic. In v1 an unrecognised
+    /// Verifies that a Hebrew fixed-date rule whose month token is not a recognized Hebrew month name or alias fails to
+    /// load with a <see cref="NotableDateValidationException" /> carrying an error diagnostic. In v1 an unrecognized
     /// alias resolved to <see langword="null" /> at resolution time; the v2 parser reports it during load.
     /// </summary>
     [TestMethod]

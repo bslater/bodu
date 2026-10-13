@@ -266,7 +266,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
 
     /// <summary>
     /// Verifies that a second call to <see cref="HashAlgorithm.TransformFinalBlock(byte[], int, int)" />
-    /// starts a new hash cycle after the previous hash operation has been finalised.
+    /// starts a new hash cycle after the previous hash operation has been finalized.
     /// </summary>
     [TestMethod]
     public void TransformFinalBlock_WhenCalledAgainAfterFinalization_ShouldStartNewHashCycle()

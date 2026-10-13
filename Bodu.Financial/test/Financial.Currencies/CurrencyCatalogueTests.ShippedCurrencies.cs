@@ -12,7 +12,7 @@ public partial class CurrencyCatalogueTests
 {
 
     /// <summary>
-    /// Verifies that a representative set of currencies is reachable as catalogue tag types.
+    /// Verifies that a representative set of currencies is reachable as catalog tag types.
     /// </summary>
     [TestMethod]
     [DataRow(typeof(EUR), "EUR", 2)]

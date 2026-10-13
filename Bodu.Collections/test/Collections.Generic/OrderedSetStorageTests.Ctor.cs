@@ -48,7 +48,7 @@ public partial class OrderedSetStorageTests
     // --------------------------------------------------------
 
     /// <summary>
-    /// Verifies that a zero capacity initialises empty backing arrays.
+    /// Verifies that a zero capacity initializes empty backing arrays.
     /// </summary>
     [TestMethod]
     public void Ctor_WhenCapacityIsZero_ShouldHaveZeroCapacity()

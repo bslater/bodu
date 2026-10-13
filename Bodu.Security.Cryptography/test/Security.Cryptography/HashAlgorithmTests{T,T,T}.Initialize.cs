@@ -82,7 +82,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
 
     /// <summary>
     /// Verifies that calling <see cref="HashAlgorithm.Initialise" /> after disposal throws an <see cref="ObjectDisposedException" />,
-    /// matching base .NET behaviour.
+    /// matching base .NET behavior.
     /// </summary>
     [TestMethod]
     public void Initialize_WhenDisposed_ShouldThrowExactly()

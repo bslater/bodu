@@ -10,7 +10,7 @@ namespace Bodu.Financial;
 
 /// <summary>
 /// Verifies <see cref="Money{TCurrency}.RoundToCash()" /> and the
-/// <see cref="ICurrency.CashRoundingIncrement" /> default behaviour across currencies that do and do not declare
+/// <see cref="ICurrency.CashRoundingIncrement" /> default behavior across currencies that do and do not declare
 /// a cash-rounding increment.
 /// </summary>
 public partial class MoneyOfTCurrencyTests

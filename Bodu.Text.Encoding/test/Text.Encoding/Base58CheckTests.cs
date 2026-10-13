@@ -8,7 +8,7 @@ namespace Bodu.Text.Encoding;
 
 /// <summary>
 /// Tests for the <see cref="Base58Check" /> encoder and decoder, covering the SHA-256 squared checksum semantics,
-/// round-trip behaviour, and tamper detection.
+/// round-trip behavior, and tamper detection.
 /// </summary>
 [TestClass]
 public sealed partial class Base58CheckTests

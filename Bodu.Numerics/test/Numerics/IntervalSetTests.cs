@@ -32,7 +32,7 @@ public partial class IntervalSetTests
     }
 
     /// <summary>
-    /// Verifies that a point excluded by both neighbours keeps the pieces separate.
+    /// Verifies that a point excluded by both neighbors keeps the pieces separate.
     /// </summary>
     [TestMethod]
     public void Of_WhenPointExcludedByBoth_ShouldStaySeparate()
@@ -177,7 +177,7 @@ public partial class IntervalSetTests
     }
 
     /// <summary>
-    /// Verifies that Of over <see cref="double" /> builds, from every pair of catalogue intervals, a set that holds
+    /// Verifies that Of over <see cref="double" /> builds, from every pair of catalog intervals, a set that holds
     /// exactly their values in disjoint, non-adjacent pieces, so an unbounded side and a bounded infinite endpoint
     /// coalesce only where they meet.
     /// </summary>
@@ -186,7 +186,7 @@ public partial class IntervalSetTests
         AssertOfAgreesWithMembership<double>();
 
     /// <summary>
-    /// Verifies that Of over <see cref="float" /> builds, from every pair of catalogue intervals, a set that holds
+    /// Verifies that Of over <see cref="float" /> builds, from every pair of catalog intervals, a set that holds
     /// exactly their values in disjoint, non-adjacent pieces, so an unbounded side and a bounded infinite endpoint
     /// coalesce only where they meet.
     /// </summary>
@@ -195,7 +195,7 @@ public partial class IntervalSetTests
         AssertOfAgreesWithMembership<float>();
 
     /// <summary>
-    /// Verifies that Of over <see cref="Half" /> builds, from every pair of catalogue intervals, a set that holds
+    /// Verifies that Of over <see cref="Half" /> builds, from every pair of catalog intervals, a set that holds
     /// exactly their values in disjoint, non-adjacent pieces, so an unbounded side and a bounded infinite endpoint
     /// coalesce only where they meet.
     /// </summary>
@@ -204,7 +204,7 @@ public partial class IntervalSetTests
         AssertOfAgreesWithMembership<Half>();
 
     /// <summary>
-    /// Verifies that Encloses over <see cref="double" /> reports every catalogue interval a one-piece set holds
+    /// Verifies that Encloses over <see cref="double" /> reports every catalog interval a one-piece set holds
     /// entirely, and only those, so an unbounded side does not enclose a bounded infinite endpoint.
     /// </summary>
     [TestMethod]
@@ -212,7 +212,7 @@ public partial class IntervalSetTests
         AssertEnclosesAgreesWithMembership<double>();
 
     /// <summary>
-    /// Verifies that Encloses over <see cref="float" /> reports every catalogue interval a one-piece set holds
+    /// Verifies that Encloses over <see cref="float" /> reports every catalog interval a one-piece set holds
     /// entirely, and only those, so an unbounded side does not enclose a bounded infinite endpoint.
     /// </summary>
     [TestMethod]
@@ -220,7 +220,7 @@ public partial class IntervalSetTests
         AssertEnclosesAgreesWithMembership<float>();
 
     /// <summary>
-    /// Verifies that Encloses over <see cref="Half" /> reports every catalogue interval a one-piece set holds entirely,
+    /// Verifies that Encloses over <see cref="Half" /> reports every catalog interval a one-piece set holds entirely,
     /// and only those, so an unbounded side does not enclose a bounded infinite endpoint.
     /// </summary>
     [TestMethod]
@@ -228,7 +228,7 @@ public partial class IntervalSetTests
         AssertEnclosesAgreesWithMembership<Half>();
 
     /// <summary>
-    /// Asserts that <see cref="IntervalSet{T}.Of(Interval{T}[])" /> builds, from every pair of catalogue intervals, a
+    /// Asserts that <see cref="IntervalSet{T}.Of(Interval{T}[])" /> builds, from every pair of catalog intervals, a
     /// set that holds exactly their values in disjoint, non-adjacent pieces.
     /// </summary>
     /// <typeparam name="T">The floating-point endpoint type.</typeparam>
@@ -254,7 +254,7 @@ public partial class IntervalSetTests
     }
 
     /// <summary>
-    /// Asserts that <see cref="IntervalSet{T}.Encloses(Interval{T})" /> on a one-piece set reports every catalogue
+    /// Asserts that <see cref="IntervalSet{T}.Encloses(Interval{T})" /> on a one-piece set reports every catalog
     /// interval whose values the set holds, and only those.
     /// </summary>
     /// <typeparam name="T">The floating-point endpoint type.</typeparam>
@@ -280,7 +280,7 @@ public partial class IntervalSetTests
     }
 
     /// <summary>
-    /// Verifies that building a set from two catalogue intervals over <see cref="double" />, <see cref="float" /> and
+    /// Verifies that building a set from two catalog intervals over <see cref="double" />, <see cref="float" /> and
     /// <see cref="Half" /> gives an equal set in either order, including where an unbounded side meets an open endpoint
     /// at the same infinity.
     /// </summary>
@@ -293,7 +293,7 @@ public partial class IntervalSetTests
     }
 
     /// <summary>
-    /// Asserts that <see cref="IntervalSet{T}.Of(Interval{T}[])" /> builds equal sets from every pair of catalogue
+    /// Asserts that <see cref="IntervalSet{T}.Of(Interval{T}[])" /> builds equal sets from every pair of catalog
     /// intervals in either order.
     /// </summary>
     /// <typeparam name="T">The floating-point endpoint type.</typeparam>

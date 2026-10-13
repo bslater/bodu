@@ -21,7 +21,7 @@ namespace Bodu.Globalization.Recurrence;
 /// <param name="Expected">The expected result: an instant, a comparison expression, or canonical text, by kind.</param>
 /// <param name="Flags">The space-separated scope flags recorded in the corpus.</param>
 /// <remarks>
-/// Cronos is a third-party comparison rather than an authority. It implements Quartz-flavoured cron and departs from
+/// Cronos is a third-party comparison rather than an authority. It implements Quartz-flavored cron and departs from
 /// Vixie in several places, each of which the corpus flags and excludes rather than reconciles.
 /// </remarks>
 public sealed record CronosVectorKat(

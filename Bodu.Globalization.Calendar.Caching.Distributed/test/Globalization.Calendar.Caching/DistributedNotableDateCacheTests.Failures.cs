@@ -239,7 +239,7 @@ public sealed partial class DistributedNotableDateCacheTests
     /// </summary>
     /// <remarks>
     /// Cancellation is the caller's instruction, not the store's failure. Reporting it as a cache miss would let a
-    /// cancelled request quietly fall through to the source and do the very work the cancellation was meant to stop,
+    /// canceled request quietly fall through to the source and do the very work the cancellation was meant to stop,
     /// which is why each path rethrows it ahead of its swallow clause.
     /// </remarks>
     /// <param name="operation">The operation the store faults on, named rather than typed so the test method's

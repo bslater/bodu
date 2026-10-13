@@ -22,7 +22,7 @@ public sealed partial class Base64Tests
     }
 
     /// <summary>
-    /// Verifies that <see cref="Base64.IsBase64Digit" /> recognises Standard alphabet characters.
+    /// Verifies that <see cref="Base64.IsBase64Digit" /> recognizes Standard alphabet characters.
     /// </summary>
     [TestMethod]
     public void IsBase64Digit_WhenStandardSymbol_ShouldReturnTrue()

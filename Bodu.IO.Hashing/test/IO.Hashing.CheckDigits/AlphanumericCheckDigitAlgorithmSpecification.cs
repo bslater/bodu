@@ -15,7 +15,7 @@ namespace Bodu.IO.Hashing.CheckDigits;
 
 /// <summary>
 /// Describes the expected observable properties of an <see cref="AlphanumericCheckDigitAlgorithm" /> implementation for
-/// use in behavioural and known-answer tests.
+/// use in behavioral and known-answer tests.
 /// </summary>
 /// <remarks>
 /// Instances are supplied by derived test classes via

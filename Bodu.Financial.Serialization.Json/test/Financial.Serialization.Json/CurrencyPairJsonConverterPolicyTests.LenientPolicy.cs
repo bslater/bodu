@@ -14,7 +14,7 @@ public partial class CurrencyPairJsonConverterPolicyTests
 {
 
     /// <summary>
-    /// Verifies that the lenient policy normalises lowercase ISO codes during object-form read.
+    /// Verifies that the lenient policy normalizes lowercase ISO codes during object-form read.
     /// </summary>
     [TestMethod]
     public void LenientPolicy_WhenReadingLowercaseCurrency_ShouldSucceed()

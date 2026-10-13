@@ -159,7 +159,7 @@ public sealed partial class Base32Tests
     }
 
     /// <summary>
-    /// Verifies that <see cref="Base32.EncodeToUtf8" /> honours <see cref="BaseFormattingOptions.OmitPadding" />.
+    /// Verifies that <see cref="Base32.EncodeToUtf8" /> honors <see cref="BaseFormattingOptions.OmitPadding" />.
     /// </summary>
     [TestMethod]
     public void EncodeToUtf8_WhenOmitPadding_ShouldNotEmitPaddingBytes()

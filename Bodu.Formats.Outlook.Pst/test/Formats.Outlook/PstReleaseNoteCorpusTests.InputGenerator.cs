@@ -34,7 +34,7 @@ public sealed partial class PstReleaseNoteCorpusTests
         private static readonly uint[] s_crcTable = BuildCrcTable();
 
         /// <summary>
-        /// Builds the bytes a catalogue input describes.
+        /// Builds the bytes a catalog input describes.
         /// </summary>
         /// <param name="input">The decoded input: <c>gen:</c> followed by a generator pipeline.</param>
         /// <returns>The file bytes.</returns>

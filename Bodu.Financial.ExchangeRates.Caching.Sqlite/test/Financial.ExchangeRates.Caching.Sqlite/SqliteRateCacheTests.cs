@@ -9,7 +9,7 @@ using Bodu.Financial.Currencies;
 namespace Bodu.Financial.ExchangeRates.Caching.Sqlite;
 
 /// <summary>
-/// Verifies the SQLite-specific behaviour of <see cref="SqliteRateCache" /> beyond the shared cache contract:
+/// Verifies the SQLite-specific behavior of <see cref="SqliteRateCache" /> beyond the shared cache contract:
 /// schema creation, persistence across instances, storage-failure resilience, and lossless round-tripping.
 /// </summary>
 [TestClass]

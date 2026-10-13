@@ -13,7 +13,7 @@ using Microsoft.Extensions.FileProviders;
 namespace Bodu.Extensions.Configuration.Text;
 
 /// <summary>
-/// Pins the behaviour of the file-backed provider when a reload encounters a malformed file or when a
+/// Pins the behavior of the file-backed provider when a reload encounters a malformed file or when a
 /// caller supplies an <c>OnLoadException</c> handler. Inheriting from
 /// <see cref="FileConfigurationProvider" /> gives the bridge the standard Microsoft semantics; these tests
 /// confirm the inheritance is intact and the parse exception is preserved.
@@ -38,7 +38,7 @@ logging.level.default = Debug
     /// </summary>
     /// <remarks>
     /// We do not assert what happens to the in-memory <c>Data</c> after a suppressed reload - that
-    /// behaviour is inherited from <see cref="FileConfigurationProvider" /> and may evolve between
+    /// behavior is inherited from <see cref="FileConfigurationProvider" /> and may evolve between
     /// framework versions. The Bodu-specific contract this test pins is "the exception surface is the
     /// real parse exception, not a generic wrapper."
     /// </remarks>
