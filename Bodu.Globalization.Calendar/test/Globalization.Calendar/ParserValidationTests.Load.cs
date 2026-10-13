@@ -334,6 +334,31 @@ public sealed partial class ParserValidationTests
     }
 
     /// <summary>
+    /// Verifies that an XML <c>Fixed</c> strategy whose <c>day</c> lies outside 1 to 31 is reported with the
+    /// <c>BODU-CAL-STRATEGY</c> diagnostic as well as the schema's, as the JSON loader reports it, rather than clamped.
+    /// </summary>
+    [TestMethod]
+    public void Load_WhenFixedDayOutOfRange_ShouldThrowStrategyDiagnostic()
+    {
+        const string xml = """
+            <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="test.day">
+              <NotableDates>
+                <NotableDate id="x" displayName="X" category="PublicHoliday">
+                  <Rules><Rule id="r"><Strategy><Fixed month="January" day="45" /></Strategy></Rule></Rules>
+                </NotableDate>
+              </NotableDates>
+            </NotableDateResource>
+            """;
+
+        NotableDateValidationException ex = Assert.ThrowsExactly<NotableDateValidationException>(() =>
+        {
+            _ = NotableDateResourceLoader.Load(xml);
+        });
+
+        Assert.Contains(d => d.Code == "BODU-CAL-STRATEGY" && d.Severity == NotableDateValidationSeverity.Error, ex.Diagnostics, "BODU-CAL-STRATEGY");
+    }
+
+    /// <summary>
     /// Verifies that the v1 <c>Holiday</c> category token, renamed to <c>PublicHoliday</c> in v2, is rejected with a
     /// schema diagnostic.
     /// </summary>

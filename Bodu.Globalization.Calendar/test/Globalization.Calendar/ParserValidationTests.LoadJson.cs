@@ -1009,6 +1009,88 @@ public sealed partial class ParserValidationTests
     }
 
     /// <summary>
+    /// Verifies that a JSON <c>fixed</c> strategy whose <c>day</c> lies outside 1 to 31 is rejected with the
+    /// <c>BODU-CAL-STRATEGY</c> diagnostic rather than clamped into that range.
+    /// </summary>
+    /// <param name="day">The out-of-range day.</param>
+    [TestMethod]
+    [DataRow(0)]
+    [DataRow(32)]
+    [DataRow(45)]
+    public void LoadJson_WhenFixedDayOutOfRange_ShouldThrowStrategyDiagnostic(int day)
+    {
+        string json = DayStrategyJson($$"""{ "fixed": { "month": 1, "day": {{day}} } }""");
+
+        NotableDateValidationException ex = Assert.ThrowsExactly<NotableDateValidationException>(() =>
+        {
+            _ = NotableDateResourceLoader.LoadJson(json);
+        });
+
+        Assert.Contains(d => d.Code == "BODU-CAL-STRATEGY" && d.Severity == NotableDateValidationSeverity.Error, ex.Diagnostics, "BODU-CAL-STRATEGY");
+    }
+
+    /// <summary>
+    /// Verifies that a JSON <c>weekdayNearDate</c> strategy whose <c>day</c> lies outside 1 to 31 is rejected with the
+    /// <c>BODU-CAL-STRATEGY</c> diagnostic rather than clamped into that range.
+    /// </summary>
+    /// <param name="day">The out-of-range day.</param>
+    [TestMethod]
+    [DataRow(0)]
+    [DataRow(32)]
+    [DataRow(45)]
+    public void LoadJson_WhenWeekdayNearDateDayOutOfRange_ShouldThrowStrategyDiagnostic(int day)
+    {
+        string json = DayStrategyJson($$"""{ "weekdayNearDate": { "month": 1, "day": {{day}}, "dayOfWeek": "Monday", "direction": "OnOrAfter" } }""");
+
+        NotableDateValidationException ex = Assert.ThrowsExactly<NotableDateValidationException>(() =>
+        {
+            _ = NotableDateResourceLoader.LoadJson(json);
+        });
+
+        Assert.Contains(d => d.Code == "BODU-CAL-STRATEGY" && d.Severity == NotableDateValidationSeverity.Error, ex.Diagnostics, "BODU-CAL-STRATEGY");
+    }
+
+    /// <summary>
+    /// Verifies that a JSON <c>fixed</c> strategy whose <c>day</c> is a bound of 1 to 31 loads as that day.
+    /// </summary>
+    /// <param name="day">The bounding day.</param>
+    [TestMethod]
+    [DataRow(1)]
+    [DataRow(31)]
+    public void LoadJson_WhenFixedDayAtBound_ShouldLoadThatDay(int day)
+    {
+        NotableDateResource resource = NotableDateResourceLoader.LoadJson(DayStrategyJson($$"""{ "fixed": { "month": 1, "day": {{day}} } }"""));
+
+        Assert.AreEqual(day, ((FixedDateStrategy)resource.NotableDates[0].Rules[0].Strategy!).Day);
+    }
+
+    /// <summary>
+    /// Verifies that a JSON <c>weekdayNearDate</c> strategy whose <c>day</c> is a bound of 1 to 31 loads as that day.
+    /// </summary>
+    /// <param name="day">The bounding day.</param>
+    [TestMethod]
+    [DataRow(1)]
+    [DataRow(31)]
+    public void LoadJson_WhenWeekdayNearDateDayAtBound_ShouldLoadThatDay(int day)
+    {
+        NotableDateResource resource = NotableDateResourceLoader.LoadJson(DayStrategyJson($$"""{ "weekdayNearDate": { "month": 1, "day": {{day}}, "dayOfWeek": "Monday", "direction": "OnOrAfter" } }"""));
+
+        Assert.AreEqual(day, ((WeekdayNearDateStrategy)resource.NotableDates[0].Rules[0].Strategy!).Day);
+    }
+
+    /// <summary>
+    /// Builds a JSON document whose one rule declares the supplied strategy.
+    /// </summary>
+    /// <param name="strategy">The JSON strategy object.</param>
+    /// <returns>The JSON document.</returns>
+    private static string DayStrategyJson(string strategy) =>
+        """
+        { "schemaVersion": "1.0", "resourceId": "test.day",
+          "notableDates": [ { "id": "x", "displayName": "X", "category": "PublicHoliday",
+            "rules": [ { "id": "r", "strategy": __STRATEGY__ } ] } ] }
+        """.Replace("__STRATEGY__", strategy, StringComparison.Ordinal);
+
+    /// <summary>
     /// Builds a JSON document holding every list-valued field the loader reads, each holding one well-formed item except
     /// the one named, which holds the supplied JSON literal.
     /// </summary>
