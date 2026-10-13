@@ -216,4 +216,108 @@ public sealed partial class ParserValidationTests
 
         Assert.Contains(d => d.Code == "BODU-CAL-RULE-SOURCE" && d.Severity == NotableDateValidationSeverity.Error, ex.Diagnostics, "BODU-CAL-RULE-SOURCE");
     }
+
+    /// <summary>
+    /// Verifies that a JSON <c>PatchRule</c> override declaring more than one occurrence source - a strategy and a
+    /// recurrence, or two strategy kinds - is rejected with the <c>BODU-CAL-RULE-SOURCE</c> diagnostic rather than
+    /// silently patching in one of them.
+    /// </summary>
+    /// <param name="patch">The JSON <c>PatchRule</c> override object under test.</param>
+    [TestMethod]
+    [DataRow("""{ "operation": "PatchRule", "notableDateRef": "x", "ruleRef": "r", "strategy": { "fixed": { "month": 4, "day": 1 } }, "recurrence": { "weekly": { "days": [ "Monday" ] } } }""", DisplayName = "Strategy and recurrence")]
+    [DataRow("""{ "operation": "PatchRule", "notableDateRef": "x", "ruleRef": "r", "strategy": { "fixed": { "month": 4, "day": 1 }, "algorithm": { "key": "western-easter" } } }""", DisplayName = "Two strategy kinds")]
+    public void LoadJson_WhenPatchRuleHasMoreThanOneOccurrenceSource_ShouldThrowRuleSourceDiagnostic(string patch)
+    {
+        string json = PatchRuleJson(patch);
+
+        NotableDateValidationException ex = Assert.ThrowsExactly<NotableDateValidationException>(() =>
+        {
+            _ = NotableDateResourceLoader.LoadJson(json);
+        });
+
+        Assert.Contains(d => d.Code == "BODU-CAL-RULE-SOURCE" && d.Severity == NotableDateValidationSeverity.Error, ex.Diagnostics, "BODU-CAL-RULE-SOURCE");
+    }
+
+    /// <summary>
+    /// Verifies that a JSON <c>PatchRule</c> override whose strategy names no recognized kind is rejected with the
+    /// <c>BODU-CAL-RULE-SOURCE</c> diagnostic rather than patching the rule to 1 January.
+    /// </summary>
+    /// <param name="patch">The JSON <c>PatchRule</c> override object under test.</param>
+    [TestMethod]
+    [DataRow("""{ "operation": "PatchRule", "notableDateRef": "x", "ruleRef": "r", "strategy": { } }""", DisplayName = "Empty strategy")]
+    [DataRow("""{ "operation": "PatchRule", "notableDateRef": "x", "ruleRef": "r", "strategy": { "fixd": { "month": 4, "day": 1 } } }""", DisplayName = "Unrecognized strategy kind")]
+    public void LoadJson_WhenPatchRuleStrategyNamesNoKind_ShouldThrowRuleSourceDiagnostic(string patch)
+    {
+        string json = PatchRuleJson(patch);
+
+        NotableDateValidationException ex = Assert.ThrowsExactly<NotableDateValidationException>(() =>
+        {
+            _ = NotableDateResourceLoader.LoadJson(json);
+        });
+
+        Assert.Contains(d => d.Code == "BODU-CAL-RULE-SOURCE" && d.Severity == NotableDateValidationSeverity.Error, ex.Diagnostics, "BODU-CAL-RULE-SOURCE");
+    }
+
+    /// <summary>
+    /// Verifies that a JSON <c>untilDate</c> whose strategy names no recognized kind is rejected with the
+    /// <c>BODU-CAL-DURATION-NOEND</c> diagnostic rather than ending the span on 1 January.
+    /// </summary>
+    /// <param name="strategy">The JSON strategy object of the <c>untilDate</c> under test.</param>
+    [TestMethod]
+    [DataRow("""{ }""", DisplayName = "Empty strategy")]
+    [DataRow("""{ "fixd": { "month": 3, "day": 5 } }""", DisplayName = "Unrecognized strategy kind")]
+    public void LoadJson_WhenUntilDateStrategyNamesNoKind_ShouldThrowDurationNoEndDiagnostic(string strategy)
+    {
+        string json = UntilDateJson(strategy);
+
+        NotableDateValidationException ex = Assert.ThrowsExactly<NotableDateValidationException>(() =>
+        {
+            _ = NotableDateResourceLoader.LoadJson(json);
+        });
+
+        Assert.Contains(d => d.Code == "BODU-CAL-DURATION-NOEND" && d.Severity == NotableDateValidationSeverity.Error, ex.Diagnostics, "BODU-CAL-DURATION-NOEND");
+    }
+
+    /// <summary>
+    /// Verifies that a JSON <c>untilDate</c> whose strategy names two kinds is rejected with the
+    /// <c>BODU-CAL-DURATION-CONFLICT</c> diagnostic rather than silently ending the span on one of them.
+    /// </summary>
+    [TestMethod]
+    public void LoadJson_WhenUntilDateStrategyHasTwoKinds_ShouldThrowDurationConflictDiagnostic()
+    {
+        string json = UntilDateJson("""{ "fixed": { "month": 3, "day": 5 }, "algorithm": { "key": "western-easter" } }""");
+
+        NotableDateValidationException ex = Assert.ThrowsExactly<NotableDateValidationException>(() =>
+        {
+            _ = NotableDateResourceLoader.LoadJson(json);
+        });
+
+        Assert.Contains(d => d.Code == "BODU-CAL-DURATION-CONFLICT" && d.Severity == NotableDateValidationSeverity.Error, ex.Diagnostics, "BODU-CAL-DURATION-CONFLICT");
+    }
+
+    /// <summary>
+    /// Builds a JSON document whose one rule, a fixed 1 March, is patched by a <c>PatchRule</c> override.
+    /// </summary>
+    /// <param name="patch">The JSON <c>PatchRule</c> override object.</param>
+    /// <returns>The JSON document.</returns>
+    private static string PatchRuleJson(string patch) =>
+        """
+        { "schemaVersion": "1.0", "resourceId": "test.bad",
+          "notableDates": [ { "id": "x", "displayName": "X", "category": "PublicHoliday",
+            "rules": [ { "id": "r", "strategy": { "fixed": { "month": 3, "day": 1 } } } ] } ],
+          "overrides": [ __PATCH__ ] }
+        """.Replace("__PATCH__", patch, StringComparison.Ordinal);
+
+    /// <summary>
+    /// Builds a JSON document whose one rule starts on 1 March and ends on the date an <c>untilDate</c> strategy selects.
+    /// </summary>
+    /// <param name="strategy">The JSON strategy object of the <c>untilDate</c>.</param>
+    /// <returns>The JSON document.</returns>
+    private static string UntilDateJson(string strategy) =>
+        """
+        { "schemaVersion": "1.0", "resourceId": "test.bad",
+          "notableDates": [ { "id": "x", "displayName": "X", "category": "PublicHoliday",
+            "rules": [ { "id": "r", "strategy": { "fixed": { "month": 3, "day": 1 } },
+              "duration": { "untilDate": { "strategy": __STRATEGY__ } } } ] } ] }
+        """.Replace("__STRATEGY__", strategy, StringComparison.Ordinal);
 }
