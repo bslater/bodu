@@ -164,8 +164,10 @@ public sealed class AsyncAutoResetEvent
     /// <param name="node">The queued waiter to observe.</param>
     /// <param name="cancellationToken">A token used to cancel the pending wait.</param>
     /// <returns>A <see cref="ValueTask" /> that completes when the signal is received.</returns>
-    private async ValueTask AwaitWaiterAsync(LinkedListNode<TaskCompletionSource<bool>> node, CancellationToken cancellationToken)
-    {
-        await _waiters.AwaitAsync(node, cancellationToken).ConfigureAwait(false);
-    }
+    /// <remarks>
+    /// The queue's wait is backed by a task, so <see cref="ValueTask{TResult}.AsTask" /> returns that task without
+    /// allocating, and no second state machine is built around it.
+    /// </remarks>
+    private ValueTask AwaitWaiterAsync(LinkedListNode<TaskCompletionSource<bool>> node, CancellationToken cancellationToken) =>
+        new(_waiters.AwaitAsync(node, cancellationToken).AsTask());
 }

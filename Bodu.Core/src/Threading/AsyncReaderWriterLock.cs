@@ -85,6 +85,9 @@ public sealed partial class AsyncReaderWriterLock
     /// <summary>The writers waiting to acquire exclusive access, granted in first-in, first-out order.</summary>
     private readonly CancellableWaiterQueue<Releaser> _waitingWriters;
 
+    /// <summary>The callback a cancelled writer runs under the gate, created once so a cancellable write wait does not allocate a delegate for it.</summary>
+    private readonly Action _onWriterCanceledUnderLock;
+
     /// <summary>The number of readers currently holding shared access.</summary>
     private int _readersActive;
 
@@ -101,6 +104,7 @@ public sealed partial class AsyncReaderWriterLock
     {
         _waitingReaders = new CancellableWaiterQueue<Releaser>(_gate);
         _waitingWriters = new CancellableWaiterQueue<Releaser>(_gate);
+        _onWriterCanceledUnderLock = OnWriterCanceledUnderLock;
     }
 
     /// <summary>
@@ -303,7 +307,7 @@ public sealed partial class AsyncReaderWriterLock
     /// <returns><see langword="true" /> if a writer was granted; otherwise, <see langword="false" />.</returns>
     private bool GrantNextWriter()
     {
-        if (_waitingWriters.Count == 0 || !_waitingWriters.TryGrant(() => CreateReleaser(isWriter: true)))
+        if (_waitingWriters.Count == 0 || !_waitingWriters.TryGrant(CreateReleaser(isWriter: true)))
             return false;
 
         _writerActive = true;
@@ -337,7 +341,7 @@ public sealed partial class AsyncReaderWriterLock
     /// <param name="cancellationToken">A token used to cancel the pending acquisition.</param>
     /// <returns>A <see cref="ValueTask{TResult}" /> yielding the write releaser.</returns>
     private ValueTask<Releaser> AwaitWriterAsync(LinkedListNode<TaskCompletionSource<Releaser>> node, CancellationToken cancellationToken) =>
-        _waitingWriters.AwaitAsync(node, cancellationToken, OnWriterCanceledUnderLock);
+        _waitingWriters.AwaitAsync(node, cancellationToken, _onWriterCanceledUnderLock);
 
     /// <summary>
     /// Re-evaluates writer preference after removing a canceled writer. Called under the common synchronization gate.
