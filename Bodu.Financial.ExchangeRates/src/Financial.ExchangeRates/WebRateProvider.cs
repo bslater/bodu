@@ -556,6 +556,42 @@ public abstract class WebRateProvider
     }
 
     /// <summary>
+    /// Runs <paramref name="load" /> for <paramref name="key" />, or joins the load already in flight for that key,
+    /// unless <paramref name="isLoaded" /> reports that the unit is already loaded: the coverage fast path and the
+    /// coalesced load a derived type's
+    /// <see cref="EnsureLoadedAsync(CurrencyPair, DateOnly, DateOnly, CancellationToken)" /> otherwise writes out
+    /// itself.
+    /// </summary>
+    /// <param name="key">The key identifying the load; equal keys share one in-flight fetch.</param>
+    /// <param name="isLoaded">
+    /// The coverage check, called while holding <see cref="SyncRoot" />; <see langword="true" /> skips the load.
+    /// </param>
+    /// <param name="load">The fetch to run on a miss, invoked with a token decoupled from any single caller.</param>
+    /// <param name="cancellationToken">A token that abandons this caller's wait on the shared fetch.</param>
+    /// <returns>
+    /// A completed task when the unit is already loaded; otherwise a task that completes when the load for
+    /// <paramref name="key" /> completes.
+    /// </returns>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="key" />, <paramref name="isLoaded" /> or <paramref name="load" /> is
+    /// <see langword="null" />.
+    /// </exception>
+    /// <exception cref="OperationCanceledException">
+    /// Thrown when <paramref name="cancellationToken" /> is signaled before the shared fetch completes; the shared
+    /// fetch continues to completion for any other joiner.
+    /// </exception>
+    /// <remarks>
+    /// The check is a fast path only. A caller can join a load started for a unit that another load has since covered,
+    /// so <paramref name="load" /> should check coverage again once it runs, as
+    /// <see cref="LoadFileFeedAsync{TTable}" /> does. The shared fetch runs as
+    /// <see cref="LoadCoalescedAsync(string, Func{CancellationToken, Task}, CancellationToken)" /> describes.
+    /// </remarks>
+    protected Task LoadCoalescedAsync(string key, Func<bool> isLoaded, Func<CancellationToken, Task> load, CancellationToken cancellationToken)
+    {
+        throw new NotImplementedException();
+    }
+
+    /// <summary>
     /// Upserts a batch of fetched observations into the accumulator under the provider's identifier, invoking
     /// <see cref="OnObservationIngested(ExchangeRate)" /> for each. The caller must hold <see cref="SyncRoot" /> and
     /// follow the batch with <see cref="RebuildSnapshot" />.
