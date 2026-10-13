@@ -163,11 +163,11 @@ none == inverted && none == collapsed && none == defaulted;  // True
 none.ToString();                                             // "∅"
 ```
 
-`Empty` acts as the identity in the set algebra: `Intersect` returns it whenever two operands share no values, and `TryUnion` returns the other operand unchanged when one side is empty.
+`Empty` is the identity for union and absorbing for intersection: `TryUnion` returns the other operand unchanged when one side is empty, and `Intersect` returns `Empty` whenever either operand is empty or the two share no values.
 
 ## Membership
 
-`Interval<T>.Contains(T value)` reports whether `value` belongs to the interval. The lower test uses `>=` when `LowerInclusive` and `>` otherwise; the upper test mirrors it. An empty interval contains no value, including itself.
+`Interval<T>.Contains(T value)` reports whether `value` belongs to the interval. The lower test uses `>=` when `LowerInclusive` and `>` otherwise; the upper test mirrors it. An empty interval contains no value.
 
 `Interval<T>.Contains(Interval<T> other)` tests subset containment - every value of `other` is also a value of this interval. The empty interval is a subset of every interval, so any interval contains the empty interval.
 

@@ -6,7 +6,7 @@ title: Runnable samples
 
 The repository ships runnable, self-contained sample projects for `Bodu.Numerics` (and its
 `Bodu.Numerics.Serialization.Json` companion) under
-[`samples/Numerics/`](https://github.com/bslater/bodu/tree/master/samples/Numerics). All four
+[`samples/Numerics/`](https://github.com/bslater/bodu/tree/master/samples/Numerics). All five
 samples are **offline and deterministic** - they format with the invariant culture so output
 does not vary by machine - and are members of `bodu.slnx`, built and executed by CI, so the code
 they show cannot drift from the current API. Each sample's README documents every scenario

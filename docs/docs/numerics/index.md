@@ -47,7 +47,7 @@ The core value types are serialization-agnostic - they carry no `[JsonConverter]
 
 ### Interface surface
 
-The value types are `readonly struct`s that opt into the relevant BCL contracts, so they substitute into generic-math, comparison, parsing, formatting, and span/UTF-8 pipelines without adapters. The four headline types compare as follows (the interval companions follow `Interval<T>`):
+The value types are `readonly struct`s that opt into the relevant BCL contracts, so they substitute into generic-math, comparison, parsing, formatting, and span/UTF-8 pipelines without adapters. The four headline types compare as follows:
 
 | Interface | `Fraction<T>` | `BigDecimal` | `Complex<T>` | `Interval<T>` | What it unlocks |
 |---|:---:|:---:|:---:|:---:|---|
@@ -57,7 +57,7 @@ The value types are `readonly struct`s that opt into the relevant BCL contracts,
 | <xref:System.IComparable`1> / <xref:System.IComparable> | ✓ | ✓ | - | - | Ordering, `OrderBy`, `SortedSet`. (`Interval<T>` is a set, not a scalar - it does not order.) |
 | <xref:System.IParsable`1> / <xref:System.ISpanParsable`1> | ✓ | ✓ | ✓ | ✓ | `Parse` / `TryParse` over `string` and `ReadOnlySpan<char>`. |
 | <xref:System.IUtf8SpanParsable`1> | ✓ | ✓ | ✓ | ✓ | `Parse` directly from a UTF-8 byte span. |
-| <xref:System.IFormattable> / <xref:System.ISpanFormattable> / <xref:System.IUtf8SpanFormattable> | ✓ | ✓ | ✓ | ✓ | `ToString(format, provider)` plus allocation-free `TryFormat` into char and UTF-8 buffers. |
+| <xref:System.IFormattable> / <xref:System.ISpanFormattable> / <xref:System.IUtf8SpanFormattable> | ✓ | ✓ | ✓ | ✓ | `ToString(format, provider)` plus `TryFormat` into char and UTF-8 buffers (through an intermediate `string`). |
 
 ## Formatting and parsing
 
@@ -160,8 +160,8 @@ Select a different wire shape by passing a <xref:Bodu.Numerics.Serialization.Jso
 
 - **`Fraction<T>` is a wide `readonly struct`** holding two `T` components (the numerator and the canonical denominator). For a fixed-width `T` (`int`, `long`, `Int128`) the value lives entirely on the stack and copies by value - no heap traffic. `Fraction<BigInteger>` carries two `BigInteger`s, each of which heap-allocates for magnitudes beyond a machine word.
 - **Every arithmetic operation promotes to `BigInteger`** to evaluate exactly, so even `Fraction<int>` arithmetic allocates the transient `BigInteger` operands. Construction additionally runs one `BigInteger.GreatestCommonDivisor` (Euclidean, `O(log min(|n|, |d|))` divisions). This is the price of exactness; for hot inner loops over bounded `int` values where rounding is acceptable, plain `int` arithmetic is faster.
-- **`Interval<T>` stores two `T` endpoints plus a one-byte inclusivity flag.** Its operations - `Contains`, `Overlaps`, `Intersect`, `TryUnion` - are a handful of `T` comparisons and allocate nothing; the whole type is allocation-free over a fixed-width endpoint type.
-- **Formatting allocates a `string`; `TryFormat` does not.** The `ISpanFormattable` / `IUtf8SpanFormattable` surfaces let both types render into a caller-supplied `Span<char>` / `Span<byte>` without an intermediate `string`, and the span/UTF-8 parse surfaces read without allocating one.
+- **`Interval<T>` stores two `T` endpoints plus a one-byte flags field** (inclusive and unbounded, per side). Its operations - `Contains`, `Overlaps`, `Intersect`, `TryUnion` - are a handful of `T` comparisons and allocate nothing; the whole type is allocation-free over a fixed-width endpoint type.
+- **Formatting allocates a `string`, and so does `TryFormat` today.** The `ISpanFormattable` / `IUtf8SpanFormattable` surfaces render into a caller-supplied `Span<char>` / `Span<byte>` for API compatibility, but they format through an intermediate `string` and copy it. The UTF-8 parse surfaces decode the bytes to a `string` first.
 
 ## Where to go next
 

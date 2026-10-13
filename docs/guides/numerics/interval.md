@@ -18,8 +18,8 @@ The type works with any numeric backing type that implements
 consumer-defined numeric types built on the generic-math interfaces.
 
 Internally an `Interval<T>` is a `readonly struct` holding the two `T`
-endpoints plus a single inclusivity byte (the two flags packed as bits
-0 and 1), so for a fixed-width endpoint type it is allocation-free and
+endpoints plus a single flags byte (an inclusive and an unbounded flag
+for each side, bits 0-3), so for a fixed-width endpoint type it is allocation-free and
 copies by value. The set operations - `Contains`, `Overlaps`,
 `Intersect`, `TryUnion` - are a few `T` comparisons each and allocate
 nothing. Endpoints are stored at full `T` precision with no widening or
@@ -270,7 +270,8 @@ Interval<double>
 ```
 
 `Interval<T>` implements `ISpanFormattable` and `IUtf8SpanFormattable`
-for allocation-free formatting into character or UTF-8 byte buffers.
+for formatting into character or UTF-8 byte buffers; both currently
+format through an intermediate `string`.
 
 ## Parsing
 
@@ -298,20 +299,32 @@ return `false` from `TryParse` and throw `FormatException` from
 
 - The first character must be `[` or `(` and the last `]` or `)`; the
   bracket style on each side selects that endpoint's inclusivity.
-- Exactly one comma separates the two endpoints; both endpoint texts
-  must be non-empty.
+- The endpoints are separated by a comma, or by a semicolon when the
+  provider's decimal separator is a comma, as the formatter writes them
+  (`[1,5; 2,5]` under de-DE). The text is split at the first separator,
+  so a group separator equal to it (`[1,000, 2,000]` under en-US) is not
+  supported. Both endpoint texts must be non-empty.
 - The single-character empty-set glyph `∅` parses to `Empty` regardless
   of culture; the shortest non-empty form is five characters (`"[a,b]"`).
 - Each endpoint is parsed by `T.TryParse(..., NumberStyles.Any, provider, …)`,
   so the endpoints honour the supplied culture and accept whatever
-  numeric shapes `T` accepts (decimal points, signs, group separators).
-  A `null` provider falls back to <xref:System.Globalization.CultureInfo>.`CurrentCulture`.
+  numeric shapes `T` accepts (decimal points, signs, and group
+  separators other than the endpoint separator). A `null` provider
+  falls back to <xref:System.Globalization.CultureInfo>.`CurrentCulture`.
+- An infinity token (`-∞`, `-Infinity` or `-inf` on the lower side;
+  `+∞`, `∞`, `+Infinity`, `Infinity`, `+inf` or `inf` on the upper)
+  beside an open bracket denotes an unbounded side. Beside a closed
+  bracket it is parsed as an endpoint value of `T`, since an unbounded
+  side is never closed: `[0, Infinity]` over `double` reads back as the
+  bounded interval it was formatted from, and over `int` it does not
+  parse. An infinite endpoint on an open side, as in `(0, Infinity)`,
+  reads back as an unbounded side.
 
 Unlike `Fraction<T>`, interval parsing forwards the *full*
-`NumberStyles.Any` to each endpoint, so culture-specific group
-separators and decimal points in the endpoints are accepted - pass
-`CultureInfo.InvariantCulture` explicitly when you need a stable,
-machine-independent round-trip.
+`NumberStyles.Any` to each endpoint, so culture-specific decimal points,
+and group separators that differ from the endpoint separator, are
+accepted - pass `CultureInfo.InvariantCulture` explicitly when you need
+a stable, machine-independent round-trip.
 
 ## Equality and hashing
 

@@ -50,7 +50,7 @@ A bounded side carries its endpoint and inclusivity flag; an unbounded side is a
 
 ## Discrete interval and interval set
 
-<xref:Bodu.Numerics.DiscreteInterval`1> serializes **through the `Interval<T>` shape** over its canonical closed integer bounds - the integer domain has no open sides to express - so its compact form is always `"[1, 5]"`. <xref:Bodu.Numerics.IntervalSet`1> serializes as a JSON **array** of its `Interval<T>` pieces (`[]` when empty), each piece in the selected policy's shape; a non-array token is rejected.
+<xref:Bodu.Numerics.DiscreteInterval`1> serializes **through the `Interval<T>` shape** over its canonical closed integer bounds - the integer domain has no open sides to express - so its finite sides are always closed (`"[1, 5]"`; `DiscreteInterval<int>.Open(1, 5)` is written `"[2, 4]"`), and an unbounded side is written as in `Interval<T>` (`"[1, +∞)"`). <xref:Bodu.Numerics.IntervalSet`1> serializes as a JSON **array** of its `Interval<T>` pieces (`[]` when empty), each piece in the selected policy's shape; a non-array token is rejected.
 
 ## `BigDecimal` shape
 

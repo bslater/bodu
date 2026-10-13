@@ -205,7 +205,7 @@ Interval<int> parsed = Interval<int>.Parse("(0, 100]", CultureInfo.InvariantCult
 Interval<int>.TryParse("∅", CultureInfo.InvariantCulture, out var none);  // none = Empty
 ```
 
-`Interval<T>` implements `ISpanFormattable` and `IUtf8SpanFormattable`, plus `ISpanParsable<Interval<T>>` and `IUtf8SpanParsable<Interval<T>>`, so the same text round-trips through character and UTF-8 byte buffers without allocation in both directions.
+`Interval<T>` implements `ISpanFormattable` and `IUtf8SpanFormattable`, plus `ISpanParsable<Interval<T>>` and `IUtf8SpanParsable<Interval<T>>`, so the same text round-trips through character and UTF-8 byte buffers (formatting, and parsing from UTF-8, currently go through an intermediate `string`). An infinite endpoint on an open side, as in `Interval<double>.Open(0, double.PositiveInfinity)`, reads back as an unbounded side; on a closed side it reads back unchanged.
 
 #### JSON
 

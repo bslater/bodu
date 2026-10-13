@@ -16,10 +16,10 @@ public readonly partial struct Interval<T>
     /// <value>An <see cref="Interval{T}" /> whose <see cref="IsEmpty" /> property is <see langword="true" />.</value>
     /// <remarks>
     /// <para>
-    /// Use <see cref="Empty" /> as the neutral element of the interval set algebra: <see cref="Intersect" /> returns it
-    /// when two operands share no values, and <see cref="TryUnion" /> treats it as the identity. The
-    /// default-constructed <c>Interval&lt;T&gt;</c> compares equal to <see cref="Empty" />, so a field or local that
-    /// was never assigned reads as the empty interval rather than as a malformed value.
+    /// <see cref="Empty" /> is the identity for union and absorbing for intersection: <see cref="TryUnion" /> treats it
+    /// as the identity, and <see cref="Intersect" /> returns it when either operand is empty or the two share no
+    /// values. The default-constructed <c>Interval&lt;T&gt;</c> compares equal to <see cref="Empty" />, so a field or
+    /// local that was never assigned reads as the empty interval rather than as a malformed value.
     /// </para>
     /// </remarks>
     /// <example>
