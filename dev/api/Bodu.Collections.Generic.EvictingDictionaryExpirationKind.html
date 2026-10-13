@@ -94,7 +94,7 @@
 
   <h1 id="Bodu_Collections_Generic_EvictingDictionaryExpirationKind" data-uid="Bodu.Collections.Generic.EvictingDictionaryExpirationKind" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 EvictingDictionaryExpirationKind Enum
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/66a6179fdd4c466a0919b24669809b8619ef9423/Bodu.Collections/src/Collections.Generic/EvictingDictionaryExpirationKind.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8845b19cb54e950d116392bc30cf29303343f12d/Bodu.Collections/src/Collections.Generic/EvictingDictionaryExpirationKind.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -105,7 +105,7 @@ EvictingDictionaryExpirationKind Enum
   <dl><dt>Assembly</dt><dd>Bodu.Collections.dll</dd></dl>
   <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Collections">Bodu.Collections</a> <span class="bodu-package-version">1.3.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/66a6179fdd4c466a0919b24669809b8619ef9423/Bodu.Collections/src/Collections.Generic/EvictingDictionaryExpirationKind.cs">EvictingDictionaryExpirationKind.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/8845b19cb54e950d116392bc30cf29303343f12d/Bodu.Collections/src/Collections.Generic/EvictingDictionaryExpirationKind.cs">EvictingDictionaryExpirationKind.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Specifies how an <a class="xref" href="Bodu.Collections.Generic.EvictingDictionary-2.html">EvictingDictionary&lt;TKey, TValue&gt;</a> measures an entry's time-to-live when expiration is
@@ -180,8 +180,8 @@ configured through <a class="xref" href="Bodu.Collections.Generic.EvictingDictio
 </dd>
     <dt id="Bodu_Collections_Generic_EvictingDictionaryExpirationKind_Sliding" data-bodu-frameworks="net8.0 net10.0"><code>Sliding = 1</code></dt>
   
-  <dd><p>The entry's expiration deadline is refreshed on every successful read access ( <code>TryGetValue</code>, the indexer
-getter, or <code>ContainsKey</code>), so the entry expires only after remaining unread for its full time-to-live.</p>
+  <dd><p>The entry's expiration deadline is refreshed on every successful read access ( <code>TryGetValue</code> or the indexer
+getter), so the entry expires only after remaining unread for its full time-to-live.</p>
 </dd>
   </dl>
 
@@ -190,12 +190,13 @@ getter, or <code>ContainsKey</code>), so the entry expires only after remaining 
   <div class="markdown level0 remarks"><p>
 The kind determines the point from which an entry's time-to-live is counted. Under <a class="xref" href="Bodu.Collections.Generic.EvictingDictionaryExpirationKind.html#Bodu_Collections_Generic_EvictingDictionaryExpirationKind_Absolute">Absolute</a> the
 countdown starts when the entry is added (or its value is updated) and is unaffected by reads. Under
-<a class="xref" href="Bodu.Collections.Generic.EvictingDictionaryExpirationKind.html#Bodu_Collections_Generic_EvictingDictionaryExpirationKind_Sliding">Sliding</a> every successful read access - <a class="xref" href="Bodu.Collections.Generic.EvictingDictionary-2.html#Bodu_Collections_Generic_EvictingDictionary_2_TryGetValue__0__1__">TryGetValue(TKey, out TValue)</a>,
-the indexer getter, and <a class="xref" href="Bodu.Collections.Generic.EvictingDictionary-2.html#Bodu_Collections_Generic_EvictingDictionary_2_ContainsKey__0_">ContainsKey(TKey)</a> - restarts the countdown,
-keeping actively read entries alive indefinitely.
+<a class="xref" href="Bodu.Collections.Generic.EvictingDictionaryExpirationKind.html#Bodu_Collections_Generic_EvictingDictionaryExpirationKind_Sliding">Sliding</a> every successful read that returns the value -
+<a class="xref" href="Bodu.Collections.Generic.EvictingDictionary-2.html#Bodu_Collections_Generic_EvictingDictionary_2_TryGetValue__0__1__">TryGetValue(TKey, out TValue)</a> and the indexer getter - restarts the countdown, keeping
+actively read entries alive indefinitely.
 </p>
 <p>
-Enumeration never refreshes an entry's lifetime under either kind.
+<a class="xref" href="Bodu.Collections.Generic.EvictingDictionary-2.html#Bodu_Collections_Generic_EvictingDictionary_2_ContainsKey__0_">ContainsKey(TKey)</a>, <a class="xref" href="Bodu.Collections.Generic.EvictingDictionary-2.html#Bodu_Collections_Generic_EvictingDictionary_2_Touch__0_">Touch(TKey)</a>,
+and enumeration never refresh an entry's lifetime under either kind.
 </p>
 </div>
 
@@ -225,7 +226,7 @@ Enumeration never refreshes an entry's lifetime under either kind.
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 66a6179 · Built: 2026-10-13 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 8845b19 · Built: 2026-10-13 (UTC)</span>
         </div>
       </div>
     </footer>

@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Extensions_BufferConverter" data-uid="Bodu.Extensions.BufferConverter" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 BufferConverter Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/66a6179fdd4c466a0919b24669809b8619ef9423/Bodu.Core/src/Extensions/BufferConverter.CopyTo.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8845b19cb54e950d116392bc30cf29303343f12d/Bodu.Core/src/Extensions/BufferConverter.CopyTo.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -104,7 +104,7 @@ BufferConverter Class
   <dl><dt>Assembly</dt><dd>Bodu.Core.dll</dd></dl>
   <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Core">Bodu.Core</a> <span class="bodu-package-version">1.3.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/66a6179fdd4c466a0919b24669809b8619ef9423/Bodu.Core/src/Extensions/BufferConverter.CopyTo.cs">BufferConverter.CopyTo.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/8845b19cb54e950d116392bc30cf29303343f12d/Bodu.Core/src/Extensions/BufferConverter.CopyTo.cs">BufferConverter.CopyTo.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Provides methods for copying and converting between raw byte arrays and arrays of unmanaged types.</p>
@@ -181,7 +181,7 @@ Only types that are <a href="https://learn.microsoft.com/dotnet/csharp/programmi
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Extensions_BufferConverter_CopyTo__1_System_Byte___System_Int32___0___System_Int32_" data-uid="Bodu.Extensions.BufferConverter.CopyTo``1(System.Byte[],System.Int32,``0[],System.Int32)">
   CopyTo&lt;T&gt;(byte[], int, T[], int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/66a6179fdd4c466a0919b24669809b8619ef9423/Bodu.Core/src/Extensions/BufferConverter.CopyTo.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8845b19cb54e950d116392bc30cf29303343f12d/Bodu.Core/src/Extensions/BufferConverter.CopyTo.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -224,6 +224,18 @@ starting at index zero in the target array.</p>
 
 
 
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentnullexception">ArgumentNullException</a></dt>
+    <dd><p><code class="paramref">sourceArray</code> or <code class="paramref">targetArray</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p><code class="paramref">sourceIndex</code> or <code class="paramref">count</code> is out of range.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>The specified range exceeds the bounds of the source or target arrays.</p>
+</dd>
+  </dl>
 
 
   </section>
@@ -234,7 +246,7 @@ starting at index zero in the target array.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Extensions_BufferConverter_CopyTo__1_System_Byte___System_Int32___0___System_Int32_System_Int32_" data-uid="Bodu.Extensions.BufferConverter.CopyTo``1(System.Byte[],System.Int32,``0[],System.Int32,System.Int32)">
   CopyTo&lt;T&gt;(byte[], int, T[], int, int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/66a6179fdd4c466a0919b24669809b8619ef9423/Bodu.Core/src/Extensions/BufferConverter.CopyTo.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8845b19cb54e950d116392bc30cf29303343f12d/Bodu.Core/src/Extensions/BufferConverter.CopyTo.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -305,7 +317,7 @@ platform-native endianness.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Extensions_BufferConverter_CopyTo__1_System_Memory_System_Byte__System_Memory___0__System_Int32_" data-uid="Bodu.Extensions.BufferConverter.CopyTo``1(System.Memory{System.Byte},System.Memory{``0},System.Int32)">
   CopyTo&lt;T&gt;(Memory&lt;byte&gt;, Memory&lt;T&gt;, int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/66a6179fdd4c466a0919b24669809b8619ef9423/Bodu.Core/src/Extensions/BufferConverter.CopyTo.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8845b19cb54e950d116392bc30cf29303343f12d/Bodu.Core/src/Extensions/BufferConverter.CopyTo.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -345,6 +357,18 @@ memory region of <code class="typeparamref">T</code>.</p>
 
 
 
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
+    <dd><p><code class="paramref">count</code> is negative, or <code class="paramref">count</code> multiplied by the size of
+<code class="typeparamref">T</code> exceeds <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32.maxvalue">MaxValue</a>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p><code class="paramref">sourceMemory</code> holds fewer than <code class="paramref">count</code> elements of
+<code class="typeparamref">T</code>, or <code class="paramref">targetMemory</code> holds fewer than <code class="paramref">count</code>
+elements.</p>
+</dd>
+  </dl>
 
 
   </section>
@@ -355,7 +379,7 @@ memory region of <code class="typeparamref">T</code>.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Extensions_BufferConverter_CopyTo__1_System_ReadOnlySpan_System_Byte__System_Span___0__System_Int32_" data-uid="Bodu.Extensions.BufferConverter.CopyTo``1(System.ReadOnlySpan{System.Byte},System.Span{``0},System.Int32)">
   CopyTo&lt;T&gt;(ReadOnlySpan&lt;byte&gt;, Span&lt;T&gt;, int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/66a6179fdd4c466a0919b24669809b8619ef9423/Bodu.Core/src/Extensions/BufferConverter.CopyTo.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8845b19cb54e950d116392bc30cf29303343f12d/Bodu.Core/src/Extensions/BufferConverter.CopyTo.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -397,10 +421,12 @@ memory region of <code class="typeparamref">T</code>.</p>
   <h4 class="section">Exceptions</h4>
   <dl class="parameters">
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
-    <dd><p>The specified <code class="paramref">count</code> exceeds the available elements in the source or target span.</p>
+    <dd><p><code class="paramref">count</code> is negative, or <code class="paramref">count</code> multiplied by the size of
+<code class="typeparamref">T</code> exceeds <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32.maxvalue">MaxValue</a>.</p>
 </dd>
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
-    <dd><p>Thrown when a span or array argument does not meet a length or offset precondition.</p>
+    <dd><p><code class="paramref">sourceSpan</code> holds fewer than <code class="paramref">count</code> elements of <code class="typeparamref">T</code>,
+or <code class="paramref">targetSpan</code> holds fewer than <code class="paramref">count</code> elements.</p>
 </dd>
   </dl>
 
@@ -413,7 +439,7 @@ memory region of <code class="typeparamref">T</code>.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Extensions_BufferConverter_CopyTo__1___0_System_Byte___System_Int32_" data-uid="Bodu.Extensions.BufferConverter.CopyTo``1(``0,System.Byte[],System.Int32)">
   CopyTo&lt;T&gt;(T, byte[], int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/66a6179fdd4c466a0919b24669809b8619ef9423/Bodu.Core/src/Extensions/BufferConverter.CopyTo.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8845b19cb54e950d116392bc30cf29303343f12d/Bodu.Core/src/Extensions/BufferConverter.CopyTo.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -458,7 +484,12 @@ memory region of <code class="typeparamref">T</code>.</p>
     <dd><p><code class="paramref">targetArray</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
 </dd>
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
-    <dd><p><code class="paramref">index</code> is negative or exceeds the available space in <code class="paramref">targetArray</code>.</p>
+    <dd><p><code class="paramref">index</code> is negative or greater than the length of <code class="paramref">targetArray</code>, or the size
+of <code class="typeparamref">T</code> is greater than the length of <code class="paramref">targetArray</code>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Fewer bytes than the size of <code class="typeparamref">T</code> remain in <code class="paramref">targetArray</code> from
+<code class="paramref">index</code>.</p>
 </dd>
   </dl>
 
@@ -471,7 +502,7 @@ memory region of <code class="typeparamref">T</code>.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Extensions_BufferConverter_Read__1_System_Byte___System_Int32_" data-uid="Bodu.Extensions.BufferConverter.Read``1(System.Byte[],System.Int32)">
   Read&lt;T&gt;(byte[], int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/66a6179fdd4c466a0919b24669809b8619ef9423/Bodu.Core/src/Extensions/BufferConverter.Read.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8845b19cb54e950d116392bc30cf29303343f12d/Bodu.Core/src/Extensions/BufferConverter.Read.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -522,7 +553,12 @@ memory region of <code class="typeparamref">T</code>.</p>
     <dd><p><code class="paramref">sourceArray</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
 </dd>
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
-    <dd><p><code class="paramref">index</code> is out of range or insufficient bytes remain.</p>
+    <dd><p><code class="paramref">index</code> is negative or greater than the length of <code class="paramref">sourceArray</code>, or the size
+of <code class="typeparamref">T</code> is greater than the length of <code class="paramref">sourceArray</code>.</p>
+</dd>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p>Fewer bytes than the size of <code class="typeparamref">T</code> remain in <code class="paramref">sourceArray</code> from
+<code class="paramref">index</code>.</p>
 </dd>
   </dl>
 
@@ -535,7 +571,7 @@ memory region of <code class="typeparamref">T</code>.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Extensions_BufferConverter_Read__1_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Extensions.BufferConverter.Read``1(System.ReadOnlySpan{System.Byte})">
   Read&lt;T&gt;(ReadOnlySpan&lt;byte&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/66a6179fdd4c466a0919b24669809b8619ef9423/Bodu.Core/src/Extensions/BufferConverter.Read.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8845b19cb54e950d116392bc30cf29303343f12d/Bodu.Core/src/Extensions/BufferConverter.Read.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -579,11 +615,8 @@ memory region of <code class="typeparamref">T</code>.</p>
 
   <h4 class="section">Exceptions</h4>
   <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
-    <dd><p>The span length is insufficient to represent a value of type <code class="typeparamref">T</code>.</p>
-</dd>
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
-    <dd><p>Thrown when a span or array argument does not meet a length or offset precondition.</p>
+    <dd><p>The span length is insufficient to represent a value of type <code class="typeparamref">T</code>.</p>
 </dd>
   </dl>
 
@@ -596,7 +629,7 @@ memory region of <code class="typeparamref">T</code>.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Extensions_BufferConverter_SwapEndian_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Int32_" data-uid="Bodu.Extensions.BufferConverter.SwapEndian(System.ReadOnlySpan{System.Byte},System.Span{System.Byte},System.Int32)">
   SwapEndian(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/66a6179fdd4c466a0919b24669809b8619ef9423/Bodu.Core/src/Extensions/BufferConverter.SwapEndian.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8845b19cb54e950d116392bc30cf29303343f12d/Bodu.Core/src/Extensions/BufferConverter.SwapEndian.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -638,11 +671,12 @@ additional memory.</p>
   <h4 class="section">Exceptions</h4>
   <dl class="parameters">
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
-    <dd><p>Thrown if <code class="paramref">elementSize</code> is less than or equal to 1.</p>
+    <dd><p>Thrown if <code class="paramref">elementSize</code> is less than or equal to 1, or if <code class="paramref">destination</code> is
+shorter than <code class="paramref">source</code>.</p>
 </dd>
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
-    <dd><p>Thrown if the source or destination spans do not have a length that is a multiple of
-<code class="paramref">elementSize</code>, or if the destination is too small to receive the swapped data.</p>
+    <dd><p>Thrown if <code class="paramref">source</code> or <code class="paramref">destination</code> is empty or does not have a length that
+is a multiple of <code class="paramref">elementSize</code>.</p>
 </dd>
   </dl>
 
@@ -655,7 +689,7 @@ additional memory.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Extensions_BufferConverter_SwapEndian__1_System_Span___0__" data-uid="Bodu.Extensions.BufferConverter.SwapEndian``1(System.Span{``0})">
   SwapEndian&lt;T&gt;(Span&lt;T&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/66a6179fdd4c466a0919b24669809b8619ef9423/Bodu.Core/src/Extensions/BufferConverter.SwapEndian.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8845b19cb54e950d116392bc30cf29303343f12d/Bodu.Core/src/Extensions/BufferConverter.SwapEndian.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -704,7 +738,7 @@ only one element.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Extensions_BufferConverter_ToArray__1_System_Byte___System_Int32_System_Int32_" data-uid="Bodu.Extensions.BufferConverter.ToArray``1(System.Byte[],System.Int32,System.Int32)">
   ToArray&lt;T&gt;(byte[], int, int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/66a6179fdd4c466a0919b24669809b8619ef9423/Bodu.Core/src/Extensions/BufferConverter.ToArray.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8845b19cb54e950d116392bc30cf29303343f12d/Bodu.Core/src/Extensions/BufferConverter.ToArray.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -776,7 +810,7 @@ platform-native endianness.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Extensions_BufferConverter_ToArray__1_System_ReadOnlySpan_System_Byte__System_Int32_" data-uid="Bodu.Extensions.BufferConverter.ToArray``1(System.ReadOnlySpan{System.Byte},System.Int32)">
   ToArray&lt;T&gt;(ReadOnlySpan&lt;byte&gt;, int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/66a6179fdd4c466a0919b24669809b8619ef9423/Bodu.Core/src/Extensions/BufferConverter.ToArray.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8845b19cb54e950d116392bc30cf29303343f12d/Bodu.Core/src/Extensions/BufferConverter.ToArray.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -826,10 +860,11 @@ endianness.</p>
   <h4 class="section">Exceptions</h4>
   <dl class="parameters">
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
-    <dd><p><code class="paramref">count</code> is negative or exceeds the available bytes.</p>
+    <dd><p><code class="paramref">count</code> is negative, or <code class="paramref">count</code> multiplied by the size of
+<code class="typeparamref">T</code> exceeds <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32.maxvalue">MaxValue</a>.</p>
 </dd>
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
-    <dd><p>Thrown when a span or array argument does not meet a length or offset precondition.</p>
+    <dd><p><code class="paramref">sourceSpan</code> holds fewer than <code class="paramref">count</code> elements of <code class="typeparamref">T</code>.</p>
 </dd>
   </dl>
 
@@ -864,7 +899,7 @@ endianness.</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 66a6179 · Built: 2026-10-13 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 8845b19 · Built: 2026-10-13 (UTC)</span>
         </div>
       </div>
     </footer>

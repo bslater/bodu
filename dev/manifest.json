@@ -1521,7 +1521,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Extensions.ArrayExtensions",
-      "Summary": "<p sourcefile=\"api/Bodu.Extensions.ArrayExtensions.yml\" sourcestartlinenumber=\"1\">Provides allocation-aware operations over <xref href=\"System.Array\" data-throw-if-not-resolved=\"false\"></xref> instances - clearing, copying, slicing, and\nreversing - that either match the missing primitives on <xref href=\"System.Array\" data-throw-if-not-resolved=\"false\"></xref> or supply more ergonomic counterparts\nto the BCL helpers.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Extensions.ArrayExtensions.yml\" sourcestartlinenumber=\"1\">Provides allocation-aware operations over <xref href=\"System.Array\" data-throw-if-not-resolved=\"false\"></xref> instances - clearing, copying, slicing, padding, and\nreversing - that either match the missing primitives on <xref href=\"System.Array\" data-throw-if-not-resolved=\"false\"></xref> or supply more ergonomic counterparts\nto the BCL helpers.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -1815,7 +1815,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Extensions.EnumExtensions",
-      "Summary": "<p sourcefile=\"api/Bodu.Extensions.EnumExtensions.yml\" sourcestartlinenumber=\"1\">Provides non-boxing bitwise helpers for flag-style enumerations - membership tests and add, remove, and toggle\noperations that work uniformly across every enum underlying type.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Extensions.EnumExtensions.yml\" sourcestartlinenumber=\"1\">Provides non-boxing bitwise helpers for flag-style enumerations - membership tests and add, remove, and toggle\noperations that work uniformly across every enum underlying type - and description and display-name lookups for\nenumeration values.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -1997,7 +1997,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Extensions.NumericExtensions",
-      "Summary": "<p sourcefile=\"api/Bodu.Extensions.NumericExtensions.yml\" sourcestartlinenumber=\"1\">Provides bit-level and byte-level transformations over the integral primitive types - endian conversion, byte and\nword swaps, bit reversal and rotation, and unchecked arithmetic helpers - for hashing, serialization, and protocol\ncode.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Extensions.NumericExtensions.yml\" sourcestartlinenumber=\"1\">Provides bit-level and byte-level transformations over the integral primitive types - endian conversion, byte and\nword swaps, bit reversal and rotation - for hashing, serialization, and protocol code, together with decimal-digit\nand number-theory helpers.</p>\n"
     },
     {
       "type": "ManagedReference",

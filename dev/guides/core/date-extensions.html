@@ -87,10 +87,10 @@
         <article data-uid="">
 <h1 id="date-and-time-extensions">Date and time extensions</h1>
 
-<p><a class="xref" href="../../api/Bodu.Extensions.DateTimeExtensions.html">DateTimeExtensions</a> and <a class="xref" href="../../api/Bodu.Extensions.DateOnlyExtensions.html">DateOnlyExtensions</a> are two parallel families of extension methods - 66 and 56 partial files respectively - that answer the calendar questions <code>DateTime</code> and <code>DateOnly</code> leave to the caller: the first and last date of a week, month, quarter, or year; the next Friday; the third Monday of the month; the ISO week number; the fiscal quarter under a July-to-June year; whether a day is a rest day under a Sunday-to-Thursday working week; an age; a value truncated to the hour. The <code>DateOnly</code> family mirrors the <code>DateTime</code> family member for member, minus the time-of-day and conversion members that have no meaning for a date.</p>
+<p><a class="xref" href="../../api/Bodu.Extensions.DateTimeExtensions.html">DateTimeExtensions</a> and <a class="xref" href="../../api/Bodu.Extensions.DateOnlyExtensions.html">DateOnlyExtensions</a> are two parallel families of extension methods that answer the calendar questions <code>DateTime</code> and <code>DateOnly</code> leave to the caller: the first and last date of a week, month, quarter, or year; the next Friday; the third Monday of the month; the ISO week number; the fiscal quarter under a July-to-June year; whether a day is a rest day under a Sunday-to-Thursday working week; an age; a value truncated to the hour. The <code>DateOnly</code> family mirrors the <code>DateTime</code> family member for member, minus the time-of-day and conversion members that have no meaning for a date.</p>
 <p>Two rules apply everywhere:</p>
 <ul>
-<li><strong>Boundary results are dates.</strong> Every <code>First…</code> / <code>Last…</code> / <code>Next…</code> / <code>Previous…</code> member returns midnight (<code>TimeOfDay == 00:00</code>) with the receiver's <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime.kind">Kind</a> preserved.</li>
+<li><strong>Boundary results are dates; relative steps keep the time.</strong> Every <code>First…</code> / <code>Last…</code> member - the first or last date of a week, month, quarter, or year, and the <code>…OfWeekIn…</code> variants - returns midnight (<code>TimeOfDay == 00:00</code>) with the receiver's <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetime.kind">Kind</a> preserved. The relative-day and recurrence members - <code>NextDateOfWeek</code>, <code>PreviousDateOfWeek</code>, <code>NextOrSameDateOfWeek</code>, <code>PreviousOrSameDateOfWeek</code>, <code>NearestDateOfWeek</code>, <code>NearestWeekdayInMonth</code>, <code>NextWeekday</code>, <code>PreviousWeekday</code>, <code>NextOccurrence</code>, and <code>PreviousOccurrence</code> - move the date and keep the receiver's time of day and <code>Kind</code>.</li>
 <li><strong>Defaults are explicit.</strong> A parameterless overload uses <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.globalization.cultureinfo.currentculture">CurrentCulture</a> for week rules and names, a January-to-December calendar year for quarters, and a Saturday-Sunday weekend for weekday tests. Every one of those defaults has an overload that takes the rule as a parameter - see the <a href="#overload-matrix">overload matrix</a> below.</li>
 </ul>
 <div class="NOTE">
@@ -99,7 +99,7 @@
 </div>
 <div class="NOTE">
 <h5>Note</h5>
-<p>There is <strong>no <code>TimeOnly</code> extension surface</strong> in <code>Bodu.Core</code>. <code>TimeOnly</code> appears only as <code>TimeOnly.MinValue</code> when a <code>DateOnly</code> is lifted to a <code>DateTime</code> internally.</p>
+<p>There is <strong>no <code>TimeOnly</code> extension surface</strong> in <code>Bodu.Core</code>. <code>TimeOnly</code> appears only internally: as <code>TimeOnly.MinValue</code> when a <code>DateOnly</code> is lifted to a <code>DateTime</code>, and as <code>TimeOnly.FromTimeSpan</code> when <code>AddFiscalYears</code> carries a <code>DateTime</code>'s time of day across.</p>
 </div>
 <h2 id="pattern-1---boundaries-of-a-week-month-quarter-or-year">Pattern 1 - boundaries of a week, month, quarter, or year</h2>
 <!-- compile -->
@@ -187,7 +187,7 @@ using Bodu.Extensions;
 var date = new DateTime(2024, 12, 30);
 
 int cultureWeek = date.WeekOfYear(CultureInfo.GetCultureInfo(&quot;en-US&quot;));                 // 53
-int ruleWeek    = date.WeekOfYear(CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday); // 53 - BCL numbering, not ISO
+int ruleWeek    = date.WeekOfYear(CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday); // 1 - four of its days fall in 2025
 int weekOfMonth = date.WeekOfMonth(CalendarWeekRule.FirstDay, DayOfWeek.Sunday);        // 5
 WeekOrdinal ordinal = date.WeekOrdinalOfMonth;                                          // Fifth (the 30th is in the 5th group of 7)
 WeekOrdinal third   = new DateTime(2024, 5, 15).WeekOrdinalOfMonth;                     // Third
@@ -196,7 +196,7 @@ DateTime week20 = DateTimeExtensions.GetStartDateOfWeek(2024, 20, CultureInfo.Ge
 </code></pre>
 <div class="WARNING">
 <h5>Warning</h5>
-<p><code>WeekOfYear(CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday)</code> reproduces <code>Calendar.GetWeekOfYear</code>, which numbers the last days of December as week 53 even when ISO 8601 assigns them to week 1 of the next year. Use <code>IsoWeekOfYear</code> / <code>IsoYear</code> when you need ISO semantics.</p>
+<p><code>WeekOfYear</code> does not reproduce <code>Calendar.GetWeekOfYear</code> at the end of December. Under <code>CalendarWeekRule.FirstFourDayWeek</code> a week with four or more days in the next year is numbered 1, where <code>Calendar.GetWeekOfYear</code> numbers it 52 or 53 (the BCL returns 53 for 30 December 2024 above); <code>FirstFullWeek</code> can never meet that test, so it matches the BCL, and <code>FirstDay</code> follows the BCL's numbering, up to week 54. With a Monday first day, <code>FirstFourDayWeek</code> therefore gives the ISO 8601 week number, but the method returns only the number: use <code>IsoWeekOfYear</code> / <code>IsoYear</code> when you also need the ISO week-year.</p>
 </div>
 <p><code>WeekOrdinalOfMonth</code> is <em>not</em> a week number: it reports which seven-day group of the month the date falls in (days 1-7 → <code>First</code>, 8-14 → <code>Second</code>, …, 29-31 → <code>Fifth</code>), which is exactly the ordinal <code>NthDateOfWeekInMonth</code> would need to land on that date.</p>
 <h2 id="pattern-5---quarters-and-fiscal-years">Pattern 5 - quarters and fiscal years</h2>
@@ -280,7 +280,7 @@ DateTime later   = DateTimeExtensions.Max(utc, utc.AddDays(1));           // the
 DateTime? maybe  = DateTimeExtensions.Min((DateTime?)null, utc);          // null-aware overloads
 TimeSpan elapsed = utc.ElapsedTimeSince();                                // now - utc
 </code></pre>
-<p><code>ToDateTimeOffset(TimeSpan offset)</code> requires a non-UTC receiver - a <code>DateTimeKind.Utc</code> value with a non-zero offset throws <code>ArgumentException</code>, exactly as the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetimeoffset">DateTimeOffset</a> constructor does. <code>ToIsoString</code> has overloads for suppressing fractional seconds, for stamping a <code>DateTimeKind</code>, and for an arbitrary format plus culture.</p>
+<p><code>ToDateTimeOffset(TimeSpan offset)</code> requires a non-UTC receiver - a <code>DateTimeKind.Utc</code> value with a non-zero offset throws <code>ArgumentException</code>, exactly as the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.datetimeoffset">DateTimeOffset</a> constructor does. <code>ToIsoString</code> has overloads for suppressing fractional seconds, for converting to a <code>DateTimeKind</code> first (a conversion of the instant through <code>ToUniversalTime</code> / <code>ToLocalTime</code>, not a relabel, so an <code>Unspecified</code> value converted to <code>Utc</code> is read as local time), and for an arbitrary format plus culture.</p>
 <p>Every <code>Get…</code> static on <code>DateTimeExtensions</code> is the year/month-addressed companion of an instance member, for when you have no <code>DateTime</code> to start from: <code>GetFirstDateOfMonth</code>, <code>GetLastDateOfMonth</code>, <code>GetFirstDateOfQuarter</code>, <code>GetLastDateOfQuarter</code> (each with an optional <code>CalendarQuarterDefinition</code>), <code>GetFirstDateOfWeekInMonth</code>, <code>GetLastDateOfWeekInMonth</code>, <code>GetFirstDateOfWeekInQuarter</code>, <code>GetLastDateOfWeekInQuarter</code>, <code>GetNthDateOfWeekInMonth</code>, <code>GetNearestDateOfWeek</code>, <code>GetFirstDateOfIsoWeek</code>, <code>GetLastDateOfIsoWeek</code>, <code>GetIsoWeeksInYear</code>, <code>GetStartDateOfWeek</code>, <code>GetMonthName</code>, <code>GetDayNumber</code>, <code>FromDayOfYear</code>, <code>FromUnixTimeSeconds</code> / <code>FromUnixTimeMilliseconds</code>, <code>FirstDateOfFiscalYear</code> / <code>LastDateOfFiscalYear</code>, and <code>Max</code> / <code>Min</code>.</p>
 <h2 id="pattern-9---the-dateonly-family">Pattern 9 - the <code>DateOnly</code> family</h2>
 <p>Every calendar member above exists on <code>DateOnly</code> with the same name and rules. The differences are the members that need a time of day or an instant:</p>
@@ -528,7 +528,7 @@ long unix          = day.ToUnixTimeSeconds();                          // 171573
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 66a6179 · Built: 2026-10-13 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 8845b19 · Built: 2026-10-13 (UTC)</span>
         </div>
       </div>
     </footer>

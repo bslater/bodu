@@ -149,9 +149,9 @@
 <ul>
 <li><strong>Mutual exclusion and gating</strong> - <a class="xref" href="../../api/Bodu.Threading.AsyncLock.html">AsyncLock</a> (an awaitable mutex whose <code>LockAsync</code> result releases on dispose), <a class="xref" href="../../api/Bodu.Threading.AsyncSemaphore.html">AsyncSemaphore</a> (bounded concurrency), and <a class="xref" href="../../api/Bodu.Threading.AsyncReaderWriterLock.html">AsyncReaderWriterLock</a> (many readers / one writer).</li>
 <li><strong>Signalling</strong> - <a class="xref" href="../../api/Bodu.Threading.AsyncManualResetEvent.html">AsyncManualResetEvent</a>, <a class="xref" href="../../api/Bodu.Threading.AsyncAutoResetEvent.html">AsyncAutoResetEvent</a>, and <a class="xref" href="../../api/Bodu.Threading.AsyncCountdownEvent.html">AsyncCountdownEvent</a> re-express the BCL event types as awaitables.</li>
-<li><strong>Flow shaping</strong> - <a class="xref" href="../../api/Bodu.Threading.AsyncLazy-1.html">AsyncLazy&lt;T&gt;</a> (one-time async initialization with a single shared invocation), <a class="xref" href="../../api/Bodu.Threading.AsyncDebouncer.html">AsyncDebouncer</a> (trailing-edge coalescing of bursts), and <a class="xref" href="../../api/Bodu.Threading.RateGate.html">RateGate</a> (N-operations-per-window rate limiting).</li>
+<li><strong>Flow shaping</strong> - <a class="xref" href="../../api/Bodu.Threading.AsyncLazy-1.html">AsyncLazy&lt;T&gt;</a> (one-time async initialization with a single shared invocation), <a class="xref" href="../../api/Bodu.Threading.AsyncDebouncer.html">AsyncDebouncer</a> (trailing-edge coalescing of bursts), and <a class="xref" href="../../api/Bodu.Threading.RateGate.html">RateGate</a> (a synchronous gate whose <code>TryInvoke</code> admits at most one call per interval).</li>
 </ul>
-<p>The common contract: waiting never blocks a thread, cancellation is honoured through <code>CancellationToken</code> parameters, and lock releases are scoped by <code>IDisposable</code> so a <code>using</code> guarantees the release path. See the <a href="../../guides/core/async-primitives.html">Async coordination primitives</a> guide.</p>
+<p>The common contract: waiting never blocks a thread, cancellation is honoured through <code>CancellationToken</code> parameters, and lock releases are scoped by <code>IDisposable</code> so a <code>using</code> guarantees the release path. <code>RateGate</code> is the exception: it never waits, so it has no awaitable and no token. See the <a href="../../guides/core/async-primitives.html">Async coordination primitives</a> guide.</p>
 <h2 id="throwhelper">ThrowHelper</h2>
 <p><a class="xref" href="../../api/Bodu.ThrowHelper.html">ThrowHelper</a> centralises the <code>ArgumentException</code> family for the entire Bodu suite - every Bodu library calls into it rather than rolling its own checks. The pattern is:</p>
 <pre><code class="lang-csharp">public static double Average(IReadOnlyList&lt;int&gt; values)
@@ -161,8 +161,8 @@
     return values.Average();
 }
 </code></pre>
-<p>The helpers are partitioned by concern across partial files: <code>Null</code>, <code>Numeric</code>, <code>Comparison</code>, <code>Equality</code>, <code>Array</code>, <code>Collection</code>, <code>Span</code>, <code>Type</code>, <code>String</code>, <code>Ascii</code>. Each helper accepts a <code>[CallerArgumentExpression(nameof(value))] string? paramName = null</code> parameter, so the call site does not need to repeat the argument name. Two parallel partial-class sets target the modern (.NET 8) and netstandard runtimes; the public surface is identical across both.</p>
-<p>Centralising the guards means the exception messages, parameter-name capture, and <code>[StackTraceHidden]</code> behaviour stay consistent across every Bodu library - and <code>ThrowHelper</code> is the primary dependency the other Bodu packages take on <code>Bodu.Core</code>.</p>
+<p>The helpers are partitioned by concern across partial files: <code>Null</code>, <code>Numeric</code>, <code>Comparison</code>, <code>Equality</code>, <code>Array</code>, <code>Collection</code>, <code>Span</code>, <code>Stream</code>, <code>Type</code>, <code>String</code>, <code>Ascii</code>. Each helper accepts a <code>[CallerArgumentExpression(nameof(value))] string? paramName = null</code> parameter, so the call site does not need to repeat the argument name. The same surface ships for <code>net8.0</code> and <code>net10.0</code>.</p>
+<p>Centralising the guards means the exception messages and parameter-name capture stay consistent across every Bodu library - and <code>ThrowHelper</code> is the primary dependency the other Bodu packages take on <code>Bodu.Core</code>.</p>
 <h2 id="random-generator-abstraction">Random generator abstraction</h2>
 <p>Several extension helpers - shuffles, sampling, randomised access - and the <code>Bodu.Collections</code> catalogue depend on a pluggable random source rather than a hard-coded <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.random">Random</a>. The seam is <a class="xref" href="../../api/Bodu.IRandomGenerator.html">IRandomGenerator</a>, a one-method interface (<code>int Next(int maxValue)</code>).</p>
 <p>Two implementations ship in <code>Bodu.Core</code>:</p>
@@ -197,7 +197,7 @@
 <tbody>
 <tr>
 <td><a class="xref" href="../../api/Bodu.Extensions.CalendarQuarterDefinition.html">CalendarQuarterDefinition</a></td>
-<td>The start month of Q1 - <code>JanuaryToDecember</code>, <code>JulyToJune</code>, <code>AprilToMarch</code>, <code>April6ToApril5</code> (UK tax year), <code>March25ToMarch24</code> (Lady Day), <code>OctoberToSeptember</code>, <code>FebruaryToJanuary</code>, plus <code>Custom</code> for externally defined rules. Drives <code>FirstDateOfQuarter</code>, <code>LastDateOfQuarter</code>, <code>Quarter</code>, <code>FiscalYear</code>.</td>
+<td>The start month of Q1 - <code>JanuaryToDecember</code>, <code>JulyToJune</code>, <code>AprilToMarch</code>, <code>April6ToApril5</code> (UK tax year), <code>March25ToMarch24</code> (Lady Day), <code>OctoberToSeptember</code>, <code>FebruaryToJanuary</code>, plus <code>Custom</code> for externally defined rules. Drives <code>Quarter</code>, <code>FirstDateOfQuarter</code>, <code>LastDateOfQuarter</code>, and the other quarter members; the fiscal-year members (<code>FiscalYear</code>, <code>AddFiscalYears</code>, and their companions) take an <a class="xref" href="../../api/Bodu.Extensions.IQuarterDefinitionProvider.html">IQuarterDefinitionProvider</a> instead.</td>
 </tr>
 <tr>
 <td><a class="xref" href="../../api/Bodu.Extensions.WeekOrdinal.html">WeekOrdinal</a></td>
@@ -209,7 +209,7 @@
 </tr>
 <tr>
 <td><a class="xref" href="../../api/Bodu.WorkingDaysOfWeek.html">WorkingDaysOfWeek</a></td>
-<td>Named working-week presets - <code>MondayToFriday</code>, <code>MondayToSaturday</code>, <code>SaturdayToThursday</code>, <code>SaturdayToWednesday</code>, and others - plus <code>Custom</code> for caller-supplied <code>DayOfWeekSet</code> schedules. Drives <code>IsWeekday</code>, <code>IsWeekend</code>, <code>IsInWorkingWeek</code>, <code>NextWeekday</code>.</td>
+<td>Named working-week presets - <code>MondayToFriday</code>, <code>MondayToSaturday</code>, <code>SaturdayToThursday</code>, <code>SaturdayToWednesday</code>, and others - plus <code>Custom</code>, a working week defined by an <a class="xref" href="../../api/Bodu.Extensions.IWeekendDefinitionProvider.html">IWeekendDefinitionProvider</a>; a caller holding a <code>DayOfWeekSet</code> passes it directly to the <code>DayOfWeekSet</code> overloads instead. Drives <code>IsWeekday</code>, <code>IsWeekend</code>, <code>IsInWorkingWeek</code>, <code>NextWeekday</code>.</td>
 </tr>
 <tr>
 <td><a class="xref" href="../../api/Bodu.Extensions.IWeekendDefinitionProvider.html">IWeekendDefinitionProvider</a></td>
@@ -245,7 +245,7 @@
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 66a6179 · Built: 2026-10-13 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 8845b19 · Built: 2026-10-13 (UTC)</span>
         </div>
       </div>
     </footer>
