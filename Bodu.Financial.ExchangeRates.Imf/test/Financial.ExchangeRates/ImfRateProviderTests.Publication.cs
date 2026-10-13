@@ -11,7 +11,7 @@ namespace Bodu.Financial.ExchangeRates;
 public partial class ImfRateProviderTests
 {
     /// <summary>The event id of the <c>ObservationIngested</c> diagnostic, logged once per observation while a load publishes.</summary>
-    private const int ObservationIngestedEventId = 4305;
+    private const int ObservationIngestedEventId = 4705;
 
     /// <summary>
     /// Verifies that a report month whose publication fails part-way is not recorded as loaded, so the next request

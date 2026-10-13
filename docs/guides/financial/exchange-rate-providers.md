@@ -135,7 +135,10 @@ decimal latest = ((IRateProvider)provider).GetRate("AUD", "USD");
 one); with no logger the provider uses `NullLogger`. Each provider's options expose
 per-event `*LogLevel` properties, defaulting to one `Information` line per
 completed download, `Debug` for download starts, and `Trace` for per-observation
-detail.
+detail. Each package logs under event ids no other package uses, so a host can filter
+or route by id: ECB 4101-4106, BoE 4201-4206, RBA 4301-4306, the pair providers' shared
+base 4401-4406 (with the payload cache's 4410-4411 and XE's 4420), the caching packages
+4501-4530, and IMF 4701-4706.
 
 **Downloaded payloads are cached on disk.** The bulk providers (ECB, BoE, RBA, IMF)
 keep a best-effort cache of the raw bytes they downloaded through `EnableDiskCache`
