@@ -89,15 +89,21 @@ public sealed partial class NotableDateDocumentBuilder
     /// <paramref name="xml" /> is <see langword="null" />, empty, or white-space.
     /// </exception>
     /// <exception cref="FormatException">
-    /// <paramref name="xml" /> is not well-formed or is not a notable-date document.
+    /// <paramref name="xml" /> is not well-formed or is not a notable-date document, or an enumeration value names no
+    /// member or the <c>workingDays</c> value is not a binary working-week pattern.
     /// </exception>
     /// <remarks>
     /// <para>
-    /// Parsing is lenient and does not validate the document: an unrecognized enumeration token becomes the
-    /// enumeration's default or is dropped (a misspelled category becomes <see cref="NotableDateCategory.None" />, and
-    /// a misspelled resolution policy value disappears), a malformed integer is dropped, and any Boolean other than
-    /// <c>true</c> or <c>1</c> reads as <see langword="false" />. A document the loader would reject can therefore
-    /// parse and even build with different data. Validate with <see cref="Validate()" /> or
+    /// Enumeration values and the working week are read with the loader's rules, so they never parse into data the
+    /// loader would read differently: an enumeration value must name a member (ignoring case; a number is not a name),
+    /// and <c>workingDays</c> must be the seven-character, Sunday-first binary pattern. Any other value throws a
+    /// <see cref="FormatException" /> carrying the message of the loader's <c>BODU-CAL-ENUM</c> or
+    /// <c>BODU-CAL-WORKING-DAYS</c> diagnostic.
+    /// </para>
+    /// <para>
+    /// Parsing does not otherwise validate the document: a malformed integer is dropped, and any Boolean other than
+    /// <c>true</c> or <c>1</c> reads as <see langword="false" />, so a document the loader would reject can still
+    /// parse. Validate with <see cref="Validate()" /> or
     /// <see cref="TryBuild(out NotableDateResource?, out IReadOnlyList{NotableDateValidationDiagnostic})" />, or load
     /// the text with <see cref="NotableDateResourceLoader" />, when the input is not trusted.
     /// </para>
@@ -139,7 +145,13 @@ public sealed partial class NotableDateDocumentBuilder
     /// <param name="document">The notable-date document.</param>
     /// <returns>A new <see cref="NotableDateDocumentBuilder" /> populated from the document.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="document" /> is <see langword="null" />.</exception>
-    /// <exception cref="FormatException">The root element is not a notable-date resource element.</exception>
+    /// <exception cref="FormatException">
+    /// The root element is not a notable-date resource element, or an enumeration value names no member or the
+    /// <c>workingDays</c> value is not a binary working-week pattern.
+    /// </exception>
+    /// <remarks>
+    /// Values are read as <see cref="FromXml(string)" /> reads them; see its remarks.
+    /// </remarks>
     public static NotableDateDocumentBuilder FromXDocument(XDocument document)
     {
         ThrowHelper.ThrowIfNull(document);

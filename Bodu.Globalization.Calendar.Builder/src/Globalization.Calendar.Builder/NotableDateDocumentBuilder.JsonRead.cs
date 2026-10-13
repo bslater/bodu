@@ -68,22 +68,19 @@ public sealed partial class NotableDateDocumentBuilder
         if (policyJson is null)
             return;
 
-        DayOfWeekSet? workingWeek = null;
-        string? workingDays = (string?)policyJson["workingDays"];
-        if (!string.IsNullOrEmpty(workingDays) && DayOfWeekSet.TryParse(workingDays, out DayOfWeekSet parsed))
-            workingWeek = parsed;
+        DayOfWeekSet? workingWeek = ParseWorkingWeek((string?)policyJson["workingDays"]);
 
         IReadOnlyList<NotableDateCategory>? categoryPrecedence = policyJson["categoryPrecedence"] is not JsonArray array
             ? null
-            : [.. array.Select(item => ParseNullableEnum<NotableDateCategory>((string?)item) ?? NotableDateCategory.None)];
+            : [.. array.Select(item => ParseEnum<NotableDateCategory>((string?)item, "categoryPrecedence"))];
 
         ResolutionPolicyBuilder policy = new();
         policy.SetParsedValues(
-            ParseNullableEnum<DuplicatePolicy>((string?)policyJson["duplicatePolicy"]),
-            ParseNullableEnum<CollisionPolicy>((string?)policyJson["sameDayCollisionPolicy"]),
-            ParseNullableEnum<CollisionPolicy>((string?)policyJson["spanCollisionPolicy"]),
-            ParseNullableEnum<PriorityDirection>((string?)policyJson["priorityDirection"]),
-            ParseNullableEnum<ObservedDateRangePolicy>((string?)policyJson["observedDateRangePolicy"]),
+            ParseNullableEnum<DuplicatePolicy>((string?)policyJson["duplicatePolicy"], "duplicatePolicy"),
+            ParseNullableEnum<CollisionPolicy>((string?)policyJson["sameDayCollisionPolicy"], "sameDayCollisionPolicy"),
+            ParseNullableEnum<CollisionPolicy>((string?)policyJson["spanCollisionPolicy"], "spanCollisionPolicy"),
+            ParseNullableEnum<PriorityDirection>((string?)policyJson["priorityDirection"], "priorityDirection"),
+            ParseNullableEnum<ObservedDateRangePolicy>((string?)policyJson["observedDateRangePolicy"], "observedDateRangePolicy"),
             workingWeek,
             categoryPrecedence);
 
@@ -122,8 +119,8 @@ public sealed partial class NotableDateDocumentBuilder
         if (policyJson["trigger"] is JsonObject trigger)
         {
             policy.SetParsedTrigger(
-                ParseNullableEnum<AdjustmentTrigger>((string?)trigger["type"]),
-                ReadStringArray(trigger["weekdays"] as JsonArray).Select(ParseEnum<DayOfWeek>),
+                ParseNullableEnum<AdjustmentTrigger>((string?)trigger["type"], "trigger type"),
+                ReadStringArray(trigger["weekdays"] as JsonArray).Select(day => ParseEnum<DayOfWeek>(day, "trigger weekdays")),
                 null,
                 null,
                 null,
@@ -133,9 +130,9 @@ public sealed partial class NotableDateDocumentBuilder
         if (policyJson["action"] is JsonObject action)
         {
             policy.SetParsedAction(
-                ParseNullableEnum<AdjustmentAction>((string?)action["type"]),
+                ParseNullableEnum<AdjustmentAction>((string?)action["type"], "action type"),
                 (int?)action["days"],
-                ParseNullableEnum<DayOfWeek>((string?)action["dayOfWeek"]),
+                ParseNullableEnum<DayOfWeek>((string?)action["dayOfWeek"], "action dayOfWeek"),
                 (int?)action["maxSearchDays"],
                 (bool?)action["skipWeekends"],
                 (bool?)action["skipNonWorkingDates"],
@@ -147,7 +144,7 @@ public sealed partial class NotableDateDocumentBuilder
         if (policyJson["emission"] is JsonObject emission)
         {
             policy.SetParsedEmission(
-                ParseNullableEnum<EmissionMode>((string?)emission["mode"]),
+                ParseNullableEnum<EmissionMode>((string?)emission["mode"], "emission mode"),
                 (string?)emission["reason"],
                 (bool?)emission["nonWorking"]);
         }
@@ -168,8 +165,8 @@ public sealed partial class NotableDateDocumentBuilder
         AdjustmentScopeBuilder scope = new();
         scope.SetParsedValues(
             ReadStringArray(scopeJson["territories"] as JsonArray),
-            ReadStringArray(scopeJson["calendars"] as JsonArray).Select(ParseEnum<CalendarSystem>),
-            ReadStringArray(scopeJson["categories"] as JsonArray).Select(ParseEnum<NotableDateCategory>),
+            ReadStringArray(scopeJson["calendars"] as JsonArray).Select(calendar => ParseEnum<CalendarSystem>(calendar, "scope calendars")),
+            ReadStringArray(scopeJson["categories"] as JsonArray).Select(category => ParseEnum<NotableDateCategory>(category, "scope categories")),
             ReadStringArray(scopeJson["notableDateRefs"] as JsonArray),
             Array.Empty<(string, string)>(),
             Array.Empty<int>(),
@@ -206,7 +203,7 @@ public sealed partial class NotableDateDocumentBuilder
         NotableDateDefinitionBuilder definition = new(
             (string?)definitionJson["id"] ?? string.Empty,
             (string?)definitionJson["displayName"] ?? string.Empty,
-            ParseEnum<NotableDateCategory>((string?)definitionJson["category"]));
+            ParseEnum<NotableDateCategory>((string?)definitionJson["category"], "category"));
 
         definition.SetParsedValues(
             (int?)definitionJson["defaultDurationDays"],
@@ -237,11 +234,11 @@ public sealed partial class NotableDateDocumentBuilder
 
         rule.SetParsedScalars(
             (int?)ruleJson["priority"],
-            ParseNullableEnum<NotableDateCategory>((string?)ruleJson["category"]),
+            ParseNullableEnum<NotableDateCategory>((string?)ruleJson["category"], "category"),
             (bool?)ruleJson["nonWorking"],
             (int?)ruleJson["durationDays"],
             (string?)ruleJson["comment"],
-            applicability is null ? null : ParseNullableEnum<CalendarSystem>((string?)applicability["calendar"]),
+            applicability is null ? null : ParseNullableEnum<CalendarSystem>((string?)applicability["calendar"], "calendar"),
             applicability is null ? null : (int?)applicability["fromYear"],
             applicability is null ? null : (int?)applicability["toYear"],
             applicability is null ? null : (int?)applicability["everyYears"],
@@ -263,9 +260,9 @@ public sealed partial class NotableDateDocumentBuilder
         {
             rule.SetParsedDuration(
                 BuildStrategyElement(untilDate["strategy"] as JsonObject),
-                ParseNullableEnum<DateBoundary>((string?)untilDate["startBoundary"]) ?? DateBoundary.Inclusive,
-                ParseNullableEnum<DateBoundary>((string?)untilDate["endBoundary"]) ?? DateBoundary.Inclusive,
-                ParseNullableEnum<EndDateSelection>((string?)untilDate["selection"]) ?? EndDateSelection.FirstOnOrAfterStart);
+                ParseNullableEnum<DateBoundary>((string?)untilDate["startBoundary"], "untilDate startBoundary") ?? DateBoundary.Inclusive,
+                ParseNullableEnum<DateBoundary>((string?)untilDate["endBoundary"], "untilDate endBoundary") ?? DateBoundary.Inclusive,
+                ParseNullableEnum<EndDateSelection>((string?)untilDate["selection"], "untilDate selection") ?? EndDateSelection.FirstOnOrAfterStart);
         }
 
         return rule;
@@ -363,7 +360,7 @@ public sealed partial class NotableDateDocumentBuilder
         NotableDateRuleBuilder rule = new(ruleRef);
         rule.SetParsedScalars(
             (int?)overrideJson["priority"],
-            ParseNullableEnum<NotableDateCategory>((string?)overrideJson["category"]),
+            ParseNullableEnum<NotableDateCategory>((string?)overrideJson["category"], "category"),
             (bool?)overrideJson["nonWorking"],
             (int?)overrideJson["durationDays"],
             null,

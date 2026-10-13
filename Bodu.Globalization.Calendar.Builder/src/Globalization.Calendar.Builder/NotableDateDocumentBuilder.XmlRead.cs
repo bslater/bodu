@@ -41,23 +41,20 @@ public sealed partial class NotableDateDocumentBuilder
             return;
 
         ResolutionPolicyBuilder policy = new();
-        DayOfWeekSet? workingWeek = null;
-        string? workingDays = (string?)element.Attribute("workingDays");
-        if (!string.IsNullOrEmpty(workingDays) && DayOfWeekSet.TryParse(workingDays, out DayOfWeekSet parsed))
-            workingWeek = parsed;
+        DayOfWeekSet? workingWeek = ParseWorkingWeek((string?)element.Attribute("workingDays"));
 
         XElement? precedenceElement = element.Element(BuilderXml.Namespace + "CategoryPrecedence");
         IReadOnlyList<NotableDateCategory>? categoryPrecedence = precedenceElement is null
             ? null
             : [.. precedenceElement.Elements(BuilderXml.Namespace + "Category")
-                .Select(c => ParseNullableEnum<NotableDateCategory>((string?)c.Attribute("value")) ?? NotableDateCategory.None)];
+                .Select(c => ParseEnum<NotableDateCategory>((string?)c.Attribute("value"), "categoryPrecedence"))];
 
         policy.SetParsedValues(
-            ParseNullableEnum<DuplicatePolicy>((string?)element.Attribute("duplicatePolicy")),
-            ParseNullableEnum<CollisionPolicy>((string?)element.Attribute("sameDayCollisionPolicy")),
-            ParseNullableEnum<CollisionPolicy>((string?)element.Attribute("spanCollisionPolicy")),
-            ParseNullableEnum<PriorityDirection>((string?)element.Attribute("priorityDirection")),
-            ParseNullableEnum<ObservedDateRangePolicy>((string?)element.Attribute("observedDateRangePolicy")),
+            ParseNullableEnum<DuplicatePolicy>((string?)element.Attribute("duplicatePolicy"), "duplicatePolicy"),
+            ParseNullableEnum<CollisionPolicy>((string?)element.Attribute("sameDayCollisionPolicy"), "sameDayCollisionPolicy"),
+            ParseNullableEnum<CollisionPolicy>((string?)element.Attribute("spanCollisionPolicy"), "spanCollisionPolicy"),
+            ParseNullableEnum<PriorityDirection>((string?)element.Attribute("priorityDirection"), "priorityDirection"),
+            ParseNullableEnum<ObservedDateRangePolicy>((string?)element.Attribute("observedDateRangePolicy"), "observedDateRangePolicy"),
             workingWeek,
             categoryPrecedence);
 
@@ -95,15 +92,15 @@ public sealed partial class NotableDateDocumentBuilder
         {
             List<DayOfWeek> weekdays = new();
             foreach (XElement weekday in trigger.Elements(BuilderXml.Namespace + "Weekday"))
-                weekdays.Add(ParseEnum<DayOfWeek>((string?)weekday.Attribute("value")));
+                weekdays.Add(ParseEnum<DayOfWeek>((string?)weekday.Attribute("value"), "trigger weekdays"));
 
             string? month = (string?)trigger.Attribute("month");
             policy.SetParsedTrigger(
-                ParseNullableEnum<AdjustmentTrigger>((string?)trigger.Attribute("type")),
+                ParseNullableEnum<AdjustmentTrigger>((string?)trigger.Attribute("type"), "trigger type"),
                 weekdays,
                 string.IsNullOrEmpty(month) ? null : BuilderXml.ParseMonth(month),
                 BuilderXml.ParseInt((string?)trigger.Attribute("day")),
-                ParseNullableEnum<WeekOrdinal>((string?)trigger.Attribute("weekOrdinal")),
+                ParseNullableEnum<WeekOrdinal>((string?)trigger.Attribute("weekOrdinal"), "trigger weekOrdinal"),
                 (string?)trigger.Attribute("handlerKey"));
         }
 
@@ -111,9 +108,9 @@ public sealed partial class NotableDateDocumentBuilder
         if (action is not null)
         {
             policy.SetParsedAction(
-                ParseNullableEnum<AdjustmentAction>((string?)action.Attribute("type")),
+                ParseNullableEnum<AdjustmentAction>((string?)action.Attribute("type"), "action type"),
                 BuilderXml.ParseInt((string?)action.Attribute("days")),
-                ParseNullableEnum<DayOfWeek>((string?)action.Attribute("dayOfWeek")),
+                ParseNullableEnum<DayOfWeek>((string?)action.Attribute("dayOfWeek"), "action dayOfWeek"),
                 BuilderXml.ParseInt((string?)action.Attribute("maxSearchDays")),
                 BuilderXml.ParseBool((string?)action.Attribute("skipWeekends")),
                 BuilderXml.ParseBool((string?)action.Attribute("skipNonWorkingDates")),
@@ -126,7 +123,7 @@ public sealed partial class NotableDateDocumentBuilder
         if (emission is not null)
         {
             policy.SetParsedEmission(
-                ParseNullableEnum<EmissionMode>((string?)emission.Attribute("mode")),
+                ParseNullableEnum<EmissionMode>((string?)emission.Attribute("mode"), "emission mode"),
                 (string?)emission.Attribute("reason"),
                 BuilderXml.ParseBool((string?)emission.Attribute("nonWorking")));
         }
@@ -171,11 +168,11 @@ public sealed partial class NotableDateDocumentBuilder
                     break;
 
                 case "Calendar":
-                    calendars.Add(ParseEnum<CalendarSystem>((string?)child.Attribute("name")));
+                    calendars.Add(ParseEnum<CalendarSystem>((string?)child.Attribute("name"), "scope calendars"));
                     break;
 
                 case "Category":
-                    categories.Add(ParseEnum<NotableDateCategory>((string?)child.Attribute("value")));
+                    categories.Add(ParseEnum<NotableDateCategory>((string?)child.Attribute("value"), "scope categories"));
                     break;
 
                 case "NotableDate":
@@ -252,7 +249,7 @@ public sealed partial class NotableDateDocumentBuilder
         use.SetParsedValues(
             (string?)element.Attribute("as"),
             (string?)element.Attribute("territory"),
-            ParseNullableEnum<NotableDateCategory>((string?)element.Attribute("category")),
+            ParseNullableEnum<NotableDateCategory>((string?)element.Attribute("category"), "import use category"),
             BuilderXml.ParseBool((string?)element.Attribute("nonWorking")),
             adjustments);
 
@@ -282,7 +279,7 @@ public sealed partial class NotableDateDocumentBuilder
         NotableDateDefinitionBuilder definition = new(
             (string?)element.Attribute("id") ?? string.Empty,
             (string?)element.Attribute("displayName") ?? string.Empty,
-            ParseEnum<NotableDateCategory>((string?)element.Attribute("category")));
+            ParseEnum<NotableDateCategory>((string?)element.Attribute("category"), "category"));
 
         definition.SetParsedValues(
             BuilderXml.ParseInt((string?)element.Attribute("defaultDurationDays")),
@@ -313,11 +310,11 @@ public sealed partial class NotableDateDocumentBuilder
         XElement? applicability = element.Element(BuilderXml.Namespace + "Applicability");
         rule.SetParsedScalars(
             BuilderXml.ParseInt((string?)element.Attribute("priority")),
-            ParseNullableEnum<NotableDateCategory>((string?)element.Attribute("category")),
+            ParseNullableEnum<NotableDateCategory>((string?)element.Attribute("category"), "category"),
             BuilderXml.ParseBool((string?)element.Attribute("nonWorking")),
             BuilderXml.ParseInt((string?)element.Attribute("durationDays")),
             (string?)element.Attribute("comment"),
-            applicability is null ? null : ParseNullableEnum<CalendarSystem>((string?)applicability.Attribute("calendar")),
+            applicability is null ? null : ParseNullableEnum<CalendarSystem>((string?)applicability.Attribute("calendar"), "calendar"),
             applicability is null ? null : BuilderXml.ParseInt((string?)applicability.Attribute("fromYear")),
             applicability is null ? null : BuilderXml.ParseInt((string?)applicability.Attribute("toYear")),
             applicability is null ? null : BuilderXml.ParseInt((string?)applicability.Attribute("everyYears")),
@@ -358,9 +355,9 @@ public sealed partial class NotableDateDocumentBuilder
             XElement? endStrategyChild = untilDate.Element(BuilderXml.Namespace + "Strategy")?.Elements().FirstOrDefault();
             rule.SetParsedDuration(
                 endStrategyChild is null ? null : new XElement(endStrategyChild),
-                ParseNullableEnum<DateBoundary>((string?)untilDate.Attribute("startBoundary")) ?? DateBoundary.Inclusive,
-                ParseNullableEnum<DateBoundary>((string?)untilDate.Attribute("endBoundary")) ?? DateBoundary.Inclusive,
-                ParseNullableEnum<EndDateSelection>((string?)untilDate.Attribute("selection")) ?? EndDateSelection.FirstOnOrAfterStart);
+                ParseNullableEnum<DateBoundary>((string?)untilDate.Attribute("startBoundary"), "untilDate startBoundary") ?? DateBoundary.Inclusive,
+                ParseNullableEnum<DateBoundary>((string?)untilDate.Attribute("endBoundary"), "untilDate endBoundary") ?? DateBoundary.Inclusive,
+                ParseNullableEnum<EndDateSelection>((string?)untilDate.Attribute("selection"), "untilDate selection") ?? EndDateSelection.FirstOnOrAfterStart);
         }
 
         return rule;
@@ -430,23 +427,65 @@ public sealed partial class NotableDateDocumentBuilder
     }
 
     /// <summary>
-    /// Parses an enumeration value from its string form, returning the default when the value is absent or
-    /// unrecognized.
+    /// Parses an enumeration value by member name, as the loader does, returning the enumeration's default when the
+    /// value is absent.
     /// </summary>
     /// <typeparam name="TEnum">The enumeration type.</typeparam>
     /// <param name="value">The string form, or <see langword="null" /> when absent.</param>
-    /// <returns>The parsed value, or the enumeration's default when absent or unrecognized.</returns>
-    private static TEnum ParseEnum<TEnum>(string? value)
+    /// <param name="field">The name of the field the value belongs to, used in the exception message.</param>
+    /// <returns>The named member, or the enumeration's default when the value is absent.</returns>
+    /// <exception cref="FormatException">
+    /// <paramref name="value" /> names no member of <typeparamref name="TEnum" />.
+    /// </exception>
+    private static TEnum ParseEnum<TEnum>(string? value, string field)
         where TEnum : struct, Enum =>
-        value is not null && Enum.TryParse(value, ignoreCase: false, out TEnum result) ? result : default;
+        ParseNullableEnum<TEnum>(value, field) ?? default;
 
     /// <summary>
-    /// Parses a nullable enumeration value from its string form.
+    /// Parses an optional enumeration value by member name, ignoring case, with the loader's rules: a number, a
+    /// comma-separated list, or a name surrounded by white space names no member.
     /// </summary>
     /// <typeparam name="TEnum">The enumeration type.</typeparam>
     /// <param name="value">The string form, or <see langword="null" /> when absent.</param>
-    /// <returns>The parsed value, or <see langword="null" /> when absent or unrecognized.</returns>
-    private static TEnum? ParseNullableEnum<TEnum>(string? value)
-        where TEnum : struct, Enum =>
-        value is not null && Enum.TryParse(value, ignoreCase: false, out TEnum result) ? result : null;
+    /// <param name="field">The name of the field the value belongs to, used in the exception message.</param>
+    /// <returns>The named member, or <see langword="null" /> when the value is absent.</returns>
+    /// <exception cref="FormatException">
+    /// <paramref name="value" /> names no member of <typeparamref name="TEnum" />.
+    /// </exception>
+    private static TEnum? ParseNullableEnum<TEnum>(string? value, string field)
+        where TEnum : struct, Enum
+    {
+        List<NotableDateValidationDiagnostic> diagnostics = new();
+        TEnum? result = NotableDateDocumentParseHelpers.ParseNullableEnum<TEnum>(value, field, diagnostics);
+        ThrowIfMalformed(diagnostics);
+
+        return result;
+    }
+
+    /// <summary>
+    /// Parses an optional working week with the loader's rules: only the seven-character, Sunday-first binary pattern
+    /// is a working week, and a blank value is absent.
+    /// </summary>
+    /// <param name="value">The <c>workingDays</c> value, or <see langword="null" /> when absent.</param>
+    /// <returns>The working week, or <see langword="null" /> when the value is absent or blank.</returns>
+    /// <exception cref="FormatException"><paramref name="value" /> is not a binary working-week pattern.</exception>
+    private static DayOfWeekSet? ParseWorkingWeek(string? value)
+    {
+        List<NotableDateValidationDiagnostic> diagnostics = new();
+        DayOfWeekSet? result = NotableDateDocumentParseHelpers.ParseWorkingWeek(value, diagnostics);
+        ThrowIfMalformed(diagnostics);
+
+        return result;
+    }
+
+    /// <summary>
+    /// Throws when the loader's parse rules recorded a diagnostic for a value, so the builder rejects exactly the
+    /// values the loader rejects, with the loader's message.
+    /// </summary>
+    /// <param name="diagnostics">The diagnostics the loader's parse rules recorded for one value.</param>
+    /// <exception cref="FormatException"><paramref name="diagnostics" /> holds a diagnostic.</exception>
+    private static void ThrowIfMalformed(List<NotableDateValidationDiagnostic> diagnostics)
+    {
+        if (diagnostics.Count > 0) throw new FormatException(diagnostics[0].Message);
+    }
 }
