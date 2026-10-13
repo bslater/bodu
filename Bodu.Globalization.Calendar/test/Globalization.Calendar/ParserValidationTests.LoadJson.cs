@@ -915,4 +915,134 @@ public sealed partial class ParserValidationTests
 
         return json;
     }
+
+    /// <summary>
+    /// The well-formed item, as a JSON literal, of every list-valued field the JSON document under the list tests holds,
+    /// keyed by the placeholder that stands for it.
+    /// </summary>
+    private static readonly Dictionary<string, string> s_listFieldItems = new(StringComparer.Ordinal)
+    {
+        ["categoryPrecedence"] = "\"PublicHoliday\"",
+        ["scope.territories"] = "\"AU\"",
+        ["scope.calendars"] = "\"Gregorian\"",
+        ["scope.categories"] = "\"PublicHoliday\"",
+        ["scope.notableDateRefs"] = "\"anchor\"",
+        ["scope.ruleRefs"] = "{ \"notableDateRef\": \"anchor\", \"ruleRef\": \"r\" }",
+        ["trigger.weekdays"] = "\"Saturday\"",
+        ["use.adjustments"] = "\"policy\"",
+        ["notableDate.tags"] = "\"civic\"",
+        ["applicability.territories"] = "\"AU\"",
+        ["rule.tags"] = "\"civic\"",
+        ["rule.adjustments"] = "\"policy\"",
+        ["weekly.days"] = "\"Thursday\"",
+        ["patch.tags"] = "\"civic\"",
+        ["patch.adjustments"] = "\"policy\"",
+    };
+
+    /// <summary>
+    /// Verifies that the list test document loads when every list-valued field holds a well-formed item, so each
+    /// rejection the per-field tests observe is caused by the one item they replace.
+    /// </summary>
+    [TestMethod]
+    public void LoadJson_WhenEveryListItemWellFormed_ShouldLoad()
+    {
+        NotableDateResource resource = NotableDateResourceLoader.LoadJson(ListFieldJson(null, null), EnumImportResolver);
+
+        Assert.AreEqual("test.lists", resource.ResourceId);
+    }
+
+    /// <summary>
+    /// Verifies that an item of a JSON list of enumeration names that is not a string is rejected with the
+    /// <c>BODU-CAL-ENUM</c> diagnostic naming the item, rather than dropped, which would empty the list and widen or
+    /// disable what it selects.
+    /// </summary>
+    /// <param name="field">The placeholder of the list holding the item.</param>
+    /// <param name="item">The item, as a JSON literal.</param>
+    [TestMethod]
+    [DataRow("categoryPrecedence", "1")]
+    [DataRow("scope.calendars", "0")]
+    [DataRow("scope.categories", "1")]
+    [DataRow("scope.categories", "null")]
+    [DataRow("trigger.weekdays", "6")]
+    [DataRow("trigger.weekdays", "true")]
+    [DataRow("weekly.days", "4")]
+    [DataRow("weekly.days", "{}")]
+    public void LoadJson_WhenNameListItemIsNotString_ShouldThrowEnumDiagnostic(string field, string item)
+    {
+        string json = ListFieldJson(field, item);
+
+        NotableDateValidationException ex = Assert.ThrowsExactly<NotableDateValidationException>(() =>
+        {
+            _ = NotableDateResourceLoader.LoadJson(json, EnumImportResolver);
+        });
+
+        Assert.Contains(d => d.Code == "BODU-CAL-ENUM" && d.Severity == NotableDateValidationSeverity.Error && d.Message.Contains("'" + item + "'", StringComparison.Ordinal), ex.Diagnostics, "BODU-CAL-ENUM");
+    }
+
+    /// <summary>
+    /// Verifies that an item of a JSON list of territory codes, references or tags that is not a string is rejected
+    /// with the <c>BODU-CAL-VALUE</c> diagnostic naming the item, rather than dropped.
+    /// </summary>
+    /// <param name="field">The placeholder of the list holding the item.</param>
+    /// <param name="item">The item, as a JSON literal.</param>
+    [TestMethod]
+    [DataRow("scope.territories", "36")]
+    [DataRow("scope.notableDateRefs", "5")]
+    [DataRow("scope.ruleRefs", "5")]
+    [DataRow("use.adjustments", "5")]
+    [DataRow("notableDate.tags", "5")]
+    [DataRow("applicability.territories", "36")]
+    [DataRow("rule.tags", "true")]
+    [DataRow("rule.adjustments", "5")]
+    [DataRow("patch.tags", "null")]
+    [DataRow("patch.adjustments", "5")]
+    public void LoadJson_WhenTextListItemIsNotString_ShouldThrowValueDiagnostic(string field, string item)
+    {
+        string json = ListFieldJson(field, item);
+
+        NotableDateValidationException ex = Assert.ThrowsExactly<NotableDateValidationException>(() =>
+        {
+            _ = NotableDateResourceLoader.LoadJson(json, EnumImportResolver);
+        });
+
+        Assert.Contains(d => d.Code == "BODU-CAL-VALUE" && d.Severity == NotableDateValidationSeverity.Error && d.Message.Contains(item, StringComparison.Ordinal), ex.Diagnostics, "BODU-CAL-VALUE");
+    }
+
+    /// <summary>
+    /// Builds a JSON document holding every list-valued field the loader reads, each holding one well-formed item except
+    /// the one named, which holds the supplied JSON literal.
+    /// </summary>
+    /// <param name="field">The placeholder of the list to set, or <see langword="null" /> to set none.</param>
+    /// <param name="item">The JSON literal the named list holds.</param>
+    /// <returns>The JSON document.</returns>
+    private static string ListFieldJson(string? field, string? item)
+    {
+        string json = """
+            { "schemaVersion": "1.0", "resourceId": "test.lists",
+              "resolutionPolicy": { "categoryPrecedence": [ @categoryPrecedence@ ] },
+              "adjustmentPolicies": [ { "id": "policy",
+                "scope": { "territories": [ @scope.territories@ ], "calendars": [ @scope.calendars@ ], "categories": [ @scope.categories@ ],
+                  "notableDateRefs": [ @scope.notableDateRefs@ ], "ruleRefs": [ @scope.ruleRefs@ ] },
+                "trigger": { "type": "IfDayOfWeek", "weekdays": [ @trigger.weekdays@ ] },
+                "action": { "type": "MoveToNextWeekday", "dayOfWeek": "Monday" },
+                "emission": { "mode": "ObservedOnly" } } ],
+              "imports": [ { "resource": "lib", "uses": [ { "notableDateRef": "lib-day", "adjustments": [ @use.adjustments@ ] } ] } ],
+              "notableDates": [
+                { "id": "anchor", "displayName": "Anchor", "category": "PublicHoliday", "tags": [ @notableDate.tags@ ],
+                  "rules": [ { "id": "r", "applicability": { "territories": [ @applicability.territories@ ] },
+                    "strategy": { "fixed": { "month": 3, "day": 1 } },
+                    "tags": [ @rule.tags@ ], "adjustments": [ @rule.adjustments@ ] } ] },
+                { "id": "weekly", "displayName": "W", "category": "Observance",
+                  "rules": [ { "id": "r", "recurrence": { "weekly": { "days": [ @weekly.days@ ] } } } ] },
+                { "id": "other", "displayName": "O", "category": "Observance",
+                  "rules": [ { "id": "r", "strategy": { "fixed": { "month": 4, "day": 1 } } } ] } ],
+              "overrides": [ { "operation": "PatchRule", "notableDateRef": "other", "ruleRef": "r",
+                "tags": [ @patch.tags@ ], "adjustments": [ @patch.adjustments@ ] } ] }
+            """;
+
+        foreach ((string key, string wellFormed) in s_listFieldItems)
+            json = json.Replace("@" + key + "@", key == field ? item : wellFormed, StringComparison.Ordinal);
+
+        return json;
+    }
 }
