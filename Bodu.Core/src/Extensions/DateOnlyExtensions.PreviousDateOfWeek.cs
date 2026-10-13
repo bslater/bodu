@@ -28,7 +28,8 @@ public static partial class DateOnlyExtensions
     /// </para>
     /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown if <paramref name="dayOfWeek" /> is not a defined value of the <see cref="DayOfWeek" /> enumeration.
+    /// Thrown if <paramref name="dayOfWeek" /> is not a defined value of the <see cref="DayOfWeek" /> enumeration, -or-
+    /// the resulting date is earlier than <see cref="DateOnly.MinValue" />.
     /// </exception>
     public static DateOnly PreviousDateOfWeek(this DateOnly date, DayOfWeek dayOfWeek)
     {
@@ -36,6 +37,6 @@ public static partial class DateOnlyExtensions
 
         int daysBack = (7 + date.DayOfWeek - dayOfWeek) % 7;
 
-        return date.AddDays(daysBack == 0 ? -7 : -daysBack);
+        return AddDaysWithinRange(date, daysBack == 0 ? -7 : -daysBack, nameof(date));
     }
 }

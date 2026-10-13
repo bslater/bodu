@@ -27,12 +27,15 @@ public static partial class DateOnlyExtensions
     /// </para>
     /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown if <paramref name="dayOfWeek" /> is not a defined value of the <see cref="DayOfWeek" /> enumeration.
+    /// Thrown if <paramref name="dayOfWeek" /> is not a defined value of the <see cref="DayOfWeek" /> enumeration, -or-
+    /// the resulting date is later than <see cref="DateOnly.MaxValue" />.
     /// </exception>
     public static DateOnly NextDateOfWeek(this DateOnly date, DayOfWeek dayOfWeek)
     {
         ThrowHelper.ThrowIfEnumValueIsUndefined(dayOfWeek);
 
-        return date.AddDays((((int)dayOfWeek - (int)date.DayOfWeek + 7) % 7) is 0 ? 7 : ((int)dayOfWeek - (int)date.DayOfWeek + 7) % 7);
+        int daysAhead = ((int)dayOfWeek - (int)date.DayOfWeek + 7) % 7;
+
+        return AddDaysWithinRange(date, daysAhead == 0 ? 7 : daysAhead, nameof(date));
     }
 }

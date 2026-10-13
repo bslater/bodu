@@ -29,12 +29,13 @@ public static partial class DateTimeExtensions
     /// </para>
     /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown if <paramref name="dayOfWeek" /> is not a defined value of the <see cref="DayOfWeek" /> enumeration.
+    /// Thrown if <paramref name="dayOfWeek" /> is not a defined value of the <see cref="DayOfWeek" /> enumeration, -or-
+    /// the resulting date is later than <see cref="DateTime.MaxValue" />.
     /// </exception>
     public static DateTime NextOrSameDateOfWeek(this DateTime dateTime, DayOfWeek dayOfWeek)
     {
         ThrowHelper.ThrowIfEnumValueIsUndefined(dayOfWeek);
 
-        return dateTime.AddTicks(GetTicksUntilNextOrSameDayOfWeek(dateTime, dayOfWeek));
+        return AddTicksWithinRange(dateTime, GetTicksUntilNextOrSameDayOfWeek(dateTime, dayOfWeek), nameof(dateTime));
     }
 }

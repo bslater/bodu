@@ -119,4 +119,16 @@ public partial class DateTimeExtensionsTests
 
         Assert.AreEqual("dateTime", ex.ParamName);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.NextOrSameDateOfWeek(DateTime, DayOfWeek)" /> still returns an occurrence that falls on the
+    /// last date a <see cref="DateTime" /> can represent.
+    /// </summary>
+    [TestMethod]
+    public void NextOrSameDateOfWeek_WhenOccurrenceIsTheLastRepresentableDateTime_ShouldReturnIt()
+    {
+        var actual = DateTime.MaxValue.NextOrSameDateOfWeek(DayOfWeek.Friday);
+
+        Assert.AreEqual(DateTime.MaxValue, actual);
+    }
 }

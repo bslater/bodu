@@ -120,4 +120,16 @@ public partial class DateTimeExtensionsTests
 
         Assert.AreEqual("dateTime", ex.ParamName);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.PreviousOrSameDateOfWeek(DateTime, DayOfWeek)" /> still returns an occurrence that falls on the
+    /// first date a <see cref="DateTime" /> can represent.
+    /// </summary>
+    [TestMethod]
+    public void PreviousOrSameDateOfWeek_WhenOccurrenceIsTheFirstRepresentableDateTime_ShouldReturnIt()
+    {
+        var actual = DateTime.MinValue.PreviousOrSameDateOfWeek(DayOfWeek.Monday);
+
+        Assert.AreEqual(DateTime.MinValue, actual);
+    }
 }

@@ -82,4 +82,16 @@ public partial class DateOnlyExtensionsTests
 
         Assert.AreEqual("date", ex.ParamName);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="DateOnlyExtensions.NextDateOfWeek(DateOnly, DayOfWeek)" /> still returns an occurrence that falls on the
+    /// last date a <see cref="DateOnly" /> can represent.
+    /// </summary>
+    [TestMethod]
+    public void NextDateOfWeek_WhenOccurrenceIsTheLastRepresentableDateOnly_ShouldReturnIt()
+    {
+        var actual = DateOnly.MaxValue.AddDays(-7).NextDateOfWeek(DayOfWeek.Friday);
+
+        Assert.AreEqual(DateOnly.MaxValue, actual);
+    }
 }

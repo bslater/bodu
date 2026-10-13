@@ -93,4 +93,16 @@ public partial class DateOnlyExtensionsTests
 
         Assert.AreEqual("date", ex.ParamName);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="DateOnlyExtensions.PreviousOrSameDateOfWeek(DateOnly, DayOfWeek)" /> still returns an occurrence that falls on the
+    /// first date a <see cref="DateOnly" /> can represent.
+    /// </summary>
+    [TestMethod]
+    public void PreviousOrSameDateOfWeek_WhenOccurrenceIsTheFirstRepresentableDateOnly_ShouldReturnIt()
+    {
+        var actual = DateOnly.MinValue.PreviousOrSameDateOfWeek(DayOfWeek.Monday);
+
+        Assert.AreEqual(DateOnly.MinValue, actual);
+    }
 }
