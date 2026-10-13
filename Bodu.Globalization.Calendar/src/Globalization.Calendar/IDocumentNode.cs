@@ -69,12 +69,17 @@ internal interface IDocumentNode
     /// <param name="xmlItem">The XML item element local name.</param>
     /// <param name="xmlAttribute">The XML attribute on each item carrying the value.</param>
     /// <param name="jsonProperty">The JSON array property name.</param>
+    /// <param name="field">The name of the field the list belongs to, used in the diagnostics.</param>
+    /// <param name="diagnostics">
+    /// The collection that receives the diagnostic for each JSON item that is an object or an array.
+    /// </param>
     /// <returns>The scalar values; empty when absent.</returns>
     /// <remarks>
-    /// A JSON item that is not a string is returned as its JSON text, so the name parse the caller applies reports it
-    /// rather than the list silently losing it.
+    /// A JSON item that is a number, a Boolean or <c>null</c> is returned as its JSON text, so the name parse the
+    /// caller applies reports it rather than the list silently losing it. An item that is an object or an array is left
+    /// out after a <c>BODU-CAL-VALUE</c> error naming its JSON kind is recorded for it.
     /// </remarks>
-    IReadOnlyList<string> ScalarList(string? xmlWrapper, string xmlItem, string xmlAttribute, string jsonProperty);
+    IReadOnlyList<string> ScalarList(string? xmlWrapper, string xmlItem, string xmlAttribute, string jsonProperty, string field, ICollection<NotableDateValidationDiagnostic> diagnostics);
 
     /// <summary>
     /// Reads an optional list of enumeration names, returning <see langword="null" /> when the wrapper element or JSON
@@ -86,11 +91,16 @@ internal interface IDocumentNode
     /// <param name="xmlItem">The XML item element local name.</param>
     /// <param name="xmlAttribute">The XML attribute on each item carrying the value.</param>
     /// <param name="jsonProperty">The JSON array property name.</param>
+    /// <param name="field">The name of the field the list belongs to, used in the diagnostics.</param>
+    /// <param name="diagnostics">
+    /// The collection that receives the diagnostic for each JSON item that is an object or an array.
+    /// </param>
     /// <returns>The scalar values, or <see langword="null" /> when absent.</returns>
     /// <remarks>
-    /// A JSON item that is not a string is returned as its JSON text, as <see cref="ScalarList" /> returns it.
+    /// A JSON item that is not a string is returned as its JSON text, or left out after a <c>BODU-CAL-VALUE</c> error
+    /// is recorded for it, as <see cref="ScalarList" /> treats it.
     /// </remarks>
-    IReadOnlyList<string>? OptionalScalarList(string? xmlWrapper, string xmlItem, string xmlAttribute, string jsonProperty);
+    IReadOnlyList<string>? OptionalScalarList(string? xmlWrapper, string xmlItem, string xmlAttribute, string jsonProperty, string field, ICollection<NotableDateValidationDiagnostic> diagnostics);
 
     /// <summary>
     /// Reads a list of text values (territory codes, references, or tags), returning an empty list when absent and
@@ -108,8 +118,8 @@ internal interface IDocumentNode
     /// </param>
     /// <returns>The text values; empty when absent.</returns>
     /// <remarks>
-    /// An item that is not a string is left out of the list after a <c>BODU-CAL-VALUE</c> error is recorded for it, so
-    /// the shortened list never reaches a loaded resource.
+    /// An item that is not a string is left out of the list after a <c>BODU-CAL-VALUE</c> error naming its JSON kind is
+    /// recorded for it, so the shortened list never reaches a loaded resource.
     /// </remarks>
     IReadOnlyList<string> TextList(string? xmlWrapper, string xmlItem, string xmlAttribute, string jsonProperty, string field, ICollection<NotableDateValidationDiagnostic> diagnostics);
 
@@ -151,7 +161,8 @@ internal interface IDocumentNode
     /// <remarks>
     /// An item that is not an integer is left out of the list after a <c>BODU-CAL-VALUE</c> error is recorded for it,
     /// so the shortened list never reaches a loaded resource. A JSON item is read as a scalar is: a number by its
-    /// digits, a string by its text.
+    /// digits, a string by its text, and any other scalar by its JSON text; an object or an array is reported by its
+    /// JSON kind.
     /// </remarks>
     IReadOnlyList<int> IntList(string? xmlWrapper, string xmlItem, string xmlAttribute, string jsonProperty, string field, ICollection<NotableDateValidationDiagnostic> diagnostics);
 
@@ -210,8 +221,8 @@ internal interface IDocumentNode
     /// The references, each with a <see langword="null" /> qualifier when it carries none; empty when absent.
     /// </returns>
     /// <remarks>
-    /// A JSON item that is neither a string nor an object is left out after a <c>BODU-CAL-VALUE</c> error is recorded
-    /// for it, so the shortened list never reaches a loaded resource.
+    /// A JSON item that is neither a string nor an object is left out after a <c>BODU-CAL-VALUE</c> error naming its
+    /// JSON kind is recorded for it, so the shortened list never reaches a loaded resource.
     /// </remarks>
     IReadOnlyList<(string? Qualifier, string Name)> QualifiedReferenceList(string? xmlWrapper, string xmlItem, string qualifierName, string name, string jsonProperty, string field, ICollection<NotableDateValidationDiagnostic> diagnostics);
 }

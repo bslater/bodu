@@ -952,9 +952,9 @@ public sealed partial class ParserValidationTests
     }
 
     /// <summary>
-    /// Verifies that an item of a JSON list of enumeration names that is not a string is rejected with the
-    /// <c>BODU-CAL-ENUM</c> diagnostic naming the item, rather than dropped, which would empty the list and widen or
-    /// disable what it selects.
+    /// Verifies that an item of a JSON list of enumeration names that is a number, a Boolean or <c>null</c> is rejected
+    /// with the <c>BODU-CAL-ENUM</c> diagnostic naming the item, rather than dropped, which would empty the list and
+    /// widen or disable what it selects.
     /// </summary>
     /// <param name="field">The placeholder of the list holding the item.</param>
     /// <param name="item">The item, as a JSON literal.</param>
@@ -966,7 +966,6 @@ public sealed partial class ParserValidationTests
     [DataRow("trigger.weekdays", "6")]
     [DataRow("trigger.weekdays", "true")]
     [DataRow("weekly.days", "4")]
-    [DataRow("weekly.days", "{}")]
     public void LoadJson_WhenNameListItemIsNotString_ShouldThrowEnumDiagnostic(string field, string item)
     {
         string json = ListFieldJson(field, item);
@@ -981,7 +980,7 @@ public sealed partial class ParserValidationTests
 
     /// <summary>
     /// Verifies that an item of a JSON list of territory codes, references or tags that is not a string is rejected
-    /// with the <c>BODU-CAL-VALUE</c> diagnostic naming the item, rather than dropped.
+    /// with the <c>BODU-CAL-VALUE</c> diagnostic naming the item's JSON kind, rather than dropped.
     /// </summary>
     /// <param name="field">The placeholder of the list holding the item.</param>
     /// <param name="item">The item, as a JSON literal.</param>
@@ -1005,7 +1004,7 @@ public sealed partial class ParserValidationTests
             _ = NotableDateResourceLoader.LoadJson(json, EnumImportResolver);
         });
 
-        Assert.Contains(d => d.Code == "BODU-CAL-VALUE" && d.Severity == NotableDateValidationSeverity.Error && d.Message.Contains(item, StringComparison.Ordinal), ex.Diagnostics, "BODU-CAL-VALUE");
+        Assert.Contains(d => d.Code == "BODU-CAL-VALUE" && d.Severity == NotableDateValidationSeverity.Error && d.Message.Contains(" list holds a JSON ", StringComparison.Ordinal), ex.Diagnostics, "BODU-CAL-VALUE");
     }
 
     /// <summary>

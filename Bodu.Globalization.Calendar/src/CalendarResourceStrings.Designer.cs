@@ -250,7 +250,7 @@ namespace Bodu {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to The {0} item &apos;{1}&apos; is not a string..
+        ///   Looks up a localized string similar to The {0} list holds a JSON {1} item, which is not a string..
         /// </summary>
         internal static string Validation_InvalidTextItem {
             get {
@@ -259,7 +259,7 @@ namespace Bodu {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to The {0} item &apos;{1}&apos; is neither a rule identifier nor a reference object..
+        ///   Looks up a localized string similar to The {0} list holds a JSON {1} item, which is neither a rule identifier nor a reference object..
         /// </summary>
         internal static string Validation_InvalidReferenceItem {
             get {
@@ -268,11 +268,20 @@ namespace Bodu {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to The &apos;{0}&apos; property holds {1}, which is not a string, number or Boolean..
+        ///   Looks up a localized string similar to The &apos;{0}&apos; property holds a JSON {1}, which is not a string, number or Boolean..
         /// </summary>
         internal static string Validation_InvalidScalarValue {
             get {
                 return ResourceManager.GetString("Validation_InvalidScalarValue", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The {0} list holds a JSON {1} item, which is not a string, number or Boolean..
+        /// </summary>
+        internal static string Validation_InvalidScalarItem {
+            get {
+                return ResourceManager.GetString("Validation_InvalidScalarItem", resourceCulture);
             }
         }
 

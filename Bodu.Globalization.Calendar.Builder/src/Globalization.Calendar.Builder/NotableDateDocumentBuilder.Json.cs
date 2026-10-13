@@ -171,12 +171,15 @@ public sealed partial class NotableDateDocumentBuilder
     /// <c>true</c> or <c>false</c>, so <c>"displayName": 5</c> reads as the text <c>5</c>. An item of a list of
     /// identifiers, territory codes or tags must be a string, and any other item throws a
     /// <see cref="FormatException" /> carrying the message of the loader's <c>BODU-CAL-VALUE</c> diagnostic; an item of
-    /// a list of enumeration names is read by its JSON text, so a number there throws as a value that names no member.
-    /// The metadata, an adjustment policy's description and a rule's comment, which the loader does not read, accept
-    /// the same scalars. Any other property that holds a value, holding an object or an array, and a property that
-    /// holds an object or a list, such as <c>applicability</c> or <c>tags</c>, holding a value of another kind, throw a
+    /// a list of enumeration names is read by its JSON text, so a number there throws as a value that names no member,
+    /// while an object or an array in a list of names or integers throws as a value of the wrong kind. The metadata, an
+    /// adjustment policy's description and a rule's comment, which the loader does not read, accept the same scalars.
+    /// Any other property that holds a value, holding an object or an array, and a property that holds an object or a
+    /// list, such as <c>applicability</c> or <c>tags</c>, holding a value of another kind, throw a
     /// <see cref="FormatException" /> carrying the message of the loader's <c>BODU-CAL-VALUE</c> diagnostic, while the
-    /// JSON literal <c>null</c> reads as absent, as the loader reads it.
+    /// JSON literal <c>null</c> reads as absent, as the loader reads it. The message names a value or an item of the
+    /// wrong kind by its JSON kind (<c>object</c>, <c>array</c>, <c>number</c>, <c>Boolean</c> or <c>null</c>), as the
+    /// loader's does, rather than quoting it.
     /// </para>
     /// <para>
     /// Every field the loader's <c>LoadJson</c> reads is read, including those outside the JSON subset that

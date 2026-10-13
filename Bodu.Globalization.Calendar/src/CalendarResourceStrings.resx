@@ -127,13 +127,16 @@
     <value>The {0} value '{1}' is not a month; expected a full English month name or an integer between 1 and 12.</value>
   </data>
   <data name="Validation_InvalidTextItem" xml:space="preserve">
-    <value>The {0} item '{1}' is not a string.</value>
+    <value>The {0} list holds a JSON {1} item, which is not a string.</value>
   </data>
   <data name="Validation_InvalidReferenceItem" xml:space="preserve">
-    <value>The {0} item '{1}' is neither a rule identifier nor a reference object.</value>
+    <value>The {0} list holds a JSON {1} item, which is neither a rule identifier nor a reference object.</value>
   </data>
   <data name="Validation_InvalidScalarValue" xml:space="preserve">
-    <value>The '{0}' property holds {1}, which is not a string, number or Boolean.</value>
+    <value>The '{0}' property holds a JSON {1}, which is not a string, number or Boolean.</value>
+  </data>
+  <data name="Validation_InvalidScalarItem" xml:space="preserve">
+    <value>The {0} list holds a JSON {1} item, which is not a string, number or Boolean.</value>
   </data>
   <data name="Validation_InvalidObjectValue" xml:space="preserve">
     <value>The '{0}' property holds a JSON {1}, which is not an object.</value>

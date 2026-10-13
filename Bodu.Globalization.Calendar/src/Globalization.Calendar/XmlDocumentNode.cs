@@ -62,11 +62,11 @@ internal sealed class XmlDocumentNode
     }
 
     /// <inheritdoc />
-    public IReadOnlyList<string> ScalarList(string? xmlWrapper, string xmlItem, string xmlAttribute, string jsonProperty) =>
+    public IReadOnlyList<string> ScalarList(string? xmlWrapper, string xmlItem, string xmlAttribute, string jsonProperty, string field, ICollection<NotableDateValidationDiagnostic> diagnostics) =>
         ReadScalarList(xmlWrapper, xmlItem, xmlAttribute) ?? [];
 
     /// <inheritdoc />
-    public IReadOnlyList<string>? OptionalScalarList(string? xmlWrapper, string xmlItem, string xmlAttribute, string jsonProperty) =>
+    public IReadOnlyList<string>? OptionalScalarList(string? xmlWrapper, string xmlItem, string xmlAttribute, string jsonProperty, string field, ICollection<NotableDateValidationDiagnostic> diagnostics) =>
         ReadScalarList(xmlWrapper, xmlItem, xmlAttribute);
 
     /// <inheritdoc />

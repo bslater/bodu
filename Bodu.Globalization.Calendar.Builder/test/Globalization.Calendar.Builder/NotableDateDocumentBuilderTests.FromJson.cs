@@ -648,8 +648,8 @@ public partial class NotableDateDocumentBuilderTests
 
     /// <summary>
     /// Verifies that an item of a JSON list of territory codes, references or tags that is a number or a Boolean, which
-    /// the loader rejects with <c>BODU-CAL-VALUE</c>, is rejected with a <see cref="FormatException" /> naming the
-    /// item, rather than an <see cref="InvalidOperationException" />.
+    /// the loader rejects with <c>BODU-CAL-VALUE</c>, is rejected with a <see cref="FormatException" /> carrying the
+    /// loader's message, rather than an <see cref="InvalidOperationException" />.
     /// </summary>
     /// <param name="field">The placeholder of the list holding the item.</param>
     /// <param name="item">The item, as a JSON literal.</param>
@@ -666,13 +666,14 @@ public partial class NotableDateDocumentBuilderTests
     public void FromJson_WhenTextListItemIsNumberOrBoolean_ShouldThrowFormatException(string field, string item)
     {
         string json = ListFieldJson(field, item);
+        string expected = LoaderErrorMessage(json, AnyLibraryResolver);
 
         FormatException ex = Assert.ThrowsExactly<FormatException>(() =>
         {
             _ = NotableDateDocumentBuilder.FromJson(json);
         });
 
-        Assert.Contains("'" + item + "'", ex.Message);
+        Assert.AreEqual(expected, ex.Message);
     }
 
     /// <summary>

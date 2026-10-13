@@ -56,7 +56,7 @@ internal static class NotableDateDocumentReader
         if (node is null)
             return ResolutionPolicy.Default;
 
-        IReadOnlyList<string>? precedence = node.OptionalScalarList("CategoryPrecedence", "Category", "value", "categoryPrecedence");
+        IReadOnlyList<string>? precedence = node.OptionalScalarList("CategoryPrecedence", "Category", "value", "categoryPrecedence", "categoryPrecedence", diagnostics);
 
         return new ResolutionPolicy(
             ParseEnum(node.Scalar("duplicatePolicy"), DuplicatePolicy.Error, "duplicatePolicy", diagnostics),
@@ -86,7 +86,7 @@ internal static class NotableDateDocumentReader
 
             IEnumerable<DayOfWeek> weekdays = trigger is null
                 ? []
-                : ParseEnumList(trigger.ScalarList(null, "Weekday", "value", "weekdays"), DayOfWeek.Monday, "trigger weekdays", diagnostics);
+                : ParseEnumList(trigger.ScalarList(null, "Weekday", "value", "weekdays", "trigger weekdays", diagnostics), DayOfWeek.Monday, "trigger weekdays", diagnostics);
 
             policies.Add(new AdjustmentPolicy(
                 ReadPatterned(policy, "id", NotableDateSchemaPattern.Identifier, diagnostics) ?? string.Empty,
@@ -153,8 +153,8 @@ internal static class NotableDateDocumentReader
 
         return new AdjustmentScope(
             CheckPatterns(node, node.TextList(null, "Territory", "code", "territories", "scope territories", diagnostics), NotableDateSchemaPattern.TerritoryCode, "territories", diagnostics),
-            ParseEnumList(node.ScalarList(null, "Calendar", "name", "calendars"), CalendarSystem.Gregorian, "scope calendars", diagnostics),
-            ParseEnumList(node.ScalarList(null, "Category", "value", "categories"), NotableDateCategory.None, "scope categories", diagnostics),
+            ParseEnumList(node.ScalarList(null, "Calendar", "name", "calendars", "scope calendars", diagnostics), CalendarSystem.Gregorian, "scope calendars", diagnostics),
+            ParseEnumList(node.ScalarList(null, "Category", "value", "categories", "scope categories", diagnostics), NotableDateCategory.None, "scope categories", diagnostics),
             CheckPatterns(node, node.TextList(null, "NotableDate", "ref", "notableDateRefs", "scope notableDateRefs", diagnostics), NotableDateSchemaPattern.Identifier, "notableDateRefs", diagnostics),
             ruleRefs.Select(reference => AdjustmentScope.QualifyRuleRef(reference.Qualifier, reference.Name)),
             ParseNullableInt(node.Scalar("fromYear"), "scope fromYear", diagnostics),
@@ -576,7 +576,7 @@ internal static class NotableDateDocumentReader
 
             if (node.Child("weekly") is IDocumentNode weekly)
             {
-                List<DayOfWeek> days = ParseEnumList(weekly.ScalarList(null, "Day", "dayOfWeek", "days"), DayOfWeek.Monday, "weekly days", diagnostics);
+                List<DayOfWeek> days = ParseEnumList(weekly.ScalarList(null, "Day", "dayOfWeek", "days", "weekly days", diagnostics), DayOfWeek.Monday, "weekly days", diagnostics);
                 return new WeeklyRecurrenceStrategy(
                     days,
                     ParseInt(weekly.Scalar("intervalWeeks"), 1, "weekly intervalWeeks", diagnostics),

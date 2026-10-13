@@ -74,7 +74,7 @@ public sealed partial class NotableDateDocumentBuilder
 
         IReadOnlyList<NotableDateCategory>? categoryPrecedence = ArrayProperty(policyJson, "categoryPrecedence") is not JsonArray array
             ? null
-            : [.. ReadNameArray(array).Select(item => ParseEnum<NotableDateCategory>(item, "categoryPrecedence"))];
+            : [.. ReadNameArray(array, "categoryPrecedence").Select(item => ParseEnum<NotableDateCategory>(item, "categoryPrecedence"))];
 
         ResolutionPolicyBuilder policy = new();
         policy.SetParsedValues(
@@ -122,7 +122,7 @@ public sealed partial class NotableDateDocumentBuilder
         {
             policy.SetParsedTrigger(
                 ParseNullableEnum<AdjustmentTrigger>(ScalarText(trigger, "type"), "trigger type"),
-                ReadNameArray(ArrayProperty(trigger, "weekdays")).Select(day => ParseEnum<DayOfWeek>(day, "trigger weekdays")),
+                ReadNameArray(ArrayProperty(trigger, "weekdays"), "trigger weekdays").Select(day => ParseEnum<DayOfWeek>(day, "trigger weekdays")),
                 ParseTriggerMonth(ScalarText(trigger, "month"), "trigger month"),
                 JsonInt(trigger, "day", "trigger day"),
                 ParseNullableEnum<WeekOrdinal>(ScalarText(trigger, "weekOrdinal"), "trigger weekOrdinal"),
@@ -200,8 +200,8 @@ public sealed partial class NotableDateDocumentBuilder
         AdjustmentScopeBuilder scope = new();
         scope.SetParsedValues(
             ReadTextArray(ArrayProperty(scopeJson, "territories"), "scope territories"),
-            ReadNameArray(ArrayProperty(scopeJson, "calendars")).Select(calendar => ParseEnum<CalendarSystem>(calendar, "scope calendars")),
-            ReadNameArray(ArrayProperty(scopeJson, "categories")).Select(category => ParseEnum<NotableDateCategory>(category, "scope categories")),
+            ReadNameArray(ArrayProperty(scopeJson, "calendars"), "scope calendars").Select(calendar => ParseEnum<CalendarSystem>(calendar, "scope calendars")),
+            ReadNameArray(ArrayProperty(scopeJson, "categories"), "scope categories").Select(category => ParseEnum<NotableDateCategory>(category, "scope categories")),
             ReadTextArray(ArrayProperty(scopeJson, "notableDateRefs"), "scope notableDateRefs"),
             ReadScopeRuleRefsJson(ArrayProperty(scopeJson, "ruleRefs")),
             ReadIntArray(ArrayProperty(scopeJson, "onlyYears"), "scope onlyYears"),
@@ -233,7 +233,7 @@ public sealed partial class NotableDateDocumentBuilder
             else if (node is JsonObject || (node is JsonValue name && name.GetValueKind() == JsonValueKind.String))
                 throw UnrepresentableJsonField("a scope rule reference that does not name its notableDateRef");
             else
-                throw new FormatException(string.Format(CultureInfo.CurrentCulture, CalendarResourceStrings.Validation_InvalidReferenceItem, "scope ruleRefs", node?.ToJsonString() ?? "null"));
+                throw ItemOfWrongKind(CalendarResourceStrings.Validation_InvalidReferenceItem, "scope ruleRefs", node);
         }
 
         return references;
@@ -429,7 +429,7 @@ public sealed partial class NotableDateDocumentBuilder
             if (string.Equals(kind, "weekly", StringComparison.Ordinal) && ArrayProperty(body, "days") is JsonArray days)
             {
                 foreach (JsonNode? day in days)
-                    element.Add(new XElement(BuilderXml.Namespace + "Day", new XAttribute("dayOfWeek", ParseEnum<DayOfWeek>(ItemText(day), "weekly days").ToString())));
+                    element.Add(new XElement(BuilderXml.Namespace + "Day", new XAttribute("dayOfWeek", ParseEnum<DayOfWeek>(ItemText(day, "weekly days"), "weekly days").ToString())));
             }
 
             return new XElement(BuilderXml.Namespace + "Recurrence", element);
@@ -810,26 +810,28 @@ public sealed partial class NotableDateDocumentBuilder
             if (node is JsonValue value && value.GetValueKind() == JsonValueKind.String)
                 values.Add(value.GetValue<string>());
             else
-                throw new FormatException(string.Format(CultureInfo.CurrentCulture, CalendarResourceStrings.Validation_InvalidTextItem, field, node?.ToJsonString() ?? "null"));
+                throw ItemOfWrongKind(CalendarResourceStrings.Validation_InvalidTextItem, field, node);
         }
 
         return values;
     }
 
     /// <summary>
-    /// Reads a JSON list of enumeration names as the loader reads it: a string item by its value, and any other item by
-    /// its JSON text, so the name parse that follows rejects it rather than the list losing it.
+    /// Reads a JSON list of enumeration names as the loader reads it: a string item by its value, and any other scalar
+    /// by its JSON text, so the name parse that follows rejects it rather than the list losing it.
     /// </summary>
     /// <param name="array">The array, or <see langword="null" /> when absent.</param>
+    /// <param name="field">The name of the field the array belongs to, used in the exception message.</param>
     /// <returns>The item texts; empty when the array is absent.</returns>
-    private static List<string> ReadNameArray(JsonArray? array)
+    /// <exception cref="FormatException">An item is an object or an array.</exception>
+    private static List<string> ReadNameArray(JsonArray? array, string field)
     {
         List<string> values = new();
         if (array is null)
             return values;
 
         foreach (JsonNode? node in array)
-            values.Add(ItemText(node));
+            values.Add(ItemText(node, field));
 
         return values;
     }
@@ -859,15 +861,23 @@ public sealed partial class NotableDateDocumentBuilder
     }
 
     /// <summary>
-    /// Returns the text of a JSON list item as the loader reads a name: a string by its value, and any other item, a
-    /// <c>null</c> among them, by its JSON text.
+    /// Returns the text of an item of a JSON list of scalars as the loader reads it: a string by its value, and any
+    /// other scalar, a <c>null</c> among them, by its JSON text.
     /// </summary>
     /// <param name="node">The item, or <see langword="null" /> for a JSON <c>null</c>.</param>
+    /// <param name="field">The name of the field the list belongs to, used in the exception message.</param>
     /// <returns>The item's text.</returns>
-    private static string ItemText(JsonNode? node) =>
-        node is JsonValue value && value.GetValueKind() == JsonValueKind.String
-            ? value.GetValue<string>()
-            : node?.ToJsonString() ?? "null";
+    /// <exception cref="FormatException">
+    /// The item is an object or an array, which the loader reports with <c>BODU-CAL-VALUE</c>.
+    /// </exception>
+    private static string ItemText(JsonNode? node, string field) =>
+        node switch
+        {
+            null => "null",
+            JsonValue value when value.GetValueKind() == JsonValueKind.String => value.GetValue<string>(),
+            JsonValue value => value.ToJsonString(),
+            _ => throw ItemOfWrongKind(CalendarResourceStrings.Validation_InvalidScalarItem, field, node),
+        };
 
     /// <summary>
     /// Reads a JSON array of integers with the loader's rules: each item is read as an integer property is, so a number
@@ -876,7 +886,7 @@ public sealed partial class NotableDateDocumentBuilder
     /// <param name="array">The array, or <see langword="null" /> when absent.</param>
     /// <param name="field">The name of the field the array belongs to, used in the exception message.</param>
     /// <returns>The integer values; empty when the array is absent.</returns>
-    /// <exception cref="FormatException">An item is not a 32-bit integer.</exception>
+    /// <exception cref="FormatException">An item is not a 32-bit integer, or is an object or an array.</exception>
     private static List<int> ReadIntArray(JsonArray? array, string field)
     {
         List<int> values = new();
@@ -885,8 +895,8 @@ public sealed partial class NotableDateDocumentBuilder
 
         foreach (JsonNode? node in array)
         {
-            // The loader reads an item that is not a string by its JSON text, a null among them.
-            if (ParseNullableInt(ItemText(node), field) is int parsed)
+            // The loader reads a scalar item that is not a string by its JSON text, a null among them.
+            if (ParseNullableInt(ItemText(node, field), field) is int parsed)
                 values.Add(parsed);
         }
 
@@ -945,7 +955,7 @@ public sealed partial class NotableDateDocumentBuilder
         {
             null => null,
             JsonValue scalar => ScalarValueText(scalar),
-            _ => throw new FormatException(string.Format(CultureInfo.CurrentCulture, CalendarResourceStrings.Validation_InvalidScalarValue, name, value.ToJsonString())),
+            _ => throw WrongKind(CalendarResourceStrings.Validation_InvalidScalarValue, name, value),
         };
 
     /// <summary>
@@ -1061,4 +1071,15 @@ public sealed partial class NotableDateDocumentBuilder
     /// <returns>The exception to throw.</returns>
     private static FormatException WrongKind(string format, string name, JsonNode value) =>
         new(string.Format(CultureInfo.CurrentCulture, format, name, JsonDocumentNode.KindName(value.GetValueKind())));
+
+    /// <summary>
+    /// Creates the <see cref="FormatException" /> for a list item of a kind the list does not read, carrying the
+    /// message of the <c>BODU-CAL-VALUE</c> diagnostic the loader reports for it, which names the item's JSON kind.
+    /// </summary>
+    /// <param name="format">The resource format string, taking the list's name and the kind of the item.</param>
+    /// <param name="field">The name of the field the list belongs to.</param>
+    /// <param name="item">The item, or <see langword="null" /> for a JSON <c>null</c>.</param>
+    /// <returns>The exception to throw.</returns>
+    private static FormatException ItemOfWrongKind(string format, string field, JsonNode? item) =>
+        new(string.Format(CultureInfo.CurrentCulture, format, field, JsonDocumentNode.KindName(item?.GetValueKind() ?? JsonValueKind.Null)));
 }

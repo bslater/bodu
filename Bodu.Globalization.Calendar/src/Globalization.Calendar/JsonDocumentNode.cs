@@ -14,6 +14,10 @@ namespace Bodu.Globalization.Calendar;
 /// numbers and booleans to their string form, and reporting an object or an array), child nodes to objects and lists to
 /// JSON arrays (reporting a value of another kind).
 /// </summary>
+/// <remarks>
+/// A value or an item of a kind its field does not read is reported by the name of its JSON kind rather than its text,
+/// which the document builder, holding parsed nodes, could not reproduce byte for byte.
+/// </remarks>
 internal sealed class JsonDocumentNode
     : IDocumentNode
 {
@@ -43,7 +47,8 @@ internal sealed class JsonDocumentNode
     /// <inheritdoc />
     /// <remarks>
     /// A property holding an object or an array, which no scalar field accepts, records a <c>BODU-CAL-VALUE</c> error
-    /// naming the property and reads as absent; the JSON literal <c>null</c> reads as absent without a diagnostic.
+    /// naming the property and the kind of value it holds, and reads as absent; the JSON literal <c>null</c> reads as
+    /// absent without a diagnostic.
     /// </remarks>
     public string? Scalar(string name)
     {
@@ -65,7 +70,7 @@ internal sealed class JsonDocumentNode
                 return "false";
 
             default:
-                ReportValue(name, CalendarResourceStrings.Validation_InvalidScalarValue, value.GetRawText());
+                ReportValue(name, CalendarResourceStrings.Validation_InvalidScalarValue, KindName(value.ValueKind));
                 return null;
         }
     }
@@ -101,12 +106,12 @@ internal sealed class JsonDocumentNode
     }
 
     /// <inheritdoc />
-    public IReadOnlyList<string> ScalarList(string? xmlWrapper, string xmlItem, string xmlAttribute, string jsonProperty) =>
-        ReadItemTexts(jsonProperty) ?? [];
+    public IReadOnlyList<string> ScalarList(string? xmlWrapper, string xmlItem, string xmlAttribute, string jsonProperty, string field, ICollection<NotableDateValidationDiagnostic> diagnostics) =>
+        ReadItemTexts(jsonProperty, field, diagnostics) ?? [];
 
     /// <inheritdoc />
-    public IReadOnlyList<string>? OptionalScalarList(string? xmlWrapper, string xmlItem, string xmlAttribute, string jsonProperty) =>
-        ReadItemTexts(jsonProperty);
+    public IReadOnlyList<string>? OptionalScalarList(string? xmlWrapper, string xmlItem, string xmlAttribute, string jsonProperty, string field, ICollection<NotableDateValidationDiagnostic> diagnostics) =>
+        ReadItemTexts(jsonProperty, field, diagnostics);
 
     /// <inheritdoc />
     public IReadOnlyList<string> TextList(string? xmlWrapper, string xmlItem, string xmlAttribute, string jsonProperty, string field, ICollection<NotableDateValidationDiagnostic> diagnostics) =>
@@ -125,10 +130,9 @@ internal sealed class JsonDocumentNode
         List<int> values = new();
         foreach (JsonElement item in array.EnumerateArray())
         {
-            // An item is read as a scalar property is, so a number in quotes is accepted and any other item, a fraction
+            // An item is read as a scalar property is, so a number in quotes is accepted and any other scalar, a fraction
             // or a Boolean among them, is reported by its JSON text rather than dropped.
-            string text = item.ValueKind == JsonValueKind.String ? item.GetString() ?? string.Empty : item.GetRawText();
-            if (NotableDateDocumentParseHelpers.ParseNullableInt(text, field, diagnostics) is int result)
+            if (ScalarItemText(item, field, diagnostics) is string text && NotableDateDocumentParseHelpers.ParseNullableInt(text, field, diagnostics) is int result)
                 values.Add(result);
         }
 
@@ -155,7 +159,7 @@ internal sealed class JsonDocumentNode
             }
             else
             {
-                NotableDateDocumentParseHelpers.AddValueError(diagnostics, CalendarResourceStrings.Validation_InvalidReferenceItem, field, item.GetRawText());
+                NotableDateDocumentParseHelpers.AddValueError(diagnostics, CalendarResourceStrings.Validation_InvalidReferenceItem, field, KindName(item.ValueKind));
             }
         }
 
@@ -212,21 +216,51 @@ internal sealed class JsonDocumentNode
 
     /// <summary>
     /// Reads the items of an array property as text, returning <see langword="null" /> when the property is absent: a
-    /// string by its value, and any other item by its JSON text, so a name parse reports it rather than the list losing
-    /// it.
+    /// string by its value, and any other scalar by its JSON text, so a name parse reports it rather than the list
+    /// losing it; an object or an array is left out after a <c>BODU-CAL-VALUE</c> error is recorded for it.
     /// </summary>
     /// <param name="jsonProperty">The JSON array property name.</param>
+    /// <param name="field">The name of the field the array belongs to, used in the diagnostics.</param>
+    /// <param name="diagnostics">The collection that receives the diagnostic for each object or array item.</param>
     /// <returns>The item texts, or <see langword="null" /> when absent.</returns>
-    private List<string>? ReadItemTexts(string jsonProperty)
+    private List<string>? ReadItemTexts(string jsonProperty, string field, ICollection<NotableDateValidationDiagnostic> diagnostics)
     {
         if (!TryGetProperty(jsonProperty, JsonValueKind.Array, out JsonElement array))
             return null;
 
         List<string> values = new();
         foreach (JsonElement item in array.EnumerateArray())
-            values.Add(item.ValueKind == JsonValueKind.String ? item.GetString() ?? string.Empty : item.GetRawText());
+        {
+            if (ScalarItemText(item, field, diagnostics) is string text)
+                values.Add(text);
+        }
 
         return values;
+    }
+
+    /// <summary>
+    /// Returns the text of an item of a list of scalars, as a scalar property is read: a string by its value, and a
+    /// number, a Boolean or <c>null</c> by its JSON text; an object or an array, which no scalar is, records a
+    /// <c>BODU-CAL-VALUE</c> error naming the list and the item's kind.
+    /// </summary>
+    /// <param name="item">The item.</param>
+    /// <param name="field">The name of the field the list belongs to, used in the diagnostic.</param>
+    /// <param name="diagnostics">The collection that receives the diagnostic for an object or an array.</param>
+    /// <returns>The item's text, or <see langword="null" /> when it is an object or an array.</returns>
+    private static string? ScalarItemText(JsonElement item, string field, ICollection<NotableDateValidationDiagnostic> diagnostics)
+    {
+        switch (item.ValueKind)
+        {
+            case JsonValueKind.String:
+                return item.GetString() ?? string.Empty;
+
+            case JsonValueKind.Object or JsonValueKind.Array:
+                NotableDateDocumentParseHelpers.AddValueError(diagnostics, CalendarResourceStrings.Validation_InvalidScalarItem, field, KindName(item.ValueKind));
+                return null;
+
+            default:
+                return item.GetRawText();
+        }
     }
 
     /// <summary>
@@ -250,15 +284,16 @@ internal sealed class JsonDocumentNode
             if (item.ValueKind == JsonValueKind.String)
                 values.Add(item.GetString() ?? string.Empty);
             else
-                NotableDateDocumentParseHelpers.AddValueError(diagnostics, CalendarResourceStrings.Validation_InvalidTextItem, field, item.GetRawText());
+                NotableDateDocumentParseHelpers.AddValueError(diagnostics, CalendarResourceStrings.Validation_InvalidTextItem, field, KindName(item.ValueKind));
         }
 
         return values;
     }
 
     /// <summary>
-    /// Returns the name of the kind of a JSON value, as the diagnostic for a property holding a value of the wrong kind
-    /// names it: <c>object</c>, <c>array</c>, <c>string</c>, <c>number</c> or <c>Boolean</c>.
+    /// Returns the name of the kind of a JSON value, as the diagnostic for a property or a list item holding a value of
+    /// the wrong kind names it: <c>object</c>, <c>array</c>, <c>string</c>, <c>number</c>, <c>Boolean</c> or
+    /// <c>null</c>.
     /// </summary>
     /// <param name="kind">The kind of the value.</param>
     /// <returns>The kind's name.</returns>
