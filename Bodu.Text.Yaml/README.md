@@ -85,13 +85,13 @@ The Regression test tier reads each upstream case through `YamlTestCorpusReader`
 using Bodu.Text.Yaml;
 
 string yaml = YamlSerializer.Serialize(new ServerConfig { Host = "localhost", Port = 8080 });
-ServerConfig config = YamlSerializer.Deserialize<ServerConfig>(yaml);
+ServerConfig config = YamlSerializer.Deserialize<ServerConfig>(yaml)!;
 
 // Document object models
 using Bodu.Text.Yaml.Nodes;
-YamlNode node = YamlNode.Parse(utf8Yaml)!;
-node["server"]!["port"] = 9090;
-byte[] back = node.ToUtf8Bytes();
+YamlNode node = YamlNode.Parse(yamlText)!;
+node["server"]!["port"] = YamlValue.Create(9090);
+string back = node.ToYamlString();
 ```
 
 - The full serializer feature surface is present: converters and factories, the shared attribute family (`PropertyName`/`Ignore`/`Converter`/`PropertyOrder`/`Constructor`/`Required`/`Include`/`ExtensionData`/`NamingPolicy`/`UnmappedMemberHandling`/`ObjectCreationHandling`/`StringEnumMemberName`), the serialization callbacks, naming policies and `YamlSerializerDefaults.Web`, the string/number enum converters, and the DOM bridges (`Deserialize<YamlNode>` / `<YamlElement>` / `<YamlDocument>`).

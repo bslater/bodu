@@ -55,7 +55,7 @@ TorrentInfo info = BencodeSerializer.Deserialize<TorrentInfo>(payload);
 
 **Exceptions.** Failures are split by cause: `BencodeFormatException` (a `FormatException`, carrying the byte `Offset`) reports malformed input, and `BencodeSerializationException` reports values or documents that cannot be mapped. Catch both when handling should not distinguish the cause.
 
-**Property-name matching.** `BencodeSerializerOptions.PropertyNameCaseInsensitive` defaults to `true`, so reads bind wire keys to members leniently. Wire keys themselves are raw bytes and case-sensitive; output never changes case.
+**Property-name matching.** `BencodeSerializerOptions.PropertyNameCaseInsensitive` defaults to `true`, so reads bind wire keys to members leniently. Wire keys themselves are raw bytes and case-sensitive; output never changes case. Under the default, two distinct keys that differ only in case (`Name` and `name`) bind to the same member, so a valid document carrying both is rejected with `BencodeSerializationException` as a duplicate member unless `AllowDuplicateKeys` is set (the later value then wins). Set `PropertyNameCaseInsensitive` to `false` to bind each key only to the member whose wire name matches it exactly.
 
 ## Runnable samples
 

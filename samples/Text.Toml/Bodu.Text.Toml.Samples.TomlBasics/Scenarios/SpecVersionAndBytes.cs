@@ -45,9 +45,9 @@ public static class SpecVersionAndBytes
                 + "editable by hand; Base64 is compact and does not turn a kilobyte into a wall of numbers.",
             expect: "The same document is rejected under the default and accepted under v1.1, which is the gate "
                 + "working - the parser is strict by default rather than permissive. The two byte shapes are "
-                + "visibly different encodings of identical bytes, and the round trip returns the original "
-                + "payload provided the reader is told which shape to expect, since the wire form alone does "
-                + "not say.");
+                + "visibly different encodings of identical bytes, and the Base64 form reads back to the "
+                + "original payload under the default handling, because the option shapes only what is "
+                + "written: a string and an integer array are told apart on the wire.");
 
         // TOML v1.1.0 allows \x hex escapes in strings; v1.0.0 (the default) does not.
         var v11Document = "greeting = \"caf\\xe9\"";
@@ -85,14 +85,14 @@ public static class SpecVersionAndBytes
         Console.WriteLine($"  Base64String  : {asBase64.Split('\n').First(l => l.StartsWith("payload", StringComparison.Ordinal)).TrimEnd()}"
             + "  (compact, but opaque to a human editing the file - TOML has no binary type, so one of these has to be chosen)");
 
-        // Both shapes deserialize back to the same bytes when the handling matches.
+        // ByteArrayHandling governs writing only: on read a string decodes as Base64 and an integer array
+        // as bytes, whatever the option says, so the Base64 form reads back under the default handling.
         var roundTripped = TomlSerializer.Deserialize<Packet>(asBase64, new TomlSerializerOptions
         {
             PropertyNamingPolicy = NamingPolicy.SnakeCaseLower,
-            ByteArrayHandling = TomlByteArrayHandling.Base64String,
         });
         Console.WriteLine($"  Round trip    : payload restored -> {Convert.ToHexString(roundTripped.Payload)}"
-            + "  (the original DEADBEEF - but only because the reader was told which shape to expect; the wire form does not say)");
+            + "  (read under the default IntegerArray handling - the option shapes writing only, and the reader accepts either form)");
 
         Console.WriteLine();
     }

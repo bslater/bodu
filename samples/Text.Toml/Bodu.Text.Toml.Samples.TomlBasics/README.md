@@ -52,7 +52,7 @@ survived the re-parse:
 
 **APIs demonstrated.** `TomlSerializer.Deserialize<T>(string, TomlSerializerOptions)`,
 `TomlSerializer.Serialize<T>`, `TomlSerializerOptions.PropertyNamingPolicy`,
-`TomlNamingPolicy.SnakeCaseLower`, nested tables and arrays of tables binding to POCOs and
+`NamingPolicy.SnakeCaseLower`, nested tables and arrays of tables binding to POCOs and
 `List<T>`.
 
 ## Scenario 2 - TemporalKinds
@@ -109,14 +109,14 @@ where each wins.
 **What it does.** Serializes one small POCO under three policies (`CamelCase`,
 `SnakeCaseLower`, `KebabCaseLower`) to show that only key spelling changes. It then
 round-trips the shared `AppConfig` and verifies the three attribute behaviours: `Address`
-writes as `url` (`[TomlPropertyName]` beats the policy), the computed `DisplayLabel` never
-reaches the wire (`[TomlIgnore]`), and deserializing a document missing `service_name` throws
-`TomlSerializationException` up front (`[TomlRequired]`) instead of silently yielding an
+writes as `url` (`[PropertyName]` beats the policy), the computed `DisplayLabel` never
+reaches the wire (`[Ignore]`), and deserializing a document missing `service_name` throws
+`TomlSerializationException` up front (`[Required]`) instead of silently yielding an
 empty string. Finally it contrasts enum output: the default emits the .NET member name
 verbatim, while `TomlStringEnumConverter` re-cases it through its own naming policy.
 
 **What to expect.** The same first property spelled three ways, two `True` confirmations for
-the attribute overrides, the exact `[TomlRequired]` rejection message naming the missing key,
+the attribute overrides, the exact `[Required]` rejection message naming the missing key,
 and the enum key emitted as `"Wednesday"` by default vs `"wednesday"` once the converter's
 snake-case policy applies:
 
@@ -148,10 +148,10 @@ snake-case policy applies:
   enum policy-cased  : run_day = "wednesday"  (re-cased through its own policy, and configured to reject integer input so a stray number is an error rather than a silent enum value)
 ```
 
-**APIs demonstrated.** `TomlNamingPolicy.CamelCase` / `.SnakeCaseLower` / `.KebabCaseLower`,
-`[TomlPropertyName]`, `[TomlIgnore]`, `[TomlRequired]`, `TomlSerializationException`,
-`TomlSerializerOptions.Converters`, `TomlStringEnumConverter(namingPolicy,
-allowIntegerValues)`.
+**APIs demonstrated.** `NamingPolicy.CamelCase` / `.SnakeCaseLower` / `.KebabCaseLower`,
+`[PropertyName]`, `[Ignore]`, `[Required]` (the shared `Bodu.Text.Serialization` attributes),
+`TomlSerializationException`, `TomlSerializerOptions.Converters`,
+`TomlStringEnumConverter(namingPolicy, allowIntegerValues)`.
 
 ## Scenario 4 - SpecVersionAndBytes
 
@@ -163,8 +163,9 @@ your files must interoperate with v1.0-only tooling), and `ByteArrayHandling` ch
 **What it does.** Attempts to parse a document using a `\x` hex escape - a v1.1.0-only string
 feature - under the default `V1_0` (rejected with `TomlFormatException`) and again under
 `V1_1` (accepted, decoding to `café`). It then serializes a `byte[]` payload both ways:
-`IntegerArray` (the self-describing default) and `Base64String` (compact), and round-trips
-the Base64 form back to bytes to show the handling must match on both sides.
+`IntegerArray` (the self-describing default) and `Base64String` (compact), and reads the
+Base64 form back under the default handling: `ByteArrayHandling` shapes only what is written,
+and the reader accepts a Base64 string or an integer array whatever the option says.
 
 **What to expect.** The rejection message under v1.0, the successfully decoded string under
 v1.1, the two wire shapes for the same four bytes, and the restored payload:
@@ -181,14 +182,14 @@ v1.1, the two wire shapes for the same four bytes, and the restored payload:
            readable and editable by hand; Base64 is compact and does not turn a kilobyte into a wall of numbers.
   Expect : The same document is rejected under the default and accepted under v1.1, which is the gate working - the
            parser is strict by default rather than permissive. The two byte shapes are visibly different encodings
-           of identical bytes, and the round trip returns the original payload provided the reader is told which
-           shape to expect, since the wire form alone does not say.
+           of identical bytes, and the Base64 form reads back to the original payload under the default handling,
+           because the option shapes only what is written: a string and an integer array are told apart on the wire.
 
   V1_0 (default): rejected -> The escape sequence is not valid.  (strict by default, so a document accepted here is one other TOML parsers will also accept)
   V1_1          : accepted -> greeting = "café"  (the newer grammar is opt-in - raising the version is a deliberate compatibility decision)
   IntegerArray  : payload = [222, 173, 190, 239]  (readable and hand-editable, but a kilobyte of payload becomes a wall of numbers)
   Base64String  : payload = "3q2+7w=="  (compact, but opaque to a human editing the file - TOML has no binary type, so one of these has to be chosen)
-  Round trip    : payload restored -> DEADBEEF  (the original DEADBEEF - but only because the reader was told which shape to expect; the wire form does not say)
+  Round trip    : payload restored -> DEADBEEF  (read under the default IntegerArray handling - the option shapes writing only, and the reader accepts either form)
 ```
 
 **APIs demonstrated.** `TomlSerializerOptions.SpecVersion`, `TomlSpecVersion.V1_0` / `.V1_1`,

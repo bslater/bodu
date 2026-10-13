@@ -14,18 +14,18 @@ Targets `net8.0` and `net10.0`.
 
 ## API shape
 
-The public surface matches the sibling `Bodu.Text.Bencode` library, so the patterns transfer directly between the two. The types are organised into folders/namespaces by surface:
+The public surface follows the same `System.Text.Json`-shaped architecture as the sibling `Bodu.Text.Bencode` and `Bodu.Text.Yaml` libraries, so the patterns transfer directly between them; the options differ where the formats do (for example, `PropertyNameCaseInsensitive` defaults to `false` here and to `true` in Bencode). The types are organised into folders/namespaces by surface:
 
 | Type(s) | Namespace | Role |
 |---|---|---|
 | `TomlSerializer` / `TomlSerializerOptions` / `TomlSerializerDefaults` | `Bodu.Text.Toml` | Static serializer entry point, its configuration, and scenario presets (for example `Web`). |
-| `TomlNamingPolicy`, `TomlTokenType`, `TomlValueKind` | `Bodu.Text.Toml` | Property naming policies, token classification, and value-kind classification. |
+| `TomlTokenType`, `TomlValueKind` | `Bodu.Text.Toml` | Token classification and value-kind classification (naming policies are the shared `Bodu.Text.Serialization.NamingPolicy`). |
 | `TomlFormatException` / `TomlSerializationException` | `Bodu.Text.Toml` | Failures split by cause: malformed input vs. values that cannot be mapped. |
 | `Utf8TomlReader` (+ `TomlReaderOptions`) | `Bodu.Text.Toml.Reader` | Forward-only, allocation-free `ref struct` token reader. |
 | `Utf8TomlWriter` (+ `TomlWriterOptions`) | `Bodu.Text.Toml.Writer` | Forward-only `ref struct` token writer. |
 | `TomlDocument` / `TomlElement` / `TomlProperty` | `Bodu.Text.Toml.Document` | Read-only, low-allocation document object model. |
 | `TomlNode` / `TomlObject` / `TomlArray` / `TomlValue` | `Bodu.Text.Toml.Nodes` | Mutable document object model: parse, edit, write back. |
-| `TomlConverter<T>` / `TomlConverterFactory`, `[TomlPropertyName]` / `[TomlIgnore]` / … | `Bodu.Text.Toml.Serialization` | Custom converters and the per-member attribute family. |
+| `TomlConverter<T>` / `TomlConverterFactory`, `TomlStringEnumConverter` (+ generic) / `TomlNumberEnumConverter<TEnum>` | `Bodu.Text.Toml.Serialization` | Custom converters, converter factories, and the public enum converters; the per-member attribute family is the shared `Bodu.Text.Serialization` set (`[PropertyName]` / `[Ignore]` / `[Converter]` / …). |
 
 ```csharp
 using Bodu.Text.Toml;
@@ -40,9 +40,9 @@ node["server"]!["port"] = 9090;
 byte[] back = node.ToUtf8Bytes();
 ```
 
-- **Value mapping:** `string`/`char`/`Guid`/`Uri` → string, the integer family → integer, `double`/`float` → float, `bool` → boolean, and `DateTimeOffset`/`DateTime`/`DateOnly`/`TimeOnly` → the four RFC 3339 date-time forms; `byte[]` → an integer array (or a Base64 string via `TomlSerializerOptions.ByteArrayHandling`); enums → member-name strings. `decimal` and `TimeSpan` have no native TOML form and require a registered `TomlConverter<T>`.
-- A TOML document root must map to a **table**, so a top-level scalar or array throws. Output is normalized TOML in document order - deterministic for a given input, with member order preserved (so `[TomlPropertyOrder]` is honored). It is not a canonical form: two equal documents built in different member orders serialize differently, so the output is unsuitable for hashing or signing.
-- The full serializer feature surface is present: converters and factories, the attribute family (`TomlPropertyName`/`Ignore`/`Converter`/`PropertyOrder`/`Constructor`/`Required`/`Include`/`ExtensionData`/`NamingPolicy`/`UnmappedMemberHandling`/`ObjectCreationHandling`/`StringEnumMemberName`), the `ITomlOn*` serialization callbacks, naming policies and `TomlSerializerDefaults.Web`, and the string/number enum converters.
+- **Value mapping:** `string`/`char`/`Guid`/`Uri` → string, the integer family → integer, `double`/`float` → float, `bool` → boolean, and `DateTimeOffset`/`DateTime`/`DateOnly`/`TimeOnly` → the four RFC 3339 date-time forms; `byte[]` → an integer array (or a Base64 string via `TomlSerializerOptions.ByteArrayHandling`); enums → member-name strings. `decimal` maps to a float or, for full precision, a string (`TomlSerializerOptions.DecimalHandling`), and `TimeSpan` to its invariant `"c"`-format string.
+- A TOML document root must map to a **table**, so a top-level scalar or array throws. Output is normalized TOML in document order - deterministic for a given input, with member order preserved (so `[PropertyOrder]` is honored). It is not a canonical form: two equal documents built in different member orders serialize differently, so the output is unsuitable for hashing or signing.
+- The full serializer feature surface is present: converters and factories, the shared attribute family (`PropertyName`/`Ignore`/`Converter`/`PropertyOrder`/`Constructor`/`Required`/`Include`/`ExtensionData`/`NamingPolicy`/`UnmappedMemberHandling`/`ObjectCreationHandling`/`StringEnumMemberName`), the serialization callbacks (`IOnSerializing` / `IOnSerialized` / `IOnDeserializing` / `IOnDeserialized`), naming policies and `TomlSerializerDefaults.Web`, and the string/number enum converters.
 - Because the reader/writer/document types live in sub-namespaces, code that uses them alongside the serializer imports `using Bodu.Text.Toml.Reader;` / `.Writer;` / `.Document;` / `.Nodes;` as needed.
 - Failures surface through `TomlFormatException` (malformed input, with line/column/offset) and `TomlSerializationException` (binding failures).
 
