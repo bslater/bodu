@@ -49,4 +49,40 @@ public partial class BencodeObjectTests
         Assert.AreEqual(1, obj.Count, "The object's count after the rejected assignment.");
         Assert.IsFalse(obj.ContainsKey("b"), "Whether the rejected key was added.");
     }
+
+    /// <summary>
+    /// Verifies that assigning an object to one of its own keys throws <see cref="InvalidOperationException" /> rather
+    /// than creating a cycle, and adds no entry.
+    /// </summary>
+    [TestMethod]
+    public void Indexer_WhenSetToTheObjectItself_ShouldThrowInvalidOperationException()
+    {
+        var obj = new BencodeObject();
+
+        _ = Assert.ThrowsExactly<InvalidOperationException>(() =>
+        {
+            obj["self"] = obj;
+        });
+
+        Assert.IsFalse(obj.ContainsKey("self"), "Whether the rejected key was added.");
+    }
+
+    /// <summary>
+    /// Verifies that assigning an ancestor to a key of one of its descendants throws
+    /// <see cref="InvalidOperationException" /> rather than creating a cycle, and adds no entry.
+    /// </summary>
+    [TestMethod]
+    public void Indexer_WhenSetToAnAncestor_ShouldThrowInvalidOperationException()
+    {
+        var root = new BencodeObject();
+        var child = new BencodeObject();
+        root["child"] = child;
+
+        _ = Assert.ThrowsExactly<InvalidOperationException>(() =>
+        {
+            child["root"] = root;
+        });
+
+        Assert.IsFalse(child.ContainsKey("root"), "Whether the rejected key was added.");
+    }
 }

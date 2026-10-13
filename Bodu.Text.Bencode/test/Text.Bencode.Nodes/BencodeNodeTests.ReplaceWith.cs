@@ -107,4 +107,22 @@ public partial class BencodeNodeTests
         Assert.AreSame(first, root[0], "The replaced slot after the rejected replacement.");
         Assert.AreSame(root, first.Parent, "The parent of the node that was not replaced.");
     }
+
+    /// <summary>
+    /// Verifies that replacing a node with an ancestor of it throws <see cref="InvalidOperationException" /> rather
+    /// than creating a cycle, and leaves the node in place.
+    /// </summary>
+    [TestMethod]
+    public void ReplaceWith_WhenReplacementIsAnAncestor_ShouldThrowInvalidOperationException()
+    {
+        var root = new BencodeObject { ["a"] = 1 };
+        BencodeNode replaced = root["a"]!;
+
+        _ = Assert.ThrowsExactly<InvalidOperationException>(() =>
+        {
+            replaced.ReplaceWith(root);
+        });
+
+        Assert.AreSame(replaced, root["a"], "The slot after the rejected replacement.");
+    }
 }

@@ -122,4 +122,64 @@ public partial class YamlArrayTests
 
         Assert.AreEqual(2, array.Count);
     }
+
+    /// <summary>
+    /// Verifies that adding an array to itself throws <see cref="InvalidOperationException" /> with the resource
+    /// message, rather than creating a cycle, and leaves the array empty.
+    /// </summary>
+    [TestMethod]
+    public void Add_WhenNodeIsTheArrayItself_ShouldThrowInvalidOperationException()
+    {
+        var array = new YamlArray();
+
+        var ex = Assert.ThrowsExactly<InvalidOperationException>(() =>
+        {
+            array.Add(array);
+        });
+
+        Assert.AreEqual(
+            YamlResourceStrings.ResourceManager.GetString("Op_Invalid_YamlNodeCycle", YamlResourceStrings.Culture),
+            ex.Message);
+        Assert.AreEqual(0, array.Count, "The array's count after the rejected add.");
+    }
+
+    /// <summary>
+    /// Verifies that adding an array to one of its own descendants throws <see cref="InvalidOperationException" />
+    /// rather than creating a cycle, and leaves the descendant unchanged.
+    /// </summary>
+    [TestMethod]
+    public void Add_WhenNodeIsAnAncestor_ShouldThrowInvalidOperationException()
+    {
+        var root = new YamlArray();
+        var child = new YamlArray();
+        root.Add(child);
+
+        _ = Assert.ThrowsExactly<InvalidOperationException>(() =>
+        {
+            child.Add(root);
+        });
+
+        Assert.AreEqual(0, child.Count, "The descendant's count after the rejected add.");
+    }
+
+    /// <summary>
+    /// Verifies that adding the root of a tree to a node two levels below it throws
+    /// <see cref="InvalidOperationException" /> rather than creating a cycle.
+    /// </summary>
+    [TestMethod]
+    public void Add_WhenNodeIsADistantAncestor_ShouldThrowInvalidOperationException()
+    {
+        var root = new YamlArray();
+        var middle = new YamlArray();
+        var leaf = new YamlArray();
+        root.Add(middle);
+        middle.Add(leaf);
+
+        _ = Assert.ThrowsExactly<InvalidOperationException>(() =>
+        {
+            leaf.Add(root);
+        });
+
+        Assert.AreEqual(0, leaf.Count, "The descendant's count after the rejected add.");
+    }
 }

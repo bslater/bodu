@@ -52,4 +52,25 @@ public partial class BencodeArrayTests
         Assert.AreSame(second, array[1], "The second slot after the rejected assignment.");
         Assert.AreSame(array, second.Parent, "The parent of the element that was not replaced.");
     }
+
+    /// <summary>
+    /// Verifies that assigning an ancestor to an element of one of its descendants throws
+    /// <see cref="InvalidOperationException" /> rather than creating a cycle, and leaves the element in place.
+    /// </summary>
+    [TestMethod]
+    public void Indexer_WhenSetToAnAncestor_ShouldThrowInvalidOperationException()
+    {
+        var element = BencodeValue.Create(1L);
+        var child = new BencodeArray();
+        child.Add(element);
+        var root = new BencodeArray();
+        root.Add(child);
+
+        _ = Assert.ThrowsExactly<InvalidOperationException>(() =>
+        {
+            child[0] = root;
+        });
+
+        Assert.AreSame(element, child[0], "The slot after the rejected assignment.");
+    }
 }

@@ -65,4 +65,21 @@ public partial class BencodeObjectTests
         Assert.AreEqual(1, obj.Count, "The object's count after the rejected add.");
         Assert.IsFalse(obj.ContainsKey("b"), "Whether the rejected key was added.");
     }
+
+    /// <summary>
+    /// Verifies that adding an object to itself throws <see cref="InvalidOperationException" /> rather than creating a
+    /// cycle, and adds no entry.
+    /// </summary>
+    [TestMethod]
+    public void Add_WhenValueIsTheObjectItself_ShouldThrowInvalidOperationException()
+    {
+        var obj = new BencodeObject();
+
+        _ = Assert.ThrowsExactly<InvalidOperationException>(() =>
+        {
+            obj.Add("self", obj);
+        });
+
+        Assert.AreEqual(0, obj.Count, "The object's count after the rejected add.");
+    }
 }

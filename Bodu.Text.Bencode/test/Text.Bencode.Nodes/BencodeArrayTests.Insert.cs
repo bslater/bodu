@@ -54,4 +54,22 @@ public partial class BencodeArrayTests
         Assert.AreEqual(1, array.Count, "The array's count after the rejected insert.");
         Assert.AreSame(array, value.Parent, "The parent of the element.");
     }
+
+    /// <summary>
+    /// Verifies that inserting an array into itself throws <see cref="InvalidOperationException" /> rather than
+    /// creating a cycle, and leaves the array unchanged.
+    /// </summary>
+    [TestMethod]
+    public void Insert_WhenNodeIsTheArrayItself_ShouldThrowInvalidOperationException()
+    {
+        var array = new BencodeArray();
+        array.Add(BencodeValue.Create(1L));
+
+        _ = Assert.ThrowsExactly<InvalidOperationException>(() =>
+        {
+            array.Insert(0, array);
+        });
+
+        Assert.AreEqual(1, array.Count, "The array's count after the rejected insert.");
+    }
 }
