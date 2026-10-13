@@ -51,28 +51,6 @@ internal static class BuilderXml
         month is >= 1 and <= 12 ? s_monthNames[month] : month.ToString(CultureInfo.InvariantCulture);
 
     /// <summary>
-    /// Parses a month token expressed as either a full English month name or an integer between 1 and 12.
-    /// </summary>
-    /// <param name="value">The raw month token.</param>
-    /// <returns>The one-based month number.</returns>
-    /// <exception cref="FormatException">
-    /// <paramref name="value" /> is neither a recognized month name nor a valid month number.
-    /// </exception>
-    internal static int ParseMonth(string value)
-    {
-        if (int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out int numeric) && numeric is >= 1 and <= 12)
-            return numeric;
-
-        for (int i = 1; i <= 12; i++)
-        {
-            if (string.Equals(s_monthNames[i], value, StringComparison.OrdinalIgnoreCase))
-                return i;
-        }
-
-        throw new FormatException(string.Format(CultureInfo.CurrentCulture, BuilderResourceStrings.Format_Invalid_XmlNotWellFormed, value));
-    }
-
-    /// <summary>
     /// Formats a Boolean value as the lower-case literal expected by the XML schema.
     /// </summary>
     /// <param name="value">The Boolean value to format.</param>
@@ -100,17 +78,4 @@ internal static class BuilderXml
         value is null
             ? null
             : value is "true" or "1" || string.Equals(value, "true", StringComparison.OrdinalIgnoreCase);
-
-    /// <summary>
-    /// Parses an integer attribute value using the invariant culture.
-    /// </summary>
-    /// <param name="value">The raw attribute value, or <see langword="null" /> when absent.</param>
-    /// <returns>
-    /// The parsed integer, or <see langword="null" /> when <paramref name="value" /> is <see langword="null" /> or
-    /// blank.
-    /// </returns>
-    internal static int? ParseInt(string? value) =>
-        string.IsNullOrEmpty(value)
-            ? null
-            : int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out int result) ? result : null;
 }

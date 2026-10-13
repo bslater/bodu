@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Globalization;
+using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Xml.Linq;
 using Bodu.Globalization.Calendar.RangeResolution;
@@ -112,7 +113,7 @@ public sealed partial class NotableDateDocumentBuilder
     {
         AdjustmentPolicyBuilder policy = new((string?)policyJson["id"] ?? string.Empty);
         policy.SetParsedHeader(
-            (int?)policyJson["priority"],
+            JsonInt(policyJson["priority"], "adjustment policy priority"),
             (string?)policyJson["description"],
             ReadScopeJson(policyJson["scope"] as JsonObject));
 
@@ -131,11 +132,11 @@ public sealed partial class NotableDateDocumentBuilder
         {
             policy.SetParsedAction(
                 ParseNullableEnum<AdjustmentAction>((string?)action["type"], "action type"),
-                (int?)action["days"],
+                JsonInt(action["days"], "action days"),
                 ParseNullableEnum<DayOfWeek>((string?)action["dayOfWeek"], "action dayOfWeek"),
-                (int?)action["maxSearchDays"],
-                (bool?)action["skipWeekends"],
-                (bool?)action["skipNonWorkingDates"],
+                JsonInt(action["maxSearchDays"], "action maxSearchDays"),
+                JsonBool(action["skipWeekends"], "action skipWeekends"),
+                JsonBool(action["skipNonWorkingDates"], "action skipNonWorkingDates"),
                 null,
                 null,
                 null);
@@ -146,7 +147,7 @@ public sealed partial class NotableDateDocumentBuilder
             policy.SetParsedEmission(
                 ParseNullableEnum<EmissionMode>((string?)emission["mode"], "emission mode"),
                 (string?)emission["reason"],
-                (bool?)emission["nonWorking"]);
+                JsonBool(emission["nonWorking"], "emission nonWorking"));
         }
 
         return policy;
@@ -206,8 +207,8 @@ public sealed partial class NotableDateDocumentBuilder
             ParseEnum<NotableDateCategory>((string?)definitionJson["category"], "category"));
 
         definition.SetParsedValues(
-            (int?)definitionJson["defaultDurationDays"],
-            (bool?)definitionJson["defaultNonWorkingDay"],
+            JsonInt(definitionJson["defaultDurationDays"], "defaultDurationDays"),
+            JsonBool(definitionJson["defaultNonWorkingDay"], "defaultNonWorkingDay"),
             ReadStringArray(definitionJson["tags"] as JsonArray));
 
         if (definitionJson["rules"] is JsonArray rules)
@@ -233,21 +234,21 @@ public sealed partial class NotableDateDocumentBuilder
         var applicability = ruleJson["applicability"] as JsonObject;
 
         rule.SetParsedScalars(
-            (int?)ruleJson["priority"],
+            JsonInt(ruleJson["priority"], "rule priority"),
             ParseNullableEnum<NotableDateCategory>((string?)ruleJson["category"], "category"),
-            (bool?)ruleJson["nonWorking"],
-            (int?)ruleJson["durationDays"],
+            JsonBool(ruleJson["nonWorking"], "rule nonWorking"),
+            JsonInt(ruleJson["durationDays"], "durationDays"),
             (string?)ruleJson["comment"],
             applicability is null ? null : ParseNullableEnum<CalendarSystem>((string?)applicability["calendar"], "calendar"),
-            applicability is null ? null : (int?)applicability["fromYear"],
-            applicability is null ? null : (int?)applicability["toYear"],
-            applicability is null ? null : (int?)applicability["everyYears"],
-            applicability is null ? null : (int?)applicability["anchorYear"]);
+            applicability is null ? null : JsonInt(applicability["fromYear"], "applicability fromYear"),
+            applicability is null ? null : JsonInt(applicability["toYear"], "applicability toYear"),
+            applicability is null ? null : JsonInt(applicability["everyYears"], "applicability everyYears"),
+            applicability is null ? null : JsonInt(applicability["anchorYear"], "applicability anchorYear"));
 
         rule.SetParsedCollections(
             applicability is null ? Array.Empty<string>() : ReadStringArray(applicability["territories"] as JsonArray),
-            applicability is null ? Array.Empty<int>() : ReadIntArray(applicability["onlyYears"] as JsonArray),
-            applicability is null ? Array.Empty<int>() : ReadIntArray(applicability["exceptYears"] as JsonArray),
+            applicability is null ? Array.Empty<int>() : ReadIntArray(applicability["onlyYears"] as JsonArray, "applicability onlyYears"),
+            applicability is null ? Array.Empty<int>() : ReadIntArray(applicability["exceptYears"] as JsonArray, "applicability exceptYears"),
             ReadStringArray(ruleJson["tags"] as JsonArray),
             ReadStringArray(ruleJson["adjustments"] as JsonArray));
 
@@ -359,10 +360,10 @@ public sealed partial class NotableDateDocumentBuilder
         string ruleRef = (string?)overrideJson["ruleRef"] ?? string.Empty;
         NotableDateRuleBuilder rule = new(ruleRef);
         rule.SetParsedScalars(
-            (int?)overrideJson["priority"],
+            JsonInt(overrideJson["priority"], "patch priority"),
             ParseNullableEnum<NotableDateCategory>((string?)overrideJson["category"], "category"),
-            (bool?)overrideJson["nonWorking"],
-            (int?)overrideJson["durationDays"],
+            JsonBool(overrideJson["nonWorking"], "patch nonWorking"),
+            JsonInt(overrideJson["durationDays"], "durationDays"),
             null,
             null,
             null,
@@ -413,14 +414,14 @@ public sealed partial class NotableDateDocumentBuilder
         if (value is null)
             return string.Empty;
 
-        if (string.Equals(name, "month", StringComparison.Ordinal) && value.GetValueKind() == System.Text.Json.JsonValueKind.Number)
+        if (string.Equals(name, "month", StringComparison.Ordinal) && value.GetValueKind() == JsonValueKind.Number)
             return BuilderXml.GetMonthName((int)value);
 
         return value.GetValueKind() switch
         {
-            System.Text.Json.JsonValueKind.True => "true",
-            System.Text.Json.JsonValueKind.False => "false",
-            System.Text.Json.JsonValueKind.Number => ((int)value).ToString(CultureInfo.InvariantCulture),
+            JsonValueKind.True => "true",
+            JsonValueKind.False => "false",
+            JsonValueKind.Number => ((int)value).ToString(CultureInfo.InvariantCulture),
             _ => value.GetValue<string>(),
         };
     }
@@ -446,11 +447,14 @@ public sealed partial class NotableDateDocumentBuilder
     }
 
     /// <summary>
-    /// Reads a JSON array into a list of integer values.
+    /// Reads a JSON array of integers with the loader's rules: each item is read as an integer property is, so a number
+    /// in quotes is accepted and any other item that is not a 32-bit integer is rejected.
     /// </summary>
     /// <param name="array">The array, or <see langword="null" /> when absent.</param>
+    /// <param name="field">The name of the field the array belongs to, used in the exception message.</param>
     /// <returns>The integer values; empty when the array is absent.</returns>
-    private static List<int> ReadIntArray(JsonArray? array)
+    /// <exception cref="FormatException">An item is not a 32-bit integer.</exception>
+    private static List<int> ReadIntArray(JsonArray? array, string field)
     {
         List<int> values = new();
         if (array is null)
@@ -458,10 +462,57 @@ public sealed partial class NotableDateDocumentBuilder
 
         foreach (JsonNode? node in array)
         {
-            if (node is not null)
-                values.Add((int)node);
+            // The loader reads an item that is not a string by its JSON text, a null among them.
+            string text = node is JsonValue value && value.GetValueKind() == JsonValueKind.String
+                ? value.GetValue<string>()
+                : node?.ToJsonString() ?? "null";
+            if (ParseNullableInt(text, field) is int parsed)
+                values.Add(parsed);
         }
 
         return values;
+    }
+
+    /// <summary>
+    /// Reads an optional JSON integer property with the loader's rules: a number, or a number in quotes, that is a
+    /// 32-bit integer.
+    /// </summary>
+    /// <param name="node">The property value, or <see langword="null" /> when absent.</param>
+    /// <param name="field">The name of the field the value belongs to, used in the exception message.</param>
+    /// <returns>The integer, or <see langword="null" /> when the property is absent or not a scalar.</returns>
+    /// <exception cref="FormatException">The value is not a 32-bit integer.</exception>
+    private static int? JsonInt(JsonNode? node, string field) =>
+        ParseNullableInt(ScalarText(node), field);
+
+    /// <summary>
+    /// Reads an optional JSON Boolean property with the loader's rules: a Boolean, or an XML-schema Boolean literal as
+    /// text or a number (<c>true</c>, <c>false</c>, <c>1</c> or <c>0</c>).
+    /// </summary>
+    /// <param name="node">The property value, or <see langword="null" /> when absent.</param>
+    /// <param name="field">The name of the field the value belongs to, used in the exception message.</param>
+    /// <returns>The Boolean, or <see langword="null" /> when the property is absent or not a scalar.</returns>
+    /// <exception cref="FormatException">The value is not a Boolean.</exception>
+    private static bool? JsonBool(JsonNode? node, string field) =>
+        ParseNullableBool(ScalarText(node), field);
+
+    /// <summary>
+    /// Reads a JSON scalar as the loader does: a string verbatim, a number by its invariant digits, and a Boolean as
+    /// <c>true</c> or <c>false</c>.
+    /// </summary>
+    /// <param name="node">The value, or <see langword="null" /> when absent.</param>
+    /// <returns>The scalar's text, or <see langword="null" /> when the value is absent or not a scalar.</returns>
+    private static string? ScalarText(JsonNode? node)
+    {
+        if (node is not JsonValue value)
+            return null;
+
+        return value.GetValueKind() switch
+        {
+            JsonValueKind.String => value.GetValue<string>(),
+            JsonValueKind.Number => value.TryGetValue(out int number) ? number.ToString(CultureInfo.InvariantCulture) : value.ToJsonString(),
+            JsonValueKind.True => "true",
+            JsonValueKind.False => "false",
+            _ => null,
+        };
     }
 }

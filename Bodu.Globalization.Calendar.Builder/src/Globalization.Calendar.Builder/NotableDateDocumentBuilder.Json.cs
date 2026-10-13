@@ -128,11 +128,11 @@ public sealed partial class NotableDateDocumentBuilder
     /// <paramref name="json" /> is <see langword="null" />, empty, or white-space.
     /// </exception>
     /// <exception cref="FormatException">
-    /// <paramref name="json" /> is not well-formed or is not a notable-date document, or an enumeration value names no
-    /// member or the <c>workingDays</c> value is not a binary working-week pattern.
+    /// <paramref name="json" /> is not well-formed or is not a notable-date document, or an enumeration, integer,
+    /// Boolean, trigger-month or <c>workingDays</c> value does not parse.
     /// </exception>
     /// <exception cref="InvalidOperationException">
-    /// A property carries a value of the wrong JSON type, for example <c>"priority": "5"</c> (a string where a number
+    /// A property carries a value of the wrong JSON type, for example <c>"displayName": 5</c> (a number where text
     /// belongs) or a numeric tag.
     /// </exception>
     /// <remarks>
@@ -144,9 +144,14 @@ public sealed partial class NotableDateDocumentBuilder
     /// <c>BODU-CAL-WORKING-DAYS</c> diagnostic.
     /// </para>
     /// <para>
-    /// Parsing does not otherwise validate the document: a malformed integer is dropped, and any Boolean other than
-    /// <c>true</c> or <c>1</c> reads as <see langword="false" />, so a document the loader would reject can still
-    /// parse. Validate with <see cref="Validate()" /> or
+    /// Integers, Booleans and an adjustment trigger's month are read with the loader's rules too: a present value must
+    /// be a 32-bit integer, an XML-schema Boolean literal (<c>true</c>, <c>false</c>, <c>1</c> or <c>0</c>), or a month
+    /// name or number, and any other value throws a <see cref="FormatException" /> carrying the message of the loader's
+    /// <c>BODU-CAL-VALUE</c> diagnostic.
+    /// </para>
+    /// <para>
+    /// Parsing does not otherwise validate the document: a document the loader would reject for a reason other than a
+    /// malformed value, such as a dangling reference, can still parse. Validate with <see cref="Validate()" /> or
     /// <see cref="TryBuild(out NotableDateResource?, out IReadOnlyList{NotableDateValidationDiagnostic})" />, or load
     /// the text with <see cref="NotableDateResourceLoader" />, when the input is not trusted.
     /// </para>
@@ -192,7 +197,7 @@ public sealed partial class NotableDateDocumentBuilder
     /// <returns>A new <see cref="NotableDateDocumentBuilder" /> populated from the object.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="json" /> is <see langword="null" />.</exception>
     /// <exception cref="FormatException">
-    /// An enumeration value names no member or the <c>workingDays</c> value is not a binary working-week pattern.
+    /// An enumeration, integer, Boolean, trigger-month or <c>workingDays</c> value does not parse.
     /// </exception>
     /// <exception cref="InvalidOperationException">A property carries a value of the wrong JSON type.</exception>
     /// <remarks>

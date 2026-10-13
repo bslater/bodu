@@ -83,7 +83,7 @@ public sealed partial class NotableDateDocumentBuilder
     {
         AdjustmentPolicyBuilder policy = new((string?)element.Attribute("id") ?? string.Empty);
         policy.SetParsedHeader(
-            BuilderXml.ParseInt((string?)element.Attribute("priority")),
+            ParseNullableInt((string?)element.Attribute("priority"), "adjustment policy priority"),
             (string?)element.Attribute("description"),
             ReadScope(element.Element(BuilderXml.Namespace + "Scope")));
 
@@ -94,12 +94,11 @@ public sealed partial class NotableDateDocumentBuilder
             foreach (XElement weekday in trigger.Elements(BuilderXml.Namespace + "Weekday"))
                 weekdays.Add(ParseEnum<DayOfWeek>((string?)weekday.Attribute("value"), "trigger weekdays"));
 
-            string? month = (string?)trigger.Attribute("month");
             policy.SetParsedTrigger(
                 ParseNullableEnum<AdjustmentTrigger>((string?)trigger.Attribute("type"), "trigger type"),
                 weekdays,
-                string.IsNullOrEmpty(month) ? null : BuilderXml.ParseMonth(month),
-                BuilderXml.ParseInt((string?)trigger.Attribute("day")),
+                ParseTriggerMonth((string?)trigger.Attribute("month"), "trigger month"),
+                ParseNullableInt((string?)trigger.Attribute("day"), "trigger day"),
                 ParseNullableEnum<WeekOrdinal>((string?)trigger.Attribute("weekOrdinal"), "trigger weekOrdinal"),
                 (string?)trigger.Attribute("handlerKey"));
         }
@@ -109,11 +108,11 @@ public sealed partial class NotableDateDocumentBuilder
         {
             policy.SetParsedAction(
                 ParseNullableEnum<AdjustmentAction>((string?)action.Attribute("type"), "action type"),
-                BuilderXml.ParseInt((string?)action.Attribute("days")),
+                ParseNullableInt((string?)action.Attribute("days"), "action days"),
                 ParseNullableEnum<DayOfWeek>((string?)action.Attribute("dayOfWeek"), "action dayOfWeek"),
-                BuilderXml.ParseInt((string?)action.Attribute("maxSearchDays")),
-                BuilderXml.ParseBool((string?)action.Attribute("skipWeekends")),
-                BuilderXml.ParseBool((string?)action.Attribute("skipNonWorkingDates")),
+                ParseNullableInt((string?)action.Attribute("maxSearchDays"), "action maxSearchDays"),
+                ParseNullableBool((string?)action.Attribute("skipWeekends"), "action skipWeekends"),
+                ParseNullableBool((string?)action.Attribute("skipNonWorkingDates"), "action skipNonWorkingDates"),
                 (string?)action.Attribute("notableDateRef"),
                 (string?)action.Attribute("ruleRef"),
                 (string?)action.Attribute("handlerKey"));
@@ -125,7 +124,7 @@ public sealed partial class NotableDateDocumentBuilder
             policy.SetParsedEmission(
                 ParseNullableEnum<EmissionMode>((string?)emission.Attribute("mode"), "emission mode"),
                 (string?)emission.Attribute("reason"),
-                BuilderXml.ParseBool((string?)emission.Attribute("nonWorking")));
+                ParseNullableBool((string?)emission.Attribute("nonWorking"), "emission nonWorking"));
         }
 
         XElement? parameters = element.Element(BuilderXml.Namespace + "Parameters");
@@ -184,11 +183,13 @@ public sealed partial class NotableDateDocumentBuilder
                     break;
 
                 case "OnlyYear":
-                    onlyYears.Add(BuilderXml.ParseInt((string?)child.Attribute("value")) ?? 0);
+                    if (ParseNullableInt((string?)child.Attribute("value"), "scope onlyYears") is int onlyYear)
+                        onlyYears.Add(onlyYear);
                     break;
 
                 case "ExceptYear":
-                    exceptYears.Add(BuilderXml.ParseInt((string?)child.Attribute("value")) ?? 0);
+                    if (ParseNullableInt((string?)child.Attribute("value"), "scope exceptYears") is int exceptYear)
+                        exceptYears.Add(exceptYear);
                     break;
 
                 default:
@@ -205,8 +206,8 @@ public sealed partial class NotableDateDocumentBuilder
             ruleRefs,
             onlyYears,
             exceptYears,
-            BuilderXml.ParseInt((string?)element.Attribute("fromYear")),
-            BuilderXml.ParseInt((string?)element.Attribute("toYear")));
+            ParseNullableInt((string?)element.Attribute("fromYear"), "scope fromYear"),
+            ParseNullableInt((string?)element.Attribute("toYear"), "scope toYear"));
 
         return scope;
     }
@@ -250,7 +251,7 @@ public sealed partial class NotableDateDocumentBuilder
             (string?)element.Attribute("as"),
             (string?)element.Attribute("territory"),
             ParseNullableEnum<NotableDateCategory>((string?)element.Attribute("category"), "import use category"),
-            BuilderXml.ParseBool((string?)element.Attribute("nonWorking")),
+            ParseNullableBool((string?)element.Attribute("nonWorking"), "import use nonWorking"),
             adjustments);
 
         return use;
@@ -282,8 +283,8 @@ public sealed partial class NotableDateDocumentBuilder
             ParseEnum<NotableDateCategory>((string?)element.Attribute("category"), "category"));
 
         definition.SetParsedValues(
-            BuilderXml.ParseInt((string?)element.Attribute("defaultDurationDays")),
-            BuilderXml.ParseBool((string?)element.Attribute("defaultNonWorkingDay")),
+            ParseNullableInt((string?)element.Attribute("defaultDurationDays"), "defaultDurationDays"),
+            ParseNullableBool((string?)element.Attribute("defaultNonWorkingDay"), "defaultNonWorkingDay"),
             ReadTags(element.Element(BuilderXml.Namespace + "Tags")));
 
         XElement? rules = element.Element(BuilderXml.Namespace + "Rules");
@@ -307,18 +308,20 @@ public sealed partial class NotableDateDocumentBuilder
     {
         NotableDateRuleBuilder rule = new((string?)element.Attribute(idAttributeName) ?? string.Empty);
 
+        // The loader names a PatchRule override's own fields after the patch, and a rule's after the rule.
+        string owner = idAttributeName == "id" ? "rule" : "patch";
         XElement? applicability = element.Element(BuilderXml.Namespace + "Applicability");
         rule.SetParsedScalars(
-            BuilderXml.ParseInt((string?)element.Attribute("priority")),
+            ParseNullableInt((string?)element.Attribute("priority"), owner + " priority"),
             ParseNullableEnum<NotableDateCategory>((string?)element.Attribute("category"), "category"),
-            BuilderXml.ParseBool((string?)element.Attribute("nonWorking")),
-            BuilderXml.ParseInt((string?)element.Attribute("durationDays")),
+            ParseNullableBool((string?)element.Attribute("nonWorking"), owner + " nonWorking"),
+            ParseNullableInt((string?)element.Attribute("durationDays"), "durationDays"),
             (string?)element.Attribute("comment"),
             applicability is null ? null : ParseNullableEnum<CalendarSystem>((string?)applicability.Attribute("calendar"), "calendar"),
-            applicability is null ? null : BuilderXml.ParseInt((string?)applicability.Attribute("fromYear")),
-            applicability is null ? null : BuilderXml.ParseInt((string?)applicability.Attribute("toYear")),
-            applicability is null ? null : BuilderXml.ParseInt((string?)applicability.Attribute("everyYears")),
-            applicability is null ? null : BuilderXml.ParseInt((string?)applicability.Attribute("anchorYear")));
+            applicability is null ? null : ParseNullableInt((string?)applicability.Attribute("fromYear"), "applicability fromYear"),
+            applicability is null ? null : ParseNullableInt((string?)applicability.Attribute("toYear"), "applicability toYear"),
+            applicability is null ? null : ParseNullableInt((string?)applicability.Attribute("everyYears"), "applicability everyYears"),
+            applicability is null ? null : ParseNullableInt((string?)applicability.Attribute("anchorYear"), "applicability anchorYear"));
 
         List<string> territories = new();
         List<int> onlyYears = new();
@@ -328,9 +331,16 @@ public sealed partial class NotableDateDocumentBuilder
             foreach (XElement territory in applicability.Elements(BuilderXml.Namespace + "Territory"))
                 territories.Add((string?)territory.Attribute("code") ?? string.Empty);
             foreach (XElement year in applicability.Elements(BuilderXml.Namespace + "OnlyYear"))
-                onlyYears.Add(BuilderXml.ParseInt((string?)year.Attribute("value")) ?? 0);
+            {
+                if (ParseNullableInt((string?)year.Attribute("value"), "applicability onlyYears") is int onlyYear)
+                    onlyYears.Add(onlyYear);
+            }
+
             foreach (XElement year in applicability.Elements(BuilderXml.Namespace + "ExceptYear"))
-                exceptYears.Add(BuilderXml.ParseInt((string?)year.Attribute("value")) ?? 0);
+            {
+                if (ParseNullableInt((string?)year.Attribute("value"), "applicability exceptYears") is int exceptYear)
+                    exceptYears.Add(exceptYear);
+            }
         }
 
         List<string> adjustments = new();
@@ -457,6 +467,57 @@ public sealed partial class NotableDateDocumentBuilder
     {
         List<NotableDateValidationDiagnostic> diagnostics = new();
         TEnum? result = NotableDateDocumentParseHelpers.ParseNullableEnum<TEnum>(value, field, diagnostics);
+        ThrowIfMalformed(diagnostics);
+
+        return result;
+    }
+
+    /// <summary>
+    /// Parses an optional integer with the loader's rules: a present value must be a 32-bit integer, read with the
+    /// invariant culture.
+    /// </summary>
+    /// <param name="value">The string form, or <see langword="null" /> when absent.</param>
+    /// <param name="field">The name of the field the value belongs to, used in the exception message.</param>
+    /// <returns>The integer, or <see langword="null" /> when the value is absent.</returns>
+    /// <exception cref="FormatException"><paramref name="value" /> is not a 32-bit integer.</exception>
+    private static int? ParseNullableInt(string? value, string field)
+    {
+        List<NotableDateValidationDiagnostic> diagnostics = new();
+        int? result = NotableDateDocumentParseHelpers.ParseNullableInt(value, field, diagnostics);
+        ThrowIfMalformed(diagnostics);
+
+        return result;
+    }
+
+    /// <summary>
+    /// Parses an optional Boolean with the loader's rules: a present value must be an XML-schema Boolean literal (<c>true</c>,
+    /// <c>false</c>, <c>1</c> or <c>0</c>).
+    /// </summary>
+    /// <param name="value">The string form, or <see langword="null" /> when absent.</param>
+    /// <param name="field">The name of the field the value belongs to, used in the exception message.</param>
+    /// <returns>The Boolean, or <see langword="null" /> when the value is absent.</returns>
+    /// <exception cref="FormatException"><paramref name="value" /> is not an XML-schema Boolean literal.</exception>
+    private static bool? ParseNullableBool(string? value, string field)
+    {
+        List<NotableDateValidationDiagnostic> diagnostics = new();
+        bool? result = NotableDateDocumentParseHelpers.ParseNullableBool(value, field, diagnostics);
+        ThrowIfMalformed(diagnostics);
+
+        return result;
+    }
+
+    /// <summary>
+    /// Parses an optional adjustment trigger month with the loader's rules: a present value must be a full English
+    /// month name, ignoring case, or an integer between 1 and 12.
+    /// </summary>
+    /// <param name="value">The string form, or <see langword="null" /> when absent.</param>
+    /// <param name="field">The name of the field the value belongs to, used in the exception message.</param>
+    /// <returns>The one-based month, or <see langword="null" /> when the value is absent.</returns>
+    /// <exception cref="FormatException"><paramref name="value" /> is not a month.</exception>
+    private static int? ParseTriggerMonth(string? value, string field)
+    {
+        List<NotableDateValidationDiagnostic> diagnostics = new();
+        int? result = NotableDateDocumentParseHelpers.ParseTriggerMonth(value, field, diagnostics);
         ThrowIfMalformed(diagnostics);
 
         return result;

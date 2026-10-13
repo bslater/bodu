@@ -434,16 +434,16 @@ public sealed partial class NotableDateDocumentBuilder
     /// reopened for editing (load it with <see cref="NotableDateResourceLoader.LoadBinary(Stream)" />).
     /// </exception>
     /// <exception cref="FormatException">
-    /// The file content is not a well-formed notable-date document, or an enumeration value names no member or the
-    /// <c>workingDays</c> value is not a binary working-week pattern.
+    /// The file content is not a well-formed notable-date document, or an enumeration, integer, Boolean, trigger-month
+    /// or <c>workingDays</c> value does not parse.
     /// </exception>
     /// <exception cref="InvalidOperationException">
     /// A <c>.json</c> file carries a value of the wrong JSON type (for example a string where a number belongs); see
     /// <see cref="FromJson(string)" />.
     /// </exception>
     /// <remarks>
-    /// Like <see cref="FromXml(string)" /> and <see cref="FromJson(string)" />, loading reads enumeration values and
-    /// the working week with the loader's rules but does not otherwise validate the document; see their remarks.
+    /// Like <see cref="FromXml(string)" /> and <see cref="FromJson(string)" />, loading reads each value with the
+    /// loader's rules but does not otherwise validate the document; see their remarks.
     /// </remarks>
     public static NotableDateDocumentBuilder Load(string path)
     {
