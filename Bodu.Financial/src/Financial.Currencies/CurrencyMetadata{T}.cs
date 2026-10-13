@@ -72,8 +72,9 @@ internal static class CurrencyMetadata<TCurrency>
 
         if (cashIncrement != 0m)
         {
-            decimal scaled = cashIncrement * minorUnitFactor;
-            if (scaled != decimal.Truncate(scaled))
+            // Compare with the increment rounded to the minor units rather than scaling it by 10^minorUnits, which
+            // overflows for a whole increment at high precision (8 at 28 minor units).
+            if (!MoneyMath.IsWholeNumberOfMinorUnits(cashIncrement, minorUnits))
             {
                 throw new InvalidOperationException(
                     string.Format(
