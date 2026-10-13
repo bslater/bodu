@@ -84,13 +84,39 @@ public static partial class DelimitedSerializer
     }
 
     /// <summary>
+    /// Maps each member of a record type to the column of a header that it binds to, once for every row read under the
+    /// header.
+    /// </summary>
+    /// <param name="headers">The header column names, or an empty list for a headerless document.</param>
+    /// <param name="members">The mapped members.</param>
+    /// <param name="options">The serializer options.</param>
+    /// <returns>
+    /// For each member, the index of the first column whose header has its name, or <c>-1</c> when it has none or is
+    /// not writable; <see langword="null" /> for a headerless document, whose fields bind by position.
+    /// </returns>
+    private static int[]? CreateColumnMap(List<string> headers, FlatMemberDescriptor[] members, DelimitedSerializerOptions options)
+    {
+        if (headers.Count == 0)
+            return null;
+
+        StringComparison comparison = options.PropertyNameCaseInsensitive ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
+        int[] columns = new int[members.Length];
+        for (int i = 0; i < members.Length; i++)
+            columns[i] = members[i].CanWrite ? IndexOfHeader(headers, members[i].Name, comparison) : -1;
+
+        return columns;
+    }
+
+    /// <summary>
     /// Binds a single decoded row to a new record instance of the target type.
     /// </summary>
     /// <param name="fields">The decoded field values.</param>
-    /// <param name="headers">The header column names, or an empty list for a headerless document.</param>
+    /// <param name="columns">
+    /// The column of each member, from <see cref="CreateColumnMap" />, or <see langword="null" /> for a headerless
+    /// document.
+    /// </param>
     /// <param name="members">The mapped members.</param>
     /// <param name="recordType">The record type.</param>
-    /// <param name="options">The serializer options.</param>
     /// <returns>The bound record.</returns>
     /// <exception cref="DelimitedSerializationException">Thrown when a field cannot be converted.</exception>
     /// <remarks>
@@ -102,27 +128,22 @@ public static partial class DelimitedSerializer
     /// </remarks>
     [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
     [RequiresDynamicCode(RequiresDynamicCodeMessage)]
-    private static object BindRecord(string[] fields, List<string> headers, FlatMemberDescriptor[] members, Type recordType, DelimitedSerializerOptions options)
+    private static object BindRecord(string[] fields, int[]? columns, FlatMemberDescriptor[] members, Type recordType)
     {
         object instance = Activator.CreateInstance(recordType)!;
         (instance as IOnDeserializing)?.OnDeserializing();
 
-        if (headers.Count == 0)
+        if (columns is null)
         {
             BindPositionally(instance, fields, members);
         }
         else
         {
-            StringComparison comparison = options.PropertyNameCaseInsensitive ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
-
-            foreach (FlatMemberDescriptor member in members)
+            for (int i = 0; i < members.Length; i++)
             {
-                if (!member.CanWrite)
-                    continue;
-
-                int column = IndexOfHeader(headers, member.Name, comparison);
+                int column = columns[i];
                 if (column >= 0 && column < fields.Length)
-                    member.SetValue(instance, ConvertFromString(fields[column], member));
+                    members[i].SetValue(instance, ConvertFromString(fields[column], members[i]));
             }
         }
 

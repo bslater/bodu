@@ -197,6 +197,10 @@ public static partial class DelimitedSerializer
             int buffered = 0;
             bool finalBlock = false;
             List<string>? headers = null;
+
+            // The member-to-column map of the header, built once the header is known.
+            List<string>? mappedHeaders = null;
+            int[]? columns = null;
             var rows = new List<(string[] Fields, int Line, long Offset)>();
 
             // The line and offset, in the whole stream, of the buffer's first byte, so that every error reports its
@@ -233,6 +237,12 @@ public static partial class DelimitedSerializer
                     segmentOffset += consumed;
                 }
 
+                if (!isStringArray && !ReferenceEquals(headers, mappedHeaders))
+                {
+                    mappedHeaders = headers;
+                    columns = CreateColumnMap(headers ?? [], members, effective);
+                }
+
                 foreach ((string[] row, int line, long offset) in rows)
                 {
                     cancellationToken.ThrowIfCancellationRequested();
@@ -242,7 +252,7 @@ public static partial class DelimitedSerializer
 
                     yield return isStringArray
                         ? (TRecord)(object)row
-                        : (TRecord)BindRecord(row, headers ?? [], members, typeof(TRecord), effective);
+                        : (TRecord)BindRecord(row, columns, members, typeof(TRecord));
                 }
 
                 if (finalBlock)

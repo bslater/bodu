@@ -245,8 +245,9 @@ public static partial class DelimitedSerializer
             return result;
         }
 
+        int[]? columns = CreateColumnMap(headers, members, effective);
         foreach (string[] row in rows)
-            result.Add((TRecord)BindRecord(row, headers, members, typeof(TRecord), effective));
+            result.Add((TRecord)BindRecord(row, columns, members, typeof(TRecord)));
 
         return result;
     }
