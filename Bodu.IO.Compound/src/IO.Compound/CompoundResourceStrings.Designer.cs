@@ -302,5 +302,14 @@ namespace Bodu.IO.Compound {
                 return ResourceManager.GetString("Op_Invalid_CompoundV3FileTooLarge", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The storage already contains a stream named '{0}'..
+        /// </summary>
+        internal static string IO_Invalid_CompoundStreamExists {
+            get {
+                return ResourceManager.GetString("IO_Invalid_CompoundStreamExists", resourceCulture);
+            }
+        }
     }
 }

@@ -348,7 +348,8 @@ public sealed class CompoundStorage
     /// Thrown when no child stream with the given name exists and <paramref name="mode" /> does not create one.
     /// </exception>
     /// <exception cref="IOException">
-    /// Thrown when <paramref name="mode" /> is <see cref="FileMode.CreateNew" /> and the stream already exists.
+    /// Thrown when <paramref name="mode" /> is <see cref="FileMode.CreateNew" /> and the stream already exists; the
+    /// message names the existing stream.
     /// </exception>
     /// <exception cref="CompoundFileSerializationException">
     /// Thrown when <paramref name="mode" /> creates a stream and <paramref name="name" /> is not a valid entry name.
@@ -473,6 +474,12 @@ public sealed class CompoundStorage
     /// <returns>
     /// <see langword="true" /> when a matching child stream exists or is created; otherwise <see langword="false" />.
     /// </returns>
+    /// <remarks>
+    /// The method reports <see langword="false" /> for the two recoverable cases: a stream that does not exist when the
+    /// call does not create one (read access alone, or a mode that does not create), and
+    /// <see cref="FileMode.CreateNew" /> with write access over a stream that exists in a writable file, for which
+    /// <see cref="OpenStream(string, FileMode, FileAccess)" /> throws <see cref="IOException" /> instead.
+    /// </remarks>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="name" /> is <see langword="null" />.
     /// </exception>
@@ -753,10 +760,7 @@ public sealed class CompoundStorage
         // Translate the recoverable-absence cases the Try-core reports as false into the documented exceptions.
         _node!.TryGetStream(name, out CompoundStreamBuilder? existing);
         if (mode == FileMode.CreateNew && existing is not null)
-        {
-            throw new IOException(
-                string.Format(CultureInfo.CurrentCulture, CompoundResourceStrings.Op_NotSupported_CompoundFileWriteMode, $"{mode}/{access}"));
-        }
+            throw new IOException(string.Format(CultureInfo.CurrentCulture, CompoundResourceStrings.IO_Invalid_CompoundStreamExists, existing.Name));
 
         throw CompoundStreamNotFoundException.ForName(name);
     }

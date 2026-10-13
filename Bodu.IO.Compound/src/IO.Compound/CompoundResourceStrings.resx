@@ -139,4 +139,7 @@
   <data name="Op_Invalid_CompoundV3FileTooLarge" xml:space="preserve">
     <value>The compound file would exceed the 2 GB maximum size of a version-3 file; write a version-4 file instead.</value>
   </data>
+  <data name="IO_Invalid_CompoundStreamExists" xml:space="preserve">
+    <value>The storage already contains a stream named '{0}'.</value>
+  </data>
 </root>
