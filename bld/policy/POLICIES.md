@@ -40,6 +40,7 @@ catch should be distilled into the Learning log below so the next author applies
 | BODU-P014 | No em-dashes or en-dashes, in any file | 1 | `check-policy.sh` (added lines, every text file) | ` - ` for an aside, `-` in a range (`2020-2026`); a dash that is test data is listed in `bld/policy/dash-allowlist.txt` |
 | BODU-P015 | No XML-doc line continues a paragraph with a Markdown block marker | 0/1 | BODU1001/BODU1002 (the formatter never wraps one there) · `validate_api_site.py` `doclines` | Keep `-`, `+`, `*`, `#`, `&gt;` or `1.` at the end of the previous line; DocFX renders the text as Markdown |
 | BODU-P016 | Solution views are generated selection manifests | 1 | `tools/solutions/generate-solutions.py --check` (whole tree, Policy Gate) | Add a project to `bodu.slnx`, classify it in `tools/solutions/solutions.json` if no rule fits, and run the generator; never edit a `bodu.*.slnx` view by hand, and never read `$(SolutionName)` and its siblings in a build file |
+| BODU-P017 | XML documentation is written in US English | 1 | `bld/check-docs.py spelling` (whole tree; `check-docs.py all` in the docs workflow) | `behavior`, `initialize`, `catalog`, `canceled`: the British forms it rejects are listed, one inflection per line, in `bld/docs-checks/us-spelling.txt`; a proper name or a verbatim third-party quotation that must keep one is listed in `bld/docs-checks/us-spelling-allowlist.txt` with its reason |
 
 ## Learning log
 

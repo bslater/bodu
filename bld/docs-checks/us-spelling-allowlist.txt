@@ -1,0 +1,9 @@
+# Documentation lines that keep a British spelling the spelling check (`python3 bld/check-docs.py spelling`) would
+# otherwise report: a proper name, or text quoted verbatim from a third party (an RFC, a specification, a library's
+# message). Everything else is written in US English, as CLAUDE.md requires.
+#
+# Format: `path[:line]  reason`, the path relative to the repository root, then two spaces (or a tab) and the reason.
+# An entry without a line excuses the whole file. An entry that no longer excuses anything is reported, so remove it
+# when its line moves or changes.
+
+Bodu.Globalization.Calendar/test/Globalization.Calendar/BahaiHolyDayKnownAnswerTests.cs:79  "Baha'i World Centre" is the organization's own name.

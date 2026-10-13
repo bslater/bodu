@@ -109,7 +109,9 @@ The points that most often need attention in review:
   hides a file from the analyzers and the policy checks. Folders under `src/` and `test/` map one to one
   to namespaces (`bld/check-folder-namespace-alignment.sh` checks this).
 - **Documentation.** Every member, private ones included, carries XML documentation in US English in
-  the style of the .NET base class library. Missing documentation fails the build.
+  the style of the .NET base class library. Missing documentation fails the build, and
+  `python3 bld/check-docs.py spelling` reports a British spelling (`behaviour`, `initialise`, `catalogue`)
+  in a `///` comment.
 - **Validation and messages.** Public members validate their arguments through the `ThrowHelper.ThrowIf…`
   helpers, and exception messages come from the project's `*ResourceStrings.resx`, never a string
   literal.
