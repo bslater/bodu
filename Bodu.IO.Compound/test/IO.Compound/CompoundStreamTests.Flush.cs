@@ -143,4 +143,17 @@ public partial class CompoundStreamTests
             await cursor.FlushAsync();
         });
     }
+
+    /// <summary>
+    /// Verifies that disposing a writable cursor after the file that owns it has been disposed does not throw.
+    /// </summary>
+    [TestMethod]
+    public void Dispose_WhenOwningFileIsDisposed_ShouldNotThrow()
+    {
+        CompoundStream cursor = OpenCursorOverDisposedFile();
+
+        cursor.Dispose();
+
+        Assert.IsFalse(cursor.CanRead);
+    }
 }

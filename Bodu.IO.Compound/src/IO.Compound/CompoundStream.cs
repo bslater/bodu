@@ -38,7 +38,11 @@ namespace Bodu.IO.Compound;
 /// closing the cursor flushes its buffer into the staging tree but does not write to the destination. A writable cursor
 /// holds at most <see cref="int.MaxValue" /> bytes - payloads beyond that are authored through the deferred stream
 /// sources on <see cref="Bodu.IO.Compound.Builders.CompoundStorageBuilder" /> (<c>AddStream(name, openRead, length)</c>
-/// or <c>AddStreamFromFile</c>), which never buffer the whole payload.
+/// or <c>AddStreamFromFile</c>), which never buffer the whole payload. Once the owning file is disposed, a writable
+/// cursor still reads its buffer, but <see cref="CanWrite" /> is <see langword="false" /> and
+/// <see cref="Write(byte[], int, int)" />, <see cref="SetLength(long)" />, and <see cref="Flush" /> throw
+/// <see cref="ObjectDisposedException" />, because the staging tree they write into can no longer be committed;
+/// disposing the cursor never throws.
 /// </para>
 /// <para>
 /// A read-only cursor (<see cref="CanWrite" /> is <see langword="false" />) throws <see cref="NotSupportedException" />
@@ -201,7 +205,10 @@ public sealed class CompoundStream
     public override bool CanSeek => !_disposed;
 
     /// <inheritdoc />
-    public override bool CanWrite => !_disposed && _write is not null;
+    /// <remarks>
+    /// A writable cursor reports <see langword="false" /> once the compound file that owns it has been disposed.
+    /// </remarks>
+    public override bool CanWrite => !_disposed && _write is not null && !_file!.IsDisposed;
 
     /// <inheritdoc />
     /// <exception cref="ObjectDisposedException">Thrown when the cursor has been disposed.</exception>
@@ -441,12 +448,17 @@ public sealed class CompoundStream
     /// For a writable cursor this flushes the buffered bytes into the staging tree and marks the owning file dirty; the
     /// destination is written only by <see cref="CompoundFile.Commit" />. For a read-only cursor this is a no-op.
     /// </remarks>
-    /// <exception cref="ObjectDisposedException">Thrown when the cursor has been disposed.</exception>
+    /// <exception cref="ObjectDisposedException">
+    /// Thrown when the cursor, or the compound file that owns a writable cursor, has been disposed.
+    /// </exception>
     public override void Flush()
     {
         ThrowIfDisposed();
         if (_write is not null)
+        {
+            _file!.ThrowIfDisposed();
             FlushToNode(disposing: false);
+        }
     }
 
     /// <inheritdoc />
@@ -454,7 +466,9 @@ public sealed class CompoundStream
     /// Thrown when the cursor is read-only, or when <paramref name="value" /> exceeds the <see cref="int.MaxValue" />
     /// writable-cursor payload cap.
     /// </exception>
-    /// <exception cref="ObjectDisposedException">Thrown when the cursor has been disposed.</exception>
+    /// <exception cref="ObjectDisposedException">
+    /// Thrown when the cursor, or the compound file that owns it, has been disposed.
+    /// </exception>
     /// <remarks>
     /// A writable cursor buffers its payload in memory and supports at most <see cref="int.MaxValue" /> bytes; author
     /// larger payloads through a deferred stream source (<c>AddStream(name, openRead, length)</c> or
@@ -465,6 +479,7 @@ public sealed class CompoundStream
         ThrowIfDisposed();
         if (_write is null)
             throw new NotSupportedException();
+        _file!.ThrowIfDisposed();
         if (value > int.MaxValue)
             throw new NotSupportedException(CompoundResourceStrings.Op_NotSupported_CompoundStreamPayloadTooLarge);
 
@@ -486,7 +501,9 @@ public sealed class CompoundStream
     /// Thrown when the cursor is read-only, or when the write would grow the payload beyond the
     /// <see cref="int.MaxValue" /> writable-cursor cap.
     /// </exception>
-    /// <exception cref="ObjectDisposedException">Thrown when the cursor has been disposed.</exception>
+    /// <exception cref="ObjectDisposedException">
+    /// Thrown when the cursor, or the compound file that owns it, has been disposed.
+    /// </exception>
     /// <remarks>
     /// A writable cursor buffers its payload in memory and supports at most <see cref="int.MaxValue" /> bytes; author
     /// larger payloads through a deferred stream source (<c>AddStream(name, openRead, length)</c> or
@@ -497,6 +514,7 @@ public sealed class CompoundStream
         ThrowIfDisposed();
         if (_write is null)
             throw new NotSupportedException();
+        _file!.ThrowIfDisposed();
         if (buffer.Length > int.MaxValue - _write.Position)
             throw new NotSupportedException(CompoundResourceStrings.Op_NotSupported_CompoundStreamPayloadTooLarge);
 

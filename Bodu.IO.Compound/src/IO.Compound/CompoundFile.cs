@@ -41,6 +41,11 @@ namespace Bodu.IO.Compound;
 /// <see cref="Commit" /> (which rewrites the whole container); <see cref="Revert" /> discards them. Mutating an
 /// existing file requires read access - write-only access is supported only for creating modes.
 /// </para>
+/// <para>
+/// Disposing the file ends the session for everything it handed out: the members of a <see cref="CompoundStorage" />
+/// that open a child or stage an edit, and the members of a writable <see cref="CompoundStream" /> that change its
+/// bytes, throw <see cref="ObjectDisposedException" />, so an edit that could never be committed is never accepted.
+/// </para>
 /// </remarks>
 /// <example>
 /// The following example opens a compound file, walks its top-level entries, and reads one named stream. The instance
@@ -919,10 +924,24 @@ public sealed class CompoundFile
     }
 
     /// <summary>
+    /// Gets a value indicating whether this instance has been disposed.
+    /// </summary>
+    /// <value><see langword="true" /> once <see cref="Dispose" /> has run; otherwise <see langword="false" />.</value>
+    internal bool IsDisposed => _disposed;
+
+    /// <summary>
     /// Marks the writable file as having uncommitted staged edits.
     /// </summary>
     internal void MarkDirty() =>
         _dirty = true;
+
+    /// <summary>
+    /// Throws an <see cref="ObjectDisposedException" /> when this instance has been disposed, so that the storages and
+    /// writable cursors it handed out cannot open children or stage edits that could never be committed.
+    /// </summary>
+    /// <exception cref="ObjectDisposedException">Thrown when the file has been disposed.</exception>
+    internal void ThrowIfDisposed() =>
+        ObjectDisposedException.ThrowIf(_disposed, this);
 
     /// <summary>
     /// Throws when this file is read-only.

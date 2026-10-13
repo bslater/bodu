@@ -161,4 +161,18 @@ public partial class CompoundStorageTests
 
         CollectionAssert.AreEqual(new[] { "Stream 1", "Stream 2" }, names);
     }
+
+    /// <summary>
+    /// Verifies that the enumeration members of a storage keep listing its children after the owning file has been
+    /// disposed, since they only read the directory held in memory.
+    /// </summary>
+    [TestMethod]
+    public void EnumerateEntries_WhenFileIsDisposed_ShouldStillListTheChildren()
+    {
+        CompoundStorage root = CreateDisposedWritableRoot();
+
+        AssertDisposedRootUnchanged(root);
+        Assert.AreEqual("S", root.EnumerateStorages().Single().Name);
+        Assert.AreEqual("A", root.EnumerateStreams().Single().Name);
+    }
 }

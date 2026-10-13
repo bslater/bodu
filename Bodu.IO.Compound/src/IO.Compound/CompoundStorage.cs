@@ -34,6 +34,13 @@ namespace Bodu.IO.Compound;
 /// written only when <see cref="CompoundFile.Commit" /> is called. On a read-only storage those members throw
 /// <see cref="InvalidOperationException" />.
 /// </para>
+/// <para>
+/// Once the owning file is disposed, every member that opens a child or stages an edit - the <c>Open*</c> and
+/// <c>TryOpen*</c> members, the mutation members, <see cref="WritePropertySet(string, OlePropertySet)" />, and the
+/// metadata setters - throws <see cref="ObjectDisposedException" />, because nothing staged afterwards could be
+/// committed. <see cref="Name" />, <see cref="Stat" />, the metadata getters, and the <c>Enumerate*</c> members keep
+/// reading the directory held in memory.
+/// </para>
 /// <example>
 /// The following example navigates a nested storage, enumerates its children, and reads a named stream from it.
 /// <code language="csharp">
@@ -136,11 +143,15 @@ public sealed class CompoundStorage
     /// MS-CFB §2.6.1 only storage entries carry a CLSID - stream entries are always written with a zero CLSID.
     /// </remarks>
     /// <exception cref="InvalidOperationException">Thrown on set when the compound file is read-only.</exception>
+    /// <exception cref="ObjectDisposedException">
+    /// Thrown on set when the owning compound file has been disposed.
+    /// </exception>
     public Guid ClassId
     {
         get => Stat.ClassId;
         set
         {
+            _file.ThrowIfDisposed();
             RequireWritable();
             _node!.ClassId = value;
             _file.MarkDirty();
@@ -156,11 +167,15 @@ public sealed class CompoundStorage
     /// unless the caller sets them, keeping byte-identical re-saves possible.
     /// </remarks>
     /// <exception cref="InvalidOperationException">Thrown on set when the compound file is read-only.</exception>
+    /// <exception cref="ObjectDisposedException">
+    /// Thrown on set when the owning compound file has been disposed.
+    /// </exception>
     public DateTimeOffset? CreationTime
     {
         get => Stat.CreationTime;
         set
         {
+            _file.ThrowIfDisposed();
             RequireWritable();
             _node!.CreationTime = value;
             _file.MarkDirty();
@@ -177,11 +192,15 @@ public sealed class CompoundStorage
     /// byte-identical re-saves possible; callers who want a modification time set it explicitly.
     /// </remarks>
     /// <exception cref="InvalidOperationException">Thrown on set when the compound file is read-only.</exception>
+    /// <exception cref="ObjectDisposedException">
+    /// Thrown on set when the owning compound file has been disposed.
+    /// </exception>
     public DateTimeOffset? ModifiedTime
     {
         get => Stat.LastModifiedTime;
         set
         {
+            _file.ThrowIfDisposed();
             RequireWritable();
             _node!.ModifiedTime = value;
             _file.MarkDirty();
@@ -193,11 +212,15 @@ public sealed class CompoundStorage
     /// </summary>
     /// <value>The opaque state-bits value; <c>0</c> when none is recorded.</value>
     /// <exception cref="InvalidOperationException">Thrown on set when the compound file is read-only.</exception>
+    /// <exception cref="ObjectDisposedException">
+    /// Thrown on set when the owning compound file has been disposed.
+    /// </exception>
     public int StateBits
     {
         get => Stat.StateBits;
         set
         {
+            _file.ThrowIfDisposed();
             RequireWritable();
             _node!.StateBits = value;
             _file.MarkDirty();
@@ -275,6 +298,7 @@ public sealed class CompoundStorage
     /// <exception cref="CompoundStreamNotFoundException">
     /// Thrown when no child storage with the given name exists.
     /// </exception>
+    /// <exception cref="ObjectDisposedException">Thrown when the owning compound file has been disposed.</exception>
     public CompoundStorage OpenStorage(string name) =>
         TryOpenStorage(name, out CompoundStorage? storage)
             ? storage
@@ -293,9 +317,7 @@ public sealed class CompoundStorage
     /// <exception cref="CompoundStreamNotFoundException">
     /// Thrown when no child stream with the given name exists.
     /// </exception>
-    /// <exception cref="ObjectDisposedException">
-    /// Thrown when the owning compound file is read-only and has been disposed.
-    /// </exception>
+    /// <exception cref="ObjectDisposedException">Thrown when the owning compound file has been disposed.</exception>
     /// <exception cref="CompoundFileFormatException">
     /// Thrown when, in a read-only compound file, the stream's sector chain is malformed, or, at a level stricter than
     /// <see cref="CompoundValidationLevel.Minimal" />, holds fewer bytes than the stream declares.
@@ -331,9 +353,7 @@ public sealed class CompoundStorage
     /// <exception cref="CompoundFileSerializationException">
     /// Thrown when <paramref name="mode" /> creates a stream and <paramref name="name" /> is not a valid entry name.
     /// </exception>
-    /// <exception cref="ObjectDisposedException">
-    /// Thrown when the owning compound file is read-only and has been disposed.
-    /// </exception>
+    /// <exception cref="ObjectDisposedException">Thrown when the owning compound file has been disposed.</exception>
     /// <exception cref="CompoundFileFormatException">
     /// Thrown when, in a read-only compound file, the stream's sector chain is malformed, or, at a level stricter than
     /// <see cref="CompoundValidationLevel.Minimal" />, holds fewer bytes than the stream declares.
@@ -341,6 +361,7 @@ public sealed class CompoundStorage
     public CompoundStream OpenStream(string name, FileMode mode, FileAccess access)
     {
         ThrowHelper.ThrowIfNull(name);
+        _file.ThrowIfDisposed();
 
         if (_node is not null)
             return OpenStagedStream(name, mode, access);
@@ -362,9 +383,11 @@ public sealed class CompoundStorage
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="name" /> is <see langword="null" />.
     /// </exception>
+    /// <exception cref="ObjectDisposedException">Thrown when the owning compound file has been disposed.</exception>
     public bool TryOpenStorage(string name, [MaybeNullWhen(false)] out CompoundStorage storage)
     {
         ThrowHelper.ThrowIfNull(name);
+        _file.ThrowIfDisposed();
 
         if (_node is not null)
         {
@@ -403,9 +426,7 @@ public sealed class CompoundStorage
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="name" /> is <see langword="null" />.
     /// </exception>
-    /// <exception cref="ObjectDisposedException">
-    /// Thrown when the owning compound file is read-only and has been disposed.
-    /// </exception>
+    /// <exception cref="ObjectDisposedException">Thrown when the owning compound file has been disposed.</exception>
     /// <exception cref="CompoundFileFormatException">
     /// Thrown when, in a read-only compound file, the stream's sector chain is malformed, or, at a level stricter than
     /// <see cref="CompoundValidationLevel.Minimal" />, holds fewer bytes than the stream declares.
@@ -413,6 +434,7 @@ public sealed class CompoundStorage
     public bool TryOpenStream(string name, [MaybeNullWhen(false)] out CompoundStream stream)
     {
         ThrowHelper.ThrowIfNull(name);
+        _file.ThrowIfDisposed();
 
         if (_node is not null)
         {
@@ -461,9 +483,7 @@ public sealed class CompoundStorage
     /// <exception cref="CompoundFileSerializationException">
     /// Thrown when <paramref name="mode" /> creates a stream and <paramref name="name" /> is not a valid entry name.
     /// </exception>
-    /// <exception cref="ObjectDisposedException">
-    /// Thrown when the owning compound file is read-only and has been disposed.
-    /// </exception>
+    /// <exception cref="ObjectDisposedException">Thrown when the owning compound file has been disposed.</exception>
     /// <exception cref="CompoundFileFormatException">
     /// Thrown when, in a read-only compound file, the stream's sector chain is malformed, or, at a level stricter than
     /// <see cref="CompoundValidationLevel.Minimal" />, holds fewer bytes than the stream declares.
@@ -471,6 +491,7 @@ public sealed class CompoundStorage
     public bool TryOpenStream(string name, FileMode mode, FileAccess access, [MaybeNullWhen(false)] out CompoundStream stream)
     {
         ThrowHelper.ThrowIfNull(name);
+        _file.ThrowIfDisposed();
 
         if (_node is not null)
             return TryOpenStagedStream(name, mode, access, out stream);
@@ -488,6 +509,7 @@ public sealed class CompoundStorage
     /// Thrown when <paramref name="name" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="InvalidOperationException">Thrown when the compound file is read-only.</exception>
+    /// <exception cref="ObjectDisposedException">Thrown when the owning compound file has been disposed.</exception>
     /// <exception cref="ArgumentException">Thrown when a child with the same name already exists.</exception>
     /// <exception cref="CompoundFileSerializationException">
     /// Thrown when <paramref name="name" /> is empty, longer than 31 characters, or contains <c>/</c>, <c>\</c>,
@@ -496,6 +518,7 @@ public sealed class CompoundStorage
     public CompoundStorage CreateStorage(string name)
     {
         ThrowHelper.ThrowIfNull(name);
+        _file.ThrowIfDisposed();
         RequireWritable();
         CompoundThrowHelper.ThrowIfNameTaken(_node!.ContainsName(name), name);
 
@@ -513,6 +536,7 @@ public sealed class CompoundStorage
     /// Thrown when <paramref name="name" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="InvalidOperationException">Thrown when the compound file is read-only.</exception>
+    /// <exception cref="ObjectDisposedException">Thrown when the owning compound file has been disposed.</exception>
     /// <exception cref="ArgumentException">Thrown when a child with the same name already exists.</exception>
     /// <exception cref="CompoundFileSerializationException">
     /// Thrown when <paramref name="name" /> is empty, longer than 31 characters, or contains <c>/</c>, <c>\</c>,
@@ -521,6 +545,7 @@ public sealed class CompoundStorage
     public CompoundStream CreateStream(string name)
     {
         ThrowHelper.ThrowIfNull(name);
+        _file.ThrowIfDisposed();
         RequireWritable();
         CompoundThrowHelper.ThrowIfNameTaken(_node!.ContainsName(name), name);
 
@@ -536,6 +561,7 @@ public sealed class CompoundStorage
     /// Thrown when <paramref name="name" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="InvalidOperationException">Thrown when the compound file is read-only.</exception>
+    /// <exception cref="ObjectDisposedException">Thrown when the owning compound file has been disposed.</exception>
     /// <exception cref="ArgumentException">Thrown when a child with the same name already exists.</exception>
     /// <exception cref="CompoundFileSerializationException">
     /// Thrown when <paramref name="name" /> is empty, longer than 31 characters, or contains <c>/</c>, <c>\</c>,
@@ -544,6 +570,7 @@ public sealed class CompoundStorage
     public void CreateStream(string name, ReadOnlyMemory<byte> content)
     {
         ThrowHelper.ThrowIfNull(name);
+        _file.ThrowIfDisposed();
         RequireWritable();
         CompoundThrowHelper.ThrowIfNameTaken(_node!.ContainsName(name), name);
 
@@ -562,9 +589,11 @@ public sealed class CompoundStorage
     /// Thrown when <paramref name="name" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="InvalidOperationException">Thrown when the compound file is read-only.</exception>
+    /// <exception cref="ObjectDisposedException">Thrown when the owning compound file has been disposed.</exception>
     public bool Delete(string name)
     {
         ThrowHelper.ThrowIfNull(name);
+        _file.ThrowIfDisposed();
         RequireWritable();
 
         bool removed = _node!.Remove(name);
@@ -583,6 +612,7 @@ public sealed class CompoundStorage
     /// Thrown when <paramref name="oldName" /> or <paramref name="newName" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="InvalidOperationException">Thrown when the compound file is read-only.</exception>
+    /// <exception cref="ObjectDisposedException">Thrown when the owning compound file has been disposed.</exception>
     /// <exception cref="KeyNotFoundException">
     /// Thrown when no child named <paramref name="oldName" /> exists.
     /// </exception>
@@ -597,6 +627,7 @@ public sealed class CompoundStorage
     {
         ThrowHelper.ThrowIfNull(oldName);
         ThrowHelper.ThrowIfNull(newName);
+        _file.ThrowIfDisposed();
         RequireWritable();
         if (!_node!.TryGetValue(oldName, out CompoundEntryBuilder? child)) throw new KeyNotFoundException(string.Format(CultureInfo.CurrentCulture, CompoundResourceStrings.IO_KeyNotFound_CompoundChild, oldName));
         CompoundThrowHelper.ThrowIfNameTaken(_node.TryGetValue(newName, out CompoundEntryBuilder? holder) && !ReferenceEquals(holder, child), newName);
@@ -619,6 +650,7 @@ public sealed class CompoundStorage
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="name" /> is <see langword="null" />.
     /// </exception>
+    /// <exception cref="ObjectDisposedException">Thrown when the owning compound file has been disposed.</exception>
     /// <exception cref="CompoundFileFormatException">
     /// Thrown when the stream is not a well-formed property set.
     /// </exception>
@@ -649,6 +681,7 @@ public sealed class CompoundStorage
     /// Thrown when <paramref name="name" /> or <paramref name="propertySet" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="InvalidOperationException">Thrown when the compound file is read-only.</exception>
+    /// <exception cref="ObjectDisposedException">Thrown when the owning compound file has been disposed.</exception>
     /// <exception cref="CompoundFileSerializationException">
     /// Thrown when the stream name is not valid or the set carries a property value that cannot be encoded.
     /// </exception>
@@ -656,6 +689,7 @@ public sealed class CompoundStorage
     {
         ThrowHelper.ThrowIfNull(name);
         ThrowHelper.ThrowIfNull(propertySet);
+        _file.ThrowIfDisposed();
         RequireWritable();
 
         using CompoundStream stream = OpenStream(name, FileMode.Create, FileAccess.Write);

@@ -16,7 +16,7 @@ The samples run against `sample1.doc` from the [runnable compound-file sample](.
 - `IsDirty` turns `true` on the first mutation - opening a writable cursor counts, even before anything is written - and `false` after `Commit` or `Revert`.
 - `Commit` (or `CommitAsync`) truncates the destination and **rewrites the whole container** from the staging tree. There is no in-place patching of sectors - the layout is recomputed from scratch every time. The layout is planned before the destination is truncated, so a staging tree that cannot be written (storages nested past `MaxDepth`, a version-3 container over 2 GB) throws <xref:Bodu.IO.Compound.CompoundFileSerializationException> and leaves the destination as it was.
 - `Revert` resets the staging tree to the baseline - the state loaded **at open**.
-- `Dispose` without `Commit` leaves the destination exactly as it was.
+- `Dispose` without `Commit` leaves the destination exactly as it was. It also ends the session: afterwards every storage member that opens a child or stages an edit, and a writable cursor's `Write`, `SetLength` and `Flush`, throw <xref:System.ObjectDisposedException>, so an edit that could never be committed is never accepted.
 
 The mode/access combinations `Open(stream, mode, access)` accepts:
 
