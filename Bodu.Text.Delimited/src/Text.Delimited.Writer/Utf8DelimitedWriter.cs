@@ -317,7 +317,7 @@ public ref struct Utf8DelimitedWriter
         for (int i = 0; i < fields.Count; i++)
         {
             if (i > 0)
-                WriteChar(_options.EffectiveDelimiter);
+                WriteAsciiByte(_options.EffectiveDelimiter);
 
             WriteField(fields[i], isFirst: i == 0, isOnly: fields.Count == 1);
         }
@@ -402,13 +402,15 @@ public ref struct Utf8DelimitedWriter
     }
 
     /// <summary>
-    /// Writes a single character as UTF-8 bytes.
+    /// Writes an ASCII character as its single UTF-8 byte.
     /// </summary>
-    /// <param name="value">The character to write.</param>
-    private void WriteChar(char value)
+    /// <param name="value">The character to write, which the constructors have checked is ASCII.</param>
+    private void WriteAsciiByte(char value)
     {
-        Span<char> chars = [value];
-        WriteText(new string(chars));
+        Span<byte> destination = _output.GetSpan(1);
+        destination[0] = (byte)value;
+        _output.Advance(1);
+        AccountDirect(1);
     }
 
     /// <summary>
