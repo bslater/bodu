@@ -90,7 +90,7 @@ to the container; it does not replace the TOML file cache that
 ```csharp
 // SQLite: one database file, WAL-enabled, best-effort.
 builder.Services.AddNotableDateService(AmericasCalendarData.LoadResource("US"));
-builder.Services.AddSqliteNotableDateCache(o => o.DatabaseFilePath = "/var/cache/notable-dates.db");
+builder.Services.AddSqliteNotableDateCache(configure: o => o.DatabaseFilePath = "/var/cache/notable-dates.db");
 builder.Services.AddCachedNotableDateService(
     cacheFactory: sp => sp.GetRequiredService<INotableDateCache>());
 
@@ -123,7 +123,7 @@ carries the freshness policy:
 var resourceProvider = new MutableNotableDateResourceProvider(AmericasCalendarData.LoadResource("US"));
 
 using var service = new CachingNotableDateService(
-    AmericasCalendarData.CreateService("US"),
+    new ReloadableNotableDateService(resourceProvider),   // resolves from the provider's current resource
     new InMemoryNotableDateCache(),
     new NotableDateCachingOptions(),
     resourceProvider);

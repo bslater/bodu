@@ -17,8 +17,9 @@ SQL Server, or any other implementation. One instance computes a civil year; eve
 dotnet add package Bodu.Globalization.Calendar.Caching.Distributed
 ```
 
-Targets `net8.0` and `net10.0`. All types live in the `Bodu.Globalization.Calendar.Caching` namespace, alongside
-the other backends.
+Targets `net8.0` and `net10.0`. The cache types live in the `Bodu.Globalization.Calendar.Caching` namespace,
+alongside the other backends; the `AddDistributedNotableDateCache` and `AddRedisNotableDateCache` registrations live
+in `Bodu.Globalization.Calendar`.
 
 ```csharp
 services.AddDistributedNotableDateCache(/* … */);   // any IDistributedCache
@@ -37,11 +38,17 @@ It is a storage backend only - the caching *policy* (per-year units, time-to-liv
 resource-version invalidation, single-flight cold misses, best-effort storage) lives in
 `CachingNotableDateService` and is identical across every backend.
 
-Two consequences worth knowing for a shared cache. Single-flight coalescing is **per process**, so
-each instance may compute a cold year once; the resource-version token keeps that correct, since an
-entry written under one resource version is never served to a process on another. And the
-best-effort contract matters more here than on local storage: a failed read is a miss and a failed
-write is skipped, so an unreachable Redis degrades to recomputation rather than an outage.
+Three consequences worth knowing for a shared cache. Single-flight coalescing is **per process**, so
+each instance may compute a cold year once. The resource-version token is only as shared as its
+source: a fixed `NotableDateCachingOptions.ResourceVersion` means the same in every process, so set
+one that changes with the data (a release or content version) and no process serves an entry written
+under another. A token derived from an observed resource provider - the case under
+`AddReloadableNotableDateService`, where `ResourceVersion` is ignored - is process-local: each process
+counts its reloads from 1, so a process still on old data and one started on new data share a token,
+and a process that reloads prunes the entries the others wrote. Share this cache between processes
+with a fixed version rather than a reloadable service. And the best-effort contract matters more
+here than on local storage: a failed read is a miss and a failed write is skipped, so an unreachable
+Redis degrades to recomputation rather than an outage.
 
 ## Choosing a backend
 

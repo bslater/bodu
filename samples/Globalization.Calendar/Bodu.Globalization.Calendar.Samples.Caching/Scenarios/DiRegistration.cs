@@ -33,7 +33,8 @@ public static class DiRegistration
                 + "whether a cache exists. The TTL matters because the cache is holding computed rule output, "
                 + "and rule data can be republished - so the entry has to expire even though the underlying "
                 + "calculation is deterministic. The durable backends slot into the same call, which is why "
-                + "moving from in-memory to SQLite or Redis is a registration line rather than a refactor.",
+                + "moving from the default file cache to SQLite or Redis is a registration line rather than a "
+                + "refactor.",
             expect: "The resolved type is the caching decorator, not the data-pack service - the registration "
                 + "wrapped what was already there. The query then works exactly as it did without the decorator, "
                 + "which is the point: nothing downstream changes.");
@@ -43,9 +44,10 @@ public static class DiRegistration
         // 1. The underlying service - any of the AddNotableDateService forms works.
         services.AddNotableDateService(AsiaPacificCalendarData.LoadResource("AU"));
 
-        // 2. The caching decorator. With no arguments it uses an in-memory cache; the options callback
-        //    tunes TTL/refresh-ahead, and cacheFactory swaps the backend (Json/Toml file caches here,
-        //    or the Sqlite / IDistributedCache backends from the add-on packages).
+        // 2. The caching decorator. Without a cacheFactory it writes a TOML file cache under
+        //    NotableDateCachingOptions.CacheDirectory (a bodu-notable-dates folder in the temp path by
+        //    default); the options callback tunes TTL/refresh-ahead, and cacheFactory swaps the backend
+        //    (the in-memory or JSON caches, or the Sqlite / IDistributedCache backends from the add-on packages).
         services.AddCachedNotableDateService(configure: options =>
         {
             options.Ttl = TimeSpan.FromDays(7);
@@ -62,17 +64,21 @@ public static class DiRegistration
             + "  (identical to the uncached result - consumers inject the interface and never learn a cache exists)");
 
         // ------------------------------------------------------------------------------------------------
-        // Durable backends ship as add-on packages, each with its own one-line registration that slots in
-        // where the in-memory default sits:
+        // Durable backends ship as add-on packages. Each registers an INotableDateCache, which the decorator
+        // uses when cacheFactory hands it over (the DurableBackends scenario constructs both directly):
         //
         //   // Bodu.Globalization.Calendar.Caching.Sqlite - a single-file durable cache:
-        //   services.AddSqliteNotableDateCache(options => options.DatabasePath = "calendar-cache.db");
+        //   services.AddSqliteNotableDateCache(configure: options => options.DatabaseFilePath = "calendar-cache.db");
         //
-        //   // Bodu.Globalization.Calendar.Caching.Distributed - any IDistributedCache (e.g. Redis):
+        //   // Bodu.Globalization.Calendar.Caching.Distributed - over a registered IDistributedCache:
         //   services.AddDistributedNotableDateCache();
-        //   services.AddRedisNotableDateCache("localhost:6379");
+        //   // ... or registering a Redis IDistributedCache as well:
+        //   services.AddRedisNotableDateCache(redis => redis.Configuration = "localhost:6379");
         //
-        // Both are omitted here to keep the sample dependency-free and offline.
+        //   // Either way, hand the registered cache to the decorator:
+        //   services.AddCachedNotableDateService(cacheFactory: sp => sp.GetRequiredService<INotableDateCache>());
+        //
+        // They are left out of this registration so the scenario keeps the default backend.
         // ------------------------------------------------------------------------------------------------
 
         Console.WriteLine();

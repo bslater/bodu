@@ -46,8 +46,8 @@ if (!options.TryValidate(out string? error))
 
 | Property | Default | Meaning |
 |---|---|---|
-| `ThrowOnStorageFailure` | `false` | `false` keeps the contract's best-effort behaviour - a failed read is an empty read, a failed write is skipped and reported as `Failed`. `true` rethrows the storage exception as the store produced it (<xref:System.IO.IOException> or `UnauthorizedAccessException` for files; which one varies by platform). Argument validation always throws regardless. |
-| `ValidateStorageOnStart` | `false` | `true` probes the backing store when the cache is constructed and throws if it is unusable, instead of discovering the fault on the first read or write. The SQLite and distributed registrations run this probe through options `ValidateOnStart`, so a misconfigured store fails host start-up. |
+| `ThrowOnStorageFailure` | `false` | `false` keeps the contract's best-effort behaviour - a failed read is an empty read, a failed write is skipped and reported as `Failed`. `true` rethrows the storage exception as the store produced it: <xref:System.IO.IOException> or `UnauthorizedAccessException` for files (which one varies by platform), `SqliteException` or `IOException` for SQLite, and any non-cancellation exception for the distributed cache. Argument validation always throws regardless. |
+| `ValidateStorageOnStart` | `false` | `true` probes the backing store eagerly and throws if it is unusable, instead of discovering the fault on the first read or write. The file and SQLite caches probe when constructed; the SQLite and distributed registrations run the probe through options `ValidateOnStart`, so a misconfigured store fails host start-up. A distributed cache constructed directly is never probed. |
 
 ### `FileNotableDateCacheOptions` - TOML and JSON files
 
@@ -83,7 +83,7 @@ if (!options.TryValidate(out string? error))
 
 | Property | Default | Meaning |
 |---|---|---|
-| `Territories` | empty | The territories to warm. Empty fails validation, so an unconfigured warm-up cannot register. |
+| `Territories` | empty | The territories to warm. Empty fails options validation, so the host fails to start until territories are configured. |
 | `YearsBehind` | `0` | Rolling window: first year = current UTC year − `YearsBehind`. Must not be negative. |
 | `YearsAhead` | `1` | Rolling window: last year = current UTC year + `YearsAhead`. Must not be negative. |
 | `FirstYear` | `null` | Pins the first year, replacing the rolling default independently of `LastYear`. |
@@ -176,7 +176,7 @@ CREATE TABLE IF NOT EXISTS notable_dates (
 );
 ```
 
-`computed_at` is the invariant round-trip text of the UTC instant and `occurrences` is the JSON array of occurrence rows for that year (the same row shape as the file schema, without the redundant `year`/`version` columns). A store deletes the territory's rows and re-inserts the merged set inside one transaction; a single-year read (`GetYear`) is answered from one keyed row without loading the territory. `Clear()` runs `DELETE FROM notable_dates`.
+`computed_at` is the invariant round-trip text of the UTC instant and `occurrences` is the JSON array of occurrence rows for that year (the same row shape as the file schema; the redundant `year` and `version` fields are written as `0` and an empty string, since the table's own columns carry them). A store deletes the territory's rows and re-inserts the merged set inside one transaction; a single-year read (`GetYear`) is answered from one keyed row without loading the territory. `Clear()` runs `DELETE FROM notable_dates`.
 
 ## The distributed key format
 

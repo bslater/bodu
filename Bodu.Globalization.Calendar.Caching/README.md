@@ -18,7 +18,8 @@ computer that knows nothing of caching: `CachingNotableDateService` implements t
 dotnet add package Bodu.Globalization.Calendar.Caching
 ```
 
-Targets `net8.0` and `net10.0`. All types live in the `Bodu.Globalization.Calendar.Caching` namespace.
+Targets `net8.0` and `net10.0`. The cache types live in the `Bodu.Globalization.Calendar.Caching` namespace; the
+`AddCachedNotableDateService` and `AddNotableDateCacheWarmup` registrations live in `Bodu.Globalization.Calendar`.
 
 ```csharp
 services.AddCachedNotableDateService(/* … */);
@@ -42,8 +43,8 @@ services.AddCachedNotableDateService(/* … */);
 
 | Type | Storage | Notes |
 |---|---|---|
-| `InMemoryNotableDateCache` | Process memory | No configuration required; the default for a single process |
-| `TomlNotableDateCache` | One TOML file per territory | Human-readable and diffable on disk |
+| `InMemoryNotableDateCache` | Process memory | No configuration required; suits a single process, chosen through `cacheFactory` |
+| `TomlNotableDateCache` | One TOML file per territory | Human-readable and diffable on disk; what `AddCachedNotableDateService` uses when no `cacheFactory` is given |
 | `JsonNotableDateCache` | One JSON file per territory | Same file layout, JSON encoding |
 | `NullNotableDateCache` | Nothing | Always misses; for disabling caching without changing wiring |
 

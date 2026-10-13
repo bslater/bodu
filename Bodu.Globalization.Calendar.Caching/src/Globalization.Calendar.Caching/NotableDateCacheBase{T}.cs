@@ -134,10 +134,11 @@ public abstract class NotableDateCacheBase<TOptions>
     /// <param name="territory">The normalized territory key.</param>
     /// <returns>The stored entries, or an empty list when none are available or the read fails.</returns>
     /// <remarks>
-    /// Declared <see langword="protected internal" /> so the storage seam is open to the backends in this assembly and
-    /// in the companion SQLite and distributed packages, which derive from this base. An unrelated third-party backend
-    /// implements the public <see cref="INotableDateCache" /> contract directly instead, as
-    /// <see cref="NullNotableDateCache" /> does.
+    /// Declared <see langword="protected internal" /> so this assembly can call the storage seam, while a backend in
+    /// any other assembly can still derive from this base and override it: the companion SQLite and distributed
+    /// packages do, and a third-party store overrides it with <see langword="protected" /> <see langword="override" />.
+    /// A backend that needs none of this base's policy implements the public <see cref="INotableDateCache" /> contract
+    /// directly instead, as <see cref="NullNotableDateCache" /> does.
     /// </remarks>
     protected internal abstract IReadOnlyList<NotableDateCacheEntry> ReadEntries(string territory);
 

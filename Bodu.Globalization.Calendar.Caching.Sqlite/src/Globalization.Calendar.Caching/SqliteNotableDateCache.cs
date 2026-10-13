@@ -98,11 +98,8 @@ public sealed class SqliteNotableDateCache
     /// Initializes a new instance of the <see cref="SqliteNotableDateCache" /> class bound to a database file.
     /// </summary>
     /// <param name="databaseFilePath">The path to the SQLite database file used by the cache.</param>
-    /// <exception cref="ArgumentNullException">
-    /// Thrown when <paramref name="databaseFilePath" /> is <see langword="null" />.
-    /// </exception>
     /// <exception cref="ArgumentException">
-    /// Thrown when <paramref name="databaseFilePath" /> is empty or white space.
+    /// Thrown when <paramref name="databaseFilePath" /> is <see langword="null" />, empty, or white space.
     /// </exception>
     public SqliteNotableDateCache(string databaseFilePath)
         : this(new SqliteNotableDateCacheOptions { DatabaseFilePath = databaseFilePath })

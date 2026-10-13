@@ -345,9 +345,10 @@ public sealed class DictionaryNotableDateCache : INotableDateCache
 
 Plug it in exactly like a shipped backend - `new CachingNotableDateService(engine, new DictionaryNotableDateCache(),
 options)` or `AddCachedNotableDateService(cacheFactory: _ => new DictionaryNotableDateCache())`. The shipped
-backends additionally derive from <xref:Bodu.Globalization.Calendar.Caching.NotableDateCacheBase`1>, which supplies
-the merge-and-prune, validity, and per-territory locking; that storage seam is opened to the companion SQLite and
-distributed packages, so a third-party backend implements the interface directly as above.
+backends instead derive from <xref:Bodu.Globalization.Calendar.Caching.NotableDateCacheBase`1>, which supplies the
+merge-and-prune, validity, and per-territory locking and leaves only the storage to the derived type. A third-party
+backend can derive from it too, overriding its `protected internal` `ReadEntries` / `WriteEntries` seam with
+`protected override`; [Writing a cache backend](../../guides/calendar/caching/custom-backend.md) shows both routes.
 
 ## Where to go next
 

@@ -17,8 +17,8 @@ a restarted process starts warm instead of recomputing every territory from scra
 dotnet add package Bodu.Globalization.Calendar.Caching.Sqlite
 ```
 
-Targets `net8.0` and `net10.0`. All types live in the `Bodu.Globalization.Calendar.Caching` namespace, alongside
-the other backends.
+Targets `net8.0` and `net10.0`. The cache types live in the `Bodu.Globalization.Calendar.Caching` namespace,
+alongside the other backends; the `AddSqliteNotableDateCache` registration lives in `Bodu.Globalization.Calendar`.
 
 ```csharp
 services.AddSqliteNotableDateCache(/* … */);

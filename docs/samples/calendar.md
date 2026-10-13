@@ -85,7 +85,8 @@ stand in for two processes sharing a store - both proved by the engine call coun
 The hosted warm-up remains a fenced comment block. A
 `CountingNotableDateService` wrapper counts the resolutions that reach the real engine, so every
 cache hit is proved by call count rather than by timing. *Packages: `Bodu.Globalization.Calendar`,
-`Bodu.Globalization.Calendar.Caching`, `Bodu.Globalization.Calendar.DependencyInjection`,
+`Bodu.Globalization.Calendar.Caching`, `Bodu.Globalization.Calendar.Caching.Sqlite`,
+`Bodu.Globalization.Calendar.Caching.Distributed`, `Bodu.Globalization.Calendar.DependencyInjection`,
 `Bodu.Globalization.Calendar.AsiaPacific`.*
 
 ### Bodu.Globalization.Calendar.Samples.RegionalData

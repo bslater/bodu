@@ -31,27 +31,30 @@ public class NotableDateCacheOptions
     /// setting.
     /// </para>
     /// <para>
-    /// The failure is rethrown as the store produced it rather than being translated, so a caller handles the pair the
-    /// cache treats as a storage failure: <see cref="IOException" /> and <see cref="UnauthorizedAccessException" />.
-    /// Which of the two a given fault yields is the storage layer's choice and varies by platform - a blocked file
-    /// write surfaces as <see cref="IOException" /> on Unix and <see cref="UnauthorizedAccessException" /> on Windows -
-    /// so code that catches only one will miss the other.
+    /// The failure is rethrown as the store produced it rather than being translated, so a caller handles the
+    /// exceptions its backend treats as storage failures: <see cref="IOException" /> and
+    /// <see cref="UnauthorizedAccessException" /> for the file caches, <c>SqliteException</c> and
+    /// <see cref="IOException" /> for the SQLite cache, and any exception other than
+    /// <see cref="OperationCanceledException" /> for the distributed cache. For the file caches, which of the two a
+    /// given fault yields is the storage layer's choice and varies by platform - a blocked file write surfaces as
+    /// <see cref="IOException" /> on Unix and <see cref="UnauthorizedAccessException" /> on Windows - so code that
+    /// catches only one will miss the other.
     /// </para>
     /// </remarks>
     public bool ThrowOnStorageFailure { get; set; }
 
     /// <summary>
-    /// Gets or sets a value indicating whether the cache eagerly probes its backing store when constructed and throws
-    /// when the store is unusable, rather than deferring the discovery to the first read or write.
+    /// Gets or sets a value indicating whether the backing store is probed eagerly, and an unusable store throws,
+    /// rather than deferring the discovery to the first read or write.
     /// </summary>
     /// <value>
-    /// <see langword="true" /> to probe the store at construction; <see langword="false" /> (the default) to skip the
-    /// probe.
+    /// <see langword="true" /> to probe the store eagerly; <see langword="false" /> (the default) to skip the probe.
     /// </value>
     /// <remarks>
-    /// The SQLite and distributed dependency-injection packages run this probe through their <c>ValidateOnStart</c>
-    /// wiring, so a misconfigured store fails the host start; a cache constructed directly probes in its constructor
-    /// instead. This setting is independent of <see cref="ThrowOnStorageFailure" />.
+    /// The file and SQLite caches probe in their constructors, and the SQLite and distributed dependency-injection
+    /// registrations run the probe through their <c>ValidateOnStart</c> wiring, so a misconfigured store fails the host
+    /// start. The distributed cache's constructor does not probe, so a distributed cache constructed directly is never
+    /// probed. This setting is independent of <see cref="ThrowOnStorageFailure" />.
     /// </remarks>
     public bool ValidateStorageOnStart { get; set; }
 

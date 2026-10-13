@@ -30,9 +30,10 @@ public static class FileBackedCaches
                 + "able to absorb the work - a deployment restarts every instance at once, and each one "
                 + "re-resolves every year it serves. A file-backed cache survives the restart, so the cost is "
                 + "paid once per data version rather than once per process. Two file formats ship because the "
-                + "choice is about who reads the file: JSON is the default, while TOML is worth having when the "
-                + "cache is committed or inspected, since it diffs legibly. The second service instance here "
-                + "stands in for the new process, which is what makes the claim testable offline.",
+                + "choice is about who reads the file: TOML, which the dependency-injection registration writes by "
+                + "default, is worth having when the cache is committed or inspected, since it diffs legibly. The "
+                + "second service instance here stands in for the new process, which is what makes the claim "
+                + "testable offline.",
             expect: "The first instance does the engine work and leaves files behind. The second - a brand-new "
                 + "service with its own counter - serves the same range with zero engine resolutions, having "
                 + "read only what the first wrote. The TOML backend is a constructor swap, nothing more.");

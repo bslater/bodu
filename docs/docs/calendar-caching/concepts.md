@@ -87,8 +87,8 @@ time-to-live. The token comes from one of two places:
 
 | Decorator constructed with | Token |
 |---|---|
-| An <xref:Bodu.Globalization.Calendar.INotableDateResourceProvider> (`versionSource`) | `"<ResourceId>\|<SchemaVersion>\|<generation>"`, where the generation increments every time the provider's `Current` reference changes. A <xref:Bodu.Globalization.Calendar.MutableNotableDateResourceProvider>`.Reload(...)` therefore invalidates every cached year on the next query, even when the new resource carries the same identifier. Under DI this provider is picked up automatically when `AddReloadableNotableDateService` registered it. |
-| No provider | `NotableDateCachingOptions.ResourceVersion`, or a built-in default token when that is `null`. Set it to the data version of the resource and bump it after a data update. |
+| An <xref:Bodu.Globalization.Calendar.INotableDateResourceProvider> (`versionSource`) | `"<ResourceId>\|<SchemaVersion>\|<generation>"`, where the generation increments every time the provider's `Current` reference changes. A <xref:Bodu.Globalization.Calendar.MutableNotableDateResourceProvider>`.Reload(...)` therefore invalidates every cached year on the next query, even when the new resource carries the same identifier. Under DI this provider is picked up automatically when `AddReloadableNotableDateService` registered it. The generation is counted per decorator from 1, so the token is local to a process: processes sharing a file, SQLite or distributed cache do not agree on it, and a reload in one prunes the entries the others wrote. |
+| No provider | `NotableDateCachingOptions.ResourceVersion`, or a built-in default token when that is `null`. Set it to the data version of the resource and bump it after a data update. This is the form to use when several processes share one cache. |
 
 Validity is a third, silent check: an entry with a null territory or version, a year outside `1`-`9999`, or a
 `ComputedAtUtc` more than one minute ahead of `asOf` (clock skew tolerance) is treated as absent on read and dropped
@@ -157,10 +157,13 @@ The shipped backends share two layers of mechanism so they differ only in how th
 | <xref:Bodu.Globalization.Calendar.Caching.DistributedNotableDateCache> | Backend (`…Caching.Distributed`) | One JSON blob per territory under `<KeyPrefix>notable-dates:<TERRITORY>` in an `IDistributedCache`, stamped with a server-side absolute expiration of `ttl + EntryExpirationMargin`. |
 | <xref:Bodu.Globalization.Calendar.Caching.NullNotableDateCache> | Backend | Implements the interface directly; stores nothing. |
 
-The abstract storage seam (`ReadEntries` / `WriteEntries`) is `protected internal`, opened to the companion SQLite
-and distributed packages. A backend outside the family implements the public
-<xref:Bodu.Globalization.Calendar.Caching.INotableDateCache> contract directly, as
-`NullNotableDateCache` does - see [Getting started](getting-started.md#implement-a-custom-cache).
+The abstract storage seam (`ReadEntries` / `WriteEntries`) is `protected internal`, so a backend in any assembly
+can derive from `NotableDateCacheBase<TOptions>`, as the companion SQLite and distributed packages do; a third-party
+backend overrides the seam with `protected override`. A backend can instead implement the public
+<xref:Bodu.Globalization.Calendar.Caching.INotableDateCache> contract directly, as `NullNotableDateCache` does - see
+[Getting started](getting-started.md#implement-a-custom-cache) and
+[Writing a cache backend](../../guides/calendar/caching/custom-backend.md). `FileNotableDateCacheBase` is the
+exception: its serialization members are `private protected`, so only the shipped TOML and JSON caches derive from it.
 
 ## Observability
 

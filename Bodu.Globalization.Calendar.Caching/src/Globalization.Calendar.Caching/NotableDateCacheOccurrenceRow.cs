@@ -12,8 +12,9 @@ namespace Bodu.Globalization.Calendar.Caching;
 /// </summary>
 /// <remarks>
 /// The rule identity is flattened to its three string components and the category to its enum name, so the row is a
-/// flat table of scalars that both the TOML and JSON serializers round-trip natively. Nullable fields are omitted when
-/// unset and deserialize back to <see langword="null" />.
+/// flat table of scalars that both the TOML and JSON serializers round-trip natively. An unset nullable field is
+/// omitted by the TOML serializer and written as <c>null</c> by the JSON one; either way it deserializes back to
+/// <see langword="null" />.
 /// </remarks>
 public sealed class NotableDateCacheOccurrenceRow
 {
