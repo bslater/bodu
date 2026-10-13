@@ -67,17 +67,19 @@ public static partial class Base58
     /// produce.
     /// </summary>
     /// <param name="charCount">The input character count.</param>
-    /// <returns>An upper bound on the decoded byte count.</returns>
+    /// <returns>An upper bound on the decoded byte count, which is <paramref name="charCount" /> itself.</returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="charCount" /> is negative.</exception>
+    /// <remarks>
+    /// No character decodes to more than one byte: each leading alphabet[0] character (<c>1</c> in the Bitcoin and
+    /// Flickr alphabets, <c>r</c> in Ripple's) decodes to exactly one zero byte, and the remaining characters carry
+    /// about 0.73 bytes each. Input made only of leading alphabet[0] characters reaches the bound, so no smaller bound
+    /// computed from the character count alone holds for every input. The exact length of a specific input is the
+    /// length of the array <see cref="Decode(ReadOnlySpan{char}, Base58Variant, BaseFormatStyles)" /> returns.
+    /// </remarks>
     public static int GetMaxDecodedLength(int charCount)
     {
         ThrowHelper.ThrowIfNegative(charCount);
-        if (charCount == 0)
-            return 0;
-        checked
-        {
-            return ((charCount * 733) / 1000) + 1;
-        }
+        return charCount;
     }
 
     /// <summary>

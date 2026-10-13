@@ -131,12 +131,14 @@ Base58.IsBase58Digit('1');                              // true
 Base58.IsBase58Digit('0');                              // false
 
 Base58.GetMaxEncodedLength(25);  // ≈ 35 (upper bound)
-Base58.GetMaxDecodedLength(34);  // ≈ 25 (upper bound)
+Base58.GetMaxDecodedLength(34);  // 34 (upper bound: one byte per character)
 ```
 
 Exact encoded length depends on the actual data (specifically the leading-zero count and the magnitude of the
 non-zero portion), so the library only exposes `GetMaxEncodedLength` / `GetMaxDecodedLength`. Code that needs the
-exact length can call `Encode` / `Decode` and use the result's length.
+exact length can call `Encode` / `Decode` and use the result's length. `GetMaxDecodedLength` returns the character
+count itself, because each leading `1` decodes to a whole zero byte: `"1111"` decodes to four bytes, so no smaller
+bound holds for every input. `Base58Check.GetMaxDecodedLength` subtracts the four checksum bytes from it.
 
 ## Common patterns
 
