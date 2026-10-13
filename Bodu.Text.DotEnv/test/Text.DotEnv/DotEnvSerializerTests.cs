@@ -204,6 +204,20 @@ public partial class DotEnvSerializerTests
     }
 
     /// <summary>
+    /// A POCO with a member whose type is a dictionary, which is not a scalar and maps to no single DotEnv value.
+    /// </summary>
+    public sealed class DictionaryMemberConfig
+    {
+        /// <summary>Gets or sets the name.</summary>
+        /// <value>The name.</value>
+        public string? Name { get; set; }
+
+        /// <summary>Gets or sets the counts.</summary>
+        /// <value>The counts, or <see langword="null" />.</value>
+        public Dictionary<string, int>? Counts { get; set; }
+    }
+
+    /// <summary>
     /// A POCO whose members are dates and times, two of them also in nullable form.
     /// </summary>
     public sealed class TemporalConfig

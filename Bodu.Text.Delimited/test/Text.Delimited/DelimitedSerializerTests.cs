@@ -439,6 +439,20 @@ public partial class DelimitedSerializerTests
     }
 
     /// <summary>
+    /// A record POCO with a member whose type is a dictionary, which is not a scalar and maps to no single field.
+    /// </summary>
+    public sealed class DictionaryMemberRecord
+    {
+        /// <summary>Gets or sets the name.</summary>
+        /// <value>The name.</value>
+        public string? Name { get; set; }
+
+        /// <summary>Gets or sets the counts.</summary>
+        /// <value>The counts, or <see langword="null" />.</value>
+        public Dictionary<string, int>? Counts { get; set; }
+    }
+
+    /// <summary>
     /// A record POCO of ten number columns, which the allocation tests write and read in thousands.
     /// </summary>
     public sealed class TenNumberRecord

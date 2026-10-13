@@ -517,4 +517,76 @@ public partial class DelimitedSerializerTests
 
         Assert.AreEqual("Value\r\n2026-01-02\r\n", text);
     }
+
+    /// <summary>
+    /// Verifies that a record member whose type is not a scalar, such as a <see cref="Dictionary{TKey, TValue}" />,
+    /// throws <see cref="DelimitedSerializationException" /> naming the column and the type, rather than writing the
+    /// value's <see cref="object.ToString" /> text, which does not read back.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenARecordMemberIsNotAScalar_ShouldThrowDelimitedSerializationException()
+    {
+        var records = new List<DictionaryMemberRecord> { new() { Name = "a", Counts = new Dictionary<string, int> { ["x"] = 1 } } };
+
+        var ex = Assert.ThrowsExactly<DelimitedSerializationException>(() =>
+        {
+            _ = DelimitedSerializer.Serialize(records);
+        });
+
+        Assert.IsTrue(ex.Message.Contains("'Counts'", StringComparison.Ordinal), ex.Message);
+        Assert.IsTrue(ex.Message.Contains(typeof(Dictionary<string, int>).ToString(), StringComparison.Ordinal), ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that a record type with a member whose type is not a scalar throws
+    /// <see cref="DelimitedSerializationException" /> before anything is written, so that a collection without records
+    /// does not write a header row for a column no field could fill.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenARecordMemberIsNotAScalarAndThereAreNoRecords_ShouldThrowDelimitedSerializationException()
+    {
+        var ex = Assert.ThrowsExactly<DelimitedSerializationException>(() =>
+        {
+            _ = DelimitedSerializer.Serialize(new List<DictionaryMemberRecord>());
+        });
+
+        Assert.IsTrue(ex.Message.Contains("'Counts'", StringComparison.Ordinal), ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that a member declared as <see cref="object" /> whose value is not a scalar throws
+    /// <see cref="DelimitedSerializationException" /> naming the column and the value's type, rather than writing the
+    /// value's <see cref="object.ToString" /> text.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenAnObjectMemberHoldsAValueThatIsNotAScalar_ShouldThrowDelimitedSerializationException()
+    {
+        var records = new List<ObjectValueRecord> { new() { Value = new List<int> { 1, 2 } } };
+
+        var ex = Assert.ThrowsExactly<DelimitedSerializationException>(() =>
+        {
+            _ = DelimitedSerializer.Serialize(records);
+        });
+
+        Assert.IsTrue(ex.Message.Contains("'Value'", StringComparison.Ordinal), ex.Message);
+        Assert.IsTrue(ex.Message.Contains(typeof(List<int>).ToString(), StringComparison.Ordinal), ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that a dictionary root whose value type is not a scalar throws
+    /// <see cref="DelimitedSerializationException" /> naming the <c>Value</c> column, rather than writing each value's
+    /// <see cref="object.ToString" /> text.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenRootIsADictionaryWhoseValuesAreNotScalars_ShouldThrowDelimitedSerializationException()
+    {
+        var pairs = new Dictionary<string, List<int>> { ["a"] = [1] };
+
+        var ex = Assert.ThrowsExactly<DelimitedSerializationException>(() =>
+        {
+            _ = DelimitedSerializer.Serialize(pairs);
+        });
+
+        Assert.IsTrue(ex.Message.Contains("'Value'", StringComparison.Ordinal), ex.Message);
+    }
 }
