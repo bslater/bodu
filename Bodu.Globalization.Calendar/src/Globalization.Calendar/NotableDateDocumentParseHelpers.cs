@@ -335,7 +335,7 @@ internal static class NotableDateDocumentParseHelpers
     /// <param name="format">The resource format string, taking the field name and the value.</param>
     /// <param name="field">The name of the field the value belongs to.</param>
     /// <param name="value">The malformed value.</param>
-    private static void AddValueError(ICollection<NotableDateValidationDiagnostic> diagnostics, string format, string field, string value) =>
+    public static void AddValueError(ICollection<NotableDateValidationDiagnostic> diagnostics, string format, string field, string value) =>
         diagnostics.Add(new NotableDateValidationDiagnostic(
             NotableDateValidationSeverity.Error,
             "BODU-CAL-VALUE",

@@ -144,11 +144,11 @@ internal static class NotableDateDocumentReader
             return AdjustmentScope.Global;
 
         return new AdjustmentScope(
-            node.ScalarList(null, "Territory", "code", "territories"),
+            node.TextList(null, "Territory", "code", "territories", "scope territories", diagnostics),
             ParseEnumList(node.ScalarList(null, "Calendar", "name", "calendars"), CalendarSystem.Gregorian, "scope calendars", diagnostics),
             ParseEnumList(node.ScalarList(null, "Category", "value", "categories"), NotableDateCategory.None, "scope categories", diagnostics),
-            node.ScalarList(null, "NotableDate", "ref", "notableDateRefs"),
-            node.QualifiedReferenceList(null, "Rule", "notableDateRef", "ruleRef", "ruleRefs")
+            node.TextList(null, "NotableDate", "ref", "notableDateRefs", "scope notableDateRefs", diagnostics),
+            node.QualifiedReferenceList(null, "Rule", "notableDateRef", "ruleRef", "ruleRefs", "scope ruleRefs", diagnostics)
                 .Select(reference => AdjustmentScope.QualifyRuleRef(reference.Qualifier, reference.Name)),
             ParseNullableInt(node.Scalar("fromYear"), "scope fromYear", diagnostics),
             ParseNullableInt(node.Scalar("toYear"), "scope toYear", diagnostics),
@@ -176,7 +176,7 @@ internal static class NotableDateDocumentReader
                 ParseEnum(notableDate.Scalar("category"), NotableDateCategory.None, "category", diagnostics),
                 ParseBool(notableDate.Scalar("defaultNonWorkingDay"), false, "defaultNonWorkingDay", diagnostics),
                 ParseInt(notableDate.Scalar("defaultDurationDays"), 1, "defaultDurationDays", diagnostics),
-                notableDate.ScalarList("Tags", "Tag", "value", "tags"),
+                notableDate.TextList("Tags", "Tag", "value", "tags", "tags", diagnostics),
                 ReadRules(notableDate, id, diagnostics)));
         }
 
@@ -218,8 +218,8 @@ internal static class NotableDateDocumentReader
         NotableDateDurationDefinition? duration = ReadDuration(node, applicability.Calendar, notableDateId, id, diagnostics);
         IDateRecurrenceStrategy? recurrence = ReadRecurrence(recurrenceNode, notableDateId, id, diagnostics);
 
-        IReadOnlyList<string> adjustments = node.ScalarList("Adjustments", "Adjustment", "policyRef", "adjustments");
-        IReadOnlyList<string> tags = node.ScalarList("Tags", "Tag", "value", "tags");
+        IReadOnlyList<string> adjustments = node.TextList("Adjustments", "Adjustment", "policyRef", "adjustments", "rule adjustments", diagnostics);
+        IReadOnlyList<string> tags = node.TextList("Tags", "Tag", "value", "tags", "rule tags", diagnostics);
 
         return recurrence is not null
             ? new NotableDateRule(
@@ -306,7 +306,7 @@ internal static class NotableDateDocumentReader
             ParseEnum(node.Scalar("calendar"), CalendarSystem.Gregorian, "calendar", diagnostics),
             ParseNullableInt(node.Scalar("fromYear"), "applicability fromYear", diagnostics),
             ParseNullableInt(node.Scalar("toYear"), "applicability toYear", diagnostics),
-            node.ScalarList(null, "Territory", "code", "territories"),
+            node.TextList(null, "Territory", "code", "territories", "applicability territories", diagnostics),
             node.IntList(null, "OnlyYear", "value", "onlyYears", "applicability onlyYears", diagnostics),
             node.IntList(null, "ExceptYear", "value", "exceptYears", "applicability exceptYears", diagnostics),
             ParseNullableInt(node.Scalar("everyYears"), "applicability everyYears", diagnostics),
@@ -665,8 +665,8 @@ internal static class NotableDateDocumentReader
         RuleApplicability? applicability = applicabilityNode is null ? null : ReadApplicability(applicabilityNode, diagnostics);
         CalendarSystem calendar = applicability?.Calendar ?? CalendarSystem.Gregorian;
 
-        IReadOnlyList<string>? adjustments = operation.OptionalScalarList("Adjustments", "Adjustment", "policyRef", "adjustments");
-        IReadOnlyList<string>? tags = operation.OptionalScalarList("Tags", "Tag", "value", "tags");
+        IReadOnlyList<string>? adjustments = operation.OptionalTextList("Adjustments", "Adjustment", "policyRef", "adjustments", "patch adjustments", diagnostics);
+        IReadOnlyList<string>? tags = operation.OptionalTextList("Tags", "Tag", "value", "tags", "patch tags", diagnostics);
 
         // A patch that carries neither a durationDays attribute nor a Duration element leaves the duration unchanged.
         NotableDateDurationDefinition? duration =
@@ -709,7 +709,7 @@ internal static class NotableDateDocumentReader
                     use.Scalar("territory"),
                     ParseNullableEnum<NotableDateCategory>(use.Scalar("category"), "import use category", diagnostics),
                     ParseNullableBool(use.Scalar("nonWorking"), "import use nonWorking", diagnostics),
-                    use.OptionalScalarList("Adjustments", "Adjustment", "policyRef", "adjustments")));
+                    use.OptionalTextList("Adjustments", "Adjustment", "policyRef", "adjustments", "import use adjustments", diagnostics)));
             }
 
             imports.Add(new NotableDateImport(import.Scalar("resource") ?? string.Empty, uses));

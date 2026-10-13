@@ -126,6 +126,12 @@
   <data name="Validation_InvalidTriggerMonth" xml:space="preserve">
     <value>The {0} value '{1}' is not a month; expected a full English month name or an integer between 1 and 12.</value>
   </data>
+  <data name="Validation_InvalidTextItem" xml:space="preserve">
+    <value>The {0} item '{1}' is not a string.</value>
+  </data>
+  <data name="Validation_InvalidReferenceItem" xml:space="preserve">
+    <value>The {0} item '{1}' is neither a rule identifier nor a reference object.</value>
+  </data>
   <data name="Validation_OverrideNotableDateNotFound" xml:space="preserve">
     <value>Override operation targets notable date '{0}', which does not exist in the resolved resource.</value>
   </data>

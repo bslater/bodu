@@ -250,6 +250,24 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The {0} item &apos;{1}&apos; is not a string..
+        /// </summary>
+        internal static string Validation_InvalidTextItem {
+            get {
+                return ResourceManager.GetString("Validation_InvalidTextItem", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The {0} item &apos;{1}&apos; is neither a rule identifier nor a reference object..
+        /// </summary>
+        internal static string Validation_InvalidReferenceItem {
+            get {
+                return ResourceManager.GetString("Validation_InvalidReferenceItem", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Override operation targets notable date '{0}', which does not exist in the resolved resource..
         /// </summary>
         internal static string Validation_OverrideNotableDateNotFound {
