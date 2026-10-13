@@ -276,7 +276,7 @@ public sealed partial class NotableDateDocumentBuilder
             foreach (JsonNode? node in rules)
             {
                 if (node is JsonObject ruleJson)
-                    definition.AddRule(ReadRuleJson(ruleJson));
+                    definition.AddRule(ReadRuleJson(ruleJson, definition.Id));
             }
         }
 
@@ -287,10 +287,21 @@ public sealed partial class NotableDateDocumentBuilder
     /// Reads a single JSON rule object into a rule builder.
     /// </summary>
     /// <param name="ruleJson">The rule object.</param>
+    /// <param name="notableDateId">
+    /// The identifier of the concept the rule belongs to, used in exception messages.
+    /// </param>
     /// <returns>The reconstructed rule builder.</returns>
-    private static NotableDateRuleBuilder ReadRuleJson(JsonObject ruleJson)
+    /// <exception cref="FormatException">
+    /// The rule's <c>strategy</c> and <c>recurrence</c> name no recognized kind or more than one between them, or its
+    /// <c>untilDate</c> declares no end strategy or one that names no recognized kind or more than one.
+    /// </exception>
+    private static NotableDateRuleBuilder ReadRuleJson(JsonObject ruleJson, string notableDateId)
     {
         NotableDateRuleBuilder rule = new(ScalarText(ruleJson, "id") ?? string.Empty);
+        JsonObject? strategyJson = ObjectProperty(ruleJson, "strategy");
+        JsonObject? recurrenceJson = ObjectProperty(ruleJson, "recurrence");
+        ThrowIfOccurrenceSourceInvalid(strategyJson, recurrenceJson, notableDateId, rule.Id, patch: false);
+
         JsonObject? applicability = ObjectProperty(ruleJson, "applicability");
 
         rule.SetParsedScalars(
@@ -312,21 +323,69 @@ public sealed partial class NotableDateDocumentBuilder
             ReadTextArray(ArrayProperty(ruleJson, "tags"), "rule tags"),
             ReadTextArray(ArrayProperty(ruleJson, "adjustments"), "rule adjustments"));
 
-        rule.SetParsedStrategy(BuildStrategyElement(ObjectProperty(ruleJson, "strategy")));
+        rule.SetParsedStrategy(BuildStrategyElement(strategyJson));
 
-        if (BuildRecurrenceElement(ObjectProperty(ruleJson, "recurrence")) is XElement recurrence)
+        if (BuildRecurrenceElement(recurrenceJson) is XElement recurrence)
             rule.SetParsedRecurrence(recurrence);
 
-        if (ObjectProperty(ruleJson, "duration") is JsonObject duration && ObjectProperty(duration, "untilDate") is JsonObject untilDate)
-        {
-            rule.SetParsedDuration(
-                BuildStrategyElement(ObjectProperty(untilDate, "strategy")),
-                ParseNullableEnum<DateBoundary>(ScalarText(untilDate, "startBoundary"), "untilDate startBoundary") ?? DateBoundary.Inclusive,
-                ParseNullableEnum<DateBoundary>(ScalarText(untilDate, "endBoundary"), "untilDate endBoundary") ?? DateBoundary.Inclusive,
-                ParseNullableEnum<EndDateSelection>(ScalarText(untilDate, "selection"), "untilDate selection") ?? EndDateSelection.FirstOnOrAfterStart);
-        }
+        ReadUntilDateJson(ruleJson, rule, notableDateId);
 
         return rule;
+    }
+
+    /// <summary>
+    /// Reads the calculated end-date duration of a JSON rule or <c>PatchRule</c> override, when it declares one, into a
+    /// rule builder.
+    /// </summary>
+    /// <param name="owner">The rule or override object.</param>
+    /// <param name="rule">The rule builder that receives the duration.</param>
+    /// <param name="notableDateId">
+    /// The identifier of the concept the rule belongs to, used in exception messages.
+    /// </param>
+    /// <exception cref="FormatException">
+    /// The <c>untilDate</c> declares no end strategy, or one that names no recognized kind or more than one.
+    /// </exception>
+    private static void ReadUntilDateJson(JsonObject owner, NotableDateRuleBuilder rule, string notableDateId)
+    {
+        if (ObjectProperty(owner, "duration") is not JsonObject duration || ObjectProperty(duration, "untilDate") is not JsonObject untilDate)
+            return;
+
+        rule.SetParsedDuration(
+            BuildEndStrategyElement(untilDate, notableDateId, rule.Id),
+            ParseNullableEnum<DateBoundary>(ScalarText(untilDate, "startBoundary"), "untilDate startBoundary") ?? DateBoundary.Inclusive,
+            ParseNullableEnum<DateBoundary>(ScalarText(untilDate, "endBoundary"), "untilDate endBoundary") ?? DateBoundary.Inclusive,
+            ParseNullableEnum<EndDateSelection>(ScalarText(untilDate, "selection"), "untilDate selection") ?? EndDateSelection.FirstOnOrAfterStart);
+    }
+
+    /// <summary>
+    /// Builds the end strategy element of a JSON <c>untilDate</c>, which must name exactly one recognized kind, as the
+    /// loader requires.
+    /// </summary>
+    /// <param name="untilDate">The <c>untilDate</c> object.</param>
+    /// <param name="notableDateId">
+    /// The identifier of the concept the rule belongs to, used in exception messages.
+    /// </param>
+    /// <param name="ruleId">The identifier of the rule, used in exception messages.</param>
+    /// <returns>The end strategy element.</returns>
+    /// <exception cref="FormatException">
+    /// The <c>untilDate</c> declares no end strategy, which the loader reports with <c>BODU-CAL-DURATION-NOEND</c>, or
+    /// one that names no recognized kind, reported the same way, or more than one, which the loader reports with
+    /// <c>BODU-CAL-DURATION-CONFLICT</c>.
+    /// </exception>
+    private static XElement BuildEndStrategyElement(JsonObject untilDate, string notableDateId, string ruleId)
+    {
+        JsonObject? strategyJson = ObjectProperty(untilDate, "strategy");
+        int kinds = CountKinds(strategyJson, s_jsonStrategyKinds.Keys);
+        if (kinds == 1 && BuildStrategyElement(strategyJson) is XElement element)
+            return element;
+
+        string format = strategyJson is null
+            ? CalendarResourceStrings.Validation_DurationEndStrategyMissing
+            : kinds == 0
+                ? CalendarResourceStrings.Validation_DurationEndStrategyKindMissing
+                : CalendarResourceStrings.Validation_DurationEndStrategyConflict;
+
+        throw new FormatException(string.Format(CultureInfo.CurrentCulture, format, notableDateId, ruleId));
     }
 
     /// <summary>
@@ -397,7 +456,7 @@ public sealed partial class NotableDateDocumentBuilder
         {
             case "AddRule":
                 NotableDateRuleBuilder addRule = ObjectProperty(overrideJson, "rule") is JsonObject ruleJson
-                    ? ReadRuleJson(ruleJson)
+                    ? ReadRuleJson(ruleJson, notableDateRef)
                     : new NotableDateRuleBuilder(string.Empty);
                 return new OverrideEntry(OverrideOperation.AddRule, notableDateRef, null, addRule);
 
@@ -417,14 +476,14 @@ public sealed partial class NotableDateDocumentBuilder
     /// <returns>The reconstructed patch override entry.</returns>
     /// <exception cref="FormatException">
     /// The override carries a <c>strategy</c> or a <c>recurrence</c>, and the two name no recognized kind or more than
-    /// one.
+    /// one, or its <c>untilDate</c> declares no end strategy or one that names no recognized kind or more than one.
     /// </exception>
     private static OverrideEntry ReadPatchOverrideJson(JsonObject overrideJson, string notableDateRef)
     {
         string ruleRef = ScalarText(overrideJson, "ruleRef") ?? string.Empty;
         JsonObject? strategyJson = ObjectProperty(overrideJson, "strategy");
         JsonObject? recurrenceJson = ObjectProperty(overrideJson, "recurrence");
-        ThrowIfPatchOccurrenceSourceInvalid(strategyJson, recurrenceJson, notableDateRef, ruleRef);
+        ThrowIfOccurrenceSourceInvalid(strategyJson, recurrenceJson, notableDateRef, ruleRef, patch: true);
 
         NotableDateRuleBuilder rule = new(ruleRef);
         JsonObject? applicability = ObjectProperty(overrideJson, "applicability");
@@ -455,44 +514,46 @@ public sealed partial class NotableDateDocumentBuilder
         if (BuildRecurrenceElement(recurrenceJson) is XElement recurrence)
             rule.SetParsedRecurrence(recurrence);
 
-        if (ObjectProperty(overrideJson, "duration") is JsonObject duration && ObjectProperty(duration, "untilDate") is JsonObject untilDate)
-        {
-            rule.SetParsedDuration(
-                BuildStrategyElement(ObjectProperty(untilDate, "strategy")),
-                ParseNullableEnum<DateBoundary>(ScalarText(untilDate, "startBoundary"), "untilDate startBoundary") ?? DateBoundary.Inclusive,
-                ParseNullableEnum<DateBoundary>(ScalarText(untilDate, "endBoundary"), "untilDate endBoundary") ?? DateBoundary.Inclusive,
-                ParseNullableEnum<EndDateSelection>(ScalarText(untilDate, "selection"), "untilDate selection") ?? EndDateSelection.FirstOnOrAfterStart);
-        }
+        ReadUntilDateJson(overrideJson, rule, notableDateRef);
 
         return new OverrideEntry(OverrideOperation.PatchRule, notableDateRef, ruleRef, rule);
     }
 
     /// <summary>
-    /// Rejects a <c>PatchRule</c> override that replaces the rule's occurrence source without naming exactly one, as
-    /// the loader rejects it: a present <c>strategy</c> or <c>recurrence</c> must name one recognized kind between
-    /// them.
+    /// Rejects a rule that does not name exactly one occurrence source, or a <c>PatchRule</c> override that replaces
+    /// the rule's occurrence source without naming exactly one, as the loader rejects them: a rule's <c>strategy</c>
+    /// and <c>recurrence</c>, and a patch's when either is present, must name one recognized kind between them.
     /// </summary>
-    /// <param name="strategyJson">The override's strategy object, or <see langword="null" /> when absent.</param>
-    /// <param name="recurrenceJson">The override's recurrence object, or <see langword="null" /> when absent.</param>
-    /// <param name="notableDateRef">The identifier of the targeted concept, used in the exception message.</param>
-    /// <param name="ruleRef">The identifier of the targeted rule, used in the exception message.</param>
+    /// <param name="strategyJson">The strategy object, or <see langword="null" /> when absent.</param>
+    /// <param name="recurrenceJson">The recurrence object, or <see langword="null" /> when absent.</param>
+    /// <param name="notableDateId">The identifier of the concept, used in the exception message.</param>
+    /// <param name="ruleId">The identifier of the rule, used in the exception message.</param>
+    /// <param name="patch">
+    /// <see langword="true" /> when the objects belong to a <c>PatchRule</c> override rather than a rule, which leaves
+    /// the occurrence source unchanged when it carries neither and selects the override's wording.
+    /// </param>
     /// <exception cref="FormatException">
-    /// A strategy or a recurrence is present, and the two name no recognized kind or more than one.
+    /// The rule's strategy and recurrence, or the patch's when either is present, name no recognized kind or more than
+    /// one between them.
     /// </exception>
-    private static void ThrowIfPatchOccurrenceSourceInvalid(JsonObject? strategyJson, JsonObject? recurrenceJson, string notableDateRef, string ruleRef)
+    private static void ThrowIfOccurrenceSourceInvalid(JsonObject? strategyJson, JsonObject? recurrenceJson, string notableDateId, string ruleId, bool patch)
     {
-        if (strategyJson is null && recurrenceJson is null)
+        if (patch && strategyJson is null && recurrenceJson is null)
             return;
 
         int sources = CountKinds(strategyJson, s_jsonStrategyKinds.Keys) + CountKinds(recurrenceJson, s_jsonRecurrenceKinds.Keys);
         if (sources == 1)
             return;
 
-        string format = sources == 0
-            ? CalendarResourceStrings.Validation_PatchOccurrenceSourceMissing
-            : CalendarResourceStrings.Validation_PatchOccurrenceSourceConflict;
+        string format = (sources == 0, patch) switch
+        {
+            (true, false) => CalendarResourceStrings.Validation_OccurrenceSourceMissing,
+            (false, false) => CalendarResourceStrings.Validation_OccurrenceSourceConflict,
+            (true, true) => CalendarResourceStrings.Validation_PatchOccurrenceSourceMissing,
+            (false, true) => CalendarResourceStrings.Validation_PatchOccurrenceSourceConflict,
+        };
 
-        throw new FormatException(string.Format(CultureInfo.CurrentCulture, format, notableDateRef, ruleRef));
+        throw new FormatException(string.Format(CultureInfo.CurrentCulture, format, notableDateId, ruleId));
     }
 
     /// <summary>

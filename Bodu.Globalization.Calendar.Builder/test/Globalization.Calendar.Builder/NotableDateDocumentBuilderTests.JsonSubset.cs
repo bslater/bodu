@@ -266,18 +266,22 @@ public partial class NotableDateDocumentBuilderTests
     }
 
     /// <summary>
-    /// Verifies that a rule whose strategy property is absent, empty, or unrecognized parses into a strategy-less rule -
-    /// observable because such a rule cannot be re-serialized.
+    /// Verifies that a rule whose strategy property is absent, empty, or unrecognized, which the loader rejects with
+    /// <c>BODU-CAL-RULE-SOURCE</c>, is rejected by <see cref="NotableDateDocumentBuilder.FromJson(string)" /> with a
+    /// <see cref="FormatException" /> rather than parsed into a strategy-less rule.
     /// </summary>
     /// <param name="ruleJson">The rule object JSON.</param>
     [TestMethod]
     [DataRow("""{ "id": "r" }""", DisplayName = "no strategy property")]
     [DataRow("""{ "id": "r", "strategy": { } }""", DisplayName = "empty strategy")]
     [DataRow("""{ "id": "r", "strategy": { "unknownKey": 5 } }""", DisplayName = "unrecognized strategy")]
-    public void FromJson_WhenRuleHasNoUsableStrategy_ShouldProduceStrategylessRule(string ruleJson)
+    public void FromJson_WhenRuleHasNoUsableStrategy_ShouldThrowFormatException(string ruleJson)
     {
-        var builder = NotableDateDocumentBuilder.FromJson(JsonWithRule(ruleJson));
+        string json = JsonWithRule(ruleJson);
 
-        _ = Assert.ThrowsExactly<InvalidOperationException>(builder.ToXml);
+        _ = Assert.ThrowsExactly<FormatException>(() =>
+        {
+            _ = NotableDateDocumentBuilder.FromJson(json);
+        });
     }
 }
