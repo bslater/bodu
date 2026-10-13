@@ -142,4 +142,7 @@
   <data name="Op_Invalid_IniValueNotScalar" xml:space="preserve">
     <value>The INI section '{0}' has a value for the key '{1}' of type '{2}', which is not a scalar and cannot be written so that it reads back.</value>
   </data>
+  <data name="Op_Invalid_IniObjectMember" xml:space="preserve">
+    <value>The INI member '{0}' is declared as object, which maps to neither a key nor a section.</value>
+  </data>
 </root>

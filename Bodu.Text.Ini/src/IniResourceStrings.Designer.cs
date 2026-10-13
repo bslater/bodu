@@ -307,5 +307,14 @@ namespace Bodu {
                 return ResourceManager.GetString("Op_Invalid_IniValueNotScalar", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The INI member '{0}' is declared as object, which maps to neither a key nor a section..
+        /// </summary>
+        internal static string Op_Invalid_IniObjectMember {
+            get {
+                return ResourceManager.GetString("Op_Invalid_IniObjectMember", resourceCulture);
+            }
+        }
     }
 }

@@ -110,8 +110,8 @@ public static partial class IniSerializer
     /// <param name="value">The root object.</param>
     /// <param name="options">The serializer options.</param>
     /// <exception cref="IniSerializationException">
-    /// Thrown when a member cannot be represented within INI's two levels, or when a key, section name or value cannot
-    /// be written so that it reads back unchanged.
+    /// Thrown when a member cannot be represented within INI's two levels, when a member is declared as
+    /// <see cref="object" />, or when a key, section name or value cannot be written so that it reads back unchanged.
     /// </exception>
     [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
     [RequiresDynamicCode(RequiresDynamicCodeMessage)]
@@ -134,8 +134,7 @@ public static partial class IniSerializer
             }
             else if (IsGlobalName(member.Name, options))
             {
-                if (IsUnsupportedEnumerable(member.MemberType))
-                    throw new IniSerializationException(string.Format(CultureInfo.CurrentCulture, IniResourceStrings.Op_Invalid_IniDepthExceeded, member.Name));
+                ThrowIfNotSection(member);
 
                 object? memberValue = member.GetValue(value);
                 if (memberValue is not null)
@@ -148,8 +147,7 @@ public static partial class IniSerializer
             if (!member.CanRead || member.IsScalar || IsGlobalName(member.Name, options))
                 continue;
 
-            if (IsUnsupportedEnumerable(member.MemberType))
-                throw new IniSerializationException(string.Format(CultureInfo.CurrentCulture, IniResourceStrings.Op_Invalid_IniDepthExceeded, member.Name));
+            ThrowIfNotSection(member);
 
             object? memberValue = member.GetValue(value);
             if (FlatBinding.ShouldSkipOnWrite(memberValue, member.IgnoreCondition, options.DefaultIgnoreCondition))
@@ -391,8 +389,8 @@ public static partial class IniSerializer
     /// <param name="options">The serializer options.</param>
     /// <returns>The populated instance.</returns>
     /// <exception cref="IniSerializationException">
-    /// Thrown when the type or a section type cannot be created, a required member has no matching key or section, or a
-    /// member nests beyond INI's two levels.
+    /// Thrown when the type or a section type cannot be created, a required member has no matching key or section, a
+    /// member nests beyond INI's two levels, or a member is declared as <see cref="object" />.
     /// </exception>
     [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
     [RequiresDynamicCode(RequiresDynamicCodeMessage)]
@@ -419,8 +417,7 @@ public static partial class IniSerializer
                 continue;
             }
 
-            if (IsUnsupportedEnumerable(member.MemberType))
-                throw new IniSerializationException(string.Format(CultureInfo.CurrentCulture, IniResourceStrings.Op_Invalid_IniDepthExceeded, member.Name));
+            ThrowIfNotSection(member);
 
             if (IsGlobalName(member.Name, options))
             {
@@ -631,6 +628,29 @@ public static partial class IniSerializer
             throw new IniSerializationException(
                 string.Format(CultureInfo.CurrentCulture, IniResourceStrings.Format_Invalid_IniValueConversion, member.Name, member.MemberType), ex);
         }
+    }
+
+    /// <summary>
+    /// Throws when a root member that is not a scalar cannot be a section, whether it is written or read and whatever
+    /// its value.
+    /// </summary>
+    /// <param name="member">The root member, which is not a scalar.</param>
+    /// <exception cref="IniSerializationException">
+    /// Thrown when the member is declared as <see cref="object" />, which maps to neither a key nor a section, or its
+    /// type is a collection other than a string-keyed dictionary, which nests beyond INI's two levels.
+    /// </exception>
+    /// <remarks>
+    /// A member declared as <see cref="object" /> would otherwise be written as a section of whatever its value holds
+    /// and read back as a bare <see cref="object" />, with the section's keys dropped; a section body rejects such a
+    /// member in the same way, as one that is not a scalar.
+    /// </remarks>
+    private static void ThrowIfNotSection(FlatMemberDescriptor member)
+    {
+        if (member.MemberType == typeof(object))
+            throw new IniSerializationException(string.Format(CultureInfo.CurrentCulture, IniResourceStrings.Op_Invalid_IniObjectMember, member.Name));
+
+        if (IsUnsupportedEnumerable(member.MemberType))
+            throw new IniSerializationException(string.Format(CultureInfo.CurrentCulture, IniResourceStrings.Op_Invalid_IniDepthExceeded, member.Name));
     }
 
     /// <summary>
