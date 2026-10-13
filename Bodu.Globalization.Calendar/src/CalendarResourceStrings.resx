@@ -132,6 +132,9 @@
   <data name="Validation_InvalidReferenceItem" xml:space="preserve">
     <value>The {0} item '{1}' is neither a rule identifier nor a reference object.</value>
   </data>
+  <data name="Validation_InvalidScalarValue" xml:space="preserve">
+    <value>The '{0}' property holds {1}, which is not a string, number or Boolean.</value>
+  </data>
   <data name="Validation_OverrideNotableDateNotFound" xml:space="preserve">
     <value>Override operation targets notable date '{0}', which does not exist in the resolved resource.</value>
   </data>

@@ -27,7 +27,7 @@ internal static class NotableDateJsonDocumentParser
     {
         using JsonDocument document = ParseDocument(json);
 
-        return NotableDateDocumentReader.Read(new JsonDocumentNode(document.RootElement), diagnostics);
+        return NotableDateDocumentReader.Read(new JsonDocumentNode(document.RootElement, diagnostics), diagnostics);
     }
 
     /// <summary>

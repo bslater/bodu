@@ -579,7 +579,7 @@ public sealed partial class NotableDateDocumentBuilder
             JsonValueKind.True => "true",
             JsonValueKind.False => "false",
             JsonValueKind.Number => ((int)value).ToString(CultureInfo.InvariantCulture),
-            _ => value.GetValue<string>(),
+            _ => ScalarText(value) ?? string.Empty,
         };
     }
 
@@ -707,15 +707,23 @@ public sealed partial class NotableDateDocumentBuilder
         ParseNullableBool(ScalarText(node), field);
 
     /// <summary>
-    /// Reads a JSON scalar as the loader does: a string verbatim, a number by its invariant digits, and a Boolean as
-    /// <c>true</c> or <c>false</c>.
+    /// Reads a JSON scalar property as the loader does: a string verbatim, a number by its invariant digits, and a
+    /// Boolean as <c>true</c> or <c>false</c>.
     /// </summary>
-    /// <param name="node">The value, or <see langword="null" /> when absent.</param>
-    /// <returns>The scalar's text, or <see langword="null" /> when the value is absent or not a scalar.</returns>
+    /// <param name="node">
+    /// The property's value, or <see langword="null" /> when absent or the JSON literal <c>null</c>.
+    /// </param>
+    /// <returns>The scalar's text, or <see langword="null" /> when the value is absent.</returns>
+    /// <exception cref="FormatException">
+    /// The value is an object or an array, which the loader reports with <c>BODU-CAL-VALUE</c>.
+    /// </exception>
     private static string? ScalarText(JsonNode? node)
     {
-        if (node is not JsonValue value)
+        if (node is null)
             return null;
+
+        if (node is not JsonValue value)
+            throw new FormatException(string.Format(CultureInfo.CurrentCulture, CalendarResourceStrings.Validation_InvalidScalarValue, node.GetPropertyName(), node.ToJsonString()));
 
         return value.GetValueKind() switch
         {

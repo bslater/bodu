@@ -436,12 +436,8 @@ public sealed partial class NotableDateDocumentBuilder
     /// </exception>
     /// <exception cref="FormatException">
     /// The file content is not a well-formed notable-date document, an enumeration, integer, Boolean, trigger-month or
-    /// <c>workingDays</c> value does not parse, or an item of a JSON list of identifiers, territory codes or tags is
-    /// not a string.
-    /// </exception>
-    /// <exception cref="InvalidOperationException">
-    /// A property of a strategy or a recurrence in a <c>.json</c> file holds an object or an array; see
-    /// <see cref="FromJson(string)" />.
+    /// <c>workingDays</c> value does not parse, a JSON property that holds a value holds an object or an array, or an
+    /// item of a JSON list of identifiers, territory codes or tags is not a string.
     /// </exception>
     /// <remarks>
     /// Like <see cref="FromXml(string)" /> and <see cref="FromJson(string)" />, loading reads each value with the

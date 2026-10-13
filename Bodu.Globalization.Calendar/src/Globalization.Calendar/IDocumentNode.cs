@@ -19,7 +19,10 @@ internal interface IDocumentNode
     /// its invariant digits, a boolean to <c>true</c>/<c>false</c>, a string verbatim).
     /// </summary>
     /// <param name="name">The attribute or property name.</param>
-    /// <returns>The scalar value, or <see langword="null" /> when absent or not a scalar.</returns>
+    /// <returns>
+    /// The scalar value, or <see langword="null" /> when absent or not a scalar. A JSON property holding an object or
+    /// an array is not a scalar, and its node has recorded a <c>BODU-CAL-VALUE</c> error naming it.
+    /// </returns>
     string? Scalar(string name);
 
     /// <summary>
