@@ -359,16 +359,10 @@ public sealed class EcbRateProvider
     /// <returns>A task that completes when the feed has been loaded.</returns>
     private Task LoadFeedThroughAsync(EcbRateFeed feed, DateOnly through, CancellationToken cancellationToken)
     {
-        lock (SyncRoot)
-        {
-            if (IsFeedCurrent(feed, through))
-                return Task.CompletedTask;
-        }
-
         // Coalesce concurrent loads of the same feed so only one download is in flight; joiners await that shared task.
         // The shared fetch runs under a token decoupled from any caller, so one caller's cancellation cannot fault the
         // others; cancellationToken only abandons this caller's wait.
-        return LoadCoalescedAsync(feed.Name, ct => LoadFeedCoreAsync(feed, through, ct), cancellationToken);
+        return LoadCoalescedAsync(feed.Name, () => IsFeedCurrent(feed, through), ct => LoadFeedCoreAsync(feed, through, ct), cancellationToken);
     }
 
     /// <summary>

@@ -298,16 +298,14 @@ public sealed class BoeRateProvider
     /// <returns>A task that completes when the range has been loaded.</returns>
     private Task LoadRangeInternalAsync(DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken)
     {
-        lock (SyncRoot)
-        {
-            if (_loadedRanges.Contains(startDate, endDate, TimeProvider.GetUtcNow()))
-                return Task.CompletedTask;
-        }
-
         // Coalesce concurrent loads of the same window so only one download is in flight; joiners await that task. The
         // shared fetch runs under a token decoupled from any caller, so one caller's cancellation cannot fault the
         // others; cancellationToken only abandons this caller's wait.
-        return LoadCoalescedAsync($"{startDate.DayNumber}-{endDate.DayNumber}", ct => LoadRangeCoreAsync(startDate, endDate, ct), cancellationToken);
+        return LoadCoalescedAsync(
+            $"{startDate.DayNumber}-{endDate.DayNumber}",
+            () => _loadedRanges.Contains(startDate, endDate, TimeProvider.GetUtcNow()),
+            ct => LoadRangeCoreAsync(startDate, endDate, ct),
+            cancellationToken);
     }
 
     /// <summary>

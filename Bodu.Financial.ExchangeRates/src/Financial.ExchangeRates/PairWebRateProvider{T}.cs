@@ -131,22 +131,15 @@ public abstract class PairWebRateProvider<TSeries>
     }
 
     /// <inheritdoc />
-    protected sealed override ValueTask EnsureLoadedAsync(CurrencyPair pair, DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken)
-    {
-        lock (SyncRoot)
-        {
-            if (IsRangeCovered(pair, startDate, endDate))
-                return ValueTask.CompletedTask;
-        }
-
+    protected sealed override ValueTask EnsureLoadedAsync(CurrencyPair pair, DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken) =>
         // Coalesce concurrent fetches of the same pair-and-window so only one request is in flight. The shared fetch
         // runs under a token decoupled from any caller, so one caller's cancellation cannot fault the others;
         // cancellationToken only abandons this caller's wait.
-        return new ValueTask(LoadCoalescedAsync(
+        new(LoadCoalescedAsync(
             $"{pair.From}/{pair.To}:{startDate.DayNumber}-{endDate.DayNumber}",
+            () => IsRangeCovered(pair, startDate, endDate),
             ct => LoadPairCoreAsync(pair, startDate, endDate, ct),
             cancellationToken));
-    }
 
     /// <inheritdoc />
     protected sealed override bool IsLoaded(CurrencyPair pair, DateOnly startDate, DateOnly endDate)
@@ -182,61 +175,40 @@ public abstract class PairWebRateProvider<TSeries>
         $"{pair.From}/{pair.To}";
 
     /// <summary>
-    /// Fetches and stores a pair's observations for the inclusive window, re-checking coverage inside the single-flight
-    /// section so a joiner that arrives after a prior fetch completes does no redundant work.
+    /// Fetches and stores a pair's observations for the inclusive window through the shared
+    /// <see cref="WebRateProvider.LoadFileFeedAsync{TTable}" /> sequence, which re-checks coverage inside the
+    /// single-flight section so a joiner that arrives after a prior fetch completes does no redundant work.
     /// </summary>
     /// <param name="pair">The currency pair to fetch.</param>
     /// <param name="startDate">The inclusive start of the range.</param>
     /// <param name="endDate">The inclusive end of the range.</param>
     /// <param name="cancellationToken">A token to observe while awaiting the fetch.</param>
     /// <returns>A task that completes when the pair's window has been loaded.</returns>
-    private async Task LoadPairCoreAsync(CurrencyPair pair, DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken)
+    private Task LoadPairCoreAsync(CurrencyPair pair, DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken)
     {
-        lock (SyncRoot)
-        {
-            if (IsRangeCovered(pair, startDate, endDate))
-                return;
-        }
+        // The pair's label is formatted once, as the load starts, and every later entry of the load reuses it.
+        string label = string.Empty;
 
-        string label = FormatPairForLog(pair);
-        CurrencyPairRequest request = new(pair, startDate, endDate);
+        return LoadFileFeedAsync(
+            alreadyLoaded: () => IsRangeCovered(pair, startDate, endDate),
+            logStarting: () =>
+            {
+                label = FormatPairForLog(pair);
+                WebRateProviderLog.PairLoadStarting(_logger, _options.DownloadStartingLogLevel, label);
+            },
+            fetchAsync: ct => _source.GetPairAsync(new CurrencyPairRequest(pair, startDate, endDate), ct),
+            logExpectedFailure: ex => WebRateProviderLog.PairLoadFailed(_logger, _options.DownloadFailedLogLevel, label, ex),
+            logUnexpectedFailure: ex => WebRateProviderLog.PairLoadUnexpectedError(_logger, label, ex),
+            publish: (data, fetchedAt) =>
+            {
+                _series[data.Pair] = data.Series;
 
-        WebRateProviderLog.PairLoadStarting(_logger, _options.DownloadStartingLogLevel, label);
-
-        PairRateData<TSeries> data;
-        try
-        {
-            data = await _source.GetPairAsync(request, cancellationToken).ConfigureAwait(false);
-        }
-        catch (Exception ex) when (ex is HttpRequestException or IOException or FormatException)
-        {
-            // Only the failures a fetch is expected to produce - transport, stream, and malformed-feed errors
-            // (ExchangeRateFormatException derives from FormatException) - are logged as pair-load failures.
-            WebRateProviderLog.PairLoadFailed(_logger, _options.DownloadFailedLogLevel, label, ex);
-            throw;
-        }
-        catch (Exception ex) when (ex is not OperationCanceledException)
-        {
-            // Anything else indicates a probable bug: log it under a distinct event id at Error so it stays
-            // visible in telemetry without being relabelled as a pair failure, then rethrow. Cancellation
-            // (including HttpClient timeouts, which surface as TaskCanceledException) is never logged.
-            WebRateProviderLog.PairLoadUnexpectedError(_logger, label, ex);
-            throw;
-        }
-
-        // Capture the load instant immediately after the download completes so it stamps every rate this pair produces.
-        DateTimeOffset fetchedAt = TimeProvider.GetUtcNow();
-
-        lock (SyncRoot)
-        {
-            _series[data.Pair] = data.Series;
-
-            int count = AddObservations(EnumerateRates(data), fetchedAt);
-            ExtendCoveredRange(pair, startDate, endDate);
-            RebuildSnapshot();
-
-            WebRateProviderLog.PairLoaded(_logger, _options.DownloadCompletedLogLevel, label, count);
-        }
+                int count = AddObservations(EnumerateRates(data), fetchedAt);
+                ExtendCoveredRange(pair, startDate, endDate);
+                return count;
+            },
+            logCompleted: count => WebRateProviderLog.PairLoaded(_logger, _options.DownloadCompletedLogLevel, label, count),
+            cancellationToken: cancellationToken);
     }
 
     /// <summary>

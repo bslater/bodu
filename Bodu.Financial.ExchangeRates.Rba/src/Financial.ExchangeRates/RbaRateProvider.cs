@@ -376,16 +376,10 @@ public sealed class RbaRateProvider
     /// <returns>A task that completes when the era has been loaded.</returns>
     private Task LoadEraThroughAsync(RbaEraWorkbook era, DateOnly through, CancellationToken cancellationToken)
     {
-        lock (SyncRoot)
-        {
-            if (IsEraCurrent(era, through))
-                return Task.CompletedTask;
-        }
-
         // Coalesce concurrent loads of the same era so only one download is in flight; joiners await that shared task.
         // The shared fetch runs under a token decoupled from any caller, so one caller's cancellation cannot fault the
         // others; cancellationToken only abandons this caller's wait.
-        return LoadCoalescedAsync(era.Label, ct => LoadEraCoreAsync(era, through, ct), cancellationToken);
+        return LoadCoalescedAsync(era.Label, () => IsEraCurrent(era, through), ct => LoadEraCoreAsync(era, through, ct), cancellationToken);
     }
 
     /// <summary>

@@ -368,16 +368,10 @@ public sealed class ImfRateProvider
     /// <returns>A task that completes when the month has been loaded.</returns>
     private Task LoadMonthThroughAsync(ImfReportMonth month, DateOnly through, CancellationToken cancellationToken)
     {
-        lock (SyncRoot)
-        {
-            if (IsMonthCurrent(month, through))
-                return Task.CompletedTask;
-        }
-
         // Coalesce concurrent loads of the same month so only one download is in flight; joiners await that shared task.
         // The shared fetch runs under a token decoupled from any caller, so one caller's cancellation cannot fault the
         // others; cancellationToken only abandons this caller's wait.
-        return LoadCoalescedAsync(month.Key, ct => LoadMonthCoreAsync(month, through, ct), cancellationToken);
+        return LoadCoalescedAsync(month.Key, () => IsMonthCurrent(month, through), ct => LoadMonthCoreAsync(month, through, ct), cancellationToken);
     }
 
     /// <summary>
