@@ -20,6 +20,10 @@ namespace Bodu.Financial.ExchangeRates;
 /// re-download.
 /// </para>
 /// <para>
+/// A response for a range that had ended before the UTC day it was written never goes stale: the Bank of England does
+/// not revise a day once it has passed, so downloading the range again could only return the same rates.
+/// </para>
+/// <para>
 /// The cache is best-effort: any I/O failure while reading is reported as a miss, and any failure while writing is
 /// swallowed, so a cache problem never breaks rate retrieval.
 /// </para>
@@ -48,4 +52,16 @@ public sealed class FileSystemBoeResponseCache
             "boe_{0:yyyyMMdd}_{1:yyyyMMdd}.csv",
             key.StartDate,
             key.EndDate);
+
+    /// <inheritdoc />
+    /// <remarks>
+    /// A response whose range ended before the UTC day it was written is always fresh; any other is fresh while its age
+    /// does not exceed <paramref name="refreshInterval" />.
+    /// </remarks>
+    protected override bool IsFresh((DateOnly StartDate, DateOnly EndDate) key, TimeSpan age, TimeSpan refreshInterval)
+    {
+        DateOnly writtenOn = DateOnly.FromDateTime(DateTime.UtcNow - age);
+
+        return key.EndDate < writtenOn || age <= refreshInterval;
+    }
 }

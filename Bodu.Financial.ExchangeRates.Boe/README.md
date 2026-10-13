@@ -48,7 +48,8 @@ foreach (BoeSeriesInfo info in provider.GetAvailablePairs())
   from its first missing day to its last, is downloaded, so a look-back window that slides
   forward one day downloads that day alone.
 - **Caching.** Downloaded range responses are cached on disk (configurable) and refreshed
-  on a TTL, since a range ending near today can gain an observation each business day.
+  on a TTL, since a range ending near today can gain an observation each business day. A
+  response for a range that had ended before the day it was downloaded never expires.
   In memory, a loaded range keeps its past days for good, while today (and any later day
   it returned no rate for) is downloaded again by a request that reaches it once
   `RefreshInterval` has passed, so a rate published after the first download is picked up.
