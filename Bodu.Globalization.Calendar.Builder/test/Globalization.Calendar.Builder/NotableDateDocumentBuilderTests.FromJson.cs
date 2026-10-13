@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Globalization;
+using System.Text.Json.Nodes;
 using Bodu.Globalization.Calendar.RangeResolution;
 
 namespace Bodu.Globalization.Calendar.Builder;
@@ -1814,5 +1816,419 @@ public partial class NotableDateDocumentBuilderTests
             json = json.Replace("@" + key + "@", key == placeholder ? item + ", " : string.Empty, StringComparison.Ordinal);
 
         return json;
+    }
+
+    /// <summary>
+    /// The JSON document under the schema tests: one of every object the loader reads, each holding every property the
+    /// schema requires of it and every integer the schema bounds.
+    /// </summary>
+    private const string SchemaTemplateJson = """
+        { "schemaVersion": "1.0", "resourceId": "test.schema",
+          "adjustmentPolicies": [ { "id": "policy", "priority": 1,
+            "scope": { "fromYear": 2000, "toYear": 2100, "ruleRefs": [ { "notableDateRef": "anchor", "ruleRef": "r" } ],
+              "onlyYears": [ 2026 ], "exceptYears": [ 2027 ] },
+            "trigger": { "type": "IfBeforeFixedDate", "month": "June", "day": 15 },
+            "action": { "type": "AddDays", "days": 1, "maxSearchDays": 7 },
+            "emission": { "mode": "ObservedOnly" } } ],
+          "imports": [ { "resource": "lib", "uses": [ { "notableDateRef": "lib-day" } ] } ],
+          "notableDates": [
+            { "id": "anchor", "displayName": "Anchor", "category": "PublicHoliday", "defaultDurationDays": 1,
+              "rules": [ { "id": "r", "durationDays": 2,
+                "applicability": { "fromYear": 2000, "toYear": 2100, "everyYears": 1, "anchorYear": 2000, "onlyYears": [ 2026 ], "exceptYears": [ 2027 ] },
+                "strategy": { "fixed": { "month": 3, "day": 1 } }, "adjustments": [ "policy" ] } ] },
+            { "id": "kinds", "displayName": "Kinds", "category": "Observance",
+              "rules": [
+                { "id": "day-of-week-in-month", "strategy": { "dayOfWeekInMonth": { "month": 5, "dayOfWeek": "Monday", "weekOrdinal": "First" } } },
+                { "id": "weekday-near-date", "strategy": { "weekdayNearDate": { "month": 5, "day": 10, "dayOfWeek": "Monday", "direction": "OnOrAfter" } } },
+                { "id": "relative", "strategy": { "relativeWeekdayInMonth": { "month": 11, "dayOfWeek": "Thursday", "weekOrdinal": "Fourth", "relativeDayOfWeek": "Friday", "direction": "After" } } },
+                { "id": "offset", "strategy": { "offsetFromRule": { "notableDateRef": "anchor", "offsetDays": 3 } } },
+                { "id": "algorithm", "strategy": { "algorithm": { "key": "western-easter" } } },
+                { "id": "near-rule", "strategy": { "weekdayNearRule": { "notableDateRef": "anchor", "dayOfWeek": "Friday", "direction": "Before" } } },
+                { "id": "nth-from-rule", "strategy": { "nthWeekdayFromRule": { "notableDateRef": "anchor", "dayOfWeek": "Sunday", "ordinal": 2 } } },
+                { "id": "working-offset", "strategy": { "workingDayOffsetFromRule": { "notableDateRef": "anchor", "offsetWorkingDays": -1 } } },
+                { "id": "working-in-month", "strategy": { "workingDayInMonth": { "month": 6, "ordinal": 1 } } },
+                { "id": "ordinal-day", "strategy": { "ordinalDayOfMonth": { "month": 7, "ordinal": 2 } } },
+                { "id": "iso-week", "strategy": { "isoWeekDate": { "week": 20, "dayOfWeek": "Wednesday" } } },
+                { "id": "day-of-year", "strategy": { "dayOfYear": { "ordinal": 100 } } },
+                { "id": "span", "strategy": { "fixed": { "month": 8, "day": 1 } },
+                  "duration": { "untilDate": { "strategy": { "fixed": { "month": 8, "day": 3 } } } } },
+                { "id": "daily", "recurrence": { "dailyInterval": { "anchorDate": "2024-01-01", "intervalDays": 7 } } },
+                { "id": "weekly", "recurrence": { "weekly": { "days": [ "Thursday" ], "intervalWeeks": 2, "anchorDate": "2024-01-04" } } },
+                { "id": "monthly-day", "recurrence": { "monthlyDay": { "dayOfMonth": 15, "intervalMonths": 1 } } },
+                { "id": "monthly-weekday", "recurrence": { "monthlyWeekday": { "dayOfWeek": "Friday", "weekOrdinal": "Second", "intervalMonths": 1 } } },
+                { "id": "gone", "strategy": { "fixed": { "month": 10, "day": 1 } } } ] } ],
+          "overrides": [
+            { "operation": "PatchRule", "notableDateRef": "anchor", "ruleRef": "r", "durationDays": 1 },
+            { "operation": "RemoveRule", "notableDateRef": "kinds", "ruleRef": "gone" },
+            { "operation": "AddRule", "notableDateRef": "kinds", "rule": { "id": "added", "strategy": { "fixed": { "month": 9, "day": 1 } } } } ] }
+        """;
+
+    /// <summary>
+    /// The JSON pointer into <see cref="SchemaTemplateJson" /> of each field the schema tests set or remove, keyed by
+    /// the name that stands for it.
+    /// </summary>
+    private static readonly Dictionary<string, string> s_schemaFieldPointers = new(StringComparer.Ordinal)
+    {
+        ["schemaVersion"] = "/schemaVersion",
+        ["resourceId"] = "/resourceId",
+        ["policy.id"] = "/adjustmentPolicies/0/id",
+        ["policy.trigger"] = "/adjustmentPolicies/0/trigger",
+        ["policy.action"] = "/adjustmentPolicies/0/action",
+        ["policy.emission"] = "/adjustmentPolicies/0/emission",
+        ["scope.fromYear"] = "/adjustmentPolicies/0/scope/fromYear",
+        ["scope.toYear"] = "/adjustmentPolicies/0/scope/toYear",
+        ["scope.ruleRefs.notableDateRef"] = "/adjustmentPolicies/0/scope/ruleRefs/0/notableDateRef",
+        ["scope.ruleRefs.ruleRef"] = "/adjustmentPolicies/0/scope/ruleRefs/0/ruleRef",
+        ["scope.onlyYears.item"] = "/adjustmentPolicies/0/scope/onlyYears/0",
+        ["scope.exceptYears.item"] = "/adjustmentPolicies/0/scope/exceptYears/0",
+        ["trigger.type"] = "/adjustmentPolicies/0/trigger/type",
+        ["trigger.day"] = "/adjustmentPolicies/0/trigger/day",
+        ["action.type"] = "/adjustmentPolicies/0/action/type",
+        ["action.maxSearchDays"] = "/adjustmentPolicies/0/action/maxSearchDays",
+        ["emission.mode"] = "/adjustmentPolicies/0/emission/mode",
+        ["import.resource"] = "/imports/0/resource",
+        ["use.notableDateRef"] = "/imports/0/uses/0/notableDateRef",
+        ["notableDate.id"] = "/notableDates/0/id",
+        ["notableDate.displayName"] = "/notableDates/0/displayName",
+        ["notableDate.category"] = "/notableDates/0/category",
+        ["notableDate.defaultDurationDays"] = "/notableDates/0/defaultDurationDays",
+        ["notableDate.rules"] = "/notableDates/1/rules",
+        ["rule.id"] = "/notableDates/1/rules/0/id",
+        ["rule.durationDays"] = "/notableDates/0/rules/0/durationDays",
+        ["applicability.fromYear"] = "/notableDates/0/rules/0/applicability/fromYear",
+        ["applicability.toYear"] = "/notableDates/0/rules/0/applicability/toYear",
+        ["applicability.everyYears"] = "/notableDates/0/rules/0/applicability/everyYears",
+        ["applicability.anchorYear"] = "/notableDates/0/rules/0/applicability/anchorYear",
+        ["applicability.onlyYears.item"] = "/notableDates/0/rules/0/applicability/onlyYears/0",
+        ["applicability.exceptYears.item"] = "/notableDates/0/rules/0/applicability/exceptYears/0",
+        ["fixed.month"] = "/notableDates/0/rules/0/strategy/fixed/month",
+        ["fixed.day"] = "/notableDates/0/rules/0/strategy/fixed/day",
+        ["dayOfWeekInMonth.month"] = "/notableDates/1/rules/0/strategy/dayOfWeekInMonth/month",
+        ["dayOfWeekInMonth.dayOfWeek"] = "/notableDates/1/rules/0/strategy/dayOfWeekInMonth/dayOfWeek",
+        ["dayOfWeekInMonth.weekOrdinal"] = "/notableDates/1/rules/0/strategy/dayOfWeekInMonth/weekOrdinal",
+        ["weekdayNearDate.month"] = "/notableDates/1/rules/1/strategy/weekdayNearDate/month",
+        ["weekdayNearDate.day"] = "/notableDates/1/rules/1/strategy/weekdayNearDate/day",
+        ["weekdayNearDate.dayOfWeek"] = "/notableDates/1/rules/1/strategy/weekdayNearDate/dayOfWeek",
+        ["weekdayNearDate.direction"] = "/notableDates/1/rules/1/strategy/weekdayNearDate/direction",
+        ["relativeWeekdayInMonth.month"] = "/notableDates/1/rules/2/strategy/relativeWeekdayInMonth/month",
+        ["relativeWeekdayInMonth.dayOfWeek"] = "/notableDates/1/rules/2/strategy/relativeWeekdayInMonth/dayOfWeek",
+        ["relativeWeekdayInMonth.weekOrdinal"] = "/notableDates/1/rules/2/strategy/relativeWeekdayInMonth/weekOrdinal",
+        ["relativeWeekdayInMonth.relativeDayOfWeek"] = "/notableDates/1/rules/2/strategy/relativeWeekdayInMonth/relativeDayOfWeek",
+        ["relativeWeekdayInMonth.direction"] = "/notableDates/1/rules/2/strategy/relativeWeekdayInMonth/direction",
+        ["offsetFromRule.notableDateRef"] = "/notableDates/1/rules/3/strategy/offsetFromRule/notableDateRef",
+        ["offsetFromRule.offsetDays"] = "/notableDates/1/rules/3/strategy/offsetFromRule/offsetDays",
+        ["algorithm.key"] = "/notableDates/1/rules/4/strategy/algorithm/key",
+        ["weekdayNearRule.notableDateRef"] = "/notableDates/1/rules/5/strategy/weekdayNearRule/notableDateRef",
+        ["weekdayNearRule.dayOfWeek"] = "/notableDates/1/rules/5/strategy/weekdayNearRule/dayOfWeek",
+        ["weekdayNearRule.direction"] = "/notableDates/1/rules/5/strategy/weekdayNearRule/direction",
+        ["nthWeekdayFromRule.notableDateRef"] = "/notableDates/1/rules/6/strategy/nthWeekdayFromRule/notableDateRef",
+        ["nthWeekdayFromRule.dayOfWeek"] = "/notableDates/1/rules/6/strategy/nthWeekdayFromRule/dayOfWeek",
+        ["nthWeekdayFromRule.ordinal"] = "/notableDates/1/rules/6/strategy/nthWeekdayFromRule/ordinal",
+        ["workingDayOffsetFromRule.notableDateRef"] = "/notableDates/1/rules/7/strategy/workingDayOffsetFromRule/notableDateRef",
+        ["workingDayOffsetFromRule.offsetWorkingDays"] = "/notableDates/1/rules/7/strategy/workingDayOffsetFromRule/offsetWorkingDays",
+        ["workingDayInMonth.month"] = "/notableDates/1/rules/8/strategy/workingDayInMonth/month",
+        ["workingDayInMonth.ordinal"] = "/notableDates/1/rules/8/strategy/workingDayInMonth/ordinal",
+        ["ordinalDayOfMonth.month"] = "/notableDates/1/rules/9/strategy/ordinalDayOfMonth/month",
+        ["ordinalDayOfMonth.ordinal"] = "/notableDates/1/rules/9/strategy/ordinalDayOfMonth/ordinal",
+        ["isoWeekDate.week"] = "/notableDates/1/rules/10/strategy/isoWeekDate/week",
+        ["isoWeekDate.dayOfWeek"] = "/notableDates/1/rules/10/strategy/isoWeekDate/dayOfWeek",
+        ["dayOfYear.ordinal"] = "/notableDates/1/rules/11/strategy/dayOfYear/ordinal",
+        ["duration.untilDate"] = "/notableDates/1/rules/12/duration/untilDate",
+        ["untilDate.fixed.month"] = "/notableDates/1/rules/12/duration/untilDate/strategy/fixed/month",
+        ["untilDate.fixed.day"] = "/notableDates/1/rules/12/duration/untilDate/strategy/fixed/day",
+        ["dailyInterval.anchorDate"] = "/notableDates/1/rules/13/recurrence/dailyInterval/anchorDate",
+        ["dailyInterval.intervalDays"] = "/notableDates/1/rules/13/recurrence/dailyInterval/intervalDays",
+        ["weekly.days"] = "/notableDates/1/rules/14/recurrence/weekly/days",
+        ["weekly.intervalWeeks"] = "/notableDates/1/rules/14/recurrence/weekly/intervalWeeks",
+        ["monthlyDay.dayOfMonth"] = "/notableDates/1/rules/15/recurrence/monthlyDay/dayOfMonth",
+        ["monthlyDay.intervalMonths"] = "/notableDates/1/rules/15/recurrence/monthlyDay/intervalMonths",
+        ["monthlyWeekday.dayOfWeek"] = "/notableDates/1/rules/16/recurrence/monthlyWeekday/dayOfWeek",
+        ["monthlyWeekday.weekOrdinal"] = "/notableDates/1/rules/16/recurrence/monthlyWeekday/weekOrdinal",
+        ["monthlyWeekday.intervalMonths"] = "/notableDates/1/rules/16/recurrence/monthlyWeekday/intervalMonths",
+        ["patch.notableDateRef"] = "/overrides/0/notableDateRef",
+        ["patch.ruleRef"] = "/overrides/0/ruleRef",
+        ["patch.durationDays"] = "/overrides/0/durationDays",
+        ["remove.notableDateRef"] = "/overrides/1/notableDateRef",
+        ["remove.ruleRef"] = "/overrides/1/ruleRef",
+        ["add.notableDateRef"] = "/overrides/2/notableDateRef",
+        ["add.rule"] = "/overrides/2/rule",
+        ["add.rule.id"] = "/overrides/2/rule/id",
+        ["add.fixed.day"] = "/overrides/2/rule/strategy/fixed/day",
+    };
+
+    /// <summary>
+    /// Verifies that the schema test document builds, through the builder, into the same resource the loader loads,
+    /// compared byte for byte as binary rule packs, so each rejection the per-field tests observe is caused by the one
+    /// field they change.
+    /// </summary>
+    [TestMethod]
+    public void FromJson_WhenEverySchemaRequiredValueIsPresent_ShouldBuildWhatLoadJsonLoads()
+    {
+        string json = SchemaFieldJson(null, null);
+
+        NotableDateResource loaded = NotableDateResourceLoader.LoadJson(json, BuilderEnumImportResolver);
+        NotableDateResource built = NotableDateDocumentBuilder.FromJson(json).Build(BuilderEnumImportResolver);
+
+        CollectionAssert.AreEqual(PackBytes(loaded), PackBytes(built));
+    }
+
+    /// <summary>
+    /// Verifies that a JSON document without a property the schema requires, which the loader reports with
+    /// <c>BODU-CAL-SCHEMA</c>, is rejected with a <see cref="FormatException" /> carrying the loader's message, rather
+    /// than read with a default in the property's place.
+    /// </summary>
+    /// <param name="field">The name of the required property removed from the document.</param>
+    [TestMethod]
+    [DataRow("schemaVersion")]
+    [DataRow("resourceId")]
+    [DataRow("policy.id")]
+    [DataRow("policy.trigger")]
+    [DataRow("policy.action")]
+    [DataRow("policy.emission")]
+    [DataRow("scope.ruleRefs.notableDateRef")]
+    [DataRow("scope.ruleRefs.ruleRef")]
+    [DataRow("trigger.type")]
+    [DataRow("action.type")]
+    [DataRow("emission.mode")]
+    [DataRow("import.resource")]
+    [DataRow("use.notableDateRef")]
+    [DataRow("notableDate.id")]
+    [DataRow("notableDate.displayName")]
+    [DataRow("notableDate.category")]
+    [DataRow("notableDate.rules")]
+    [DataRow("rule.id")]
+    [DataRow("fixed.month")]
+    [DataRow("fixed.day")]
+    [DataRow("dayOfWeekInMonth.month")]
+    [DataRow("dayOfWeekInMonth.dayOfWeek")]
+    [DataRow("dayOfWeekInMonth.weekOrdinal")]
+    [DataRow("weekdayNearDate.month")]
+    [DataRow("weekdayNearDate.day")]
+    [DataRow("weekdayNearDate.dayOfWeek")]
+    [DataRow("weekdayNearDate.direction")]
+    [DataRow("relativeWeekdayInMonth.month")]
+    [DataRow("relativeWeekdayInMonth.dayOfWeek")]
+    [DataRow("relativeWeekdayInMonth.weekOrdinal")]
+    [DataRow("relativeWeekdayInMonth.relativeDayOfWeek")]
+    [DataRow("relativeWeekdayInMonth.direction")]
+    [DataRow("offsetFromRule.notableDateRef")]
+    [DataRow("offsetFromRule.offsetDays")]
+    [DataRow("algorithm.key")]
+    [DataRow("weekdayNearRule.notableDateRef")]
+    [DataRow("weekdayNearRule.dayOfWeek")]
+    [DataRow("weekdayNearRule.direction")]
+    [DataRow("nthWeekdayFromRule.notableDateRef")]
+    [DataRow("nthWeekdayFromRule.dayOfWeek")]
+    [DataRow("nthWeekdayFromRule.ordinal")]
+    [DataRow("workingDayOffsetFromRule.notableDateRef")]
+    [DataRow("workingDayOffsetFromRule.offsetWorkingDays")]
+    [DataRow("workingDayInMonth.month")]
+    [DataRow("workingDayInMonth.ordinal")]
+    [DataRow("ordinalDayOfMonth.month")]
+    [DataRow("ordinalDayOfMonth.ordinal")]
+    [DataRow("isoWeekDate.week")]
+    [DataRow("isoWeekDate.dayOfWeek")]
+    [DataRow("dayOfYear.ordinal")]
+    [DataRow("duration.untilDate")]
+    [DataRow("untilDate.fixed.month")]
+    [DataRow("untilDate.fixed.day")]
+    [DataRow("dailyInterval.anchorDate")]
+    [DataRow("weekly.days")]
+    [DataRow("monthlyDay.dayOfMonth")]
+    [DataRow("monthlyWeekday.dayOfWeek")]
+    [DataRow("monthlyWeekday.weekOrdinal")]
+    [DataRow("patch.notableDateRef")]
+    [DataRow("patch.ruleRef")]
+    [DataRow("remove.notableDateRef")]
+    [DataRow("remove.ruleRef")]
+    [DataRow("add.notableDateRef")]
+    [DataRow("add.rule")]
+    [DataRow("add.rule.id")]
+    public void FromJson_WhenSchemaRequiredPropertyIsAbsent_ShouldThrowLoadersMessage(string field)
+    {
+        AssertThrowsLoaderSchemaMessage(SchemaFieldJson(field, null));
+    }
+
+    /// <summary>
+    /// Verifies that a JSON property the schema requires, holding the literal <c>null</c>, which the loader reads as
+    /// absent and reports with <c>BODU-CAL-SCHEMA</c>, is rejected with a <see cref="FormatException" /> carrying the
+    /// loader's message.
+    /// </summary>
+    /// <param name="field">The name of the required property set to <c>null</c>.</param>
+    [TestMethod]
+    [DataRow("schemaVersion")]
+    [DataRow("resourceId")]
+    [DataRow("policy.id")]
+    [DataRow("policy.trigger")]
+    [DataRow("trigger.type")]
+    [DataRow("scope.ruleRefs.notableDateRef")]
+    [DataRow("import.resource")]
+    [DataRow("notableDate.displayName")]
+    [DataRow("notableDate.category")]
+    [DataRow("notableDate.rules")]
+    [DataRow("rule.id")]
+    [DataRow("fixed.day")]
+    [DataRow("nthWeekdayFromRule.ordinal")]
+    [DataRow("duration.untilDate")]
+    [DataRow("dailyInterval.anchorDate")]
+    [DataRow("weekly.days")]
+    [DataRow("monthlyDay.dayOfMonth")]
+    [DataRow("patch.ruleRef")]
+    [DataRow("add.rule")]
+    public void FromJson_WhenSchemaRequiredPropertyIsNull_ShouldThrowLoadersMessage(string field)
+    {
+        AssertThrowsLoaderSchemaMessage(SchemaFieldJson(field, "null"));
+    }
+
+    /// <summary>
+    /// Verifies that a JSON list the schema requires to hold an item, a concept's <c>rules</c> or a weekly recurrence's
+    /// <c>days</c>, holding none, which the loader reports with <c>BODU-CAL-SCHEMA</c>, is rejected with a
+    /// <see cref="FormatException" /> carrying the loader's message.
+    /// </summary>
+    /// <param name="field">The name of the list emptied in the document.</param>
+    [TestMethod]
+    [DataRow("notableDate.rules")]
+    [DataRow("weekly.days")]
+    public void FromJson_WhenSchemaRequiredListIsEmpty_ShouldThrowLoadersMessage(string field)
+    {
+        AssertThrowsLoaderSchemaMessage(SchemaFieldJson(field, "[]"));
+    }
+
+    /// <summary>
+    /// Verifies that a JSON integer outside the range the schema allows for it, which the loader reports with
+    /// <c>BODU-CAL-SCHEMA</c>, is rejected with a <see cref="FormatException" /> carrying the loader's message, rather
+    /// than written into the document for the schema to reject at <c>Build</c>.
+    /// </summary>
+    /// <param name="field">The name of the integer.</param>
+    /// <param name="literal">The integer, as a JSON literal.</param>
+    [TestMethod]
+    [DataRow("scope.fromYear", "-1")]
+    [DataRow("scope.toYear", "65536")]
+    [DataRow("scope.onlyYears.item", "-5")]
+    [DataRow("scope.exceptYears.item", "70000")]
+    [DataRow("trigger.day", "0")]
+    [DataRow("trigger.day", "32")]
+    [DataRow("action.maxSearchDays", "0")]
+    [DataRow("notableDate.defaultDurationDays", "0")]
+    [DataRow("rule.durationDays", "0")]
+    [DataRow("rule.durationDays", "-3")]
+    [DataRow("applicability.fromYear", "-1")]
+    [DataRow("applicability.toYear", "65536")]
+    [DataRow("applicability.everyYears", "0")]
+    [DataRow("applicability.anchorYear", "65536")]
+    [DataRow("applicability.onlyYears.item", "-5")]
+    [DataRow("applicability.exceptYears.item", "65536")]
+    [DataRow("fixed.day", "0")]
+    [DataRow("fixed.day", "32")]
+    [DataRow("weekdayNearDate.day", "0")]
+    [DataRow("weekdayNearDate.day", "40")]
+    [DataRow("nthWeekdayFromRule.ordinal", "0")]
+    [DataRow("nthWeekdayFromRule.ordinal", "367")]
+    [DataRow("nthWeekdayFromRule.ordinal", "\"+5\"")]
+    [DataRow("nthWeekdayFromRule.ordinal", "\"05\"")]
+    [DataRow("workingDayInMonth.ordinal", "0")]
+    [DataRow("ordinalDayOfMonth.ordinal", "-367")]
+    [DataRow("dayOfYear.ordinal", "367")]
+    [DataRow("isoWeekDate.week", "0")]
+    [DataRow("isoWeekDate.week", "54")]
+    [DataRow("untilDate.fixed.day", "0")]
+    [DataRow("dailyInterval.intervalDays", "0")]
+    [DataRow("weekly.intervalWeeks", "0")]
+    [DataRow("monthlyDay.dayOfMonth", "0")]
+    [DataRow("monthlyDay.dayOfMonth", "32")]
+    [DataRow("monthlyDay.intervalMonths", "0")]
+    [DataRow("monthlyWeekday.intervalMonths", "-1")]
+    [DataRow("patch.durationDays", "0")]
+    [DataRow("add.fixed.day", "32")]
+    public void FromJson_WhenIntegerIsOutsideSchemaRange_ShouldThrowLoadersMessage(string field, string literal)
+    {
+        AssertThrowsLoaderSchemaMessage(SchemaFieldJson(field, literal));
+    }
+
+    /// <summary>
+    /// Verifies that a JSON integer at a bound of the range the schema allows for it builds, through the builder, into
+    /// the same resource the loader loads, compared byte for byte as binary rule packs.
+    /// </summary>
+    /// <param name="field">The name of the integer.</param>
+    /// <param name="literal">The integer, as a JSON literal.</param>
+    [TestMethod]
+    [DataRow("scope.fromYear", "0")]
+    [DataRow("scope.toYear", "65535")]
+    [DataRow("scope.onlyYears.item", "0")]
+    [DataRow("scope.exceptYears.item", "65535")]
+    [DataRow("trigger.day", "1")]
+    [DataRow("trigger.day", "31")]
+    [DataRow("action.maxSearchDays", "1")]
+    [DataRow("notableDate.defaultDurationDays", "1")]
+    [DataRow("rule.durationDays", "1")]
+    [DataRow("applicability.fromYear", "0")]
+    [DataRow("applicability.toYear", "65535")]
+    [DataRow("applicability.everyYears", "1")]
+    [DataRow("applicability.anchorYear", "65535")]
+    [DataRow("applicability.onlyYears.item", "65535")]
+    [DataRow("fixed.day", "31")]
+    [DataRow("weekdayNearDate.day", "31")]
+    [DataRow("nthWeekdayFromRule.ordinal", "-366")]
+    [DataRow("nthWeekdayFromRule.ordinal", "366")]
+    [DataRow("dayOfYear.ordinal", "-1")]
+    [DataRow("isoWeekDate.week", "1")]
+    [DataRow("isoWeekDate.week", "53")]
+    [DataRow("dailyInterval.intervalDays", "1")]
+    [DataRow("monthlyDay.dayOfMonth", "31")]
+    public void FromJson_WhenIntegerIsAtSchemaRangeBound_ShouldBuildWhatLoadJsonLoads(string field, string literal)
+    {
+        string json = SchemaFieldJson(field, literal);
+
+        NotableDateResource loaded = NotableDateResourceLoader.LoadJson(json, BuilderEnumImportResolver);
+        NotableDateResource built = NotableDateDocumentBuilder.FromJson(json).Build(BuilderEnumImportResolver);
+
+        CollectionAssert.AreEqual(PackBytes(loaded), PackBytes(built), field + " " + literal);
+    }
+
+    /// <summary>
+    /// Asserts that the builder rejects a JSON document with a <see cref="FormatException" /> carrying the message of the
+    /// first <c>BODU-CAL-SCHEMA</c> error the loader reports for it.
+    /// </summary>
+    /// <param name="json">The JSON document.</param>
+    private static void AssertThrowsLoaderSchemaMessage(string json)
+    {
+        _ = NotableDateResourceLoader.TryLoadJson(json, BuilderEnumImportResolver, out _, out IReadOnlyList<NotableDateValidationDiagnostic> diagnostics);
+        NotableDateValidationDiagnostic? expected = diagnostics.FirstOrDefault(d => d.Code == "BODU-CAL-SCHEMA" && d.Severity == NotableDateValidationSeverity.Error);
+        Assert.IsNotNull(expected, "The loader reported no BODU-CAL-SCHEMA error.");
+
+        FormatException ex = Assert.ThrowsExactly<FormatException>(() =>
+        {
+            _ = NotableDateDocumentBuilder.FromJson(json);
+        });
+
+        Assert.AreEqual(expected.Message, ex.Message);
+    }
+
+    /// <summary>
+    /// Returns <see cref="SchemaTemplateJson" /> with one field removed or replaced.
+    /// </summary>
+    /// <param name="field">The name of the field, or <see langword="null" /> to change none.</param>
+    /// <param name="literal">The JSON literal the field holds, or <see langword="null" /> to remove it.</param>
+    /// <returns>The JSON document.</returns>
+    private static string SchemaFieldJson(string? field, string? literal)
+    {
+        JsonNode root = JsonNode.Parse(SchemaTemplateJson)!;
+        if (field is null)
+            return root.ToJsonString();
+
+        string[] segments = s_schemaFieldPointers[field].Split('/', StringSplitOptions.RemoveEmptyEntries);
+        JsonNode parent = root;
+        foreach (string segment in segments[..^1])
+            parent = parent is JsonArray array ? array[int.Parse(segment, CultureInfo.InvariantCulture)]! : parent[segment]!;
+
+        string last = segments[^1];
+        if (parent is JsonArray items)
+            items[int.Parse(last, CultureInfo.InvariantCulture)] = JsonNode.Parse(literal!);
+        else if (literal is null)
+            _ = parent.AsObject().Remove(last);
+        else
+            parent[last] = JsonNode.Parse(literal);
+
+        return root.ToJsonString();
     }
 }
