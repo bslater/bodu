@@ -70,11 +70,13 @@ if (properties.TryGetValue(0x3001 /* display name */, out PstPropertyValue name)
   block at a time (`PstTableRow` cell access honors the existence bitmap).
 
 Validation is tiered via `PstFileOptions.ValidationLevel`: `Compatible` (default,
-structural checks plus the header checksum), `Strict` (every page and block checksum
-and signature), and `Minimal` (salvage reads of damaged files). Independently,
-`PstFileOptions.OmitUnresolvableValues` leaves out a property value or table cell
-whose reference does not resolve, instead of failing its whole context, and lists
-it in `OmittedPropertyIds`, so a damaged object still yields its other values.
+structural checks plus the header checksum), `Strict` (also every page and block
+checksum and signature, and stricter content checks), and `Minimal` (as
+`Compatible`, but the header checksum is skipped too). For salvage reads of
+damaged files, `PstFileOptions.OmitUnresolvableValues` leaves out a property
+value or table cell whose reference does not resolve, instead of failing its
+whole context, and lists it in `OmittedPropertyIds`, so a damaged object still
+yields its other values.
 
 ## Out of scope
 

@@ -74,6 +74,14 @@ public sealed class OlePropertySection
     /// Gets the code page used to decode ANSI (<c>VT_LPSTR</c>) strings in the section.
     /// </summary>
     /// <value>The section code page; <c>1252</c> when none is declared.</value>
+    /// <remarks>
+    /// Code pages 1200, 1201 and 65001 read and write ANSI strings as UTF-16 and UTF-8; every other code page uses the
+    /// encoding the shared framework's <see cref="System.Text.CodePagesEncodingProvider" /> serves for it, such as
+    /// Windows-1252 or Shift-JIS (932), without registering that provider process-wide. A code page the provider does
+    /// not serve, and code page 0, read and write as Latin-1. A character the code page cannot represent is written as
+    /// a best-fit or <c>?</c> replacement, so store such text as <see cref="OlePropertyType.UnicodeString" /> or in a
+    /// code page 65001 section.
+    /// </remarks>
     public int CodePage { get; }
 
     /// <summary>

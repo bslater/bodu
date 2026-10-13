@@ -33,12 +33,12 @@ A PST file is a node-oriented database in a single file. <xref:Bodu.IO.Pst.PstFi
 
 **Options and formats**
 
-- <xref:Bodu.IO.Pst.PstFileOptions> - `ValidationLevel` (<xref:Bodu.IO.Pst.PstValidationLevel>: `Compatible` / `Strict` / `Minimal`), `OmitUnresolvableValues` (default `false`; leaves a value whose reference does not resolve out of its property context or table row, listed in `OmittedPropertyIds`), and the decoded-block LRU `BlockCacheSize` (default 256 entries; `0` disables).
+- <xref:Bodu.IO.Pst.PstFileOptions> - `ValidationLevel` (<xref:Bodu.IO.Pst.PstValidationLevel>: `Compatible` / `Strict` / `Minimal`), `OmitUnresolvableValues` (default `false`; leaves a value whose reference does not resolve out of its property context or table row, listed in `OmittedPropertyIds`), the decoded page and block LRU caches' `BlockCacheSize` (default 256 entries each; `0` disables), and the limits `MaxNodeDataLength` (default 256 MiB, the largest node payload a read materializes) and `MaxDataTreeLeaves` (default 65,536 leaf blocks per data tree).
 - <xref:Bodu.IO.Pst.PstFileFormat> / <xref:Bodu.IO.Pst.PstCryptMethod> - the header's declared variant (both `Unicode` and `Ansi` are read; the OST variant is rejected) and content encoding.
 
 **Errors**
 
-- <xref:Bodu.IO.Pst.PstFileException> (base, with a <xref:Bodu.IO.Pst.PstFileError> category), <xref:Bodu.IO.Pst.PstFileFormatException> (malformed content at the active validation level), <xref:Bodu.IO.Pst.PstUnsupportedFormatException> (recognized but unsupported variant - the 4 KiB-page OST), <xref:Bodu.IO.Pst.PstNodeNotFoundException> (a `GetNode` miss).
+- <xref:Bodu.IO.Pst.PstFileException> (base, with a <xref:Bodu.IO.Pst.PstFileError> category), <xref:Bodu.IO.Pst.PstFileFormatException> (malformed content at the active validation level), <xref:Bodu.IO.Pst.PstUnsupportedFormatException> (recognized but unsupported - an OST file of any version, the 4 KiB-page variant among them, or a content encoding other than none, permute, or cyclic), <xref:Bodu.IO.Pst.PstNodeNotFoundException> (a `GetNode` miss).
 
 ## Example
 

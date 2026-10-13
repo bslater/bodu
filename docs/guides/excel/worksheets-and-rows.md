@@ -14,7 +14,7 @@ Both surfaces yield the same sparse <xref:Bodu.Formats.Excel.ExcelCell> values -
 |---|---|---|
 | Obtained from | `workbook.OpenWorksheet(...)` | `workbook.ReadWorksheet(...)` |
 | Access | Forward-only, record order | Random, by `(row, column)` |
-| Memory | One cell at a time | Whole sheet buffered |
+| Memory | The sheet's records, buffered once; cells decoded one at a time | Every populated cell, materialized |
 | Surface | `TryReadCell`, `ReadCells`, `ReadRows` | `TryGetCell`, `Cells`, `Rows` |
 | Reach for | A single pass over a large sheet | Lookups and revisiting cells |
 
@@ -89,7 +89,7 @@ Opening a sheet seeks to its recorded byte offset, so readers from the same work
 
 ## Choosing a surface
 
-- **Reach for the streaming reader** when you scan a sheet once - aggregations, exports, row-by-row transforms over a large worksheet - and want to bound allocation to a single cell.
+- **Reach for the streaming reader** when you scan a sheet once - aggregations, exports, row-by-row transforms over a large worksheet - and do not need a cell map: the reader buffers the sheet's encoded records once and decodes each cell on demand.
 - **Reach for the materialized worksheet** when you need random access - looking up a cell by position, cross-referencing columns, or reading the same sheet more than once.
 
 ## Tuning large-workbook reads
@@ -100,15 +100,17 @@ holding the whole sheet in memory. The levers below all bound the working set
 without changing the values you read.
 
 **Prefer the streaming reader.** <xref:Bodu.Formats.Excel.ExcelWorksheetReader>
-decodes one <xref:Bodu.Formats.Excel.ExcelCell> at a time in record order, so its
-allocation is a single cell regardless of sheet size. The materialized
-<xref:Bodu.Formats.Excel.ExcelWorksheet> buffers every populated cell, so it
-scales with the sheet - use it only when you genuinely need random access, and
-let it fall out of scope as soon as the lookups are done.
+reads the sheet's encoded records into one buffer and decodes one
+<xref:Bodu.Formats.Excel.ExcelCell> at a time in record order, without building a
+cell map, so its memory is proportional to the sheet's size on disk. The
+materialized <xref:Bodu.Formats.Excel.ExcelWorksheet> also keeps every populated
+cell, so it grows with the cell count as well - use it only when you genuinely
+need random access, and let it fall out of scope as soon as the lookups are done.
 
-**Read one sheet at a time, and dispose between sheets.** Each reader seeks to its
-own substream and holds decode state until disposed. Open, drain, and dispose one
-reader before opening the next rather than holding several open across a workbook:
+**Read one sheet at a time.** Each reader buffers its own sheet's records, and
+`Dispose` only marks it closed: the buffer is reclaimed once the reader is no
+longer referenced. Open, drain, and drop one reader before opening the next
+rather than holding several across a workbook:
 
 ```csharp
 using Bodu.Formats.Excel;
@@ -120,7 +122,7 @@ foreach (ExcelWorksheetInfo sheet in workbook.Worksheets)
     using ExcelWorksheetReader reader = workbook.OpenWorksheet(sheet.Index);
     while (reader.TryReadCell(out ExcelCell cell))
         Accumulate(cell);
-}   // each reader's decode state is released before the next opens
+}   // each reader goes out of scope before the next opens
 ```
 
 **Skip the metadata you do not use.** Pass an
@@ -148,10 +150,10 @@ whole sheet, because Excel writes cells in row-major order. Reach for
 
 | Goal | Do | Avoid |
 |---|---|---|
-| Bound memory to one cell | `OpenWorksheet` + `TryReadCell` / `ReadCells` | `ReadWorksheet` |
+| Avoid materializing every cell | `OpenWorksheet` + `TryReadCell` / `ReadCells` | `ReadWorksheet` |
 | Process row by row | `ReadRows` | materializing then iterating `Rows` |
 | Numeric / time-series only | `ReadDocumentProperties = false`, `DetectDateFormats = false` | default options |
-| Several sheets | one reader at a time, disposed between | holding many readers open |
+| Several sheets | one reader at a time, dropped between | holding many readers open |
 | Random lookups (small sheet) | `ReadWorksheet` + `TryGetCell` | streaming and re-scanning |
 
 ## Where to go next

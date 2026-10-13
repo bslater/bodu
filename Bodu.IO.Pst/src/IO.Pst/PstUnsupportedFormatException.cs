@@ -8,7 +8,8 @@ namespace Bodu.IO.Pst;
 
 /// <summary>
 /// Represents an error raised when a PST file is recognized but uses a format variant or content encoding the library
-/// does not read (the 4&#160;KiB-page OST variant or Windows Information Protection encryption).
+/// does not read (an OST file of any version, the 4&#160;KiB-page variant among them, or a content encoding other than
+/// none, permute, or cyclic, such as Windows Information Protection encryption).
 /// </summary>
 [System.Diagnostics.CodeAnalysis.SuppressMessage("Roslynator", "RCS1194:Implement exception constructors", Justification = "The type fixes the error code, so the base constructors that take a PstFileError are deliberately not mirrored; the three standard constructors are provided.")]
 public sealed class PstUnsupportedFormatException

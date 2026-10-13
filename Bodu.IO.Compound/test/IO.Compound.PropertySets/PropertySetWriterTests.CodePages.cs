@@ -62,6 +62,46 @@ public partial class PropertySetWriterTests
     }
 
     /// <summary>
+    /// Verifies that a section declaring code page 1252 encodes the characters Windows-1252 has outside Latin-1 with
+    /// their Windows-1252 bytes (U+2019 as 0x92) and reads them back, rather than replacing them with question marks.
+    /// </summary>
+    [TestMethod]
+    public void Write_WhenCodePageIs1252_ShouldEncodeWindows1252Characters()
+    {
+        var section = new OlePropertySection(TestFormatId, 1252);
+        section.Set(20, OlePropertyValue.Create("it\u2019s \u20AC5", OlePropertyType.AnsiString));
+
+        var set = new OlePropertySet(TestFormatId, Guid.Empty, 1252);
+        set.AddSection(section);
+        byte[] bytes = set.ToArray();
+        ReadOnlySpan<byte> windows1252 = [0x69, 0x74, 0x92, 0x73, 0x20, 0x80, 0x35, 0x00];
+
+        Assert.IsTrue(bytes.AsSpan().IndexOf(windows1252) >= 0);
+        Assert.AreEqual("it\u2019s \u20AC5", OlePropertySet.Parse(bytes).Sections[0][20]?.AsString());
+    }
+
+    /// <summary>
+    /// Verifies that a section declaring the double-byte code page 932 (Shift-JIS) round-trips its ANSI text and its
+    /// property-name dictionary.
+    /// </summary>
+    [TestMethod]
+    public void Write_WhenCodePageIsShiftJis_ShouldRoundTripTextAndDictionary()
+    {
+        var section = new OlePropertySection(TestFormatId, 932);
+        section.Set(20, OlePropertyValue.Create("\u65E5\u672C\u8A9E", OlePropertyType.AnsiString));
+        section.SetName(20, "\u540D\u524D");
+
+        var set = new OlePropertySet(TestFormatId, Guid.Empty, 932);
+        set.AddSection(section);
+
+        OlePropertySection parsed = OlePropertySet.Parse(set.ToArray()).Sections[0];
+
+        Assert.AreEqual(932, parsed.CodePage);
+        Assert.AreEqual("\u65E5\u672C\u8A9E", parsed[20]?.AsString());
+        Assert.AreEqual("\u540D\u524D", parsed.GetNamedProperties().Keys.Single());
+    }
+
+    /// <summary>
     /// Round-trips a single-property section declared at the supplied code page.
     /// </summary>
     /// <param name="codePage">The section code page.</param>

@@ -30,7 +30,7 @@ set of entries directly under the root storage:
 
 | Format | Extension | Distinguishing root entry | Kind |
 |---|---|---|---|
-| Excel workbook | `.xls` | `Workbook` (older files: `Book`) | Stream - BIFF8 record sequence |
+| Excel workbook | `.xls` | `Workbook` (BIFF5 files: `Book`) | Stream - BIFF8 (or BIFF5) record sequence |
 | Word document | `.doc` | `WordDocument` (+ `0Table` / `1Table`, `Data`) | Stream(s) |
 | PowerPoint | `.ppt` | `PowerPoint Document` (+ `Current User`, `Pictures`) | Stream(s) |
 | Outlook message | `.msg` | `__substg1.0_*`, `__attach_*`, `__recip_*`, `__properties_version1.0` | Streams + storages |
@@ -38,8 +38,8 @@ set of entries directly under the root storage:
 Notes that matter when probing:
 
 - **Excel** keeps its entire workbook in a single `Workbook` stream - a
-  flat BIFF8 record sequence. Very old files name it `Book`. Both are
-  direct children of the root storage.
+  flat BIFF8 record sequence. BIFF5 files (Excel 5.0 and 95) name it
+  `Book`. Both are direct children of the root storage.
 - **Word** stores the main text in `WordDocument` and its formatting
   tables in `0Table` or `1Table` (the active one is selected by a flag
   inside `WordDocument`), with document properties in `Data`.
@@ -153,11 +153,12 @@ caller's job.
 ## Reading an `.xls` workbook
 
 For `.xls` you *can* open the `Workbook` stream directly and read its BIFF8
-records yourself, but you do not have to - that is exactly what
+records (or a `Book` stream's BIFF5 records) yourself, but you do not have
+to - that is exactly what
 [`Bodu.Formats.Excel.Binary`](xref:Bodu.Formats.Excel.ExcelBinaryWorkbook)
-exists for. It builds on `Bodu.IO.Compound`, locates the `Workbook`
-stream, and exposes worksheet cell values without you touching the record
-layer:
+exists for. It builds on `Bodu.IO.Compound`, locates the `Workbook` or
+`Book` stream, and exposes worksheet cell values without you touching the
+record layer:
 
 ```csharp
 using Bodu.Formats.Excel;

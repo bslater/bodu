@@ -165,6 +165,15 @@ public sealed class ExcelBinaryWorkbook
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="path" /> or <paramref name="options" /> is <see langword="null" />.
     /// </exception>
+    /// <exception cref="CompoundFileFormatException">Thrown when the file is not a valid compound file.</exception>
+    /// <exception cref="ExcelBinaryWorkbookStreamNotFoundException">
+    /// Thrown when the compound file has no workbook stream.
+    /// </exception>
+    /// <exception cref="ExcelBinaryFormatException">Thrown when the workbook stream is not valid BIFF.</exception>
+    /// <exception cref="ExcelBinaryUnsupportedException">
+    /// Thrown when the workbook is in a BIFF version before BIFF5.
+    /// </exception>
+    /// <exception cref="ExcelBinaryEncryptedWorkbookException">Thrown when the workbook is encrypted.</exception>
     /// <example>
     /// <code language="csharp">
     ///<![CDATA[
@@ -201,6 +210,15 @@ public sealed class ExcelBinaryWorkbook
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="file" /> is <see langword="null" />.
     /// </exception>
+    /// <exception cref="CompoundFileFormatException">Thrown when the file is not a valid compound file.</exception>
+    /// <exception cref="ExcelBinaryWorkbookStreamNotFoundException">
+    /// Thrown when the compound file has no workbook stream.
+    /// </exception>
+    /// <exception cref="ExcelBinaryFormatException">Thrown when the workbook stream is not valid BIFF.</exception>
+    /// <exception cref="ExcelBinaryUnsupportedException">
+    /// Thrown when the workbook is in a BIFF version before BIFF5.
+    /// </exception>
+    /// <exception cref="ExcelBinaryEncryptedWorkbookException">Thrown when the workbook is encrypted.</exception>
     public static ExcelBinaryWorkbook OpenRead(FileInfo file)
     {
         ThrowHelper.ThrowIfNull(file);
@@ -220,6 +238,7 @@ public sealed class ExcelBinaryWorkbook
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="stream" /> is <see langword="null" />.
     /// </exception>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="stream" /> is not seekable.</exception>
     /// <exception cref="CompoundFileFormatException">Thrown when the stream is not a valid compound file.</exception>
     /// <exception cref="ExcelBinaryWorkbookStreamNotFoundException">
     /// Thrown when the compound file has no workbook stream.
@@ -241,6 +260,16 @@ public sealed class ExcelBinaryWorkbook
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="stream" /> or <paramref name="options" /> is <see langword="null" />.
     /// </exception>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="stream" /> is not seekable.</exception>
+    /// <exception cref="CompoundFileFormatException">Thrown when the stream is not a valid compound file.</exception>
+    /// <exception cref="ExcelBinaryWorkbookStreamNotFoundException">
+    /// Thrown when the compound file has no workbook stream.
+    /// </exception>
+    /// <exception cref="ExcelBinaryFormatException">Thrown when the workbook stream is not valid BIFF.</exception>
+    /// <exception cref="ExcelBinaryUnsupportedException">
+    /// Thrown when the workbook is in a BIFF version before BIFF5.
+    /// </exception>
+    /// <exception cref="ExcelBinaryEncryptedWorkbookException">Thrown when the workbook is encrypted.</exception>
     /// <example>
     /// <code language="csharp">
     ///<![CDATA[

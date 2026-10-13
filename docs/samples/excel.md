@@ -31,9 +31,9 @@ The read-only BIFF5 and BIFF8 (`.xls`) workbook reader, layer by layer:
   declared used range in A1 notation), flattened document properties, and the workbook's
   declared <xref:Bodu.Formats.Excel.ExcelDateSystem>.
 - **ForwardOnlyReader** - the primary surface:
-  <xref:Bodu.Formats.Excel.ExcelWorksheetReader> streams cells forward-only with constant
-  memory (2,417 cells counted and classified without buffering), plus `ReadRows` grouping
-  for row-shaped import pipelines.
+  <xref:Bodu.Formats.Excel.ExcelWorksheetReader> streams cells forward-only from the sheet's
+  records, buffered once (2,417 cells counted and classified without a cell map), plus
+  `ReadRows` grouping for row-shaped import pipelines.
 - **MaterializedWorksheet** - the convenience surface:
   <xref:Bodu.Formats.Excel.ExcelWorksheet> with coordinate lookup (`TryGetCell`), LINQ
   aggregation over the cell collection, and sparse-row semantics.

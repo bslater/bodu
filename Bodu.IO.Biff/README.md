@@ -28,7 +28,7 @@ while (reader.Read())
 
         case BiffRecordType.BoundSheet:
             BiffBoundSheetRecord sheet = reader.GetBoundSheet();
-            Console.WriteLine($"{sheet.Name} at 0x{sheet.StreamOffset:X} ({sheet.State})");
+            Console.WriteLine($"{sheet.Name.GetString()} at 0x{sheet.StreamOffset:X} ({sheet.State})");
             break;
 
         case BiffRecordType.Number:

@@ -127,7 +127,7 @@ try
 }
 catch (PstUnsupportedFormatException)
 {
-    Console.WriteLine("A recognized but unsupported PST variant (the 4 KiB-page OST).");
+    Console.WriteLine("A recognized but unsupported variant (an OST file, or an unsupported content encoding).");
 }
 catch (PstFileFormatException ex)
 {

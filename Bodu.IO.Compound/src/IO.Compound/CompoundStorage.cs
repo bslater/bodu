@@ -293,6 +293,13 @@ public sealed class CompoundStorage
     /// <exception cref="CompoundStreamNotFoundException">
     /// Thrown when no child stream with the given name exists.
     /// </exception>
+    /// <exception cref="ObjectDisposedException">
+    /// Thrown when the owning compound file is read-only and has been disposed.
+    /// </exception>
+    /// <exception cref="CompoundFileFormatException">
+    /// Thrown when, in a read-only compound file, the stream's sector chain is malformed, or, at a level stricter than
+    /// <see cref="CompoundValidationLevel.Minimal" />, holds fewer bytes than the stream declares.
+    /// </exception>
     public CompoundStream OpenStream(string name) =>
         TryOpenStream(name, out CompoundStream? stream)
             ? stream
@@ -312,10 +319,24 @@ public sealed class CompoundStorage
     /// Thrown when <paramref name="name" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="NotSupportedException">
-    /// Thrown when <paramref name="access" /> requests write access on a read-only compound file.
+    /// Thrown when the compound file is read-only and the call asks for anything but <see cref="FileMode.Open" /> with
+    /// <see cref="FileAccess.Read" />, or when <paramref name="mode" /> is not a supported file mode.
     /// </exception>
     /// <exception cref="CompoundStreamNotFoundException">
     /// Thrown when no child stream with the given name exists and <paramref name="mode" /> does not create one.
+    /// </exception>
+    /// <exception cref="IOException">
+    /// Thrown when <paramref name="mode" /> is <see cref="FileMode.CreateNew" /> and the stream already exists.
+    /// </exception>
+    /// <exception cref="CompoundFileSerializationException">
+    /// Thrown when <paramref name="mode" /> creates a stream and <paramref name="name" /> is not a valid entry name.
+    /// </exception>
+    /// <exception cref="ObjectDisposedException">
+    /// Thrown when the owning compound file is read-only and has been disposed.
+    /// </exception>
+    /// <exception cref="CompoundFileFormatException">
+    /// Thrown when, in a read-only compound file, the stream's sector chain is malformed, or, at a level stricter than
+    /// <see cref="CompoundValidationLevel.Minimal" />, holds fewer bytes than the stream declares.
     /// </exception>
     public CompoundStream OpenStream(string name, FileMode mode, FileAccess access)
     {
@@ -382,6 +403,13 @@ public sealed class CompoundStorage
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="name" /> is <see langword="null" />.
     /// </exception>
+    /// <exception cref="ObjectDisposedException">
+    /// Thrown when the owning compound file is read-only and has been disposed.
+    /// </exception>
+    /// <exception cref="CompoundFileFormatException">
+    /// Thrown when, in a read-only compound file, the stream's sector chain is malformed, or, at a level stricter than
+    /// <see cref="CompoundValidationLevel.Minimal" />, holds fewer bytes than the stream declares.
+    /// </exception>
     public bool TryOpenStream(string name, [MaybeNullWhen(false)] out CompoundStream stream)
     {
         ThrowHelper.ThrowIfNull(name);
@@ -427,7 +455,18 @@ public sealed class CompoundStorage
     /// Thrown when <paramref name="name" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="NotSupportedException">
-    /// Thrown when <paramref name="access" /> requests write access on a read-only compound file.
+    /// Thrown when the compound file is read-only and the call asks for anything but <see cref="FileMode.Open" /> with
+    /// <see cref="FileAccess.Read" />, or when <paramref name="mode" /> is not a supported file mode.
+    /// </exception>
+    /// <exception cref="CompoundFileSerializationException">
+    /// Thrown when <paramref name="mode" /> creates a stream and <paramref name="name" /> is not a valid entry name.
+    /// </exception>
+    /// <exception cref="ObjectDisposedException">
+    /// Thrown when the owning compound file is read-only and has been disposed.
+    /// </exception>
+    /// <exception cref="CompoundFileFormatException">
+    /// Thrown when, in a read-only compound file, the stream's sector chain is malformed, or, at a level stricter than
+    /// <see cref="CompoundValidationLevel.Minimal" />, holds fewer bytes than the stream declares.
     /// </exception>
     public bool TryOpenStream(string name, FileMode mode, FileAccess access, [MaybeNullWhen(false)] out CompoundStream stream)
     {
@@ -450,6 +489,10 @@ public sealed class CompoundStorage
     /// </exception>
     /// <exception cref="InvalidOperationException">Thrown when the compound file is read-only.</exception>
     /// <exception cref="ArgumentException">Thrown when a child with the same name already exists.</exception>
+    /// <exception cref="CompoundFileSerializationException">
+    /// Thrown when <paramref name="name" /> is empty, longer than 31 characters, or contains <c>/</c>, <c>\</c>,
+    /// <c>:</c>, or <c>!</c>.
+    /// </exception>
     public CompoundStorage CreateStorage(string name)
     {
         ThrowHelper.ThrowIfNull(name);
@@ -471,6 +514,10 @@ public sealed class CompoundStorage
     /// </exception>
     /// <exception cref="InvalidOperationException">Thrown when the compound file is read-only.</exception>
     /// <exception cref="ArgumentException">Thrown when a child with the same name already exists.</exception>
+    /// <exception cref="CompoundFileSerializationException">
+    /// Thrown when <paramref name="name" /> is empty, longer than 31 characters, or contains <c>/</c>, <c>\</c>,
+    /// <c>:</c>, or <c>!</c>.
+    /// </exception>
     public CompoundStream CreateStream(string name)
     {
         ThrowHelper.ThrowIfNull(name);
@@ -490,6 +537,10 @@ public sealed class CompoundStorage
     /// </exception>
     /// <exception cref="InvalidOperationException">Thrown when the compound file is read-only.</exception>
     /// <exception cref="ArgumentException">Thrown when a child with the same name already exists.</exception>
+    /// <exception cref="CompoundFileSerializationException">
+    /// Thrown when <paramref name="name" /> is empty, longer than 31 characters, or contains <c>/</c>, <c>\</c>,
+    /// <c>:</c>, or <c>!</c>.
+    /// </exception>
     public void CreateStream(string name, ReadOnlyMemory<byte> content)
     {
         ThrowHelper.ThrowIfNull(name);
@@ -537,6 +588,10 @@ public sealed class CompoundStorage
     /// </exception>
     /// <exception cref="ArgumentException">
     /// Thrown when a child named <paramref name="newName" /> already exists.
+    /// </exception>
+    /// <exception cref="CompoundFileSerializationException">
+    /// Thrown when <paramref name="newName" /> is empty, longer than 31 characters, or contains <c>/</c>, <c>\</c>,
+    /// <c>:</c>, or <c>!</c>.
     /// </exception>
     public void Rename(string oldName, string newName)
     {

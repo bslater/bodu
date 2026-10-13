@@ -49,7 +49,7 @@ For the full glossary, see [Core concepts](concepts.md).
 - **Read-only.** Neither reader writes, and neither emulates a MAPI session: there is no MAPI message object, no property-change notification, and no RTF-to-HTML de-encapsulation.
 - **Every property, curated conveniences.** All decoded properties are reachable through `Properties`; `Subject`, `SenderName`, `SentTime`, and the rest are lazy views that return `null` when the property is absent.
 - **Bounded resources.** Both option types cap embedded-message nesting, decompressed RTF size, and the attachment payload decoded inline; the `.pst` options additionally bound node materialization. See [resource limits](concepts.md#resource-limits).
-- **PST variants.** The mail-store reader opens Unicode and ANSI files; the OST variant is rejected by the container with <xref:Bodu.IO.Pst.PstUnsupportedFormatException>. Search folders are excluded from folder enumeration.
+- **PST variants.** The mail-store reader opens Unicode and ANSI files; OST files, and content encodings other than none, permute, or cyclic, are rejected by the container with <xref:Bodu.IO.Pst.PstUnsupportedFormatException>. Search folders are excluded from folder enumeration.
 
 ## Worked example - a message and a mail store
 
@@ -130,7 +130,7 @@ foreach (OutlookMailFolder folder in store.RootFolder.EnumerateSubfolders())
 | <xref:Bodu.Formats.Outlook.OutlookMailFolder> | One folder: `DisplayName`, `ContainerClass`, `MessageCount`, `UnreadCount`, `HasSubfolders`; streaming `EnumerateSubfolders` / `EnumerateMessages` / `EnumerateAssociatedMessages`. |
 | <xref:Bodu.Formats.Outlook.OutlookMailMessage> | One message: the same convenience surface as `OutlookMessage`, plus `Recipients`, `Attachments`, and the bodies. |
 | <xref:Bodu.Formats.Outlook.OutlookMailAttachment> | One attachment: the same surface as `OutlookAttachment`; `OpenMessage()` returns an `OutlookMailMessage`. |
-| <xref:Bodu.Formats.Outlook.OutlookMailStoreReaderOptions> | `ValidationLevel`, `BlockCacheSize`, `DecompressRtf`, `MaxNodeDataLength`, and the shared `Max*` limits. |
+| <xref:Bodu.Formats.Outlook.OutlookMailStoreReaderOptions> | `ValidationLevel`, the salvage options `OmitUnresolvableValues` and `ValueOmittedCallback`, `BlockCacheSize`, `DecompressRtf`, `MaxNodeDataLength`, and the shared `Max*` limits. |
 | <xref:Bodu.Formats.Outlook.OutlookPstFormatException> | A messaging-level violation of MS-PST; container corruption surfaces as the `Bodu.IO.Pst` exception family instead. |
 
 ## Where to go next

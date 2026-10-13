@@ -170,6 +170,7 @@ foreach (PstPropertyValue value in properties)
 // record key: 6A552B813C43F94384F18B7DA2393E95
 //   0x0E34 (0x0102, 24 bytes)
 //   0x0E38 (0x0003, 4 bytes)
+//   0x0FF9 (0x0102, 16 bytes)
 //   0x3001 (0x001F, 14 bytes)
 //   ...
 ```

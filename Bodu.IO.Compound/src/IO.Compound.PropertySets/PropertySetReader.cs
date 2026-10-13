@@ -501,17 +501,30 @@ internal static class PropertySetReader
     }
 
     /// <summary>
-    /// Resolves a code-page number to an <see cref="Encoding" /> without requiring the code-pages provider.
+    /// Resolves a section code page to the <see cref="Encoding" /> that decodes and encodes its ANSI strings.
     /// </summary>
     /// <param name="codePage">The code-page number.</param>
-    /// <returns>The resolved encoding; falls back to Latin-1 for single-byte code pages.</returns>
-    private static Encoding ResolveEncoding(int codePage) =>
+    /// <returns>
+    /// The UTF-16 or UTF-8 encoding for code pages 1200, 1201 and 65001; otherwise the encoding
+    /// <see cref="CodePagesEncodingProvider" /> serves for the code page, or Latin-1 for code page 0 and for a code
+    /// page it does not serve.
+    /// </returns>
+    /// <remarks>
+    /// The Windows and other legacy code pages come from the shared framework's
+    /// <see cref="CodePagesEncodingProvider" />, queried directly rather than registered with
+    /// <see cref="Encoding.RegisterProvider" />, so reading or writing a property set changes nothing process-wide.
+    /// Code page 0 names the machine's ANSI code page rather than a code page of its own; it is read as Latin-1, so a
+    /// property set decodes the same on every machine. The writer resolves its encoding through this method too, so the
+    /// two always agree.
+    /// </remarks>
+    internal static Encoding ResolveEncoding(int codePage) =>
         codePage switch
         {
             1200 => Encoding.Unicode,
             1201 => Encoding.BigEndianUnicode,
             65001 => Encoding.UTF8,
-            _ => Encoding.Latin1,
+            0 => Encoding.Latin1,
+            _ => CodePagesEncodingProvider.Instance.GetEncoding(codePage) ?? Encoding.Latin1,
         };
 
     /// <summary>

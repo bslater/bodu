@@ -73,10 +73,15 @@ public sealed class OutlookAttachment
     /// Gets how the attachment's content is stored.
     /// </summary>
     /// <value>
-    /// The <c>PidTagAttachMethod</c> value when present and defined. When the property is absent, an attachment that
-    /// carries a by-value content stream reports <see cref="OutlookAttachmentMethod.ByValue" /> (real-world writers
-    /// frequently omit the method); otherwise <see cref="OutlookAttachmentMethod.None" />.
+    /// The <c>PidTagAttachMethod</c> value when present and defined. When the property is absent or carries an
+    /// undefined value, an attachment that carries a by-value content stream reports
+    /// <see cref="OutlookAttachmentMethod.ByValue" /> (real-world writers frequently omit the method); otherwise
+    /// <see cref="OutlookAttachmentMethod.None" />.
     /// </value>
+    /// <remarks>
+    /// The inference applies at every validation level: unlike the <c>.pst</c> reader, the <c>.msg</c> reader does not
+    /// reject an undefined method under <see cref="CompoundValidationLevel.Strict" />.
+    /// </remarks>
     public OutlookAttachmentMethod Method =>
         Properties.GetInt32(MapiPropertyIds.AttachMethod) is int value
             && value is >= (int)OutlookAttachmentMethod.None and <= (int)OutlookAttachmentMethod.ByWebReference

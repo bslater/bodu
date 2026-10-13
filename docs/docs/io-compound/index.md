@@ -33,7 +33,7 @@ For the full glossary, see [Core concepts](concepts.md).
 ## Scope and limitations
 
 - **Reading and writing.** This introduction focuses on the read path; the library also **authors** CFB containers - `CompoundFile.Create` plus `Commit`, the detached `CompoundStorageBuilder`, and the property-set builders. See the [Authoring compound files](../../guides/io-compound/authoring-compound-files.md) guide.
-- **No format interpretation.** The reader surfaces named streams and their bytes; understanding a `Workbook` or `WordDocument` stream is the caller's job. The narrow BIFF8 `.xls` reader in [Bodu.Formats.Excel.Binary](../excel/index.md) is the worked example of a format reader layered on top.
+- **No format interpretation.** The reader surfaces named streams and their bytes; understanding a `Workbook` or `WordDocument` stream is the caller's job. The narrow BIFF5 / BIFF8 `.xls` reader in [Bodu.Formats.Excel.Binary](../excel/index.md) is the worked example of a format reader layered on top.
 
 ## Worked example - open, navigate, read
 
@@ -43,7 +43,7 @@ A single flow traces the container end-to-end:
 2. Open the container: `using CompoundFile file = CompoundFile.Open(stream)`.
 3. Walk the hierarchy from <xref:Bodu.IO.Compound.CompoundFile.RootStorage> with `EnumerateEntries` / `EnumerateStorages` / `EnumerateStreams`.
 4. Resolve a named stream: `file.RootStorage.OpenStream("Workbook")` (or the non-throwing `TryOpenStream`).
-5. Read the bytes: `ReadAllBytes()` for a small payload, or `Open()` for a seekable `CompoundStream` cursor.
+5. Read the bytes: `ReadAllBytes()` for a small payload, or read the returned `CompoundStream` itself as a seekable `Stream` cursor.
 
 ```csharp
 using Bodu.IO.Compound;
@@ -102,4 +102,4 @@ byte[] bytes = workbook.ReadAllBytes();
 - **[Bodu.IO.Compound guides](../../guides/io-compound/index.md)** - reading files, buffered vs streaming access, and property sets.
 - **API reference** - [Bodu.IO.Compound](xref:Bodu.IO.Compound) · [Bodu.IO.Compound.PropertySets](xref:Bodu.IO.Compound.PropertySets).
 - **[Binary Formats & I/O topic overview](../topics/binary-formats.md)** - where the container reader sits beneath the format readers.
-- **For the BIFF8 `.xls` reader built on this package**, see [Bodu.Formats.Excel.Binary](../excel/index.md).
+- **For the BIFF5 / BIFF8 `.xls` reader built on this package**, see [Bodu.Formats.Excel.Binary](../excel/index.md).

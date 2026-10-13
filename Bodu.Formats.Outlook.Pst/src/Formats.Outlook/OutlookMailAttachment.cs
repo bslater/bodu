@@ -64,11 +64,20 @@ public sealed class OutlookMailAttachment
     /// <value>The tag-addressed property collection, decoded once on first access.</value>
     /// <exception cref="ObjectDisposedException">The owning session has been disposed.</exception>
     /// <exception cref="PstFileException">The container is malformed.</exception>
+    /// <exception cref="OutlookPstFormatException">
+    /// Under strict validation, a property value cannot be decoded.
+    /// </exception>
     /// <remarks>
+    /// <para>
     /// A by-value payload (<c>PidTagAttachDataBinary</c>) larger than
     /// <see cref="OutlookMailStoreReaderOptions.MaxInlineAttachmentBytes" /> is not decoded: the property is present
     /// with a <see langword="null" /> value and the content is served by <see cref="OpenContentStream" /> directly from
     /// the store.
+    /// </para>
+    /// <para>
+    /// An exception thrown by <see cref="OutlookMailStoreReaderOptions.ValueOmittedCallback" /> while the properties
+    /// are decoded propagates from this access.
+    /// </para>
     /// </remarks>
     public MapiPropertyCollection Properties
     {

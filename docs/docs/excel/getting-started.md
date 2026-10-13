@@ -12,7 +12,7 @@ Unfamiliar with terms like *BIFF8* and *BIFF5*, *workbook globals*, *cell kind*,
 dotnet add package Bodu.Formats.Excel.Binary
 ```
 
-Targets `net8.0` and `net10.0`. Depends on `Bodu.IO.Compound` (the container reader) and `Bodu.IO.Biff` (the BIFF5 / BIFF8 record codec); `Bodu.IO.Compound` depends only on `Bodu.Core`, and `Bodu.IO.Biff` on `Bodu.Core` plus the `System.Text.Encoding.CodePages` NuGet package (for BIFF5 byte strings).
+Targets `net8.0` and `net10.0`. Depends on `Bodu.IO.Compound` (the container reader) and `Bodu.IO.Biff` (the BIFF5 / BIFF8 record codec); both depend only on `Bodu.Core`. BIFF5 byte strings decode through `CodePagesEncodingProvider`, which ships in the shared framework, so no extra package is needed.
 
 ## Open a workbook and list its sheets
 
@@ -104,7 +104,7 @@ while (reader.TryReadCell(out ExcelCell cell))
 }
 ```
 
-The reader never assumes a number is a date, but it flags numeric cells whose format is a date or time format via <xref:Bodu.Formats.Excel.ExcelCell.IsDateFormatted>. <xref:Bodu.Formats.Excel.ExcelSerialDate> converts the serial number using the workbook's <xref:Bodu.Formats.Excel.ExcelDateSystem>. The workbook also offers `GetDateTime(cell)` as a shortcut that returns `null` for non-date cells.
+The reader never assumes a number is a date, but it flags numeric cells whose format is a date or time format via <xref:Bodu.Formats.Excel.ExcelCell.IsDateFormatted>. <xref:Bodu.Formats.Excel.ExcelSerialDate> converts the serial number using the workbook's <xref:Bodu.Formats.Excel.ExcelDateSystem>. The workbook also offers `GetDateTime(cell)` as a shortcut: it converts every numeric cell, counts and amounts included, and returns `null` only for a non-numeric one, so check `IsDateFormatted` first.
 
 ## Read document metadata, or skip it for throughput
 

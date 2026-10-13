@@ -223,7 +223,7 @@ if (storage.TryOpenPropertySet("BoduPipeline", out OlePropertySet? read))
 // Sequence = 42
 ```
 
-A name dictionary is legal in any section, not just the user-defined one, so `GetNamedProperties()` works here too. Code page 65001 makes `AnsiString` values UTF-8 on the wire; `UnicodeString` is the alternative that never depends on the section code page. The writer encodes code pages 1200, 1201, and 65001 exactly and every other value - 1252 included - as Latin-1, so for text outside ASCII use one of those three or `UnicodeString`.
+A name dictionary is legal in any section, not just the user-defined one, so `GetNamedProperties()` works here too. Code page 65001 makes `AnsiString` values UTF-8 on the wire; `UnicodeString` is the alternative that never depends on the section code page. Code pages 1200 and 1201 make them UTF-16, and every other code page - 1252, Shift-JIS (932) and the rest - reads and writes `AnsiString` values with the encoding the shared framework's `CodePagesEncodingProvider` serves for it (queried directly, never registered process-wide); a code page it does not serve, and code page 0, fall back to Latin-1. A character the section's code page cannot represent is written as a best-fit or `?` replacement, so for text outside the code page use 65001 or `UnicodeString`.
 
 ## Bytes in and out without a container
 

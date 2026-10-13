@@ -178,7 +178,7 @@ file.Revert();                                                    // keep the fi
 // removed=True missing=False dirty=True
 ```
 
-`Rename` applies to a storage or a stream, keeps its payload, metadata, and position in the tree, and throws <xref:System.Collections.Generic.KeyNotFoundException> for a missing source or <xref:System.ArgumentException> for a taken target name. `Delete` removes a stream or a whole storage subtree and reports whether anything was removed. Names follow the container's rules - at most 31 UTF-16 code units, no `/` or null characters, compared case-insensitively - and the `\x05` / `\x01` control prefixes are part of the name.
+`Rename` applies to a storage or a stream, keeps its payload, metadata, and position in the tree, and throws <xref:System.Collections.Generic.KeyNotFoundException> for a missing source or <xref:System.ArgumentException> for a taken target name. `Delete` removes a stream or a whole storage subtree and reports whether anything was removed. Names follow the container's rules - at most 31 UTF-16 code units, non-empty, no `/`, `\`, `:`, or `!`, compared case-insensitively - and the `\x05` / `\x01` control prefixes are part of the name.
 
 A writable storage also exposes its directory metadata as settable properties - `ClassId`, `CreationTime`, `ModifiedTime`, `StateBits` - which `Commit` writes exactly as set and never stamps for you.
 

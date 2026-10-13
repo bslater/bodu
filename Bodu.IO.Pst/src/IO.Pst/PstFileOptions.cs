@@ -65,14 +65,16 @@ public sealed class PstFileOptions
     public bool OmitUnresolvableValues { get; init; }
 
     /// <summary>
-    /// Gets the maximum number of decoded pages and block payloads the session keeps in its least-recently-used cache.
+    /// Gets the maximum number of decoded pages, and separately of decoded block payloads, the session keeps in its
+    /// least-recently-used caches.
     /// </summary>
-    /// <value>The cache entry budget; <c>256</c> by default. <c>0</c> disables caching entirely.</value>
+    /// <value>The entry budget of each cache; <c>256</c> by default. <c>0</c> disables caching entirely.</value>
     /// <exception cref="ArgumentOutOfRangeException">The value is negative.</exception>
     /// <remarks>
-    /// Every cached entry is at most one block (8,192 bytes), so the default budget bounds the cache at roughly 2 MB
-    /// per open session. Repeated structural reads - B-tree walks, property-context and table-context access over the
-    /// same nodes - are served from the cache instead of re-reading and re-decoding from the source stream.
+    /// Pages and blocks are cached separately, each cache holding up to this many entries. A cached page is 512 bytes
+    /// and a cached block at most 8,192 bytes, so the default budget bounds the two caches at roughly 2.2 MB per open
+    /// session. Repeated structural reads - B-tree walks, property-context and table-context access over the same
+    /// nodes - are served from the cache instead of re-reading and re-decoding from the source stream.
     /// </remarks>
     public int BlockCacheSize
     {

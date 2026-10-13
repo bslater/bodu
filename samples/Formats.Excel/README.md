@@ -16,4 +16,4 @@ file.
 
 | Sample | Demonstrates | Packages |
 |---|---|---|
-| `Bodu.Formats.Excel.Binary.Samples.ExcelReading` | The `ExcelBinaryWorkbook` session (sheet directory, document properties, date system), the forward-only `ExcelWorksheetReader` streaming every cell in constant memory, the materialized `ExcelWorksheet` convenience surface with coordinate lookup and LINQ, and cell-kind decoding including BIFF8's format-classified serial dates via `ExcelSerialDate`/`ExcelDateSystem` | `Bodu.Formats.Excel.Binary` |
+| `Bodu.Formats.Excel.Binary.Samples.ExcelReading` | The `ExcelBinaryWorkbook` session (sheet directory, document properties, date system), the forward-only `ExcelWorksheetReader` streaming every cell without a cell map, the materialized `ExcelWorksheet` convenience surface with coordinate lookup and LINQ, and cell-kind decoding including BIFF8's format-classified serial dates via `ExcelSerialDate`/`ExcelDateSystem` | `Bodu.Formats.Excel.Binary` |
