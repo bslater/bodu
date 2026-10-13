@@ -49826,6 +49826,21 @@ references:
   commentId: Overload:Bodu.Financial.ExchangeRates.DateRangeCoverage.IsEmpty
   fullName: Bodu.Financial.ExchangeRates.DateRangeCoverage.IsEmpty
   nameWithType: DateRangeCoverage.IsEmpty
+- uid: Bodu.Financial.ExchangeRates.DateRangeCoverage.TryGetUncoveredSpan(System.DateOnly,System.DateOnly,System.DateOnly@,System.DateOnly@)
+  name: TryGetUncoveredSpan(DateOnly, DateOnly, out DateOnly, out DateOnly)
+  href: api/Bodu.Financial.ExchangeRates.DateRangeCoverage.html#Bodu_Financial_ExchangeRates_DateRangeCoverage_TryGetUncoveredSpan_System_DateOnly_System_DateOnly_System_DateOnly__System_DateOnly__
+  commentId: M:Bodu.Financial.ExchangeRates.DateRangeCoverage.TryGetUncoveredSpan(System.DateOnly,System.DateOnly,System.DateOnly@,System.DateOnly@)
+  name.vb: TryGetUncoveredSpan(DateOnly, DateOnly, DateOnly, DateOnly)
+  fullName: Bodu.Financial.ExchangeRates.DateRangeCoverage.TryGetUncoveredSpan(System.DateOnly, System.DateOnly, out System.DateOnly, out System.DateOnly)
+  fullName.vb: Bodu.Financial.ExchangeRates.DateRangeCoverage.TryGetUncoveredSpan(System.DateOnly, System.DateOnly, System.DateOnly, System.DateOnly)
+  nameWithType: DateRangeCoverage.TryGetUncoveredSpan(DateOnly, DateOnly, out DateOnly, out DateOnly)
+  nameWithType.vb: DateRangeCoverage.TryGetUncoveredSpan(DateOnly, DateOnly, DateOnly, DateOnly)
+- uid: Bodu.Financial.ExchangeRates.DateRangeCoverage.TryGetUncoveredSpan*
+  name: TryGetUncoveredSpan
+  href: api/Bodu.Financial.ExchangeRates.DateRangeCoverage.html#Bodu_Financial_ExchangeRates_DateRangeCoverage_TryGetUncoveredSpan_
+  commentId: Overload:Bodu.Financial.ExchangeRates.DateRangeCoverage.TryGetUncoveredSpan
+  fullName: Bodu.Financial.ExchangeRates.DateRangeCoverage.TryGetUncoveredSpan
+  nameWithType: DateRangeCoverage.TryGetUncoveredSpan
 - uid: Bodu.Financial.ExchangeRates.DatedRateProviderAdapter
   name: DatedRateProviderAdapter
   href: api/Bodu.Financial.ExchangeRates.DatedRateProviderAdapter.html
@@ -51502,6 +51517,21 @@ references:
   commentId: Overload:Bodu.Financial.ExchangeRates.FileSystemBoeResponseCache.GetFileName
   fullName: Bodu.Financial.ExchangeRates.FileSystemBoeResponseCache.GetFileName
   nameWithType: FileSystemBoeResponseCache.GetFileName
+- uid: Bodu.Financial.ExchangeRates.FileSystemBoeResponseCache.IsFresh(System.ValueTuple{System.DateOnly,System.DateOnly},System.TimeSpan,System.TimeSpan)
+  name: IsFresh((DateOnly StartDate, DateOnly EndDate), TimeSpan, TimeSpan)
+  href: api/Bodu.Financial.ExchangeRates.FileSystemBoeResponseCache.html#Bodu_Financial_ExchangeRates_FileSystemBoeResponseCache_IsFresh_System_ValueTuple_System_DateOnly_System_DateOnly__System_TimeSpan_System_TimeSpan_
+  commentId: M:Bodu.Financial.ExchangeRates.FileSystemBoeResponseCache.IsFresh(System.ValueTuple{System.DateOnly,System.DateOnly},System.TimeSpan,System.TimeSpan)
+  name.vb: IsFresh((StartDate As DateOnly, EndDate As DateOnly), TimeSpan, TimeSpan)
+  fullName: Bodu.Financial.ExchangeRates.FileSystemBoeResponseCache.IsFresh((System.DateOnly StartDate, System.DateOnly EndDate), System.TimeSpan, System.TimeSpan)
+  fullName.vb: Bodu.Financial.ExchangeRates.FileSystemBoeResponseCache.IsFresh((StartDate As System.DateOnly, EndDate As System.DateOnly), System.TimeSpan, System.TimeSpan)
+  nameWithType: FileSystemBoeResponseCache.IsFresh((DateOnly StartDate, DateOnly EndDate), TimeSpan, TimeSpan)
+  nameWithType.vb: FileSystemBoeResponseCache.IsFresh((StartDate As DateOnly, EndDate As DateOnly), TimeSpan, TimeSpan)
+- uid: Bodu.Financial.ExchangeRates.FileSystemBoeResponseCache.IsFresh*
+  name: IsFresh
+  href: api/Bodu.Financial.ExchangeRates.FileSystemBoeResponseCache.html#Bodu_Financial_ExchangeRates_FileSystemBoeResponseCache_IsFresh_
+  commentId: Overload:Bodu.Financial.ExchangeRates.FileSystemBoeResponseCache.IsFresh
+  fullName: Bodu.Financial.ExchangeRates.FileSystemBoeResponseCache.IsFresh
+  nameWithType: FileSystemBoeResponseCache.IsFresh
 - uid: Bodu.Financial.ExchangeRates.FileSystemByteCache`1
   name: FileSystemByteCache<TKey>
   href: api/Bodu.Financial.ExchangeRates.FileSystemByteCache-1.html
@@ -51620,6 +51650,15 @@ references:
   fullName.vb: Bodu.Financial.ExchangeRates.FileSystemByteCache(Of TKey).TryGet(TKey, System.TimeSpan, Byte())
   nameWithType: FileSystemByteCache<TKey>.TryGet(TKey, TimeSpan, out byte[])
   nameWithType.vb: FileSystemByteCache(Of TKey).TryGet(TKey, TimeSpan, Byte())
+- uid: Bodu.Financial.ExchangeRates.FileSystemByteCache`1.TryGet(`0,System.TimeSpan,System.Byte[]@,System.Nullable{System.DateTimeOffset}@)
+  name: TryGet(TKey, TimeSpan, out byte[], out DateTimeOffset?)
+  href: api/Bodu.Financial.ExchangeRates.FileSystemByteCache-1.html#Bodu_Financial_ExchangeRates_FileSystemByteCache_1_TryGet__0_System_TimeSpan_System_Byte____System_Nullable_System_DateTimeOffset___
+  commentId: M:Bodu.Financial.ExchangeRates.FileSystemByteCache`1.TryGet(`0,System.TimeSpan,System.Byte[]@,System.Nullable{System.DateTimeOffset}@)
+  name.vb: TryGet(TKey, TimeSpan, Byte(), DateTimeOffset?)
+  fullName: Bodu.Financial.ExchangeRates.FileSystemByteCache<TKey>.TryGet(TKey, System.TimeSpan, out byte[], out System.DateTimeOffset?)
+  fullName.vb: Bodu.Financial.ExchangeRates.FileSystemByteCache(Of TKey).TryGet(TKey, System.TimeSpan, Byte(), System.DateTimeOffset?)
+  nameWithType: FileSystemByteCache<TKey>.TryGet(TKey, TimeSpan, out byte[], out DateTimeOffset?)
+  nameWithType.vb: FileSystemByteCache(Of TKey).TryGet(TKey, TimeSpan, Byte(), DateTimeOffset?)
 - uid: Bodu.Financial.ExchangeRates.FileSystemByteCache`1.TryGet*
   name: TryGet
   href: api/Bodu.Financial.ExchangeRates.FileSystemByteCache-1.html#Bodu_Financial_ExchangeRates_FileSystemByteCache_1_TryGet_
@@ -51637,6 +51676,15 @@ references:
   fullName.vb: Bodu.Financial.ExchangeRates.FileSystemByteCache(Of TKey).TryGetCore(TKey, System.TimeSpan, Byte())
   nameWithType: FileSystemByteCache<TKey>.TryGetCore(TKey, TimeSpan, out byte[])
   nameWithType.vb: FileSystemByteCache(Of TKey).TryGetCore(TKey, TimeSpan, Byte())
+- uid: Bodu.Financial.ExchangeRates.FileSystemByteCache`1.TryGetCore(`0,System.TimeSpan,System.Byte[]@,System.Nullable{System.DateTimeOffset}@)
+  name: TryGetCore(TKey, TimeSpan, out byte[], out DateTimeOffset?)
+  href: api/Bodu.Financial.ExchangeRates.FileSystemByteCache-1.html#Bodu_Financial_ExchangeRates_FileSystemByteCache_1_TryGetCore__0_System_TimeSpan_System_Byte____System_Nullable_System_DateTimeOffset___
+  commentId: M:Bodu.Financial.ExchangeRates.FileSystemByteCache`1.TryGetCore(`0,System.TimeSpan,System.Byte[]@,System.Nullable{System.DateTimeOffset}@)
+  name.vb: TryGetCore(TKey, TimeSpan, Byte(), DateTimeOffset?)
+  fullName: Bodu.Financial.ExchangeRates.FileSystemByteCache<TKey>.TryGetCore(TKey, System.TimeSpan, out byte[], out System.DateTimeOffset?)
+  fullName.vb: Bodu.Financial.ExchangeRates.FileSystemByteCache(Of TKey).TryGetCore(TKey, System.TimeSpan, Byte(), System.DateTimeOffset?)
+  nameWithType: FileSystemByteCache<TKey>.TryGetCore(TKey, TimeSpan, out byte[], out DateTimeOffset?)
+  nameWithType.vb: FileSystemByteCache(Of TKey).TryGetCore(TKey, TimeSpan, Byte(), DateTimeOffset?)
 - uid: Bodu.Financial.ExchangeRates.FileSystemByteCache`1.TryGetCore*
   name: TryGetCore
   href: api/Bodu.Financial.ExchangeRates.FileSystemByteCache-1.html#Bodu_Financial_ExchangeRates_FileSystemByteCache_1_TryGetCore_
@@ -51753,6 +51801,15 @@ references:
   fullName.vb: Bodu.Financial.ExchangeRates.FileSystemImfReportCache.TryGet(Bodu.Financial.ExchangeRates.ImfReportMonth, System.TimeSpan, Byte())
   nameWithType: FileSystemImfReportCache.TryGet(ImfReportMonth, TimeSpan, out byte[])
   nameWithType.vb: FileSystemImfReportCache.TryGet(ImfReportMonth, TimeSpan, Byte())
+- uid: Bodu.Financial.ExchangeRates.FileSystemImfReportCache.TryGet(Bodu.Financial.ExchangeRates.ImfReportMonth,System.TimeSpan,System.Byte[]@,System.Nullable{System.DateTimeOffset}@)
+  name: TryGet(ImfReportMonth, TimeSpan, out byte[], out DateTimeOffset?)
+  href: api/Bodu.Financial.ExchangeRates.FileSystemImfReportCache.html#Bodu_Financial_ExchangeRates_FileSystemImfReportCache_TryGet_Bodu_Financial_ExchangeRates_ImfReportMonth_System_TimeSpan_System_Byte____System_Nullable_System_DateTimeOffset___
+  commentId: M:Bodu.Financial.ExchangeRates.FileSystemImfReportCache.TryGet(Bodu.Financial.ExchangeRates.ImfReportMonth,System.TimeSpan,System.Byte[]@,System.Nullable{System.DateTimeOffset}@)
+  name.vb: TryGet(ImfReportMonth, TimeSpan, Byte(), DateTimeOffset?)
+  fullName: Bodu.Financial.ExchangeRates.FileSystemImfReportCache.TryGet(Bodu.Financial.ExchangeRates.ImfReportMonth, System.TimeSpan, out byte[], out System.DateTimeOffset?)
+  fullName.vb: Bodu.Financial.ExchangeRates.FileSystemImfReportCache.TryGet(Bodu.Financial.ExchangeRates.ImfReportMonth, System.TimeSpan, Byte(), System.DateTimeOffset?)
+  nameWithType: FileSystemImfReportCache.TryGet(ImfReportMonth, TimeSpan, out byte[], out DateTimeOffset?)
+  nameWithType.vb: FileSystemImfReportCache.TryGet(ImfReportMonth, TimeSpan, Byte(), DateTimeOffset?)
 - uid: Bodu.Financial.ExchangeRates.FileSystemImfReportCache.TryGet*
   name: TryGet
   href: api/Bodu.Financial.ExchangeRates.FileSystemImfReportCache.html#Bodu_Financial_ExchangeRates_FileSystemImfReportCache_TryGet_
@@ -52496,6 +52553,15 @@ references:
   fullName.vb: Bodu.Financial.ExchangeRates.IByteCache(Of TKey).TryGet(TKey, System.TimeSpan, Byte())
   nameWithType: IByteCache<TKey>.TryGet(TKey, TimeSpan, out byte[])
   nameWithType.vb: IByteCache(Of TKey).TryGet(TKey, TimeSpan, Byte())
+- uid: Bodu.Financial.ExchangeRates.IByteCache`1.TryGet(`0,System.TimeSpan,System.Byte[]@,System.Nullable{System.DateTimeOffset}@)
+  name: TryGet(TKey, TimeSpan, out byte[], out DateTimeOffset?)
+  href: api/Bodu.Financial.ExchangeRates.IByteCache-1.html#Bodu_Financial_ExchangeRates_IByteCache_1_TryGet__0_System_TimeSpan_System_Byte____System_Nullable_System_DateTimeOffset___
+  commentId: M:Bodu.Financial.ExchangeRates.IByteCache`1.TryGet(`0,System.TimeSpan,System.Byte[]@,System.Nullable{System.DateTimeOffset}@)
+  name.vb: TryGet(TKey, TimeSpan, Byte(), DateTimeOffset?)
+  fullName: Bodu.Financial.ExchangeRates.IByteCache<TKey>.TryGet(TKey, System.TimeSpan, out byte[], out System.DateTimeOffset?)
+  fullName.vb: Bodu.Financial.ExchangeRates.IByteCache(Of TKey).TryGet(TKey, System.TimeSpan, Byte(), System.DateTimeOffset?)
+  nameWithType: IByteCache<TKey>.TryGet(TKey, TimeSpan, out byte[], out DateTimeOffset?)
+  nameWithType.vb: IByteCache(Of TKey).TryGet(TKey, TimeSpan, Byte(), DateTimeOffset?)
 - uid: Bodu.Financial.ExchangeRates.IByteCache`1.TryGet*
   name: TryGet
   href: api/Bodu.Financial.ExchangeRates.IByteCache-1.html#Bodu_Financial_ExchangeRates_IByteCache_1_TryGet_
@@ -52651,6 +52717,15 @@ references:
   fullName.vb: Bodu.Financial.ExchangeRates.IImfReportCache.TryGet(Bodu.Financial.ExchangeRates.ImfReportMonth, System.TimeSpan, Byte())
   nameWithType: IImfReportCache.TryGet(ImfReportMonth, TimeSpan, out byte[])
   nameWithType.vb: IImfReportCache.TryGet(ImfReportMonth, TimeSpan, Byte())
+- uid: Bodu.Financial.ExchangeRates.IImfReportCache.TryGet(Bodu.Financial.ExchangeRates.ImfReportMonth,System.TimeSpan,System.Byte[]@,System.Nullable{System.DateTimeOffset}@)
+  name: TryGet(ImfReportMonth, TimeSpan, out byte[], out DateTimeOffset?)
+  href: api/Bodu.Financial.ExchangeRates.IImfReportCache.html#Bodu_Financial_ExchangeRates_IImfReportCache_TryGet_Bodu_Financial_ExchangeRates_ImfReportMonth_System_TimeSpan_System_Byte____System_Nullable_System_DateTimeOffset___
+  commentId: M:Bodu.Financial.ExchangeRates.IImfReportCache.TryGet(Bodu.Financial.ExchangeRates.ImfReportMonth,System.TimeSpan,System.Byte[]@,System.Nullable{System.DateTimeOffset}@)
+  name.vb: TryGet(ImfReportMonth, TimeSpan, Byte(), DateTimeOffset?)
+  fullName: Bodu.Financial.ExchangeRates.IImfReportCache.TryGet(Bodu.Financial.ExchangeRates.ImfReportMonth, System.TimeSpan, out byte[], out System.DateTimeOffset?)
+  fullName.vb: Bodu.Financial.ExchangeRates.IImfReportCache.TryGet(Bodu.Financial.ExchangeRates.ImfReportMonth, System.TimeSpan, Byte(), System.DateTimeOffset?)
+  nameWithType: IImfReportCache.TryGet(ImfReportMonth, TimeSpan, out byte[], out DateTimeOffset?)
+  nameWithType.vb: IImfReportCache.TryGet(ImfReportMonth, TimeSpan, Byte(), DateTimeOffset?)
 - uid: Bodu.Financial.ExchangeRates.IImfReportCache.TryGet*
   name: TryGet
   href: api/Bodu.Financial.ExchangeRates.IImfReportCache.html#Bodu_Financial_ExchangeRates_IImfReportCache_TryGet_
@@ -53042,18 +53117,6 @@ references:
   commentId: Overload:Bodu.Financial.ExchangeRates.ImfRateProviderOptions.EnableDiskCache
   fullName: Bodu.Financial.ExchangeRates.ImfRateProviderOptions.EnableDiskCache
   nameWithType: ImfRateProviderOptions.EnableDiskCache
-- uid: Bodu.Financial.ExchangeRates.ImfRateProviderOptions.RefreshInterval
-  name: RefreshInterval
-  href: api/Bodu.Financial.ExchangeRates.ImfRateProviderOptions.html#Bodu_Financial_ExchangeRates_ImfRateProviderOptions_RefreshInterval
-  commentId: P:Bodu.Financial.ExchangeRates.ImfRateProviderOptions.RefreshInterval
-  fullName: Bodu.Financial.ExchangeRates.ImfRateProviderOptions.RefreshInterval
-  nameWithType: ImfRateProviderOptions.RefreshInterval
-- uid: Bodu.Financial.ExchangeRates.ImfRateProviderOptions.RefreshInterval*
-  name: RefreshInterval
-  href: api/Bodu.Financial.ExchangeRates.ImfRateProviderOptions.html#Bodu_Financial_ExchangeRates_ImfRateProviderOptions_RefreshInterval_
-  commentId: Overload:Bodu.Financial.ExchangeRates.ImfRateProviderOptions.RefreshInterval
-  fullName: Bodu.Financial.ExchangeRates.ImfRateProviderOptions.RefreshInterval
-  nameWithType: ImfRateProviderOptions.RefreshInterval
 - uid: Bodu.Financial.ExchangeRates.ImfRateProviderOptions.ReportPath
   name: ReportPath
   href: api/Bodu.Financial.ExchangeRates.ImfRateProviderOptions.html#Bodu_Financial_ExchangeRates_ImfRateProviderOptions_ReportPath
@@ -57318,6 +57381,15 @@ references:
   commentId: Overload:Bodu.Financial.ExchangeRates.WebRateProvider.IsLoaded
   fullName: Bodu.Financial.ExchangeRates.WebRateProvider.IsLoaded
   nameWithType: WebRateProvider.IsLoaded
+- uid: Bodu.Financial.ExchangeRates.WebRateProvider.LoadCoalescedAsync(System.String,System.Func{System.Boolean},System.Func{System.Threading.CancellationToken,System.Threading.Tasks.Task},System.Threading.CancellationToken)
+  name: LoadCoalescedAsync(string, Func<bool>, Func<CancellationToken, Task>, CancellationToken)
+  href: api/Bodu.Financial.ExchangeRates.WebRateProvider.html#Bodu_Financial_ExchangeRates_WebRateProvider_LoadCoalescedAsync_System_String_System_Func_System_Boolean__System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_
+  commentId: M:Bodu.Financial.ExchangeRates.WebRateProvider.LoadCoalescedAsync(System.String,System.Func{System.Boolean},System.Func{System.Threading.CancellationToken,System.Threading.Tasks.Task},System.Threading.CancellationToken)
+  name.vb: LoadCoalescedAsync(String, Func(Of Boolean), Func(Of CancellationToken, Task), CancellationToken)
+  fullName: Bodu.Financial.ExchangeRates.WebRateProvider.LoadCoalescedAsync(string, System.Func<bool>, System.Func<System.Threading.CancellationToken, System.Threading.Tasks.Task>, System.Threading.CancellationToken)
+  fullName.vb: Bodu.Financial.ExchangeRates.WebRateProvider.LoadCoalescedAsync(String, System.Func(Of Boolean), System.Func(Of System.Threading.CancellationToken, System.Threading.Tasks.Task), System.Threading.CancellationToken)
+  nameWithType: WebRateProvider.LoadCoalescedAsync(string, Func<bool>, Func<CancellationToken, Task>, CancellationToken)
+  nameWithType.vb: WebRateProvider.LoadCoalescedAsync(String, Func(Of Boolean), Func(Of CancellationToken, Task), CancellationToken)
 - uid: Bodu.Financial.ExchangeRates.WebRateProvider.LoadCoalescedAsync(System.String,System.Func{System.Threading.CancellationToken,System.Threading.Tasks.Task},System.Threading.CancellationToken)
   name: LoadCoalescedAsync(string, Func<CancellationToken, Task>, CancellationToken)
   href: api/Bodu.Financial.ExchangeRates.WebRateProvider.html#Bodu_Financial_ExchangeRates_WebRateProvider_LoadCoalescedAsync_System_String_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_
@@ -57666,6 +57738,18 @@ references:
   commentId: Overload:Bodu.Financial.ExchangeRates.WebRateProviderOptions.ObservationIngestedLogLevel
   fullName: Bodu.Financial.ExchangeRates.WebRateProviderOptions.ObservationIngestedLogLevel
   nameWithType: WebRateProviderOptions.ObservationIngestedLogLevel
+- uid: Bodu.Financial.ExchangeRates.WebRateProviderOptions.RefreshInterval
+  name: RefreshInterval
+  href: api/Bodu.Financial.ExchangeRates.WebRateProviderOptions.html#Bodu_Financial_ExchangeRates_WebRateProviderOptions_RefreshInterval
+  commentId: P:Bodu.Financial.ExchangeRates.WebRateProviderOptions.RefreshInterval
+  fullName: Bodu.Financial.ExchangeRates.WebRateProviderOptions.RefreshInterval
+  nameWithType: WebRateProviderOptions.RefreshInterval
+- uid: Bodu.Financial.ExchangeRates.WebRateProviderOptions.RefreshInterval*
+  name: RefreshInterval
+  href: api/Bodu.Financial.ExchangeRates.WebRateProviderOptions.html#Bodu_Financial_ExchangeRates_WebRateProviderOptions_RefreshInterval_
+  commentId: Overload:Bodu.Financial.ExchangeRates.WebRateProviderOptions.RefreshInterval
+  fullName: Bodu.Financial.ExchangeRates.WebRateProviderOptions.RefreshInterval
+  nameWithType: WebRateProviderOptions.RefreshInterval
 - uid: Bodu.Financial.ExchangeRates.WebRateProviderOptions.SynchronousNetworkFetchLogLevel
   name: SynchronousNetworkFetchLogLevel
   href: api/Bodu.Financial.ExchangeRates.WebRateProviderOptions.html#Bodu_Financial_ExchangeRates_WebRateProviderOptions_SynchronousNetworkFetchLogLevel

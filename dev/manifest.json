@@ -6855,7 +6855,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Financial.ExchangeRates.WebRateProviderOptions",
-      "Summary": "<p sourcefile=\"api/Bodu.Financial.ExchangeRates.WebRateProviderOptions.yml\" sourcestartlinenumber=\"1\">Provides the configuration common to every pair-based web exchange-rate source: the endpoint base address, the HTTP\ncontract (user agent and timeout), the synchronous-access and look-back behaviour, the currency-alias map, and the\nper-concern diagnostic log levels. A concrete source derives from this type to add its own endpoint members and\nvalidation.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Financial.ExchangeRates.WebRateProviderOptions.yml\" sourcestartlinenumber=\"1\">Provides the configuration common to every pair-based web exchange-rate source and to the IMF provider: the endpoint\nbase address, the HTTP contract (user agent and timeout), the synchronous-access, look-back and refresh behavior,\nthe currency-alias map, and the per-concern diagnostic log levels. A concrete source derives from this type to add\nits own endpoint members and validation.</p>\n"
     },
     {
       "type": "ManagedReference",
