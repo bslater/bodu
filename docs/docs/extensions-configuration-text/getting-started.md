@@ -15,11 +15,13 @@ dotnet add package Bodu.Extensions.Configuration.Text
 
 Targets `net8.0` and `net10.0`. Depends on:
 
-- `Bodu.Core` and `Bodu.Text.Configuration` (the parser, resolver, and view).
+- `Bodu.Core` and `Bodu.Text.Configuration` (the parser, resolver, and view), `Bodu.Text.Toml` (the TOML bridge), and
+  `Bodu.Text.Bencode` (the Bencode bridge).
 - `Microsoft.Extensions.Configuration`, `Microsoft.Extensions.Configuration.FileExtensions`,
   `Microsoft.Extensions.Configuration.Binder`, `Microsoft.Extensions.FileProviders.Physical`,
-  `Microsoft.Extensions.Options.ConfigurationExtensions`, and the associated abstractions packages - all at the .NET
-  8 line for `net8.0` and the .NET 10 line for `net10.0`.
+  `Microsoft.Extensions.Options.ConfigurationExtensions`, `Microsoft.Extensions.DependencyInjection.Abstractions`,
+  `Microsoft.Extensions.Primitives`, and the associated abstractions packages - all at the .NET 8 line for `net8.0`
+  and the .NET 10 line for `net10.0`.
 
 ## Minimal samples
 
@@ -48,8 +50,11 @@ IConfiguration configuration = new ConfigurationBuilder()
 ```
 
 The no-argument overload probes the builder's base path for `.boduconfig`, then `bodu.config`. The first file found
-is loaded; if neither exists and `optional` is `true`, the call is a no-op. Use this when your application has a
-single conventional configuration file in its working directory.
+is loaded; if neither exists and `optional` is `true`, the call is a no-op, and with `optional: false` the call itself
+throws `FileNotFoundException`. The builder's default `PhysicalFileProvider` does not serve dot-prefixed files, so
+`.boduconfig` is found only through a provider constructed with `ExclusionFilters.None`. Use this when your application
+has a single conventional configuration file in its base path (by default the application's base directory, or the
+path `SetBasePath` sets).
 
 ### Anchor glob resolution to a source path
 

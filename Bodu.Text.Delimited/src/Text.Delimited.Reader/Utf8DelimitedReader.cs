@@ -22,8 +22,9 @@ namespace Bodu.Text.Delimited.Reader;
 /// header each record is a positional array of <see cref="DelimitedTokenType.String" /> fields.
 /// </para>
 /// <para>
-/// Fields are decoded on demand through <see cref="GetString" />: surrounding quotes are removed and doubled quotes are
-/// collapsed to a single literal. <see cref="ValueSpan" /> exposes the raw source bytes of a field value.
+/// Fields are decoded when their record is read, and <see cref="GetString" /> returns the decoded text: surrounding
+/// quotes are removed and doubled quotes are collapsed to a single literal. <see cref="ValueSpan" /> exposes the raw
+/// source bytes of a field value.
 /// </para>
 /// <para>
 /// A line ends at a line feed, a carriage return and line feed, or a lone carriage return, and a blank line is skipped
@@ -551,7 +552,9 @@ public ref struct Utf8DelimitedReader
                     || _data[_position] is (byte)'\r' or (byte)'\n';
             }
 
-            if (b == (byte)'\n')
+            // A line feed ends a line, and so does a carriage return that no line feed follows; the line feed of a
+            // CRLF is counted on its own, so the pair counts once.
+            if (b == (byte)'\n' || (b == (byte)'\r' && (_position + 1 >= _data.Length || _data[_position + 1] != (byte)'\n')))
                 _line++;
 
             _position += AppendByte(sb, b);

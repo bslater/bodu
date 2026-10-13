@@ -23,8 +23,9 @@ namespace Bodu.Text.Configuration;
 /// <see cref="ConfigurationView" /> holds the resolved, target-specific snapshot consumed by application code.
 /// </para>
 /// <para>
-/// A <see cref="ConfigurationDocument" /> exposes only the read surface of <see cref="IniDocumentBase" />; it is
-/// produced by the configuration reader and is not mutated by application code.
+/// A <see cref="ConfigurationDocument" /> is produced by the configuration reader, and its section list is fixed: it
+/// does not re-expose the protected methods of <see cref="IniDocumentBase" /> that add or remove sections. Its sections
+/// and their entries remain mutable through <see cref="IniSection" />.
 /// </para>
 /// <para>
 /// Diagnostic routing is controlled by the supplied <see cref="ConfigurationParseOptions" />. In
@@ -368,6 +369,10 @@ public sealed class ConfigurationDocument
     /// <exception cref="ArgumentNullException">
     /// <paramref name="document" /> or <paramref name="writer" /> is <see langword="null" />.
     /// </exception>
+    /// <remarks>
+    /// The writer is neither flushed nor disposed: the caller owns it, and flushes or disposes it to commit the text.
+    /// The writer's own encoding applies; <see cref="ConfigurationWriteOptions.Encoding" /> does not.
+    /// </remarks>
     public static void Save(IniDocumentBase document, TextWriter writer, ConfigurationWriteOptions? options = null)
     {
         ThrowHelper.ThrowIfNull(document);

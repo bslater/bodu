@@ -20,8 +20,9 @@ namespace Bodu.Text.Configuration;
 /// a freshly built document, or when generating a minimized variant for transport.
 /// </para>
 /// <para>
-/// <see cref="Profile" /> selects the default formatting envelope (Bodu, EditorConfig-compatible, or strict). The
-/// remaining properties override individual aspects of that envelope without abandoning the rest of its defaults.
+/// <see cref="Profile" /> only labels the option set: the writer reads the individual properties. Start from a preset
+/// or <see cref="For(ConfigurationProfile)" /> to take a profile's formatting choices, and set the properties that
+/// differ.
 /// </para>
 /// <para>
 /// <see cref="Encoding" /> defaults to UTF-8 without a byte-order mark to match the EditorConfig file convention;
@@ -45,9 +46,13 @@ namespace Bodu.Text.Configuration;
 public sealed partial class ConfigurationWriteOptions
 {
     /// <summary>
-    /// Gets the behaviour profile this option bag represents.
+    /// Gets the profile this option set was created from. The default is <see cref="ConfigurationProfile.Bodu" />.
     /// </summary>
-    /// <value>The selected profile.</value>
+    /// <value>The profile the option set is labelled with.</value>
+    /// <remarks>
+    /// The property is informational: the writer does not read it, and setting it changes no other property. Use
+    /// <see cref="For(ConfigurationProfile)" /> or a preset to select a profile's formatting choices.
+    /// </remarks>
     public ConfigurationProfile Profile { get; init; } = ConfigurationProfile.Bodu;
 
     /// <summary>
@@ -69,9 +74,10 @@ public sealed partial class ConfigurationWriteOptions
     public string KeyValueSeparator { get; init; } = " = ";
 
     /// <summary>
-    /// Gets the comment prefix character used when emitting new comments.
+    /// Gets a comment prefix character. The writer does not use it: every <see cref="IniComment" /> is written with its
+    /// own <see cref="IniComment.Prefix" />, and the writer emits no comment that lacks one.
     /// </summary>
-    /// <value>The comment prefix.</value>
+    /// <value>The comment prefix; it has no effect on the output.</value>
     public char CommentPrefix { get; init; } = '#';
 
     /// <summary>

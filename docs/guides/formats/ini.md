@@ -86,7 +86,7 @@ root["metrics"] = metrics;
 File.WriteAllBytes("app.ini", root.ToUtf8Bytes());
 ```
 
-Every comment line from the source survives (`LeadingComments` on sections and values, `TrailingComments` per object). Layout is canonicalized: `key=value` without padding, and global entries always precede the first section header. Inline comments are not modeled - the dialect keeps an inline `;` or `#` and the text after it as value content.
+Comment lines from the source are kept on the nodes they precede (`LeadingComments` on sections and values, `TrailingComments` per object), with two exceptions: a comment before a duplicate key that the duplicate-key policy discards (the earlier entry under the default `LastWins`, the later one under `FirstWins`) is lost with it, and every comment is written with the writer's `CommentPrefix`, `;` by default, so a `#` comment comes back as a `;` comment. Layout is canonicalized: `key=value` without padding, and global entries always precede the first section header. Inline comments are not modeled - the dialect keeps an inline `;` or `#` and the text after it as value content.
 
 ## Pattern 4 - duplicate policies
 

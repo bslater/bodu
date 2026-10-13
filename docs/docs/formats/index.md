@@ -49,7 +49,7 @@ string host = root.GetProperty("server").GetProperty("host").GetString();
 
 ## INI primitives vs. configuration layering
 
-`Bodu.Text.Ini` is the general-purpose INI library. `Bodu.Text.Configuration` is the EditorConfig-style configuration engine (profiles, glob resolution, typed views) built over its **own** internal INI document model - it does not depend on the format packages.
+`Bodu.Text.Ini` is the general-purpose INI library. `Bodu.Text.Configuration` is the EditorConfig-style configuration engine (profiles, glob resolution, typed views) built over its **own** public INI document model (`IniDocumentBase` and its family) - it does not depend on the format packages.
 
 ## Where to go next
 

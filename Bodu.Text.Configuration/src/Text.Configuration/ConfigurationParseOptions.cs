@@ -32,14 +32,24 @@ namespace Bodu.Text.Configuration;
 /// instance between parse and <see cref="ConfigurationResolveOptions" /> keeps the parsed model and the resolved view's
 /// lookups consistent. Instances are safe to cache and share across threads because every property is <c>init</c>-only.
 /// </para>
+/// <para>
+/// <see cref="Profile" /> only labels the option set. The individual properties carry the behaviour, so start from a
+/// preset or <see cref="For(ConfigurationProfile)" /> to select a profile, and set every property that the variation
+/// needs.
+/// </para>
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
-/// // Strict structure, but collect every diagnostic instead of failing fast.
+/// // Strict structure, but collect every diagnostic instead of failing fast. The properties, not Profile, select the
+/// // behaviour, so the variation states each of the Strict preset's choices.
 /// var options = new ConfigurationParseOptions
 /// {
-///     Profile        = ConfigurationProfile.Strict,
-///     DiagnosticMode = ConfigurationDiagnosticMode.Collect,
+///     Profile              = ConfigurationProfile.Strict,
+///     InlineCommentMode    = ConfigurationInlineCommentMode.Disabled,
+///     DuplicateKeyMode     = DuplicateKeyPolicy.Disallowed,
+///     DuplicateSectionMode = IniDuplicateSectionBehavior.Disallowed,
+///     SectionHeaderMode    = ConfigurationSectionHeaderMode.Strict,
+///     DiagnosticMode       = ConfigurationDiagnosticMode.Collect,
 /// };
 ///
 /// ConfigurationParseResult result = ConfigurationDocument.ParseWithDiagnostics(text, options);
@@ -52,9 +62,13 @@ namespace Bodu.Text.Configuration;
 public sealed partial class ConfigurationParseOptions
 {
     /// <summary>
-    /// Gets the behaviour profile this option bag represents. The default is <see cref="ConfigurationProfile.Bodu" />.
+    /// Gets the profile this option set was created from. The default is <see cref="ConfigurationProfile.Bodu" />.
     /// </summary>
-    /// <value>The selected profile.</value>
+    /// <value>The profile the option set is labelled with.</value>
+    /// <remarks>
+    /// The property is informational: the parser does not read it, and setting it changes no other property. Use
+    /// <see cref="For(ConfigurationProfile)" /> or a preset to select a profile's behaviour.
+    /// </remarks>
     public ConfigurationProfile Profile { get; init; } = ConfigurationProfile.Bodu;
 
     /// <summary>

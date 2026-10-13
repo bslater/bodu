@@ -13,13 +13,15 @@ namespace Bodu.Text.Delimited;
 /// </summary>
 /// <remarks>
 /// <para>
-/// The generated factory maps the type's public read/write instance properties in declaration order, honouring
-/// <see cref="Bodu.Text.Serialization.PropertyNameAttribute" /> for column names and skipping members annotated with
-/// <see cref="Bodu.Text.Serialization.IgnoreAttribute" />. Scalar values convert with the invariant culture, in the
-/// forms the reflection binder of <see cref="DelimitedSerializer" /> uses, so the two paths write the same text and
-/// read it alike: temporal values in their round-trip forms, and <see langword="null" /> for a nullable member whose
-/// field is empty or white space, except a nullable <see cref="char" />, which takes only an empty field as
-/// <see langword="null" />.
+/// The generated factory maps the public read/write instance properties declared on the type, in declaration order,
+/// honouring <see cref="Bodu.Text.Serialization.PropertyNameAttribute" /> for column names and skipping members
+/// annotated <see cref="Bodu.Text.Serialization.IgnoreAttribute" /> with
+/// <see cref="Bodu.Text.Serialization.IgnoreCondition.Always" />, the default condition; a member annotated with
+/// another condition is mapped and always written. Scalar values convert with the invariant culture, in the forms the
+/// reflection binder of <see cref="DelimitedSerializer" /> uses, so for the members both map the two paths write the
+/// same text and read it alike: temporal values in their round-trip forms, and <see langword="null" /> for a nullable
+/// member whose field is empty or white space, except a nullable <see cref="char" />, which takes only an empty field
+/// as <see langword="null" />.
 /// </para>
 /// <para>
 /// The annotated type must be declared <see langword="partial" /> so the generator can add the factory to it. Passing

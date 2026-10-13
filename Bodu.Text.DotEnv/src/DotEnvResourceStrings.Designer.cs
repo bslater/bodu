@@ -142,6 +142,15 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The type '{0}' cannot be created; reading a DotEnv document into it needs a public parameterless constructor..
+        /// </summary>
+        internal static string Op_Invalid_DotEnvTypeNotCreatable {
+            get {
+                return ResourceManager.GetString("Op_Invalid_DotEnvTypeNotCreatable", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Required DotEnv key '{0}' was not present in the document..
         /// </summary>
         internal static string Op_Invalid_DotEnvMissingRequiredKey {
@@ -156,6 +165,24 @@ namespace Bodu {
         internal static string Format_Invalid_DotEnvValueConversion {
             get {
                 return ResourceManager.GetString("Format_Invalid_DotEnvValueConversion", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to A DotEnv key must begin with an ASCII letter or '_' and hold only ASCII letters, digits and '_', or the reader would not read it back..
+        /// </summary>
+        internal static string Arg_Invalid_DotEnvKeyName {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_DotEnvKeyName", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The key '{0}' cannot be written so that it reads back as a DotEnv key..
+        /// </summary>
+        internal static string Op_Invalid_DotEnvUnwritableKey {
+            get {
+                return ResourceManager.GetString("Op_Invalid_DotEnvUnwritableKey", resourceCulture);
             }
         }
     }

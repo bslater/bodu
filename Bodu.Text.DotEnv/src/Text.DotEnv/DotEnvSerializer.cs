@@ -40,7 +40,9 @@ public static partial class DotEnvSerializer
     /// <param name="options">The serializer options, or <see langword="null" /> to use the defaults.</param>
     /// <returns>The DotEnv text.</returns>
     /// <exception cref="DotEnvSerializationException">
-    /// Thrown when <typeparamref name="T" /> cannot be mapped to a DotEnv object.
+    /// Thrown when <typeparamref name="T" /> cannot be mapped to a DotEnv object, or when a member name or dictionary
+    /// key is not a key the reader reads back (one matching <c>[A-Za-z_][A-Za-z0-9_]*</c>); the message then names the
+    /// key, and the writer's <see cref="ArgumentException" /> is the inner exception.
     /// </exception>
     [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
     [RequiresDynamicCode(RequiresDynamicCodeMessage)]
@@ -63,7 +65,9 @@ public static partial class DotEnvSerializer
     /// Thrown when <paramref name="destination" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="DotEnvSerializationException">
-    /// Thrown when <typeparamref name="T" /> cannot be mapped to a DotEnv object.
+    /// Thrown when <typeparamref name="T" /> cannot be mapped to a DotEnv object, or when a member name or dictionary
+    /// key is not a key the reader reads back (one matching <c>[A-Za-z_][A-Za-z0-9_]*</c>); the message then names the
+    /// key, and the writer's <see cref="ArgumentException" /> is the inner exception.
     /// </exception>
     [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
     [RequiresDynamicCode(RequiresDynamicCodeMessage)]
@@ -92,7 +96,9 @@ public static partial class DotEnvSerializer
     /// Thrown when <paramref name="destination" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="DotEnvSerializationException">
-    /// Thrown when <typeparamref name="T" /> cannot be mapped to a DotEnv object.
+    /// Thrown when <typeparamref name="T" /> cannot be mapped to a DotEnv object, or when a member name or dictionary
+    /// key is not a key the reader reads back (one matching <c>[A-Za-z_][A-Za-z0-9_]*</c>); the message then names the
+    /// key, and the writer's <see cref="ArgumentException" /> is the inner exception.
     /// </exception>
     [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
     [RequiresDynamicCode(RequiresDynamicCodeMessage)]
@@ -118,7 +124,8 @@ public static partial class DotEnvSerializer
     /// </exception>
     /// <exception cref="DotEnvFormatException">Thrown when the text is not valid DotEnv.</exception>
     /// <exception cref="DotEnvSerializationException">
-    /// Thrown when the document cannot be mapped to <typeparamref name="T" />.
+    /// Thrown when the document cannot be mapped to <typeparamref name="T" />, including when <typeparamref name="T" />
+    /// is abstract or has no public parameterless constructor.
     /// </exception>
     [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
     [RequiresDynamicCode(RequiresDynamicCodeMessage)]
@@ -138,7 +145,8 @@ public static partial class DotEnvSerializer
     /// <returns>The deserialized value.</returns>
     /// <exception cref="DotEnvFormatException">Thrown when the bytes are not valid DotEnv.</exception>
     /// <exception cref="DotEnvSerializationException">
-    /// Thrown when the document cannot be mapped to <typeparamref name="T" />.
+    /// Thrown when the document cannot be mapped to <typeparamref name="T" />, including when <typeparamref name="T" />
+    /// is abstract or has no public parameterless constructor.
     /// </exception>
     [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
     [RequiresDynamicCode(RequiresDynamicCodeMessage)]
@@ -164,7 +172,8 @@ public static partial class DotEnvSerializer
     /// </exception>
     /// <exception cref="DotEnvFormatException">Thrown when the content is not valid DotEnv.</exception>
     /// <exception cref="DotEnvSerializationException">
-    /// Thrown when the document cannot be mapped to <typeparamref name="T" />.
+    /// Thrown when the document cannot be mapped to <typeparamref name="T" />, including when <typeparamref name="T" />
+    /// is abstract or has no public parameterless constructor.
     /// </exception>
     [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
     [RequiresDynamicCode(RequiresDynamicCodeMessage)]
@@ -192,7 +201,8 @@ public static partial class DotEnvSerializer
     /// </exception>
     /// <exception cref="DotEnvFormatException">Thrown when the content is not valid DotEnv.</exception>
     /// <exception cref="DotEnvSerializationException">
-    /// Thrown when the document cannot be mapped to <typeparamref name="T" />.
+    /// Thrown when the document cannot be mapped to <typeparamref name="T" />, including when <typeparamref name="T" />
+    /// is abstract or has no public parameterless constructor.
     /// </exception>
     [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
     [RequiresDynamicCode(RequiresDynamicCodeMessage)]

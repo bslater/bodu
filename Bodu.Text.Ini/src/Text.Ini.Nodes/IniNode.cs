@@ -171,6 +171,9 @@ public abstract class IniNode
     /// Thrown when the tree holds a key, section name or value that <see cref="Utf8IniWriter" /> refuses because it
     /// would not read back unchanged.
     /// </exception>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when the tree nests an <see cref="IniObject" /> inside a section, which INI cannot represent.
+    /// </exception>
     public abstract void WriteTo(ref Utf8IniWriter writer);
 
     /// <summary>
@@ -180,6 +183,9 @@ public abstract class IniNode
     /// <exception cref="ArgumentException">
     /// Thrown when the tree holds a key, section name or value that <see cref="Utf8IniWriter" /> refuses because it
     /// would not read back unchanged.
+    /// </exception>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when the tree nests an <see cref="IniObject" /> inside a section, which INI cannot represent.
     /// </exception>
     public byte[] ToUtf8Bytes()
     {
@@ -198,6 +204,9 @@ public abstract class IniNode
     /// <exception cref="ArgumentException">
     /// Thrown when the tree holds a key, section name or value that <see cref="Utf8IniWriter" /> refuses because it
     /// would not read back unchanged.
+    /// </exception>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when the tree nests an <see cref="IniObject" /> inside a section, which INI cannot represent.
     /// </exception>
     public override string ToString() =>
         Encoding.UTF8.GetString(ToUtf8Bytes());

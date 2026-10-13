@@ -92,7 +92,7 @@ public sealed partial class ConfigurationView
     /// (e.g. <c>logging:level:default</c>) and the dotted form (<c>logging.level.default</c>) produce the same lookup,
     /// and under <see cref="ConfigurationKeyMapping.Identity" /> a key is looked up as written.
     /// </param>
-    /// <returns>The value, or <see langword="null" /> when absent.</returns>
+    /// <value>The value, or <see langword="null" /> when absent.</value>
     /// <remarks>
     /// This indexer deliberately returns <see langword="null" /> for an absent key rather than throwing
     /// <see cref="KeyNotFoundException" /> as <see cref="IReadOnlyDictionary{TKey, TValue}.this" /> normally would,

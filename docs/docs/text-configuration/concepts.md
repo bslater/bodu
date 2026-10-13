@@ -14,11 +14,12 @@ For the high-level shape of the library and the pipeline diagram, start with the
 ## Document and view
 
 A **document** is the parsed-but-not-yet-resolved representation of the source text.
-<xref:Bodu.Text.Configuration.ConfigurationDocument> is a `sealed` type that *inherits* the read-only
+<xref:Bodu.Text.Configuration.ConfigurationDocument> is a `sealed` type that *inherits* the
 <xref:Bodu.Text.Configuration.IniDocumentBase> model - the library's own trivia-preserving INI structure, which the reader
 produces - with a preamble (the <xref:Bodu.Text.Configuration.IniDocumentBase.GlobalSection>) and zero or more named
 <xref:Bodu.Text.Configuration.IniDocumentBase.Sections> in source order. The document preserves comments, ordering, and
-duplicate-policy decisions, so it can be re-emitted byte-for-byte.
+duplicate-policy decisions, so it can be re-emitted with the same meaning; the writer canonicalizes the layout (see
+Saving, below).
 
 Because it derives from `IniDocumentBase`, every read member of the INI model is available directly on the document:
 `doc.GlobalSection["root"]`, `doc.Sections[0].Name`, `section.Entries`, `section["indent_size"]`, and the typed
@@ -73,7 +74,7 @@ Each option type controls one stage of the pipeline.
 
 | Property | Role |
 |---|---|
-| `Profile` | The profile this bag represents. Default `Bodu`. |
+| `Profile` | The profile the option set was created from. Informational: the reader does not read it. Default `Bodu`. |
 | `InlineCommentMode` | Disabled / WhitespaceIntroduced (default) / Always. |
 | `DuplicateKeyMode` | LastWins (default) / FirstWins / Disallowed (from <xref:Bodu.Text.Configuration.DuplicateKeyPolicy>). |
 | `DuplicateSectionMode` | Preserve (default) / Merge / MergeAdjacent / Disallowed (from <xref:Bodu.Text.Configuration.IniDuplicateSectionBehavior>). |
@@ -99,7 +100,7 @@ handling are free to diverge from the raw-INI dialect.
 
 | Property | Role |
 |---|---|
-| `Profile` | The profile this bag represents. Default `Bodu`. |
+| `Profile` | The profile the option set was created from. Informational: the resolver does not read it. Default `Bodu`. |
 | `PathRoot` | The directory a target path is rebased against before globs are matched; an explicit value always wins. When `null`, a document loaded with `Load(path)` uses the directory of its file; when neither is available, the target is matched as given, and `MissingPathRootMode` decides what a path-less resolve does. |
 | `MissingPathRootMode` | UseEmptyRoot (default) / Throw. There is no `IgnoreAnchoredPatterns` value. |
 | `ApplyPreambleProperties` | Whether preamble (global section) properties contribute to the view. Default `true` (`Bodu`/`Strict`/`Relaxed`); `false` for `EditorConfigCompatible`. |
@@ -177,7 +178,7 @@ language follows EditorConfig:
 |---|---|
 | `*` | Any characters except `/`. |
 | `**` | Any characters including `/`. |
-| `?` | Any single character. |
+| `?` | Any single character except `/`. |
 | `[abc]` / `[!abc]` | Character class / negated character class; a bracket expression that holds a `/` is literal text. |
 | `{a,b,c}` | Alternation; a group without a comma, such as `{single}` or `{}`, is literal text. |
 | `[*.cs]` | All `.cs` files at any depth (unanchored). |
@@ -331,13 +332,15 @@ when it was parsed from a string or loaded from a stream or a text reader.
 emits the document back to text. The writer preserves comment lines, section ordering, and the original property
 ordering within each section, so a parse-then-save round-trip is byte-stable for any document the library produced.
 <xref:Bodu.Text.Configuration.ConfigurationWriteOptions> controls encoding (default UTF-8 *without* BOM), newline style
-(`NewLine`, default `\n`), the key/value separator (`KeyValueSeparator`, default `" = "`), comment prefix
-(`CommentPrefix`, default `#`), and three booleans - `PreserveComments`, `WriteInlineComments`, and
-`InsertBlankLineBetweenSections`. The `EditorConfigCompatible` preset suppresses inline comments; the `Normalized`
+(`NewLine`, default `\n`), the key/value separator (`KeyValueSeparator`, default `" = "`), and three booleans -
+`PreserveComments`, `WriteInlineComments`, and `InsertBlankLineBetweenSections`. `CommentPrefix` has no effect: every
+comment is written with the prefix it was read or created with. The `EditorConfigCompatible` preset suppresses inline comments; the `Normalized`
 preset (which is `For(ConfigurationProfile.Strict)`) additionally drops preserved comments for deterministic output.
 
 For documents the library *did not* produce - hand-authored INI files with idiosyncratic whitespace - the writer
-emits canonical formatting, so the round-trip is semantically stable but may rearrange incidental whitespace.
+emits canonical formatting, so the round-trip is semantically stable but may rearrange incidental whitespace. Comment
+lines after the last entry of a file are read as leading comments of the section that holds that entry, so they are
+written above that section's header.
 
 ## Where to go next
 

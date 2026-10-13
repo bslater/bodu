@@ -84,4 +84,23 @@ public partial class DotEnvSerializerTests
 
         Assert.IsTrue(ex.Message.Contains(kat.MessageContains!, StringComparison.Ordinal), ex.Message);
     }
+
+    /// <summary>
+    /// Verifies that a dictionary key the reader would not read back throws <see cref="DotEnvSerializationException" />
+    /// naming the key, with the writer's <see cref="ArgumentException" /> as the inner exception, rather than writing
+    /// text that does not read back.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenADictionaryKeyCannotBeReadBack_ShouldThrowDotEnvSerializationException()
+    {
+        var map = new Dictionary<string, string> { ["db.host"] = "localhost" };
+
+        var ex = Assert.ThrowsExactly<DotEnvSerializationException>(() =>
+        {
+            _ = DotEnvSerializer.Serialize(map);
+        });
+
+        Assert.IsTrue(ex.Message.Contains("db.host", StringComparison.Ordinal), ex.Message);
+        Assert.IsInstanceOfType<ArgumentException>(ex.InnerException);
+    }
 }

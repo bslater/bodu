@@ -24,7 +24,7 @@ Targets `net8.0` and `net10.0`. Depends on `Bodu.Text.Serialization` and `Bodu.C
 
 | Type | Purpose |
 |---|---|
-| <xref:Bodu.Text.DotEnv.Reader.Utf8DotEnvReader> / <xref:Bodu.Text.DotEnv.Writer.Utf8DotEnvWriter> | Forward-only, allocation-free token machines, configured by <xref:Bodu.Text.DotEnv.Reader.DotEnvReaderOptions> / <xref:Bodu.Text.DotEnv.Writer.DotEnvWriterOptions>. |
+| <xref:Bodu.Text.DotEnv.Reader.Utf8DotEnvReader> / <xref:Bodu.Text.DotEnv.Writer.Utf8DotEnvWriter> | Forward-only `ref struct` token reader and writer, configured by <xref:Bodu.Text.DotEnv.Reader.DotEnvReaderOptions> / <xref:Bodu.Text.DotEnv.Writer.DotEnvWriterOptions>. |
 | <xref:Bodu.Text.DotEnv.DotEnvSerializer> | Settings POCO or `Dictionary<string, string>` ↔ text: `Serialize` / `Deserialize<T>` over strings, UTF-8 spans, buffer writers, and streams (with buffered async variants). |
 | <xref:Bodu.Text.DotEnv.DotEnvSerializerOptions> / <xref:Bodu.Text.DotEnv.DotEnvSerializerDefaults> | Naming policy, case sensitivity, `IncludeFields`, `DefaultIgnoreCondition`, `WriteExportPrefix`; `General` / `Web` presets. |
 | <xref:Bodu.Text.DotEnv.Nodes.DotEnvNode> / <xref:Bodu.Text.DotEnv.Nodes.DotEnvObject> / <xref:Bodu.Text.DotEnv.Nodes.DotEnvValue> | Mutable DOM that preserves each entry's `export` flag through a round trip. |

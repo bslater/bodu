@@ -7,6 +7,7 @@
 using Bodu.Test.IO;
 
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.FileProviders;
 
 namespace Bodu.Extensions.Configuration.Text;
 
@@ -44,5 +45,39 @@ public sealed partial class TomlConfigurationTests
     {
         Assert.ThrowsExactly<FileNotFoundException>(() =>
             new ConfigurationBuilder().AddTomlFile("does-not-exist.toml", optional: false).Build());
+    }
+
+    /// <summary>
+    /// Verifies that a relative path resolves against the base path the builder sets with <c>SetBasePath</c>, as it does
+    /// for <c>AddJsonFile</c>, rather than against the current directory.
+    /// </summary>
+    [TestMethod]
+    public void AddTomlFile_WhenTheBuilderHasABasePath_ShouldResolveTheRelativePathAgainstIt()
+    {
+        using TempFileScope scope = new("name = \"from-file\"\n[db]\nport = 5432\n", "toml");
+        IConfigurationRoot config = new ConfigurationBuilder()
+            .SetBasePath(scope.Directory)
+            .AddTomlFile(Path.GetFileName(scope.Path))
+            .Build();
+
+        Assert.AreEqual("from-file", config["name"]);
+        Assert.AreEqual("5432", config["db:port"]);
+    }
+
+    /// <summary>
+    /// Verifies that a relative path resolves through the file provider the builder sets with <c>SetFileProvider</c>,
+    /// as it does for <c>AddJsonFile</c>.
+    /// </summary>
+    [TestMethod]
+    public void AddTomlFile_WhenTheBuilderHasAFileProvider_ShouldReadThroughIt()
+    {
+        using TempFileScope scope = new("name = \"from-file\"\n[db]\nport = 5432\n", "toml");
+        using var fileProvider = new PhysicalFileProvider(scope.Directory);
+        IConfigurationRoot config = new ConfigurationBuilder()
+            .SetFileProvider(fileProvider)
+            .AddTomlFile(Path.GetFileName(scope.Path))
+            .Build();
+
+        Assert.AreEqual("from-file", config["name"]);
     }
 }

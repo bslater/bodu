@@ -13,8 +13,9 @@ namespace Bodu.Text.Delimited.Reader;
 /// <remarks>
 /// <para>
 /// The options are an immutable value type. Because the default value of a <see cref="char" /> is <c>'\0'</c>, the
-/// delimiter, quote, and comment characters fall back to their RFC 4180 defaults (<c>','</c>, <c>'"'</c>, <c>'#'</c>)
-/// when left unset, and headers are read by default (set <see cref="NoHeader" /> to disable).
+/// delimiter and quote fall back to their RFC 4180 defaults (<c>','</c> and <c>'"'</c>), and the comment character to
+/// <c>'#'</c>, a Bodu default since RFC 4180 defines no comments, when left unset, and headers are read by default (set
+/// <see cref="NoHeader" /> to disable).
 /// </para>
 /// <para>
 /// The reader matches the delimiter, quote, and comment characters as single bytes of the UTF-8 input, so each must be

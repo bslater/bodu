@@ -63,4 +63,34 @@ public partial class Utf8DelimitedReaderTests
 
         Assert.AreEqual(4, ex.LineNumber);
     }
+
+    /// <summary>
+    /// Verifies that a lone carriage return inside a quoted field counts as one line, as a CRLF there does: three
+    /// records on four lines leave the reader on line 4, and an unterminated quote opened on the fourth line is reported
+    /// on line 4.
+    /// </summary>
+    /// <param name="lineEnding">The line ending inside the quoted field.</param>
+    [TestMethod]
+    [DataRow("\r")]
+    [DataRow("\r\n")]
+    public void LineNumber_WhenAQuotedFieldHoldsACarriageReturn_ShouldCountOneLine(string lineEnding)
+    {
+        var source = "a,b,c\nd,\"e" + lineEnding + "\",f\ng,h,i";
+        var options = new DelimitedReaderOptions { NoHeader = true };
+        var reader = new Utf8DelimitedReader(Encoding.UTF8.GetBytes(source), options);
+
+        while (reader.Read())
+        {
+        }
+
+        Assert.AreEqual(3, ReadRecords(source, options).Count);
+        Assert.AreEqual(4, reader.LineNumber);
+
+        var ex = Assert.ThrowsExactly<DelimitedFormatException>(() =>
+        {
+            _ = Transcribe("a,b,c\nd,\"e" + lineEnding + "\",f\ng,\"h", options);
+        });
+
+        Assert.AreEqual(4, ex.LineNumber);
+    }
 }

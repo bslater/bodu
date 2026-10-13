@@ -571,4 +571,23 @@ public partial class DelimitedSerializerTests
 
         Assert.IsTrue(ex.Message.Contains(nameof(ConstructedRecord), StringComparison.Ordinal), ex.Message);
     }
+
+    /// <summary>
+    /// Verifies that with <see cref="DelimitedSerializerOptions.NoHeader" /> set, a headerless document binds each
+    /// field of a POCO record to the member in the same position, so the records <c>Ada,36</c> and <c>Grace</c> read
+    /// back with their names and ages, the missing age left at its default.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenNoHeaderIsSet_ForAPoco_ShouldBindFieldsByPosition()
+    {
+        var options = new DelimitedSerializerOptions { NoHeader = true };
+
+        List<Person> people = DelimitedSerializer.Deserialize<Person>("Ada,36\nGrace\n", options);
+
+        Assert.AreEqual(2, people.Count);
+        Assert.AreEqual("Ada", people[0].Name);
+        Assert.AreEqual(36, people[0].Age);
+        Assert.AreEqual("Grace", people[1].Name);
+        Assert.AreEqual(0, people[1].Age);
+    }
 }

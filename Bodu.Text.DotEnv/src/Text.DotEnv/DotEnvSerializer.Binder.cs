@@ -71,8 +71,30 @@ public static partial class DotEnvSerializer
             if (entry.Value is null && options.DefaultIgnoreCondition is IgnoreCondition.WhenWritingNull or IgnoreCondition.WhenWritingDefault)
                 continue;
 
-            writer.WritePropertyName(Convert.ToString(entry.Key, CultureInfo.InvariantCulture) ?? string.Empty);
+            WriteKey(ref writer, Convert.ToString(entry.Key, CultureInfo.InvariantCulture) ?? string.Empty);
             writer.WriteString(ValueToString(entry.Value));
+        }
+    }
+
+    /// <summary>
+    /// Writes a key, translating the writer's refusal of a key that would not read back into the serializer's
+    /// exception.
+    /// </summary>
+    /// <param name="writer">The writer.</param>
+    /// <param name="key">The key to write.</param>
+    /// <exception cref="DotEnvSerializationException">
+    /// Thrown when <paramref name="key" /> is not a key the reader reads back; the writer's
+    /// <see cref="ArgumentException" /> is the inner exception.
+    /// </exception>
+    private static void WriteKey(ref Utf8DotEnvWriter writer, string key)
+    {
+        try
+        {
+            writer.WritePropertyName(key);
+        }
+        catch (ArgumentException ex) when (ex.GetType() == typeof(ArgumentException))
+        {
+            throw new DotEnvSerializationException(string.Format(CultureInfo.CurrentCulture, DotEnvResourceStrings.Op_Invalid_DotEnvUnwritableKey, key), ex);
         }
     }
 
@@ -95,7 +117,7 @@ public static partial class DotEnvSerializer
             if (ShouldSkipOnWrite(memberValue, member, options))
                 continue;
 
-            writer.WritePropertyName(member.Name);
+            WriteKey(ref writer, member.Name);
             writer.WriteString(ValueToString(memberValue));
         }
     }
@@ -138,7 +160,7 @@ public static partial class DotEnvSerializer
         Type concrete = targetType.IsInterface
             ? typeof(Dictionary<,>).MakeGenericType(typeof(string), valueType)
             : targetType;
-        var dictionary = (IDictionary)Activator.CreateInstance(concrete)!;
+        var dictionary = (IDictionary)CreateInstance(concrete);
 
         foreach ((string key, string raw) in entries)
             dictionary[key] = ConvertFromString(raw, valueType, key);
@@ -153,12 +175,14 @@ public static partial class DotEnvSerializer
     /// <param name="targetType">The POCO type.</param>
     /// <param name="options">The serializer options.</param>
     /// <returns>The populated instance.</returns>
-    /// <exception cref="DotEnvSerializationException">Thrown when a required key is missing.</exception>
+    /// <exception cref="DotEnvSerializationException">
+    /// Thrown when the type cannot be created or a required key is missing.
+    /// </exception>
     [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
     [RequiresDynamicCode(RequiresDynamicCodeMessage)]
     private static object ReadPoco(List<KeyValuePair<string, string>> entries, Type targetType, DotEnvSerializerOptions options)
     {
-        object instance = Activator.CreateInstance(targetType)!;
+        object instance = CreateInstance(targetType);
         (instance as IOnDeserializing)?.OnDeserializing();
 
         StringComparison comparison = options.PropertyNameCaseInsensitive ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
@@ -186,6 +210,25 @@ public static partial class DotEnvSerializer
         (instance as IOnDeserialized)?.OnDeserialized();
 
         return instance;
+    }
+
+    /// <summary>
+    /// Creates an instance of a type the document is read into, after checking that the type can be created.
+    /// </summary>
+    /// <param name="type">The type to create.</param>
+    /// <returns>The new instance.</returns>
+    /// <exception cref="DotEnvSerializationException">
+    /// Thrown when <paramref name="type" /> is an interface or an abstract class, or a class with no public
+    /// parameterless constructor.
+    /// </exception>
+    [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
+    private static object CreateInstance(Type type)
+    {
+        // A value type can always be created; a reference type needs the constructor Activator calls.
+        if (!type.IsValueType && (type.IsAbstract || type.GetConstructor(Type.EmptyTypes) is null))
+            throw new DotEnvSerializationException(string.Format(CultureInfo.CurrentCulture, DotEnvResourceStrings.Op_Invalid_DotEnvTypeNotCreatable, type));
+
+        return Activator.CreateInstance(type)!;
     }
 
     /// <summary>

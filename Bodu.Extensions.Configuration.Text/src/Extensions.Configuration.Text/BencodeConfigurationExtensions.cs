@@ -33,7 +33,7 @@ public static class BencodeConfigurationExtensions
     /// Adds a read-only Bencode configuration source backed by the file at <paramref name="path" />.
     /// </summary>
     /// <param name="builder">The configuration builder.</param>
-    /// <param name="path">The Bencode file path.</param>
+    /// <param name="path">The Bencode file path, rooted or relative to the builder's file provider.</param>
     /// <param name="optional">When <see langword="true" />, the file is permitted to be missing.</param>
     /// <returns>The supplied <paramref name="builder" />, for chaining.</returns>
     /// <exception cref="ArgumentNullException">
@@ -42,6 +42,13 @@ public static class BencodeConfigurationExtensions
     /// <exception cref="ArgumentException">
     /// Thrown when <paramref name="path" /> is <see langword="null" />, empty, or whitespace.
     /// </exception>
+    /// <remarks>
+    /// The path is located as <c>AddJsonFile</c> locates its file: a relative path through the builder's file provider,
+    /// which is the provider <c>SetFileProvider</c> sets, the base path <c>SetBasePath</c> sets, or by default the
+    /// application's base directory, and a rooted path from the file system. The default
+    /// <see cref="Microsoft.Extensions.FileProviders.PhysicalFileProvider" /> does not serve a file whose name begins
+    /// with a dot; supply one constructed with <c>ExclusionFilters.None</c> through <c>SetFileProvider</c> to read one.
+    /// </remarks>
     public static IConfigurationBuilder AddBencodeFile(this IConfigurationBuilder builder, string path, bool optional = false)
     {
         ThrowHelper.ThrowIfNull(builder);

@@ -51,11 +51,12 @@ IConfiguration configuration = new ConfigurationBuilder()
     .Build();
 ```
 
-The parameterless overload probes for `.boduconfig` first and then `bodu.config` in the builder's base path. With `optional: true` (the default) the call is a no-op when neither file is present; with `optional: false` it throws `FileNotFoundException`.
+The parameterless overload probes for `.boduconfig` first and then `bodu.config` in the builder's base path. With `optional: true` (the default) the call is a no-op when neither file is present; with `optional: false` the call itself throws `FileNotFoundException`. The builder's default `PhysicalFileProvider` does not serve dot-prefixed files, so `.boduconfig` is found only through a provider constructed with `ExclusionFilters.None` (set with `SetFileProvider`); otherwise the probe finds only `bodu.config`.
 
 ## Pattern 4 - stream-backed source
 
 ```csharp
+using System.Text;
 using Bodu.Extensions.Configuration.Text;
 using Bodu.Text.Configuration;
 
@@ -66,11 +67,11 @@ IConfiguration configuration = new ConfigurationBuilder()
         stream: ms,
         targetPath: null,
         parseOptions: ConfigurationParseOptions.Relaxed,
-        resolveOptions: ConfigurationResolveOptions.EditorConfigCompatible)
+        resolveOptions: ConfigurationResolveOptions.For(ConfigurationProfile.Relaxed))
     .Build();
 ```
 
-`AddTextConfigurationStream(Stream, …)` registers a `TextStreamConfigurationSource`. Unlike file-backed sources, stream sources do not support reload-on-change - the stream is consumed once during `Build()`. Use the stream overload when the configuration comes from a network resource, an embedded resource, or anywhere else that cannot be expressed as a file path.
+`AddTextConfigurationStream(Stream, …)` registers a `TextStreamConfigurationSource`. A stream has no file to root the document at, so with a `null` target path choose resolve options that do not require a path root: the `EditorConfigCompatible` and `Strict` resolve presets set `MissingPathRootMode.Throw`, and `Build()` would throw `InvalidOperationException` unless you also pass a `targetPath` or set `PathRoot`. Unlike file-backed sources, stream sources do not support reload-on-change - the stream is consumed once during `Build()`. Use the stream overload when the configuration comes from a network resource, an embedded resource, or anywhere else that cannot be expressed as a file path.
 
 ## Pattern 5 - pre-parsed document
 
@@ -90,18 +91,20 @@ IConfiguration configuration = new ConfigurationBuilder()
 <xref:Bodu.Text.Configuration.ConfigurationDocument>. The bridge resolves the document once and flattens the view into an
 in-memory collection before handing it to the configuration root, so the source is captured **by value**: later mutations to the document do not flow into the configuration, and there is no reload-on-change.
 
-To author or mutate a document in code rather than parsing one, build an <xref:Bodu.Text.Configuration.IniDocument> (the configuration library's own INI model) through its public surface (`GetOrAddSection`, `AddEntry`) and pass it the same way:
+To author or mutate a document in code rather than parsing one, build an <xref:Bodu.Text.Configuration.IniDocument> (the configuration library's own INI model) through its public surface (`GlobalSection`, `GetOrAddSection`, `AddEntry`) and pass it the same way. With no target path only the preamble contributes, and a section name is a glob matched against the target path, not a namespace, so put keys meant for every target in the global section:
 
 ```csharp
 using Bodu.Extensions.Configuration.Text;
 using Bodu.Text.Configuration;
 
 var doc = new IniDocument();
-doc.GetOrAddSection("logging").AddEntry(new IniEntry("level", "Debug"));
+doc.GlobalSection.AddEntry(new IniEntry("logging.level", "Debug"));
 
 IConfiguration configuration = new ConfigurationBuilder()
     .AddTextConfigurationDocument(doc)
     .Build();
+
+string? level = configuration["logging:level"];   // "Debug"
 ```
 
 ## Pattern 6 - fluent source configuration
@@ -139,7 +142,7 @@ IConfiguration configuration = new ConfigurationBuilder()
 string? level = configuration["logging:level"];
 ```
 
-`AddTomlFile(path, optional)` registers a `TomlConfigurationSource`. The source is **read once** when the configuration is built - the TOML bridge is read-only and attaches no reload-on-change watcher, so there is no `reloadOnChange` parameter (unlike the file-backed INI source in Pattern 1). With `optional: true` a missing file yields an empty source; with `optional: false` it throws `FileNotFoundException`.
+`AddTomlFile(path, optional)` registers a `TomlConfigurationSource`, which locates the file as `AddJsonFile` does: a relative path through the builder's file provider (the provider `SetFileProvider` sets, the base path `SetBasePath` sets, or by default the application's base directory), a rooted path as it is. The default provider does not serve a file whose name begins with a dot. The source is **read once** when the configuration is built - the TOML bridge is read-only and attaches no reload-on-change watcher, so there is no `reloadOnChange` parameter (unlike the file-backed INI source in Pattern 1). With `optional: true` a missing file yields an empty source; with `optional: false` it throws `FileNotFoundException`.
 
 For configuration that arrives as a stream rather than a file path, use the stream overload - the UTF-8 TOML text is consumed once during `Build()`:
 
@@ -191,7 +194,7 @@ IConfiguration configuration = new ConfigurationBuilder()
 string? level = configuration["logging:level"];
 ```
 
-`AddBencodeFile(path, optional)` registers a `BencodeConfigurationSource`. Like the TOML bridge, the source is **read once** when the configuration is built - it is read-only and attaches no reload-on-change watcher. With `optional: true` a missing file yields an empty source; with `optional: false` it throws `FileNotFoundException`.
+`AddBencodeFile(path, optional)` registers a `BencodeConfigurationSource`, which locates the file as the TOML bridge does. Like the TOML bridge, the source is **read once** when the configuration is built - it is read-only and attaches no reload-on-change watcher. With `optional: true` a missing file yields an empty source; with `optional: false` it throws `FileNotFoundException`.
 
 For configuration that arrives as a stream, use the stream overload - the Bencode document is consumed once during `Build()`:
 

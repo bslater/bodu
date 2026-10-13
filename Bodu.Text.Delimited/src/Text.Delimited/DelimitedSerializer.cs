@@ -49,10 +49,12 @@ namespace Bodu.Text.Delimited;
 /// <see cref="DelimitedSerializerOptions.NoHeader" /> set, an empty collection writes nothing.
 /// </para>
 /// <para>
-/// The buffered stream overloads mirror the sibling quartet libraries. The
-/// <see cref="DeserializeAsyncEnumerableAsync{TRecord}(Stream, DelimitedSerializerOptions?, CancellationToken)" /> and
-/// the <see cref="IAsyncEnumerable{T}" /> serialize overload are truly incremental: records are parsed and yielded as
-/// stream chunks arrive, and written and flushed in bounded batches, so neither surface materializes the document.
+/// The buffered <c>Serialize</c> and <c>Deserialize</c> stream overloads and the buffered <c>SerializeAsync</c> mirror
+/// the sibling quartet libraries; there is no buffered <c>DeserializeAsync</c>, because the asynchronous read is
+/// <see cref="DeserializeAsyncEnumerableAsync{TRecord}(Stream, DelimitedSerializerOptions?, CancellationToken)" />.
+/// That method and the <see cref="IAsyncEnumerable{T}" /> serialize overload are truly incremental: records are parsed
+/// and yielded as stream chunks arrive, and written and flushed in bounded batches, so neither surface materializes the
+/// document.
 /// </para>
 /// </remarks>
 public static partial class DelimitedSerializer

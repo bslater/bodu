@@ -70,6 +70,8 @@ public readonly struct DelimitedElement
         if (ValueKind != DelimitedValueKind.Array)
             throw new InvalidOperationException();
 
+        _document.ThrowIfDisposed();
+
         return _row == DocumentRow ? _document.RowCount : _document.FieldCount(_row);
     }
 
@@ -94,12 +96,20 @@ public readonly struct DelimitedElement
     /// <value>The child element.</value>
     /// <exception cref="InvalidOperationException">Thrown when this element is not an array.</exception>
     /// <exception cref="ObjectDisposedException">Thrown when the owning document has been disposed.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="index" /> is negative or not less than <see cref="GetArrayLength" />.
+    /// </exception>
     public DelimitedElement this[int index]
     {
         get
         {
             if (ValueKind != DelimitedValueKind.Array)
                 throw new InvalidOperationException();
+
+            // Reading the length checks that the document is not disposed before the index is checked against it.
+            int length = GetArrayLength();
+            ThrowHelper.ThrowIfNegative(index);
+            ThrowHelper.ThrowIfGreaterThanOrEqual(index, length);
 
             return _row == DocumentRow
                 ? new DelimitedElement(_document, index, NoField)
@@ -118,6 +128,11 @@ public readonly struct DelimitedElement
     /// <exception cref="InvalidOperationException">Thrown when this element is not an object.</exception>
     /// <exception cref="KeyNotFoundException">Thrown when the column is not present.</exception>
     /// <exception cref="ObjectDisposedException">Thrown when the owning document has been disposed.</exception>
+    /// <remarks>
+    /// A column is found by the name <see cref="EnumerateObject" /> gives it: the first column whose header has the
+    /// name, or, for a field beyond the header's under <see cref="DelimitedFieldCountBehavior.Ragged" />, its
+    /// zero-based column index written as invariant digits, such as <c>3</c>.
+    /// </remarks>
     public DelimitedElement GetProperty(string name)
     {
         if (!TryGetProperty(name, out DelimitedElement value))
@@ -139,6 +154,11 @@ public readonly struct DelimitedElement
     /// </exception>
     /// <exception cref="InvalidOperationException">Thrown when this element is not an object.</exception>
     /// <exception cref="ObjectDisposedException">Thrown when the owning document has been disposed.</exception>
+    /// <remarks>
+    /// A column is found by the name <see cref="EnumerateObject" /> gives it: the first column whose header has the
+    /// name, or, for a field beyond the header's under <see cref="DelimitedFieldCountBehavior.Ragged" />, its
+    /// zero-based column index written as invariant digits, such as <c>3</c>.
+    /// </remarks>
     public bool TryGetProperty(string name, out DelimitedElement value)
     {
         ThrowHelper.ThrowIfNull(name);
@@ -146,7 +166,7 @@ public readonly struct DelimitedElement
         if (ValueKind != DelimitedValueKind.Object)
             throw new InvalidOperationException();
 
-        int column = _document.IndexOfHeader(name);
+        int column = _document.IndexOfColumn(name);
         if (column < 0 || column >= _document.FieldCount(_row))
         {
             value = default;

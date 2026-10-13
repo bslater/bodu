@@ -72,7 +72,7 @@ Settings settings = DotEnvSerializer.Deserialize<Settings>(
 
 ## Round-trip an INI document, preserving comments
 
-The mutable INI DOM keeps every comment line:
+The mutable INI DOM keeps comment lines on the nodes they precede (a comment before a duplicate key that the duplicate-key policy discards is lost with it), and writes them with the writer's comment prefix, `;` by default:
 
 ```csharp
 using Bodu.Text.Ini.Nodes;
@@ -85,7 +85,7 @@ var metrics = new IniObject();
 metrics["enabled"] = new IniValue("true");
 root["metrics"] = metrics;
 
-File.WriteAllBytes("app.ini", root.ToUtf8Bytes());   // original comments intact
+File.WriteAllBytes("app.ini", root.ToUtf8Bytes());   // comments kept, each written with ';'
 ```
 
 ## Read typed INI values

@@ -36,7 +36,7 @@ writer.Flush();   // "symbol\tqty\r\nAAPL\t10\r\n"
 ## Notes
 
 - **Header from the first record.** The property names of the first object record become the header row; subsequent records contribute value rows only.
-- **Minimal quoting.** A field is quoted, with internal quotes doubled, only when the reader would otherwise read it back differently: when it contains the delimiter, the quote character, or a line break; when it begins or ends with a space or a tab; when it is a record's first field and begins with `CommentChar`; or when it is the only field of its record and is empty. Output therefore round-trips through the reader.
+- **Minimal quoting.** A field is quoted, with internal quotes doubled, only when the reader would otherwise read it back differently: when it contains the delimiter, the quote character, or a line break; when it begins or ends with a space or a tab; when it is a record's first field and begins with `CommentChar`; when it is the first field the writer writes and begins with U+FEFF, which the reader would skip as a byte order mark; or when it is the only field of its record and is empty. Output therefore round-trips through the reader.
 - **CRLF line endings.** Every row, the header row included, ends with a carriage return and a line feed, as RFC 4180 requires, whatever the platform.
-- **Flush to commit.** Bytes are staged until `Flush` (or `Dispose`); check `BytesPending` to see what is still buffered.
+- **Flush to commit in stream mode.** Over a `Stream`, bytes are staged until `Flush` (or `Dispose`), and `BytesPending` shows what is still buffered; over an `IBufferWriter<byte>`, as in the example, they go straight to the buffer and `Flush` does nothing.
 - **See also:** the [line-formats introduction](~/docs/formats/index.md) and the [delimited guide](~/guides/formats/delimited.md).

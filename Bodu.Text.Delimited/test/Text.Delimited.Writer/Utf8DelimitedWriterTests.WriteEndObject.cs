@@ -50,4 +50,26 @@ public partial class Utf8DelimitedWriterTests
 
         Assert.AreEqual("\"#id\",\" name \"\r\n1,Ada\r\n", Encoding.UTF8.GetString(buffer.WrittenSpan));
     }
+
+    /// <summary>
+    /// Verifies that a first header name beginning with U+FEFF is quoted, so the reader, which skips a byte order mark at
+    /// the start of the input, reads the header back with the character, and the record binds to it.
+    /// </summary>
+    [TestMethod]
+    public void WriteEndObject_WhenTheFirstHeaderNameBeginsWithAByteOrderMark_ShouldQuoteItSoItReadsBack()
+    {
+        var buffer = new ArrayBufferWriter<byte>();
+        var writer = new Utf8DelimitedWriter(buffer);
+
+        writer.WriteStartArray();
+        WriteRecord(ref writer, ("\uFEFFid", "1"), ("name", "Ada"));
+        writer.WriteEndArray();
+        writer.Flush();
+
+        Assert.AreEqual("\"\uFEFFid\",name\r\n1,Ada\r\n", Encoding.UTF8.GetString(buffer.WrittenSpan));
+
+        var reader = new Bodu.Text.Delimited.Reader.Utf8DelimitedReader(buffer.WrittenSpan);
+        _ = reader.Read();
+        CollectionAssert.AreEqual(new[] { "\uFEFFid", "name" }, reader.Headers.ToArray());
+    }
 }

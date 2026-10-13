@@ -111,6 +111,96 @@ public partial class IniSerializerTests
     }
 
     /// <summary>
+    /// A POCO whose members are the scalars beyond the common set: <see cref="DateOnly" />, <see cref="TimeOnly" />, the
+    /// 128-bit and half-precision numbers and <see cref="System.Numerics.BigInteger" />, two of them also in nullable form.
+    /// </summary>
+    private sealed class ExtendedScalarRecord
+    {
+        /// <summary>Gets or sets the date.</summary>
+        /// <value>The date.</value>
+        public DateOnly Day { get; set; }
+
+        /// <summary>Gets or sets the time of day.</summary>
+        /// <value>The time of day.</value>
+        public TimeOnly Time { get; set; }
+
+        /// <summary>Gets or sets the signed 128-bit number.</summary>
+        /// <value>The signed 128-bit number.</value>
+        public Int128 Large { get; set; }
+
+        /// <summary>Gets or sets the unsigned 128-bit number.</summary>
+        /// <value>The unsigned 128-bit number.</value>
+        public UInt128 Unsigned { get; set; }
+
+        /// <summary>Gets or sets the half-precision number.</summary>
+        /// <value>The half-precision number.</value>
+        public Half Small { get; set; }
+
+        /// <summary>Gets or sets the arbitrary-precision integer.</summary>
+        /// <value>The arbitrary-precision integer.</value>
+        public System.Numerics.BigInteger Big { get; set; }
+
+        /// <summary>Gets or sets the optional signed 128-bit number.</summary>
+        /// <value>The number, or <see langword="null" />.</value>
+        public Int128? MaybeLarge { get; set; }
+
+        /// <summary>Gets or sets the optional time of day.</summary>
+        /// <value>The time of day, or <see langword="null" />.</value>
+        public TimeOnly? MaybeTime { get; set; }
+    }
+
+    /// <summary>
+    /// A root model with a global key <c>Name</c> and no public parameterless constructor, which deserialization cannot
+    /// create.
+    /// </summary>
+    private sealed class ConstructedConfig
+    {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ConstructedConfig" /> class.
+        /// </summary>
+        /// <param name="name">The server name.</param>
+        public ConstructedConfig(string name) =>
+            Name = name;
+
+        /// <summary>Gets or sets the server name (a global key).</summary>
+        public string Name { get; set; }
+    }
+
+    /// <summary>
+    /// An abstract root model with a global key <c>Name</c>, which deserialization cannot create.
+    /// </summary>
+    private abstract class AbstractConfig
+    {
+        /// <summary>Gets or sets the server name (a global key).</summary>
+        public string? Name { get; set; }
+    }
+
+    /// <summary>
+    /// A root model whose section has no public parameterless constructor.
+    /// </summary>
+    private sealed class ConstructedSectionConfig
+    {
+        /// <summary>Gets or sets the database section, which deserialization cannot create.</summary>
+        public ConstructedSection? Database { get; set; }
+    }
+
+    /// <summary>
+    /// A section model with no public parameterless constructor.
+    /// </summary>
+    private sealed class ConstructedSection
+    {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ConstructedSection" /> class.
+        /// </summary>
+        /// <param name="host">The host name.</param>
+        public ConstructedSection(string host) =>
+            Host = host;
+
+        /// <summary>Gets or sets the host name.</summary>
+        public string Host { get; set; }
+    }
+
+    /// <summary>
     /// A hand-written <see cref="IIniSectionFactory{TSection}" /> for <see cref="DatabaseSection" />, standing in for
     /// the generated factory in the reflection-free section-overload tests.
     /// </summary>

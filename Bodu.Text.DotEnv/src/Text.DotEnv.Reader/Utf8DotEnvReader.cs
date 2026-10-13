@@ -289,8 +289,9 @@ public ref struct Utf8DotEnvReader
     }
 
     /// <summary>
-    /// Skips the current value. For a property name the reader first advances to the value and then leaves it consumed;
-    /// for structural or scalar tokens the reader simply advances once.
+    /// Skips the value of the current property name. On a property name the reader advances past its value; on any
+    /// other token it does nothing, as <c>Utf8JsonReader.Skip</c> does on a primitive value, so a loop that relies on
+    /// it to move past a comment or a structural token must call <see cref="Read" /> instead.
     /// </summary>
     /// <exception cref="DotEnvFormatException">Thrown when the skipped bytes are not valid DotEnv.</exception>
     public void Skip()

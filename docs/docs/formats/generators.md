@@ -18,7 +18,7 @@ For every annotated type the generator adds one file, `<Namespace>.<Type>.Delimi
 - a public static property - `DelimitedFactory` of type <xref:Bodu.Text.Delimited.IDelimitedRecordFactory`1>, or `IniFactory` of type <xref:Bodu.Text.Ini.IIniSectionFactory`1> - holding a singleton;
 - a private nested class implementing the interface: a static array of the resolved wire names in declaration order (`Headers` / `Keys`), a `GetFields` / `GetEntries` method that formats each member, a `Create` method that constructs the instance and binds decoded strings back, and a `Bind` helper that matches names ordinally first and case-insensitively as a fallback.
 
-The factory maps the type's **public read/write instance properties in declaration order**, honors `[PropertyName]` for the wire name, skips members annotated `[Ignore]` (with the default `IgnoreCondition.Always`), formats and parses scalars with `InvariantCulture`, and writes a `null` member as the empty string, or, in an INI factory, leaves it out as `IniSerializer` does - mirroring the runtime reflection binders so the two paths are interchangeable. A Delimited factory follows the Delimited binder: it writes `DateTime` and `DateTimeOffset` in the round-trip `O` form and `TimeSpan` in the constant `c` form, and binds `null` to a nullable member whose field is empty or white space, except a `char?` member, which takes only an empty field as `null`. An INI factory follows the INI binder: the invariant general forms, and `null` for an empty value only.
+The factory maps the **public read/write instance properties declared on the type, in declaration order**, honors `[PropertyName]` for the wire name, skips members annotated `[Ignore]` (with the default `IgnoreCondition.Always`), formats and parses scalars with `InvariantCulture`, and writes a `null` member as the empty string, or, in an INI factory, leaves it out as `IniSerializer` does - mirroring the runtime reflection binders for the members both map, with the differences listed under [Differences from the reflection binder](#differences-from-the-reflection-binder). A Delimited factory follows the Delimited binder: it writes `DateTime` and `DateTimeOffset` in the round-trip `O` form and `TimeSpan` in the constant `c` form, and binds `null` to a nullable member whose field is empty or white space, except a `char?` member, which takes only an empty field as `null`. An INI factory follows the INI binder: the invariant general forms, and `null` for an empty value only.
 
 ## Wiring the generator into a project
 
@@ -50,7 +50,17 @@ To inspect the emitted source, set `<EmitCompilerGeneratedFiles>true</EmitCompil
 | Each mapped property's type is a supported scalar or its `Nullable<T>`: `string`, `bool`, `char`, `sbyte`/`byte`/`short`/`ushort`/`int`/`uint`/`long`/`ulong`, `float`/`double`/`decimal`, `Guid`, `DateTime`, `DateTimeOffset`, `TimeSpan`, or any enum. | Anything else - `Uri`, collections, nested objects - is skipped with `BTFG002`; the factory is still generated for the remaining members. |
 | `[Ignore]` with the default condition excludes a member; `[Ignore(Condition = …)]` with any *other* condition leaves it mapped. An INI factory applies that condition when writing, and `WhenWritingNull`, the serializer's default, to a member without one, as `IniSerializer` does; a Delimited factory writes every mapped member, as `DelimitedSerializer` does. | A factory never sees the serializer options, so an INI factory cannot follow a `DefaultIgnoreCondition` other than `WhenWritingNull`, and a delimited record cannot leave out a column. |
 
-Two behaviors differ from the reflection binder by design: the options-level `PropertyNamingPolicy` is **not** applied by a factory (its header and key names are fixed at compile time, so pin names with `[PropertyName]`), and `IncludeFields` has no effect (fields are never mapped).
+## Differences from the reflection binder
+
+A factory and the reflection binder agree for a type whose members are all settable properties declared on the type itself, in the order they should be written, with supported scalar types and names pinned with `[PropertyName]` - the shape of the examples on this page. Outside that shape they differ, so switching a type to its factory can change the header or keys written and the values read:
+
+- The options-level `PropertyNamingPolicy` is **not** applied by a factory: its header and key names are fixed at compile time, so pin names with `[PropertyName]`. `IncludeFields` has no effect, since fields are never mapped.
+- Only properties declared on the type itself are mapped; the reflection binders also map the public properties it inherits.
+- Get-only and `init`-only properties are not mapped. The reflection binders write a get-only property as a column or key, and set an `init`-only one when reading.
+- `[PropertyOrder]` is ignored: a factory writes in declaration order, while the reflection binders order their columns and keys by it.
+- A factory's `Bind` falls back to a case-insensitive match of every name; the reflection binders match names case-sensitively unless `PropertyNameCaseInsensitive` is set.
+- An INI factory does not enforce `[Required]`; `IniSerializer`'s reflection binder throws `IniSerializationException` for a missing required key.
+- `DateOnly`, `TimeOnly`, `Uri`, `Int128`, `UInt128`, `Half` and `BigInteger` members are skipped with `BTFG002`, although the reflection binders convert them.
 
 ## Diagnostics
 

@@ -17,11 +17,6 @@ Run either sample from the repository root:
 dotnet run --project samples/Text.Formats/<SampleName>
 ```
 
-> Both samples' root namespaces sit under `Bodu.Samples.*` rather than `Bodu.Text.*`: from
-> inside a namespace under `Bodu.Text`, the simple names `Delimited`, `Ini`, and `DotEnv`
-> resolve to their *namespaces* instead of the facade classes. Each README documents the
-> pitfall for consumers whose own code lives under `Bodu.Text`.
-
 ## The samples
 
 ### Bodu.Text.Formats.Samples.DelimitedData
@@ -44,8 +39,8 @@ materializes a document. *Package: `Bodu.Text.Formats` (umbrella).*
 The two config-file formats: INI (`Bodu.Text.Ini`) - global keys hoisted onto the root and
 sections as nested objects via the read-only <xref:Bodu.Text.Ini.Document.IniDocument>, typed
 binding through <xref:Bodu.Text.Ini.IniSerializer>, and the mutate + write edit loop on the
-comment-preserving <xref:Bodu.Text.Ini.Nodes.IniNode> DOM where every original comment
-survives; and DotEnv (`Bodu.Text.DotEnv`) - `export` prefixes, quoting, inline comments,
+comment-preserving <xref:Bodu.Text.Ini.Nodes.IniNode> DOM, which keeps the sample file's
+comments and canonicalizes its layout; and DotEnv (`Bodu.Text.DotEnv`) - `export` prefixes, quoting, inline comments,
 empty-vs-absent values, the deliberate *no-interpolation* contract (values are literal;
 `${VAR}` expansion is the consumer's explicit decision), typed settings via
 <xref:Bodu.Text.DotEnv.DotEnvSerializer>, and the streaming

@@ -24,16 +24,17 @@ namespace Bodu.Text.Delimited.Writer;
 /// <para>
 /// A field is quoted, with internal quotes doubled, when the reader would otherwise read it back differently: when it
 /// contains the delimiter, the quote character, or a line break; when it begins or ends with a space or a tab; when it
-/// is the first field of its record and begins with <see cref="DelimitedWriterOptions.CommentChar" />; and when it is
-/// the only field of its record and is empty. Every other field is written bare.
+/// is the first field of its record and begins with <see cref="DelimitedWriterOptions.CommentChar" />; when it is the
+/// first field the writer writes and begins with U+FEFF; and when it is the only field of its record and is empty.
+/// Every other field is written bare.
 /// </para>
 /// <para>
 /// The output therefore round-trips through <see cref="Bodu.Text.Delimited.Reader.Utf8DelimitedReader" /> with the same
 /// delimiter and quote: a record of one empty field is written <c>""</c> rather than as an empty line, which the reader
 /// skips; a first field is not read as a comment line by a reader that allows comments with the writer's comment
-/// character; and a reader with <see cref="Bodu.Text.Delimited.Reader.DelimitedReaderOptions.TrimFields" /> keeps the
-/// spaces and tabs at a field's ends. A record with no fields at all is written as an empty line, which the reader
-/// skips.
+/// character; a U+FEFF that begins the document is not skipped as a byte order mark; and a reader with
+/// <see cref="Bodu.Text.Delimited.Reader.DelimitedReaderOptions.TrimFields" /> keeps the spaces and tabs at a field's
+/// ends. A record with no fields at all is written as an empty line, which the reader skips.
 /// </para>
 /// </remarks>
 public ref struct Utf8DelimitedWriter
@@ -67,6 +68,9 @@ public ref struct Utf8DelimitedWriter
 
     /// <summary>Whether the header row has been written.</summary>
     private bool _headerWritten;
+
+    /// <summary>Whether any row has been written, so that no later field begins the document.</summary>
+    private bool _rowWritten;
 
     /// <summary>The number of bytes flushed to the destination.</summary>
     private long _bytesCommitted;
@@ -109,6 +113,29 @@ public ref struct Utf8DelimitedWriter
         _headers = [];
         _names = [];
         _values = [];
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="Utf8DelimitedWriter" /> struct that writes to the supplied buffer
+    /// using the supplied options, continuing a document that another writer may already have started.
+    /// </summary>
+    /// <param name="output">The destination buffer writer.</param>
+    /// <param name="options">The writer options.</param>
+    /// <param name="continuesDocument">
+    /// Whether the rows written follow rows already written to the document, so that none of their fields begins it.
+    /// </param>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="output" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when the delimiter, quote or comment character of <paramref name="options" /> is not an ASCII character
+    /// or is a carriage return or a line feed, when the delimiter equals the quote, or when the comment character
+    /// equals the delimiter or the quote.
+    /// </exception>
+    internal Utf8DelimitedWriter(IBufferWriter<byte> output, DelimitedWriterOptions options, bool continuesDocument)
+        : this(output, options)
+    {
+        _rowWritten = continuesDocument;
     }
 
     /// <summary>
@@ -296,6 +323,7 @@ public ref struct Utf8DelimitedWriter
         }
 
         WriteRaw("\r\n"u8);
+        _rowWritten = true;
     }
 
     /// <summary>
@@ -339,6 +367,10 @@ public ref struct Utf8DelimitedWriter
         // A record of one empty field would otherwise be an empty line, which the reader skips.
         if (field.Length == 0)
             return isOnly;
+
+        // A U+FEFF that begins the document is encoded as the UTF-8 byte order mark, which the reader skips.
+        if (isFirst && !_rowWritten && field[0] == '\uFEFF')
+            return true;
 
         // A first field beginning with the comment character would read as a comment line, and a reader with TrimFields
         // would trim a space or a tab at either end.

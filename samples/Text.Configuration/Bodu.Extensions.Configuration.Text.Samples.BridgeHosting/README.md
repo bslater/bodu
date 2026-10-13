@@ -10,11 +10,11 @@ dependency injection. Everything runs offline against the committed `Data/` file
 dotnet run --project samples/Text.Configuration/Bodu.Extensions.Configuration.Text.Samples.BridgeHosting
 ```
 
-> Path handling differs by source: `AddTextConfigurationFile` resolves relative paths through
-> the builder's file provider, so the sample calls `SetBasePath(AppContext.BaseDirectory)`;
-> `AddTomlFile` reads its path directly (absolute, or relative to the working directory), so
-> the TOML scenarios anchor with `Path.Combine(AppContext.BaseDirectory, ...)`. The csproj
-> copies `Data/**` next to the built binary either way.
+> `AddTextConfigurationFile` and `AddTomlFile` both resolve a relative path through the
+> builder's file provider, as `AddJsonFile` does, so the sample calls
+> `SetBasePath(AppContext.BaseDirectory)` for the text configuration file; the TOML scenarios
+> pass absolute paths built with `Path.Combine(AppContext.BaseDirectory, ...)`, which are read
+> as they are. The csproj copies `Data/**` next to the built binary either way.
 
 ## Scenario 1 - TextConfigurationFileSource
 

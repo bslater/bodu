@@ -43,7 +43,8 @@ public enum DotEnvTokenType
     String,
 
     /// <summary>
-    /// A comment line, surfaced for tooling and the mutable document object; skipped by the binder.
+    /// A comment line, surfaced for tooling; skipped by the serializer and by both document models, which keep no
+    /// comments.
     /// </summary>
     Comment,
 }

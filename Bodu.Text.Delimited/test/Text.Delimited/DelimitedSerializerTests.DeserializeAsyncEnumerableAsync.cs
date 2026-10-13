@@ -726,4 +726,72 @@ public partial class DelimitedSerializerTests
 
         Assert.IsTrue(ex.Message.Contains(nameof(ConstructedRecord), StringComparison.Ordinal), ex.Message);
     }
+
+    /// <summary>
+    /// Verifies that a <see langword="null" /> source throws <see cref="ArgumentNullException" /> for <c>source</c> when
+    /// the method is called, before the sequence is enumerated.
+    /// </summary>
+    [TestMethod]
+    public void DeserializeAsyncEnumerableAsync_WhenTheSourceIsNull_ShouldThrowArgumentNullExceptionAtTheCall()
+    {
+        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = DelimitedSerializer.DeserializeAsyncEnumerableAsync<string[]>(null!);
+        });
+
+        Assert.AreEqual("source", ex.ParamName);
+    }
+
+    /// <summary>
+    /// Verifies that a delimiter outside ASCII throws <see cref="ArgumentException" /> for <c>options</c> when the
+    /// method is called, before the sequence is enumerated.
+    /// </summary>
+    [TestMethod]
+    public void DeserializeAsyncEnumerableAsync_WhenTheDelimiterIsNotAscii_ShouldThrowArgumentExceptionAtTheCall()
+    {
+        var options = new DelimitedSerializerOptions { Delimiter = '\u00A3', NoHeader = true };
+        using var stream = new MemoryStream(Encoding.UTF8.GetBytes("a\u00A3b\n"));
+
+        var ex = Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            _ = DelimitedSerializer.DeserializeAsyncEnumerableAsync<string[]>(stream, options);
+        });
+
+        Assert.AreEqual("options", ex.ParamName);
+    }
+
+    /// <summary>
+    /// Verifies that a scalar record type throws <see cref="DelimitedSerializationException" /> when the method is
+    /// called, before the sequence is enumerated.
+    /// </summary>
+    [TestMethod]
+    public void DeserializeAsyncEnumerableAsync_WhenTheRecordTypeIsAScalar_ShouldThrowDelimitedSerializationExceptionAtTheCall()
+    {
+        using var source = new MemoryStream(Encoding.UTF8.GetBytes("a\n1\n"));
+
+        _ = Assert.ThrowsExactly<DelimitedSerializationException>(() =>
+        {
+            _ = DelimitedSerializer.DeserializeAsyncEnumerableAsync<int>(source);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that with <see cref="DelimitedSerializerOptions.NoHeader" /> set, the streamed records of a POCO bind
+    /// each field to the member in the same position, as <c>Deserialize</c> does.
+    /// </summary>
+    /// <returns>A task representing the asynchronous test.</returns>
+    [TestMethod]
+    public async Task DeserializeAsyncEnumerableAsync_WhenNoHeaderIsSet_ForAPoco_ShouldBindFieldsByPosition()
+    {
+        var options = new DelimitedSerializerOptions { NoHeader = true };
+        using var stream = new MemoryStream(Encoding.UTF8.GetBytes("Ada,36\nGrace,45\n"));
+
+        List<Person> people = await ToListAsync(DelimitedSerializer.DeserializeAsyncEnumerableAsync<Person>(stream, options));
+
+        Assert.AreEqual(2, people.Count);
+        Assert.AreEqual("Ada", people[0].Name);
+        Assert.AreEqual(36, people[0].Age);
+        Assert.AreEqual("Grace", people[1].Name);
+        Assert.AreEqual(45, people[1].Age);
+    }
 }

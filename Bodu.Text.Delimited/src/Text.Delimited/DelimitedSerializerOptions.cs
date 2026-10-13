@@ -195,6 +195,12 @@ public sealed class DelimitedSerializerOptions
     /// </summary>
     /// <value><see langword="true" /> for headerless documents; otherwise <see langword="false" />.</value>
     /// <exception cref="InvalidOperationException">Thrown when set after the options have become read-only.</exception>
+    /// <remarks>
+    /// Without a header, the fields of a POCO record bind by position, as a generated
+    /// <see cref="IDelimitedRecordFactory{TRecord}" /> binds them: each field to the member the serializer writes in
+    /// that column, which is the readable members in member order, so the field of a get-only member is skipped and a
+    /// member past the last field keeps its default value.
+    /// </remarks>
     public bool NoHeader
     {
         get => _noHeader;

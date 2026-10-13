@@ -129,7 +129,8 @@ public static partial class IniSerializer
     /// </exception>
     /// <exception cref="IniFormatException">Thrown when the text is not valid INI.</exception>
     /// <exception cref="IniSerializationException">
-    /// Thrown when the document cannot be mapped to <typeparamref name="T" />.
+    /// Thrown when the document cannot be mapped to <typeparamref name="T" />, including when <typeparamref name="T" />,
+    /// or the type of a section it is read into, is abstract or has no public parameterless constructor.
     /// </exception>
     [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
     [RequiresDynamicCode(RequiresDynamicCodeMessage)]
@@ -152,7 +153,8 @@ public static partial class IniSerializer
     /// collision violates the configured policies.
     /// </exception>
     /// <exception cref="IniSerializationException">
-    /// Thrown when the document cannot be mapped to <typeparamref name="T" />.
+    /// Thrown when the document cannot be mapped to <typeparamref name="T" />, including when <typeparamref name="T" />,
+    /// or the type of a section it is read into, is abstract or has no public parameterless constructor.
     /// </exception>
     [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
     [RequiresDynamicCode(RequiresDynamicCodeMessage)]
@@ -178,7 +180,8 @@ public static partial class IniSerializer
     /// </exception>
     /// <exception cref="IniFormatException">Thrown when the content is not valid INI.</exception>
     /// <exception cref="IniSerializationException">
-    /// Thrown when the document cannot be mapped to <typeparamref name="T" />.
+    /// Thrown when the document cannot be mapped to <typeparamref name="T" />, including when <typeparamref name="T" />,
+    /// or the type of a section it is read into, is abstract or has no public parameterless constructor.
     /// </exception>
     [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
     [RequiresDynamicCode(RequiresDynamicCodeMessage)]
@@ -206,7 +209,8 @@ public static partial class IniSerializer
     /// </exception>
     /// <exception cref="IniFormatException">Thrown when the content is not valid INI.</exception>
     /// <exception cref="IniSerializationException">
-    /// Thrown when the document cannot be mapped to <typeparamref name="T" />.
+    /// Thrown when the document cannot be mapped to <typeparamref name="T" />, including when <typeparamref name="T" />,
+    /// or the type of a section it is read into, is abstract or has no public parameterless constructor.
     /// </exception>
     [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
     [RequiresDynamicCode(RequiresDynamicCodeMessage)]

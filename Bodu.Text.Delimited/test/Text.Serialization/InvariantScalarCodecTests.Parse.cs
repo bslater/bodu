@@ -59,4 +59,32 @@ public sealed partial class InvariantScalarCodecTests
         Assert.AreEqual(s_instant, value);
         Assert.AreEqual(DateTimeKind.Utc, ((DateTime)value!).Kind);
     }
+
+    /// <summary>
+    /// Verifies that the text written for a <see cref="DateOnly" />, a <see cref="TimeOnly" /> with a fraction of a
+    /// second, the extremes of <see cref="Int128" /> and <see cref="UInt128" />, a <see cref="Half" /> and a
+    /// <see cref="System.Numerics.BigInteger" /> beyond 128 bits reads back as the value written.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenTheTextIsAnExtendedScalarAsWritten_ForDelimitedPolicy_ShouldReturnTheValue()
+    {
+        object[] values =
+        [
+            new DateOnly(2026, 1, 2),
+            new TimeOnly(13, 45, 30).Add(TimeSpan.FromTicks(1234567)),
+            Int128.MinValue,
+            UInt128.MaxValue,
+            (Half)0.1,
+            -(System.Numerics.BigInteger.Pow(10, 40) + 1),
+        ];
+
+        foreach (object value in values)
+        {
+            string text = InvariantScalarCodec.Format(value, InvariantScalarCodec.Policy.Delimited);
+
+            object? parsed = InvariantScalarCodec.Parse(text, value.GetType(), InvariantScalarCodec.Policy.Delimited);
+
+            Assert.AreEqual(value, parsed, text);
+        }
+    }
 }

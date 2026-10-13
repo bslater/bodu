@@ -94,6 +94,33 @@ public partial class FormatFactoryGeneratorTests
     }
 
     /// <summary>
+    /// Verifies that the runtime reflection binder binds a headerless document positionally in the same member order as
+    /// the generated factory, so both read the same records from the same text.
+    /// </summary>
+    [TestMethod]
+    public void DelimitedFactory_WhenHeaderless_ShouldBindAsTheReflectionBinderDoes()
+    {
+        var options = new DelimitedSerializerOptions { NoHeader = true };
+        const string Text = "Ada,36,ada@example.com,1.5,Engineer\nGrace,45\n";
+
+        List<GeneratedPerson> generated = DelimitedSerializer.Deserialize(Text, GeneratedPerson.DelimitedFactory, options);
+        List<GeneratedPerson> reflection = DelimitedSerializer.Deserialize<GeneratedPerson>(Text, options);
+
+        Assert.AreEqual(generated.Count, reflection.Count);
+        for (int i = 0; i < generated.Count; i++)
+        {
+            Assert.AreEqual(generated[i].Name, reflection[i].Name, $"Record {i}");
+            Assert.AreEqual(generated[i].Age, reflection[i].Age, $"Record {i}");
+            Assert.AreEqual(generated[i].Email, reflection[i].Email, $"Record {i}");
+            Assert.AreEqual(generated[i].Score, reflection[i].Score, $"Record {i}");
+            Assert.AreEqual(generated[i].Kind, reflection[i].Kind, $"Record {i}");
+        }
+
+        Assert.AreEqual("Ada", reflection[0].Name);
+        Assert.AreEqual(PersonKind.Engineer, reflection[0].Kind);
+    }
+
+    /// <summary>
     /// Verifies that the generated factory falls back to case-insensitive header matching.
     /// </summary>
     [TestMethod]

@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Globalization;
+
 using Bodu.Text.Delimited.Reader;
 
 namespace Bodu.Text.Delimited.Document;
@@ -171,7 +173,7 @@ public sealed class DelimitedDocument
     {
         ThrowIfDisposed();
 
-        return column < _headers.Count ? _headers[column] : column.ToString(System.Globalization.CultureInfo.InvariantCulture);
+        return column < _headers.Count ? _headers[column] : column.ToString(CultureInfo.InvariantCulture);
     }
 
     /// <summary>
@@ -188,15 +190,27 @@ public sealed class DelimitedDocument
     }
 
     /// <summary>
-    /// Finds the column index of the first header with the specified name.
+    /// Finds the column with the specified name, as <see cref="HeaderAt" /> names the columns: the first header with
+    /// the name, or a column beyond the header named by its index as invariant digits.
     /// </summary>
-    /// <param name="name">The header name.</param>
-    /// <returns>The zero-based column index, or <c>-1</c> when absent.</returns>
-    internal int IndexOfHeader(string name)
+    /// <param name="name">The column name.</param>
+    /// <returns>The zero-based column index, or <c>-1</c> when no column has the name.</returns>
+    internal int IndexOfColumn(string name)
     {
         ThrowIfDisposed();
 
-        return _headers.IndexOf(name);
+        int column = _headers.IndexOf(name);
+        if (column >= 0)
+            return column;
+
+        // A column beyond the header is named by its index alone, so only the canonical spelling of an index past the
+        // last header finds one: ASCII digits with no sign, no white space and no leading zero.
+        if (name.Length > 1 && name[0] == '0')
+            return -1;
+
+        return int.TryParse(name, NumberStyles.None, CultureInfo.InvariantCulture, out int index) && index >= _headers.Count
+            ? index
+            : -1;
     }
 
     /// <summary>

@@ -117,8 +117,9 @@ The no-argument overload probes the builder's base path for two conventional nam
 | 2 | `bodu.config` |
 
 The first file found is added as a configuration source. When neither is present and `optional` is `true`, the call is
-a no-op; when `optional` is `false`, the source surfaces as missing per the standard `FileConfigurationProvider`
-contract.
+a no-op; when `optional` is `false`, the call itself throws `FileNotFoundException`. The builder's default
+`PhysicalFileProvider` does not serve dot-prefixed files, so `.boduconfig` is found only through a provider constructed
+with `ExclusionFilters.None`.
 
 ## Reload-on-change
 
@@ -126,8 +127,9 @@ contract.
 provider attaches a file watcher through the configured `IFileProvider`; any change to the underlying file triggers
 a reparse + reload, and any reload tokens issued through `IConfiguration` fire.
 
-`TextStreamConfigurationSource` does **not** support reload-on-change - it parses the stream once when `Build` is
-called, and the stream lifetime ends with that parse. For dynamic stream-backed inputs, rebuild the configuration.
+`TextStreamConfigurationSource` does **not** support reload-on-change - it reads the stream once when the configuration
+is built and does not dispose it; the caller owns the stream. For dynamic stream-backed inputs, rebuild the
+configuration.
 
 The TOML and Bencode bridges (`AddTomlFile` / `AddTomlStream`, `AddBencodeFile` / `AddBencodeStream`) are read-once
 and read-only by design - they attach no file watcher even for the file overloads, so there is no `reloadOnChange`

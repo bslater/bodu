@@ -24,7 +24,6 @@ Two points follow from the table. First, the position members are nullable: a st
 
 The Delimited reader enforces RFC 4180 structure. An unterminated quoted field, a record whose field count disagrees with the header, characters after a closing quote, and a duplicate header name are all `DelimitedFormatException`:
 
-<!-- compile -->
 ```csharp
 using Bodu.Text.Delimited;
 using Bodu.Text.Delimited.Document;
@@ -60,7 +59,6 @@ Three <xref:Bodu.Text.Delimited.Reader.DelimitedReaderOptions> policies convert 
 | `MalformedRecordBehavior` | `Throw` | `SkipRecord` | A malformed record - one with text after a closing quote, or one whose field count breaks `Strict` - is skipped whole, and reading continues with the next line. |
 | `DuplicateHeaderBehavior` | `Throw` | `TakeFirst` / `TakeLast` | A repeated column name maps to the first or last occurrence; the other columns with the name are read under an empty name. |
 
-<!-- compile -->
 ```csharp
 using Bodu.Text.Delimited.Reader;
 
@@ -86,7 +84,6 @@ An unterminated quoted field is never tolerated - there is no policy for it, bec
 
 A well-formed document that does not fit the record type raises `DelimitedSerializationException`. The typical cause is a scalar that does not parse; the `FormatException` from the conversion is preserved as the inner exception:
 
-<!-- compile -->
 ```csharp
 public sealed class Trade
 {
@@ -95,7 +92,6 @@ public sealed class Trade
 }
 ```
 
-<!-- compile -->
 ```csharp
 try
 {
@@ -110,9 +106,10 @@ catch (DelimitedSerializationException ex)
 // The input string 'ten' was not in a correct format.
 ```
 
+The record type is checked before anything is read or written. A record is a `string[]` or an object whose members map to columns, so since 1.3.0 a scalar or collection record type throws *A delimited record is a string array or an object whose members map to columns; the record type '...', a scalar or a collection, is not supported.*, and reading into an abstract record type, or one with no public parameterless constructor, throws *The record type '...' cannot be created; reading a delimited record needs a public parameterless constructor.*
+
 A *missing* column is not an error - Delimited does not honor `[Required]`, so `Symbol\nMSFT\n` binds a `Trade` with `Quantity` left at its default. And because the document is parsed before it is bound, a structural error inside the same call still surfaces as the format exception:
 
-<!-- compile -->
 ```csharp
 DelimitedSerializer.Deserialize<Trade>("Symbol,Quantity\nMSFT,\"1\n");
 // → throws DelimitedFormatException: A quoted delimited field was not terminated before the end of the input.
@@ -122,7 +119,6 @@ DelimitedSerializer.Deserialize<Trade>("Symbol,Quantity\nMSFT,\"1\n");
 
 The DotEnv reader reports a line, a column, and a byte offset on every structural failure. All three describe one position, the byte at which it found the error or the opening quote of an unterminated value, and the column counts bytes from the start of the line:
 
-<!-- compile -->
 ```csharp
 using Bodu.Text.DotEnv;
 using Bodu.Text.DotEnv.Document;
@@ -149,9 +145,8 @@ The DotEnv knobs on <xref:Bodu.Text.DotEnv.Reader.DotEnvReaderOptions> run in th
 
 ## Pattern 5 - DotEnv: binding failures
 
-`DotEnvSerializationException` covers the two binding failures the format can have: a `[Required]` key that is absent, and a value that does not convert:
+`DotEnvSerializationException` covers the binding failures: a `[Required]` key that is absent, a value that does not convert, and a type that cannot hold the document:
 
-<!-- compile -->
 ```csharp
 public sealed class ApiSettings
 {
@@ -162,7 +157,6 @@ public sealed class ApiSettings
 }
 ```
 
-<!-- compile -->
 ```csharp
 DotEnvSerializer.Deserialize<ApiSettings>("TIMEOUT=10\n");
 // → throws DotEnvSerializationException: Required DotEnv key 'ApiKey' was not present in the document.
@@ -172,13 +166,14 @@ DotEnvSerializer.Deserialize<ApiSettings>("ApiKey=k\nTimeout=soon\n");
 //   InnerException: FormatException: The input string 'soon' was not in a correct format.
 ```
 
+The type is checked as well. A DotEnv root is an object or a string-keyed dictionary, so a scalar root (a primitive, `string`, an enum, `decimal`, `Guid`, a date or time type, `Uri`, a 128-bit or half-precision number, `BigInteger`, or the nullable form of one) or a collection root throws *DotEnv serialization requires an object or string-keyed dictionary root; the type '...' is not supported.*, from `Serialize` and `Deserialize` alike. Since 1.3.0 that covers every scalar: earlier versions bound `decimal`, `Guid`, the date and time types, `Uri`, the 128-bit and half-precision numbers, `BigInteger` and the nullable forms as objects, through their public properties. Reading into an abstract type, or one with no public parameterless constructor such as a positional `record`, throws *The type '...' cannot be created; reading a DotEnv document into it needs a public parameterless constructor.* rather than the runtime's `MissingMethodException`.
+
 As with Delimited, a syntax error in the same call is the format exception (`ApiKey="k` → *Unterminated double-quoted DotEnv value beginning on line 1.*), so handlers around `Deserialize<T>` need both clauses.
 
 ## Pattern 6 - INI: malformed input and document-model rules
 
 The INI reader's dialect is deliberately conservative: `=` is the only delimiter, a header must close on its line with nothing but whitespace or a comment after it, and any other comment is a line of its own. Those produce positioned `IniFormatException`s:
 
-<!-- compile -->
 ```csharp
 using Bodu.Text.Ini;
 using Bodu.Text.Ini.Document;
@@ -203,7 +198,6 @@ catch (IniFormatException ex)
 
 INI has a second source of format exceptions: the **document-model** duplicate policies in <xref:Bodu.Text.Ini.IniDocumentOptions>. The source-order reader reports the file verbatim; it is the normalized document (and therefore both DOMs and the serializer) that decides what a repeated key or section means. The defaults are lenient (`Merge` sections, `LastWins` keys) and the strict values raise the format exception:
 
-<!-- compile -->
 ```csharp
 using Bodu.Text.Ini.Reader;
 
@@ -222,7 +216,6 @@ IniDocument.Parse("[s]\nk=1\n[s]\nj=2\n"u8, IniReaderOptions.Default,
 
 `IniSerializationException` adds a third cause to the two the other formats share - the format's depth limit. INI is two levels deep (section, then key), so a member that would need a third level is rejected, on write as well as on read:
 
-<!-- compile -->
 ```csharp
 public sealed class AppConfig
 {
@@ -238,7 +231,6 @@ public sealed class Server
 }
 ```
 
-<!-- compile -->
 ```csharp
 IniSerializer.Deserialize<AppConfig>("[Server]\nPort=8080\n");
 // → throws IniSerializationException: The INI document does not contain the required key 'Name'.
@@ -250,11 +242,12 @@ IniSerializer.Deserialize<AppConfig>("Name=x\n[Server]\nPort=eighty\n");
 
 A `Server` type that itself held an object-typed member - `public Tls? Tls { get; set; }` - fails at first use with *INI supports only two levels (section then key); the member 'Tls' nests deeper.*, whether or not the member is `null`: the check is on the type's shape, not the instance.
 
+The root type is checked as it is for DotEnv: an INI root is an object or a string-keyed dictionary, so a scalar or collection root throws *INI serialization requires an object root; the type '...' is not supported.* on write and on read. Since 1.3.0 that includes `DateOnly`, `TimeOnly`, the 128-bit and half-precision numbers and `BigInteger`, and their nullable forms, which earlier versions bound as objects through their public properties. Reading into an abstract type, or one with no public parameterless constructor, whether the root or the type of a section, throws *The type '...' cannot be created; reading an INI document into it needs a public parameterless constructor.* rather than the runtime's `MissingMethodException`.
+
 ## Pattern 8 - Catch both families
 
 Because the serializer's read path parses and then binds, a robust handler distinguishes the two and uses the position when there is one:
 
-<!-- compile -->
 ```csharp
 public static AppConfig? TryLoad(string ini, Action<string> report)
 {

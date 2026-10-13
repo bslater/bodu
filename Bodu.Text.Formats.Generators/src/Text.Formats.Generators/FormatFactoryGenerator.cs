@@ -17,10 +17,12 @@ namespace Bodu.Text.Formats.Generators;
 /// <c>DelimitedFactory</c> / <c>IniFactory</c> properties on the partial type.
 /// </summary>
 /// <remarks>
-/// The generated factories map the type's public read/write instance properties in declaration order, honour
-/// <c>[PropertyName]</c> for wire names, skip members annotated <c>[Ignore]</c> (with <c>IgnoreCondition.Always</c>),
-/// and convert scalars with the invariant culture - mirroring the runtime reflection binders so the two paths are
-/// interchangeable.
+/// The generated factories map the public read/write instance properties declared on the type in declaration order,
+/// honour <c>[PropertyName]</c> for wire names, skip members annotated <c>[Ignore]</c> (with
+/// <c>IgnoreCondition.Always</c>), and convert scalars with the invariant culture, mirroring the runtime reflection
+/// binders for the members both map. They differ from those binders where the binders read the options or reflect over
+/// more: the naming policy, inherited, get-only and <c>init</c>-only properties, <c>[PropertyOrder]</c>, case-sensitive
+/// name matching, <c>[Required]</c>, and the scalar types the factories do not support.
 /// </remarks>
 [Generator(LanguageNames.CSharp)]
 public sealed class FormatFactoryGenerator : IIncrementalGenerator

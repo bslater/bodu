@@ -89,7 +89,8 @@ ConfigurationDocument generated = ConfigurationDocument.Parse(
     text,
     ConfigurationParseOptions.Strict);
 
-// EditorConfig-compatible - inline comments disabled, identity key mapping (keys keep their dots), keys lowercased, no preamble.
+// EditorConfig-compatible - inline comments disabled, identity key mapping (keys keep their dots), keys lowercased.
+// The matching resolve preset, ConfigurationResolveOptions.EditorConfigCompatible, leaves the preamble out of the view.
 ConfigurationDocument editorConfig = ConfigurationDocument.Parse(
     text,
     ConfigurationParseOptions.EditorConfigCompatible);
