@@ -397,8 +397,8 @@ public sealed partial class NotableDateDocumentBuilder
     /// recognized kind.
     /// </returns>
     /// <remarks>
-    /// Each attribute is read as the loader reads it, its name matched ignoring case, and written under its schema
-    /// name; a property the loader does not read is ignored, as the loader ignores it.
+    /// Each attribute's name is matched as the loader matches it, ignoring case, and the attribute is written under its
+    /// schema name; a property the loader does not read is ignored, as the loader ignores it.
     /// </remarks>
     private static XElement? BuildRecurrenceElement(JsonObject? recurrenceJson)
     {
@@ -646,8 +646,8 @@ public sealed partial class NotableDateDocumentBuilder
     /// kind.
     /// </returns>
     /// <remarks>
-    /// Each attribute is read as the loader reads it, its name matched ignoring case, and written under its schema
-    /// name; a property the loader does not read is ignored, as the loader ignores it.
+    /// Each attribute's name is matched as the loader matches it, ignoring case, and the attribute is written under its
+    /// schema name; a property the loader does not read is ignored, as the loader ignores it.
     /// </remarks>
     private static XElement? BuildStrategyElement(JsonObject? strategyJson)
     {
