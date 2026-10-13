@@ -51,9 +51,10 @@ namespace Bodu.Extensions.Configuration.Text;
 /// </para>
 /// <para>
 /// File-backed registrations honour the standard <see cref="FileConfigurationSource" /> behaviours (reload-on-change,
-/// optional-file, exception wrapping) and resolve <c>path</c>-relative paths through the supplied or builder-default
-/// <see cref="IFileProvider" />. The convention overload uses the builder's default <see cref="IFileProvider" />; note
-/// that <see cref="IFileProvider" /> implementations such as
+/// optional-file, exception wrapping), resolve a relative <c>path</c> through the supplied or builder-default
+/// <see cref="IFileProvider" />, and, when no provider is supplied, read a rooted <c>path</c> from the file system, as
+/// <c>AddJsonFile</c> does. The convention overload uses the builder's default <see cref="IFileProvider" />; note that
+/// <see cref="IFileProvider" /> implementations such as
 /// <see cref="Microsoft.Extensions.FileProviders.PhysicalFileProvider" /> filter out dot-prefixed files by default -
 /// see the remarks on <see cref="AddTextConfiguration(IConfigurationBuilder, bool, bool)" /> for the workaround
 /// required to surface <c>.boduconfig</c>.
@@ -105,13 +106,18 @@ public static class TextConfigurationExtensions
     /// Adds a Bodu Text Configuration source backed by the file at <paramref name="path" />.
     /// </summary>
     /// <param name="builder">The configuration builder.</param>
-    /// <param name="path">The configuration file path, relative to the builder's file provider.</param>
+    /// <param name="path">The configuration file path, rooted or relative to the builder's file provider.</param>
     /// <param name="targetPath">The optional target path used for glob-anchored resolution.</param>
     /// <param name="optional">When <see langword="true" />, the file is permitted to be missing.</param>
     /// <param name="reloadOnChange">
     /// When <see langword="true" />, the provider reloads the configuration when the underlying file changes.
     /// </param>
     /// <returns>The supplied <paramref name="builder" />, for chaining.</returns>
+    /// <remarks>
+    /// The file is located as <c>AddJsonFile</c> locates it: a rooted path is read from the file system, and any other
+    /// path through the builder's file provider, which is the provider <c>SetFileProvider</c> sets, the base path
+    /// <c>SetBasePath</c> sets, or by default the application's base directory.
+    /// </remarks>
     /// <exception cref="ArgumentNullException"><paramref name="builder" /> is <see langword="null" />.</exception>
     /// <exception cref="ArgumentException">
     /// <paramref name="path" /> is <see langword="null" />, empty, or whitespace.
@@ -134,13 +140,20 @@ public static class TextConfigurationExtensions
     /// The file provider that locates <paramref name="path" />, or <see langword="null" /> to defer to the builder's
     /// default file provider.
     /// </param>
-    /// <param name="path">The configuration file path, relative to <paramref name="provider" />.</param>
+    /// <param name="path">
+    /// The configuration file path, relative to <paramref name="provider" />, or, when no provider is supplied, rooted
+    /// or relative to the builder's file provider.
+    /// </param>
     /// <param name="targetPath">The optional target path used for glob-anchored resolution.</param>
     /// <param name="optional">When <see langword="true" />, the file is permitted to be missing.</param>
     /// <param name="reloadOnChange">
     /// When <see langword="true" />, the provider reloads the configuration when the underlying file changes.
     /// </param>
     /// <returns>The supplied <paramref name="builder" />, for chaining.</returns>
+    /// <remarks>
+    /// With <paramref name="provider" /> set to <see langword="null" />, the file is located as <c>AddJsonFile</c>
+    /// locates it: a rooted path is read from the file system, and any other path through the builder's file provider.
+    /// </remarks>
     /// <exception cref="ArgumentNullException"><paramref name="builder" /> is <see langword="null" />.</exception>
     /// <exception cref="ArgumentException">
     /// <paramref name="path" /> is <see langword="null" />, empty, or whitespace.
@@ -172,6 +185,10 @@ public static class TextConfigurationExtensions
     /// <param name="builder">The configuration builder.</param>
     /// <param name="configureSource">A callback that configures the source.</param>
     /// <returns>The supplied <paramref name="builder" />, for chaining.</returns>
+    /// <remarks>
+    /// The source locates the file as <c>AddJsonFile</c> does, a rooted path included; see
+    /// <see cref="TextConfigurationSource.Build(IConfigurationBuilder)" />.
+    /// </remarks>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="builder" /> or <paramref name="configureSource" /> is <see langword="null" />.
     /// </exception>

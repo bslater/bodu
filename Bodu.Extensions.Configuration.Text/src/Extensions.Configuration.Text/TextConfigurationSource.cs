@@ -76,9 +76,21 @@ public sealed class TextConfigurationSource
     public ConfigurationResolveOptions? ResolveOptions { get; set; }
 
     /// <inheritdoc />
+    /// <remarks>
+    /// The source locates <see cref="FileConfigurationSource.Path" /> as <c>AddJsonFile</c> does: when no
+    /// <see cref="FileConfigurationSource.FileProvider" /> is set, a rooted path is served by a
+    /// <see cref="Microsoft.Extensions.FileProviders.PhysicalFileProvider" /> at the deepest directory on it that
+    /// exists (see <see cref="FileConfigurationSource.ResolveFileProvider" />), and any other path by the builder's
+    /// file provider, which is the provider <c>SetFileProvider</c> sets, the base path <c>SetBasePath</c> sets, or by
+    /// default the application's base directory.
+    /// </remarks>
     public override IConfigurationProvider Build(IConfigurationBuilder builder)
     {
         ThrowHelper.ThrowIfNull(builder);
+
+        // A no-op unless the path is rooted and no file provider was supplied; without it the builder's provider
+        // would look a rooted path up under its own root.
+        ResolveFileProvider();
         this.EnsureDefaults(builder);
         return new TextConfigurationProvider(this);
     }
