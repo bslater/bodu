@@ -275,4 +275,22 @@ public partial class IniSerializerTests
 
         Assert.AreEqual("Port=5\n", text);
     }
+
+    /// <summary>
+    /// Verifies that a type mapping two global keys to one name throws <see cref="IniSerializationException" /> naming
+    /// the type and the name, rather than writing the key twice.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenTwoMembersMapToOneName_ShouldThrowIniSerializationException()
+    {
+        var config = new DuplicateKeyConfig { First = "a", Second = "b" };
+
+        var ex = Assert.ThrowsExactly<IniSerializationException>(() =>
+        {
+            _ = IniSerializer.Serialize(config);
+        });
+
+        Assert.IsTrue(ex.Message.Contains(nameof(DuplicateKeyConfig), StringComparison.Ordinal), ex.Message);
+        Assert.IsTrue(ex.Message.Contains("'X'", StringComparison.Ordinal), ex.Message);
+    }
 }

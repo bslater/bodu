@@ -590,4 +590,21 @@ public partial class DelimitedSerializerTests
         Assert.AreEqual("Grace", people[1].Name);
         Assert.AreEqual(0, people[1].Age);
     }
+
+    /// <summary>
+    /// Verifies that a record type mapping two members to one column throws
+    /// <see cref="DelimitedSerializationException" /> naming the type and the column, rather than binding the column to
+    /// both.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenTwoMembersMapToOneColumn_ShouldThrowDelimitedSerializationException()
+    {
+        var ex = Assert.ThrowsExactly<DelimitedSerializationException>(() =>
+        {
+            _ = DelimitedSerializer.Deserialize<DuplicateColumnRecord>("X\r\na\r\n");
+        });
+
+        Assert.IsTrue(ex.Message.Contains(nameof(DuplicateColumnRecord), StringComparison.Ordinal), ex.Message);
+        Assert.IsTrue(ex.Message.Contains("'X'", StringComparison.Ordinal), ex.Message);
+    }
 }

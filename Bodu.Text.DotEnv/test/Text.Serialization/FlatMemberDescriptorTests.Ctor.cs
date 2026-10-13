@@ -22,4 +22,16 @@ public sealed partial class FlatMemberDescriptorTests
         Assert.IsTrue(descriptor.CanRead);
         Assert.IsTrue(descriptor.CanWrite);
     }
+
+    /// <summary>
+    /// Verifies that a property declared with the C# <see langword="required" /> keyword is described as required, as
+    /// one marked <see cref="RequiredAttribute" /> is.
+    /// </summary>
+    [TestMethod]
+    public void Ctor_WhenPropertyIsDeclaredWithTheRequiredKeyword_ShouldDescribeItAsRequired()
+    {
+        var descriptor = new DescriptorProbe(typeof(RequiredKeywordSample).GetProperty(nameof(RequiredKeywordSample.Count))!);
+
+        Assert.IsTrue(descriptor.Required);
+    }
 }

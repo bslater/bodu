@@ -298,4 +298,66 @@ public partial class IniSerializerTests
         Assert.AreEqual("abc", config.Port);
         Assert.AreEqual(0, ((PortNumberBase)config).Port);
     }
+
+    /// <summary>
+    /// Verifies that a missing global key for a member declared with the C# <see langword="required" /> keyword throws
+    /// <see cref="IniSerializationException" /> naming the key, as a member marked <see cref="RequiredAttribute" />
+    /// does.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenARequiredKeywordKeyIsMissing_ShouldThrowIniSerializationException()
+    {
+        var ex = Assert.ThrowsExactly<IniSerializationException>(() =>
+        {
+            _ = IniSerializer.Deserialize<RequiredKeywordConfig>("Other=1\n[Database]\nHost=x\n");
+        });
+
+        Assert.IsTrue(ex.Message.Contains("'Name'", StringComparison.Ordinal), ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that a missing section for a member declared with the C# <see langword="required" /> keyword throws
+    /// <see cref="IniSerializationException" /> naming the section.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenARequiredKeywordSectionIsMissing_ShouldThrowIniSerializationException()
+    {
+        var ex = Assert.ThrowsExactly<IniSerializationException>(() =>
+        {
+            _ = IniSerializer.Deserialize<RequiredKeywordConfig>("Name=app\n");
+        });
+
+        Assert.IsTrue(ex.Message.Contains("'Database'", StringComparison.Ordinal), ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that a missing key in a section, for a section member declared with the C# <see langword="required" />
+    /// keyword, throws <see cref="IniSerializationException" /> naming the key.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenARequiredKeywordSectionKeyIsMissing_ShouldThrowIniSerializationException()
+    {
+        var ex = Assert.ThrowsExactly<IniSerializationException>(() =>
+        {
+            _ = IniSerializer.Deserialize<RequiredKeywordConfig>("Name=app\n[Database]\nPort=1\n");
+        });
+
+        Assert.IsTrue(ex.Message.Contains("'Host'", StringComparison.Ordinal), ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that a type mapping two global keys to one name throws <see cref="IniSerializationException" /> naming
+    /// the type and the name, rather than binding the key to both.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenTwoMembersMapToOneName_ShouldThrowIniSerializationException()
+    {
+        var ex = Assert.ThrowsExactly<IniSerializationException>(() =>
+        {
+            _ = IniSerializer.Deserialize<DuplicateKeyConfig>("X=a\n");
+        });
+
+        Assert.IsTrue(ex.Message.Contains(nameof(DuplicateKeyConfig), StringComparison.Ordinal), ex.Message);
+        Assert.IsTrue(ex.Message.Contains("'X'", StringComparison.Ordinal), ex.Message);
+    }
 }

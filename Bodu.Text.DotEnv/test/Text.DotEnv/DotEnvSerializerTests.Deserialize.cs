@@ -189,4 +189,36 @@ public partial class DotEnvSerializerTests
         Assert.AreEqual("abc", config.Port);
         Assert.AreEqual(0, ((PortNumberBase)config).Port);
     }
+
+    /// <summary>
+    /// Verifies that a missing key for a member declared with the C# <see langword="required" /> keyword throws
+    /// <see cref="DotEnvSerializationException" /> naming the key, as a member marked
+    /// <see cref="Bodu.Text.Serialization.RequiredAttribute" /> does.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenARequiredKeywordMemberIsMissing_ShouldThrowDotEnvSerializationException()
+    {
+        var ex = Assert.ThrowsExactly<DotEnvSerializationException>(() =>
+        {
+            _ = DotEnvSerializer.Deserialize<RequiredKeywordConfig>("OTHER=1\n");
+        });
+
+        Assert.IsTrue(ex.Message.Contains("HOST", StringComparison.Ordinal), ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that a type mapping two members to one key throws <see cref="DotEnvSerializationException" /> naming the
+    /// type and the key, rather than binding the key to both.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenTwoMembersMapToOneKey_ShouldThrowDotEnvSerializationException()
+    {
+        var ex = Assert.ThrowsExactly<DotEnvSerializationException>(() =>
+        {
+            _ = DotEnvSerializer.Deserialize<DuplicateKeyConfig>("X=a\n");
+        });
+
+        Assert.IsTrue(ex.Message.Contains(nameof(DuplicateKeyConfig), StringComparison.Ordinal), ex.Message);
+        Assert.IsTrue(ex.Message.Contains("'X'", StringComparison.Ordinal), ex.Message);
+    }
 }

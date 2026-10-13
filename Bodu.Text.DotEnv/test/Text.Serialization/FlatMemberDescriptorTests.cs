@@ -41,4 +41,15 @@ public sealed partial class FlatMemberDescriptorTests
         [PropertyName("CUSTOM_KEY")]
         public int Count { get; set; }
     }
+
+    /// <summary>
+    /// A record whose property is declared with the C# <see langword="required" /> keyword.
+    /// </summary>
+    private sealed class RequiredKeywordSample
+    {
+        /// <summary>
+        /// Gets or sets a property the keyword makes required.
+        /// </summary>
+        public required int Count { get; set; }
+    }
 }

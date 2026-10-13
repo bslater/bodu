@@ -176,6 +176,42 @@ public partial class IniSerializerTests
     }
 
     /// <summary>
+    /// A root model whose global key and section member are declared with the C# <see langword="required" /> keyword
+    /// rather than <see cref="RequiredAttribute" />.
+    /// </summary>
+    private sealed class RequiredKeywordConfig
+    {
+        /// <summary>Gets or sets the required server name (a global key).</summary>
+        public required string Name { get; set; }
+
+        /// <summary>Gets or sets the required database section.</summary>
+        public required RequiredKeywordSection Database { get; set; }
+    }
+
+    /// <summary>
+    /// A section model whose key is declared with the C# <see langword="required" /> keyword.
+    /// </summary>
+    private sealed class RequiredKeywordSection
+    {
+        /// <summary>Gets or sets the required host name.</summary>
+        public required string Host { get; set; }
+    }
+
+    /// <summary>
+    /// A root model whose two global keys are both mapped to the name <c>X</c>.
+    /// </summary>
+    private sealed class DuplicateKeyConfig
+    {
+        /// <summary>Gets or sets the first value mapped to <c>X</c>.</summary>
+        [PropertyName("X")]
+        public string? First { get; set; }
+
+        /// <summary>Gets or sets the second value mapped to <c>X</c>.</summary>
+        [PropertyName("X")]
+        public string? Second { get; set; }
+    }
+
+    /// <summary>
     /// A base root model whose text <c>Port</c> global key <see cref="PortNumberHidingConfig" /> hides.
     /// </summary>
     private class PortTextBase

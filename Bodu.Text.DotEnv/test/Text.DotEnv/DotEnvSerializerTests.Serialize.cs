@@ -118,4 +118,40 @@ public partial class DotEnvSerializerTests
 
         Assert.AreEqual("Port=5\n", text);
     }
+
+    /// <summary>
+    /// Verifies that a type mapping two members to one key throws <see cref="DotEnvSerializationException" /> naming the
+    /// type and the key, rather than writing the key twice.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenTwoMembersMapToOneKey_ShouldThrowDotEnvSerializationException()
+    {
+        var config = new DuplicateKeyConfig { First = "a", Second = "b" };
+
+        var ex = Assert.ThrowsExactly<DotEnvSerializationException>(() =>
+        {
+            _ = DotEnvSerializer.Serialize(config);
+        });
+
+        Assert.IsTrue(ex.Message.Contains(nameof(DuplicateKeyConfig), StringComparison.Ordinal), ex.Message);
+        Assert.IsTrue(ex.Message.Contains("'X'", StringComparison.Ordinal), ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that a type whose naming policy maps a member to the key another member names explicitly throws
+    /// <see cref="DotEnvSerializationException" /> naming the key.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenTheNamingPolicyMapsTwoMembersToOneKey_ShouldThrowDotEnvSerializationException()
+    {
+        var options = new DotEnvSerializerOptions(DotEnvSerializerDefaults.Web);
+        var config = new PolicyDuplicateKeyConfig { HostName = "a", Alias = "b" };
+
+        var ex = Assert.ThrowsExactly<DotEnvSerializationException>(() =>
+        {
+            _ = DotEnvSerializer.Serialize(config, options);
+        });
+
+        Assert.IsTrue(ex.Message.Contains("'HOST_NAME'", StringComparison.Ordinal), ex.Message);
+    }
 }

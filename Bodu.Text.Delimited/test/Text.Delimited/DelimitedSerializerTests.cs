@@ -400,6 +400,22 @@ public partial class DelimitedSerializerTests
     }
 
     /// <summary>
+    /// A record POCO whose two properties are both mapped to the column <c>X</c>.
+    /// </summary>
+    public sealed class DuplicateColumnRecord
+    {
+        /// <summary>Gets or sets the first value mapped to <c>X</c>.</summary>
+        /// <value>The first value.</value>
+        [Bodu.Text.Serialization.PropertyName("X")]
+        public string? First { get; set; }
+
+        /// <summary>Gets or sets the second value mapped to <c>X</c>.</summary>
+        /// <value>The second value.</value>
+        [Bodu.Text.Serialization.PropertyName("X")]
+        public string? Second { get; set; }
+    }
+
+    /// <summary>
     /// A record POCO whose every property is excluded with <see cref="Bodu.Text.Serialization.IgnoreAttribute" />.
     /// </summary>
     public sealed class IgnoredRecord

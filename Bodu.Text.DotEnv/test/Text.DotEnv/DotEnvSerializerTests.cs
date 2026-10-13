@@ -205,6 +205,50 @@ public partial class DotEnvSerializerTests
     }
 
     /// <summary>
+    /// A POCO whose member is declared with the C# <see langword="required" /> keyword rather than
+    /// <see cref="RequiredAttribute" />.
+    /// </summary>
+    public sealed class RequiredKeywordConfig
+    {
+        /// <summary>Gets or sets the required host name, remapped to the <c>HOST</c> key.</summary>
+        /// <value>The host.</value>
+        [PropertyName("HOST")]
+        public required string Host { get; set; }
+    }
+
+    /// <summary>
+    /// A POCO whose two members are both mapped to the key <c>X</c>.
+    /// </summary>
+    public sealed class DuplicateKeyConfig
+    {
+        /// <summary>Gets or sets the first value mapped to <c>X</c>.</summary>
+        /// <value>The first value.</value>
+        [PropertyName("X")]
+        public string? First { get; set; }
+
+        /// <summary>Gets or sets the second value mapped to <c>X</c>.</summary>
+        /// <value>The second value.</value>
+        [PropertyName("X")]
+        public string? Second { get; set; }
+    }
+
+    /// <summary>
+    /// A POCO whose member <c>HostName</c> the <see cref="DotEnvSerializerDefaults.Web" /> naming policy maps to
+    /// <c>HOST_NAME</c>, the key another member names explicitly.
+    /// </summary>
+    public sealed class PolicyDuplicateKeyConfig
+    {
+        /// <summary>Gets or sets the host name, mapped to <c>HOST_NAME</c> by the naming policy.</summary>
+        /// <value>The host name.</value>
+        public string? HostName { get; set; }
+
+        /// <summary>Gets or sets an alias mapped explicitly to <c>HOST_NAME</c>.</summary>
+        /// <value>The alias.</value>
+        [PropertyName("HOST_NAME")]
+        public string? Alias { get; set; }
+    }
+
+    /// <summary>
     /// Gets scalar root values, each of which serialization must reject with <see cref="DotEnvSerializationException" /> naming its type.
     /// </summary>
     /// <value>The rows, each a named scalar value and the exception it raises.</value>
