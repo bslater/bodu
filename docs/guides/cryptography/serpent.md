@@ -70,7 +70,7 @@ byte[] ciphertext = alg.Encrypt(plaintext);                          // 64 bytes
 byte[] recovered  = alg.Decrypt(ciphertext);
 ```
 
-`LegalKeySizes` reports 128-256 in 64-bit steps. Because it is a 128-bit-block cipher, `Serpent128Cipher` is *not* accepted by the AEAD transforms - those are written for <xref:Bodu.Security.Cryptography.AesBlockCipher> only - but every classic mode and padding scheme in [Modes, transforms, and factories](cipher-composition-reference.md) applies.
+`LegalKeySizes` reports 128-256 in 64-bit steps. Because it is a 128-bit-block cipher, `Serpent128Cipher` can drive the AEAD transforms in [AEAD modes](aead-modes.md) as well as every classic mode and padding scheme in [Modes, transforms, and factories](cipher-composition-reference.md).
 
 ## Pattern 3 - the wide-block, tweakable variants
 

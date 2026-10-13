@@ -53,7 +53,7 @@ namespace Bodu.Security.Cryptography;
 /// <para>
 /// Only the sequential hashing profile of Skein is implemented. Tree hashing, personalization strings, public-key or
 /// key-derivation identifiers, and nonce modes are not exposed; the corresponding Skein tweak types are reserved for
-/// potential future extension (see <see cref="SkeinTweakType" />).
+/// potential future extension.
 /// </para>
 /// <para>
 /// <strong>When to choose Skein.</strong> Pick the Skein family for interop with code that has standardized on it (the

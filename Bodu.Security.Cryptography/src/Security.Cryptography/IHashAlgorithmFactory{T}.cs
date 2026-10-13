@@ -16,15 +16,16 @@ namespace Bodu.Security.Cryptography;
 /// <para>
 /// This interface decouples the creation and configuration of hash algorithm instances from the logic that consumes
 /// them, enabling reusable, testable, and extensible one-shot hash operations via the
-/// <see cref="HashAlgorithmHelper" /> utility class. Implementations may return newly constructed or pooled algorithm
-/// instances depending on lifecycle management requirements.
+/// <see cref="HashAlgorithmHelper" /> utility class. Each call to <see cref="Create" /> must return a new instance that
+/// the caller owns and disposes: <see cref="HashAlgorithmHelper" /> disposes every instance it creates, and
+/// <see cref="MerkleTree" /> requires a fresh one, so do not return pooled or shared instances.
 /// </para>
 /// <para>
 /// <strong>How to obtain an instance.</strong> Most callers do not implement this interface directly. Use
 /// <see cref="HashAlgorithmFactory.From{T}(System.Func{T})" /> to wrap an algorithm-construction delegate as a
 /// <see cref="DelegateHashAlgorithmFactory{T}" /> - the right pick whenever the algorithm needs configuration (a key, a
 /// round count, a variant flag) at the construction site. Implement <see cref="IHashAlgorithmFactory{T}" /> directly
-/// only when adding instance pooling, telemetry, or other cross-cutting behavior around algorithm creation.
+/// only when adding telemetry or other cross-cutting behavior around algorithm creation.
 /// </para>
 /// <para>
 /// <strong>How it is consumed.</strong> Pass the factory to the static helpers on <see cref="HashAlgorithmHelper" />,

@@ -12,12 +12,12 @@ all known distinguishing attacks and has a well-studied, wide peer-reviewed secu
 
 ![ASCON sponge construction - 320-bit state, Ascon-p permutation, absorb and squeeze phases](../../images/diagrams/ascon-sponge.svg)
 
-**Bodu.Security.Cryptography** ships all four NIST-defined algorithm types:
+**Bodu.Security.Cryptography** ships the four algorithms SP 800-232 defines, plus ASCON-HASHA256, the round-reduced hash from the Ascon v1.2 submission that SP 800-232 did not adopt - five types in all:
 
 | Type | Algorithm name | Category | What it does |
 |---|---|---|---|
 | <xref:Bodu.Security.Cryptography.AsconHash256> | `ASCON-HASH256` | Hash | Fixed-length 256-bit digest. Conservative 12-round absorption. |
-| <xref:Bodu.Security.Cryptography.AsconHashA256> | `ASCON-HASHA256` | Hash | Fixed-length 256-bit digest. 8-round absorption for higher throughput. |
+| <xref:Bodu.Security.Cryptography.AsconHashA256> | `ASCON-HASHA256` | Hash | Fixed-length 256-bit digest. 8-round absorption for higher throughput. Not part of SP 800-232. |
 | <xref:Bodu.Security.Cryptography.AsconXof128> | `ASCON-XOF128` | XOF | Variable-length output - squeeze any number of bytes from a single absorbed message. |
 | <xref:Bodu.Security.Cryptography.AsconCxof128> | `ASCON-CXOF128` | XOF | Variable-length output with a customization string - separates output domains from the same primitive. |
 | <xref:Bodu.Security.Cryptography.AsconAead128> | `ASCON-AEAD128` | AEAD | Authenticated encryption - 128-bit key, 128-bit nonce, 128-bit authentication tag. |
@@ -27,14 +27,14 @@ all known distinguishing attacks and has a well-studied, wide peer-reviewed secu
 | If you need… | Reach for | Why |
 |---|---|---|
 | A fixed-length 256-bit digest (conservative) | `AsconHash256` | 12-round absorption throughout - maximum security margin. |
-| A fixed-length 256-bit digest (throughput) | `AsconHashA256` | 8-round absorption - faster on large inputs; squeeze phase is unchanged. |
+| A fixed-length 256-bit digest (throughput) | `AsconHashA256` | 8-round absorption and squeezing - faster on large inputs; the non-standard Ascon v1.2 variant, not SP 800-232. |
 | An output of arbitrary length - key derivation, stream seed | `AsconXof128` | Squeeze as many bytes as needed from one absorbed input. |
 | Multiple independent output functions from one primitive | `AsconCxof128` | A customization string domain-separates the output; same primitive, different contexts. |
 | Encrypt-and-authenticate a message | `AsconAead128` | Sponge-based AEAD with a 128-bit key and tag; no separate MAC step required. |
 
 When in doubt: reach for `AsconHash256` for hashing and `AsconAead128` for authenticated encryption.
 
-## One permutation, four roles
+## One permutation, three roles
 
 The defining feature of the family is that hashing, extendable output, and authenticated encryption are all built from the **same** sponge - a 320-bit state and the Ascon-p permutation - rather than from three unrelated primitives. The role is determined entirely by how the sponge is initialised and which phases (absorb, squeeze, key injection, domain separation) are applied:
 
@@ -44,7 +44,7 @@ The defining feature of the family is that hashing, extendable output, and authe
 | **XOF** | `AsconXof128`, `AsconCxof128` | Absorb the message, then squeeze an arbitrary number of output bytes. |
 | **AEAD** | `AsconAead128` | Inject key and nonce, absorb AAD, encrypt by XORing the rate, then squeeze a tag. |
 
-The practical payoff is a single, small implementation surface: one permutation to audit, one state layout, one round function. A device that already ships ASCON for authenticated encryption gets hashing and key derivation for free. NIST SP 800-232 specifies all of these under one umbrella, so they share a common security analysis.
+The practical payoff is a single, small implementation surface: one permutation to audit, one state layout, one round function. A device that already ships ASCON for authenticated encryption gets hashing and key derivation for free. NIST SP 800-232 specifies all of these except ASCON-HASHA256 under one umbrella, so they share a common security analysis.
 
 ## The shared permutation
 
@@ -58,10 +58,11 @@ identical rounds (up to 12) to the 320-bit state. Each round is:
 3. **Linear diffusion** - each word is XORed with two rotated copies of itself using
    word-specific rotation constants, spreading any change across the full state.
 
-The round count is the throughput / margin trade-off. Absorption phases use 12 rounds
-(`AsconHash256`) or 8 rounds (`AsconHashA256`, `AsconXof128`, `AsconCxof128`, `AsconAead128`).
-Squeeze phases and AEAD finalization always use 12 rounds, so the output step carries the full
-security margin in every variant.
+The round count is the throughput / margin trade-off. `AsconHash256`, `AsconXof128`, and
+`AsconCxof128` use 12 rounds throughout. `AsconHashA256` uses 8 rounds to absorb and between
+squeezed output blocks, and 12 only for the transition from absorbing to squeezing.
+`AsconAead128` uses 12 rounds for initialization and finalization and 8 for the associated-data
+and message blocks.
 
 ## Quick-start examples
 

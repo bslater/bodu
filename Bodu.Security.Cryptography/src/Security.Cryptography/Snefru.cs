@@ -13,7 +13,8 @@ namespace Bodu.Security.Cryptography;
 
 /// <summary>
 /// Base class for the <c>Snefru</c> family of unkeyed hash functions designed by Ralph Merkle, implementing the core
-/// compression routine using S-box substitutions and word rotations over 512-bit blocks.
+/// compression routine using S-box substitutions and word rotations over a 512-bit buffer: the running hash followed by
+/// a 48-byte (Snefru-128) or 32-byte (Snefru-256) message block.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -150,7 +151,7 @@ public abstract partial class Snefru
     /// The final block of unprocessed input, typically containing fewer than <c>BlockSize</c> bytes.
     /// </param>
     /// <param name="messageLength">
-    /// The total number of bytes processed prior to this block (excluding the current partial block).
+    /// The total number of message bytes consumed, including the bytes in <paramref name="block" />.
     /// </param>
     /// <returns>
     /// A padded byte array of exactly <c>2 × BlockSize</c> bytes, containing the input block followed by zeros and an
@@ -175,10 +176,10 @@ public abstract partial class Snefru
     }
 
     /// <summary>
-    /// Transforms a single 512-bit block using Snefru S-box and rotation rounds. Updates internal state via XOR with
-    /// permuted buffer values.
+    /// Transforms a single message block using Snefru S-box and rotation rounds over the 512-bit buffer formed by the
+    /// running hash and the block. Updates internal state via XOR with permuted buffer values.
     /// </summary>
-    /// <param name="block">The 64-byte input block to hash.</param>
+    /// <param name="block">The message block to hash: 48 bytes for Snefru-128, 32 bytes for Snefru-256.</param>
     /// <remarks>
     /// The method performs 8 rounds, each consisting of 4 shifts and S-box applications, to mix input entropy into the
     /// state.

@@ -46,7 +46,7 @@ PKCS7 round-trips cleanly for any plaintext length, including zero.
 
 **Use for:** plaintexts that already carry their own length (a length prefix, a terminator, or a framed binary record) and are produced with a deterministic shape.
 
-Zero padding appends `0x00` bytes until the plaintext reaches a block boundary. It does nothing when the plaintext is already block-aligned. The problem with unpadding is that `0x00` is a perfectly valid plaintext byte - `Unpad` strips trailing zeros, and it cannot tell whether those zeros were padding or part of the real message.
+Zero padding appends `0x00` bytes until the plaintext reaches a block boundary. It does nothing when the plaintext is already block-aligned. The problem with unpadding is that `0x00` is a perfectly valid plaintext byte, so no scheme could tell whether trailing zeros were padding or part of the real message. `Unpad` therefore returns the data unchanged, zeros included; strip them using the length the application recorded.
 
 ```csharp
 using var alg = new Threefish256
@@ -109,7 +109,7 @@ using var alg = new Threefish256
 
 ## ISO/IEC 7816-4 - bit padding (one-and-zeros)
 
-**Use for:** smart-card protocols and crypto constructions that require the 7816-4 shape (for example CMAC, SHA-3/Keccak). Access this mode through the extended <xref:Bodu.Security.Cryptography.PaddingModeKind> enum, which is not part of the framework `PaddingMode` surface.
+**Use for:** smart-card protocols and crypto constructions that require the 7816-4 shape (for example CMAC). Access this mode through the extended <xref:Bodu.Security.Cryptography.PaddingModeKind> enum, which is not part of the framework `PaddingMode` surface.
 
 ISO/IEC 7816-4 appends a single `0x80` byte followed by `0x00` bytes out to the next block boundary. When the plaintext is already block-aligned, a full extra block of padding is appended. `Unpad` scans the final block in constant time for the rightmost `0x80`: everything after it must be `0x00`, and the byte itself marks the end of the plaintext.
 
@@ -120,13 +120,13 @@ byte[] padded   = bitPadding.Pad(plaintext, blockSize: 256);    // block size in
 byte[] unpadded = bitPadding.Unpad(padded, blockSize: 256);
 ```
 
-## None - only for block-aligned or stream modes
+## None - only for block-aligned input
 
-**Use for:** stream-shaped modes (CTR, CFB, OFB) that don't need padding, or when you have already padded the plaintext in your own code and want the cipher to leave it alone.
+**Use for:** plaintext that is already a whole number of blocks, for example because you have padded it in your own code and want the cipher to leave it alone. Through a `SymmetricAlgorithm` wrapper this holds for every mode, the stream-shaped CTR, CFB, and OFB included: the wrapper's transform passes the final block through the padding strategy, and `None` accepts only block-aligned input.
 
 <!-- compile -->
 ```csharp
-// Stream-shaped mode: ciphertext length == plaintext length.
+// No expansion: ciphertext length == plaintext length.
 using var alg = new Threefish256
 {
     BlockMode = CipherModeKind.CTR,
@@ -136,12 +136,12 @@ alg.GenerateKey();
 alg.GenerateIV();
 alg.GenerateTweak();
 
-byte[] plaintext  = new byte[100];     // any length is fine
-byte[] ciphertext = alg.Encrypt(plaintext);    // 100 bytes out
+byte[] plaintext  = new byte[96];      // three 32-byte blocks: None needs block-aligned input
+byte[] ciphertext = alg.Encrypt(plaintext);    // 96 bytes out
 byte[] recovered  = alg.Decrypt(ciphertext);
 ```
 
-`PaddingMode.None` combined with a block-oriented mode (CBC, ECB) and a plaintext that isn't a multiple of the block size will throw <xref:System.Security.Cryptography.CryptographicException> during encryption. Don't use the two together unless you know your plaintext is block-aligned.
+With `PaddingMode.None`, a plaintext that isn't a multiple of the block size throws <xref:System.ArgumentException> during encryption, in every mode, CTR, CFB, and OFB included. Don't use `None` unless you know your plaintext is block-aligned. To encrypt an arbitrary length in CTR without expansion, drive <xref:Bodu.Security.Cryptography.CtrModeTransform> directly, which accepts any length (see [Cipher block modes](cipher-modes.md#ctr---parallel-seekable-stream-shaped)).
 
 ## Choosing - quick guide
 
@@ -149,8 +149,8 @@ byte[] recovered  = alg.Decrypt(ciphertext);
 |---|---|---|---|
 | Arbitrary bytes | CBC, ECB | **PKCS7** | Plaintext + 1-block bytes |
 | Framed (length-prefixed / terminated) | CBC, ECB | **Zeros** or **PKCS7** | ≥ plaintext, to next block boundary |
-| Any length | CTR, CFB, OFB | **None** | Exactly plaintext length |
-| Already block-aligned | CBC, ECB | **None** (if sure) | Exactly plaintext length |
+| Any length, no expansion | CTR, through `CtrModeTransform` directly | no padding strategy | Exactly plaintext length |
+| Already block-aligned | Any mode | **None** (if sure) | Exactly plaintext length |
 | Interop with ANSI X.923 spec | CBC, ECB | **ANSIX923** | Plaintext + 1-block bytes |
 | Interop with legacy ISO 10126 ciphertext | CBC, ECB | **ISO10126** | Plaintext + 1-block bytes |
 | Smart-card / CMAC / bit-oriented protocols | CBC, ECB | **ISO7816_4** (via `PaddingModeKind`) | Plaintext + 1-block bytes |

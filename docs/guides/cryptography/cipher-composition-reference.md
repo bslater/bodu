@@ -25,7 +25,8 @@ This is the reference for how a block cipher becomes an encryptor in `Bodu.Secur
 | `OCB` | 4096 | **No** - `NotSupportedException` | <xref:Bodu.Security.Cryptography.OcbModeTransform> (AEAD) | 16-byte IV, first 12 used | any | n/a |
 | `EAX` | 8192 | **No** - `NotSupportedException` | <xref:Bodu.Security.Cryptography.EaxModeTransform> (AEAD) | 16-byte nonce | any | n/a |
 | `SIV` | 16384 | **No** - `NotSupportedException` | <xref:Bodu.Security.Cryptography.SivModeTransform> (AEAD) | ignored | any | n/a |
-| *(no member)* | - | - | <xref:Bodu.Security.Cryptography.GcmModeTransform>, <xref:Bodu.Security.Cryptography.GcmSivModeTransform>, <xref:Bodu.Security.Cryptography.CcmModeTransform> (AEAD) | 12-byte nonce | any | n/a |
+| *(no member)* | - | - | <xref:Bodu.Security.Cryptography.GcmModeTransform> (AEAD) | 12-byte nonce | any | n/a |
+| *(no member)* | - | - | <xref:Bodu.Security.Cryptography.GcmSivModeTransform>, <xref:Bodu.Security.Cryptography.CcmModeTransform> (AEAD) | 16-byte IV, first 12 used | any | n/a |
 
 Two consequences worth stating plainly:
 
@@ -34,7 +35,7 @@ Two consequences worth stating plainly:
 
 ### `BlockMode` and the inherited `Mode`
 
-<xref:Bodu.Security.Cryptography.ExtendedSymmetricAlgorithm> keeps `BlockMode` and the BCL `Mode` in sync where a value exists in both enums (`CBC`, `ECB`, `OFB`, `CFB`, `CTS`). Values with no `CipherMode` equivalent leave `Mode` untouched, so after `BlockMode = CipherModeKind.CTR` the inherited property still reports the previous value. Read `BlockMode`, not `Mode`, to know what a Bodu wrapper will do. The tweakable wrappers (<xref:Bodu.Security.Cryptography.Threefish256> and siblings, <xref:Bodu.Security.Cryptography.Serpent256> and siblings) declare their own `BlockMode` on <xref:Bodu.Security.Cryptography.TweakableSymmetricAlgorithm>-derived bases and do not mirror it into `Mode` at all.
+On <xref:Bodu.Security.Cryptography.ExtendedSymmetricAlgorithm>, assigning `BlockMode` updates the BCL `Mode` wherever a value exists in both enums (`CBC`, `ECB`, `OFB`, `CFB`, `CTS`), so after `BlockMode = CipherModeKind.OFB` the inherited property reports `OFB`. The other direction is narrower: the BCL `Mode` setter accepts only `CBC`, `ECB`, and `CFB` and throws `CryptographicException` for any other value, `OFB` and `CTS` included, so select OFB and CTR through `BlockMode`. Values with no `CipherMode` equivalent leave `Mode` untouched, so after `BlockMode = CipherModeKind.CTR` the inherited property still reports the previous value. Read `BlockMode`, not `Mode`, to know what a Bodu wrapper will do. The tweakable wrappers (<xref:Bodu.Security.Cryptography.Threefish256> and siblings, <xref:Bodu.Security.Cryptography.Serpent256> and siblings) declare their own `BlockMode` on <xref:Bodu.Security.Cryptography.TweakableSymmetricAlgorithm>-derived bases and do not mirror it into `Mode` at all.
 
 ## Pattern 1 - the five wrapper modes
 
@@ -130,7 +131,7 @@ byte[] key = Convert.FromHexString("000102030405060708090a0b0c0d0e0f");
 byte[] iv  = Convert.FromHexString("101112131415161718191a1b1c1d1e1f");
 byte[] plaintext = "composition reference: 37 bytes long!!"u8.ToArray();
 
-// CTS (CS3 / IEEE 1619 order): no padding, ciphertext length == plaintext length, input >= one block.
+// CTS (CS2 order): no padding, ciphertext length == plaintext length, input >= one block.
 using IBlockCipher cipher = new AesBlockCipher(key);
 using var cts = new CtsModeTransform(cipher, iv);
 byte[] ciphertext = new byte[plaintext.Length];

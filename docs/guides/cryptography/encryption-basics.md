@@ -6,7 +6,7 @@ title: Encryption basics
 
 This page introduces the mental model that every cipher in the library follows. If you know `System.Security.Cryptography.SymmetricAlgorithm` from the BCL, most of this will feel familiar - with three twists:
 
-1. **`BlockMode`** replaces `Mode`. The inherited `Mode` property (type <xref:System.Security.Cryptography.CipherMode>) only knows about the modes the BCL defined. Bodu ciphers expose a new `BlockMode` property of type <xref:Bodu.Security.Cryptography.CipherModeKind>, which adds `CTR`, `XTS`, and friends. *Set `BlockMode`, not `Mode`.*
+1. **`BlockMode`** replaces `Mode`. The inherited `Mode` property (type <xref:System.Security.Cryptography.CipherMode>) only knows about the modes the BCL defined. Bodu ciphers expose a new `BlockMode` property of type <xref:Bodu.Security.Cryptography.CipherModeKind>, which adds `CTR` (the enum also names `CTS`, `XTS`, and the AEAD modes, which ship only as direct transforms). *Set `BlockMode`, not `Mode`.*
 2. **Tweak** is a first-class input for Threefish. Threefish is a *tweakable* block cipher; each call is parameterized by a key, an IV, **and** a 128-bit tweak that acts as a domain-separation label.
 3. **Key / IV / Tweak are lazily generated.** If you never set them, they are materialized on first read from a cryptographically secure RNG. Read the property, or call `GenerateKey()` / `GenerateIV()` / `GenerateTweak()` explicitly.
 
@@ -14,12 +14,14 @@ The <xref:Bodu.Security.Cryptography.CipherModeKind> enum is a superset of the B
 
 ## Two padding properties, kept in sync
 
-Every block-cipher wrapper carries **two** padding surfaces that always agree:
+The block-cipher wrappers built on <xref:Bodu.Security.Cryptography.ExtendedSymmetricAlgorithm> (Skipjack, Blowfish, Camellia, Twofish, and Serpent128) carry **two** padding surfaces that always agree:
 
 - the inherited <xref:System.Security.Cryptography.PaddingMode>-typed `Padding` (so the cipher plugs into `CryptoStream` and any BCL-shaped code); and
 - a `BlockPadding` of type <xref:Bodu.Security.Cryptography.PaddingModeKind>, the extended enum that adds ISO/IEC 7816-4 bit padding on top of the framework values.
 
 Assigning either one updates the other whenever the value has a counterpart: setting `Padding = PaddingMode.PKCS7` sets `BlockPadding` to `PaddingModeKind.PKCS7`, and the reverse holds. The single asymmetry is the Bodu-only `PaddingModeKind.ISO7816_4`, which has no `PaddingMode` equivalent - assigning it leaves the inherited `Padding` untouched. Use whichever property reads more naturally at the call site; the samples in these guides use the BCL `Padding` because it is the name most readers already know.
+
+The tweakable wrappers (the Threefish family, and Serpent256 / Serpent512 / Serpent1024) derive from <xref:Bodu.Security.Cryptography.TweakableSymmetricAlgorithm> instead. They have their own `BlockMode` but only the BCL `Padding`, so `BlockPadding` and ISO/IEC 7816-4 padding are not available on them.
 
 ## Anatomy of an encryption
 
@@ -150,11 +152,12 @@ using var alg = new Threefish256();
 
 ## When to prefer the BCL over a Bodu cipher
 
-These wrappers exist to cover algorithms the BCL does not ship - Threefish, Camellia, Twofish, Serpent, Skipjack, Blowfish - and to expose the modes (`CTR`, `XTS`) and padding (`ISO7816_4`) the framework enums omit. They do **not** re-implement AES: the only AES surface here is <xref:Bodu.Security.Cryptography.AesBlockCipher>, a thin <xref:Bodu.Security.Cryptography.IBlockCipher> adapter over the BCL `Aes` engine, provided so AES can drive the AEAD mode transforms.
+These wrappers exist to cover algorithms the BCL does not ship - Threefish, Camellia, Twofish, Serpent, Skipjack, Blowfish - and to expose the `CTR` mode and the `ISO7816_4` padding the framework enums omit (`CTS` and `XTS` ship as direct transforms). They do **not** re-implement AES: the only AES surface here is <xref:Bodu.Security.Cryptography.AesBlockCipher>, a thin <xref:Bodu.Security.Cryptography.IBlockCipher> adapter over the BCL `Aes` engine, provided so AES can drive the AEAD mode transforms.
 
 | Want… | Reach for |
 |---|---|
-| AES in ECB / CBC / CTR / CFB | the BCL `Aes` directly - it is hardware-accelerated on AES-NI CPUs |
+| AES in ECB / CBC / CFB | the BCL `Aes` directly - it is hardware-accelerated on AES-NI CPUs |
+| AES in CTR | <xref:Bodu.Security.Cryptography.AesBlockCipher> + <xref:Bodu.Security.Cryptography.CtrModeTransform> - the BCL `CipherMode` has no CTR value |
 | AES-GCM / AES-CCM | the BCL `AesGcm` / `AesCcm`, or `AesBlockCipher` + the Bodu AEAD transforms for OCB / EAX / SIV / GCM-SIV |
 | A non-AES block cipher | the Bodu `SymmetricAlgorithm` wrapper for that cipher |
 | A counter-mode or tweakable cipher | a Bodu wrapper with `BlockMode = CTR`, or Threefish for tweak support |

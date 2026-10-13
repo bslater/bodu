@@ -160,9 +160,6 @@
   <data name="Crypt_Invalid_HashSize" xml:space="preserve">
     <value>Invalid hash size: {0}. Valid sizes are: {1}.</value>
   </data>
-  <data name="Crypt_Invalid_HashSizePositiveMultipleOf" xml:space="preserve">
-    <value>Invalid hash size: The hash size must be a positive multiple of {0} bytes.</value>
-  </data>
   <data name="Crypt_Invalid_IVRequiredForMode" xml:space="preserve">
     <value>The cipher mode specified requires that an initialization vector (IV) be used.</value>
   </data>
@@ -201,6 +198,9 @@
   </data>
   <data name="Crypt_Invalid_PartialBufferOverlap" xml:space="preserve">
     <value>The input and output buffers partially overlap. Cryptographic transforms support only exact in-place transformation (identical start and length) or fully disjoint buffers.</value>
+  </data>
+  <data name="Crypt_Invalid_PositiveMultipleOf" xml:space="preserve">
+    <value>The value of '{0}' must be a positive multiple of {1}.</value>
   </data>
   <data name="Crypt_Invalid_PropertyValue" xml:space="preserve">
     <value>The specified value for '{0}' is not supported by this algorithm.</value>

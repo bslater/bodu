@@ -19,7 +19,7 @@ namespace Bodu.Security.Cryptography;
 /// of the block size), CTS behaves identically to CBC with no stealing.
 /// </para>
 /// <para>
-/// The CTS steal algorithm (CS3 / IEEE 1619 variant):
+/// The CTS steal algorithm (the CS2 variant of the NIST SP 800-38A Addendum), applied when the final block is partial:
 /// <list type="bullet">
 /// <item>
 /// <description>All complete blocks except the last two are processed normally in CBC mode.</description>
@@ -48,8 +48,9 @@ namespace Bodu.Security.Cryptography;
 /// block-aligned - typical in fixed-size record formats, network frames with strict size budgets, and on-disk layouts
 /// where adding padding bytes is impossible. CTS shares CBC's lack of authentication and its sequential nature; for new
 /// general-purpose encryption an AEAD mode (<see cref="GcmModeTransform" />, <see cref="EaxModeTransform" />) is
-/// preferable. The variant implemented here is CS3 / IEEE 1619 (the order used by NIST SP 800-38A Addendum and most
-/// modern interop).
+/// preferable. The variant implemented here is CS2 of the NIST SP 800-38A Addendum: the final two ciphertext blocks are
+/// swapped only when the final block is partial, so block-aligned input is plain CBC. CS3 swaps them for every input of
+/// two or more blocks, so for block-aligned input its output differs from this transform's.
 /// </para>
 /// </remarks>
 /// <example>
@@ -58,7 +59,7 @@ namespace Bodu.Security.Cryptography;
 /// using System.Security.Cryptography;
 /// using Bodu.Security.Cryptography;
 ///
-/// // Most callers should set SymmetricAlgorithm.Mode = CipherBlockMode.CTS instead of using this directly.
+/// // CTS is available only as this direct transform; the SymmetricAlgorithm wrappers' BlockMode cannot build it.
 /// using IBlockCipher cipher = new AesBlockCipher(key);
 /// byte[] iv = RandomNumberGenerator.GetBytes(cipher.BlockSize / 8);
 /// IBlockCipherModeTransform cts = new CtsModeTransform(cipher, iv);
@@ -298,7 +299,7 @@ public sealed class CtsModeTransform
         // Final partial block: P_n (tailBytes bytes).
         ReadOnlySpan<byte> tail = input.Slice(bodyLength + blockSize, tailBytes);
 
-        // Build the CBC-chained final block: (P_n || 0^(blockSize - tailBytes)) XOR E. Standard CBC-CS3
+        // Build the CBC-chained final block: (P_n || 0^(blockSize - tailBytes)) XOR E. Standard CBC-CS2
         // still chains the zero-padded final plaintext block against the penultimate ciphertext block E
         // before the raw encryption; the high (blockSize - tailBytes) bytes reduce to E[tailBytes..] and
         // are recovered from the truncated block on decrypt.

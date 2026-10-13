@@ -353,7 +353,7 @@ public abstract class AsconXof<T>
     /// </summary>
     /// <remarks>
     /// Derived classes (specifically <see cref="AsconCxof128" />) call this to close the customization phase before
-    /// injecting a domain-separation constant.
+    /// message absorption begins.
     /// </remarks>
     protected void FinalizeAbsorptionPhase()
     {

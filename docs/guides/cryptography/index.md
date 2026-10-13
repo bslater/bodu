@@ -161,7 +161,7 @@ Raw, confidentiality-only XOR keystream ciphers - **no authentication**; pair wi
 
 <div class="bodu-card">
   <h3><a href="cubehash.md">Using CubeHash</a></h3>
-  <p>SHA-3 finalist with tunable rounds and block size.</p>
+  <p>Second-round SHA-3 candidate with tunable rounds and block size.</p>
 </div>
 
 <div class="bodu-card">
@@ -200,7 +200,7 @@ The remaining digests have their own walk-throughs too - [BLAKE2 / BLAKE3](blake
 
 <div class="bodu-card">
   <h3><a href="ascon.md">ASCON overview</a></h3>
-  <p>All five NIST SP 800-232 types - Hash256, HashA256, XOF128, CXOF128, AEAD128 - with selection guidance.</p>
+  <p>The four NIST SP 800-232 types - Hash256, XOF128, CXOF128, AEAD128 - plus the non-standard HashA256, with selection guidance.</p>
 </div>
 
 <div class="bodu-card">

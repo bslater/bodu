@@ -49,8 +49,9 @@ namespace Bodu.Security.Cryptography;
 /// <para>
 /// <strong>When to choose CubeHash.</strong> Pick CubeHash for academic study, cryptographic competition
 /// reproducibility, or interop with code that has settled on a specific CubeHash parameterization. The defaults
-/// (CubeHash 16/32/+160/512) match the SHA-3 competition submission. For new general-purpose cryptographic hashing
-/// prefer SHA-2, SHA-3, or <see cref="Blake2b" />.
+/// (CubeHash16+16/32+32-512) are faster than the SHA-3 round 2 submission (CubeHash160+16/32+160-512); set
+/// <see cref="InitializationRounds" /> and <see cref="FinalizationRounds" /> to 160 to reproduce its test vectors. For
+/// new general-purpose cryptographic hashing prefer SHA-2, SHA-3, or <see cref="Blake2b" />.
 /// </para>
 /// </remarks>
 /// <example>
@@ -486,9 +487,7 @@ public sealed class CubeHash
     /// <paramref name="ibStart" /> and <paramref name="cbSize" /> specify a range that exceeds the length of
     /// <paramref name="array" />.
     /// </exception>
-    /// <exception cref="CryptographicUnexpectedOperationException">
-    /// The hash algorithm has already been finalized and cannot accept more input data.
-    /// </exception>
+    /// <exception cref="ObjectDisposedException">The algorithm instance has been disposed.</exception>
     protected override void HashCore(byte[] array, int ibStart, int cbSize)
     {
         ThrowHelper.ThrowIfNull(array);
@@ -502,9 +501,7 @@ public sealed class CubeHash
     /// hashing algorithm. This method updates the internal hash state accordingly by consuming the entire input span.
     /// </summary>
     /// <param name="source">The input byte span containing the data to hash.</param>
-    /// <exception cref="CryptographicUnexpectedOperationException">
-    /// The hash algorithm has already been finalized and cannot accept more input data.
-    /// </exception>
+    /// <exception cref="ObjectDisposedException">The algorithm instance has been disposed.</exception>
     protected override void HashCore(ReadOnlySpan<byte> source)
     {
         ThrowIfDisposed();
@@ -554,9 +551,7 @@ public sealed class CubeHash
     /// A byte array containing the computed hash value. Its length is <see cref="HashAlgorithm.HashSize" /> divided by
     /// 8.
     /// </returns>
-    /// <exception cref="CryptographicUnexpectedOperationException">
-    /// Thrown when the hash algorithm has been disposed or has produced an unexpected finalization state.
-    /// </exception>
+    /// <exception cref="ObjectDisposedException">The algorithm instance has been disposed.</exception>
     protected override byte[] HashFinal()
     {
         ThrowIfDisposed();

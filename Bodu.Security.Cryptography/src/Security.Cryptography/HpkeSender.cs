@@ -195,6 +195,11 @@ public sealed class HpkeSender
     /// <returns>The ciphertext followed by the authentication tag.</returns>
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
     /// <exception cref="NotSupportedException">The suite is export-only.</exception>
+    /// <exception cref="PlatformNotSupportedException">
+    /// The suite's AEAD is ChaCha20Poly1305 and the platform's
+    /// <see cref="System.Security.Cryptography.ChaCha20Poly1305" /> is not supported (<see cref="System.Security.Cryptography.ChaCha20Poly1305.IsSupported" />
+    /// is <see langword="false" />).
+    /// </exception>
     /// <exception cref="InvalidOperationException">The message sequence number has reached its maximum.</exception>
     public byte[] Seal(ReadOnlySpan<byte> associatedData, ReadOnlySpan<byte> plaintext)
     {

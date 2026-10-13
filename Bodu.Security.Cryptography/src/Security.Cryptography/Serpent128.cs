@@ -71,7 +71,7 @@ namespace Bodu.Security.Cryptography;
 /// using Bodu.Security.Cryptography.Extensions;
 ///
 /// using var serpent = new Serpent128();
-/// serpent.GenerateKey(); // 256-bit by default
+/// serpent.GenerateKey(); // 128-bit by default
 /// serpent.GenerateIV();
 /// byte[] ciphertext = serpent.Encrypt(plaintext);
 /// byte[] roundTrip = serpent.Decrypt(ciphertext);

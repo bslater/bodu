@@ -7,9 +7,9 @@
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Computes a hash using the <c>ASCON-HASHA256</c> cryptographic hash algorithm as defined in NIST SP 800-232. Produces
-/// a 256-bit (32-byte) digest using a reduced-round Ascon-p permutation during absorption over a 320-bit sponge state.
-/// This class cannot be inherited.
+/// Computes a hash using the <c>ASCON-HASHA256</c> cryptographic hash algorithm, the round-reduced Hasha variant of the
+/// Ascon v1.2 submission. Produces a 256-bit (32-byte) digest using a reduced-round Ascon-p permutation over a 320-bit
+/// sponge state. This class cannot be inherited.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -20,6 +20,12 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <para>
 /// For the highest security margin, use <see cref="AsconHash256" />, which applies Ascon-p12 at every phase.
+/// </para>
+/// <para>
+/// <strong>Standard status.</strong> NIST SP 800-232 standardizes ASCON-HASH256, not this variant: ASCON-HASHA256 comes
+/// from the Ascon v1.2 lightweight-cryptography submission, which SP 800-232 did not adopt. Its initial state and
+/// digests match the ascon-c reference implementation. Where a standardized algorithm is required, use
+/// <see cref="AsconHash256" />.
 /// </para>
 /// <para>
 /// <strong>Parameters at a glance.</strong>
@@ -37,13 +43,13 @@ namespace Bodu.Security.Cryptography;
 /// </description>
 /// </item>
 /// <item>
-/// <description>Specification: NIST SP 800-232 (ASCON family).</description>
+/// <description>Specification: the Ascon v1.2 submission (Hasha); not part of NIST SP 800-232.</description>
 /// </item>
 /// </list>
 /// <para>
-/// <strong>When to choose ASCON-HASHA256.</strong> Pick this when ASCON-family interop is required and message
-/// throughput matters more than the extra round-count margin of <see cref="AsconHash256" /> - typical for IoT gateways
-/// and lightweight protocols that hash sustained streams of telemetry. For maximum margin use
+/// <strong>When to choose ASCON-HASHA256.</strong> Pick this when interop with the Ascon v1.2 Hasha variant is required
+/// and message throughput matters more than the extra round-count margin of <see cref="AsconHash256" /> - typical for
+/// IoT gateways and lightweight protocols that hash sustained streams of telemetry. For maximum margin use
 /// <see cref="AsconHash256" />; for non-ASCON throughput-sensitive hashing on commodity hardware <see cref="Blake3" />
 /// is faster still.
 /// </para>
@@ -56,12 +62,11 @@ namespace Bodu.Security.Cryptography;
 ///]]>
 /// </code>
 /// </example>
-/// <seealso cref="AsconHash256"/> <seealso href="https://doi.org/10.6028/NIST.SP.800-232">NIST SP 800-232 (ASCON)
-/// </seealso>
+/// <seealso cref="AsconHash256"/>
 public sealed class AsconHashA256
     : AsconHash
 {
-    /// <summary>The first word of the pre-computed initial state for ASCON-HASHA256 (NIST SP 800-232).</summary>
+    /// <summary>The first word of the pre-computed initial state for ASCON-HASHA256 (Ascon v1.2).</summary>
     /// <remarks>
     /// The five IV words are the result of applying Ascon-p12 to <c>[raw_IV, 0, 0, 0, 0]</c>, sourced from ascon-c
     /// <c>opt64/constants.h</c> (<c>ASCON_HASHA_IV0..IV4</c>).

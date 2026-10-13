@@ -175,6 +175,12 @@ public sealed class CcmModeTransform
     }
 
     /// <inheritdoc />
+    /// <exception cref="CryptographicException">
+    /// <paramref name="plaintext" /> is longer than 2²⁴ - 1 bytes, the limit of the 3-byte length field.
+    /// </exception>
+    /// <exception cref="NotSupportedException">
+    /// The associated data is 65,280 bytes or longer, beyond the 2-byte length encoding this implementation supports.
+    /// </exception>
     public int Encrypt(ReadOnlySpan<byte> plaintext, Span<byte> output)
     {
         ThrowIfDisposed();
@@ -218,6 +224,13 @@ public sealed class CcmModeTransform
     /// propagates, so unverified plaintext never escapes. See <see cref="IAeadBlockCipherModeTransform.Decrypt" /> for
     /// the library-wide failure contract.
     /// </remarks>
+    /// <exception cref="CryptographicException">
+    /// The authentication tag did not match, or the ciphertext without its tag is longer than 2²⁴ - 1 bytes, the limit
+    /// of the 3-byte length field.
+    /// </exception>
+    /// <exception cref="NotSupportedException">
+    /// The associated data is 65,280 bytes or longer, beyond the 2-byte length encoding this implementation supports.
+    /// </exception>
     public int Decrypt(ReadOnlySpan<byte> ciphertextWithTag, Span<byte> output)
     {
         ThrowIfDisposed();

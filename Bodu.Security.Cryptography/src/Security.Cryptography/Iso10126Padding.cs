@@ -49,7 +49,7 @@ public sealed class Iso10126Padding
     /// <param name="input">The data to pad.</param>
     /// <param name="blockSize">The block size in bits. Must be a positive multiple of 8.</param>
     /// <returns>The padded data as a byte array.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">
+    /// <exception cref="CryptographicException">
     /// Thrown if <paramref name="blockSize" /> is not a positive multiple of 8.
     /// </exception>
     public byte[] Pad(ReadOnlySpan<byte> input, int blockSize)
@@ -85,13 +85,13 @@ public sealed class Iso10126Padding
     /// <param name="input">The padded data.</param>
     /// <param name="blockSize">The block size in bits. Must be a positive multiple of 8.</param>
     /// <returns>The unpadded data as a byte array.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown if <paramref name="blockSize" /> is not a positive multiple of 8.
-    /// </exception>
     /// <exception cref="ArgumentException">
     /// Thrown if <paramref name="input" /> is empty or not aligned to the block size.
     /// </exception>
-    /// <exception cref="CryptographicException">Thrown if the trailing length byte is out of range.</exception>
+    /// <exception cref="CryptographicException">
+    /// Thrown if <paramref name="blockSize" /> is not a positive multiple of 8, or if the trailing length byte is out
+    /// of range.
+    /// </exception>
     /// <remarks>
     /// Unlike its siblings, ISO 10126 validation is deliberately <em>not</em> masked into a constant-time walk of the
     /// final block: the interior pad bytes are random by construction, so the trailing length byte is the only byte

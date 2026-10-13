@@ -48,7 +48,7 @@ public sealed class NoPadding
     /// <param name="input">The input data to validate and return.</param>
     /// <param name="blockSize">The required block size in bits. Must be a positive multiple of 8.</param>
     /// <returns>A new byte array containing the same bytes as <paramref name="input" />.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">
+    /// <exception cref="System.Security.Cryptography.CryptographicException">
     /// Thrown if <paramref name="blockSize" /> is not a positive multiple of 8.
     /// </exception>
     /// <exception cref="ArgumentException">

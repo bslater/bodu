@@ -59,45 +59,7 @@ namespace Bodu.Security.Cryptography;
 /// </item>
 /// <item>
 /// <term>Two-pass alternatives</term>
-/// <description><see cref="EaxModeTransform" /> - flexible nonce length, OMAC-based authentication.</description>
-/// </item>
-/// <item>
-/// <term>Misuse-resistant</term>
-/// <description>
-/// <see cref="GcmSivModeTransform" /> (RFC 8452) and <see cref="SivModeTransform" /> (RFC 5297) - nonce reuse only
-/// leaks message-equality.
-/// </description>
-/// </item>
-/// <item>
-/// <term>Single-pass without GCM's failure profile</term>
-/// <description><see cref="OcbModeTransform" /> - RFC 7253, single-pass, graceful nonce-reuse failure.</description>
-/// </item>
-/// </list>
-/// <para>
-/// Most callers should reach for the helper methods on
-/// <see cref="Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions" /> instead of calling
-/// <see cref="ProcessAssociatedData" /> + <see cref="Encrypt" />/<see cref="Decrypt" /> directly - those wrappers size
-/// the output buffer correctly and return a single freshly allocated array.
-/// </para>
-/// <para>
-/// <strong>API surface.</strong> The library ships several implementations clustered by trade-off:
-/// </para>
-/// <list type="bullet">
-/// <item>
-/// <term>Default high-throughput AEAD</term>
-/// <description>
-/// <see cref="GcmModeTransform" /> - single-pass, hardware-accelerated, fragile under nonce reuse.
-/// </description>
-/// </item>
-/// <item>
-/// <term>Constrained-environment AEAD</term>
-/// <description>
-/// <see cref="CcmModeTransform" /> - two-pass, no Galois-field arithmetic, used by Zigbee / Bluetooth Mesh.
-/// </description>
-/// </item>
-/// <item>
-/// <term>Two-pass alternatives</term>
-/// <description><see cref="EaxModeTransform" /> - flexible nonce length, OMAC-based authentication.</description>
+/// <description><see cref="EaxModeTransform" /> - one-block nonce, OMAC-based authentication.</description>
 /// </item>
 /// <item>
 /// <term>Misuse-resistant</term>
@@ -125,9 +87,15 @@ public interface IAeadBlockCipherModeTransform
     : IAeadTransform
 {
     /// <summary>
-    /// Processes associated data (AAD) that will be authenticated but not encrypted. Must be called before
+    /// Processes associated data (AAD) that will be authenticated but not encrypted. Call it at most once, before
     /// <see cref="Encrypt" /> or <see cref="Decrypt" />.
     /// </summary>
+    /// <remarks>
+    /// The call is optional for most implementations: when it is omitted, the message is authenticated with empty
+    /// associated data. <see cref="AsconAead128" /> is the exception - it requires the call, with an empty span when
+    /// there is no associated data, and its <see cref="Encrypt" /> and <see cref="Decrypt" /> throw
+    /// <see cref="InvalidOperationException" /> without it.
+    /// </remarks>
     /// <param name="associatedData">The bytes to authenticate. May be empty to indicate no associated data.</param>
     /// <exception cref="InvalidOperationException">
     /// Associated data has already been processed on this instance, or the instance has already completed an
@@ -181,7 +149,7 @@ public interface IAeadBlockCipherModeTransform
     /// <item>
     /// <description>
     /// <em>Verify-before-release.</em> The tag is compared in constant time before any plaintext byte is written to
-    /// <paramref name="output" />. Used by GCM, CCM, EAX, and OCB.
+    /// <paramref name="output" />. Used by GCM and EAX.
     /// </description>
     /// </item>
     /// <item>
@@ -189,8 +157,8 @@ public interface IAeadBlockCipherModeTransform
     /// <em>Write-then-clear.</em> The candidate plaintext is streamed into <paramref name="output" /> first because the
     /// algorithm's structure requires the transform to complete before the tag can be computed. The tag is then
     /// compared in constant time; on mismatch <paramref name="output" /> is zeroed via
-    /// <see cref="CryptographicOperations.ZeroMemory" /> before the exception is thrown. Used by Ascon-AEAD-128 and
-    /// GCM-SIV.
+    /// <see cref="CryptographicOperations.ZeroMemory" /> before the exception is thrown. Used by CCM, OCB, SIV,
+    /// GCM-SIV, and Ascon-AEAD-128.
     /// </description>
     /// </item>
     /// </list>

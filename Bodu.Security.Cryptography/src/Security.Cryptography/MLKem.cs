@@ -35,8 +35,8 @@ namespace Bodu.Security.Cryptography;
 /// <strong>Key formats.</strong> Only the FIPS 203 byte encodings are supported: the 64-byte private seed (d ‖ z) via
 /// <see cref="ImportPrivateSeed" />, and the encoded decapsulation / encapsulation keys via
 /// <see cref="ImportDecapsulationKey" /> and <see cref="ImportEncapsulationKey" />, which apply the §7.3 hash and §7.2
-/// modulus checks respectively. The PKCS#8 / SubjectPublicKeyInfo members inherited from
-/// <see cref="AsymmetricAlgorithm" /> are not implemented and retain their base (throwing) behavior.
+/// modulus checks respectively. The PKCS#8 / SubjectPublicKeyInfo and XML members inherited from
+/// <see cref="AsymmetricAlgorithm" /> are overridden to throw <see cref="NotSupportedException" />.
 /// </para>
 /// <para>
 /// <strong>Memory.</strong> When a key is generated or imported, the instance also keeps the values FIPS 203 derives

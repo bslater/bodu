@@ -44,10 +44,9 @@ namespace Bodu.Security.Cryptography;
 /// <para>
 /// <strong>When to choose Ascon-XOF128.</strong> Pick this when an extendable-output function is required inside an
 /// Ascon-based protocol - variable-length KDF outputs, hash-based DRBGs, or any context that needs more than the
-/// 256-bit fixed output of <see cref="AsconHash256" />. For non-Ascon settings <see cref="Shake" /> (NIST FIPS 202) or
-/// <see cref="Blake3" />'s XOF mode is faster on commodity hardware. For domain-separated output families (KMAC-style
-/// or per-purpose XOF instances), use <see cref="AsconCxof128" /> to bind a customization string into the initial
-/// state.
+/// 256-bit fixed output of <see cref="AsconHash256" />. For non-Ascon settings <see cref="Shake" /> (NIST FIPS 202) is
+/// faster on commodity hardware. For domain-separated output families (KMAC-style or per-purpose XOF instances), use
+/// <see cref="AsconCxof128" /> to bind a customization string into the initial state.
 /// </para>
 /// </remarks>
 /// <example>

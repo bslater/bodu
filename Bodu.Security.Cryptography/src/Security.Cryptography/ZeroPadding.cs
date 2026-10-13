@@ -46,7 +46,7 @@ public sealed class ZeroPadding
     /// <param name="input">The input data to pad.</param>
     /// <param name="blockSize">The block size in bits. Must be a positive multiple of 8.</param>
     /// <returns>The padded input.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">
+    /// <exception cref="System.Security.Cryptography.CryptographicException">
     /// Thrown if <paramref name="blockSize" /> is not a positive multiple of 8.
     /// </exception>
     public byte[] Pad(ReadOnlySpan<byte> input, int blockSize)

@@ -45,7 +45,7 @@ nonces. *Package: `Bodu.Security.Cryptography`.*
 
 ### Bodu.Security.Cryptography.Samples.CipherModesAndPadding
 
-The layer beneath `SymmetricAlgorithm.Mode`: the seven `IPaddingStrategy` implementations with
+The layer beneath `SymmetricAlgorithm.Mode`: the six `IPaddingStrategy` implementations with
 their actual trailer bytes and which of them can recover the original length, the confidentiality
 mode transforms driven directly over an `IBlockCipher` (with ECB shown leaking identical blocks),
 and the specialist modes - ciphertext stealing, XTS with per-sector tweaks, and CCM/SIV/GCM-SIV
@@ -71,7 +71,7 @@ export-only AEAD. *Package: `Bodu.Security.Cryptography`.*
 
 ### Bodu.Security.Cryptography.Samples.MerkleTrees
 
-The RFC 6962 Merkle-tree family, reproducing the RFC's appendix D vectors byte for byte: roots and
+The RFC 6962 Merkle-tree family, reproducing the Merkle requirements document's appendix D vectors byte for byte: roots and
 audit paths with the leaf/node domain separation, the length-bound root (`BindRoot` /
 `VerifyInclusionBound`) that closes the tree-size ambiguity, append-only consistency proofs, the
 blocked, streaming, and async surface with <xref:Bodu.Security.Cryptography.MerkleBlockComputation>,

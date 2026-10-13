@@ -16,15 +16,16 @@ namespace Bodu.Security.Cryptography;
 /// <remarks>
 /// <para>
 /// The factory dispatches a padding-scheme enumeration value to the matching <see cref="IPaddingStrategy" />
-/// implementation. Used internally by every <see cref="System.Security.Cryptography.SymmetricAlgorithm" /> in this
-/// library when its padding is configured.
+/// implementation. Used internally by every block-cipher <see cref="System.Security.Cryptography.SymmetricAlgorithm" />
+/// wrapper in this library when <c>CreateEncryptor</c> or <c>CreateDecryptor</c> builds a transform from its configured
+/// padding.
 /// </para>
 /// <para>
 /// Two overloads are provided. <see cref="Create(PaddingMode)" /> dispatches the BCL-standard
 /// <see cref="PaddingMode" /> values (PKCS7, Zeros, None, ANSI X.923, ISO 10126).
 /// <see cref="Create(PaddingModeKind)" /> additionally supports <see cref="PaddingModeKind.ISO7816_4" />, the
-/// "one-and-zeros" scheme used by smart cards and SHA-3 / Keccak - pick this overload when integrating with the
-/// extended <see cref="PaddingModeKind" /> superset.
+/// "one-and-zeros" scheme used by smart cards and CMAC - pick this overload when integrating with the extended
+/// <see cref="PaddingModeKind" /> superset.
 /// </para>
 /// </remarks>
 /// <example>
@@ -33,15 +34,15 @@ namespace Bodu.Security.Cryptography;
 /// // BCL-standard padding mode - covers PKCS7, Zeros, None, ANSI X.923, ISO 10126.
 /// IPaddingStrategy pkcs7 = PaddingFactory.Create(PaddingMode.PKCS7);
 ///
-/// // Extended padding mode - adds ISO/IEC 7816-4 ("one-and-zeros") used by smart cards and SHA-3.
+/// // Extended padding mode - adds ISO/IEC 7816-4 ("one-and-zeros") used by smart cards and CMAC.
 /// IPaddingStrategy iso7816 = PaddingFactory.Create(PaddingModeKind.ISO7816_4);
 ///
 /// // Apply on encryption.
-/// byte[] padded = pkcs7.Pad(plaintext, blockSizeBits: 128);
+/// byte[] padded = pkcs7.Pad(plaintext, blockSize: 128);
 ///
 /// // Remove on decryption - Unpad validates the trailer and throws CryptographicException
 /// // if the padding is malformed.
-/// byte[] stripped = pkcs7.Unpad(decrypted, blockSizeBits: 128);
+/// byte[] stripped = pkcs7.Unpad(decrypted, blockSize: 128);
 ///]]>
 /// </code>
 /// </example>

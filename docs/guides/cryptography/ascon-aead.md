@@ -43,8 +43,8 @@ used by the hash and XOF variants. Every encryption proceeds through four fixed 
 1. **Initialization** - the state is loaded as `[IV ‖ K₀ ‖ K₁ ‖ N₀ ‖ N₁]` and Ascon-p12 is
    applied, followed by XORing the key into state words S₃ and S₄.
 2. **Associated-data absorption** - each 16-byte block of AAD is absorbed with Ascon-p8 between
-   blocks. A domain-separation constant (XOR of 1 into S₄) is always applied after the AD phase,
-   even when AD is empty.
+   blocks. A domain-separation constant (XOR of `0x80` into the most significant byte of S₄,
+   SP 800-232's DSEP) is always applied after the AD phase, even when AD is empty.
 3. **Encryption / decryption** - plaintext or ciphertext is processed in 16-byte blocks with
    Ascon-p8 between blocks. The final partial block is Ascon-padded and absorbed without a
    trailing permutation.
@@ -210,8 +210,9 @@ byte[] key = RandomNumberGenerator.GetBytes(AsconAead128.KeySize / 8);
 byte[] nonce = RandomNumberGenerator.GetBytes(AsconAead128.NonceSize / 8);
 ```
 
-A 128-bit random nonce has negligible collision probability for fewer than approximately 2⁶⁴
-messages under the same key. For higher message volumes, use a counter instead:
+Random 128-bit nonces collide with probability about n²/2¹²⁹ after n messages under the same
+key: about 2⁻³³ at 2⁴⁸ messages, but roughly 39 % by 2⁶⁴. Stay well below 2⁶⁴ messages per key;
+for higher message volumes, use a counter instead:
 
 ```csharp
 using System.Buffers.Binary;

@@ -222,8 +222,8 @@ public static partial class ICryptoTransformExtensions
     /// Thrown when <paramref name="transform" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="ArgumentException">
-    /// Thrown when <paramref name="destination" /> is too small to hold the transformed output. A safe minimum size is
-    /// <c>input.Length + transform.OutputBlockSize</c>.
+    /// Thrown when <paramref name="destination" /> is shorter than <c>input.Length + transform.OutputBlockSize</c>,
+    /// even when the transformed output itself would fit.
     /// </exception>
     /// <remarks>
     /// <para>
@@ -261,7 +261,8 @@ public static partial class ICryptoTransformExtensions
     /// Thrown when <paramref name="transform" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="ArgumentException">
-    /// Thrown when <paramref name="destination" /> is too small to hold the transformed output.
+    /// Thrown when <paramref name="destination" /> is shorter than <c>input.Length + transform.OutputBlockSize</c>,
+    /// even when the transformed output itself would fit.
     /// </exception>
     /// <remarks>
     /// <para>

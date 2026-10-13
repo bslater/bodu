@@ -28,10 +28,10 @@ namespace Bodu.Security.Cryptography;
 /// share the standard key-schedule operations.
 /// </para>
 /// <para>
-/// External callers cannot derive new variants: the constructor and protected members are scoped
-/// <c>private protected</c>. Use <see cref="Serpent128Cipher" /> or one of the wide-block
-/// <see cref="Serpent256Cipher" /> / <see cref="Serpent512Cipher" /> / <see cref="Serpent1024Cipher" /> types directly,
-/// or compose with <see cref="IBlockCipherModeTransform" /> via <see cref="BlockCipherModeFactory" />.
+/// The S-box and key-schedule helpers are scoped <c>private protected</c>, so only the variants in this assembly can
+/// use them. Use <see cref="Serpent128Cipher" /> or one of the wide-block <see cref="Serpent256Cipher" /> /
+/// <see cref="Serpent512Cipher" /> / <see cref="Serpent1024Cipher" /> types directly, or compose with
+/// <see cref="IBlockCipherModeTransform" /> via <see cref="BlockCipherModeFactory" />.
 /// </para>
 /// </remarks>
 public abstract partial class SerpentBlockCipherBase

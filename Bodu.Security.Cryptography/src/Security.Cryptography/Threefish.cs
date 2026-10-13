@@ -56,11 +56,12 @@ namespace Bodu.Security.Cryptography;
 /// <code language="csharp">
 ///<![CDATA[
 /// // Use the recommended general-purpose variant - Threefish-512 over a CTR mode.
-/// using TweakableSymmetricAlgorithm alg = new Threefish512();
+/// using var alg = new Threefish512();
 /// alg.GenerateKey();
 /// alg.GenerateIV();
 /// alg.GenerateTweak();
 /// alg.BlockMode = CipherModeKind.CTR;
+/// // Padding stays PKCS7 (the default): through the wrapper, None needs block-aligned input.
 ///
 /// using ICryptoTransform encryptor = alg.CreateEncryptor(alg.Key, alg.IV, alg.Tweak);
 /// using var cipherText = new MemoryStream();

@@ -75,7 +75,10 @@ public sealed partial class MerkleTree
     /// <param name="secondSize">The later tree's entry count.</param>
     /// <param name="proof">The consistency proof.</param>
     /// <returns>
-    /// <see langword="true" /> when the proof reconstructs both roots; otherwise <see langword="false" />.
+    /// <see langword="true" /> when the proof reconstructs both roots, or in the degenerate cases the remarks describe:
+    /// equal sizes with an empty proof and identical roots, or a <paramref name="firstSize" /> of zero with an empty
+    /// proof, whatever the roots (each must still be <see cref="HashLength" /> bytes); otherwise
+    /// <see langword="false" />.
     /// </returns>
     /// <exception cref="ArgumentNullException"><paramref name="proof" /> is <see langword="null" />.</exception>
     /// <remarks>

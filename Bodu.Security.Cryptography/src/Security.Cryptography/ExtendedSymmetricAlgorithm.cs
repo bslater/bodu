@@ -55,8 +55,8 @@ public abstract class ExtendedSymmetricAlgorithm
     /// <para>
     /// This property replaces the inherited <see cref="SymmetricAlgorithm.Mode" /> property for use with
     /// <see cref="BlockCipherModeFactory" /> and the extended set of modes it supports, including
-    /// <see cref="CipherModeKind.CTR" /> and <see cref="CipherModeKind.OFB" />, which are not available via the
-    /// standard <see cref="CipherMode" /> enumeration.
+    /// <see cref="CipherModeKind.CTR" />, which is not available via the standard <see cref="CipherMode" />
+    /// enumeration.
     /// </para>
     /// <para>
     /// When the assigned value has a matching member in <see cref="CipherMode" /> (for example, CBC, ECB, CFB), the
@@ -73,7 +73,7 @@ public abstract class ExtendedSymmetricAlgorithm
             _blockMode = value;
 
             // Keep the inherited Mode in sync where a direct CipherMode equivalent exists. Extended modes without a
-            // mapping (e.g. CTR, OFB) intentionally leave ModeValue untouched.
+            // mapping (e.g. CTR) intentionally leave ModeValue untouched.
             if (Enum.TryParse<CipherMode>(value.ToString(), out CipherMode mode) &&
                 Enum.IsDefined(mode))
             {
@@ -124,8 +124,11 @@ public abstract class ExtendedSymmetricAlgorithm
     /// <inheritdoc />
     /// <remarks>
     /// Also synchronizes <see cref="BlockMode" /> so that encryptor and decryptor creation, which read
-    /// <see cref="BlockMode" />, honour the assigned value. Every <see cref="CipherMode" /> member has a matching
-    /// <see cref="CipherModeKind" /> member, so the synchronization always succeeds.
+    /// <see cref="BlockMode" />, honour the assigned value. The inherited <see cref="SymmetricAlgorithm.Mode" /> setter
+    /// accepts only <see cref="CipherMode.CBC" />, <see cref="CipherMode.ECB" />, and <see cref="CipherMode.CFB" />,
+    /// and throws <see cref="CryptographicException" /> for any other value, <see cref="CipherMode.OFB" /> and
+    /// <see cref="CipherMode.CTS" /> included. Select OFB and CTR through <see cref="BlockMode" /> instead; assigning
+    /// it also updates the value this property reports wherever a <see cref="CipherMode" /> equivalent exists.
     /// </remarks>
     public override CipherMode Mode
     {

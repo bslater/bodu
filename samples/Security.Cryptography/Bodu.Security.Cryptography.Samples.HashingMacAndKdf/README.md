@@ -122,11 +122,11 @@ message: "authenticate me"
   Poly1305        : f137072adc416687d4f3129a5ba1d2f4
 ```
 
-The key is set through the `KeyedHashAlgorithm` surface (`{ Key = … }`); a non-empty key is what switches
+The key is set through each algorithm's `Key` property (`{ Key = … }`); a non-empty key is what switches
 BLAKE2b into MAC mode. Poly1305 reports `CanReuseTransform == false` because it is single-use - a fresh
 instance and key per message.
 
-**APIs demonstrated.** `SipHash64`, `SipHash128`, keyed `Blake2b`, `Poly1305`, the `KeyedHashAlgorithm.Key`
+**APIs demonstrated.** `SipHash64`, `SipHash128`, keyed `Blake2b`, `Poly1305`, the `Key` property
 initializer.
 
 ## Scenario 4 - ExtendableOutput

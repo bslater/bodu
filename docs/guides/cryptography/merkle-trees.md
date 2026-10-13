@@ -206,7 +206,8 @@ That is RFC 6962 behaving as specified, not a defect. When the size comes from a
 byte[] published = tree.BindRoot(computation.Root, computation.InputLength);   // or accumulator.FinishBound()
 
 bool ok = tree.VerifyBlockInclusion(
-    published, computation.InputLength, blockSize, blockIndex, block, blockPath);
+    published, computation.InputLength, blockSize, blockIndex, block,
+    blockPath.Select(step => (ReadOnlyMemory<byte>)step).ToArray());
 ```
 
 `VerifyBlockInclusion` derives the tree size from the bound length and block size, so there is no size left to misstate, and it requires the block to be exactly the length its position demands. `VerifyInclusionBound` is the entry-mode equivalent.

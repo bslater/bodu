@@ -40,43 +40,92 @@ public abstract partial class MLKem
             _ => 256,
         };
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Not supported: ML-KEM keys have no XML key format. This member always throws.
+    /// </summary>
+    /// <inheritdoc path="/param" />
+    /// <exception cref="NotSupportedException">Always.</exception>
     public override void FromXmlString(string xmlString) =>
         throw KeyFormatNotSupported();
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Not supported: ML-KEM keys have no XML key format. This member always throws.
+    /// </summary>
+    /// <inheritdoc path="/param" />
+    /// <returns>This member does not return.</returns>
+    /// <exception cref="NotSupportedException">Always.</exception>
     public override string ToXmlString(bool includePrivateParameters) =>
         throw KeyFormatNotSupported();
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Not supported: ML-KEM keys are exchanged only in their raw FIPS 203 encodings, not as SubjectPublicKeyInfo. This
+    /// member always throws.
+    /// </summary>
+    /// <inheritdoc path="/param" />
+    /// <exception cref="NotSupportedException">Always.</exception>
     public override void ImportSubjectPublicKeyInfo(ReadOnlySpan<byte> source, out int bytesRead) =>
         throw KeyFormatNotSupported();
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Not supported: ML-KEM keys are exchanged only in their raw FIPS 203 encodings, not as PKCS#8. This member always
+    /// throws.
+    /// </summary>
+    /// <inheritdoc path="/param" />
+    /// <exception cref="NotSupportedException">Always.</exception>
     public override void ImportPkcs8PrivateKey(ReadOnlySpan<byte> source, out int bytesRead) =>
         throw KeyFormatNotSupported();
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Not supported: encrypted PKCS#8 is out of scope for this library. This member always throws.
+    /// </summary>
+    /// <inheritdoc path="/param" />
+    /// <exception cref="NotSupportedException">Always.</exception>
     public override void ImportEncryptedPkcs8PrivateKey(ReadOnlySpan<byte> passwordBytes, ReadOnlySpan<byte> source, out int bytesRead) =>
         throw KeyFormatNotSupported();
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Not supported: encrypted PKCS#8 is out of scope for this library. This member always throws.
+    /// </summary>
+    /// <inheritdoc path="/param" />
+    /// <exception cref="NotSupportedException">Always.</exception>
     public override void ImportEncryptedPkcs8PrivateKey(ReadOnlySpan<char> password, ReadOnlySpan<byte> source, out int bytesRead) =>
         throw KeyFormatNotSupported();
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Not supported: ML-KEM keys are exchanged only in their raw FIPS 203 encodings, not as SubjectPublicKeyInfo. This
+    /// member always throws.
+    /// </summary>
+    /// <inheritdoc path="/param" />
+    /// <returns>This member does not return.</returns>
+    /// <exception cref="NotSupportedException">Always.</exception>
     public override bool TryExportSubjectPublicKeyInfo(Span<byte> destination, out int bytesWritten) =>
         throw KeyFormatNotSupported();
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Not supported: ML-KEM keys are exchanged only in their raw FIPS 203 encodings, not as PKCS#8. This member always
+    /// throws.
+    /// </summary>
+    /// <inheritdoc path="/param" />
+    /// <returns>This member does not return.</returns>
+    /// <exception cref="NotSupportedException">Always.</exception>
     public override bool TryExportPkcs8PrivateKey(Span<byte> destination, out int bytesWritten) =>
         throw KeyFormatNotSupported();
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Not supported: encrypted PKCS#8 is out of scope for this library. This member always throws.
+    /// </summary>
+    /// <inheritdoc path="/param" />
+    /// <returns>This member does not return.</returns>
+    /// <exception cref="NotSupportedException">Always.</exception>
     public override bool TryExportEncryptedPkcs8PrivateKey(ReadOnlySpan<byte> passwordBytes, PbeParameters pbeParameters, Span<byte> destination, out int bytesWritten) =>
         throw KeyFormatNotSupported();
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Not supported: encrypted PKCS#8 is out of scope for this library. This member always throws.
+    /// </summary>
+    /// <inheritdoc path="/param" />
+    /// <returns>This member does not return.</returns>
+    /// <exception cref="NotSupportedException">Always.</exception>
     public override bool TryExportEncryptedPkcs8PrivateKey(ReadOnlySpan<char> password, PbeParameters pbeParameters, Span<byte> destination, out int bytesWritten) =>
         throw KeyFormatNotSupported();
 

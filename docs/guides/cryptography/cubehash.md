@@ -4,7 +4,7 @@ title: Using CubeHash
 
 # Using CubeHash
 
-CubeHash is Daniel J. Bernstein's 2008 submission to the NIST SHA-3 competition. It is a sponge-style hash built from a single simple permutation ("Cube"), parameterized by round counts and block size so you can dial the speed / margin trade-off. The default configuration reproduces the **CubeHash 16/32-512** variant submitted to the SHA-3 contest.
+CubeHash is Daniel J. Bernstein's 2008 submission to the NIST SHA-3 competition. It is a sponge-style hash built from a single simple permutation ("Cube"), parameterized by round counts and block size so you can dial the speed / margin trade-off. The defaults are **CubeHash16+16/32+32-512**, faster than the configuration submitted to the SHA-3 contest; to reproduce the submission's published test vectors, use 160 initialization and 160 finalization rounds (**CubeHash160+16/32+160-512**).
 
 The type is <xref:Bodu.Security.Cryptography.CubeHash>, and it derives from <xref:System.Security.Cryptography.HashAlgorithm?displayProperty=nameWithType>.
 
@@ -20,9 +20,9 @@ The type is <xref:Bodu.Security.Cryptography.CubeHash>, and it derives from <xre
 
 `CubeHash` derives directly from <xref:System.Security.Cryptography.HashAlgorithm?displayProperty=nameWithType>, so the standard `ComputeHash` / `TransformBlock` lifecycle applies. A `HashSize` outside the permitted set throws `ArgumentOutOfRangeException` at construction (or when the setter runs).
 
-The published naming convention is **CubeHash `r+b`/`w+f`-`h`** - initialization rounds `i`, transform rounds `r`, block size `b`, finalization rounds `f`, output bits `h`. `AlgorithmName` reflects the current configuration, e.g. `"CubeHash16+16/32+32-512"`.
+The published naming convention is **CubeHash `i+r`/`b+f`-`h`** - initialization rounds `i`, transform rounds `r`, block size `b`, finalization rounds `f`, output bits `h`. `AlgorithmName` reflects the current configuration, e.g. `"CubeHash16+16/32+32-512"`.
 
-## Pattern 1 - default CubeHash (the SHA-3 submission)
+## Pattern 1 - default CubeHash
 
 <!-- compile -->
 ```csharp
@@ -31,11 +31,11 @@ using Bodu.Security.Cryptography;
 
 byte[] data = Encoding.UTF8.GetBytes("the quick brown fox");
 
-using var cube = new CubeHash();              // default 512-bit output, 16/32-512 parameters
+using var cube = new CubeHash();              // default 512-bit output, CubeHash16+16/32+32-512
 byte[] digest = cube.ComputeHash(data);       // 64 bytes
 ```
 
-This is the configuration referenced by most published CubeHash test vectors.
+This is not the SHA-3 submission's configuration. The submission's test vectors use 160 initialization and 160 finalization rounds: `new CubeHash(initializationRounds: 160, rounds: 16, transformBlockSize: 32, finalizationRounds: 160, hashSize: 512)`, or set `InitializationRounds = 160` and `FinalizationRounds = 160` before hashing.
 
 ## Pattern 2 - a shorter digest
 
@@ -76,7 +76,7 @@ using var safe = new CubeHash
 };
 ```
 
-All four round-count properties (`Rounds`, `InitializationRounds`, `FinalizationRounds`) and `TransformBlockSize` are only settable before the first `ComputeHash` / `TransformBlock`. The `AlgorithmName` surfaces the effective parameters:
+All three round-count properties (`Rounds`, `InitializationRounds`, `FinalizationRounds`) and `TransformBlockSize` are only settable before the first `ComputeHash` / `TransformBlock`. The `AlgorithmName` surfaces the effective parameters:
 
 ```csharp
 Console.WriteLine(fast.AlgorithmName);   // e.g. "CubeHash16+8/64+32-256"
@@ -120,7 +120,7 @@ using var cube = new CubeHash
 
 ## Security caveats
 
-- **Status.** CubeHash was a first-round SHA-3 *submission* - it did not advance to the final round (the finalists were BLAKE, Grøstl, JH, Keccak, and Skein). The default `16/32` configuration is unbroken but conservative parameterizations exist precisely because the low-round variants have a thinner margin; do not reduce `Rounds` below the default for security-sensitive use.
+- **Status.** CubeHash was a second-round SHA-3 *candidate* - it did not advance to the final round (the finalists were BLAKE, Grøstl, JH, Keccak, and Skein). The default configuration is unbroken but conservative parameterizations exist precisely because the low-round variants have a thinner margin; do not reduce `Rounds` below the default for security-sensitive use.
 - **Output size vs security level.** As with any digest, an n-bit output gives ≈ n-bit pre-image resistance but only ≈ n/2-bit collision resistance. The 224-bit minimum therefore offers 112-bit collision resistance - pick 256 or wider when collisions matter.
 - **Length extension.** CubeHash is a sponge construction, so it is immune to length extension and is safe to use as a keyed MAC by prepending the key (HMAC is unnecessary) - but no native MAC mode is exposed here; for a built-in keyed mode reach for [Skein](skein.md) or [BLAKE2b](blake.md).
 

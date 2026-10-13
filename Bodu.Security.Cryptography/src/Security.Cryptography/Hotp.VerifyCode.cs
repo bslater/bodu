@@ -57,8 +57,8 @@ public static partial class Hotp
     /// <c>[counter, counter + lookAhead]</c>; otherwise, <see langword="false" />.
     /// </returns>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="digits" /> is less than 6 or greater than 8, <paramref name="lookAhead" /> is negative, or
-    /// <paramref name="algorithm" /> is not a defined <see cref="OtpHashAlgorithm" /> value.
+    /// <paramref name="digits" /> is less than 6 or greater than 8, <paramref name="lookAhead" /> is negative or
+    /// greater than 1024, or <paramref name="algorithm" /> is not a defined <see cref="OtpHashAlgorithm" /> value.
     /// </exception>
     /// <remarks>
     /// The full window is always scanned - matching does not short-circuit - so the loop's duration does not reveal

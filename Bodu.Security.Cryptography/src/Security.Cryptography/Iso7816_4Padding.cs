@@ -16,14 +16,15 @@ namespace Bodu.Security.Cryptography;
 /// <para>
 /// A full block of padding is always added when the input is already block-aligned so that <see cref="Unpad" /> can
 /// unambiguously recover the original length by locating the terminator. The scheme is widely used in smart-card
-/// protocols, SHA-3/Keccak and CMAC. <see cref="Unpad" /> validates in constant time over the final block to resist
-/// padding-oracle side channels.
+/// protocols and CMAC. <see cref="Unpad" /> validates in constant time over the final block to resist padding-oracle
+/// side channels.
 /// </para>
 /// <para>
 /// <strong>When to choose ISO/IEC 7816-4.</strong> Pick this when interoperating with smart-card, EMV, or ISO crypto
-/// tooling - the <c>0x80</c>/<c>0x00</c> sentinel scheme is the standard there. It is also the padding used by the
-/// SHA-3 / Keccak family and by CMAC. For general-purpose .NET / Java / OpenSSL interop prefer
-/// <see cref="Pkcs7Padding" />; for AEAD modes that handle their own alignment use <see cref="NoPadding" />.
+/// tooling - the <c>0x80</c>/<c>0x00</c> sentinel scheme is the standard there. It is also the padding used by CMAC.
+/// (SHA-3 and SHAKE use a different scheme, pad10*1 after a domain-separation suffix.) For general-purpose .NET / Java
+/// / OpenSSL interop prefer <see cref="Pkcs7Padding" />; for AEAD modes that handle their own alignment use
+/// <see cref="NoPadding" />.
 /// </para>
 /// </remarks>
 /// <example>
@@ -51,7 +52,7 @@ public sealed class Iso7816_4Padding
     /// <param name="input">The data to pad.</param>
     /// <param name="blockSize">The block size in bits. Must be a positive multiple of 8.</param>
     /// <returns>The padded data as a byte array.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">
+    /// <exception cref="CryptographicException">
     /// Thrown if <paramref name="blockSize" /> is not a positive multiple of 8.
     /// </exception>
     public byte[] Pad(ReadOnlySpan<byte> input, int blockSize)
@@ -78,13 +79,13 @@ public sealed class Iso7816_4Padding
     /// <param name="input">The padded data.</param>
     /// <param name="blockSize">The block size in bits. Must be a positive multiple of 8.</param>
     /// <returns>The unpadded data as a byte array.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown if <paramref name="blockSize" /> is not a positive multiple of 8.
-    /// </exception>
     /// <exception cref="ArgumentException">
     /// Thrown if <paramref name="input" /> is empty or not aligned to the block size.
     /// </exception>
-    /// <exception cref="CryptographicException">Thrown if the padding terminator is missing or malformed.</exception>
+    /// <exception cref="CryptographicException">
+    /// Thrown if <paramref name="blockSize" /> is not a positive multiple of 8, or if the padding terminator is missing
+    /// or malformed.
+    /// </exception>
     public byte[] Unpad(ReadOnlySpan<byte> input, int blockSize)
     {
         CryptographyThrowHelper.ThrowIfNotPositiveMultipleOf(blockSize, 8);

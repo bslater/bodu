@@ -44,7 +44,7 @@ What is **not** covered: arrays you allocate and hand to the library (`byte[] ke
 
 ## SIMD determinism and the `DisableSimd` switch
 
-BLAKE2b, BLAKE2s, BLAKE3, ChaCha20, Salsa20, Serpent-128, Threefish-256/512/1024, and CubeHash carry AVX-512 kernels; BLAKE2, BLAKE3, ChaCha20, Salsa20, Serpent-128, Argon2, and scrypt also carry AVX2, SSSE3 or SSE2, and ARM64 AdvSimd kernels; GHASH and POLYVAL in GCM / GCM-SIV have PCLMULQDQ and PMULL paths. All of them produce **bit-identical output** to their scalar reference - the switch exists for reproducibility and audit, not safety. The feature switch `Bodu.Security.Cryptography.DisableSimd` forces the scalar path for the whole process:
+BLAKE2b, BLAKE2s, BLAKE3, ChaCha20, Salsa20, Serpent-128, Threefish-256/512/1024, and CubeHash carry AVX-512 kernels; BLAKE2, BLAKE3, ChaCha20, Salsa20, Serpent-128, CubeHash, Argon2, and scrypt also carry AVX2, SSSE3 or SSE2, and ARM64 AdvSimd kernels; ML-KEM and ML-DSA carry AVX2 kernels for their transforms, products, and four-way SHAKE sampling; GHASH and POLYVAL in GCM / GCM-SIV have PCLMULQDQ and PMULL paths. All of them produce **bit-identical output** to their scalar reference - the switch exists for reproducibility and audit, not safety. The feature switch `Bodu.Security.Cryptography.DisableSimd` forces the scalar path for the whole process:
 
 ```xml
 <ItemGroup>
@@ -75,7 +75,7 @@ The library uses four exception families with consistent meaning. The table list
 | The object's **lifecycle** forbids the call | `InvalidOperationException` | a second `Encrypt` / `Decrypt` on any AEAD transform (including after a failed decrypt), `TransformFinalBlock` twice on a `BlockCipherTransform` |
 | The feature is not implemented for this type | `NotSupportedException` | `BlockMode = CipherModeKind.CTS` / `XTS` / `OCB` / `EAX` / `SIV` at `CreateEncryptor`, the BCL one-shots (`EncryptCbc` …), `ToXmlString`, encrypted PKCS#8, PKCS#8 / SPKI on ML-KEM / ML-DSA, `Poly1305` with padding |
 | Use after `Dispose` | `ObjectDisposedException` | any member of a disposed hash, cipher, transform, asymmetric algorithm, or `SecretBytes` |
-| Text that is not hex | `FormatException` | `HashValue.ParseHex("zz")`; PHC-string parsing in `Argon2.Verify` / `Scrypt.Verify` |
+| Text that is not hex | `FormatException` | `HashValue.ParseHex("zz")`; a malformed PHC string in `Argon2.Verify` / `Scrypt.Verify` (a well-formed string whose costs or tag length are out of range throws `ArgumentOutOfRangeException`, and an Argon2 version other than 0x10 or 0x13 `ArgumentException`) |
 
 Two rules follow. First, **a failed authentication is `CryptographicException`** everywhere - AEAD tags, Poly1305, signature verification does *not* throw but returns `false` (`Ed25519.VerifyData`, `MLDsa.VerifyData`, `Hotp.VerifyCode` return `false` for a wrong or wrongly sized input). Second, the *same* mistake surfaces differently by layer: a bad key length is `ArgumentException` on an engine and `CryptographicException` on its wrapper, because the wrapper follows the BCL `SymmetricAlgorithm` convention. Catch `CryptographicException` on the wrapper path and `ArgumentException` when you compose engines yourself.
 

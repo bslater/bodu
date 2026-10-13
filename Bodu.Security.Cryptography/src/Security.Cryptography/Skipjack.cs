@@ -138,12 +138,14 @@ public sealed class Skipjack
     /// A symmetric <see cref="Skipjack" /> decryptor object implementing <see cref="ICryptoTransform" />.
     /// </returns>
     /// <exception cref="ObjectDisposedException">The current instance has been disposed.</exception>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="rgbKey" /> or <paramref name="rgbIV" /> is <see langword="null" />.
-    /// </exception>
+    /// <exception cref="ArgumentNullException"><paramref name="rgbKey" /> is <see langword="null" />.</exception>
     /// <exception cref="CryptographicException">
     /// <paramref name="rgbKey" /> is not exactly 10 bytes in length, or <paramref name="rgbIV" /> is not exactly 8
-    /// bytes in length.
+    /// bytes in length, or <paramref name="rgbIV" /> is <see langword="null" /> and
+    /// <see cref="ExtendedSymmetricAlgorithm.BlockMode" /> is not <see cref="CipherModeKind.ECB" />.
+    /// </exception>
+    /// <exception cref="NotSupportedException">
+    /// <see cref="ExtendedSymmetricAlgorithm.BlockMode" /> is not ECB, CBC, CFB, OFB, or CTR.
     /// </exception>
     public override ICryptoTransform CreateDecryptor(byte[] rgbKey, byte[]? rgbIV)
     {
@@ -170,12 +172,14 @@ public sealed class Skipjack
     /// A symmetric <see cref="Skipjack" /> encryptor object implementing <see cref="ICryptoTransform" />.
     /// </returns>
     /// <exception cref="ObjectDisposedException">The current instance has been disposed.</exception>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="rgbKey" /> or <paramref name="rgbIV" /> is <see langword="null" />.
-    /// </exception>
+    /// <exception cref="ArgumentNullException"><paramref name="rgbKey" /> is <see langword="null" />.</exception>
     /// <exception cref="CryptographicException">
     /// <paramref name="rgbKey" /> is not exactly 10 bytes in length, or <paramref name="rgbIV" /> is not exactly 8
-    /// bytes in length.
+    /// bytes in length, or <paramref name="rgbIV" /> is <see langword="null" /> and
+    /// <see cref="ExtendedSymmetricAlgorithm.BlockMode" /> is not <see cref="CipherModeKind.ECB" />.
+    /// </exception>
+    /// <exception cref="NotSupportedException">
+    /// <see cref="ExtendedSymmetricAlgorithm.BlockMode" /> is not ECB, CBC, CFB, OFB, or CTR.
     /// </exception>
     public override ICryptoTransform CreateEncryptor(byte[] rgbKey, byte[]? rgbIV)
     {

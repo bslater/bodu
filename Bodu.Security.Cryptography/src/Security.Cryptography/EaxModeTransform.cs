@@ -45,13 +45,13 @@ namespace Bodu.Security.Cryptography;
 /// <see cref="IAeadBlockCipherModeTransform" /> convention.
 /// </para>
 /// <para>
-/// <strong>When to use EAX.</strong> Pick EAX when an unencumbered, two-pass AEAD with a flexible nonce length (the
-/// OMAC-derived <c>N'</c> means EAX accepts nonces up to the cipher block size) is wanted - some embedded protocols and
-/// historical industry standards require it. EAX is roughly half the throughput of <see cref="GcmModeTransform" /> on
-/// commodity hardware but does not depend on Galois-field arithmetic and has no patent concerns. For new
-/// general-purpose AEAD prefer GCM; for nonce-misuse resistance prefer <see cref="GcmSivModeTransform" /> or
-/// <see cref="SivModeTransform" />; for single-pass AEAD without GCM's catastrophic-on-reuse profile prefer
-/// <see cref="OcbModeTransform" />.
+/// <strong>When to use EAX.</strong> Pick EAX when an unencumbered, two-pass AEAD is wanted - some embedded protocols
+/// and historical industry standards require it. The EAX construction admits nonces of any length, but this
+/// implementation requires a nonce of exactly the cipher block size (16 bytes for AES). EAX is roughly half the
+/// throughput of <see cref="GcmModeTransform" /> on commodity hardware but does not depend on Galois-field arithmetic
+/// and has no patent concerns. For new general-purpose AEAD prefer GCM; for nonce-misuse resistance prefer
+/// <see cref="GcmSivModeTransform" /> or <see cref="SivModeTransform" />; for single-pass AEAD without GCM's
+/// catastrophic-on-reuse profile prefer <see cref="OcbModeTransform" />.
 /// </para>
 /// <para>
 /// <strong>Nonce uniqueness is required.</strong> EAX is not nonce-misuse resistant. Two messages encrypted under the

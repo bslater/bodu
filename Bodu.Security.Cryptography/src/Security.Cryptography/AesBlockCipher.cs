@@ -13,8 +13,9 @@ namespace Bodu.Security.Cryptography;
 
 /// <summary>
 /// Exposes the BCL <see cref="Aes" /> algorithm as an <see cref="IBlockCipher" />, providing the single-block primitive
-/// that the authenticated-mode transforms (<see cref="GcmModeTransform" />, <see cref="CcmModeTransform" />,
-/// <see cref="OcbModeTransform" />, <see cref="SivModeTransform" />, <see cref="GcmSivModeTransform" />) require.
+/// that the mode transforms build on - the authenticated modes (<see cref="GcmModeTransform" />,
+/// <see cref="CcmModeTransform" />, <see cref="OcbModeTransform" />, <see cref="EaxModeTransform" />,
+/// <see cref="SivModeTransform" />, <see cref="GcmSivModeTransform" />) among them.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -24,9 +25,11 @@ namespace Bodu.Security.Cryptography;
 /// than rebuilding a cipher context each time, and an instance that only encrypts never builds a decryptor.
 /// </para>
 /// <para>
-/// <see cref="AesBlockCipher" /> is not intended for direct encryption of user data. Wrap it in one of the
-/// authenticated mode transforms listed above - the mode transform is responsible for chaining, IV / nonce handling,
-/// associated-data authentication, and tag generation or verification.
+/// <see cref="AesBlockCipher" /> encrypts single blocks and is not meant to be applied to user data block by block.
+/// Wrap it in a mode transform - preferably one of the authenticated modes listed above, which accept any
+/// <see cref="IBlockCipher" /> with a 128-bit block and for which this adapter is the hardware-accelerated choice. The
+/// mode transform is responsible for chaining, IV / nonce handling, and, for the authenticated modes, associated-data
+/// authentication and tag generation or verification.
 /// </para>
 /// <para>
 /// Instances hold sensitive key material and must be disposed after use. Disposal releases the underlying
@@ -180,9 +183,9 @@ public sealed class AesBlockCipher
 
     /// <inheritdoc />
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
+    /// <exception cref="CryptographicException"><paramref name="input" /> is not a whole number of blocks.</exception>
     /// <exception cref="ArgumentException">
-    /// <paramref name="input" /> is not a whole number of blocks, or <paramref name="output" /> is shorter than
-    /// <paramref name="input" />.
+    /// <paramref name="output" /> is shorter than <paramref name="input" />.
     /// </exception>
     /// <remarks>
     /// Moves the run through the cached ECB encryptor in chunks of up to 4 KiB, one platform call per chunk. The cached
@@ -202,9 +205,9 @@ public sealed class AesBlockCipher
 
     /// <inheritdoc />
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
+    /// <exception cref="CryptographicException"><paramref name="input" /> is not a whole number of blocks.</exception>
     /// <exception cref="ArgumentException">
-    /// <paramref name="input" /> is not a whole number of blocks, or <paramref name="output" /> is shorter than
-    /// <paramref name="input" />.
+    /// <paramref name="output" /> is shorter than <paramref name="input" />.
     /// </exception>
     /// <remarks>
     /// Moves the run through the cached ECB decryptor, or one one-shot call from 64 KiB, as

@@ -23,7 +23,9 @@ public enum HpkeAead : ushort
     Aes256Gcm = 0x0002,
 
     /// <summary>
-    /// ChaCha20Poly1305, AEAD identifier <c>0x0003</c>.
+    /// ChaCha20Poly1305, AEAD identifier <c>0x0003</c>. Provided by the platform's
+    /// <see cref="System.Security.Cryptography.ChaCha20Poly1305" />, so available only where
+    /// <see cref="System.Security.Cryptography.ChaCha20Poly1305.IsSupported" /> is <see langword="true" />.
     /// </summary>
     ChaCha20Poly1305 = 0x0003,
 

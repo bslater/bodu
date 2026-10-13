@@ -59,8 +59,8 @@ public static class SampleLog
     /// <param name="length">The number of bytes to generate.</param>
     /// <returns>The generated payload.</returns>
     /// <remarks>
-    /// This is the preimage the RFC 6962 appendix D block-mode vectors are defined over, so the roots the block
-    /// scenarios print can be checked against the published values.
+    /// This is the preimage the Merkle requirements document's appendix D block-mode vectors are defined over, so the
+    /// roots the block scenarios print can be checked against those values.
     /// </remarks>
     public static byte[] Payload(int length)
     {

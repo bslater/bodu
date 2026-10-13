@@ -193,8 +193,7 @@ internal static partial class CryptographyThrowHelper
                     CultureInfo.CurrentCulture,
                     CryptoResourceStrings.Crypt_Invalid_BlockSize,
                     value.Length * 8,
-                    CryptographyHelper.FormatLegalSizes(legalBlockSizes)),
-                paramValueName);
+                    CryptographyHelper.FormatLegalSizes(legalBlockSizes)));
     }
 
     /// <summary>
@@ -325,8 +324,7 @@ internal static partial class CryptographyThrowHelper
                     CultureInfo.CurrentCulture,
                     CryptoResourceStrings.Crypt_Invalid_KeySize,
                     keyBits,
-                    CryptographyHelper.FormatLegalSizes(legalKeySizes)),
-                paramKeyName);
+                    CryptographyHelper.FormatLegalSizes(legalKeySizes)));
     }
 
     /// <summary>
@@ -349,8 +347,7 @@ internal static partial class CryptographyThrowHelper
         if (nonce is null || nonce.Length != expectedBytes)
         {
             throw new CryptographicException(
-                string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Crypt_Invalid_IVSize, actualBits, expectedBytes * 8),
-                paramName);
+                string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Crypt_Invalid_IVSize, actualBits, expectedBytes * 8));
         }
     }
 
@@ -409,8 +406,7 @@ internal static partial class CryptographyThrowHelper
                     CultureInfo.CurrentCulture,
                     CryptoResourceStrings.Crypt_Invalid_TweakSize,
                     tweak.Length * 8,
-                    CryptographyHelper.FormatLegalSizes(legalTweakSizes)),
-                paramTweakName);
+                    CryptographyHelper.FormatLegalSizes(legalTweakSizes)));
     }
 
     /// <summary>
@@ -498,8 +494,7 @@ internal static partial class CryptographyThrowHelper
 
         if (value <= T.Zero || value % divisor != T.Zero)
             throw new CryptographicException(
-                paramName!,
-                string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Crypt_Invalid_HashSizePositiveMultipleOf, divisor));
+                string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Crypt_Invalid_PositiveMultipleOf, paramName, divisor));
     }
 
     /// <summary>
@@ -529,8 +524,7 @@ internal static partial class CryptographyThrowHelper
 
         if ((throwIfZero && span.Length == 0) || span.Length % divisor != 0)
             throw new CryptographicException(
-                string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Crypt_Invalid_InputLengthBlockMultiple, divisor),
-                paramName);
+                string.Format(CultureInfo.CurrentCulture, CryptoResourceStrings.Crypt_Invalid_InputLengthBlockMultiple, divisor));
     }
 
     /// <summary>

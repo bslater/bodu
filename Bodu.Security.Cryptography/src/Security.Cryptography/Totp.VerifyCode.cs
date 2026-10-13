@@ -26,8 +26,8 @@ public static partial class Totp
     /// <see langword="false" />.
     /// </returns>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="digits" /> is less than 6 or greater than 8, <paramref name="window" /> is negative,
-    /// <paramref name="periodSeconds" /> is less than 1, <paramref name="algorithm" /> is not a defined
+    /// <paramref name="digits" /> is less than 6 or greater than 8, <paramref name="window" /> is negative or greater
+    /// than 1024, <paramref name="periodSeconds" /> is less than 1, <paramref name="algorithm" /> is not a defined
     /// <see cref="OtpHashAlgorithm" /> value, or <paramref name="timestamp" /> is earlier than the Unix epoch.
     /// </exception>
     public static bool VerifyCode(ReadOnlySpan<byte> secret, ReadOnlySpan<char> code, DateTimeOffset timestamp, int window = 1, int digits = 6, int periodSeconds = DefaultPeriodSeconds, OtpHashAlgorithm algorithm = OtpHashAlgorithm.Sha1) =>
@@ -54,8 +54,8 @@ public static partial class Totp
     /// <see langword="false" />.
     /// </returns>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="digits" /> is less than 6 or greater than 8, <paramref name="window" /> is negative,
-    /// <paramref name="periodSeconds" /> is less than 1, <paramref name="algorithm" /> is not a defined
+    /// <paramref name="digits" /> is less than 6 or greater than 8, <paramref name="window" /> is negative or greater
+    /// than 1024, <paramref name="periodSeconds" /> is less than 1, <paramref name="algorithm" /> is not a defined
     /// <see cref="OtpHashAlgorithm" /> value, or <paramref name="timestamp" /> is earlier than the Unix epoch.
     /// </exception>
     /// <remarks>

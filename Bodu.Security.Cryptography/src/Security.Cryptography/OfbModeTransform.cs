@@ -44,12 +44,12 @@ namespace Bodu.Security.Cryptography;
 /// using System.Security.Cryptography;
 /// using Bodu.Security.Cryptography;
 ///
-/// // Most callers should set SymmetricAlgorithm.Mode = CipherBlockMode.OFB instead of using this directly.
+/// // Most callers set BlockMode = CipherModeKind.OFB on a SymmetricAlgorithm wrapper instead of using this directly.
 /// using IBlockCipher cipher = new AesBlockCipher(key);
 /// byte[] iv = RandomNumberGenerator.GetBytes(cipher.BlockSize / 8); // unique per message
 /// IBlockCipherModeTransform ofb = new OfbModeTransform(cipher, iv);
-/// byte[] ciphertext = new byte[plaintext.Length];
-/// int written = ofb.Transform(plaintext, ciphertext, encrypt: true);
+/// byte[] ciphertext = new byte[paddedPlaintext.Length]; // a whole number of blocks
+/// int written = ofb.Transform(paddedPlaintext, ciphertext, encrypt: true);
 ///]]>
 /// </code>
 /// </example>
@@ -77,6 +77,9 @@ public sealed class OfbModeTransform
     /// </param>
     /// <exception cref="ArgumentNullException">
     /// Thrown if <paramref name="cipher" /> or <paramref name="iv" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown if the length of <paramref name="iv" /> does not equal the block size of <paramref name="cipher" />.
     /// </exception>
     public OfbModeTransform(IBlockCipher cipher, byte[] iv)
     {

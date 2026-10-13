@@ -14,11 +14,11 @@ This guide covers all three on one page. For the broader "which hash do I pick?"
 
 | Hash | State / block | Threefish backend | Key (MAC) | Permitted output sizes (bits) |
 |---|---|---|---|---|
-| **Skein-256** | 256 bits / 32 bytes | Threefish-256 | 0-128 bytes | 128, 160, 224, 256 |
-| **Skein-512** | 512 bits / 64 bytes | Threefish-512 | 0-128 bytes | 128, 160, 224, 256, 384, 512 |
-| **Skein-1024** | 1024 bits / 128 bytes | Threefish-1024 | 0-128 bytes | 384, 512, 1024 |
+| **Skein-256** | 256 bits / 32 bytes | Threefish-256 | 0-1024 bytes | 128, 160, 224, 256 |
+| **Skein-512** | 512 bits / 64 bytes | Threefish-512 | 0-1024 bytes | 128, 160, 224, 256, 384, 512 |
+| **Skein-1024** | 1024 bits / 128 bytes | Threefish-1024 | 0-1024 bytes | 384, 512, 1024 |
 
-All three derive from <xref:Bodu.Security.Cryptography.Skein> (in turn <xref:Bodu.Security.Cryptography.KeyedBlockHashAlgorithm>, a <xref:System.Security.Cryptography.HashAlgorithm?displayProperty=nameWithType> that adds a `Key` property) and support both plain hash and Skein-MAC mode (a preliminary KEY UBI phase). `Skein.MaxKeySize` is 8192 bits (128 bytes) across all variants; the output size is fixed at construction to one of the permitted values above, and a value outside the set throws `ArgumentOutOfRangeException`.
+All three derive from <xref:Bodu.Security.Cryptography.Skein> (in turn <xref:Bodu.Security.Cryptography.KeyedBlockHashAlgorithm>, a <xref:System.Security.Cryptography.HashAlgorithm?displayProperty=nameWithType> that adds a `Key` property) and support both plain hash and Skein-MAC mode (a preliminary KEY UBI phase). `Skein.MaxKeySize` is 8192 bits (1024 bytes) across all variants; the output size is fixed at construction to one of the permitted values above, and a value outside the set throws `ArgumentOutOfRangeException`.
 
 ## When to pick which
 
@@ -49,7 +49,7 @@ Skein-512 accepts 128, 160, 224, 256, 384, or 512 bits; any other value throws `
 ```csharp
 using Bodu.Security.Cryptography;
 
-byte[] macKey = RandomNumberGenerator.GetBytes(64);   // 0-128 bytes
+byte[] macKey = RandomNumberGenerator.GetBytes(64);   // 0-1024 bytes
 using var mac = new Skein512(hashSize: 512);
 mac.Key = macKey;
 
@@ -97,7 +97,7 @@ The Skein specification defines optional configuration parameters - personalisat
 - **Status.** Skein was a SHA-3 finalist; the SHA-3 selection chose Keccak (which became SHAKE / SHA-3 / KMAC). Skein is unbroken but is not a standardised algorithm - pick SHA-3 or BLAKE2 / 3 when interoperability matters more than the specific algorithm.
 - **Output size vs security level.** A digest of n bits gives ≈ n-bit pre-image resistance but only ≈ n/2-bit collision resistance (the birthday bound). A 256-bit Skein output therefore has 128-bit collision resistance - adequate for most uses. Don't choose an output below 256 bits where collision resistance matters cryptographically.
 - **MAC mode safety.** Skein's UBI construction is immune to length-extension attacks, so Skein-MAC by prepending the key is safe - HMAC is unnecessary.
-- **Key length.** Any length 0 - 128 bytes is accepted. The spec recommends matching the key length to the state size (32 bytes for Skein-256, 64 bytes for Skein-512, 128 bytes for Skein-1024) for the cleanest security argument.
+- **Key length.** Any length 0 - 1024 bytes is accepted. The spec recommends matching the key length to the state size (32 bytes for Skein-256, 64 bytes for Skein-512, 128 bytes for Skein-1024) for the cleanest security argument.
 
 ## When *not* to use Skein
 

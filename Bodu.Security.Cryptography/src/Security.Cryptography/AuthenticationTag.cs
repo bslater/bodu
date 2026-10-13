@@ -23,9 +23,12 @@ namespace Bodu.Security.Cryptography;
 /// is <see langword="true" />.
 /// </para>
 /// <para>
-/// Tag verification is security-critical: always compare tags with <see cref="FixedTimeEquals(AuthenticationTag)" />
-/// (or the span overload), never with <see cref="Equals(AuthenticationTag)" />, so an attacker cannot learn the
-/// position of the first mismatching byte from the comparison time.
+/// Tag verification is security-critical, so every comparison this type offers runs in fixed time:
+/// <see cref="FixedTimeEquals(AuthenticationTag)" /> (and the span overload), <see cref="Equals(AuthenticationTag)" />,
+/// and the <c>==</c> and <c>!=</c> operators all compare through
+/// <see cref="CryptographicOperations.FixedTimeEquals(ReadOnlySpan{byte}, ReadOnlySpan{byte})" />, so an attacker
+/// cannot learn the position of the first mismatching byte from the comparison time. Do not compare the raw bytes with
+/// an ordinary loop or <c>SequenceEqual</c>.
 /// </para>
 /// </remarks>
 /// <example>

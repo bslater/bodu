@@ -64,13 +64,17 @@ using Bodu.Security.Cryptography.Extensions;
 
 using var cipher = new ChaCha20();
 cipher.GenerateKey();               // 32-byte key
-cipher.GenerateNonce();                // 12-byte nonce - unique per message
+cipher.GenerateNonce();             // 12-byte nonce - unique per message
 
 byte[] ciphertext = cipher.Encrypt(plaintext);
-byte[] roundtrip  = cipher.Decrypt(ciphertext);   // self-inverse
+
+// A nonce backs one transform from the parameterless Create* methods (which Encrypt and Decrypt use),
+// so decrypt with a second instance given the same key and nonce.
+using var decryptor = new ChaCha20 { Key = cipher.Key, Nonce = cipher.Nonce };
+byte[] roundtrip = decryptor.Decrypt(ciphertext);   // self-inverse
 ```
 
-Swap `ChaCha20` for `XChaCha20`, `Salsa20`, `XSalsa20`, `Rabbit`, or `Hc128` - the lifecycle is identical (no block mode or padding). These are **raw, confidentiality-only** ciphers: never reuse a `(key, nonce)` pair, and pair with a MAC such as `Poly1305` or prefer an AEAD construction when you need integrity.
+Swap `ChaCha20` for `XChaCha20`, `Salsa20`, `XSalsa20`, `Rabbit`, or `Hc128` - the lifecycle is identical (no block mode or padding), including the rule that the parameterless `CreateEncryptor()` / `CreateDecryptor()` allow one transform per nonce. These are **raw, confidentiality-only** ciphers: never reuse a `(key, nonce)` pair, and pair with a MAC such as `Poly1305` or prefer an AEAD construction when you need integrity.
 
 ### AEAD - AES-GCM via `AesBlockCipher` + `GcmModeTransform`
 

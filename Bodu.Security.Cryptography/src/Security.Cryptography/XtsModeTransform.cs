@@ -118,7 +118,8 @@ public sealed class XtsModeTransform
     /// </param>
     /// <exception cref="ArgumentNullException">Any argument is <see langword="null" />.</exception>
     /// <exception cref="ArgumentException">
-    /// Block sizes differ, or <paramref name="tweak" /> length does not equal the block size.
+    /// <paramref name="dataCipher" /> does not have a 128-bit block, the block sizes differ, or
+    /// <paramref name="tweak" /> length does not equal the block size.
     /// </exception>
     public XtsModeTransform(IBlockCipher dataCipher, IBlockCipher tweakCipher, byte[] tweak)
     {
@@ -151,10 +152,17 @@ public sealed class XtsModeTransform
 
     /// <inheritdoc />
     /// <remarks>
+    /// <para>
     /// The tweaks for a run of up to 4 KiB are computed first, then the run is XORed with them, encrypted or decrypted
     /// with one multi-block call, and XORed with them again; the output is identical to transforming a block at a time.
     /// <paramref name="output" /> may be the same memory as <paramref name="input" />. The tweak and scratch buffers
     /// are cleared before the call returns.
+    /// </para>
+    /// <para>
+    /// Unlike the chaining modes, XTS does not continue from the previous call: every call starts again at the first
+    /// block of the data unit the tweak names. One call must therefore cover a whole data unit; splitting a sector
+    /// across two calls transforms the second part wrongly, and no error is raised.
+    /// </para>
     /// </remarks>
     [SkipLocalsInit]
     public int Transform(ReadOnlySpan<byte> input, Span<byte> output, bool encrypt)

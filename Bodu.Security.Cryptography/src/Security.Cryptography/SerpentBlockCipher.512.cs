@@ -59,6 +59,9 @@ public sealed class Serpent512Cipher
     /// </summary>
     /// <param name="key">The 512-bit (64-byte) key used for encryption and decryption.</param>
     /// <param name="tweak">The 128-bit (16-byte) tweak value used to modify the block cipher behavior.</param>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="key" /> is not 64 bytes long, or <paramref name="tweak" /> is not 16 bytes long.
+    /// </exception>
     public Serpent512Cipher(ReadOnlySpan<byte> key, ReadOnlySpan<byte> tweak)
         : base(key, tweak) { }
 

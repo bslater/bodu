@@ -14,7 +14,7 @@ and ASCON-CXOF128 are the XOF members of the ASCON family, standardized in NIST 
 | Type | Algorithm name | Customization | Typical use |
 |---|---|---|---|
 | <xref:Bodu.Security.Cryptography.AsconXof128> | `ASCON-XOF128` | None | General-purpose variable-length output, key derivation, stream seed. |
-| <xref:Bodu.Security.Cryptography.AsconCxof128> | `ASCON-CXOF128` | Optional customization string | Multiple independent output functions from the same primitive. |
+| <xref:Bodu.Security.Cryptography.AsconCxof128> | `ASCON-CXOF128` | Customization string (`Customize`; an empty span for the empty string) | Multiple independent output functions from the same primitive. |
 
 ## Fixed parameters
 
@@ -22,9 +22,9 @@ and ASCON-CXOF128 are the XOF members of the ASCON family, standardized in NIST 
 |---|---|---|
 | State size | 320 bits (40 bytes) | Shared across the full ASCON family. |
 | Rate (absorption and squeeze block) | 64 bits (8 bytes) | Eight bytes processed per permutation call. |
-| Absorption rounds | 8 (Ascon-p8) | Applied after each absorbed block. |
+| Absorption rounds | 12 (Ascon-p12) | Applied after each absorbed block. |
 | Transition permutation | 12 (Ascon-p12) | Always applied once when switching from absorb to squeeze. |
-| Squeeze permutation | 8 (Ascon-p8) | Applied between successive squeeze blocks. |
+| Squeeze permutation | 12 (Ascon-p12) | Applied between successive squeeze blocks. |
 | Output | Variable | Any positive multiple of 8 bits. |
 | Security level | 128 bits | For outputs of at least 32 bytes. Shorter outputs cap collision resistance at half the output length, as with any XOF. |
 
@@ -37,8 +37,8 @@ Both types follow the same three-phase lifecycle:
 3. **Reset** - call `Initialize()` to discard all state and start a fresh message.
 
 `Absorb` after `Squeeze` has started throws `InvalidOperationException`. Call `Initialize()` to
-reset. For `AsconCxof128`, there is a fourth phase before absorption: an optional call to
-`Customize`.
+reset. For `AsconCxof128`, there is a fourth phase before absorption: a call to `Customize`,
+which SP 800-232 always performs (see Pattern 7).
 
 ## Pattern 1 - producing output of a fixed length
 
@@ -150,7 +150,7 @@ seed - effectively a stream cipher output.
 
 ## Pattern 6 - CXOF128 with a customization string
 
-`AsconCxof128` extends the XOF lifecycle with an optional customization step before absorption.
+`AsconCxof128` extends the XOF lifecycle with a customization step before absorption.
 Two instances with different customization strings produce completely independent outputs for the
 same absorbed input.
 
@@ -176,25 +176,27 @@ byte[] macKey = macXof.GetHash(32);
 // encKey != macKey, even though message is identical.
 ```
 
-Call `Customize` **before** any call to `Absorb`. Calling it afterwards, or calling it a second
-time on the same instance, throws `InvalidOperationException`. Call `Initialize()` to reset and
+Call `Customize` **before** any call to `Absorb`. Calling it after `Absorb`, or calling it a
+second time on the same instance, throws `InvalidOperationException`. Call `Initialize()` to reset and
 allow a fresh `Customize`.
 
 ### Customization string semantics
 
-The customization string is absorbed into the sponge using the standard Ascon padding rule, and
-then a domain-separation constant (XOR of 1 into state word S₄) is injected before the message
-absorption phase begins. This ensures:
+`Customize` absorbs the bit length of the customization string `Z`, encoded as a 64-bit
+little-endian integer, then the bytes of `Z`, and closes the phase with the standard Ascon
+padding and the 12-round permutation before message absorption begins. Together with
+ASCON-CXOF128's own initialization vector, which differs from ASCON-XOF128's, this ensures:
 
 - Two instances with different customization strings produce unrelated output.
-- An instance with an empty customization string produces output that differs from
-  `AsconXof128` for the same message (because the domain-separation constant is always applied).
+- ASCON-CXOF128 output never equals `AsconXof128` output for the same message, whatever the
+  customization string, the empty string included.
 - The customization string may be public - it is not a secret.
 
 ## Pattern 7 - empty customization string (not the same as no customization)
 
-Calling `Customize(ReadOnlySpan<byte>.Empty)` still applies the ASCON-CXOF128 domain separation.
-The output differs from `AsconXof128` even with no customization bytes:
+Calling `Customize(ReadOnlySpan<byte>.Empty)` still absorbs the length prefix of the empty
+string, as SP 800-232 requires. The output differs from `AsconXof128` even with no customization
+bytes:
 
 ```csharp
 using Bodu.Security.Cryptography;
@@ -202,7 +204,7 @@ using Bodu.Security.Cryptography;
 byte[] message = [0x01, 0x02, 0x03, 0x04];
 
 using AsconCxof128 cxof = new AsconCxof128();
-cxof.Customize(ReadOnlySpan<byte>.Empty);   // empty string - domain separation still applied
+cxof.Customize(ReadOnlySpan<byte>.Empty);   // empty string - its length prefix is still absorbed
 cxof.Absorb(message);
 byte[] cxofOutput = cxof.GetHash(32);
 
@@ -211,9 +213,10 @@ byte[] xofOutput = AsconXof128.HashData(message, 32);
 // cxofOutput != xofOutput
 ```
 
-If `Customize` is not called at all, `AsconCxof128` operates without the customization domain
-separation - identically to a plain `AsconXof128` for the same absorbed input. The
-customization step is optional by design.
+If `Customize` is not called at all, `AsconCxof128` absorbs no customization block, so its
+output matches neither ASCON-CXOF128 with the empty string nor `AsconXof128` (the two start from
+different initialization vectors). SP 800-232 always absorbs `Z`, so call `Customize` - with an
+empty span for the empty string - whenever the output must match the standard.
 
 ## Pattern 8 - reusing an instance
 

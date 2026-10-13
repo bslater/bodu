@@ -221,11 +221,15 @@ public abstract class TweakableSymmetricAlgorithm
     /// <param name="tweak">The tweak value that modifies the decryption process.</param>
     /// <returns>An <see cref="ICryptoTransform" /> instance that can be used to perform the decryption.</returns>
     /// <exception cref="ArgumentNullException">
-    /// Thrown if <paramref name="rgbKey" />, <paramref name="rgbIV" />, or <paramref name="tweak" /> is
-    /// <see langword="null" />.
+    /// Thrown if <paramref name="rgbKey" /> or <paramref name="tweak" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="CryptographicException">
-    /// Thrown if any input does not conform to the expected size, format, or algorithm-specific constraints.
+    /// Thrown if any input does not conform to the expected size, format, or algorithm-specific constraints, including
+    /// a <see langword="null" /> <paramref name="rgbIV" /> for a mode other than ECB.
+    /// </exception>
+    /// <exception cref="NotSupportedException">
+    /// Thrown if the configured block mode cannot be built; for the shipped Threefish and Serpent types, any
+    /// <c>BlockMode</c> other than ECB, CBC, CFB, OFB, or CTR.
     /// </exception>
     /// <remarks>
     /// This method must be implemented by derived types to support decryption with a tweak, as required by tweakable
@@ -249,11 +253,15 @@ public abstract class TweakableSymmetricAlgorithm
     /// <param name="tweak">The tweak value that modifies the encryption process.</param>
     /// <returns>An <see cref="ICryptoTransform" /> instance that can be used to perform the encryption.</returns>
     /// <exception cref="ArgumentNullException">
-    /// Thrown if <paramref name="rgbKey" />, <paramref name="rgbIV" />, or <paramref name="tweak" /> is
-    /// <see langword="null" />.
+    /// Thrown if <paramref name="rgbKey" /> or <paramref name="tweak" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="CryptographicException">
-    /// Thrown if any input does not conform to the expected size, format, or algorithm-specific constraints.
+    /// Thrown if any input does not conform to the expected size, format, or algorithm-specific constraints, including
+    /// a <see langword="null" /> <paramref name="rgbIV" /> for a mode other than ECB.
+    /// </exception>
+    /// <exception cref="NotSupportedException">
+    /// Thrown if the configured block mode cannot be built; for the shipped Threefish and Serpent types, any
+    /// <c>BlockMode</c> other than ECB, CBC, CFB, OFB, or CTR.
     /// </exception>
     /// <remarks>
     /// This method must be implemented by derived types to support encryption with a tweak, as required by tweakable

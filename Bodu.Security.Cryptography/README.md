@@ -2,7 +2,7 @@
 
 > **API stability - Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
 
-Managed implementations of modern and legacy cryptographic primitives for .NET 8 and later. The library provides block ciphers, AEAD modes, hash and MAC functions, padding schemes, asymmetric key agreement and signatures (including the FIPS 203/204 post-quantum algorithms), and the supporting transform infrastructure to compose them. All algorithms are exposed through the standard `SymmetricAlgorithm` / `HashAlgorithm` / `KeyedHashAlgorithm` / `AsymmetricAlgorithm` contracts so they slot into existing BCL pipelines (including `CryptoStream`).
+Managed implementations of modern and legacy cryptographic primitives for .NET 8 and later. The library provides block ciphers, AEAD modes, hash and MAC functions, padding schemes, asymmetric key agreement and signatures (including the FIPS 203/204 post-quantum algorithms), and the supporting transform infrastructure to compose them. Most algorithms are exposed through the standard `SymmetricAlgorithm` / `HashAlgorithm` / `AsymmetricAlgorithm` contracts so they slot into existing BCL pipelines (including `CryptoStream`); the keyed hashes are `HashAlgorithm`s with a `Key` property, through Bodu's `KeyedBlockHashAlgorithm` and `KeyedDeferredFinalBlockHashAlgorithm` rather than the BCL `KeyedHashAlgorithm`, and the stream ciphers, AEAD transforms, ASCON XOFs, KDFs, and Merkle tree have their own shapes.
 
 It also provides an RFC 6962 [Merkle tree](#merkle-trees) with inclusion and consistency proofs, built over any `HashAlgorithm` and able to hash a large input's leaves on every core.
 
@@ -96,10 +96,10 @@ PKCS#7, ANSI X9.23, ISO 7816-4, ISO 10126, zero-padding, and `None`. All are exe
 
 | Algorithm | Type | Standard | Output (bits) | Status | Notes |
 |---|---|---|---:|---|---|
-| BLAKE2b / BLAKE2s | hash + optional MAC | RFC 7693 | 8-512 / 8-256 | Recommended | Keyed mode is a one-step HMAC alternative |
-| BLAKE3 | hash + XOF | BLAKE3 reference | 256 (extendable) | Recommended | Tree hashing; optionally [multithreaded](#multithreading) for large inputs |
+| BLAKE2b / BLAKE2s | hash + optional MAC | RFC 7693 | 128, 160, 192, 224, 256, 384, 512 / 128, 160, 192, 224, 256 | Recommended | Keyed mode is a one-step HMAC alternative |
+| BLAKE3 | hash | BLAKE3 reference | 256 (fixed) | Recommended | Tree hashing; optionally [multithreaded](#multithreading) for large inputs |
 | Skein 256 / 512 / 1024 | hash with UBI tweak | Skein 1.3 | up to state size | Recommended for tweakable use | SHA-3 candidate |
-| Ascon-Hash256 / Ascon-HashA256 | hash | NIST SP 800-232 | 256 | Recommended for lightweight | Conservative (Ascon-p12) vs. fast (Ascon-p8) variants |
+| Ascon-Hash256 / Ascon-HashA256 | hash | NIST SP 800-232 (Hash256); Ascon v1.2 (HashA256, non-standard) | 256 | Recommended for lightweight | Conservative (Ascon-p12) vs. fast (Ascon-p8) variants |
 | Ascon-XOF128 / Ascon-CXOF128 | XOF / customisable XOF | NIST SP 800-232 | extendable | Recommended for lightweight | Sponge-mode streaming output |
 | SHAKE128 / SHAKE256 | XOF | NIST FIPS 202 | extendable | Recommended | |
 | Poly1305 | one-time MAC | RFC 8439 | 128 | Recommended (one-time key only) | Reuse with same key is rejected at runtime |
@@ -173,8 +173,8 @@ Static, span-based, and built on the BCL one-shot HMAC (`OtpHashAlgorithm` selec
 
 - **AEAD transforms** (`IAeadBlockCipherModeTransform`) are single-use per message. Each implementation tracks `_completed`, `_aadProcessed`, `_disposed`, rejects double-Encrypt/Decrypt with `InvalidOperationException`, rejects post-disposal access with `ObjectDisposedException`, compares tags with `CryptographicOperations.FixedTimeEquals`, and clears the plaintext destination on tag-verification failure.
 - **`BlockCipherTransform`** owns and disposes the underlying `IBlockCipher`. Single-use; rejects `TransformBlock` after `TransformFinalBlock`. See the class XML remarks for the full ownership contract.
-- **`Poly1305`** is a one-time MAC; the same instance throws `CryptographicException` on a second `ComputeHash` unless `Key` is explicitly reassigned. Disposing clears `_acc`, `_r`, `_s`, and `_key`.
-- **`Blake3`** clears each `uint[]` on the chunk-CV stack on Dispose so per-subtree chaining values do not survive in heap memory.
+- **`Poly1305`** is a one-time MAC; the same instance throws `CryptographicException` on a second `ComputeHash` unless `Key` is explicitly reassigned. Disposing clears the key and the accumulator state.
+- **`Blake3`** clears its chaining-value stack on Dispose so per-subtree chaining values do not survive in heap memory.
 - **GCM** rejects message lengths that would force its 32-bit `inc32` counter to wrap past `0xFFFFFFFF` while another block remains to be processed.
 
 ## Hardware acceleration
@@ -196,6 +196,7 @@ These primitives dispatch to vector, carry-less-multiply or wide-multiply instru
 | Threefish-256 / 512 / 1024 | AVX-512 | - |
 | Argon2 | AVX2, else SSSE3 | AdvSimd with the general registers (two rows or columns at a time) |
 | scrypt | SSE2 | - |
+| ML-KEM, ML-DSA (transforms, products, and four-way SHAKE sampling) | AVX2 (the four-way Keccak rotating with AVX-512VL where available) | - |
 
 The 16-wide ChaCha20, Salsa20 and BLAKE3 kernels, and the 8-wide Poly1305 kernel, run where .NET accelerates 512-bit vectors (`Vector512.IsHardwareAccelerated`); other AVX-512 processors run the next narrower kernels.
 

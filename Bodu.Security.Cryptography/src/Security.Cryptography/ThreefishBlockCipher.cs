@@ -23,12 +23,11 @@ namespace Bodu.Security.Cryptography;
 /// specific Threefish variant, along with their own <see cref="Encrypt" /> and <see cref="Decrypt" /> implementations.
 /// </para>
 /// <para>
-/// External callers cannot derive new variants: the constructor and protected members are scoped
-/// <c>private protected</c>, limiting derivation to the three variants that ship with this library. Use
-/// <see cref="Threefish256Cipher" />, <see cref="Threefish512Cipher" />, or <see cref="Threefish1024Cipher" /> for the
-/// raw block primitive, or one of the higher-level <see cref="Threefish256" />, <see cref="Threefish512" />, or
-/// <see cref="Threefish1024" /> wrappers for the standard
-/// <see cref="System.Security.Cryptography.SymmetricAlgorithm" /> contract.
+/// External callers cannot derive new variants: the constructor is scoped <c>private protected</c>, limiting derivation
+/// to the three variants that ship with this library. Use <see cref="Threefish256Cipher" />,
+/// <see cref="Threefish512Cipher" />, or <see cref="Threefish1024Cipher" /> for the raw block primitive, or one of the
+/// higher-level <see cref="Threefish256" />, <see cref="Threefish512" />, or <see cref="Threefish1024" /> wrappers for
+/// the standard <see cref="System.Security.Cryptography.SymmetricAlgorithm" /> contract.
 /// </para>
 /// </remarks>
 /// <seealso href="../guides/cryptography/composing-primitives.html">Composing primitives - direct use vs.

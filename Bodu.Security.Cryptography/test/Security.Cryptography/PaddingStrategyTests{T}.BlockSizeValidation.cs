@@ -11,8 +11,8 @@ namespace Bodu.Security.Cryptography;
 /// <summary>
 /// Pins the <see cref="IPaddingStrategy" /> contract for invalid <c>blockSize</c> values across
 /// both <c>Pad</c> and <c>Unpad</c>. Every implementation must throw
-/// <see cref="ArgumentOutOfRangeException" /> when <c>blockSize</c> is not a positive multiple of
-/// 8 - rather than letting the <c>blockSize / 8</c> integer division surface a
+/// <see cref="CryptographicException" /> when <c>blockSize</c> is not a positive multiple of
+/// 8, rather than letting the <c>blockSize / 8</c> integer division surface a
 /// <see cref="DivideByZeroException" />, or silently succeeding for inputs whose length happens to
 /// be a multiple of <c>|blockSize|</c>.
 /// </summary>
@@ -140,6 +140,26 @@ public abstract partial class PaddingStrategyTests<TPadding>
         {
             _ = padding.Pad(input, blockSize);
         });
+    }
+
+    /// <summary>
+    /// Verifies that the <see cref="CryptographicException" /> thrown by <see cref="IPaddingStrategy.Pad" /> for a
+    /// <c>blockSize</c> that is not a multiple of 8 states the rule, naming the divisor, rather than carrying only the
+    /// parameter name or the text of an unrelated hash-size rule.
+    /// </summary>
+    [TestMethod]
+    public void Pad_WhenBlockSizeIsNotMultipleOfEight_ShouldThrowWithMessageStatingRule()
+    {
+        TPadding padding = CreatePadding();
+        byte[] input = new byte[BlockSize];
+
+        var ex = Assert.ThrowsExactly<CryptographicException>(() =>
+        {
+            _ = padding.Pad(input, 12);
+        });
+
+        Assert.Contains("multiple of 8", ex.Message);
+        Assert.DoesNotContain("hash size", ex.Message);
     }
 
     /// <summary>

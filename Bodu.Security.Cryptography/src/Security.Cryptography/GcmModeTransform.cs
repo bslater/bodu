@@ -57,7 +57,7 @@ namespace Bodu.Security.Cryptography;
 /// are dead code through the public <see cref="ReadOnlySpan{Byte}" /> surface today (the <see cref="int" />-typed
 /// length caps inputs at ≈ 2 GiB, far below either limit) but document the invariant at the call site and protect any
 /// future surface that admits longer inputs. The 32-bit counter is separately guarded against wrapping past
-/// <c>0xFFFFFFFF</c> - see <c>Encrypt_WhenCounterWouldWrapPast0xFFFFFFFF</c>.
+/// <c>0xFFFFFFFF</c>.
 /// </para>
 /// <para>
 /// <strong>When to use GCM.</strong> The default modern AEAD mode - single-pass, parallelisable, and
@@ -148,8 +148,8 @@ public sealed class GcmModeTransform
     /// <paramref name="cipher" /> or <paramref name="nonce" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="ArgumentException">
-    /// <paramref name="cipher" /> does not have a 16-byte block size, or <paramref name="nonce" /> is not exactly
-    /// <see cref="NonceSize" /> bytes.
+    /// <paramref name="cipher" /> does not have a 16-byte block size, or <paramref name="nonce" /> is not exactly 12
+    /// bytes.
     /// </exception>
     public GcmModeTransform(IBlockCipher cipher, byte[] nonce)
         : this(
@@ -167,8 +167,8 @@ public sealed class GcmModeTransform
     /// <param name="nonce">The 96-bit (12-byte) nonce. Must be unique per key.</param>
     /// <exception cref="ArgumentNullException"><paramref name="cipher" /> is <see langword="null" />.</exception>
     /// <exception cref="ArgumentException">
-    /// <paramref name="cipher" /> does not have a 16-byte block size, or <paramref name="nonce" /> is not exactly
-    /// <see cref="NonceSize" /> bytes.
+    /// <paramref name="cipher" /> does not have a 16-byte block size, or <paramref name="nonce" /> is not exactly 12
+    /// bytes.
     /// </exception>
     public GcmModeTransform(IBlockCipher cipher, ReadOnlySpan<byte> nonce)
         : this(cipher, nonce, nameof(nonce), useInitialCounterBlock: false)
@@ -182,8 +182,8 @@ public sealed class GcmModeTransform
     /// <param name="nonce">The 96-bit (12-byte) nonce. Must be unique per key.</param>
     /// <exception cref="ArgumentNullException"><paramref name="cipher" /> is <see langword="null" />.</exception>
     /// <exception cref="ArgumentException">
-    /// <paramref name="cipher" /> does not have a 16-byte block size, or <paramref name="nonce" /> is not exactly
-    /// <see cref="NonceSize" /> bytes.
+    /// <paramref name="cipher" /> does not have a 16-byte block size, or <paramref name="nonce" /> is not exactly 12
+    /// bytes.
     /// </exception>
     /// <remarks>
     /// Convenience overload over the span form for callers using the <see cref="Nonce" /> value type - typically

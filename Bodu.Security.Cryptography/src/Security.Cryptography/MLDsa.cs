@@ -38,8 +38,8 @@ namespace Bodu.Security.Cryptography;
 /// pre-hash variant HashML-DSA is deliberately out of scope for this version. Only the raw FIPS 204 byte encodings are
 /// supported: the 32-byte seed ξ via <see cref="ImportPrivateSeed" /> and the encoded keys via
 /// <see cref="ImportPrivateKey" /> (which cross-checks the embedded public-key hash) and <see cref="ImportPublicKey" />
-/// . The PKCS#8 / SubjectPublicKeyInfo members inherited from <see cref="AsymmetricAlgorithm" /> are not implemented
-/// and retain their base (throwing) behavior.
+/// . The PKCS#8 / SubjectPublicKeyInfo and XML members inherited from <see cref="AsymmetricAlgorithm" /> are overridden
+/// to throw <see cref="NotSupportedException" />.
 /// </para>
 /// <para>
 /// <strong>Memory.</strong> When a key is generated or imported, the instance also keeps the values FIPS 204 derives

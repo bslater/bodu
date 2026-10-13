@@ -106,6 +106,11 @@ public sealed class HpkeSuite
     /// Gets the DHKEM(X25519, HKDF-SHA256) / HKDF-SHA256 / ChaCha20Poly1305 suite.
     /// </summary>
     /// <value>The pre-configured suite <c>0x0020, 0x0001, 0x0003</c>.</value>
+    /// <remarks>
+    /// This suite's AEAD is the platform's <see cref="System.Security.Cryptography.ChaCha20Poly1305" />, so sealing or
+    /// opening with it throws <see cref="PlatformNotSupportedException" /> where
+    /// <see cref="System.Security.Cryptography.ChaCha20Poly1305.IsSupported" /> is <see langword="false" />.
+    /// </remarks>
     public static HpkeSuite X25519_HkdfSha256_ChaCha20Poly1305 { get; } =
         new(HpkeKem.X25519HkdfSha256, HpkeKdf.HkdfSha256, HpkeAead.ChaCha20Poly1305);
 
