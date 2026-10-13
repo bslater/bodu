@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
 
 namespace Bodu.Text.Serialization;
@@ -18,6 +19,9 @@ namespace Bodu.Text.Serialization;
 /// </remarks>
 internal static class FlatBinding
 {
+    /// <summary>The boxed default value of each value type a default test has met.</summary>
+    private static readonly ConcurrentDictionary<Type, object> s_defaults = new();
+
     /// <summary>
     /// Determines whether a type is, or implements, a dictionary keyed by <see cref="string" />.
     /// </summary>
@@ -109,13 +113,16 @@ internal static class FlatBinding
     /// </summary>
     /// <param name="value">The value to test.</param>
     /// <returns><see langword="true" /> when the value is a value type's default.</returns>
+    /// <remarks>
+    /// The default of each value type is boxed once and kept, so a test allocates nothing once its type has been met.
+    /// </remarks>
     private static bool IsDefaultValue(object value)
     {
         Type type = value.GetType();
         if (!type.IsValueType)
             return false;
 
-        object? defaultValue = Activator.CreateInstance(type);
+        object defaultValue = s_defaults.GetOrAdd(type, static valueType => Activator.CreateInstance(valueType)!);
         return value.Equals(defaultValue);
     }
 
