@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Text_DotEnv_DotEnvSerializer" data-uid="Bodu.Text.DotEnv.DotEnvSerializer" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 DotEnvSerializer Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7cda729e1b5ccd06a091d5e883a52c86284ad7b7/Bodu.Text.DotEnv/src/Text.DotEnv/DotEnvSerializer.Binder.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/28ff0998cedbb058e1d43b4b3e73023f949a86e2/Bodu.Text.DotEnv/src/Text.DotEnv/DotEnvSerializer.Binder.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -104,7 +104,7 @@ DotEnvSerializer Class
   <dl><dt>Assembly</dt><dd>Bodu.Text.DotEnv.dll</dd></dl>
   <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Text.DotEnv">Bodu.Text.DotEnv</a> <span class="bodu-package-version">1.3.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/7cda729e1b5ccd06a091d5e883a52c86284ad7b7/Bodu.Text.DotEnv/src/Text.DotEnv/DotEnvSerializer.Binder.cs">DotEnvSerializer.Binder.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/28ff0998cedbb058e1d43b4b3e73023f949a86e2/Bodu.Text.DotEnv/src/Text.DotEnv/DotEnvSerializer.Binder.cs">DotEnvSerializer.Binder.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Provides methods for serializing .NET objects to DotEnv text and deserializing DotEnv text into .NET objects, shaped
@@ -165,9 +165,16 @@ after <code>System.Text.Json</code>'s <code>JsonSerializer</code>.</p>
   <div class="markdown level0 remarks"><p>
 DotEnv models a flat, ordered object of string-valued keys, so the serializer maps a POCO (or an
 <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.idictionary-2">IDictionary&lt;TKey, TValue&gt;</a> keyed by <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>) whose members are strings or types
-convertible from a string. Property names honour <a class="xref" href="Bodu.Text.DotEnv.DotEnvSerializerOptions.html#Bodu_Text_DotEnv_DotEnvSerializerOptions_PropertyNamingPolicy">PropertyNamingPolicy</a> and the
+convertible from a string. A dictionary that implements only that generic interface, and not the non-generic
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.idictionary">IDictionary</a>, is written and read through it, as a
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.dictionary-2">Dictionary&lt;TKey, TValue&gt;</a> is. Property names honour
+<a class="xref" href="Bodu.Text.DotEnv.DotEnvSerializerOptions.html#Bodu_Text_DotEnv_DotEnvSerializerOptions_PropertyNamingPolicy">PropertyNamingPolicy</a> and the
 <a class="xref" href="Bodu.Text.Serialization.PropertyNameAttribute.html">PropertyNameAttribute</a> family; the callback interfaces (<a class="xref" href="Bodu.Text.Serialization.IOnSerializing.html">IOnSerializing</a>
-and its siblings) fire around the mapping.
+and its siblings) fire around the mapping. Each member name maps to one key, its most derived declaration: a
+property or field hidden with the <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/operators/new-operator">new</a> modifier is neither written nor read. A type that maps two
+members to one key is rejected with <a class="xref" href="Bodu.Text.DotEnv.DotEnvSerializationException.html">DotEnvSerializationException</a> before anything is read or written.
+A member declared with the C# <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/required">required</a> keyword is required, as one marked
+<a class="xref" href="Bodu.Text.Serialization.RequiredAttribute.html">RequiredAttribute</a> is: reading a document without its key throws.
 </p>
 <p>
 The asynchronous stream overloads buffer the entire document rather than streaming it; only the stream copy is
@@ -185,7 +192,7 @@ asynchronous.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_DotEnv_DotEnvSerializer_DeserializeAsync__1_System_IO_Stream_Bodu_Text_DotEnv_DotEnvSerializerOptions_System_Threading_CancellationToken_" data-uid="Bodu.Text.DotEnv.DotEnvSerializer.DeserializeAsync``1(System.IO.Stream,Bodu.Text.DotEnv.DotEnvSerializerOptions,System.Threading.CancellationToken)">
   DeserializeAsync&lt;T&gt;(Stream, DotEnvSerializerOptions?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7cda729e1b5ccd06a091d5e883a52c86284ad7b7/Bodu.Text.DotEnv/src/Text.DotEnv/DotEnvSerializer.Binder.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/28ff0998cedbb058e1d43b4b3e73023f949a86e2/Bodu.Text.DotEnv/src/Text.DotEnv/DotEnvSerializer.Binder.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -256,7 +263,7 @@ is abstract or has no public parameterless constructor.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_DotEnv_DotEnvSerializer_Deserialize__1_System_IO_Stream_Bodu_Text_DotEnv_DotEnvSerializerOptions_" data-uid="Bodu.Text.DotEnv.DotEnvSerializer.Deserialize``1(System.IO.Stream,Bodu.Text.DotEnv.DotEnvSerializerOptions)">
   Deserialize&lt;T&gt;(Stream, DotEnvSerializerOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7cda729e1b5ccd06a091d5e883a52c86284ad7b7/Bodu.Text.DotEnv/src/Text.DotEnv/DotEnvSerializer.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/28ff0998cedbb058e1d43b4b3e73023f949a86e2/Bodu.Text.DotEnv/src/Text.DotEnv/DotEnvSerializer.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -323,7 +330,7 @@ is abstract or has no public parameterless constructor.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_DotEnv_DotEnvSerializer_Deserialize__1_System_ReadOnlySpan_System_Byte__Bodu_Text_DotEnv_DotEnvSerializerOptions_" data-uid="Bodu.Text.DotEnv.DotEnvSerializer.Deserialize``1(System.ReadOnlySpan{System.Byte},Bodu.Text.DotEnv.DotEnvSerializerOptions)">
   Deserialize&lt;T&gt;(ReadOnlySpan&lt;byte&gt;, DotEnvSerializerOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7cda729e1b5ccd06a091d5e883a52c86284ad7b7/Bodu.Text.DotEnv/src/Text.DotEnv/DotEnvSerializer.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/28ff0998cedbb058e1d43b4b3e73023f949a86e2/Bodu.Text.DotEnv/src/Text.DotEnv/DotEnvSerializer.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -387,7 +394,7 @@ is abstract or has no public parameterless constructor.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_DotEnv_DotEnvSerializer_Deserialize__1_System_String_Bodu_Text_DotEnv_DotEnvSerializerOptions_" data-uid="Bodu.Text.DotEnv.DotEnvSerializer.Deserialize``1(System.String,Bodu.Text.DotEnv.DotEnvSerializerOptions)">
   Deserialize&lt;T&gt;(string, DotEnvSerializerOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7cda729e1b5ccd06a091d5e883a52c86284ad7b7/Bodu.Text.DotEnv/src/Text.DotEnv/DotEnvSerializer.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/28ff0998cedbb058e1d43b4b3e73023f949a86e2/Bodu.Text.DotEnv/src/Text.DotEnv/DotEnvSerializer.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -454,7 +461,7 @@ is abstract or has no public parameterless constructor.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_DotEnv_DotEnvSerializer_SerializeAsync__1_System_IO_Stream___0_Bodu_Text_DotEnv_DotEnvSerializerOptions_System_Threading_CancellationToken_" data-uid="Bodu.Text.DotEnv.DotEnvSerializer.SerializeAsync``1(System.IO.Stream,``0,Bodu.Text.DotEnv.DotEnvSerializerOptions,System.Threading.CancellationToken)">
   SerializeAsync&lt;T&gt;(Stream, T, DotEnvSerializerOptions?, CancellationToken)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7cda729e1b5ccd06a091d5e883a52c86284ad7b7/Bodu.Text.DotEnv/src/Text.DotEnv/DotEnvSerializer.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/28ff0998cedbb058e1d43b4b3e73023f949a86e2/Bodu.Text.DotEnv/src/Text.DotEnv/DotEnvSerializer.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -525,7 +532,7 @@ key, and the writer's <a class="xref" href="https://learn.microsoft.com/dotnet/a
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_DotEnv_DotEnvSerializer_Serialize__1_System_Buffers_IBufferWriter_System_Byte____0_Bodu_Text_DotEnv_DotEnvSerializerOptions_" data-uid="Bodu.Text.DotEnv.DotEnvSerializer.Serialize``1(System.Buffers.IBufferWriter{System.Byte},``0,Bodu.Text.DotEnv.DotEnvSerializerOptions)">
   Serialize&lt;T&gt;(IBufferWriter&lt;byte&gt;, T, DotEnvSerializerOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7cda729e1b5ccd06a091d5e883a52c86284ad7b7/Bodu.Text.DotEnv/src/Text.DotEnv/DotEnvSerializer.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/28ff0998cedbb058e1d43b4b3e73023f949a86e2/Bodu.Text.DotEnv/src/Text.DotEnv/DotEnvSerializer.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -587,7 +594,7 @@ key, and the writer's <a class="xref" href="https://learn.microsoft.com/dotnet/a
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_DotEnv_DotEnvSerializer_Serialize__1___0_Bodu_Text_DotEnv_DotEnvSerializerOptions_" data-uid="Bodu.Text.DotEnv.DotEnvSerializer.Serialize``1(``0,Bodu.Text.DotEnv.DotEnvSerializerOptions)">
   Serialize&lt;T&gt;(T, DotEnvSerializerOptions?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/7cda729e1b5ccd06a091d5e883a52c86284ad7b7/Bodu.Text.DotEnv/src/Text.DotEnv/DotEnvSerializer.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/28ff0998cedbb058e1d43b4b3e73023f949a86e2/Bodu.Text.DotEnv/src/Text.DotEnv/DotEnvSerializer.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -671,7 +678,7 @@ key, and the writer's <a class="xref" href="https://learn.microsoft.com/dotnet/a
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 7cda729 · Built: 2026-10-13 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 28ff099 · Built: 2026-10-13 (UTC)</span>
         </div>
       </div>
     </footer>
