@@ -64,4 +64,7 @@
   <data name="Arg_Invalid_KeyPrefixWhiteSpace" xml:space="preserve">
     <value>The cache key prefix must be either null or a non-empty, non-white-space value.</value>
   </data>
+  <data name="Op_Invalid_DistributedCacheOptions" xml:space="preserve">
+    <value>Distributed exchange-rate cache options are invalid.</value>
+  </data>
 </root>

@@ -73,4 +73,7 @@
   <data name="Arg_Invalid_YahooOptionsSymbolFormat" xml:space="preserve">
     <value>The Yahoo options symbol format must be specified and contain the '{from}' and '{to}' placeholders.</value>
   </data>
+  <data name="Op_Invalid_YahooOptions" xml:space="preserve">
+    <value>Yahoo exchange-rate options are invalid.</value>
+  </data>
 </root>

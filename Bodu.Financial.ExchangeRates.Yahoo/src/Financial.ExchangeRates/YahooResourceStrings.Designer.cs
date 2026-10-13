@@ -104,5 +104,14 @@ namespace Bodu.Financial.ExchangeRates {
                 return ResourceManager.GetString("Arg_Invalid_YahooOptionsSymbolFormat", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Yahoo exchange-rate options are invalid..
+        /// </summary>
+        internal static string Op_Invalid_YahooOptions {
+            get {
+                return ResourceManager.GetString("Op_Invalid_YahooOptions", resourceCulture);
+            }
+        }
     }
 }

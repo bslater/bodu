@@ -79,4 +79,7 @@
   <data name="IO_KeyNotFound_ImfRate" xml:space="preserve">
     <value>No IMF exchange rate is available for {0}/{1} on {2}.</value>
   </data>
+  <data name="Op_Invalid_ImfOptions" xml:space="preserve">
+    <value>IMF exchange-rate options are invalid.</value>
+  </data>
 </root>

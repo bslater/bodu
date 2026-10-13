@@ -122,5 +122,14 @@ namespace Bodu.Financial.ExchangeRates {
                 return ResourceManager.GetString("Arg_Invalid_XeOptionsAuthScriptBaseUrl", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to XE exchange-rate options are invalid..
+        /// </summary>
+        internal static string Op_Invalid_XeOptions {
+            get {
+                return ResourceManager.GetString("Op_Invalid_XeOptions", resourceCulture);
+            }
+        }
     }
 }

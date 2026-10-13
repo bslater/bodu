@@ -79,4 +79,7 @@
   <data name="Arg_Invalid_XeOptionsAuthScriptBaseUrl" xml:space="preserve">
     <value>The XE options authorization script base URL must be specified.</value>
   </data>
+  <data name="Op_Invalid_XeOptions" xml:space="preserve">
+    <value>XE exchange-rate options are invalid.</value>
+  </data>
 </root>

@@ -79,7 +79,7 @@ public static class FixerFinancialServiceBuilderExtensions
             HttpClientName,
             configuration,
             sectionName,
-            "Fixer exchange-rate options are invalid.",
+            FixerResourceStrings.Op_Invalid_FixerOptions,
             configure,
             configureResilience,
             static (client, opts, loggerFactory, timeProvider) =>

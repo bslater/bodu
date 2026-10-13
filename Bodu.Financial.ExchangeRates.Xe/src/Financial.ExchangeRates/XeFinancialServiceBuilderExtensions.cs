@@ -82,7 +82,7 @@ public static class XeFinancialServiceBuilderExtensions
             HttpClientName,
             configuration,
             sectionName,
-            "XE exchange-rate options are invalid.",
+            XeResourceStrings.Op_Invalid_XeOptions,
             configure,
             configureResilience,
             static (client, opts, loggerFactory, timeProvider) =>

@@ -94,4 +94,7 @@
   <data name="Arg_Invalid_BoeOptionsLogLevel" xml:space="preserve">
     <value>The Bank of England options must specify a defined log level for every logging concern.</value>
   </data>
+  <data name="Op_Invalid_BoeOptions" xml:space="preserve">
+    <value>Bank of England exchange-rate options are invalid.</value>
+  </data>
 </root>

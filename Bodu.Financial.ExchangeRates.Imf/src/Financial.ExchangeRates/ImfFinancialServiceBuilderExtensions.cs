@@ -77,7 +77,7 @@ public static class ImfFinancialServiceBuilderExtensions
             HttpClientName,
             configuration,
             sectionName,
-            "IMF exchange-rate options are invalid.",
+            ImfResourceStrings.Op_Invalid_ImfOptions,
             configure,
             configureResilience,
             static (client, opts, loggerFactory, timeProvider) =>

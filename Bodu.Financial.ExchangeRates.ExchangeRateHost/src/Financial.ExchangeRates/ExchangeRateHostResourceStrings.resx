@@ -76,4 +76,7 @@
   <data name="IO_KeyNotFound_ExchangeRateHostRate" xml:space="preserve">
     <value>No exchangerate.host exchange rate is available for {0}/{1} on {2}.</value>
   </data>
+  <data name="Op_Invalid_ExchangeRateHostOptions" xml:space="preserve">
+    <value>exchangerate.host exchange-rate options are invalid.</value>
+  </data>
 </root>

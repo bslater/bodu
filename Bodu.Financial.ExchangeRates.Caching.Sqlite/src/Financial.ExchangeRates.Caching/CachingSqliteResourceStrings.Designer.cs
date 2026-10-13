@@ -77,5 +77,14 @@ namespace Bodu.Financial.ExchangeRates.Caching {
                 return ResourceManager.GetString("Arg_OutOfRange_BusyTimeoutNegative", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to SQLite exchange-rate cache options are invalid..
+        /// </summary>
+        internal static string Op_Invalid_SqliteCacheOptions {
+            get {
+                return ResourceManager.GetString("Op_Invalid_SqliteCacheOptions", resourceCulture);
+            }
+        }
     }
 }

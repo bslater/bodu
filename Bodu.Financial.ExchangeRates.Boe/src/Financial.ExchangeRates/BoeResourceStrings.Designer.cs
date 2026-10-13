@@ -167,5 +167,14 @@ namespace Bodu.Financial.ExchangeRates {
                 return ResourceManager.GetString("Arg_Invalid_BoeOptionsLogLevel", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Bank of England exchange-rate options are invalid..
+        /// </summary>
+        internal static string Op_Invalid_BoeOptions {
+            get {
+                return ResourceManager.GetString("Op_Invalid_BoeOptions", resourceCulture);
+            }
+        }
     }
 }

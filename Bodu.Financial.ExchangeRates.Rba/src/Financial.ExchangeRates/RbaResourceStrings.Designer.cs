@@ -158,5 +158,14 @@ namespace Bodu.Financial.ExchangeRates {
                 return ResourceManager.GetString("Arg_Invalid_RbaOptionsLogLevel", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to RBA exchange-rate options are invalid..
+        /// </summary>
+        internal static string Op_Invalid_RbaOptions {
+            get {
+                return ResourceManager.GetString("Op_Invalid_RbaOptions", resourceCulture);
+            }
+        }
     }
 }

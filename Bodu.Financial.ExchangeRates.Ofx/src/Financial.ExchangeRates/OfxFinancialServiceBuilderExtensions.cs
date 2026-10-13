@@ -82,7 +82,7 @@ public static class OfxFinancialServiceBuilderExtensions
             HttpClientName,
             configuration,
             sectionName,
-            "OFX exchange-rate options are invalid.",
+            OfxResourceStrings.Op_Invalid_OfxOptions,
             configure,
             configureResilience,
             static (client, opts, loggerFactory, timeProvider) =>

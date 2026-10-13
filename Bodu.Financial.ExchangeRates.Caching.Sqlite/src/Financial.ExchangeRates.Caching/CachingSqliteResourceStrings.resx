@@ -64,4 +64,7 @@
   <data name="Arg_OutOfRange_BusyTimeoutNegative" xml:space="preserve">
     <value>The busy timeout must not be negative.</value>
   </data>
+  <data name="Op_Invalid_SqliteCacheOptions" xml:space="preserve">
+    <value>SQLite exchange-rate cache options are invalid.</value>
+  </data>
 </root>

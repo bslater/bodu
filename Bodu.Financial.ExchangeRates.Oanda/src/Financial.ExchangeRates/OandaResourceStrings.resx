@@ -76,4 +76,7 @@
   <data name="Arg_Invalid_OandaOptionsPeriod" xml:space="preserve">
     <value>The OANDA options period must be specified.</value>
   </data>
+  <data name="Op_Invalid_OandaOptions" xml:space="preserve">
+    <value>OANDA exchange-rate options are invalid.</value>
+  </data>
 </root>

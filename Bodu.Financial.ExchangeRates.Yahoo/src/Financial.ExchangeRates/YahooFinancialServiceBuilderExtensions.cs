@@ -82,7 +82,7 @@ public static class YahooFinancialServiceBuilderExtensions
             HttpClientName,
             configuration,
             sectionName,
-            "Yahoo exchange-rate options are invalid.",
+            YahooResourceStrings.Op_Invalid_YahooOptions,
             configure,
             configureResilience,
             static (client, opts, loggerFactory, timeProvider) =>

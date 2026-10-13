@@ -113,5 +113,14 @@ namespace Bodu.Financial.ExchangeRates {
                 return ResourceManager.GetString("IO_KeyNotFound_ExchangeRateHostRate", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to exchangerate.host exchange-rate options are invalid..
+        /// </summary>
+        internal static string Op_Invalid_ExchangeRateHostOptions {
+            get {
+                return ResourceManager.GetString("Op_Invalid_ExchangeRateHostOptions", resourceCulture);
+            }
+        }
     }
 }

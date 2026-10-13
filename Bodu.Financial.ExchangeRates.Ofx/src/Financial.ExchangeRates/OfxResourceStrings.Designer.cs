@@ -113,5 +113,14 @@ namespace Bodu.Financial.ExchangeRates {
                 return ResourceManager.GetString("Arg_Invalid_OfxOptionsReportingInterval", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to OFX exchange-rate options are invalid..
+        /// </summary>
+        internal static string Op_Invalid_OfxOptions {
+            get {
+                return ResourceManager.GetString("Op_Invalid_OfxOptions", resourceCulture);
+            }
+        }
     }
 }

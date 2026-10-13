@@ -76,4 +76,7 @@
   <data name="IO_KeyNotFound_FixerRate" xml:space="preserve">
     <value>No Fixer exchange rate is available for {0}/{1} on {2}.</value>
   </data>
+  <data name="Op_Invalid_FixerOptions" xml:space="preserve">
+    <value>Fixer exchange-rate options are invalid.</value>
+  </data>
 </root>

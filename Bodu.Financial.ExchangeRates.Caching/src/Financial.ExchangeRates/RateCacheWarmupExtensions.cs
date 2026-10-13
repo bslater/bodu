@@ -77,7 +77,7 @@ public static class RateCacheWarmupExtensions
             optionsBuilder.Configure(configure);
 
         optionsBuilder
-            .Validate(static options => options.TryValidate(out _), "Rate cache warm-up options are invalid.")
+            .Validate(static options => options.TryValidate(out _), CachingResourceStrings.Op_Invalid_WarmupOptions)
             .ValidateOnStart();
 
         builder.Services.AddHostedService<RateCacheWarmupService>();

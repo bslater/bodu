@@ -212,7 +212,7 @@ public static class RateCachingExtensions
             optionsBuilder.Configure(configure);
 
         optionsBuilder
-            .Validate(static options => options.TryValidate(out _), "Caching exchange-rate options are invalid.")
+            .Validate(static options => options.TryValidate(out _), CachingResourceStrings.Op_Invalid_CachingOptions)
             .ValidateOnStart();
     }
 
