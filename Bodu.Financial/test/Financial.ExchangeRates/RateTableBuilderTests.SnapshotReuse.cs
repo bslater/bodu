@@ -102,4 +102,39 @@ public partial class RateTableBuilderTests
 
         Assert.AreEqual(s_usdJpy, table.ToSeries().Single().Pair);
     }
+
+    /// <summary>
+    /// Verifies that a snapshot taken after one series changed copies only that series: the unchanged series' snapshots
+    /// are reused, so a provider that rebuilds its book after every load pays for what the load changed rather than for
+    /// everything it holds.
+    /// </summary>
+    [TestMethod]
+    public void ToSeries_WhenOneOfManySeriesChanged_ShouldCopyOnlyThatSeries()
+    {
+        RateTableBuilder table = new();
+        CurrencyCode[] quotes = Enum.GetValues<CurrencyCode>()
+            .Where(code => code is not CurrencyCode.None and not CurrencyCode.USD)
+            .Take(40)
+            .ToArray();
+        DateOnly start = new(2020, 1, 1);
+        foreach (CurrencyCode quote in quotes)
+        {
+            for (int day = 0; day < 1000; day++)
+                table.Upsert(new CurrencyPair(CurrencyCode.USD, quote), "TEST", start.AddDays(day), 1.5m);
+        }
+
+        CurrencyPair changed = new(CurrencyCode.USD, quotes[0]);
+        _ = table.ToSeries();
+        table.Upsert(changed, "TEST", start.AddDays(1000), 1.6m);
+        _ = table.ToSeries();
+        table.Upsert(changed, "TEST", start.AddDays(1001), 1.6m);
+
+        long before = GC.GetAllocatedBytesForCurrentThread();
+        IReadOnlyList<RateSeries> snapshots = table.ToSeries();
+        long allocated = GC.GetAllocatedBytesForCurrentThread() - before;
+
+        // One series of about a thousand days copies about 20 KB; all forty copy about 800 KB.
+        Assert.HasCount(40, snapshots);
+        Assert.IsLessThan(100_000L, allocated);
+    }
 }

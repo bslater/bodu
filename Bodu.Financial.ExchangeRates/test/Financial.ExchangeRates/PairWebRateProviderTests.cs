@@ -100,4 +100,22 @@ public partial class PairWebRateProviderTests
         Assert.AreEqual(RateHistoryAvailabilityKind.Rolling, provider.HistoryAvailability.Kind);
         Assert.AreEqual(90, provider.HistoryAvailability.WindowDays);
     }
+
+    /// <summary>
+    /// Verifies that a load that adds no observation leaves the provider's snapshot as it was, rather than rebuilding
+    /// it from everything already held.
+    /// </summary>
+    [TestMethod]
+    public async Task LoadPairAsync_WhenLoadAddsNothing_ShouldKeepTheSnapshot()
+    {
+        StubPairSource source = new(new RateObservation(Known, 0.6828m));
+        using TestPairWebRateProvider provider = new(source, new TestWebRateProviderOptions());
+        await provider.LoadPairAsync("AUD", "USD", RangeStart, RangeEnd);
+        FixedDatedRateProvider before = provider.GetLoadedSnapshot();
+
+        await provider.LoadPairAsync("AUD", "USD", new DateOnly(2023, 2, 1), new DateOnly(2023, 2, 28));
+
+        Assert.AreEqual(2, source.CallCount);
+        Assert.AreSame(before, provider.GetLoadedSnapshot());
+    }
 }
