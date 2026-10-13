@@ -21,7 +21,7 @@ string? appName = configuration["appName"];
 string? level   = configuration["logging:level"];
 ```
 
-`AddTextConfigurationFile(path, …)` registers a `TextConfigurationSource`. The provider uses the host's default file provider, watches for changes when `reloadOnChange: true`, and re-resolves the view when the file is rewritten. The dotted keys in the INI source flatten through `ConfigurationKeyOptions.Default` so `logging.level.default = …` is reachable as `"logging:level:default"` - the canonical colon-delimited form `IConfiguration` consumers expect.
+`AddTextConfigurationFile(path, …)` registers a `TextConfigurationSource`. It locates the file as `AddJsonFile` does: a relative path through the builder's file provider (the provider `SetFileProvider` sets, the base path `SetBasePath` sets, or by default the application's base directory), a rooted path as it is. The provider watches for changes when `reloadOnChange: true`, and re-resolves the view when the file is rewritten. The dotted keys in the INI source flatten through `ConfigurationKeyOptions.Default` so `logging.level.default = …` is reachable as `"logging:level:default"` - the canonical colon-delimited form `IConfiguration` consumers expect.
 
 ## Pattern 2 - explicit file provider
 

@@ -102,4 +102,21 @@ public partial class CompoundStorageTests
         Assert.AreEqual(Guid.Empty, reopened.RootStorage.OpenStorage("S").ClassId);
         CollectionAssert.AreEqual(new byte[16], committed.AsSpan(entry + CompoundContainerBytes.ClassIdOffset, 16).ToArray());
     }
+
+    /// <summary>
+    /// Verifies that setting the CLSID of a storage after its writable file has been disposed throws
+    /// <see cref="ObjectDisposedException" /> and stages nothing, since the edit could never be committed.
+    /// </summary>
+    [TestMethod]
+    public void ClassId_WhenSetAfterFileIsDisposed_ShouldThrowObjectDisposedException()
+    {
+        CompoundStorage root = CreateDisposedWritableRoot();
+
+        _ = Assert.ThrowsExactly<ObjectDisposedException>(() =>
+        {
+            root.ClassId = Guid.NewGuid();
+        });
+
+        Assert.AreEqual(Guid.Empty, root.ClassId);
+    }
 }

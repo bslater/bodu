@@ -24,6 +24,12 @@ public static partial class DateOnlyExtensions
     /// The result is computed by evaluating the day-distance between <paramref name="date" /> and the nearest
     /// occurrence of <paramref name="dayOfWeek" /> in either direction.
     /// </para>
+    /// <para>
+    /// When the nearest occurrence lies outside the range of <see cref="DateOnly" />, which can happen only within six
+    /// days of <see cref="DateOnly.MinValue" /> or <see cref="DateOnly.MaxValue" />, the occurrence in the other
+    /// direction is returned instead. For example, <c>DateOnly.MaxValue</c> falls on a Friday, so the nearest Saturday
+    /// it can return is 25 December 9999.
+    /// </para>
     /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown if <paramref name="dayOfWeek" /> is not a defined value of the <see cref="DayOfWeek" /> enumeration.
@@ -62,6 +68,10 @@ public static partial class DateOnlyExtensions
     /// <para>
     /// The result is computed by evaluating the day-distance between the specified reference date and the nearest
     /// occurrence of <paramref name="dayOfWeek" /> in either direction.
+    /// </para>
+    /// <para>
+    /// When the nearest occurrence lies outside the range of <see cref="DateOnly" />, which can happen only within six
+    /// days of 1 January 0001 or 31 December 9999, the occurrence in the other direction is returned instead.
     /// </para>
     /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException">

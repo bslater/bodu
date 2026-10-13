@@ -81,7 +81,7 @@ foreach (ConfigurationDiagnostic d in result.Diagnostics)
 ConfigurationDocument document = result.Document;
 ```
 
-`ParseWithDiagnostics` always returns a `ConfigurationParseResult` carrying the document and the diagnostic list. With the `Relaxed` profile (which sets `DiagnosticMode = Collect`), the parser keeps going past recoverable errors and reports them all at once - useful for IDE-style validation. With other profiles, the diagnostic list is populated alongside the throw if you catch `ConfigurationParseException`.
+`ParseWithDiagnostics` returns a `ConfigurationParseResult` carrying the document and the diagnostic list. With the `Relaxed` profile (which sets `DiagnosticMode = Collect`), the parser keeps going past recoverable errors and reports them all at once - useful for IDE-style validation. The other profiles set `DiagnosticMode = Throw`, so the first error throws `ConfigurationParseException` instead of returning a result; the exception carries that one diagnostic, and any warnings reported before it are not attached.
 
 ## Pattern 5 - write a document back out
 

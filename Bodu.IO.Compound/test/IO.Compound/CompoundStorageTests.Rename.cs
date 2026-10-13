@@ -60,4 +60,21 @@ public partial class CompoundStorageTests
 
         Assert.AreEqual("DATA", file.RootStorage.EnumerateEntries().Single().Name);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="CompoundStorage.Rename(string, string)" /> throws <see cref="ObjectDisposedException" />
+    /// once the writable file has been disposed, and leaves the child's name as it was.
+    /// </summary>
+    [TestMethod]
+    public void Rename_WhenFileIsDisposed_ShouldThrowObjectDisposedException()
+    {
+        CompoundStorage root = CreateDisposedWritableRoot();
+
+        _ = Assert.ThrowsExactly<ObjectDisposedException>(() =>
+        {
+            root.Rename("A", "B");
+        });
+
+        AssertDisposedRootUnchanged(root);
+    }
 }

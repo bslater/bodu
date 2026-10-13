@@ -283,4 +283,61 @@ public partial class CompoundStorageTests
         Assert.IsFalse(file.RootStorage.TryOpenStream("B", out _));
         CollectionAssert.AreEqual(new[] { "A", "C" }, file.RootStorage.EnumerateEntries().Select(static e => e.Name).ToArray());
     }
+
+    /// <summary>
+    /// Verifies that <see cref="CompoundStorage.TryOpenStream(string, out CompoundStream)" /> throws
+    /// <see cref="ObjectDisposedException" /> once a writable file has been disposed, rather than opening a cursor over
+    /// the staged payload.
+    /// </summary>
+    [TestMethod]
+    public void TryOpenStream_WhenWritableFileIsDisposed_ShouldThrowObjectDisposedException()
+    {
+        CompoundStorage root = CreateDisposedWritableRoot();
+
+        _ = Assert.ThrowsExactly<ObjectDisposedException>(() =>
+        {
+            _ = root.TryOpenStream("A", out _);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="CompoundStorage.TryOpenStream(string, out CompoundStream)" /> throws
+    /// <see cref="ObjectDisposedException" /> once a read-only file has been disposed, whether or not the stream
+    /// exists, rather than reporting a missing stream as absent.
+    /// </summary>
+    [TestMethod]
+    public void TryOpenStream_WhenReadOnlyFileIsDisposedAndStreamIsMissing_ShouldThrowObjectDisposedException()
+    {
+        CompoundStorage root = OpenDisposedReadOnlyRoot();
+
+        _ = Assert.ThrowsExactly<ObjectDisposedException>(() =>
+        {
+            _ = root.TryOpenStream("Missing", out _);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="CompoundStorage.TryOpenStream(string, FileMode, FileAccess, out CompoundStream)" />
+    /// throws <see cref="ObjectDisposedException" /> once a writable file has been disposed, whether the call reads,
+    /// opens for writing, or creates, and stages nothing.
+    /// </summary>
+    /// <param name="name">The stream name passed to the call.</param>
+    /// <param name="mode">The file mode passed to the call.</param>
+    /// <param name="access">The access passed to the call.</param>
+    [TestMethod]
+    [DataRow("A", FileMode.Open, FileAccess.Read)]
+    [DataRow("A", FileMode.OpenOrCreate, FileAccess.ReadWrite)]
+    [DataRow("New", FileMode.CreateNew, FileAccess.Write)]
+    [DataRow("Missing", FileMode.Open, FileAccess.Write)]
+    public void TryOpenStream_WhenWritableFileIsDisposed_ForFileMode_ShouldThrowObjectDisposedException(string name, FileMode mode, FileAccess access)
+    {
+        CompoundStorage root = CreateDisposedWritableRoot();
+
+        _ = Assert.ThrowsExactly<ObjectDisposedException>(() =>
+        {
+            _ = root.TryOpenStream(name, mode, access, out _);
+        });
+
+        AssertDisposedRootUnchanged(root);
+    }
 }

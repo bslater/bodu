@@ -480,6 +480,28 @@ public static partial class DateTimeExtensions
     }
 
     /// <summary>
+    /// Returns the tick count of the occurrence of <paramref name="dayOfWeek" /> nearest to <paramref name="ticks" />
+    /// that a <see cref="DateTime" /> can represent.
+    /// </summary>
+    /// <param name="ticks">The reference tick count.</param>
+    /// <param name="dayOfWeek">The target <see cref="DayOfWeek" /> to align to.</param>
+    /// <returns>The tick count for the nearest representable occurrence of <paramref name="dayOfWeek" />.</returns>
+    /// <remarks>
+    /// Within six days of <see cref="DateTime.MinValue" /> or <see cref="DateTime.MaxValue" /> the nearest occurrence
+    /// can lie outside the range; the occurrence in the other direction, at most six days away, is returned instead.
+    /// <see cref="GetTicksForNearestDayOfWeek(long, DayOfWeek)" /> keeps the unbounded result for callers that align
+    /// raw tick values, such as the fiscal calendar's year anchors.
+    /// </remarks>
+    internal static long GetTicksForNearestRepresentableDayOfWeek(long ticks, DayOfWeek dayOfWeek)
+    {
+        long nearest = GetTicksForNearestDayOfWeek(ticks, dayOfWeek);
+
+        return nearest < MinTicks
+            ? nearest + TicksPerWeek
+            : nearest > MaxTicks ? nearest - TicksPerWeek : nearest;
+    }
+
+    /// <summary>
     /// Calculates the number of ticks between the specified <paramref name="dateTime" /> and the next occurrence of
     /// <paramref name="dayOfWeek" />, including the current day when it already matches.
     /// </summary>

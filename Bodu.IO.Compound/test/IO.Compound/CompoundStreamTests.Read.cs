@@ -235,6 +235,18 @@ public partial class CompoundStreamTests
     }
 
     /// <summary>
+    /// Verifies that a writable cursor still reads its own bytes after the file that owns it has been disposed.
+    /// </summary>
+    [TestMethod]
+    public void Read_WhenOwningFileOfAWritableCursorIsDisposed_ShouldReturnTheCursorsBytes()
+    {
+        using CompoundStream cursor = OpenCursorOverDisposedFile();
+
+        Assert.IsTrue(cursor.CanRead);
+        Assert.AreEqual(3, cursor.Read(new byte[4], 0, 4));
+    }
+
+    /// <summary>
     /// Reads exactly the specified number of bytes from a stream.
     /// </summary>
     /// <param name="stream">The stream to read.</param>

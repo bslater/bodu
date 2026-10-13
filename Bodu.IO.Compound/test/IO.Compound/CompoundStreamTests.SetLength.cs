@@ -67,4 +67,22 @@ public partial class CompoundStreamTests
         cursor.SetLength(5000);
         Assert.IsLessThanOrEqualTo(5000L, cursor.Position);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="CompoundStream.SetLength(long)" /> on a writable cursor throws
+    /// <see cref="ObjectDisposedException" /> once the file that owns the cursor has been disposed, and leaves the
+    /// cursor's length as it was.
+    /// </summary>
+    [TestMethod]
+    public void SetLength_WhenOwningFileIsDisposed_ShouldThrowObjectDisposedException()
+    {
+        using CompoundStream cursor = OpenCursorOverDisposedFile();
+
+        _ = Assert.ThrowsExactly<ObjectDisposedException>(() =>
+        {
+            cursor.SetLength(1);
+        });
+
+        Assert.AreEqual(3L, cursor.Length);
+    }
 }

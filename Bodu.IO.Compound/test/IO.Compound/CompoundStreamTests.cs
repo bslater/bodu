@@ -32,6 +32,20 @@ public partial class CompoundStreamTests
     }
 
     /// <summary>
+    /// Creates a writable compound file, opens a read-write cursor over its stream <c>Data</c> holding the bytes 1, 2 and
+    /// 3, and then disposes the file while the cursor stays open.
+    /// </summary>
+    /// <returns>The open cursor, whose owning file has been disposed; dispose it when finished.</returns>
+    private static CompoundStream OpenCursorOverDisposedFile()
+    {
+        var file = CompoundFile.Create(new MemoryStream());
+        file.RootStorage.CreateStream("Data", new byte[] { 1, 2, 3 });
+        CompoundStream cursor = file.RootStorage.OpenStream("Data", FileMode.Open, FileAccess.ReadWrite);
+        file.Dispose();
+        return cursor;
+    }
+
+    /// <summary>
     /// Verifies that <see cref="CompoundStream.Read(Span{byte})" /> returns the full payload for both backings.
     /// </summary>
     /// <param name="buffered">Whether the owning compound file buffers the whole source in memory.</param>

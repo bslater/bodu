@@ -71,4 +71,21 @@ public partial class CompoundStorageTests
             file.RootStorage.StateBits = 1;
         });
     }
+
+    /// <summary>
+    /// Verifies that setting the state bits of a storage after its writable file has been disposed throws
+    /// <see cref="ObjectDisposedException" /> and stages nothing, since the edit could never be committed.
+    /// </summary>
+    [TestMethod]
+    public void StateBits_WhenSetAfterFileIsDisposed_ShouldThrowObjectDisposedException()
+    {
+        CompoundStorage root = CreateDisposedWritableRoot();
+
+        _ = Assert.ThrowsExactly<ObjectDisposedException>(() =>
+        {
+            root.StateBits = 1;
+        });
+
+        Assert.AreEqual(0, root.StateBits);
+    }
 }

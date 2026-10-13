@@ -20,6 +20,37 @@ public partial class CompoundStorageTests
         CompoundFile.Open(CompoundFixtures.OpenReference("valid/clean.dat"));
 
     /// <summary>
+    /// Creates a writable compound file whose root holds the stream <c>A</c> and the storage <c>S</c>, then disposes it.
+    /// </summary>
+    /// <returns>The root storage of the disposed file.</returns>
+    private static CompoundStorage CreateDisposedWritableRoot()
+    {
+        CompoundFile file = CreateWritableWithChild("A", existingIsStorage: false);
+        _ = file.RootStorage.CreateStorage("S");
+        file.Dispose();
+        return file.RootStorage;
+    }
+
+    /// <summary>
+    /// Opens the reference fixture whose root holds the storage <c>Storage 1</c> read-only, then disposes it.
+    /// </summary>
+    /// <returns>The root storage of the disposed file.</returns>
+    private static CompoundStorage OpenDisposedReadOnlyRoot()
+    {
+        CompoundFile file = OpenNested();
+        file.Dispose();
+        return file.RootStorage;
+    }
+
+    /// <summary>
+    /// Asserts that the root storage of the file <see cref="CreateDisposedWritableRoot" /> disposed still holds exactly
+    /// the stream <c>A</c> and the storage <c>S</c> it was created with.
+    /// </summary>
+    /// <param name="root">The root storage of the disposed file.</param>
+    private static void AssertDisposedRootUnchanged(CompoundStorage root) =>
+        CollectionAssert.AreEquivalent(new[] { "A", "S" }, root.EnumerateEntries().Select(static e => e.Name).ToArray());
+
+    /// <summary>
     /// Verifies that the root storage enumerates its direct child storage but not the grandchild stream.
     /// </summary>
     [TestMethod]
@@ -129,5 +160,19 @@ public partial class CompoundStorageTests
         var names = storage1.EnumerateStreams().Select(s => s.Name).OrderBy(n => n, StringComparer.Ordinal).ToList();
 
         CollectionAssert.AreEqual(new[] { "Stream 1", "Stream 2" }, names);
+    }
+
+    /// <summary>
+    /// Verifies that the enumeration members of a storage keep listing its children after the owning file has been
+    /// disposed, since they only read the directory held in memory.
+    /// </summary>
+    [TestMethod]
+    public void EnumerateEntries_WhenFileIsDisposed_ShouldStillListTheChildren()
+    {
+        CompoundStorage root = CreateDisposedWritableRoot();
+
+        AssertDisposedRootUnchanged(root);
+        Assert.AreEqual("S", root.EnumerateStorages().Single().Name);
+        Assert.AreEqual("A", root.EnumerateStreams().Single().Name);
     }
 }

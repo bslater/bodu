@@ -9,8 +9,8 @@ using System.Collections.Immutable;
 namespace Bodu.Text.Configuration;
 
 /// <summary>
-/// The exception raised when a configuration document cannot be parsed. Exposes the originating diagnostic (
-/// <see cref="Diagnostic" />) together with any additional diagnostics gathered before the failure.
+/// The exception raised when a configuration document cannot be parsed or resolved. Exposes the diagnostic that stopped
+/// the operation as <see cref="Diagnostic" />; the library raises it with that diagnostic alone.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -22,9 +22,13 @@ namespace Bodu.Text.Configuration;
 /// <see cref="ConfigurationPattern.Compile(string, StringComparison)" />).
 /// </para>
 /// <para>
-/// The exception always provides a non-default <see cref="Diagnostics" /> array; when a single diagnostic triggered the
-/// failure it also appears as <see cref="Diagnostic" />. <see cref="Location" /> forwards to the primary diagnostic's
-/// location and falls back to <see cref="ConfigurationSourceLocation.None" /> when no diagnostic is attached.
+/// Every exception the library raises carries exactly one diagnostic, the error that stopped the operation, as
+/// <see cref="Diagnostic" /> and as the single entry of <see cref="Diagnostics" />; warnings the parser reported before
+/// the error are not attached. <see cref="Diagnostics" /> holds more than one entry only when a caller constructs the
+/// exception from a list with <see cref="ConfigurationParseException(IReadOnlyList{ConfigurationDiagnostic})" />, and
+/// is empty, but never default, when it is constructed from a message alone. <see cref="Location" /> forwards to the
+/// primary diagnostic's location and falls back to <see cref="ConfigurationSourceLocation.None" /> when no diagnostic
+/// is attached.
 /// </para>
 /// </remarks>
 /// <example>
@@ -53,8 +57,11 @@ public sealed class ConfigurationParseException
     /// <summary>
     /// Initializes a new instance of the <see cref="ConfigurationParseException" /> class with a default message.
     /// </summary>
+    /// <remarks>
+    /// The default message is read from the library's resources for the current UI culture.
+    /// </remarks>
     public ConfigurationParseException()
-        : base("The configuration document could not be parsed.")
+        : base(ConfigurationResourceStrings.Format_Invalid_ConfigurationDocument)
     {
         Diagnostics = [];
     }
@@ -98,7 +105,11 @@ public sealed class ConfigurationParseException
     /// Initializes a new instance of the <see cref="ConfigurationParseException" /> class from a set of previously
     /// collected diagnostics. The first entry, if any, is exposed via <see cref="Diagnostic" />.
     /// </summary>
-    /// <param name="diagnostics">The diagnostics gathered before the failure.</param>
+    /// <param name="diagnostics">The diagnostics the exception carries.</param>
+    /// <remarks>
+    /// The library itself never uses this constructor; it is for a caller that collects diagnostics, for example with
+    /// <see cref="ConfigurationDiagnosticMode.Collect" />, and reports them together.
+    /// </remarks>
     /// <exception cref="ArgumentNullException"><paramref name="diagnostics" /> is <see langword="null" />.</exception>
     public ConfigurationParseException(IReadOnlyList<ConfigurationDiagnostic> diagnostics)
         : base(GetMessage(diagnostics))
@@ -130,7 +141,8 @@ public sealed class ConfigurationParseException
     public ConfigurationDiagnostic? Diagnostic { get; }
 
     /// <summary>
-    /// Gets the diagnostics gathered prior to the failure. Always returns a non-default array; may be empty.
+    /// Gets the diagnostics the exception carries: the single diagnostic that stopped the operation when the library
+    /// raises it, or the list a caller supplied. Always returns a non-default array; may be empty.
     /// </summary>
     /// <value>An immutable, possibly empty list of diagnostics.</value>
     public ImmutableArray<ConfigurationDiagnostic> Diagnostics { get; }
@@ -168,6 +180,6 @@ public sealed class ConfigurationParseException
         ThrowHelper.ThrowIfNull(diagnostics);
         return diagnostics.Count > 0
             ? diagnostics[0].Message
-            : "The configuration document could not be parsed.";
+            : ConfigurationResourceStrings.Format_Invalid_ConfigurationDocument;
     }
 }

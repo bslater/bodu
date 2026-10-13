@@ -37,6 +37,27 @@ public partial class CompoundStorageTests
     }
 
     /// <summary>
+    /// Verifies that the <see cref="IOException" /> <see cref="FileMode.CreateNew" /> raises over an existing staged
+    /// stream names that stream, rather than reporting the supported mode and access combination as unsupported.
+    /// </summary>
+    /// <param name="access">The access passed to the call.</param>
+    [TestMethod]
+    [DataRow(FileAccess.Write)]
+    [DataRow(FileAccess.ReadWrite)]
+    public void OpenStream_WhenCreateNewAndStreamExists_ShouldThrowIOExceptionNamingTheStream(FileAccess access)
+    {
+        using CompoundFile file = CreateWritableWithStream(1, 2, 3);
+
+        IOException ex = Assert.ThrowsExactly<IOException>(() =>
+        {
+            using CompoundStream _ = file.RootStorage.OpenStream("Stream 1", FileMode.CreateNew, access);
+        });
+
+        Assert.Contains("'Stream 1'", ex.Message);
+        Assert.DoesNotContain($"CreateNew/{access}", ex.Message);
+    }
+
+    /// <summary>
     /// Verifies that opening an absent staged stream throws <see cref="CompoundStreamNotFoundException" /> naming the
     /// stream, so the caller can report which entry was missing.
     /// </summary>
@@ -224,6 +245,46 @@ public partial class CompoundStorageTests
         Assert.AreEqual(expected.Length, stream.Length);
         CollectionAssert.AreEqual(expected, stream.ReadAllBytes());
         CollectionAssert.AreEqual(expected, ReadInChunks(stream));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="CompoundStorage.OpenStream(string)" /> throws <see cref="ObjectDisposedException" />
+    /// once a writable file has been disposed, as it does for a read-only file.
+    /// </summary>
+    [TestMethod]
+    public void OpenStream_WhenWritableFileIsDisposed_ShouldThrowObjectDisposedException()
+    {
+        CompoundStorage root = CreateDisposedWritableRoot();
+
+        _ = Assert.ThrowsExactly<ObjectDisposedException>(() =>
+        {
+            using CompoundStream stream = root.OpenStream("A");
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="CompoundStorage.OpenStream(string, FileMode, FileAccess)" /> throws
+    /// <see cref="ObjectDisposedException" /> once a writable file has been disposed, whether the call reads, opens for
+    /// writing, or creates, and stages nothing.
+    /// </summary>
+    /// <param name="name">The stream name passed to the call.</param>
+    /// <param name="mode">The file mode passed to the call.</param>
+    /// <param name="access">The access passed to the call.</param>
+    [TestMethod]
+    [DataRow("A", FileMode.Open, FileAccess.Read)]
+    [DataRow("A", FileMode.Open, FileAccess.ReadWrite)]
+    [DataRow("New", FileMode.Create, FileAccess.Write)]
+    [DataRow("New", FileMode.Append, FileAccess.Write)]
+    public void OpenStream_WhenWritableFileIsDisposed_ForFileMode_ShouldThrowObjectDisposedException(string name, FileMode mode, FileAccess access)
+    {
+        CompoundStorage root = CreateDisposedWritableRoot();
+
+        _ = Assert.ThrowsExactly<ObjectDisposedException>(() =>
+        {
+            using CompoundStream stream = root.OpenStream(name, mode, access);
+        });
+
+        AssertDisposedRootUnchanged(root);
     }
 
     /// <summary>

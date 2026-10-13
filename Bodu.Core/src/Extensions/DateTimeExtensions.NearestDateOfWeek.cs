@@ -24,6 +24,12 @@ public static partial class DateTimeExtensions
     /// The result is computed by evaluating the day-distance between <paramref name="dateTime" /> and the nearest
     /// occurrence of <paramref name="dayOfWeek" /> in either direction.
     /// </para>
+    /// <para>
+    /// When the nearest occurrence lies outside the range of <see cref="DateTime" />, which can happen only within six
+    /// days of <see cref="DateTime.MinValue" /> or <see cref="DateTime.MaxValue" />, the occurrence in the other
+    /// direction is returned instead. For example, <c>DateTime.MaxValue</c> falls on a Friday, so the nearest Saturday
+    /// it can return is 25 December 9999.
+    /// </para>
     /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown if <paramref name="dayOfWeek" /> is not a defined value of the <see cref="DayOfWeek" /> enumeration.
@@ -31,7 +37,7 @@ public static partial class DateTimeExtensions
     public static DateTime NearestDateOfWeek(this DateTime dateTime, DayOfWeek dayOfWeek)
     {
         ThrowHelper.ThrowIfEnumValueIsUndefined(dayOfWeek);
-        return new DateTime(GetTicksForNearestDayOfWeek(dateTime.Ticks, dayOfWeek), dateTime.Kind);
+        return new DateTime(GetTicksForNearestRepresentableDayOfWeek(dateTime.Ticks, dayOfWeek), dateTime.Kind);
     }
 
     /// <summary>
@@ -62,6 +68,10 @@ public static partial class DateTimeExtensions
     /// The result is computed by evaluating the day-distance between the specified reference date and the nearest
     /// occurrence of <paramref name="dayOfWeek" /> in either direction.
     /// </para>
+    /// <para>
+    /// When the nearest occurrence lies outside the range of <see cref="DateTime" />, which can happen only within six
+    /// days of 1 January 0001 or 31 December 9999, the occurrence in the other direction is returned instead.
+    /// </para>
     /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown if <paramref name="year" />, <paramref name="month" />, or <paramref name="day" /> does not represent a
@@ -75,6 +85,6 @@ public static partial class DateTimeExtensions
         ThrowHelper.ThrowIfOutOfRange(day, 1, DateTime.DaysInMonth(year, month));
         ThrowHelper.ThrowIfEnumValueIsUndefined(dayOfWeek);
 
-        return new DateTime(GetTicksForNearestDayOfWeek(GetDateTicks(year, month, day), dayOfWeek), DateTimeKind.Unspecified);
+        return new DateTime(GetTicksForNearestRepresentableDayOfWeek(GetDateTicks(year, month, day), dayOfWeek), DateTimeKind.Unspecified);
     }
 }
