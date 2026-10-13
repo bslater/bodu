@@ -435,12 +435,9 @@ public sealed partial class NotableDateDocumentBuilder
     /// <c>.json</c> file declares a field the builder's document model cannot hold; see <see cref="FromJson(string)" />.
     /// </exception>
     /// <exception cref="FormatException">
-    /// The file content is not a well-formed notable-date document, an enumeration, integer, Boolean, trigger-month or
-    /// <c>workingDays</c> value does not parse, a JSON property that holds a value holds an object or an array, a JSON
-    /// property that holds an object or a list holds a value of another kind, an item of a JSON list of identifiers,
-    /// territory codes or tags is not a string, a JSON rule's <c>strategy</c> and <c>recurrence</c>, or a JSON
-    /// <c>PatchRule</c> override's when it carries either, name no recognized kind or more than one between them, or a
-    /// JSON <c>untilDate</c> declares no end strategy or one that names no recognized kind or more than one.
+    /// The file content is not a well-formed notable-date document, or holds a value or a field that
+    /// <see cref="FromXml(string)" />, for an <c>.xml</c> file, or <see cref="FromJson(string)" />, for a <c>.json</c>
+    /// file, rejects with a <see cref="FormatException" />; see their exceptions.
     /// </exception>
     /// <remarks>
     /// Like <see cref="FromXml(string)" /> and <see cref="FromJson(string)" />, loading reads each value with the

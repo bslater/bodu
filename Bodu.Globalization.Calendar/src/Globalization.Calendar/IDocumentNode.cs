@@ -48,7 +48,8 @@ internal interface IDocumentNode
 
     /// <summary>
     /// Enumerates the object items of a list: the XML item elements within an optional wrapper element (every element
-    /// child when <paramref name="xmlItem" /> is <see langword="null" />), or the JSON array's elements.
+    /// child when <paramref name="xmlItem" /> is <see langword="null" />), or the JSON array's elements that are
+    /// objects.
     /// </summary>
     /// <param name="xmlWrapper">
     /// The XML wrapper element, or <see langword="null" /> to read this node's children.
@@ -58,6 +59,10 @@ internal interface IDocumentNode
     /// </param>
     /// <param name="jsonProperty">The JSON array property name.</param>
     /// <returns>The item nodes; empty when absent or, in JSON, not an array.</returns>
+    /// <remarks>
+    /// A JSON item that is not an object is left out rather than read as an object with every property absent, and its
+    /// node records a <c>BODU-CAL-VALUE</c> error naming the property and the item's JSON kind, once for the property.
+    /// </remarks>
     IEnumerable<IDocumentNode> List(string? xmlWrapper, string? xmlItem, string jsonProperty);
 
     /// <summary>

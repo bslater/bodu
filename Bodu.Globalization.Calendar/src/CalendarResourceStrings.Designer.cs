@@ -304,6 +304,15 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The &apos;{0}&apos; property holds a JSON {1} item, which is not an object..
+        /// </summary>
+        internal static string Validation_InvalidObjectItem {
+            get {
+                return ResourceManager.GetString("Validation_InvalidObjectItem", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The &apos;{0}&apos; value &apos;{1}&apos; does not match the pattern &apos;{2}&apos; the schema requires..
         /// </summary>
         internal static string Validation_SchemaPatternMismatch {

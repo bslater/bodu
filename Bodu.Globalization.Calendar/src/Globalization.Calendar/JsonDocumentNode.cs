@@ -94,7 +94,8 @@ internal sealed class JsonDocumentNode
     /// <remarks>
     /// A property holding a value that is not an array records a <c>BODU-CAL-VALUE</c> error naming the property and
     /// the kind of value it holds, and reads as an empty list, as does the JSON literal <c>null</c>, without a
-    /// diagnostic.
+    /// diagnostic. An item that is not an object is left out, and the first such item records a <c>BODU-CAL-VALUE</c>
+    /// error naming the property and the item's kind.
     /// </remarks>
     public IEnumerable<IDocumentNode> List(string? xmlWrapper, string? xmlItem, string jsonProperty)
     {
@@ -102,7 +103,12 @@ internal sealed class JsonDocumentNode
             yield break;
 
         foreach (JsonElement item in array.EnumerateArray())
-            yield return new JsonDocumentNode(item, _diagnostics);
+        {
+            if (item.ValueKind == JsonValueKind.Object)
+                yield return new JsonDocumentNode(item, _diagnostics);
+            else
+                ReportValue(jsonProperty, CalendarResourceStrings.Validation_InvalidObjectItem, KindName(item.ValueKind));
+        }
     }
 
     /// <inheritdoc />

@@ -131,7 +131,8 @@ public sealed partial class NotableDateDocumentBuilder
     /// <paramref name="json" /> is not well-formed or is not a notable-date document, an enumeration, integer, Boolean,
     /// date, month, trigger-month or <c>workingDays</c> value does not parse, a property that holds a value holds an
     /// object or an array, a property that holds an object or a list holds a value of another kind, an item of a list
-    /// of identifiers, territory codes or tags is not a string, a rule's <c>strategy</c> and <c>recurrence</c>, or a
+    /// of identifiers, territory codes or tags is not a string, an item of a list of concepts, rules, adjustment
+    /// policies, imports, uses or overrides is not an object, a rule's <c>strategy</c> and <c>recurrence</c>, or a
     /// <c>PatchRule</c> override's when it carries either, name no recognized kind or more than one between them, an
     /// <c>untilDate</c> declares no end strategy or one that names no recognized kind or more than one, an override's
     /// <c>operation</c> is absent or names no operation, or an <c>AddRule</c> override has no <c>rule</c>.
@@ -174,8 +175,9 @@ public sealed partial class NotableDateDocumentBuilder
     /// a list of enumeration names is read by its JSON text, so a number there throws as a value that names no member,
     /// while an object or an array in a list of names or integers throws as a value of the wrong kind. The metadata, an
     /// adjustment policy's description and a rule's comment, which the loader does not read, accept the same scalars.
-    /// Any other property that holds a value, holding an object or an array, and a property that holds an object or a
-    /// list, such as <c>applicability</c> or <c>tags</c>, holding a value of another kind, throw a
+    /// Any other property that holds a value, holding an object or an array, a property that holds an object or a list,
+    /// such as <c>applicability</c> or <c>tags</c>, holding a value of another kind, and an item of a list of concepts,
+    /// rules, adjustment policies, imports, uses or overrides that is not an object, throw a
     /// <see cref="FormatException" /> carrying the message of the loader's <c>BODU-CAL-VALUE</c> diagnostic, while the
     /// JSON literal <c>null</c> reads as absent, as the loader reads it. The message names a value or an item of the
     /// wrong kind by its JSON kind (<c>object</c>, <c>array</c>, <c>number</c>, <c>Boolean</c> or <c>null</c>), as the
@@ -250,11 +252,12 @@ public sealed partial class NotableDateDocumentBuilder
     /// <exception cref="FormatException">
     /// An enumeration, integer, Boolean, date, month, trigger-month or <c>workingDays</c> value does not parse, a
     /// property that holds a value holds an object or an array, a property that holds an object or a list holds a value
-    /// of another kind, an item of a list of identifiers, territory codes or tags is not a string, a rule's
-    /// <c>strategy</c> and <c>recurrence</c>, or a <c>PatchRule</c> override's when it carries either, name no
-    /// recognized kind or more than one between them, an <c>untilDate</c> declares no end strategy or one that names no
-    /// recognized kind or more than one, an override's <c>operation</c> is absent or names no operation, or an
-    /// <c>AddRule</c> override has no <c>rule</c>.
+    /// of another kind, an item of a list of identifiers, territory codes or tags is not a string, an item of a list of
+    /// concepts, rules, adjustment policies, imports, uses or overrides is not an object, a rule's <c>strategy</c> and
+    /// <c>recurrence</c>, or a <c>PatchRule</c> override's when it carries either, name no recognized kind or more than
+    /// one between them, an <c>untilDate</c> declares no end strategy or one that names no recognized kind or more than
+    /// one, an override's <c>operation</c> is absent or names no operation, or an <c>AddRule</c> override has no
+    /// <c>rule</c>.
     /// </exception>
     /// <exception cref="NotSupportedException">
     /// <paramref name="json" /> declares a field the builder's document model cannot hold; see

@@ -93,16 +93,11 @@ public sealed partial class NotableDateDocumentBuilder
     /// Reads the JSON <c>adjustmentPolicies</c> array into the builder.
     /// </summary>
     /// <param name="array">The adjustment-policies array, or <see langword="null" /> when absent.</param>
+    /// <exception cref="FormatException">An item is not an object.</exception>
     private void ReadAdjustmentPoliciesJson(JsonArray? array)
     {
-        if (array is null)
-            return;
-
-        foreach (JsonNode? node in array)
-        {
-            if (node is JsonObject policyJson)
-                _adjustmentPolicies.Add(ReadAdjustmentPolicyJson(policyJson));
-        }
+        foreach (JsonObject policyJson in ObjectItems(array, "adjustmentPolicies"))
+            _adjustmentPolicies.Add(ReadAdjustmentPolicyJson(policyJson));
     }
 
     /// <summary>
@@ -243,16 +238,11 @@ public sealed partial class NotableDateDocumentBuilder
     /// Reads the JSON <c>notableDates</c> array into the builder.
     /// </summary>
     /// <param name="array">The notable-dates array, or <see langword="null" /> when absent.</param>
+    /// <exception cref="FormatException">An item of the array, or of a concept's rules, is not an object.</exception>
     private void ReadNotableDatesJson(JsonArray? array)
     {
-        if (array is null)
-            return;
-
-        foreach (JsonNode? node in array)
-        {
-            if (node is JsonObject definitionJson)
-                _definitions.Add(ReadNotableDateJson(definitionJson));
-        }
+        foreach (JsonObject definitionJson in ObjectItems(array, "notableDates"))
+            _definitions.Add(ReadNotableDateJson(definitionJson));
     }
 
     /// <summary>
@@ -272,14 +262,8 @@ public sealed partial class NotableDateDocumentBuilder
             JsonBool(definitionJson, "defaultNonWorkingDay", "defaultNonWorkingDay"),
             ReadTextArray(ArrayProperty(definitionJson, "tags"), "tags"));
 
-        if (ArrayProperty(definitionJson, "rules") is JsonArray rules)
-        {
-            foreach (JsonNode? node in rules)
-            {
-                if (node is JsonObject ruleJson)
-                    definition.AddRule(ReadRuleJson(ruleJson, definition.Id));
-            }
-        }
+        foreach (JsonObject ruleJson in ObjectItems(ArrayProperty(definitionJson, "rules"), "rules"))
+            definition.AddRule(ReadRuleJson(ruleJson, definition.Id));
 
         return definition;
     }
@@ -442,17 +426,15 @@ public sealed partial class NotableDateDocumentBuilder
     /// Reads the JSON <c>overrides</c> array into the builder.
     /// </summary>
     /// <param name="array">The overrides array, or <see langword="null" /> when absent.</param>
+    /// <exception cref="FormatException">An item is not an object.</exception>
     private void ReadOverridesJson(JsonArray? array)
     {
         if (array is null)
             return;
 
         OverrideBuilder overrides = new();
-        foreach (JsonNode? node in array)
-        {
-            if (node is JsonObject overrideJson)
-                overrides.AddEntry(ReadOverrideJson(overrideJson));
-        }
+        foreach (JsonObject overrideJson in ObjectItems(array, "overrides"))
+            overrides.AddEntry(ReadOverrideJson(overrideJson));
 
         _overrides = overrides;
     }
@@ -622,26 +604,15 @@ public sealed partial class NotableDateDocumentBuilder
     /// Reads the JSON <c>imports</c> array into the builder.
     /// </summary>
     /// <param name="array">The imports array, or <see langword="null" /> when absent.</param>
+    /// <exception cref="FormatException">An item of the array, or of an import's uses, is not an object.</exception>
     /// <exception cref="NotSupportedException">A use declares an empty <c>adjustments</c> list.</exception>
     private void ReadImportsJson(JsonArray? array)
     {
-        if (array is null)
-            return;
-
-        foreach (JsonNode? node in array)
+        foreach (JsonObject importJson in ObjectItems(array, "imports"))
         {
-            if (node is not JsonObject importJson)
-                continue;
-
             ImportBuilder import = new(ScalarText(importJson, "resource") ?? string.Empty);
-            if (ArrayProperty(importJson, "uses") is JsonArray uses)
-            {
-                foreach (JsonNode? useNode in uses)
-                {
-                    if (useNode is JsonObject useJson)
-                        import.AddUse(ReadImportUseJson(useJson));
-                }
-            }
+            foreach (JsonObject useJson in ObjectItems(ArrayProperty(importJson, "uses"), "uses"))
+                import.AddUse(ReadImportUseJson(useJson));
 
             _imports.Add(import);
         }
@@ -814,6 +785,24 @@ public sealed partial class NotableDateDocumentBuilder
         }
 
         return values;
+    }
+
+    /// <summary>
+    /// Enumerates the items of a JSON list of objects as the loader reads them, each of which must be an object.
+    /// </summary>
+    /// <param name="array">The array, or <see langword="null" /> when absent.</param>
+    /// <param name="name">The array property's name, used in the exception message.</param>
+    /// <returns>The objects, in order; empty when the array is absent.</returns>
+    /// <exception cref="FormatException">
+    /// An item is not an object, which the loader reports with <c>BODU-CAL-VALUE</c>.
+    /// </exception>
+    private static IEnumerable<JsonObject> ObjectItems(JsonArray? array, string name)
+    {
+        if (array is null)
+            yield break;
+
+        foreach (JsonNode? node in array)
+            yield return node as JsonObject ?? throw ItemOfWrongKind(CalendarResourceStrings.Validation_InvalidObjectItem, name, node);
     }
 
     /// <summary>

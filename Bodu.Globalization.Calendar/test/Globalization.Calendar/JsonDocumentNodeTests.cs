@@ -139,4 +139,22 @@ public class JsonDocumentNodeTests
 
         Assert.IsEmpty(diagnostics);
     }
+
+    /// <summary>
+    /// Verifies that a list of objects yields only its object items and records one <c>BODU-CAL-VALUE</c> error, naming
+    /// the property and the first other item's kind, for the items it leaves out.
+    /// </summary>
+    [TestMethod]
+    public void List_WhenItemsAreNotObjects_ShouldYieldObjectsAndRecordOneValueDiagnostic()
+    {
+        List<NotableDateValidationDiagnostic> diagnostics = new();
+        JsonDocumentNode node = new(JsonDocument.Parse("""{ "rules": [ 5, { "id": "r" }, "s", { "id": "t" } ] }""").RootElement, diagnostics);
+
+        List<string?> ids = node.List("Rules", "Rule", "rules").Select(rule => rule.Scalar("id")).ToList();
+
+        CollectionAssert.AreEqual(new[] { "r", "t" }, ids);
+        NotableDateValidationDiagnostic diagnostic = Assert.ContainsSingle(diagnostics);
+        Assert.AreEqual("BODU-CAL-VALUE", diagnostic.Code);
+        Assert.AreEqual("The 'rules' property holds a JSON number item, which is not an object.", diagnostic.Message);
+    }
 }

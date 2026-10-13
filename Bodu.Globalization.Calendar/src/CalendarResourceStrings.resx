@@ -144,6 +144,9 @@
   <data name="Validation_InvalidListValue" xml:space="preserve">
     <value>The '{0}' property holds a JSON {1}, which is not an array.</value>
   </data>
+  <data name="Validation_InvalidObjectItem" xml:space="preserve">
+    <value>The '{0}' property holds a JSON {1} item, which is not an object.</value>
+  </data>
   <data name="Validation_SchemaPatternMismatch" xml:space="preserve">
     <value>The '{0}' value '{1}' does not match the pattern '{2}' the schema requires.</value>
   </data>
