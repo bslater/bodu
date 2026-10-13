@@ -31,5 +31,5 @@ byte[] back = root.ToUtf8Bytes();
 ## Notes
 
 - **Table root.** The root of a parsed or written tree is always a <xref:Bodu.Text.Toml.Nodes.TomlObject>; writing a scalar or array as the root throws.
-- **Layout is normalized.** Comments and the original header/inline layout are not preserved; the writer re-emits the tree in canonical block form.
+- **Layout is normalized.** Comments and the original header/inline layout are not preserved; the writer re-emits the tree in normalized block form.
 - **See also:** the [Bodu.Text.Toml introduction](~/docs/serialization/toml/index.md) and the [Using TOML](~/guides/serialization/toml/using.md) guide (Pattern 6 - Edit a document with the mutable DOM).

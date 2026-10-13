@@ -81,6 +81,6 @@ YAML is edited by hand, so failures point at the offending location. A malformed
 - **[Getting started](getting-started.md)** - install and the first round trip.
 - **[Using YAML](../../../guides/serialization/yaml/using.md)** - worked patterns: type mapping, spec-version selection, both DOMs, and multi-document streams.
 - **[Writing converters](../../../guides/serialization/yaml/converters.md)** - custom shapes with `YamlConverter<T>`.
-- **[Bodu serializers introduction](../index.md)** - the family parent: the shared tiers and how to choose a format. The sibling [TOML](../toml/index.md) and [Bencode](../bencode/index.md) introductions cover the twin libraries.
+- **[Bodu serializers introduction](../index.md)** - the family parent: the shared tiers and how to choose a format. The sibling [TOML](../toml/index.md) and [Bencode](../bencode/index.md) introductions cover the sibling libraries.
 - **[Text & Serialization topic](../../topics/text-and-serialization.md)** - how the serializers sit alongside `Bodu.Text.Encoding` and `Bodu.Text.Formats`.
 - **API reference** - <xref:Bodu.Text.Yaml>.

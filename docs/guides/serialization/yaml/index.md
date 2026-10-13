@@ -55,7 +55,7 @@ If you are new to the family, start with the [introduction](../../../docs/serial
 ## Where to go next
 
 - [Serializer options: freezing, caching, and thread safety](../options-and-lifetime.md) and [Migrating from System.Text.Json](../migrating-from-system-text-json.md) - the cross-format guides.
-- [Bodu serializers guides](../index.md) - the family parent guide hub. The sibling [TOML](../toml/index.md) and [Bencode](../bencode/index.md) hubs cover the twin libraries.
+- [Bodu serializers guides](../index.md) - the family parent guide hub. The sibling [TOML](../toml/index.md) and [Bencode](../bencode/index.md) hubs cover the sibling libraries.
 - [Bodu.Text.Yaml introduction](../../../docs/serialization/yaml/index.md) and [core concepts](../../../docs/serialization/yaml/concepts.md) - the format specifics and family vocabulary.
 - [Text & Serialization guides](../../topics/text-and-serialization.md) - how these guides sit alongside the encoding and format guides.
 - API reference - <xref:Bodu.Text.Yaml>.

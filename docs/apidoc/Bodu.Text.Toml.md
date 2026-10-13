@@ -8,7 +8,7 @@ uid: Bodu.Text.Toml
 
 **Bodu.Text.Toml** is a [TOML](https://toml.io/) (v1.0.0 / v1.1.0) library for .NET 8 and .NET 10. It maps plain CLR objects to and from TOML through a configurable converter model, over a low-level forward-only token reader and writer, with both a mutable and a read-only document object model.
 
-The public surface layers four tiers: a static <xref:Bodu.Text.Toml.TomlSerializer> for object mapping, the <xref:Bodu.Text.Toml.Reader.Utf8TomlReader> / <xref:Bodu.Text.Toml.Writer.Utf8TomlWriter> `ref struct` pair for forward-only token processing, a mutable <xref:Bodu.Text.Toml.Nodes.TomlNode> DOM, and a read-only <xref:Bodu.Text.Toml.Document.TomlDocument> DOM. The twin library <xref:Bodu.Text.Bencode> applies the identical shape to Bencode.
+The public surface layers four tiers: a static <xref:Bodu.Text.Toml.TomlSerializer> for object mapping, the <xref:Bodu.Text.Toml.Reader.Utf8TomlReader> / <xref:Bodu.Text.Toml.Writer.Utf8TomlWriter> `ref struct` pair for forward-only token processing, a mutable <xref:Bodu.Text.Toml.Nodes.TomlNode> DOM, and a read-only <xref:Bodu.Text.Toml.Document.TomlDocument> DOM. The sibling libraries <xref:Bodu.Text.Bencode> and <xref:Bodu.Text.Yaml> apply the same shape to their formats, with options and defaults tuned to each.
 
 The types are organised into folders/namespaces by surface (`Reader`, `Writer`, `Document`, `Nodes`, `Serialization`). The reader enforces strict **TOML v1.0.0** by default and opts in to **TOML v1.1.0** grammar additions through the <xref:Bodu.Text.Toml.TomlSpecVersion> selector on the options. For EditorConfig-style INI configuration, see <xref:Bodu.Text.Ini>; for binary-to-text encodings (Base16 / Base32 / Base64 / Base58 / Base85), see the companion <xref:Bodu.Text.Encoding> package.
 
@@ -24,8 +24,8 @@ The types are organised into folders/namespaces by surface (`Reader`, `Writer`, 
 
 **Serializer (`Bodu.Text.Toml`)**
 
-- <xref:Bodu.Text.Toml.TomlSerializer> - static façade. `Serialize` to `string` / `IBufferWriter<byte>` / `Stream` and `Deserialize<T>` from `string` / `ReadOnlySpan<byte>` / `Stream`, sync and async.
-- <xref:Bodu.Text.Toml.TomlSerializerOptions> - converters, naming policy, ignore conditions, depth, `IncludeFields`, `SpecVersion`, and `ByteArrayHandling`; cached and frozen on first use.
+- <xref:Bodu.Text.Toml.TomlSerializer> - static façade. `Serialize` to `string` / `IBufferWriter<byte>` and `SerializeAsync` to a `Stream`; `Deserialize<T>` from `string` / `ReadOnlySpan<byte>` / `Stream` and `DeserializeAsync<T>` from a `Stream`. Writing to a stream is asynchronous only.
+- <xref:Bodu.Text.Toml.TomlSerializerOptions> - converters, naming policy, ignore conditions, depth, `IncludeFields`, `SpecVersion`, `ByteArrayHandling`, and `DecimalHandling`; cached and frozen on first use.
 - <xref:Bodu.Text.Toml.TomlSerializerDefaults> - the `General` / `Web` preset selector.
 - <xref:Bodu.Text.Serialization.NamingPolicy> - camel, snake, and kebab casing policies.
 - <xref:Bodu.Text.Toml.TomlTokenType>, <xref:Bodu.Text.Toml.TomlValueKind> - the token and value-kind enumerations.
@@ -35,7 +35,7 @@ The types are organised into folders/namespaces by surface (`Reader`, `Writer`, 
 **Low-level reader / writer**
 
 - <xref:Bodu.Text.Toml.Reader.Utf8TomlReader> (+ <xref:Bodu.Text.Toml.Reader.TomlReaderOptions>) - forward-only, allocation-free token reader.
-- <xref:Bodu.Text.Toml.Writer.Utf8TomlWriter> (+ <xref:Bodu.Text.Toml.Writer.TomlWriterOptions>) - forward-only token writer; emits canonical, block-style TOML.
+- <xref:Bodu.Text.Toml.Writer.Utf8TomlWriter> (+ <xref:Bodu.Text.Toml.Writer.TomlWriterOptions>) - forward-only token writer; emits normalized, block-style TOML.
 
 **Document object models**
 
@@ -73,9 +73,9 @@ byte[] back = node.ToUtf8Bytes();
 ## Notes
 
 - **Full serializer surface.** The converter, attribute, callback, naming-policy (and `TomlSerializerDefaults.Web`), and enum-converter surfaces are all present.
-- **Shared serialization core.** The library references <xref:Bodu.Text.Serialization> for the attribute family, the naming policies, the ignore / creation / unmapped-member enums, and the serialization callback interfaces, and compiles that package's shared metadata resolver and converter engine under its own format symbol; the reader, writer, DOMs, and format converters are TOML-specific. Its twin, <xref:Bodu.Text.Bencode>, mirrors it type for type for Bencode; <xref:Bodu.Text.Yaml> shares the architecture with a YAML-tuned surface.
+- **Shared serialization core.** The library references <xref:Bodu.Text.Serialization> for the attribute family, the naming policies, the ignore / creation / unmapped-member enums, and the serialization callback interfaces, and compiles that package's shared metadata resolver and converter engine under its own format symbol; the reader, writer, DOMs, and format converters are TOML-specific. Its siblings, <xref:Bodu.Text.Bencode> and <xref:Bodu.Text.Yaml>, share the architecture and the serializer surface; their options and defaults differ where the formats do (for example, `PropertyNameCaseInsensitive` defaults to `true` in Bencode and to `false` here).
 - **Value mapping.** `string` / `char` / `Guid` / `Uri` / `Version` → string, `TimeSpan` → the invariant `"c"`-format string, the integer family (including `Int128` / `UInt128` within the i64 range) → integer, `double` / `float` / `Half` → float, `decimal` → float or a lossless string via <xref:Bodu.Text.Toml.TomlDecimalHandling>, `bool` → boolean, and `DateTimeOffset` / `DateTime` / `DateOnly` / `TimeOnly` → the four RFC 3339 date-time forms; `byte[]` and memory-of-byte → an integer array (or a Base64 string via <xref:Bodu.Text.Toml.TomlByteArrayHandling>); enums → member-name strings. Collections (arrays, lists, sets, queues, stacks, and the concurrent collections) map to arrays, with a `Stack<T>` round-trip reversing the stack (the writer emits pop order). Dictionaries map to tables in insertion order; keys may be strings, integers, enums, `Guid`, `bool`, or `char`, written as bare or quoted table keys. An `object`-typed member writes its runtime type and reads back as a <xref:Bodu.Text.Toml.Document.TomlElement>; the read-only DOM types participate directly. Public fields participate via `IncludeFields` or `[Include]`. The full per-type list is in the [built-in converter catalog](~/guides/serialization/toml/builtin-converters.md).
-- **Table root.** A TOML document root must map to a table, so a top-level scalar or array throws. Output is canonical TOML in document order, so `[PropertyOrder]` is honored.
+- **Table root.** A TOML document root must map to a table, so a top-level scalar or array throws. Output is normalized TOML in member order, so `[PropertyOrder]` is honored; it is deterministic for a given member order but not a canonical form, so equal documents built in different orders serialize differently.
 - **Spec-version selection.** Parsing defaults to strict v1.0.0; setting `SpecVersion` to `V1_1` accepts the v1.1.0 additions (`\e` and `\xHH` escapes, seconds-less times, multi-line / trailing-comma inline tables). The writer always emits output valid under both versions.
 - **Errors.** Malformed input surfaces through <xref:Bodu.Text.Toml.TomlFormatException> (with line, column, and offset); binding failures through <xref:Bodu.Text.Toml.TomlSerializationException>.
 - **See also:** the [introduction](~/docs/serialization/index.md), [core concepts](~/docs/serialization/toml/concepts.md), and [getting-started](~/docs/serialization/toml/getting-started.md); the [Using TOML](~/guides/serialization/toml/using.md) and [writing converters](~/guides/serialization/toml/converters.md) guides; and the sibling [Bencode](xref:Bodu.Text.Bencode) and [YAML](xref:Bodu.Text.Yaml) libraries.

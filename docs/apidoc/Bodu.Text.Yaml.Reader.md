@@ -34,5 +34,5 @@ while (reader.Read())
 ## Notes
 
 - **Presentation is resolved, not reported.** Scalar style, block vs. flow layout, anchors, and aliases are handled during parsing; the token stream exposes only `StartMapping` / `StartSequence`, `PropertyName`, and the typed scalar kinds (`Null`, `String`, `Integer`, `Float`, `Boolean`).
-- **Spec version.** The 1.2 core schema is the default; `V1_1` additionally accepts `yes`/`no`/`on`/`off` and sexagesimal numbers. Malformed input throws <xref:Bodu.Text.Yaml.YamlFormatException> with line, column, and offset.
+- **Spec version.** The 1.2 core schema is the default; `V1_1` additionally accepts the `yes`/`no`/`on`/`off`/`y`/`n` booleans and the YAML 1.1 integer forms; sexagesimal numbers stay strings under both versions. Malformed input throws <xref:Bodu.Text.Yaml.YamlFormatException> with line, column, and offset.
 - **See also:** the [Bodu.Text.Yaml introduction](~/docs/serialization/yaml/index.md) and the [Using YAML](~/guides/serialization/yaml/using.md) guide (Pattern 9 - Drive the low-level reader and writer).
