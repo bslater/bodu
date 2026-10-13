@@ -82,4 +82,23 @@ internal static class JsonRateValueReader
     /// </remarks>
     internal static bool TryReadUnixMilliseconds(JsonElement element, out long timestamp) =>
         TryReadInt64(element, out timestamp);
+
+    /// <summary>
+    /// Reads an integer Unix-millisecond timestamp from a JSON number or invariant numeric string as the UTC date it
+    /// falls on.
+    /// </summary>
+    /// <param name="element">The JSON value to read.</param>
+    /// <param name="date">
+    /// Receives the UTC calendar date of the timestamp when reading succeeds; otherwise <see langword="default" />.
+    /// </param>
+    /// <returns>
+    /// <see langword="true" /> when the JSON value is an integer timestamp within the range a
+    /// <see cref="DateTimeOffset" /> represents (the years 1 to 9999); otherwise <see langword="false" />. A timestamp
+    /// outside that range, which <see cref="DateTimeOffset.FromUnixTimeMilliseconds(long)" /> rejects, is not a date,
+    /// and reading it never throws.
+    /// </returns>
+    internal static bool TryReadUnixMillisecondsDate(JsonElement element, out DateOnly date)
+    {
+        throw new NotImplementedException();
+    }
 }
