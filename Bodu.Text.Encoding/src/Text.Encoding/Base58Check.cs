@@ -106,10 +106,14 @@ public static class Base58Check
     /// </summary>
     /// <param name="charCount">The input character count.</param>
     /// <returns>
-    /// An upper bound on the payload byte count, or <c>0</c> when <paramref name="charCount" /> is too small to contain
-    /// a checksum.
+    /// An upper bound on the payload byte count, <paramref name="charCount" /> less the four checksum bytes, or
+    /// <c>0</c> when <paramref name="charCount" /> is too small to contain a checksum.
     /// </returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="charCount" /> is negative.</exception>
+    /// <remarks>
+    /// The bound follows <see cref="Base58.GetMaxDecodedLength(int)" />: no character decodes to more than one byte,
+    /// and a payload that begins with a run of zero bytes encodes each of them as one leading alphabet[0] character.
+    /// </remarks>
     public static int GetMaxDecodedLength(int charCount)
     {
         ThrowHelper.ThrowIfNegative(charCount);
@@ -149,9 +153,9 @@ public static class Base58Check
         if (!Base58.IsValid(source, variant, styles))
             return false;
 
-        // Each character decodes to at most one byte (a leading alphabet[0] to exactly one), so the input length bounds
-        // the decoded length even for a long run of leading zero bytes, which Base58.GetMaxDecodedLength undercounts.
-        byte[] rented = ArrayPool<byte>.Shared.Rent(source.Length);
+        // Each character decodes to at most one byte (a leading alphabet[0] to exactly one), so the bound holds even
+        // for a long run of leading zero bytes.
+        byte[] rented = ArrayPool<byte>.Shared.Rent(Base58.GetMaxDecodedLength(source.Length));
         try
         {
             if (!Base58.TryDecode(source, rented, out int decodedLength, variant, styles))

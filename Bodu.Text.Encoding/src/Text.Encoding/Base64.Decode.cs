@@ -88,6 +88,12 @@ public static partial class Base64
         if (normalized < 0)
             throw new FormatException(EncodingResourceStrings.Format_Invalid_Base64Alphabet);
 
+        // Decoding reads whole four-character quanta, so a remainder (padded input shorter than one quantum, such as
+        // "QQ=", which strict padding leaves as it is) is malformed. Rejecting it here also keeps the exact length
+        // computed below from going negative.
+        if (normalized % 4 != 0)
+            throw new FormatException(EncodingResourceStrings.Format_Invalid_Base64);
+
         byte[] buffer = new byte[GetExactDecodedLength(scratch[..normalized])];
         if (!Convert.TryFromBase64Chars(scratch[..normalized], buffer, out int bytesWritten)
             || bytesWritten != buffer.Length)

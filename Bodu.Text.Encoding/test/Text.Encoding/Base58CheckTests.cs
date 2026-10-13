@@ -11,7 +11,7 @@ namespace Bodu.Text.Encoding;
 /// round-trip behaviour, and tamper detection.
 /// </summary>
 [TestClass]
-public sealed class Base58CheckTests
+public sealed partial class Base58CheckTests
 {
 
     /// <summary>

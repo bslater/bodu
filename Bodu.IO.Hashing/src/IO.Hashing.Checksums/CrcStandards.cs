@@ -15,8 +15,8 @@ namespace Bodu.IO.Hashing.Checksums
     /// Pass to <see cref="CrcStandard.Get(CrcStandards)" /> to materialise the corresponding <see cref="CrcStandard" /> on demand.
     /// </summary>
     /// <remarks>
-    /// <para>The enum covers only canonical names, which <see cref="CrcStandard.FromName(string)" /> also resolves. Published aliases
-    /// (for example <c>CRC-32</c> or <c>PKZIP</c>) have no values of their own and are not resolved by name. Standards whose width
+    /// <para>The enum covers only canonical names. Published aliases (for example <c>CRC-32</c> or <c>PKZIP</c>) are not separate
+    /// values - they resolve to their canonical instance through <see cref="CrcStandard.FromName(string)" />. Standards whose width
     /// exceeds 64 bits (currently only <c>CRC-82/DARC</c>) are omitted because they cannot be represented in a <see cref="ulong" />.</para>
     /// </remarks>
     public enum CrcStandards
@@ -66,6 +66,7 @@ namespace Bodu.IO.Hashing.Checksums
         /// <item><description>XOR Out: <c>0x0UL</c></description></item>
         /// </list>
         /// </para>
+        /// <para>The <c>CRC-4/G-704</c> standard is also known by the alias <c>CRC-4/ITU</c>.</para>
         /// </remarks>
         CRC4_G704 = 2,
 
@@ -98,6 +99,7 @@ namespace Bodu.IO.Hashing.Checksums
         /// <item><description>XOR Out: <c>0x00UL</c></description></item>
         /// </list>
         /// </para>
+        /// <para>The <c>CRC-5/EPC-C1G2</c> standard is also known by the alias <c>CRC-5/EPC</c>.</para>
         /// </remarks>
         CRC5_EPCC1G2 = 4,
 
@@ -114,6 +116,7 @@ namespace Bodu.IO.Hashing.Checksums
         /// <item><description>XOR Out: <c>0x00UL</c></description></item>
         /// </list>
         /// </para>
+        /// <para>The <c>CRC-5/G-704</c> standard is also known by the alias <c>CRC-5/ITU</c>.</para>
         /// </remarks>
         CRC5_G704 = 5,
 
@@ -194,6 +197,7 @@ namespace Bodu.IO.Hashing.Checksums
         /// <item><description>XOR Out: <c>0x00UL</c></description></item>
         /// </list>
         /// </para>
+        /// <para>The <c>CRC-6/G-704</c> standard is also known by the alias <c>CRC-6/ITU</c>.</para>
         /// </remarks>
         CRC6_G704 = 10,
 
@@ -226,6 +230,7 @@ namespace Bodu.IO.Hashing.Checksums
         /// <item><description>XOR Out: <c>0x00UL</c></description></item>
         /// </list>
         /// </para>
+        /// <para>The <c>CRC-7/MMC</c> standard is also known by the alias <c>CRC-7</c>.</para>
         /// </remarks>
         CRC7_MMC = 12,
 
@@ -402,6 +407,7 @@ namespace Bodu.IO.Hashing.Checksums
         /// <item><description>XOR Out: <c>0x55UL</c></description></item>
         /// </list>
         /// </para>
+        /// <para>The <c>CRC-8/I-432-1</c> standard is also known by the alias <c>CRC-8/ITU</c>.</para>
         /// </remarks>
         CRC8_I4321 = 23,
 
@@ -450,6 +456,7 @@ namespace Bodu.IO.Hashing.Checksums
         /// <item><description>XOR Out: <c>0x00UL</c></description></item>
         /// </list>
         /// </para>
+        /// <para>The <c>CRC-8/MAXIM-DOW</c> standard is also known by the aliases <c>CRC-8/MAXIM</c> and <c>DOW-CRC</c>.</para>
         /// </remarks>
         CRC8_MAXIMDOW = 26,
 
@@ -546,6 +553,7 @@ namespace Bodu.IO.Hashing.Checksums
         /// <item><description>XOR Out: <c>0x00UL</c></description></item>
         /// </list>
         /// </para>
+        /// <para>The <c>CRC-8/SMBUS</c> standard is also known by the alias <c>CRC-8</c>.</para>
         /// </remarks>
         CRC8_SMBUS = 32,
 
@@ -562,6 +570,7 @@ namespace Bodu.IO.Hashing.Checksums
         /// <item><description>XOR Out: <c>0x00UL</c></description></item>
         /// </list>
         /// </para>
+        /// <para>The <c>CRC-8/TECH-3250</c> standard is also known by the aliases <c>CRC-8/AES</c> and <c>CRC-8/EBU</c>.</para>
         /// </remarks>
         CRC8_TECH3250 = 33,
 
@@ -594,6 +603,7 @@ namespace Bodu.IO.Hashing.Checksums
         /// <item><description>XOR Out: <c>0x000UL</c></description></item>
         /// </list>
         /// </para>
+        /// <para>The <c>CRC-10/ATM</c> standard is also known by the aliases <c>CRC-10</c> and <c>CRC-10/I-610</c>.</para>
         /// </remarks>
         CRC10_ATM = 35,
 
@@ -642,6 +652,7 @@ namespace Bodu.IO.Hashing.Checksums
         /// <item><description>XOR Out: <c>0x000UL</c></description></item>
         /// </list>
         /// </para>
+        /// <para>The <c>CRC-11/FLEXRAY</c> standard is also known by the alias <c>CRC-11</c>.</para>
         /// </remarks>
         CRC11_FLEXRAY = 38,
 
@@ -690,6 +701,7 @@ namespace Bodu.IO.Hashing.Checksums
         /// <item><description>XOR Out: <c>0x000UL</c></description></item>
         /// </list>
         /// </para>
+        /// <para>The <c>CRC-12/DECT</c> standard is also known by the alias <c>X-CRC-12</c>.</para>
         /// </remarks>
         CRC12_DECT = 41,
 
@@ -722,6 +734,7 @@ namespace Bodu.IO.Hashing.Checksums
         /// <item><description>XOR Out: <c>0x000UL</c></description></item>
         /// </list>
         /// </para>
+        /// <para>The <c>CRC-12/UMTS</c> standard is also known by the alias <c>CRC-12/3GPP</c>.</para>
         /// </remarks>
         CRC12_UMTS = 43,
 
@@ -786,6 +799,7 @@ namespace Bodu.IO.Hashing.Checksums
         /// <item><description>XOR Out: <c>0x0000UL</c></description></item>
         /// </list>
         /// </para>
+        /// <para>The <c>CRC-15/CAN</c> standard is also known by the alias <c>CRC-15</c>.</para>
         /// </remarks>
         CRC15_CAN = 47,
 
@@ -818,6 +832,7 @@ namespace Bodu.IO.Hashing.Checksums
         /// <item><description>XOR Out: <c>0x0000UL</c></description></item>
         /// </list>
         /// </para>
+        /// <para>The <c>CRC-16/ARC</c> standard is also known by the aliases <c>ARC</c>, <c>CRC-16</c>, <c>CRC-16/LHA</c>, and <c>CRC-IBM</c>.</para>
         /// </remarks>
         CRC16_ARC = 49,
 
@@ -882,6 +897,7 @@ namespace Bodu.IO.Hashing.Checksums
         /// <item><description>XOR Out: <c>0x0001UL</c></description></item>
         /// </list>
         /// </para>
+        /// <para>The <c>CRC-16/DECT-R</c> standard is also known by the alias <c>R-CRC-16</c>.</para>
         /// </remarks>
         CRC16_DECTR = 53,
 
@@ -898,6 +914,7 @@ namespace Bodu.IO.Hashing.Checksums
         /// <item><description>XOR Out: <c>0x0000UL</c></description></item>
         /// </list>
         /// </para>
+        /// <para>The <c>CRC-16/DECT-X</c> standard is also known by the alias <c>X-CRC-16</c>.</para>
         /// </remarks>
         CRC16_DECTX = 54,
 
@@ -946,6 +963,7 @@ namespace Bodu.IO.Hashing.Checksums
         /// <item><description>XOR Out: <c>0xFFFFUL</c></description></item>
         /// </list>
         /// </para>
+        /// <para>The <c>CRC-16/GENIBUS</c> standard is also known by the aliases <c>CRC-16/DARC</c>, <c>CRC-16/EPC</c>, <c>CRC-16/EPC-C1G2</c>, and <c>CRC-16/I-CODE</c>.</para>
         /// </remarks>
         CRC16_GENIBUS = 57,
 
@@ -978,6 +996,7 @@ namespace Bodu.IO.Hashing.Checksums
         /// <item><description>XOR Out: <c>0x0000UL</c></description></item>
         /// </list>
         /// </para>
+        /// <para>The <c>CRC-16/IBM-3740</c> standard is also known by the aliases <c>CRC-16/AUTOSAR</c> and <c>CRC-16/CCITT-FALSE</c>.</para>
         /// </remarks>
         CRC16_IBM3740 = 59,
 
@@ -994,6 +1013,7 @@ namespace Bodu.IO.Hashing.Checksums
         /// <item><description>XOR Out: <c>0xFFFFUL</c></description></item>
         /// </list>
         /// </para>
+        /// <para>The <c>CRC-16/IBM-SDLC</c> standard is also known by the aliases <c>CRC-16/ISO-HDLC</c>, <c>CRC-16/ISO-IEC-14443-3-B</c>, <c>CRC-16/X-25</c>, <c>CRC-B</c>, and <c>X-25</c>.</para>
         /// </remarks>
         CRC16_IBMSDLC = 60,
 
@@ -1010,6 +1030,7 @@ namespace Bodu.IO.Hashing.Checksums
         /// <item><description>XOR Out: <c>0x0000UL</c></description></item>
         /// </list>
         /// </para>
+        /// <para>The <c>CRC-16/ISO-IEC-14443-3-A</c> standard is also known by the alias <c>CRC-A</c>.</para>
         /// </remarks>
         CRC16_ISOIEC144433A = 61,
 
@@ -1026,6 +1047,7 @@ namespace Bodu.IO.Hashing.Checksums
         /// <item><description>XOR Out: <c>0x0000UL</c></description></item>
         /// </list>
         /// </para>
+        /// <para>The <c>CRC-16/KERMIT</c> standard is also known by the aliases <c>CRC-16/BLUETOOTH</c>, <c>CRC-16/CCITT</c>, <c>CRC-16/CCITT-TRUE</c>, <c>CRC-16/V-41-LSB</c>, <c>CRC-CCITT</c>, and <c>KERMIT</c>.</para>
         /// </remarks>
         CRC16_KERMIT = 62,
 
@@ -1074,6 +1096,7 @@ namespace Bodu.IO.Hashing.Checksums
         /// <item><description>XOR Out: <c>0xFFFFUL</c></description></item>
         /// </list>
         /// </para>
+        /// <para>The <c>CRC-16/MAXIM-DOW</c> standard is also known by the alias <c>CRC-16/MAXIM</c>.</para>
         /// </remarks>
         CRC16_MAXIMDOW = 65,
 
@@ -1106,6 +1129,7 @@ namespace Bodu.IO.Hashing.Checksums
         /// <item><description>XOR Out: <c>0x0000UL</c></description></item>
         /// </list>
         /// </para>
+        /// <para>The <c>CRC-16/MODBUS</c> standard is also known by the alias <c>MODBUS</c>.</para>
         /// </remarks>
         CRC16_MODBUS = 67,
 
@@ -1170,6 +1194,7 @@ namespace Bodu.IO.Hashing.Checksums
         /// <item><description>XOR Out: <c>0xFFFFUL</c></description></item>
         /// </list>
         /// </para>
+        /// <para>The <c>CRC-16/PROFIBUS</c> standard is also known by the alias <c>CRC-16/IEC-61158-2</c>.</para>
         /// </remarks>
         CRC16_PROFIBUS = 71,
 
@@ -1202,6 +1227,7 @@ namespace Bodu.IO.Hashing.Checksums
         /// <item><description>XOR Out: <c>0x0000UL</c></description></item>
         /// </list>
         /// </para>
+        /// <para>The <c>CRC-16/SPI-FUJITSU</c> standard is also known by the alias <c>CRC-16/AUG-CCITT</c>.</para>
         /// </remarks>
         CRC16_SPIFUJITSU = 73,
 
@@ -1266,6 +1292,7 @@ namespace Bodu.IO.Hashing.Checksums
         /// <item><description>XOR Out: <c>0x0000UL</c></description></item>
         /// </list>
         /// </para>
+        /// <para>The <c>CRC-16/UMTS</c> standard is also known by the aliases <c>CRC-16/BUYPASS</c> and <c>CRC-16/VERIFONE</c>.</para>
         /// </remarks>
         CRC16_UMTS = 77,
 
@@ -1298,6 +1325,7 @@ namespace Bodu.IO.Hashing.Checksums
         /// <item><description>XOR Out: <c>0x0000UL</c></description></item>
         /// </list>
         /// </para>
+        /// <para>The <c>CRC-16/XMODEM</c> standard is also known by the aliases <c>CRC-16/ACORN</c>, <c>CRC-16/LTE</c>, <c>CRC-16/V-41-MSB</c>, <c>XMODEM</c>, and <c>ZMODEM</c>.</para>
         /// </remarks>
         CRC16_XMODEM = 79,
 
@@ -1442,6 +1470,7 @@ namespace Bodu.IO.Hashing.Checksums
         /// <item><description>XOR Out: <c>0x000000UL</c></description></item>
         /// </list>
         /// </para>
+        /// <para>The <c>CRC-24/OPENPGP</c> standard is also known by the alias <c>CRC-24</c>.</para>
         /// </remarks>
         CRC24_OPENPGP = 88,
 
@@ -1506,6 +1535,7 @@ namespace Bodu.IO.Hashing.Checksums
         /// <item><description>XOR Out: <c>0x00000000UL</c></description></item>
         /// </list>
         /// </para>
+        /// <para>The <c>CRC-32/AIXM</c> standard is also known by the alias <c>CRC-32Q</c>.</para>
         /// </remarks>
         CRC32_AIXM = 92,
 
@@ -1538,6 +1568,7 @@ namespace Bodu.IO.Hashing.Checksums
         /// <item><description>XOR Out: <c>0xFFFFFFFFUL</c></description></item>
         /// </list>
         /// </para>
+        /// <para>The <c>CRC-32/BASE91-D</c> standard is also known by the alias <c>CRC-32D</c>.</para>
         /// </remarks>
         CRC32_BASE91D = 94,
 
@@ -1554,6 +1585,7 @@ namespace Bodu.IO.Hashing.Checksums
         /// <item><description>XOR Out: <c>0xFFFFFFFFUL</c></description></item>
         /// </list>
         /// </para>
+        /// <para>The <c>CRC-32/BZIP2</c> standard is also known by the aliases <c>CRC-32/AAL5</c>, <c>CRC-32/DECT-B</c>, and <c>B-CRC-32</c>.</para>
         /// </remarks>
         CRC32_BZIP2 = 95,
 
@@ -1586,6 +1618,7 @@ namespace Bodu.IO.Hashing.Checksums
         /// <item><description>XOR Out: <c>0xFFFFFFFFUL</c></description></item>
         /// </list>
         /// </para>
+        /// <para>The <c>CRC-32/CKSUM</c> standard is also known by the aliases <c>CKSUM</c> and <c>CRC-32/POSIX</c>.</para>
         /// </remarks>
         CRC32_CKSUM = 97,
 
@@ -1602,6 +1635,7 @@ namespace Bodu.IO.Hashing.Checksums
         /// <item><description>XOR Out: <c>0xFFFFFFFFUL</c></description></item>
         /// </list>
         /// </para>
+        /// <para>The <c>CRC-32/ISCSI</c> standard is also known by the aliases <c>CRC-32/BASE91-C</c>, <c>CRC-32/CASTAGNOLI</c>, <c>CRC-32/INTERLAKEN</c>, <c>CRC-32C</c>, and <c>CRC-32/NVME</c>.</para>
         /// </remarks>
         CRC32_ISCSI = 98,
 
@@ -1618,6 +1652,7 @@ namespace Bodu.IO.Hashing.Checksums
         /// <item><description>XOR Out: <c>0xFFFFFFFFUL</c></description></item>
         /// </list>
         /// </para>
+        /// <para>The <c>CRC-32/ISO-HDLC</c> standard is also known by the aliases <c>CRC-32</c>, <c>CRC-32/ADCCP</c>, <c>CRC-32/V-42</c>, <c>CRC-32/XZ</c>, and <c>PKZIP</c>.</para>
         /// </remarks>
         CRC32_ISOHDLC = 99,
 
@@ -1634,6 +1669,7 @@ namespace Bodu.IO.Hashing.Checksums
         /// <item><description>XOR Out: <c>0x00000000UL</c></description></item>
         /// </list>
         /// </para>
+        /// <para>The <c>CRC-32/JAMCRC</c> standard is also known by the alias <c>JAMCRC</c>.</para>
         /// </remarks>
         CRC32_JAMCRC = 100,
 
@@ -1682,6 +1718,7 @@ namespace Bodu.IO.Hashing.Checksums
         /// <item><description>XOR Out: <c>0x00000000UL</c></description></item>
         /// </list>
         /// </para>
+        /// <para>The <c>CRC-32/XFER</c> standard is also known by the alias <c>XFER</c>.</para>
         /// </remarks>
         CRC32_XFER = 103,
 
@@ -1714,6 +1751,7 @@ namespace Bodu.IO.Hashing.Checksums
         /// <item><description>XOR Out: <c>0x0000000000000000UL</c></description></item>
         /// </list>
         /// </para>
+        /// <para>The <c>CRC-64/ECMA-182</c> standard is also known by the alias <c>CRC-64</c>.</para>
         /// </remarks>
         CRC64_ECMA182 = 105,
 
@@ -1810,6 +1848,7 @@ namespace Bodu.IO.Hashing.Checksums
         /// <item><description>XOR Out: <c>0xFFFFFFFFFFFFFFFFUL</c></description></item>
         /// </list>
         /// </para>
+        /// <para>The <c>CRC-64/XZ</c> standard is also known by the alias <c>CRC-64/GO-ECMA</c>.</para>
         /// </remarks>
         CRC64_XZ = 111,
 

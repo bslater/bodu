@@ -77,9 +77,6 @@ public sealed partial class Base64Tests
             {
                 foreach (BaseFormatStyles styles in DecodeAgreement.AllStyles)
                 {
-                    if (IsShortPaddedStrictInput(input, variant, styles))
-                        continue;
-
                     var decodes = DecodeAgreement.TryDecode(() => Base64.Decode(input, variant, styles), out _);
                     if (Base64.IsValid(input, variant, styles) != decodes)
                         disagreements.Add($"{variant} [{styles}] {DecodeAgreement.Quote(input)}: Decode succeeds = {decodes}");

@@ -22,28 +22,6 @@ public sealed partial class Base64Tests
     private static byte[] Ascii(string value) => System.Text.Encoding.ASCII.GetBytes(value);
 
     /// <summary>
-    /// Indicates whether <see cref="Base64.Decode(string, Base64Variant, BaseFormatStyles)" /> throws
-    /// <see cref="OverflowException" /> rather than <see cref="FormatException" /> for <paramref name="input" />: a
-    /// strictly padded decode of padded input shorter than one four-character quantum (for example <c>QQ=</c>). That
-    /// is a separate defect from the validation sweeps' concern, so they leave this shape out.
-    /// </summary>
-    /// <param name="input">The candidate input.</param>
-    /// <param name="variant">The variant the sweep decodes with.</param>
-    /// <param name="styles">The styles the sweep decodes with.</param>
-    /// <returns><see langword="true" /> when the decode would throw <see cref="OverflowException" />.</returns>
-    private static bool IsShortPaddedStrictInput(string input, Base64Variant variant, BaseFormatStyles styles)
-    {
-        if (variant == Base64Variant.UrlSafe || styles.HasFlag(BaseFormatStyles.AllowMissingPadding))
-            return false;
-
-        var retained = variant == Base64Variant.Mime || styles.HasFlag(BaseFormatStyles.IgnoreWhitespace)
-            ? string.Concat(input.Where(c => c is not (' ' or '\t' or '\r' or '\n')))
-            : input;
-
-        return retained.Length is > 0 and < 4 && retained[^1] == '=';
-    }
-
-    /// <summary>
     /// Returns the inputs the validation sweeps hold to <see cref="Base64.Decode(string, Base64Variant, BaseFormatStyles)" />:
     /// padded and unpadded encodings of every payload up to ten bytes, each with the mutations of
     /// <see cref="DecodeAgreement.Mutations" />, plus hand-picked non-canonical, partially padded, over-padded, and

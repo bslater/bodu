@@ -118,4 +118,27 @@ public sealed partial class Base58Tests
         Assert.AreEqual("9Ajdvzr", System.Text.Encoding.ASCII.GetString(destination, 0, bytesWritten));
     }
 
+    /// <summary>
+    /// Verifies that <see cref="Base58.DecodeFromUtf8" /> decodes UTF-8 input made only of the alphabet's first
+    /// character, for every variant and at every length to 64, into a destination of
+    /// <see cref="Base58.GetMaxDecodedLength(int)" /> bytes.
+    /// </summary>
+    [TestMethod]
+    public void DecodeFromUtf8_WhenEveryCharacterIsALeadingZero_ShouldDecodeIntoTheMaxDecodedLength()
+    {
+        foreach (Base58Variant variant in Enum.GetValues<Base58Variant>())
+        {
+            for (int length = 1; length <= 64; length++)
+            {
+                byte[] utf8 = Ascii(LeadingZeroCharacters(variant, length));
+                byte[] destination = new byte[Base58.GetMaxDecodedLength(length)];
+
+                OperationStatus status = Base58.DecodeFromUtf8(utf8, destination, out int _, out int bytesWritten, variant);
+
+                Assert.AreEqual(OperationStatus.Done, status, $"Status for {variant} at length {length}.");
+                Assert.AreEqual(length, bytesWritten, $"Bytes written for {variant} at length {length}.");
+            }
+        }
+    }
+
 }

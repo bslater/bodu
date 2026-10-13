@@ -142,6 +142,62 @@ public sealed partial class Base64Tests
         });
     }
     /// <summary>
+    /// Verifies that <see cref="Base64.FromBase64String(string)" /> rejects padded input shorter than one
+    /// four-character quantum with <see cref="FormatException" />.
+    /// </summary>
+    [TestMethod]
+    public void FromBase64String_ForString_WhenInputIsPaddedAndShorterThanAQuantum_ShouldThrowFormatException()
+    {
+        Assert.ThrowsExactly<FormatException>(() =>
+        {
+            _ = Base64.FromBase64String("QQ=");
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Base64.FromBase64String(ReadOnlySpan{char})" /> rejects padded input shorter than one
+    /// four-character quantum with <see cref="FormatException" />.
+    /// </summary>
+    [TestMethod]
+    public void FromBase64String_ForCharSpan_WhenInputIsPaddedAndShorterThanAQuantum_ShouldThrowFormatException()
+    {
+        Assert.ThrowsExactly<FormatException>(() =>
+        {
+            _ = Base64.FromBase64String("QQ=".AsSpan());
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Base64.FromBase64String(ReadOnlySpan{byte})" /> rejects padded UTF-8 input shorter than
+    /// one four-character quantum with <see cref="FormatException" />.
+    /// </summary>
+    [TestMethod]
+    public void FromBase64String_ForUtf8Source_WhenInputIsPaddedAndShorterThanAQuantum_ShouldThrowFormatException()
+    {
+        byte[] utf8 = Ascii("QQ=");
+
+        Assert.ThrowsExactly<FormatException>(() =>
+        {
+            _ = Base64.FromBase64String(utf8);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Base64.FromBase64String(ReadOnlySpan{char}, Span{byte}, out int, out int)" /> reports
+    /// <see cref="OperationStatus.InvalidData" /> for padded input shorter than one four-character quantum.
+    /// </summary>
+    [TestMethod]
+    public void FromBase64String_ForCharSpan_OperationStatus_WhenInputIsPaddedAndShorterThanAQuantum_ShouldReturnInvalidData()
+    {
+        byte[] destination = new byte[4];
+
+        OperationStatus status = Base64.FromBase64String("QQ=".AsSpan(), destination, out int _, out int bytesWritten);
+
+        Assert.AreEqual(OperationStatus.InvalidData, status);
+        Assert.AreEqual(0, bytesWritten);
+    }
+
+    /// <summary>
     /// Verifies that <see cref="Base64.ToBase64String(byte[])" /> returns the canonical Standard variant output.
     /// </summary>
     [TestMethod]

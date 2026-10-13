@@ -68,18 +68,6 @@ public sealed class LengthHelperOverflowTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="Base58.GetMaxDecodedLength(int)" /> throws on overflow.
-    /// </summary>
-    [TestMethod]
-    public void Base58_GetMaxDecodedLength_WhenOverflow_ShouldThrowExactly()
-    {
-        Assert.ThrowsExactly<OverflowException>(() =>
-        {
-            _ = Base58.GetMaxDecodedLength(int.MaxValue);
-        });
-    }
-
-    /// <summary>
     /// Verifies that <see cref="Base58.GetMaxEncodedLength(int)" /> throws on overflow. The Base58 expansion factor
     /// (138/100) means overflow kicks in earlier than the other encodings.
     /// </summary>

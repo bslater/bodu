@@ -1,13 +1,15 @@
 <#
 .SYNOPSIS
-    Generates the CRC catalogue documentation page at docs/guides/cryptography/crc-catalogue.md.
+    Generates the CRC catalogue documentation page at docs/guides/io-hashing/crc-catalogue.md.
 
 .DESCRIPTION
     Renders a Markdown reference page that lists every CRC standard in crc-specs.json. The page
-    credits the CRC RevEng project, records the last export timestamp from
-    crc-specs.meta.json, stamps its own regeneration time, and describes how to access the
-    catalogue via the common strongly-typed properties, the `CrcStandards` enum (via
-    `CrcStandard.Get`), or by name (via `CrcStandard.FromName`).
+    credits the CRC RevEng project, records the last fetch timestamp from crc-specs.meta.json,
+    and describes how to access the catalogue via the common strongly-typed properties, the
+    `CrcStandards` enum (via `CrcStandard.Get`), or by name (via `CrcStandard.FromName`).
+
+    The page depends only on its two inputs, so regenerating it without a new fetch reproduces
+    the committed page exactly.
 
 .PARAMETER SpecsPath
     Path to the crc-specs.json input file.
@@ -32,7 +34,7 @@
 param(
     [string]$SpecsPath  = (Join-Path $PSScriptRoot '..' 'Bodu.IO.Hashing' 'src' 'crc-specs.json'),
     [string]$MetaPath   = (Join-Path $PSScriptRoot '..' 'Bodu.IO.Hashing' 'src' 'crc-specs.meta.json'),
-    [string]$OutputPath = (Join-Path $PSScriptRoot '..' 'docs' 'guides' 'cryptography' 'crc-catalogue.md'),
+    [string]$OutputPath = (Join-Path $PSScriptRoot '..' 'docs' 'guides' 'io-hashing' 'crc-catalogue.md'),
     [int]$MaxSize = 64
 )
 
@@ -60,6 +62,17 @@ function Format-AnchorSlug {
     return 'crc.cat.' + ($Name -replace '/', '-').ToLowerInvariant()
 }
 
+function Format-UtcTimestamp {
+    param($Value)
+    # ConvertFrom-Json turns the ISO 8601 text crc-specs.meta.json stores into a DateTime, whose string
+    # form is culture-shaped ("06/09/2026 06:48:50"); render it back in the stored ISO 8601 form.
+    if ($Value -is [datetime]) {
+        return $Value.ToUniversalTime().ToString("yyyy-MM-dd'T'HH:mm:ss'Z'", [System.Globalization.CultureInfo]::InvariantCulture)
+    }
+
+    return [string]$Value
+}
+
 $specs = @(Get-Content -LiteralPath $SpecsPath -Raw | ConvertFrom-Json)
 
 $source = 'https://reveng.sourceforge.io/crc-catalogue/all.htm'
@@ -69,15 +82,13 @@ if (Test-Path -LiteralPath $MetaPath) {
     try {
         $meta = Get-Content -LiteralPath $MetaPath -Raw | ConvertFrom-Json
         if ($meta.PSObject.Properties['source'])     { $source     = [string]$meta.source }
-        if ($meta.PSObject.Properties['fetchedUtc']) { $fetchedUtc = [string]$meta.fetchedUtc }
+        if ($meta.PSObject.Properties['fetchedUtc']) { $fetchedUtc = Format-UtcTimestamp $meta.fetchedUtc }
         if ($meta.PSObject.Properties['entryCount']) { $entryCount = [int]$meta.entryCount }
     }
     catch {
         Write-Warning "Could not read metadata at $MetaPath; using defaults."
     }
 }
-$regeneratedUtc = (Get-Date).ToUniversalTime().ToString('yyyy-MM-ddTHH:mm:ssZ')
-
 $supported = @($specs | Where-Object { $_.size -le $MaxSize })
 $skipped   = @($specs | Where-Object { $_.size -gt $MaxSize })
 
@@ -95,23 +106,24 @@ $lines = [System.Collections.Generic.List[string]]::new()
 [void]$lines.Add('')
 [void]$lines.Add('# CRC catalogue')
 [void]$lines.Add('')
-[void]$lines.Add('The <xref:Bodu.IO.Hashing.Checksums.CrcStandard> type exposes a broad catalogue of named CRC parameter sets that can be passed to <xref:Bodu.IO.Hashing.Checksums.Crc> for CRC computation. The catalogue is mechanically derived from the **CRC RevEng** project.')
+[void]$lines.Add('The <xref:Bodu.IO.Hashing.Checksums.CrcStandard> type (in the **Bodu.IO.Hashing** package) exposes a broad catalogue of named CRC parameter sets that can be passed to <xref:Bodu.IO.Hashing.Checksums.Crc> for CRC computation. The catalogue is mechanically derived from the **CRC RevEng** project.')
+[void]$lines.Add('')
+[void]$lines.Add('For walk-through usage of the CRC engine, see [Using CRC](crc.md).')
 [void]$lines.Add('')
 [void]$lines.Add('## Attribution')
 [void]$lines.Add('')
-[void]$lines.Add("The CRC parameter sets in this catalogue are sourced from **Greg Cook's CRC RevEng Catalogue of parametrised CRC algorithms** at [$source]($source).")
+[void]$lines.Add("The CRC parameter sets in this catalogue are sourced from **Greg Cook's CRC RevEng Catalogue of parameterized CRC algorithms** at [$source]($source).")
 [void]$lines.Add('')
-[void]$lines.Add('The catalogue is distributed as part of the CRC RevEng project at <https://reveng.sourceforge.io/>. Please consult the upstream page for the authoritative parameter definitions, alias history, and licence terms that apply to the underlying data.')
+[void]$lines.Add('The catalogue is distributed as part of the CRC RevEng project at <https://reveng.sourceforge.io/>. Please consult the upstream page for the authoritative parameter definitions, alias history, and license terms that apply to the underlying data.')
 [void]$lines.Add('')
 if ($fetchedUtc) {
     [void]$lines.Add("- **Catalogue last fetched (UTC):** $fetchedUtc")
 }
-[void]$lines.Add("- **This page regenerated (UTC):** $regeneratedUtc")
 [void]$lines.Add("- **Entries in source:** $entryCount")
 [void]$lines.Add('')
 [void]$lines.Add('## Accessing standards')
 [void]$lines.Add('')
-[void]$lines.Add('The catalogue is a **lazy-materialised data table**. Loading <xref:Bodu.IO.Hashing.Checksums.CrcStandard> allocates only the packed spec rows and the per-entry cache slots - individual <xref:Bodu.IO.Hashing.Checksums.CrcStandard> instances are constructed on first access and then memoised, so a process that uses only a handful of standards pays for only a handful of allocations.')
+[void]$lines.Add('The catalogue is a **lazy-materialized data table**. Loading <xref:Bodu.IO.Hashing.Checksums.CrcStandard> allocates only the packed spec rows and the per-entry cache slots - individual <xref:Bodu.IO.Hashing.Checksums.CrcStandard> instances are constructed on first access and then memoized, so a process that uses only a handful of standards pays for only a handful of allocations.')
 [void]$lines.Add('')
 [void]$lines.Add('Three entry points:')
 [void]$lines.Add('')
@@ -142,7 +154,7 @@ else {
 [void]$lines.Add('')
 [void]$lines.Add('## Support policy')
 [void]$lines.Add('')
-[void]$lines.Add('`CrcStandard` represents all scalar parameters as <xref:System.UInt64>, so the library can materialise any CRC of width 1-64 bits. Entries whose width exceeds 64 bits are listed below for completeness but are **not** exposed by <xref:Bodu.IO.Hashing.Checksums.CrcStandards> and cannot be constructed through `CrcStandard`.')
+[void]$lines.Add('`CrcStandard` represents all scalar parameters as <xref:System.UInt64>, so the library can materialize any CRC of width 1-64 bits. Entries whose width exceeds 64 bits are listed below for completeness but are **not** exposed by <xref:Bodu.IO.Hashing.Checksums.CrcStandards> and cannot be constructed through `CrcStandard`.')
 [void]$lines.Add('')
 if ($hasAliases) {
     [void]$lines.Add('Aliases share a single catalogue instance with their canonical standard. `CrcStandard.FromName` resolves both canonical and alias names, so `FromName("CRC-32")` and `FromName("CRC-32/ISO-HDLC")` return the same instance.')
@@ -243,7 +255,9 @@ $overviewLabel = if ($OutputPath -match 'io-hashing') { 'Bodu.IO.Hashing guides 
 [void]$lines.Add("- **[$overviewLabel](index.md)** - every guide in this library.")
 [void]$lines.Add('')
 
-Set-Content -LiteralPath $OutputPath -Value ($lines -join "`n") -Encoding utf8
+# The lines already end with an empty one, so the joined text ends in a single line feed; -NoNewline keeps
+# Set-Content from adding a second.
+Set-Content -LiteralPath $OutputPath -Value ($lines -join "`n") -Encoding utf8 -NoNewline
 Write-Host "Wrote $OutputPath"
 Write-Host "  Supported listed: $($supported.Count)"
 Write-Host "  Common:           $(($supported | Where-Object { $Common.Contains($_.name) }).Count)"
