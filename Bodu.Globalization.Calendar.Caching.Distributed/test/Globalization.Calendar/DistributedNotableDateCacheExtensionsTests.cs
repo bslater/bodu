@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Globalization;
 using Bodu.Globalization.Calendar.Caching;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
@@ -147,6 +148,27 @@ public sealed class DistributedNotableDateCacheExtensionsTests
         {
             _ = provider.GetRequiredService<INotableDateCache>();
         });
+    }
+
+    /// <summary>
+    /// Verifies that invalid distributed cache options fail validation with the package's resource message.
+    /// </summary>
+    [TestMethod]
+    public void AddDistributedNotableDateCache_WhenOptionsInvalid_ShouldFailWithResourceMessage()
+    {
+        using ServiceProvider provider = BuildProvider(services =>
+        {
+            services.AddDistributedMemoryCache();
+            services.AddDistributedNotableDateCache(configure: o => o.KeyPrefix = "   ");
+        });
+        string? expected = CalendarCachingDistributedResourceStrings.ResourceManager.GetString("Op_Invalid_CacheOptions", CultureInfo.CurrentCulture);
+
+        OptionsValidationException ex = Assert.ThrowsExactly<OptionsValidationException>(() =>
+        {
+            _ = provider.GetRequiredService<IOptions<DistributedNotableDateCacheOptions>>().Value;
+        });
+
+        Assert.AreEqual(expected, ex.Failures.Single());
     }
 
     /// <summary>
