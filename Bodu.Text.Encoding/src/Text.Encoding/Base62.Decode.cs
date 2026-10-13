@@ -27,7 +27,8 @@ public static partial class Base62
     /// Thrown when <paramref name="s" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="FormatException">
-    /// Thrown when the input contains characters outside the Base62 alphabet.
+    /// Thrown when the input contains characters outside the Base62 alphabet, or is longer than 65536 characters (a
+    /// bound on the decoder's quadratic cost).
     /// </exception>
     public static byte[] Decode(string s, BaseFormatStyles style = BaseFormatStyles.None)
     {
@@ -41,7 +42,9 @@ public static partial class Base62
     /// <param name="chars">The Base62 character span.</param>
     /// <param name="style">Parsing styles.</param>
     /// <returns>The decoded byte array. Returns <see cref="Array.Empty{T}" /> for empty input.</returns>
-    /// <exception cref="FormatException">Thrown when the input is not valid Base62.</exception>
+    /// <exception cref="FormatException">
+    /// Thrown when the input is not valid Base62, or is longer than 65536 characters.
+    /// </exception>
     public static byte[] Decode(ReadOnlySpan<char> chars, BaseFormatStyles style = BaseFormatStyles.None) =>
         chars.IsEmpty
             ? []
@@ -67,7 +70,9 @@ public static partial class Base62
     /// Thrown when the segment defined by <paramref name="offset" /> and <paramref name="count" /> exceeds the
     /// available range of <paramref name="chars" />.
     /// </exception>
-    /// <exception cref="FormatException">Thrown when the input is not valid Base62.</exception>
+    /// <exception cref="FormatException">
+    /// Thrown when the input is not valid Base62, or is longer than 65536 characters.
+    /// </exception>
     public static byte[] Decode(char[] chars, int offset, int count, BaseFormatStyles style = BaseFormatStyles.None)
     {
         ThrowHelper.ThrowIfArrayOffsetOrCountInvalid(chars, offset, count);
@@ -84,8 +89,8 @@ public static partial class Base62
     /// </param>
     /// <param name="style">Parsing styles.</param>
     /// <returns>
-    /// <see langword="true" /> on success; <see langword="false" /> when the input is malformed or the destination is
-    /// too small.
+    /// <see langword="true" /> on success; <see langword="false" /> when the input is malformed or longer than 65536
+    /// characters, or the destination is too small.
     /// </returns>
     public static bool TryDecode(ReadOnlySpan<char> chars, Span<byte> destination, out int bytesWritten, BaseFormatStyles style = BaseFormatStyles.None)
     {

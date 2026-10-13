@@ -13,7 +13,11 @@ public static partial class Base85
     /// </summary>
     /// <param name="s">The Base85 input.</param>
     /// <param name="variant">The variant.</param>
-    /// <param name="style">Parsing styles. Only <see cref="BaseFormatStyles.IgnoreWhitespace" /> has effect.</param>
+    /// <param name="style">
+    /// Parsing styles. <see cref="BaseFormatStyles.IgnoreWhitespace" /> permits whitespace in the input;
+    /// <see cref="BaseFormatStyles.AllowPrefix" /> permits the Adobe Ascii85 <c>&lt;~</c> / <c>~&gt;</c> delimiter pair
+    /// (Ascii85 only).
+    /// </param>
     /// <returns>The decoded byte array.</returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="s" /> is <see langword="null" />.

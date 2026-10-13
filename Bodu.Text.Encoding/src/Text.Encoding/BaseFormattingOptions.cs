@@ -34,8 +34,8 @@ namespace Bodu.Text.Encoding;
 ///     | BaseFormattingOptions.IncludePrefix
 ///     | BaseFormattingOptions.InsertSpacing);
 ///
-/// // Padding-free Base64 - produces the same output as Base64Url.Encode.
-/// string unpadded = Base64.Encode(data, BaseFormattingOptions.OmitPadding);
+/// // Padding-free Standard Base64 (still the '+' and '/' alphabet; Base64Url.Encode uses '-' and '_').
+/// string unpadded = Base64.Encode(data, options: BaseFormattingOptions.OmitPadding);
 ///]]>
 /// </code>
 /// </example>
@@ -43,8 +43,8 @@ namespace Bodu.Text.Encoding;
 public enum BaseFormattingOptions : byte
 {
     /// <summary>
-    /// No formatting is applied. The output is compact, lower case, and continuous with no spacing, prefix, or line
-    /// breaks.
+    /// No formatting is applied. The output is compact and continuous with no spacing, prefix, or line breaks, in each
+    /// encoding's default case (lower case for Base16).
     /// </summary>
     None = 0,
 

@@ -47,11 +47,11 @@ namespace Bodu.Text.Encoding;
 /// string ascii85 = Base85.Encode(data);
 ///
 /// // Wrap the output in the Adobe <~ ... ~> delimiter pair.
-/// string delimited = Base85.Encode(data, BaseFormattingOptions.IncludePrefix);
+/// string delimited = Base85.Encode(data, options: BaseFormattingOptions.IncludePrefix);
 ///
 /// // ZeroMQ Z85 - shell-safe alphabet; the input must be a multiple of four bytes.
-/// byte[] padded = "hello wor"u8.ToArray();    // 9 bytes - pad to 12 before encoding
-/// string z85    = Base85.Encode(padded.AsSpan(0, 8), Base85Variant.Z85);
+/// byte[] aligned = "hello world!"u8.ToArray();    // 12 bytes
+/// string z85     = Base85.Encode(aligned, Base85Variant.Z85);
 ///
 /// // Round-trip.
 /// byte[] roundtrip = Base85.Decode(ascii85);
@@ -162,8 +162,8 @@ public static partial class Base85
     }
 
     /// <summary>
-    /// Returns the maximum number of bytes that decoding <paramref name="charCount" /> characters could produce (worst
-    /// case, assuming no <c>z</c> shortcuts expand to four zero bytes).
+    /// Returns the maximum number of bytes that decoding <paramref name="charCount" /> characters could produce - the
+    /// worst case, in which every character is an Ascii85 <c>z</c> shortcut expanding to four zero bytes.
     /// </summary>
     /// <param name="charCount">The input character count. Must be non-negative.</param>
     /// <returns>The worst-case decoded byte count.</returns>

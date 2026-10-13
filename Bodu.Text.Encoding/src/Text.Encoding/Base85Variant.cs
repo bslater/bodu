@@ -34,9 +34,9 @@ public enum Base85Variant : byte
     Ascii85 = 0,
 
     /// <summary>
-    /// The Z85 alphabet defined by ZeroMQ (RFC 32 / "ZMTP/2.0"). Uses a shell-safe alphabet that avoids quote, slash,
-    /// semicolon, and backslash. No <c>z</c> shortcut is recognised, and the input length must be a multiple of four
-    /// bytes (output length is then a multiple of five characters).
+    /// The Z85 alphabet defined by ZeroMQ (RFC 32 / "ZMTP/2.0"). Uses a shell-safe alphabet that avoids the quote
+    /// characters, semicolon, and backslash. No <c>z</c> shortcut is recognised, and the input length must be a
+    /// multiple of four bytes (output length is then a multiple of five characters).
     /// </summary>
     Z85 = 1,
 

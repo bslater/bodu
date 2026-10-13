@@ -28,7 +28,7 @@ public static partial class Bech32
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="encoding" /> is undefined.</exception>
     /// <remarks>
     /// This method does not impose the BIP-173 90-character maximum, so it can serve longer non-address schemes (for
-    /// example Lightning BOLT11 invoices). The decoder enforces the 90-character limit by default.
+    /// example Lightning BOLT11 invoices). The decoder always enforces the 90-character limit.
     /// </remarks>
     public static string Encode(string hrp, ReadOnlySpan<byte> data, Bech32Encoding encoding = Bech32Encoding.Bech32)
     {

@@ -27,7 +27,7 @@ namespace Bodu.Text.Encoding;
 ///
 /// // Decoder accepts inputs both with and without trailing '=' padding.
 /// byte[] roundtrip = Base64Url.Decode(segment);
-/// byte[] padded    = Base64Url.Decode("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9==");
+/// byte[] padded    = Base64Url.Decode("eyJhbGciOiJub25lIn0=");                // {"alg":"none"}, padded
 ///]]>
 /// </code>
 /// </example>

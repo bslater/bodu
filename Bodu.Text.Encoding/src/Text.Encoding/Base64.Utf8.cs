@@ -129,8 +129,8 @@ public static partial class Base64
     }
 
     /// <summary>
-    /// Builds a lookup table for the supplied alphabet, plus UrlSafe aliases for the standard alphabet (and vice versa)
-    /// so the decoder tolerates either form when the user is lenient.
+    /// Builds a lookup table mapping each character of the supplied alphabet to its value; every other character maps
+    /// to <c>-1</c>, so each variant's decoder accepts only its own alphabet.
     /// </summary>
     /// <param name="alphabet">The alphabet.</param>
     /// <returns>A 128-entry lookup table.</returns>
