@@ -110,12 +110,15 @@ public sealed class ImfRateProviderOptions
     public string? CacheDirectory { get; set; }
 
     /// <summary>
-    /// Gets or sets how long a cached copy of the current month's report remains fresh before it is re-downloaded.
+    /// Gets or sets how long a cached copy of the current month's report remains fresh before it is re-downloaded, and
+    /// how long a loaded month serves a request for a day the IMF could still publish before it is downloaded again.
     /// </summary>
     /// <value>The refresh interval; defaults to 12 hours.</value>
     /// <remarks>
     /// A closed month's report is immutable and is served from cache regardless of age; only the current, still-growing
-    /// month is subject to this interval.
+    /// month is subject to this interval. In memory, a loaded month serves for good a request that ends before the day
+    /// it was downloaded, or on a day it returned rates for; a request that reaches a later day of the month downloads
+    /// the month again once this interval has passed.
     /// </remarks>
     public TimeSpan RefreshInterval { get; set; } = TimeSpan.FromHours(12);
 

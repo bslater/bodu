@@ -45,7 +45,9 @@ foreach (RbaSeriesInfo info in provider.GetAvailablePairs())
   network).
 - **Caching.** Downloaded files can be cached on disk by setting `EnableDiskCache` (off by
   default); immutable historical eras are then cached indefinitely and the open-ended current
-  era refreshes on `CurrentEraRefreshInterval`.
+  era refreshes on `CurrentEraRefreshInterval`. In memory, a closed era is loaded once, while
+  a request that reaches a day the RBA had not yet published when the current era was
+  loaded downloads it again once `CurrentEraRefreshInterval` has passed.
 - **Configuration.** `RbaRateProviderOptions` carries working defaults and binds through
   `Microsoft.Extensions.Options`. The package ships its own `AddRbaExchangeRates`
   registration in the `Bodu.Financial.ExchangeRates` namespace.

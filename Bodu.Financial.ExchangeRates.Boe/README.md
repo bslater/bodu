@@ -47,6 +47,9 @@ foreach (BoeSeriesInfo info in provider.GetAvailablePairs())
   synchronous miss does not reach the network).
 - **Caching.** Downloaded range responses are cached on disk (configurable) and refreshed
   on a TTL, since a range ending near today can gain an observation each business day.
+  In memory, a loaded range keeps its past days for good, while today (and any later day
+  it returned no rate for) is downloaded again by a request that reaches it once
+  `RefreshInterval` has passed, so a rate published after the first download is picked up.
 - **Configuration.** `BoeRateProviderOptions` carries working defaults and binds through
   `Microsoft.Extensions.Options`. The provider's connection to the IADB is grouped under
   its `Endpoint` (`BoeEndpointOptions`) - base URL, query path, HTTP timeout, and

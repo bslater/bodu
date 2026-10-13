@@ -85,9 +85,16 @@ public sealed class RbaRateProviderOptions
     public string? CacheDirectory { get; set; }
 
     /// <summary>
-    /// Gets or sets how long a cached copy of the open-ended current era remains fresh before it is re-downloaded.
+    /// Gets or sets how long a cached copy of the open-ended current era remains fresh before it is re-downloaded, and
+    /// how long the loaded current era serves a request for a day the RBA could still publish before it is downloaded
+    /// again.
     /// </summary>
     /// <value>The refresh interval; defaults to 12 hours. Immutable historical eras are cached indefinitely.</value>
+    /// <remarks>
+    /// In memory, the loaded current era serves for good a request that ends before the day it was downloaded, or on a
+    /// day it returned rates for; a request that reaches a later day downloads the era again once this interval has
+    /// passed. A closed era is loaded once.
+    /// </remarks>
     public TimeSpan CurrentEraRefreshInterval { get; set; } = TimeSpan.FromHours(12);
 
     /// <summary>

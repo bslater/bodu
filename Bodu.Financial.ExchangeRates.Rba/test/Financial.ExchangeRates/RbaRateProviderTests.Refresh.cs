@@ -29,4 +29,22 @@ public partial class RbaRateProviderTests
         Assert.AreEqual(2, source.GetTableCallCount);
         Assert.IsTrue(provider.TryGetRate("AUD", "USD", today, RateLookupOptions.Exact, out _));
     }
+
+    /// <summary>
+    /// Verifies that a closed era is never downloaded again, however long ago it was loaded.
+    /// </summary>
+    [TestMethod]
+    public async Task LoadRangeAsync_WhenEraIsClosed_ShouldNotLoadItAgain()
+    {
+        MutableTimeProvider time = new(new DateTimeOffset(2023, 1, 4, 9, 0, 0, TimeSpan.Zero));
+        RbaRateProviderOptions options = new() { EnableDiskCache = false, CurrentEraRefreshInterval = TimeSpan.FromHours(1) };
+        FixtureRbaRateTableSource source = new(options);
+        using RbaRateProvider provider = new(source, options, timeProvider: time);
+
+        await provider.LoadRangeAsync(new DateOnly(2022, 6, 1), new DateOnly(2022, 6, 30));
+        time.Advance(TimeSpan.FromDays(30));
+        await provider.LoadRangeAsync(new DateOnly(2022, 6, 1), new DateOnly(2022, 6, 30));
+
+        Assert.AreEqual(1, source.GetTableCallCount);
+    }
 }

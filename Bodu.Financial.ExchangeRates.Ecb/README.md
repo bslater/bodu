@@ -47,7 +47,9 @@ foreach (EcbSeriesInfo info in provider.GetAvailablePairs())
   provider serves a snapshot of already-loaded data and a synchronous miss does not reach
   the network).
 - **Caching.** Downloaded files are cached on disk (configurable); because every feed
-  extends to the latest business day, each is refreshed on a TTL.
+  extends to the latest business day, each is refreshed on a TTL. In memory, a loaded
+  feed serves past days for good, while a request that reaches a day the ECB had not yet
+  published when the feed was loaded downloads it again once `RefreshInterval` has passed.
 - **Configuration.** `EcbRateProviderOptions` carries working defaults and binds through
   `Microsoft.Extensions.Options`. The provider's connection to the ECB is grouped under
   its `Endpoint` (`EcbEndpointOptions`) - base URL, HTTP timeout, and user-agent - so the

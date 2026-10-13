@@ -56,6 +56,22 @@ internal sealed class EcbRateTable
     }
 
     /// <summary>
+    /// Returns the latest date the table holds an observation for.
+    /// </summary>
+    /// <returns>The latest observation date, or <see langword="null" /> when the table is empty.</returns>
+    public DateOnly? GetLastDate()
+    {
+        DateOnly? last = null;
+        foreach (EcbRateObservation observation in Observations)
+        {
+            if (last is null || observation.Date > last.Value)
+                last = observation.Date;
+        }
+
+        return last;
+    }
+
+    /// <summary>
     /// Produces the discovered-pair metadata for the distinct currencies in the table.
     /// </summary>
     /// <returns>

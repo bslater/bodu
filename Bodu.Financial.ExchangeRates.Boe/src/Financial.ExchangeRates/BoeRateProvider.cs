@@ -67,8 +67,8 @@ public sealed class BoeRateProvider
     /// <summary>The logger that records range downloads and on-demand network fetches.</summary>
     private readonly ILogger _logger;
 
-    /// <summary>The merged inclusive ranges whose data has been loaded; accessed under <see cref="WebRateProvider.SyncRoot" />.</summary>
-    private readonly DateRangeCoverage _loadedRanges = new();
+    /// <summary>The days whose data has been loaded: final days for good, open days until the refresh interval passes; accessed under <see cref="WebRateProvider.SyncRoot" />.</summary>
+    private readonly LoadedRangeCoverage _loadedRanges = new();
 
     /// <summary>The discovered currency series, keyed by pair.</summary>
     private readonly Dictionary<CurrencyPair, BoeSeriesInfo> _series = new();
@@ -223,7 +223,7 @@ public sealed class BoeRateProvider
     {
         lock (SyncRoot)
         {
-            return _loadedRanges.Contains(startDate, endDate);
+            return _loadedRanges.Contains(startDate, endDate, TimeProvider.GetUtcNow());
         }
     }
 
@@ -300,7 +300,7 @@ public sealed class BoeRateProvider
     {
         lock (SyncRoot)
         {
-            if (_loadedRanges.Contains(startDate, endDate))
+            if (_loadedRanges.Contains(startDate, endDate, TimeProvider.GetUtcNow()))
                 return Task.CompletedTask;
         }
 
@@ -320,7 +320,7 @@ public sealed class BoeRateProvider
     /// <returns>A task that completes when the range has been loaded.</returns>
     private Task LoadRangeCoreAsync(DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken) =>
         LoadFileFeedAsync(
-            alreadyLoaded: () => _loadedRanges.Contains(startDate, endDate),
+            alreadyLoaded: () => _loadedRanges.Contains(startDate, endDate, TimeProvider.GetUtcNow()),
             logStarting: () => Log.FeedLoadStarting(_logger, _options.DownloadStartingLogLevel, startDate, endDate),
             fetchAsync: ct => _source.GetTableAsync(startDate, endDate, ct),
             logExpectedFailure: ex => Log.FeedLoadFailed(_logger, _options.DownloadFailedLogLevel, startDate, endDate, ex),
@@ -330,8 +330,11 @@ public sealed class BoeRateProvider
                 foreach (BoeSeriesInfo info in table.GetSeriesInfo())
                     _series[info.Pair] = info;
 
+                // Days the Bank of England can still publish (today, and any later day it has returned no rate for)
+                // are held only until the refresh interval has passed, so a rate published after this download is
+                // downloaded on a later request.
                 int count = AddObservations(table.EnumerateRates(), fetchedAt);
-                _loadedRanges.Add(startDate, endDate);
+                _loadedRanges.Add(startDate, endDate, table.GetLastDate(), fetchedAt, _options.RefreshInterval);
                 return count;
             },
             logCompleted: count => Log.FeedLoaded(_logger, _options.DownloadCompletedLogLevel, startDate, endDate, count),

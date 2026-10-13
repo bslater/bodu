@@ -69,6 +69,22 @@ internal sealed class RbaRateTable
     }
 
     /// <summary>
+    /// Returns the latest date the table holds a row for.
+    /// </summary>
+    /// <returns>The latest row date, or <see langword="null" /> when the table has no rows.</returns>
+    public DateOnly? GetLastDate()
+    {
+        DateOnly? last = null;
+        foreach (RbaRateRow row in Rows)
+        {
+            if (last is null || row.Date > last.Value)
+                last = row.Date;
+        }
+
+        return last;
+    }
+
+    /// <summary>
     /// Produces the discovered-pair metadata for the series in the table.
     /// </summary>
     /// <returns>One <see cref="RbaSeriesInfo" /> per currency series.</returns>

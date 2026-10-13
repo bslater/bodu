@@ -105,12 +105,15 @@ public sealed class BoeRateProviderOptions
     public string? CacheDirectory { get; set; }
 
     /// <summary>
-    /// Gets or sets how long a cached range response remains fresh before it is re-downloaded.
+    /// Gets or sets how long a cached range response remains fresh before it is re-downloaded, and how long the days of
+    /// a loaded range the Bank of England could still publish are served before they are downloaded again.
     /// </summary>
     /// <value>The refresh interval; defaults to 12 hours.</value>
     /// <remarks>
     /// A range that ends on or near the current date can gain a new observation each business day, so cached responses
-    /// are treated as refreshable rather than immutable.
+    /// are treated as refreshable rather than immutable. In memory, a loaded range keeps for good every day before the
+    /// day it was downloaded and every later day it returned a rate for; its other days (today, and any later day) are
+    /// downloaded again by a request that reaches them once this interval has passed.
     /// </remarks>
     public TimeSpan RefreshInterval { get; set; } = TimeSpan.FromHours(12);
 

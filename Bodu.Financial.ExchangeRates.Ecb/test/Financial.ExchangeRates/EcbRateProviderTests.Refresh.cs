@@ -29,4 +29,23 @@ public partial class EcbRateProviderTests
         Assert.AreEqual(2, source.GetTableCallCount);
         Assert.AreEqual(1.0600m, provider.GetRate("EUR", "USD", today, RateLookupOptions.Exact).Rate.Rate);
     }
+
+    /// <summary>
+    /// Verifies that a request ending on a day the loaded feed already holds for good is served without a download,
+    /// however long ago the feed was loaded.
+    /// </summary>
+    [TestMethod]
+    public async Task LoadRangeAsync_WhenRangeEndsOnFinalDay_ShouldNotLoadAgain()
+    {
+        MutableTimeProvider time = new(new DateTimeOffset(2023, 1, 4, 9, 0, 0, TimeSpan.Zero));
+        EcbRateProviderOptions options = new() { EnableDiskCache = false, RefreshInterval = TimeSpan.FromHours(1) };
+        FixtureEcbRateTableSource source = new(options) { PublishedThrough = new DateOnly(2023, 1, 3) };
+        using EcbRateProvider provider = new(source, options, timeProvider: time);
+
+        await provider.LoadRangeAsync(new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 4));
+        time.Advance(TimeSpan.FromHours(2));
+        await provider.LoadRangeAsync(new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 3));
+
+        Assert.AreEqual(1, source.GetTableCallCount);
+    }
 }

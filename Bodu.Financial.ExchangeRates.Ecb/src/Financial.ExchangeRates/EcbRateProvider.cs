@@ -69,8 +69,8 @@ public sealed class EcbRateProvider
     /// <summary>The logger that records feed downloads and on-demand network fetches.</summary>
     private readonly ILogger _logger;
 
-    /// <summary>The names of feeds whose data has been loaded.</summary>
-    private readonly HashSet<string> _loadedFeeds = new(StringComparer.Ordinal);
+    /// <summary>The feeds whose data has been loaded, keyed by name, each with the days it can no longer revise and when its open days expire.</summary>
+    private readonly Dictionary<string, LoadedUnit> _loadedFeeds = new(StringComparer.Ordinal);
 
     /// <summary>The discovered currency series, keyed by pair.</summary>
     private readonly Dictionary<CurrencyPair, EcbSeriesInfo> _series = new();
@@ -216,7 +216,7 @@ public sealed class EcbRateProvider
         LoadFeedAsync(SelectWidestFeed(), cancellationToken);
 
     /// <summary>
-    /// Downloads and loads a single feed, if it has not already been loaded.
+    /// Downloads and loads a single feed, unless it has already been loaded and is still current.
     /// </summary>
     /// <param name="feed">The feed to load.</param>
     /// <param name="cancellationToken">A token to observe while awaiting the load.</param>
@@ -224,20 +224,15 @@ public sealed class EcbRateProvider
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="feed" /> is <see langword="null" />.
     /// </exception>
+    /// <remarks>
+    /// Every ECB feed runs to the latest business day, so a feed loaded before the ECB published that day's rates is
+    /// downloaded again once <see cref="EcbRateProviderOptions.RefreshInterval" /> has passed since it was loaded.
+    /// </remarks>
     public Task LoadFeedAsync(EcbRateFeed feed, CancellationToken cancellationToken = default)
     {
         ThrowHelper.ThrowIfNull(feed);
 
-        lock (SyncRoot)
-        {
-            if (_loadedFeeds.Contains(feed.Name))
-                return Task.CompletedTask;
-        }
-
-        // Coalesce concurrent loads of the same feed so only one download is in flight; joiners await that shared task.
-        // The shared fetch runs under a token decoupled from any caller, so one caller's cancellation cannot fault the
-        // others; cancellationToken only abandons this caller's wait.
-        return LoadCoalescedAsync(feed.Name, ct => LoadFeedCoreAsync(feed, ct), cancellationToken);
+        return LoadFeedThroughAsync(feed, DateOnly.FromDateTime(TimeProvider.GetUtcNow().UtcDateTime), cancellationToken);
     }
 
     /// <summary>
@@ -250,12 +245,16 @@ public sealed class EcbRateProvider
     /// <exception cref="ArgumentException">
     /// Thrown when <paramref name="endDate" /> precedes <paramref name="startDate" />.
     /// </exception>
+    /// <remarks>
+    /// A feed already loaded serves the range without a download, unless the range reaches a day the ECB had not yet
+    /// published when the feed was loaded and <see cref="EcbRateProviderOptions.RefreshInterval" /> has passed since.
+    /// </remarks>
     public Task LoadRangeAsync(DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken = default)
     {
         if (endDate < startDate)
             throw CreateRangeInvertedException(startDate, endDate);
 
-        return LoadFeedAsync(SelectFeedForRange(startDate), cancellationToken);
+        return LoadFeedThroughAsync(SelectFeedForRange(startDate), endDate, cancellationToken);
     }
 
     /// <summary>
@@ -272,7 +271,7 @@ public sealed class EcbRateProvider
 
     /// <inheritdoc />
     protected override ValueTask EnsureLoadedAsync(CurrencyPair pair, DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken) =>
-        new(LoadFeedAsync(SelectFeedForRange(startDate), cancellationToken));
+        new(LoadFeedThroughAsync(SelectFeedForRange(startDate), endDate, cancellationToken));
 
     /// <inheritdoc />
     protected override bool IsLoaded(CurrencyPair pair, DateOnly startDate, DateOnly endDate)
@@ -281,7 +280,7 @@ public sealed class EcbRateProvider
 
         lock (SyncRoot)
         {
-            return _loadedFeeds.Contains(feed.Name);
+            return IsFeedCurrent(feed, endDate);
         }
     }
 
@@ -352,31 +351,66 @@ public sealed class EcbRateProvider
     }
 
     /// <summary>
+    /// Loads a feed for a request that needs it through a given day, unless the feed as loaded still serves that day.
+    /// </summary>
+    /// <param name="feed">The feed to load.</param>
+    /// <param name="through">The last day the request needs.</param>
+    /// <param name="cancellationToken">A token to observe while awaiting the load.</param>
+    /// <returns>A task that completes when the feed has been loaded.</returns>
+    private Task LoadFeedThroughAsync(EcbRateFeed feed, DateOnly through, CancellationToken cancellationToken)
+    {
+        lock (SyncRoot)
+        {
+            if (IsFeedCurrent(feed, through))
+                return Task.CompletedTask;
+        }
+
+        // Coalesce concurrent loads of the same feed so only one download is in flight; joiners await that shared task.
+        // The shared fetch runs under a token decoupled from any caller, so one caller's cancellation cannot fault the
+        // others; cancellationToken only abandons this caller's wait.
+        return LoadCoalescedAsync(feed.Name, ct => LoadFeedCoreAsync(feed, through, ct), cancellationToken);
+    }
+
+    /// <summary>
+    /// Reports whether a feed has been loaded and, as loaded, still serves a request that needs it through a given day.
+    /// The caller must hold <see cref="WebRateProvider.SyncRoot" />.
+    /// </summary>
+    /// <param name="feed">The feed to test.</param>
+    /// <param name="through">The last day the request needs.</param>
+    /// <returns>
+    /// <see langword="true" /> when the feed serves the request as loaded; otherwise <see langword="false" />.
+    /// </returns>
+    private bool IsFeedCurrent(EcbRateFeed feed, DateOnly through) =>
+        _loadedFeeds.TryGetValue(feed.Name, out LoadedUnit loaded) && loaded.Covers(through, TimeProvider.GetUtcNow());
+
+    /// <summary>
     /// Downloads and stores a single feed, re-checking the loaded set inside the single-flight section so a joiner that
     /// arrives after a prior load completes does no redundant work.
     /// </summary>
     /// <param name="feed">The feed to load.</param>
+    /// <param name="through">The last day the request needs.</param>
     /// <param name="cancellationToken">A token to observe while awaiting the load.</param>
     /// <returns>A task that completes when the feed has been loaded.</returns>
-    private Task LoadFeedCoreAsync(EcbRateFeed feed, CancellationToken cancellationToken) =>
+    private Task LoadFeedCoreAsync(EcbRateFeed feed, DateOnly through, CancellationToken cancellationToken) =>
         LoadFileFeedAsync(
-            alreadyLoaded: () => _loadedFeeds.Contains(feed.Name),
+            alreadyLoaded: () => IsFeedCurrent(feed, through),
             logStarting: () => Log.FeedLoadStarting(_logger, _options.DownloadStartingLogLevel, feed.Name),
             fetchAsync: ct => _source.GetTableAsync(feed, ct),
             logExpectedFailure: ex => Log.FeedLoadFailed(_logger, _options.DownloadFailedLogLevel, feed.Name, ex),
             logUnexpectedFailure: ex => Log.FeedLoadUnexpectedError(_logger, feed.Name, ex),
             publish: (table, fetchedAt) =>
             {
-                if (_loadedFeeds.Contains(feed.Name))
+                if (IsFeedCurrent(feed, through))
                     return null;
 
                 foreach (EcbSeriesInfo info in table.GetSeriesInfo())
                     _series[info.Pair] = info;
 
                 // Record the feed as loaded only once its observations are in, so a publish that fails part-way leaves
-                // it unloaded and the next request downloads it again.
+                // it unloaded and the next request downloads it again. Every feed runs to the latest business day, so
+                // its days from today on are held only until the refresh interval has passed.
                 int count = AddObservations(table.EnumerateRates(), fetchedAt);
-                _loadedFeeds.Add(feed.Name);
+                _loadedFeeds[feed.Name] = LoadedUnit.Create(unitEnd: null, table.GetLastDate(), fetchedAt, _options.RefreshInterval);
                 return count;
             },
             logCompleted: count => Log.FeedLoaded(_logger, _options.DownloadCompletedLogLevel, feed.Name, count),
