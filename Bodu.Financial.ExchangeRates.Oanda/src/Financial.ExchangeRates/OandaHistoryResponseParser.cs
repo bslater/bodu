@@ -18,7 +18,8 @@ namespace Bodu.Financial.ExchangeRates;
 /// <c>PointInTime</c> is a Unix timestamp in milliseconds interpreted in UTC and <c>Rate</c> is the price-selected
 /// rate. The OANDA anonymous endpoint serves a server-determined recent window, so rows outside the request's inclusive
 /// range are skipped, as are rows with a missing or non-positive rate. Numeric members are tolerated as JSON numbers or
-/// numeric strings.
+/// numeric strings. An entry whose currency codes are not strings never matches the requested pair, and an entry that
+/// is not an object is reported as missing data.
 /// </remarks>
 internal static class OandaHistoryResponseParser
 {
@@ -49,6 +50,9 @@ internal static class OandaHistoryResponseParser
         }
 
         JsonElement series = SelectSeries(widget, request.Pair);
+        if (series.ValueKind != JsonValueKind.Object)
+            throw NoData(request);
+
         var observations = new List<RateObservation>();
 
         if (series.TryGetProperty("data", out JsonElement data) && data.ValueKind == JsonValueKind.Array)
@@ -94,6 +98,8 @@ internal static class OandaHistoryResponseParser
             if (entry.ValueKind == JsonValueKind.Object
                 && entry.TryGetProperty("baseCurrency", out JsonElement baseCurrency)
                 && entry.TryGetProperty("quoteCurrency", out JsonElement quoteCurrency)
+                && baseCurrency.ValueKind == JsonValueKind.String
+                && quoteCurrency.ValueKind == JsonValueKind.String
                 && string.Equals(baseCurrency.GetString(), from, StringComparison.OrdinalIgnoreCase)
                 && string.Equals(quoteCurrency.GetString(), to, StringComparison.OrdinalIgnoreCase))
             {

@@ -15,6 +15,27 @@ namespace Bodu.Financial.ExchangeRates;
 internal static class JsonRateValueReader
 {
     /// <summary>
+    /// Reads a decimal of any sign from a JSON number or invariant numeric string.
+    /// </summary>
+    /// <param name="element">The JSON value to read.</param>
+    /// <param name="value">Receives the parsed decimal value when the input is numeric; otherwise zero.</param>
+    /// <returns>
+    /// <see langword="true" /> when the JSON value is a number that fits a <see cref="decimal" />, or a string that
+    /// parses as one under the invariant culture; otherwise <see langword="false" />. A value of any other kind (<c>null</c>,
+    /// a boolean, an object or an array) is not numeric, and reading it never throws.
+    /// </returns>
+    internal static bool TryReadDecimal(JsonElement element, out decimal value)
+    {
+        value = 0m;
+        return element.ValueKind switch
+        {
+            JsonValueKind.Number => element.TryGetDecimal(out value),
+            JsonValueKind.String => decimal.TryParse(element.GetString(), NumberStyles.Float | NumberStyles.AllowThousands, CultureInfo.InvariantCulture, out value),
+            _ => false,
+        };
+    }
+
+    /// <summary>
     /// Reads a strictly positive decimal from a JSON number or invariant numeric string.
     /// </summary>
     /// <param name="element">The JSON value to read.</param>
@@ -23,16 +44,28 @@ internal static class JsonRateValueReader
     /// <see langword="true" /> when the JSON value represents a strictly positive decimal; otherwise,
     /// <see langword="false" />.
     /// </returns>
-    internal static bool TryReadPositiveDecimal(JsonElement element, out decimal rate)
+    internal static bool TryReadPositiveDecimal(JsonElement element, out decimal rate) =>
+        TryReadDecimal(element, out rate) && rate > 0m;
+
+    /// <summary>
+    /// Reads a 64-bit integer from a JSON number or invariant integer string.
+    /// </summary>
+    /// <param name="element">The JSON value to read.</param>
+    /// <param name="value">Receives the parsed integer when parsing succeeds; otherwise zero.</param>
+    /// <returns>
+    /// <see langword="true" /> when the JSON value is an integral number that fits a <see cref="long" />, or a string
+    /// that parses as one under the invariant culture; otherwise <see langword="false" />. A value of any other kind
+    /// never throws.
+    /// </returns>
+    internal static bool TryReadInt64(JsonElement element, out long value)
     {
-        rate = 0m;
-        bool parsed = element.ValueKind switch
+        value = 0;
+        return element.ValueKind switch
         {
-            JsonValueKind.Number => element.TryGetDecimal(out rate),
-            JsonValueKind.String => decimal.TryParse(element.GetString(), NumberStyles.Float | NumberStyles.AllowThousands, CultureInfo.InvariantCulture, out rate),
+            JsonValueKind.Number => element.TryGetInt64(out value),
+            JsonValueKind.String => long.TryParse(element.GetString(), NumberStyles.Integer, CultureInfo.InvariantCulture, out value),
             _ => false,
         };
-        return parsed && rate > 0m;
     }
 
     /// <summary>
@@ -47,14 +80,6 @@ internal static class JsonRateValueReader
     /// <remarks>
     /// Conversion to a valid <see cref="DateTimeOffset" /> remains the caller's responsibility.
     /// </remarks>
-    internal static bool TryReadUnixMilliseconds(JsonElement element, out long timestamp)
-    {
-        timestamp = 0;
-        return element.ValueKind switch
-        {
-            JsonValueKind.Number => element.TryGetInt64(out timestamp),
-            JsonValueKind.String => long.TryParse(element.GetString(), NumberStyles.Integer, CultureInfo.InvariantCulture, out timestamp),
-            _ => false,
-        };
-    }
+    internal static bool TryReadUnixMilliseconds(JsonElement element, out long timestamp) =>
+        TryReadInt64(element, out timestamp);
 }

@@ -13,9 +13,16 @@ namespace Bodu.Financial.ExchangeRates;
 /// Parses a Yahoo Finance <c>v8/finance/chart</c> JSON response into a <see cref="PairRateData{TSeries}" />.
 /// </summary>
 /// <remarks>
+/// <para>
 /// The chart response carries a parallel <c>timestamp</c> array and an <c>indicators.quote[0].close</c> array. Days
 /// with no published close are emitted as <see langword="null" /> and are skipped. Timestamps are Unix seconds at the
 /// start of each bar and are interpreted in UTC.
+/// </para>
+/// <para>
+/// Closes and timestamps are read as JSON numbers or numeric strings. A point whose close or timestamp is of any other
+/// kind is skipped like any other malformed point, and a chart, result or quote member that is not an object is
+/// reported as missing data, so no value of an unexpected kind escapes as <see cref="InvalidOperationException" />.
+/// </para>
 /// </remarks>
 internal static class YahooChartResponseParser
 {
@@ -41,8 +48,12 @@ internal static class YahooChartResponseParser
         using JsonDocument document = ParseDocument(json, symbol);
         JsonElement root = document.RootElement;
 
-        if (root.ValueKind != JsonValueKind.Object || !root.TryGetProperty("chart", out JsonElement chart))
+        if (root.ValueKind != JsonValueKind.Object
+            || !root.TryGetProperty("chart", out JsonElement chart)
+            || chart.ValueKind != JsonValueKind.Object)
+        {
             throw NoData(symbol);
+        }
 
         ThrowOnChartError(chart, symbol);
 
@@ -55,8 +66,12 @@ internal static class YahooChartResponseParser
 
         JsonElement first = result[0];
 
-        if (!first.TryGetProperty("timestamp", out JsonElement timestamps) || timestamps.ValueKind != JsonValueKind.Array)
+        if (first.ValueKind != JsonValueKind.Object
+            || !first.TryGetProperty("timestamp", out JsonElement timestamps)
+            || timestamps.ValueKind != JsonValueKind.Array)
+        {
             throw NoData(symbol);
+        }
 
         if (!TryGetCloseArray(first, out JsonElement closes))
             throw NoData(symbol);
@@ -68,16 +83,14 @@ internal static class YahooChartResponseParser
 
         for (int i = 0; i < count; i++)
         {
-            JsonElement close = closes[i];
-            if (close.ValueKind is JsonValueKind.Null)
-                continue;
-
-            if (!close.TryGetDecimal(out decimal rate) || rate <= 0m)
+            // A null close (a day with no published close), a close of any other non-numeric kind, and a non-positive
+            // close are all skipped.
+            if (!JsonRateValueReader.TryReadPositiveDecimal(closes[i], out decimal rate))
                 continue;
 
             // A non-numeric or out-of-range Unix timestamp must be skipped like any other malformed point, rather
             // than crashing the fetch with an InvalidOperationException / ArgumentOutOfRangeException.
-            if (!timestamps[i].TryGetInt64(out long unixSeconds) || !TryUnixSecondsToDate(unixSeconds, out DateOnly date))
+            if (!JsonRateValueReader.TryReadInt64(timestamps[i], out long unixSeconds) || !TryUnixSecondsToDate(unixSeconds, out DateOnly date))
                 continue;
 
             if (date < request.StartDate || date > request.EndDate)
@@ -123,7 +136,9 @@ internal static class YahooChartResponseParser
         if (!chart.TryGetProperty("error", out JsonElement error) || error.ValueKind is JsonValueKind.Null)
             return;
 
-        string description = error.TryGetProperty("description", out JsonElement element) && element.ValueKind == JsonValueKind.String
+        string description = error.ValueKind == JsonValueKind.Object
+            && error.TryGetProperty("description", out JsonElement element)
+            && element.ValueKind == JsonValueKind.String
             ? element.GetString() ?? string.Empty
             : string.Empty;
 
@@ -142,9 +157,11 @@ internal static class YahooChartResponseParser
         closes = default;
 
         if (!result.TryGetProperty("indicators", out JsonElement indicators)
+            || indicators.ValueKind != JsonValueKind.Object
             || !indicators.TryGetProperty("quote", out JsonElement quote)
             || quote.ValueKind != JsonValueKind.Array
             || quote.GetArrayLength() == 0
+            || quote[0].ValueKind != JsonValueKind.Object
             || !quote[0].TryGetProperty("close", out JsonElement close)
             || close.ValueKind != JsonValueKind.Array)
         {
@@ -183,6 +200,7 @@ internal static class YahooChartResponseParser
     /// <returns>The quote-currency ISO code.</returns>
     private static string ReadQuoteIsoCode(JsonElement result, string fallback) =>
         result.TryGetProperty("meta", out JsonElement meta)
+        && meta.ValueKind == JsonValueKind.Object
         && meta.TryGetProperty("currency", out JsonElement currency)
         && currency.ValueKind == JsonValueKind.String
             ? currency.GetString() ?? fallback
