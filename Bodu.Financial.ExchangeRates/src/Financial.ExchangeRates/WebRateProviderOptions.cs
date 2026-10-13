@@ -128,7 +128,8 @@ public abstract class WebRateProviderOptions
     /// and any later day the source returned no rate for, are open: they are served for this interval, and the next
     /// request that reaches one of them after the interval has passed downloads it again, so a rate the source
     /// publishes later the same day is picked up. A source may apply the interval to more than its in-memory loads; the
-    /// derived options type says where.
+    /// derived options type says where. The interval must be greater than zero; <see cref="TryValidate" /> rejects any
+    /// other value.
     /// </remarks>
     public TimeSpan RefreshInterval { get; set; } = TimeSpan.FromHours(12);
 
@@ -223,6 +224,12 @@ public abstract class WebRateProviderOptions
         if (DefaultLookback <= TimeSpan.Zero)
         {
             error = ExchangeRatesResourceStrings.Arg_Invalid_WebExchangeRateOptionsDefaultLookback;
+            return false;
+        }
+
+        if (RefreshInterval <= TimeSpan.Zero)
+        {
+            error = ExchangeRatesResourceStrings.Arg_Invalid_WebExchangeRateOptionsRefreshInterval;
             return false;
         }
 

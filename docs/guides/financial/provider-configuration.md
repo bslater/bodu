@@ -66,7 +66,8 @@ them behind one contract.
 > [!NOTE]
 > Options are validated at startup. Every `Add<Source>ExchangeRates` wires the options type's
 > `TryValidate` into `ValidateOnStart`, so a missing API key, a null base address, or a
-> non-positive timeout fails the host before the first request rather than on the first lookup.
+> non-positive timeout or refresh interval fails the host before the first request rather than on
+> the first lookup.
 > The message names the provider ("Fixer exchange-rate options are invalid.").
 
 ## Pattern 2 - a bulk provider in full: ECB

@@ -152,7 +152,7 @@ builder.Services
         configureResilience: resilience => resilience.Retry.MaxRetryAttempts = 5);
 ```
 
-Options are validated at startup (`ValidateOnStart`), so a null `BaseUrl` or a non-positive `RefreshInterval` fails the host before the first request.
+Options are validated at startup (`ValidateOnStart`), so a null `BaseUrl` or a non-positive refresh interval (`RefreshInterval` on every provider's options, `CurrentEraRefreshInterval` on RBA's) fails the host before the first request.
 
 ### Supply an API key for a pair provider
 

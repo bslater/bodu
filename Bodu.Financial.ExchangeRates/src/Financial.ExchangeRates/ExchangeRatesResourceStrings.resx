@@ -90,6 +90,9 @@
   <data name="Arg_Invalid_WebExchangeRateOptionsLogLevel" xml:space="preserve">
     <value>The exchange-rate provider options must specify a defined log level for every logging concern.</value>
   </data>
+  <data name="Arg_Invalid_WebExchangeRateOptionsRefreshInterval" xml:space="preserve">
+    <value>The exchange-rate provider options refresh interval must be greater than zero.</value>
+  </data>
   <data name="Arg_Invalid_ExchangeRateRangeInverted" xml:space="preserve">
     <value>The end date must not be earlier than the start date.</value>
   </data>
