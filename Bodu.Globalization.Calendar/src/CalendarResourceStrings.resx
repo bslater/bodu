@@ -174,6 +174,12 @@
   <data name="Validation_DurationEndStrategyMissing" xml:space="preserve">
     <value>Notable date '{0}', rule '{1}': the calculated end-date duration is missing an end strategy.</value>
   </data>
+  <data name="Validation_DurationEndStrategyKindMissing" xml:space="preserve">
+    <value>Notable date '{0}', rule '{1}': the calculated end-date duration's end strategy names no recognized strategy kind.</value>
+  </data>
+  <data name="Validation_DurationEndStrategyConflict" xml:space="preserve">
+    <value>Notable date '{0}', rule '{1}': the calculated end-date duration's end strategy names more than one strategy kind; exactly one is required.</value>
+  </data>
   <data name="Validation_DurationOffsetReferenceNotFound" xml:space="preserve">
     <value>Notable date '{0}', rule '{1}': the calculated end-date duration references '{2}', which resolves to no rule.</value>
   </data>
@@ -197,6 +203,12 @@
   </data>
   <data name="Validation_OccurrenceSourceConflict" xml:space="preserve">
     <value>Notable date '{0}', rule '{1}': the rule declares more than one strategy or recurrence; exactly one is required.</value>
+  </data>
+  <data name="Validation_PatchOccurrenceSourceMissing" xml:space="preserve">
+    <value>Notable date '{0}', rule '{1}': the PatchRule override declares a strategy or recurrence that names no recognized kind; a patched occurrence source must name exactly one.</value>
+  </data>
+  <data name="Validation_PatchOccurrenceSourceConflict" xml:space="preserve">
+    <value>Notable date '{0}', rule '{1}': the PatchRule override declares more than one strategy or recurrence; a patched occurrence source must name exactly one.</value>
   </data>
   <data name="Validation_InvalidOrdinalValue" xml:space="preserve">
     <value>Notable date '{0}', rule '{1}': ordinal '{2}' is invalid.</value>

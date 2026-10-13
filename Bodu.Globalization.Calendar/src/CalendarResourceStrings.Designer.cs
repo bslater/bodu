@@ -394,6 +394,24 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Notable date &apos;{0}&apos;, rule &apos;{1}&apos;: the calculated end-date duration&apos;s end strategy names no recognized strategy kind..
+        /// </summary>
+        internal static string Validation_DurationEndStrategyKindMissing {
+            get {
+                return ResourceManager.GetString("Validation_DurationEndStrategyKindMissing", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Notable date &apos;{0}&apos;, rule &apos;{1}&apos;: the calculated end-date duration&apos;s end strategy names more than one strategy kind; exactly one is required..
+        /// </summary>
+        internal static string Validation_DurationEndStrategyConflict {
+            get {
+                return ResourceManager.GetString("Validation_DurationEndStrategyConflict", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to the calculated end-date duration references '{2}', which resolves to no rule..
         /// </summary>
         internal static string Validation_DurationOffsetReferenceNotFound {
@@ -462,6 +480,24 @@ namespace Bodu {
         internal static string Validation_OccurrenceSourceConflict {
             get {
                 return ResourceManager.GetString("Validation_OccurrenceSourceConflict", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Notable date &apos;{0}&apos;, rule &apos;{1}&apos;: the PatchRule override declares a strategy or recurrence that names no recognized kind; a patched occurrence source must name exactly one..
+        /// </summary>
+        internal static string Validation_PatchOccurrenceSourceMissing {
+            get {
+                return ResourceManager.GetString("Validation_PatchOccurrenceSourceMissing", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Notable date &apos;{0}&apos;, rule &apos;{1}&apos;: the PatchRule override declares more than one strategy or recurrence; a patched occurrence source must name exactly one..
+        /// </summary>
+        internal static string Validation_PatchOccurrenceSourceConflict {
+            get {
+                return ResourceManager.GetString("Validation_PatchOccurrenceSourceConflict", resourceCulture);
             }
         }
 

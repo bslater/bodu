@@ -197,7 +197,7 @@ A document with **no** `<Imports>` loads with the single-argument overload, `Not
 `<Overrides>` are edits applied at load time, after imports are resolved, targeted by id. They let a regional document tweak an imported concept without forking it. Three operations are available:
 
 - **`<AddRule notableDateRef="...">`** wraps a new `<Rule>` and appends it to an existing concept.
-- **`<PatchRule notableDateRef="..." ruleRef="...">`** replaces parts of an existing rule. The targeting attributes are required; scalar attributes (`priority`, `category`, `nonWorking`, `durationDays`, `comment`) patch in place, and a nested `<Applicability>`, `<Strategy>`, `<Tags>`, or `<Adjustments>` replaces that section wholesale.
+- **`<PatchRule notableDateRef="..." ruleRef="...">`** replaces parts of an existing rule. The targeting attributes are required; scalar attributes (`priority`, `category`, `nonWorking`, `durationDays`, `comment`) patch in place, and a nested `<Applicability>`, `<Strategy>`, `<Tags>`, or `<Adjustments>` replaces that section wholesale. A patch that replaces the occurrence source carries one `<Strategy>` or one `<Recurrence>`, not both: one that carries both, or a strategy or recurrence naming no recognized kind, fails with `BODU-CAL-RULE-SOURCE`.
 - **`<RemoveRule notableDateRef="..." ruleRef="..."/>`** deletes a single rule.
 
 ```xml
@@ -299,7 +299,7 @@ The larger sections map the same way: `<AdjustmentPolicies>` → `adjustmentPoli
 
 JSON and XML are accepted by separate loader entry points - `LoadJson` for JSON, `Load` for XML - and produce identical resources; there is no auto-detection.
 
-A JSON document is not validated against a schema the way an XML document is against the XSD, so a misspelled property name is ignored rather than reported. The semantic checks are shared: a rule that declares no recognized strategy or recurrence, or more than one, fails with `BODU-CAL-RULE-SOURCE` in either format.
+A JSON document is not validated against a schema the way an XML document is against the XSD, so a misspelled property name is ignored rather than reported. The semantic checks are shared: a rule that declares no recognized strategy or recurrence, or more than one, fails with `BODU-CAL-RULE-SOURCE` in either format, as does a `PatchRule` override that replaces the occurrence source with none or more than one, and an `untilDate` end strategy naming no recognized kind fails with `BODU-CAL-DURATION-NOEND` (more than one, `BODU-CAL-DURATION-CONFLICT`).
 
 ---
 

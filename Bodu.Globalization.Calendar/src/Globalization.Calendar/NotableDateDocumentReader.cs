@@ -250,19 +250,28 @@ internal static class NotableDateDocumentReader
     /// <param name="notableDateId">The identifier of the owning concept, used in diagnostics.</param>
     /// <param name="ruleId">The identifier of the rule, used in diagnostics.</param>
     /// <param name="diagnostics">The collection that receives semantic diagnostics.</param>
+    /// <param name="patch">
+    /// <see langword="true" /> when the nodes belong to a <c>PatchRule</c> override rather than a rule, selecting the
+    /// override's wording.
+    /// </param>
     /// <remarks>
-    /// The XSD already enforces this for XML; the check exists for JSON, which is not schema-validated, and reports the
-    /// same condition for both formats so a rule never falls back to a placeholder date or silently drops a source.
+    /// The XSD already enforces this for a rule in XML; the check exists for JSON, which is not schema-validated, and
+    /// for a <c>PatchRule</c> override, whose schema permits both a strategy and a recurrence. It reports the same
+    /// condition for both formats so a rule never falls back to a placeholder date or silently drops a source.
     /// </remarks>
-    private static void ValidateOccurrenceSource(IDocumentNode? strategy, IDocumentNode? recurrence, string notableDateId, string ruleId, ICollection<NotableDateValidationDiagnostic> diagnostics)
+    private static void ValidateOccurrenceSource(IDocumentNode? strategy, IDocumentNode? recurrence, string notableDateId, string ruleId, ICollection<NotableDateValidationDiagnostic> diagnostics, bool patch = false)
     {
         int sources = CountKinds(strategy, s_strategyKinds) + CountKinds(recurrence, s_recurrenceKinds);
         if (sources == 1)
             return;
 
-        string format = sources == 0
-            ? CalendarResourceStrings.Validation_OccurrenceSourceMissing
-            : CalendarResourceStrings.Validation_OccurrenceSourceConflict;
+        string format = (sources == 0, patch) switch
+        {
+            (true, false) => CalendarResourceStrings.Validation_OccurrenceSourceMissing,
+            (false, false) => CalendarResourceStrings.Validation_OccurrenceSourceConflict,
+            (true, true) => CalendarResourceStrings.Validation_PatchOccurrenceSourceMissing,
+            (false, true) => CalendarResourceStrings.Validation_PatchOccurrenceSourceConflict,
+        };
 
         diagnostics.Add(new NotableDateValidationDiagnostic(
             NotableDateValidationSeverity.Error,
@@ -502,6 +511,23 @@ internal static class NotableDateDocumentReader
                 return null;
             }
 
+            // The schema holds an XML end strategy to one kind; a JSON one is checked here, as a rule's start strategy
+            // is, so the end never falls back to a placeholder 1 January or silently drops a kind.
+            int endKinds = CountKinds(endStrategyNode, s_strategyKinds);
+            if (endKinds != 1)
+            {
+                diagnostics.Add(endKinds == 0
+                    ? new NotableDateValidationDiagnostic(
+                        NotableDateValidationSeverity.Error,
+                        "BODU-CAL-DURATION-NOEND",
+                        string.Format(System.Globalization.CultureInfo.CurrentCulture, CalendarResourceStrings.Validation_DurationEndStrategyKindMissing, notableDateId, ruleId))
+                    : new NotableDateValidationDiagnostic(
+                        NotableDateValidationSeverity.Error,
+                        "BODU-CAL-DURATION-CONFLICT",
+                        string.Format(System.Globalization.CultureInfo.CurrentCulture, CalendarResourceStrings.Validation_DurationEndStrategyConflict, notableDateId, ruleId)));
+                return null;
+            }
+
             return new CalculatedEndDateDurationDefinition(
                 ReadStrategy(endStrategyNode, calendar, notableDateId, ruleId, diagnostics),
                 ParseEnum(untilDate.Scalar("startBoundary"), DateBoundary.Inclusive),
@@ -637,6 +663,13 @@ internal static class NotableDateDocumentReader
 
         IDocumentNode? applicabilityNode = operation.Child("applicability");
         IDocumentNode? strategyNode = operation.Child("strategy");
+        IDocumentNode? recurrenceNode = operation.Child("recurrence");
+
+        // A patch that carries neither a strategy nor a recurrence leaves the rule's occurrence source unchanged; one
+        // that carries either replaces it, so it must name exactly one source, as a rule must.
+        if (strategyNode is not null || recurrenceNode is not null)
+            ValidateOccurrenceSource(strategyNode, recurrenceNode, notableDateRef, ruleRef, diagnostics, patch: true);
+
         RuleApplicability? applicability = applicabilityNode is null ? null : ReadApplicability(applicabilityNode);
         CalendarSystem calendar = applicability?.Calendar ?? CalendarSystem.Gregorian;
 
@@ -658,7 +691,7 @@ internal static class NotableDateDocumentReader
             duration,
             applicability,
             strategyNode is null ? null : ReadStrategy(strategyNode, calendar, notableDateRef, ruleRef, diagnostics),
-            ReadRecurrence(operation.Child("recurrence"), notableDateRef, ruleRef, diagnostics),
+            ReadRecurrence(recurrenceNode, notableDateRef, ruleRef, diagnostics),
             adjustments is null ? null : [.. adjustments],
             tags is null ? null : [.. tags]);
     }
