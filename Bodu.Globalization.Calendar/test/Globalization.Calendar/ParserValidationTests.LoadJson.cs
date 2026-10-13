@@ -323,6 +323,223 @@ public sealed partial class ParserValidationTests
     }
 
     /// <summary>
+    /// The recognized value of every enumeration-valued field the JSON document under the enumeration tests holds, keyed
+    /// by the placeholder that stands for it.
+    /// </summary>
+    private static readonly Dictionary<string, string> s_enumFieldValues = new(StringComparer.Ordinal)
+    {
+        ["duplicatePolicy"] = "Error",
+        ["sameDayCollisionPolicy"] = "KeepAll",
+        ["spanCollisionPolicy"] = "KeepAll",
+        ["priorityDirection"] = "HigherWins",
+        ["observedDateRangePolicy"] = "ObservedOccurrenceControlsInclusion",
+        ["categoryPrecedence"] = "PublicHoliday",
+        ["scope.calendars"] = "Gregorian",
+        ["scope.categories"] = "PublicHoliday",
+        ["trigger.type"] = "IfDayOfWeek",
+        ["trigger.weekdays"] = "Saturday",
+        ["trigger.weekOrdinal"] = "First",
+        ["action.type"] = "MoveToNextWeekday",
+        ["action.dayOfWeek"] = "Monday",
+        ["emission.mode"] = "ObservedOnly",
+        ["notableDate.category"] = "PublicHoliday",
+        ["rule.category"] = "Observance",
+        ["applicability.calendar"] = "Gregorian",
+        ["dayOfWeekInMonth.dayOfWeek"] = "Monday",
+        ["dayOfWeekInMonth.weekOrdinal"] = "First",
+        ["weekdayNearDate.dayOfWeek"] = "Monday",
+        ["weekdayNearDate.direction"] = "OnOrAfter",
+        ["relativeWeekdayInMonth.dayOfWeek"] = "Monday",
+        ["relativeWeekdayInMonth.weekOrdinal"] = "Last",
+        ["relativeWeekdayInMonth.relativeDayOfWeek"] = "Tuesday",
+        ["relativeWeekdayInMonth.direction"] = "After",
+        ["weekdayNearRule.dayOfWeek"] = "Friday",
+        ["weekdayNearRule.direction"] = "Before",
+        ["nthWeekdayFromRule.dayOfWeek"] = "Sunday",
+        ["isoWeekDate.dayOfWeek"] = "Wednesday",
+        ["untilDate.startBoundary"] = "Inclusive",
+        ["untilDate.endBoundary"] = "Exclusive",
+        ["untilDate.selection"] = "FirstAfterStart",
+        ["weekly.days"] = "Thursday",
+        ["monthlyDay.invalidDayBehavior"] = "UseLastDayOfMonth",
+        ["monthlyWeekday.dayOfWeek"] = "Friday",
+        ["monthlyWeekday.weekOrdinal"] = "Second",
+        ["patch.category"] = "Civic",
+        ["use.category"] = "Cultural",
+    };
+
+    /// <summary>
+    /// Verifies that the enumeration test document loads when every enumeration-valued field holds a recognized value,
+    /// so each rejection the per-field test observes is caused by the one value it replaces.
+    /// </summary>
+    [TestMethod]
+    public void LoadJson_WhenEveryEnumValueRecognized_ShouldLoad()
+    {
+        NotableDateResource resource = NotableDateResourceLoader.LoadJson(EnumFieldJson(null, null), EnumImportResolver);
+
+        Assert.AreEqual("test.enums", resource.ResourceId);
+    }
+
+    /// <summary>
+    /// Verifies that an enumeration-valued JSON field holding a value that names no member is rejected with the
+    /// <c>BODU-CAL-ENUM</c> diagnostic rather than replaced by the field's default.
+    /// </summary>
+    /// <param name="field">The placeholder of the field holding the unrecognized value.</param>
+    [TestMethod]
+    [DataRow("duplicatePolicy")]
+    [DataRow("sameDayCollisionPolicy")]
+    [DataRow("spanCollisionPolicy")]
+    [DataRow("priorityDirection")]
+    [DataRow("observedDateRangePolicy")]
+    [DataRow("categoryPrecedence")]
+    [DataRow("scope.calendars")]
+    [DataRow("scope.categories")]
+    [DataRow("trigger.type")]
+    [DataRow("trigger.weekdays")]
+    [DataRow("trigger.weekOrdinal")]
+    [DataRow("action.type")]
+    [DataRow("action.dayOfWeek")]
+    [DataRow("emission.mode")]
+    [DataRow("notableDate.category")]
+    [DataRow("rule.category")]
+    [DataRow("applicability.calendar")]
+    [DataRow("dayOfWeekInMonth.dayOfWeek")]
+    [DataRow("dayOfWeekInMonth.weekOrdinal")]
+    [DataRow("weekdayNearDate.dayOfWeek")]
+    [DataRow("weekdayNearDate.direction")]
+    [DataRow("relativeWeekdayInMonth.dayOfWeek")]
+    [DataRow("relativeWeekdayInMonth.weekOrdinal")]
+    [DataRow("relativeWeekdayInMonth.relativeDayOfWeek")]
+    [DataRow("relativeWeekdayInMonth.direction")]
+    [DataRow("weekdayNearRule.dayOfWeek")]
+    [DataRow("weekdayNearRule.direction")]
+    [DataRow("nthWeekdayFromRule.dayOfWeek")]
+    [DataRow("isoWeekDate.dayOfWeek")]
+    [DataRow("untilDate.startBoundary")]
+    [DataRow("untilDate.endBoundary")]
+    [DataRow("untilDate.selection")]
+    [DataRow("weekly.days")]
+    [DataRow("monthlyDay.invalidDayBehavior")]
+    [DataRow("monthlyWeekday.dayOfWeek")]
+    [DataRow("monthlyWeekday.weekOrdinal")]
+    [DataRow("patch.category")]
+    [DataRow("use.category")]
+    public void LoadJson_WhenEnumValueUnrecognized_ShouldThrowEnumDiagnostic(string field)
+    {
+        string json = EnumFieldJson(field, "Bogus");
+
+        NotableDateValidationException ex = Assert.ThrowsExactly<NotableDateValidationException>(() =>
+        {
+            _ = NotableDateResourceLoader.LoadJson(json, EnumImportResolver);
+        });
+
+        Assert.Contains(d => d.Code == "BODU-CAL-ENUM" && d.Severity == NotableDateValidationSeverity.Error && d.Message.Contains("Bogus", StringComparison.Ordinal), ex.Diagnostics, "BODU-CAL-ENUM");
+    }
+
+    /// <summary>
+    /// Verifies that an enumeration-valued JSON field holding a member's number rather than its name is rejected with the
+    /// <c>BODU-CAL-ENUM</c> diagnostic, as the schema and the XML loader reject it.
+    /// </summary>
+    [TestMethod]
+    public void LoadJson_WhenEnumValueIsNumeric_ShouldThrowEnumDiagnostic()
+    {
+        string json = EnumFieldJson("sameDayCollisionPolicy", "1");
+
+        NotableDateValidationException ex = Assert.ThrowsExactly<NotableDateValidationException>(() =>
+        {
+            _ = NotableDateResourceLoader.LoadJson(json, EnumImportResolver);
+        });
+
+        Assert.Contains(d => d.Code == "BODU-CAL-ENUM" && d.Severity == NotableDateValidationSeverity.Error, ex.Diagnostics, "BODU-CAL-ENUM");
+    }
+
+    /// <summary>
+    /// Verifies that an enumeration-valued JSON field naming a member in a different case is recognized, so the loader
+    /// keeps reading member names case-insensitively.
+    /// </summary>
+    [TestMethod]
+    public void LoadJson_WhenEnumValueDiffersInCase_ShouldLoadTheNamedMember()
+    {
+        string json = EnumFieldJson("sameDayCollisionPolicy", "highestpriorityonly");
+
+        NotableDateResource resource = NotableDateResourceLoader.LoadJson(json, EnumImportResolver);
+
+        Assert.AreEqual(CollisionPolicy.HighestPriorityOnly, resource.ResolutionPolicy.SameDayCollisionPolicy);
+    }
+
+    /// <summary>
+    /// Resolves the one resource the enumeration test document imports.
+    /// </summary>
+    /// <param name="name">The imported resource's name.</param>
+    /// <returns>The imported resource's JSON, or <see langword="null" /> for any other name.</returns>
+    private static string? EnumImportResolver(string name) =>
+        name == "lib"
+            ? """
+              { "schemaVersion": "1.0", "resourceId": "test.lib",
+                "notableDates": [ { "id": "lib-day", "displayName": "Library Day", "category": "Observance",
+                  "rules": [ { "id": "r", "strategy": { "fixed": { "month": 8, "day": 8 } } } ] } ] }
+              """
+            : null;
+
+    /// <summary>
+    /// Builds a JSON document holding every enumeration-valued field the loader reads, each set to its recognized value
+    /// except the one named, which holds the supplied value.
+    /// </summary>
+    /// <param name="field">The placeholder of the field to set, or <see langword="null" /> to set none.</param>
+    /// <param name="value">The value the named field holds.</param>
+    /// <returns>The JSON document.</returns>
+    private static string EnumFieldJson(string? field, string? value)
+    {
+        string json = """
+            { "schemaVersion": "1.0", "resourceId": "test.enums",
+              "resolutionPolicy": { "duplicatePolicy": "@duplicatePolicy@", "sameDayCollisionPolicy": "@sameDayCollisionPolicy@",
+                "spanCollisionPolicy": "@spanCollisionPolicy@", "priorityDirection": "@priorityDirection@",
+                "observedDateRangePolicy": "@observedDateRangePolicy@", "categoryPrecedence": [ "@categoryPrecedence@" ] },
+              "adjustmentPolicies": [ { "id": "policy",
+                "scope": { "calendars": [ "@scope.calendars@" ], "categories": [ "@scope.categories@" ] },
+                "trigger": { "type": "@trigger.type@", "weekdays": [ "@trigger.weekdays@" ], "weekOrdinal": "@trigger.weekOrdinal@" },
+                "action": { "type": "@action.type@", "dayOfWeek": "@action.dayOfWeek@" },
+                "emission": { "mode": "@emission.mode@" } } ],
+              "imports": [ { "resource": "lib", "uses": [ { "notableDateRef": "lib-day", "category": "@use.category@" } ] } ],
+              "notableDates": [
+                { "id": "anchor", "displayName": "Anchor", "category": "@notableDate.category@",
+                  "rules": [ { "id": "r", "category": "@rule.category@", "applicability": { "calendar": "@applicability.calendar@" },
+                    "strategy": { "fixed": { "month": 3, "day": 1 } },
+                    "duration": { "untilDate": { "startBoundary": "@untilDate.startBoundary@", "endBoundary": "@untilDate.endBoundary@",
+                      "selection": "@untilDate.selection@", "strategy": { "fixed": { "month": 3, "day": 5 } } } },
+                    "adjustments": [ "policy" ] } ] },
+                { "id": "dow-in-month", "displayName": "D", "category": "Observance",
+                  "rules": [ { "id": "r", "strategy": { "dayOfWeekInMonth": { "month": 4, "dayOfWeek": "@dayOfWeekInMonth.dayOfWeek@", "weekOrdinal": "@dayOfWeekInMonth.weekOrdinal@" } } } ] },
+                { "id": "near-date", "displayName": "D", "category": "Observance",
+                  "rules": [ { "id": "r", "strategy": { "weekdayNearDate": { "month": 5, "day": 10, "dayOfWeek": "@weekdayNearDate.dayOfWeek@", "direction": "@weekdayNearDate.direction@" } } } ] },
+                { "id": "relative", "displayName": "D", "category": "Observance",
+                  "rules": [ { "id": "r", "strategy": { "relativeWeekdayInMonth": { "month": 6, "dayOfWeek": "@relativeWeekdayInMonth.dayOfWeek@",
+                    "weekOrdinal": "@relativeWeekdayInMonth.weekOrdinal@", "relativeDayOfWeek": "@relativeWeekdayInMonth.relativeDayOfWeek@",
+                    "direction": "@relativeWeekdayInMonth.direction@" } } } ] },
+                { "id": "near-rule", "displayName": "D", "category": "Observance",
+                  "rules": [ { "id": "r", "strategy": { "weekdayNearRule": { "notableDateRef": "anchor", "ruleRef": "r",
+                    "dayOfWeek": "@weekdayNearRule.dayOfWeek@", "direction": "@weekdayNearRule.direction@" } } } ] },
+                { "id": "nth-from-rule", "displayName": "D", "category": "Observance",
+                  "rules": [ { "id": "r", "strategy": { "nthWeekdayFromRule": { "notableDateRef": "anchor", "ruleRef": "r",
+                    "dayOfWeek": "@nthWeekdayFromRule.dayOfWeek@", "ordinal": 2 } } } ] },
+                { "id": "iso-week", "displayName": "D", "category": "Observance",
+                  "rules": [ { "id": "r", "strategy": { "isoWeekDate": { "week": 20, "dayOfWeek": "@isoWeekDate.dayOfWeek@" } } } ] },
+                { "id": "weekly", "displayName": "D", "category": "Observance",
+                  "rules": [ { "id": "r", "recurrence": { "weekly": { "days": [ "@weekly.days@" ] } } } ] },
+                { "id": "monthly-day", "displayName": "D", "category": "Observance",
+                  "rules": [ { "id": "r", "recurrence": { "monthlyDay": { "dayOfMonth": 31, "invalidDayBehavior": "@monthlyDay.invalidDayBehavior@" } } } ] },
+                { "id": "monthly-weekday", "displayName": "D", "category": "Observance",
+                  "rules": [ { "id": "r", "recurrence": { "monthlyWeekday": { "dayOfWeek": "@monthlyWeekday.dayOfWeek@", "weekOrdinal": "@monthlyWeekday.weekOrdinal@" } } } ] } ],
+              "overrides": [ { "operation": "PatchRule", "notableDateRef": "dow-in-month", "ruleRef": "r", "category": "@patch.category@" } ] }
+            """;
+
+        foreach ((string key, string recognized) in s_enumFieldValues)
+            json = json.Replace("@" + key + "@", key == field ? value : recognized, StringComparison.Ordinal);
+
+        return json;
+    }
+
+    /// <summary>
     /// Builds a JSON document whose one rule, a fixed 1 March, is patched by a <c>PatchRule</c> override.
     /// </summary>
     /// <param name="patch">The JSON <c>PatchRule</c> override object.</param>
