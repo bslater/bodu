@@ -1,9 +1,10 @@
-"""Tests for the target-framework and session-limit checks in bld/check-docs.py."""
+"""Tests for the target-framework, session-limit and spelling checks in bld/check-docs.py."""
 
 from __future__ import annotations
 
 import os
 import sys
+import tempfile
 import unittest
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -223,6 +224,298 @@ class SessionTimeoutTests(unittest.TestCase):
 
     def test_session_timeout_problems_when_file_sets_no_limit_should_report_nothing(self) -> None:
         self.assertEqual([], session_problems("<RunSettings>\n  <RunConfiguration>\n  </RunConfiguration>\n</RunSettings>\n"))
+
+
+
+# The word pairs the spelling tests read, in the data file's grammar.
+SPELLING_PAIRS_TEXT = (
+    "# British -> American, one inflection per line\n"
+    "behaviour -> behavior\n"
+    "behaviours -> behaviors\n"
+    "\n"
+    "initialise -> initialize\n"
+    "initialised -> initialized   # an inflection is its own entry\n"
+    "catalogue -> catalog\n"
+    "flavoured -> flavored\n"
+    "cancelled -> canceled\n")
+
+SPELLING_PAIRS = {
+    "behaviour": "behavior",
+    "behaviours": "behaviors",
+    "initialise": "initialize",
+    "initialised": "initialized",
+    "catalogue": "catalog",
+    "flavoured": "flavored",
+    "cancelled": "canceled",
+}
+
+
+def findings(*lines: str) -> list[tuple[int, str, str]]:
+    return check_docs.spelling_findings("\n".join(lines) + "\n", SPELLING_PAIRS)
+
+
+class SpellingFindingsTests(unittest.TestCase):
+    """The British spellings spelling_findings reads in XML documentation, and the text it leaves alone."""
+
+    def test_spelling_findings_when_doc_line_has_british_word_should_report_line_word_and_replacement(self) -> None:
+        """Verifies that a British word in a documentation line is reported with its line, as written, and its US form."""
+        found = findings(
+            "namespace Widgets;",
+            "",
+            "/// <summary>",
+            "/// Describes the widget's behaviour when it is initialised.",
+            "/// </summary>")
+        self.assertEqual([(4, "behaviour", "behavior"), (4, "initialised", "initialized")], found)
+
+    def test_spelling_findings_when_word_is_capitalized_should_match_and_keep_the_case(self) -> None:
+        """Verifies that the match ignores case and that the replacement keeps the case of the word found."""
+        self.assertEqual(
+            [(1, "Behaviours", "Behaviors"), (2, "CATALOGUE", "CATALOG")],
+            findings("/// Behaviours differ.", "/// See the CATALOGUE."))
+
+    def test_spelling_findings_when_word_is_part_of_a_longer_word_should_report_nothing(self) -> None:
+        """Verifies that only whole words match, so a longer word or an identifier containing one is not reported."""
+        self.assertEqual([], findings(
+            "/// Misbehaviours, catalogues and the CatalogueEntry type are not on the list.",
+            "/// Neither is reinitialised or behaviour_mode or behaviour2."))
+
+    def test_spelling_findings_when_word_is_hyphenated_or_possessive_should_report_it(self) -> None:
+        """Verifies that a hyphen or an apostrophe bounds a word, so a compound or a possessive is still read."""
+        self.assertEqual(
+            [(1, "flavoured", "flavored"), (2, "behaviour", "behavior")],
+            findings("/// Quartz-flavoured cron.", "/// The reader's behaviour's cost."))
+
+    def test_spelling_findings_when_only_some_inflections_are_listed_should_report_only_those(self) -> None:
+        """Verifies that each inflection is an entry of its own, so an inflection that is not listed is not reported."""
+        self.assertEqual([(1, "initialise", "initialize")], findings("/// Call initialise; it initialises the state."))
+
+    def test_spelling_findings_when_word_is_not_in_a_doc_comment_should_report_nothing(self) -> None:
+        """Verifies that code, string literals, identifiers, ordinary comments and four-slash comments are not read."""
+        self.assertEqual([], findings(
+            "var behaviour = Initialise(\"catalogue\");",
+            "// The behaviour of this loop is initialised elsewhere.",
+            "//// behaviour",
+            "/* catalogue */",
+            "string s = \"/// behaviour\";"))
+
+    def test_spelling_findings_when_word_is_inline_code_or_a_code_block_should_report_nothing(self) -> None:
+        """Verifies that text inside <c> and <code> elements, including a code block over several lines, is not read."""
+        self.assertEqual([], findings(
+            "/// Reads the <c># catalogue: ...</c> line.",
+            "/// <example>",
+            "/// <code><![CDATA[",
+            "/// var behaviour = settings[\"behaviour\"];",
+            "/// ]]></code>",
+            "/// </example>"))
+
+    def test_spelling_findings_when_code_block_ends_should_read_the_prose_after_it(self) -> None:
+        """Verifies that prose after a code block is read again, on its own line."""
+        self.assertEqual([(4, "behaviour", "behavior")], findings(
+            "/// <code>",
+            "/// behaviour = 1;",
+            "/// </code>",
+            "/// The behaviour shown above."))
+
+    def test_spelling_findings_when_word_is_in_a_tag_attribute_or_url_should_report_nothing(self) -> None:
+        """Verifies that tag names, attribute values such as cref and href, and bare URLs are not read."""
+        self.assertEqual([], findings(
+            "/// <see cref=\"Catalogue.Behaviour\" /> and <paramref name=\"initialised\" />.",
+            "/// <a href=\"https://reveng.sourceforge.io/crc-catalogue/all.htm\">CRC RevEng list</a>,",
+            "/// mirrored at https://example.org/catalogue/behaviour."))
+
+    def test_spelling_findings_when_link_text_is_british_should_report_it(self) -> None:
+        """Verifies that the text of a link is prose and is read, while its href is not."""
+        self.assertEqual([(1, "catalogue", "catalog")], findings(
+            "/// <a href=\"https://reveng.sourceforge.io/crc-catalogue/all.htm\">CRC RevEng catalogue</a>"))
+
+    def test_spelling_findings_when_unclosed_code_block_ends_its_comment_should_read_the_next_comment(self) -> None:
+        """Verifies that a code block left open does not run past the end of its documentation comment."""
+        self.assertEqual([(4, "behaviour", "behavior")], findings(
+            "/// <code>",
+            "/// x = 1;",
+            "int x;",
+            "/// The behaviour."))
+
+
+class SpellingPairsTests(unittest.TestCase):
+    """The grammar of bld/docs-checks/us-spelling.txt, and the list it holds."""
+
+    def test_parse_spelling_pairs_when_text_is_well_formed_should_map_each_british_word_to_its_us_form(self) -> None:
+        """Verifies that each 'british -> american' line is read, and that comments and blank lines are skipped."""
+        pairs, problems = check_docs.parse_spelling_pairs(SPELLING_PAIRS_TEXT)
+        self.assertEqual([], problems)
+        self.assertEqual(SPELLING_PAIRS, pairs)
+
+    def test_parse_spelling_pairs_when_line_is_malformed_should_report_its_line(self) -> None:
+        """Verifies that a line without an arrow, a duplicate British word, and a pair that changes nothing are reported."""
+        _, problems = check_docs.parse_spelling_pairs(
+            "behaviour behavior\ncolour -> color\ncolour -> colour\nhonour -> honor\nhonor -> honor\n")
+        self.assertEqual(3, len(problems), problems)
+        self.assertTrue(problems[0].startswith("us-spelling.txt:1:"), problems[0])
+        self.assertTrue(problems[1].startswith("us-spelling.txt:3:"), problems[1])
+        self.assertTrue(problems[2].startswith("us-spelling.txt:5:"), problems[2])
+
+    def test_parse_spelling_pairs_when_repository_list_is_read_should_hold_the_agreed_pairs(self) -> None:
+        """Verifies that the repository's list parses cleanly and holds the agreed US forms, cancelled as the BCL spells it."""
+        pairs, problems = check_docs.parse_spelling_pairs(check_docs.read(os.path.join(check_docs.CHECKS, "us-spelling.txt")))
+        self.assertEqual([], problems)
+        for british, american in (
+                ("behaviour", "behavior"), ("behaviours", "behaviors"), ("behavioural", "behavioral"),
+                ("initialise", "initialize"), ("initialised", "initialized"), ("normalisation", "normalization"),
+                ("analyse", "analyze"), ("colour", "color"), ("artefact", "artifact"), ("labelled", "labeled"),
+                ("modelling", "modeling"), ("cancelled", "canceled"), ("cancelling", "canceling"),
+                ("licence", "license"), ("defence", "defense"), ("centre", "center"), ("catalogue", "catalog"),
+                ("analogue", "analog"), ("grey", "gray"), ("programme", "program"), ("whilst", "while"),
+                ("judgement", "judgment"), ("acknowledgement", "acknowledgment"), ("fulfil", "fulfill")):
+            with self.subTest(british=british):
+                self.assertEqual(american, pairs.get(british))
+
+    def test_parse_spelling_pairs_when_repository_list_is_read_should_hold_no_us_word(self) -> None:
+        """Verifies that the list holds no word US English shares, so an -ise or -ence ending alone never flags a word."""
+        pairs, _ = check_docs.parse_spelling_pairs(check_docs.read(os.path.join(check_docs.CHECKS, "us-spelling.txt")))
+        for word in (
+                "otherwise", "precise", "exercise", "promise", "noise", "advise", "devise", "comprise", "compromise",
+                "surprise", "expertise", "enterprise", "premise", "revise", "supervise", "emphasis", "analysis",
+                "analyses", "cancellation", "license", "practice", "prologue"):
+            with self.subTest(word=word):
+                self.assertNotIn(word, pairs)
+
+
+class SpellingAllowlistTests(unittest.TestCase):
+    """The grammar of bld/docs-checks/us-spelling-allowlist.txt."""
+
+    def test_parse_spelling_allowlist_when_entries_are_well_formed_should_key_them_by_path_and_line(self) -> None:
+        """Verifies that an entry names a file, or a line of one, followed by its reason, and that comments are skipped."""
+        entries, problems = check_docs.parse_spelling_allowlist(
+            "# path[:line]  reason\n"
+            "Widgets/src/Widget.cs:12  Quotes RFC 9999 verbatim.\n"
+            "\n"
+            "Widgets/test/Quoted Widget.cs  The whole file is a third-party corpus.\n")
+        self.assertEqual([], problems)
+        self.assertEqual({
+            ("Widgets/src/Widget.cs", 12): "Quotes RFC 9999 verbatim.",
+            ("Widgets/test/Quoted Widget.cs", None): "The whole file is a third-party corpus.",
+        }, entries)
+
+    def test_parse_spelling_allowlist_when_entry_has_no_reason_should_report_its_line(self) -> None:
+        """Verifies that an entry without a reason is reported rather than excusing anything."""
+        entries, problems = check_docs.parse_spelling_allowlist("# header\nWidgets/src/Widget.cs:12\n")
+        self.assertEqual({}, entries)
+        self.assertEqual(1, len(problems), problems)
+        self.assertTrue(problems[0].startswith("us-spelling-allowlist.txt:2:"), problems[0])
+
+
+class GeneratedSourceTests(unittest.TestCase):
+    """The C# sources is_generated_source treats as generated, which the spelling check leaves alone."""
+
+    def test_is_generated_source_when_file_is_a_resource_designer_should_return_true(self) -> None:
+        """Verifies that a *.Designer.cs file is generated whatever its text."""
+        self.assertTrue(check_docs.is_generated_source("WidgetResourceStrings.Designer.cs", "/// behaviour\n"))
+
+    def test_is_generated_source_when_banner_follows_the_copyright_header_should_return_true(self) -> None:
+        """Verifies that an <auto-generated> banner among the comments opening a file marks it generated."""
+        text = (
+            "﻿// ----\n// <copyright file=\"Widget.cs\" company=\"Bodu Pty. Ltd.\">\n// </copyright>\n// ----\n\n"
+            "// ----\n// <auto-generated />\n// ----\n\nnamespace Widgets;\n")
+        self.assertTrue(check_docs.is_generated_source("Widget.cs", text))
+
+    def test_is_generated_source_when_banner_comes_after_code_should_return_false(self) -> None:
+        """Verifies that <auto-generated> written after the opening comments, as a generator's template would, is not a banner."""
+        text = "// <copyright file=\"Emitter.cs\" />\n\nnamespace Widgets;\n\n// Emits \"// <auto-generated />\".\n"
+        self.assertFalse(check_docs.is_generated_source("Emitter.cs", text))
+
+
+SPELLING_SOURCE = "// <copyright />\n\nnamespace Widgets;\n\n/// <summary>Sets the widget's behaviour.</summary>\npublic sealed class Widget { }\n"
+
+
+def write_tree(root: str, files: dict[str, str]) -> None:
+    for relative, text in files.items():
+        path = os.path.join(root, *relative.split("/"))
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        with open(path, "w", encoding="utf-8") as stream:
+            stream.write(text)
+
+
+class CheckSpellingTests(unittest.TestCase):
+    """The sources check_spelling reads, the data files it reads them against, and how it reports what it finds."""
+
+    def setUp(self) -> None:
+        self._directory = tempfile.TemporaryDirectory()
+        self.addCleanup(self._directory.cleanup)
+        self.root = self._directory.name
+        self.checks = os.path.join(self.root, "bld", "docs-checks")
+        write_tree(self.checks, {"us-spelling.txt": SPELLING_PAIRS_TEXT, "us-spelling-allowlist.txt": "# none\n"})
+
+    def check(self) -> list[str]:
+        return check_docs.check_spelling(self.root, self.checks)
+
+    def test_check_spelling_when_project_source_has_british_word_should_report_file_line_word_and_replacement(self) -> None:
+        """Verifies that a British word in a project's src or test documentation is reported with its file, line, word and US form."""
+        write_tree(self.root, {"Widgets/src/Widget.cs": SPELLING_SOURCE, "Widgets/test/WidgetTests.cs": SPELLING_SOURCE})
+        found = self.check()
+        self.assertEqual(2, len(found), found)
+        self.assertTrue(found[0].startswith("Widgets/src/Widget.cs:5:"), found[0])
+        self.assertIn("'behaviour'", found[0])
+        self.assertIn("'behavior'", found[0])
+        self.assertTrue(found[1].startswith("Widgets/test/WidgetTests.cs:5:"), found[1])
+
+    def test_check_spelling_when_source_is_nested_or_shared_should_report_it(self) -> None:
+        """Verifies that a src folder below a grouping folder, and shared source compiled into projects, are read."""
+        write_tree(self.root, {
+            "Widgets.Data/Widgets.Data.Europe/src/Data.cs": SPELLING_SOURCE,
+            "Widgets/shared/Shared.cs": SPELLING_SOURCE,
+        })
+        self.assertEqual(2, len(self.check()))
+
+    def test_check_spelling_when_source_is_outside_the_documented_trees_should_report_nothing(self) -> None:
+        """Verifies that samples, build output, generated sources and the separate Bodu.CodeStyle solution are not read."""
+        write_tree(self.root, {
+            "samples/Widgets/Program.cs": SPELLING_SOURCE,
+            "Widgets/src/obj/Release/Widget.cs": SPELLING_SOURCE,
+            "Widgets/src/bin/Widget.cs": SPELLING_SOURCE,
+            "Widgets/src/WidgetResourceStrings.Designer.cs": SPELLING_SOURCE,
+            "Widgets/src/Generated.cs": "// <auto-generated />\n" + SPELLING_SOURCE,
+            "Bodu.CodeStyle/Analyzers/src/Analyzer.cs": SPELLING_SOURCE,
+            "Widgets/src/Widget.md": "/// behaviour\n",
+        })
+        self.assertEqual([], self.check())
+
+    def test_check_spelling_when_allowlist_names_the_line_or_file_should_report_nothing(self) -> None:
+        """Verifies that an allowlisted line, and every line of an allowlisted file, are excused."""
+        write_tree(self.root, {
+            "Widgets/src/Widget.cs": SPELLING_SOURCE,
+            "Widgets/test/Quoted.cs": SPELLING_SOURCE,
+            "bld/docs-checks/us-spelling-allowlist.txt":
+                "Widgets/src/Widget.cs:5  Quotes a third-party message verbatim.\n"
+                "Widgets/test/Quoted.cs  Restates a third-party test suite.\n",
+        })
+        self.assertEqual([], self.check())
+
+    def test_check_spelling_when_allowlist_entry_excuses_nothing_should_report_it(self) -> None:
+        """Verifies that an allowlist entry whose line no longer has a British word, or whose file is gone, is reported as stale."""
+        write_tree(self.root, {
+            "Widgets/src/Widget.cs": SPELLING_SOURCE,
+            "bld/docs-checks/us-spelling-allowlist.txt":
+                "Widgets/src/Widget.cs:5  Quotes a third-party message verbatim.\n"
+                "Widgets/src/Widget.cs:6  Moved.\n"
+                "Widgets/src/Gone.cs  Deleted.\n",
+        })
+        found = self.check()
+        self.assertEqual(2, len(found), found)
+        self.assertTrue(all(line.startswith("us-spelling-allowlist.txt:") for line in found), found)
+        self.assertIn("Widgets/src/Widget.cs:6", found[0])
+        self.assertIn("Widgets/src/Gone.cs", found[1])
+
+    def test_check_spelling_when_word_list_is_missing_should_report_it(self) -> None:
+        """Verifies that the check fails, rather than passing vacuously, when its word list is missing."""
+        os.remove(os.path.join(self.checks, "us-spelling.txt"))
+        found = self.check()
+        self.assertEqual(1, len(found), found)
+        self.assertIn("us-spelling.txt", found[0])
+
+    def test_check_spelling_when_check_is_named_on_the_command_line_should_run_it(self) -> None:
+        """Verifies that 'spelling' is a check the command line runs, and that 'all' includes it."""
+        self.assertIn("spelling", check_docs.CHECK_NAMES)
 
 
 if __name__ == "__main__":
