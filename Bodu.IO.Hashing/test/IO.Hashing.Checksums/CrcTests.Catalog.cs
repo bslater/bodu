@@ -16,7 +16,10 @@ using System.Text;
 
 public partial class CrcTests
 {
-   private static readonly byte[] CatalogCheckInput = Encoding.ASCII.GetBytes("123456789");
+    /// <summary>
+    /// The ASCII bytes of <c>"123456789"</c>, the input whose CRC each catalogue entry publishes as its <c>check</c> value.
+    /// </summary>
+    private static readonly byte[] CatalogCheckInput = Encoding.ASCII.GetBytes("123456789");
 
     /// <summary>
     /// Yields one test row per catalogue CRC standard: the <see cref="CrcStandards" /> enum value and the expected

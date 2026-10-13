@@ -22,6 +22,16 @@ public sealed partial class CrcStandard
     /// <summary>Compact value-type row in the packed catalogue data table. Indexed by <see cref="CrcStandards" /> ordinal.</summary>
     private readonly struct CatalogEntry
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CatalogEntry" /> struct with the parameters of one catalogue standard.
+        /// </summary>
+        /// <param name="name">The canonical RevEng name of the standard.</param>
+        /// <param name="size">The width of the CRC, in bits.</param>
+        /// <param name="polynomial">The generator polynomial.</param>
+        /// <param name="initialValue">The register value before the first input byte is processed.</param>
+        /// <param name="reflectIn">A value indicating whether each input byte is reflected before it is processed.</param>
+        /// <param name="reflectOut">A value indicating whether the final register value is reflected before <paramref name="xOrOut" /> is applied.</param>
+        /// <param name="xOrOut">The value XORed into the final register value.</param>
         public CatalogEntry(string name, int size, ulong polynomial, ulong initialValue, bool reflectIn, bool reflectOut, ulong xOrOut)
         {
             Name = name;
@@ -33,15 +43,29 @@ public sealed partial class CrcStandard
             ReflectOut = reflectOut;
         }
 
+        /// <summary>The canonical RevEng name of the standard.</summary>
         public readonly string Name;
+
+        /// <summary>The width of the CRC, in bits.</summary>
         public readonly int Size;
+
+        /// <summary>The generator polynomial.</summary>
         public readonly ulong Polynomial;
+
+        /// <summary>The register value before the first input byte is processed.</summary>
         public readonly ulong InitialValue;
+
+        /// <summary>The value XORed into the final register value.</summary>
         public readonly ulong XOrOut;
+
+        /// <summary>A value indicating whether each input byte is reflected before it is processed.</summary>
         public readonly bool ReflectIn;
+
+        /// <summary>A value indicating whether the final register value is reflected before <see cref="XOrOut" /> is applied.</summary>
         public readonly bool ReflectOut;
     }
 
+    /// <summary>The packed parameters of every catalogue standard, in <see cref="CrcStandards" /> order.</summary>
     private static readonly CatalogEntry[] s_catalog = new CatalogEntry[]
     {
         new CatalogEntry("CRC-3/GSM", 3, 0x3UL, 0x0UL, false, false, 0x7UL),
@@ -183,8 +207,8 @@ public sealed partial class CrcStandard
             IReadOnlyList<CrcStandard>? cached = Volatile.Read(ref s_all);
             if (cached is not null) return cached;
             return BuildAll();
-         }
-   }
+        }
+    }
 
     /// <summary>
     /// Materializes - or retrieves from cache - the <see cref="CrcStandard" /> identified by the given enum value.
@@ -255,6 +279,10 @@ public sealed partial class CrcStandard
         return false;
     }
 
+    /// <summary>
+    /// Returns the map from canonical name or alias to the enum value, building it on first use.
+    /// </summary>
+    /// <returns>The shared name map.</returns>
     private static Dictionary<string, CrcStandards> GetNameToEnumMap()
     {
         Dictionary<string, CrcStandards>? map = Volatile.Read(ref s_nameToEnum);
@@ -262,6 +290,11 @@ public sealed partial class CrcStandard
         return BuildNameLookup();
     }
 
+    /// <summary>
+    /// Builds the map from canonical name or alias to the enum value and publishes it, so that every caller shares the map that
+    /// is published first.
+    /// </summary>
+    /// <returns>The published name map.</returns>
     private static Dictionary<string, CrcStandards> BuildNameLookup()
     {
         var map = new Dictionary<string, CrcStandards>(186, StringComparer.Ordinal);
@@ -456,6 +489,11 @@ public sealed partial class CrcStandard
         return winner ?? map;
     }
 
+    /// <summary>
+    /// Materializes every catalogue standard in declaration order and publishes the read-only snapshot, so that every
+    /// caller shares the snapshot that is published first.
+    /// </summary>
+    /// <returns>The published snapshot of every catalogue standard.</returns>
     private static IReadOnlyList<CrcStandard> BuildAll()
     {
         var array = new CrcStandard[s_catalog.Length];
