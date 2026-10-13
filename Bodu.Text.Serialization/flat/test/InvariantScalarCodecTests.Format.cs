@@ -37,4 +37,15 @@ public sealed partial class InvariantScalarCodecTests
     {
         Assert.AreEqual("false", InvariantScalarCodec.Format(false, InvariantScalarCodec.Policy.Configuration));
     }
+
+    /// <summary>
+    /// Verifies that a <see cref="DateTime" /> is written in the round-trip form, which keeps its sub-second ticks.
+    /// </summary>
+    [TestMethod]
+    public void Format_WhenDateTimeHasTicks_ForDelimitedPolicy_ShouldWriteRoundTripText()
+    {
+        string text = InvariantScalarCodec.Format(s_instant, InvariantScalarCodec.Policy.Delimited);
+
+        Assert.AreEqual(s_instant.ToString("O", CultureInfo.InvariantCulture), text);
+    }
 }

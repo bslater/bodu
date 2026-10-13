@@ -9,7 +9,8 @@ using System.Reflection;
 namespace Bodu.Text.Serialization;
 
 /// <summary>
-/// Provides tests for the shared <see cref="FlatMemberDescriptor" /> as the DotEnv serializer compiles it.
+/// Provides tests for the shared <see cref="FlatMemberDescriptor" />, compiled into the test project of each line format
+/// that compiles it.
 /// </summary>
 [TestClass]
 public sealed partial class FlatMemberDescriptorTests
@@ -30,16 +31,25 @@ public sealed partial class FlatMemberDescriptorTests
     }
 
     /// <summary>
-    /// A record with a renamed required property.
+    /// A record with a renamed required property, an ordered property and a read-only field.
     /// </summary>
     private sealed class MemberSample
     {
+        /// <summary>A read-only field, which can be read but not written.</summary>
+        public readonly int ImmutableField = 12;
+
         /// <summary>
         /// Gets or sets a required property written under another name.
         /// </summary>
         [Required]
         [PropertyName("CUSTOM_KEY")]
         public int Count { get; set; }
+
+        /// <summary>
+        /// Gets or sets a property with an explicit serialization order.
+        /// </summary>
+        [PropertyOrder(2)]
+        public int Number { get; set; }
     }
 
     /// <summary>

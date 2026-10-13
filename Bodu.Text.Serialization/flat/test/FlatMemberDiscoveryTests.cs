@@ -7,13 +7,14 @@
 namespace Bodu.Text.Serialization;
 
 /// <summary>
-/// Provides tests for the shared <see cref="FlatMemberDiscovery" /> as the DotEnv serializer compiles it.
+/// Provides tests for the shared <see cref="FlatMemberDiscovery" />, compiled into the test project of each line format
+/// that compiles it.
 /// </summary>
 [TestClass]
 public sealed partial class FlatMemberDiscoveryTests
 {
     /// <summary>
-    /// A record with a renamed required property, an ignored property and a public field.
+    /// A record with a renamed required property, an ignored property, a public field and an indexer.
     /// </summary>
     private sealed class MemberSample
     {
@@ -32,6 +33,13 @@ public sealed partial class FlatMemberDiscoveryTests
 
         /// <summary>A public field, discovered only when fields are included.</summary>
         public int PublicField = 42;
+
+        /// <summary>
+        /// Gets the text of an index; an indexer is never a member.
+        /// </summary>
+        /// <param name="index">The index to write.</param>
+        /// <returns>The index as invariant text.</returns>
+        public string this[int index] => index.ToString(System.Globalization.CultureInfo.InvariantCulture);
     }
 
     /// <summary>

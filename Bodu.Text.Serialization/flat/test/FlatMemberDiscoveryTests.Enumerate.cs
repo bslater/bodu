@@ -38,4 +38,18 @@ public sealed partial class FlatMemberDiscoveryTests
             members.Select(static member => member.Name).ToArray());
         Assert.IsTrue(members.All(static member => member.DeclaringType == typeof(HidingSample)));
     }
+
+    /// <summary>
+    /// Verifies that, with fields excluded, discovery returns only the plain property, the renamed one: the field, the ignored property
+    /// and the indexer are skipped.
+    /// </summary>
+    [TestMethod]
+    public void Enumerate_WhenFieldsExcluded_ShouldSkipFieldsIgnoredPropertiesAndIndexers()
+    {
+        MemberInfo[] members = FlatMemberDiscovery.Enumerate(typeof(MemberSample), includeFields: false).ToArray();
+
+        CollectionAssert.AreEqual(
+            new[] { nameof(MemberSample.Count) },
+            members.Select(static member => member.Name).ToArray());
+    }
 }
