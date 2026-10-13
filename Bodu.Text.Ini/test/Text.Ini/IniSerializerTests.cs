@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Collections;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Numerics;
 using System.Reflection;
@@ -361,6 +363,94 @@ public partial class IniSerializerTests
 
         /// <summary>Gets or sets the host name.</summary>
         public string Host { get; set; }
+    }
+
+    /// <summary>
+    /// A root model with a global scalar member and a section held in a dictionary that implements only the generic
+    /// dictionary interface.
+    /// </summary>
+    private sealed class GenericOnlySectionConfig
+    {
+        /// <summary>Gets or sets the application name (a global key).</summary>
+        public string? Name { get; set; }
+
+        /// <summary>Gets or sets the logging section.</summary>
+        public GenericOnlyDictionary<string>? Logging { get; set; }
+    }
+
+    /// <summary>
+    /// A dictionary keyed by <see cref="string" /> that implements the generic
+    /// <see cref="IDictionary{TKey, TValue}" /> interface but not the non-generic <see cref="IDictionary" />, and
+    /// enumerates its entries in the order they were added.
+    /// </summary>
+    /// <typeparam name="TValue">The type of the values.</typeparam>
+    private sealed class GenericOnlyDictionary<TValue> : IDictionary<string, TValue>
+    {
+        /// <summary>The entries, which enumerate in the order they were added.</summary>
+        private readonly Dictionary<string, TValue> _entries = new(StringComparer.Ordinal);
+
+        /// <inheritdoc />
+        public ICollection<string> Keys => _entries.Keys;
+
+        /// <inheritdoc />
+        public ICollection<TValue> Values => _entries.Values;
+
+        /// <inheritdoc />
+        public int Count => _entries.Count;
+
+        /// <inheritdoc />
+        public bool IsReadOnly => false;
+
+        /// <inheritdoc />
+        public TValue this[string key]
+        {
+            get => _entries[key];
+            set => _entries[key] = value;
+        }
+
+        /// <inheritdoc />
+        public void Add(string key, TValue value) =>
+            _entries.Add(key, value);
+
+        /// <inheritdoc />
+        public void Add(KeyValuePair<string, TValue> item) =>
+            _entries.Add(item.Key, item.Value);
+
+        /// <inheritdoc />
+        public void Clear() =>
+            _entries.Clear();
+
+        /// <inheritdoc />
+        public bool Contains(KeyValuePair<string, TValue> item) =>
+            ((ICollection<KeyValuePair<string, TValue>>)_entries).Contains(item);
+
+        /// <inheritdoc />
+        public bool ContainsKey(string key) =>
+            _entries.ContainsKey(key);
+
+        /// <inheritdoc />
+        public void CopyTo(KeyValuePair<string, TValue>[] array, int arrayIndex) =>
+            ((ICollection<KeyValuePair<string, TValue>>)_entries).CopyTo(array, arrayIndex);
+
+        /// <inheritdoc />
+        public IEnumerator<KeyValuePair<string, TValue>> GetEnumerator() =>
+            _entries.GetEnumerator();
+
+        /// <inheritdoc />
+        public bool Remove(string key) =>
+            _entries.Remove(key);
+
+        /// <inheritdoc />
+        public bool Remove(KeyValuePair<string, TValue> item) =>
+            ((ICollection<KeyValuePair<string, TValue>>)_entries).Remove(item);
+
+        /// <inheritdoc />
+        public bool TryGetValue(string key, [MaybeNullWhen(false)] out TValue value) =>
+            _entries.TryGetValue(key, out value);
+
+        /// <inheritdoc />
+        IEnumerator IEnumerable.GetEnumerator() =>
+            GetEnumerator();
     }
 
     /// <summary>

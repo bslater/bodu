@@ -420,4 +420,52 @@ public partial class IniSerializerTests
 
         Assert.IsTrue(ex.Message.Contains("IReadOnlyDictionary", StringComparison.Ordinal), ex.Message);
     }
+
+    /// <summary>
+    /// Verifies that a root that implements <see cref="IDictionary{TKey, TValue}" /> keyed by <see cref="string" />,
+    /// but not the non-generic <see cref="System.Collections.IDictionary" />, is created and bound through the generic
+    /// interface, each global key converted to the value type.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenTheRootImplementsOnlyTheGenericDictionaryInterface_ShouldMapTheGlobalKeys()
+    {
+        GenericOnlyDictionary<int> root = IniSerializer.Deserialize<GenericOnlyDictionary<int>>("b=2\na=1\n");
+
+        CollectionAssert.AreEqual(new[] { "b", "a" }, root.Keys.ToArray());
+        Assert.AreEqual(2, root["b"]);
+        Assert.AreEqual(1, root["a"]);
+    }
+
+    /// <summary>
+    /// Verifies that a root whose sections, and the root itself, implement only the generic dictionary interface maps
+    /// the reserved global entries and each section to a dictionary of that type.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenTheSectionsImplementOnlyTheGenericDictionaryInterface_ShouldMapEachSection()
+    {
+        var options = new IniSerializerOptions { GlobalSectionName = "global" };
+
+        GenericOnlyDictionary<GenericOnlyDictionary<string>> root =
+            IniSerializer.Deserialize<GenericOnlyDictionary<GenericOnlyDictionary<string>>>("a=1\n[db]\nhost=x\n", options);
+
+        CollectionAssert.AreEqual(new[] { "global", "db" }, root.Keys.ToArray());
+        Assert.AreEqual("1", root["global"]["a"]);
+        Assert.AreEqual("x", root["db"]["host"]);
+    }
+
+    /// <summary>
+    /// Verifies that a section member whose type implements only the generic dictionary interface binds the section's
+    /// entries.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenASectionMemberImplementsOnlyTheGenericDictionaryInterface_ShouldBindItsEntries()
+    {
+        GenericOnlySectionConfig config = IniSerializer.Deserialize<GenericOnlySectionConfig>("Name=app\n[Logging]\nlevel=info\nsink=console\n");
+
+        Assert.AreEqual("app", config.Name);
+        Assert.IsNotNull(config.Logging);
+        CollectionAssert.AreEqual(new[] { "level", "sink" }, config.Logging.Keys.ToArray());
+        Assert.AreEqual("info", config.Logging["level"]);
+        Assert.AreEqual("console", config.Logging["sink"]);
+    }
 }

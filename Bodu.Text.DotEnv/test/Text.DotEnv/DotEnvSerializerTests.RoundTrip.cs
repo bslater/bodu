@@ -165,4 +165,19 @@ public partial class DotEnvSerializerTests
         Assert.AreEqual(original.MaybeAtOffset, restored.MaybeAtOffset, text);
         Assert.AreEqual(original.MaybeAtOffset!.Value.Offset, restored.MaybeAtOffset!.Value.Offset, text);
     }
+
+    /// <summary>
+    /// Verifies that a root that implements only the generic dictionary interface reads back as the entries written,
+    /// in the same order.
+    /// </summary>
+    [TestMethod]
+    public void SerializeDeserialize_WhenTheRootImplementsOnlyTheGenericDictionaryInterface_ShouldPreserveEveryEntry()
+    {
+        var original = new GenericOnlyDictionary<string> { ["HOST"] = "db.internal", ["PORT"] = "1234" };
+
+        string text = DotEnvSerializer.Serialize(original);
+        GenericOnlyDictionary<string> restored = DotEnvSerializer.Deserialize<GenericOnlyDictionary<string>>(text);
+
+        CollectionAssert.AreEqual(original.ToArray(), restored.ToArray(), text);
+    }
 }

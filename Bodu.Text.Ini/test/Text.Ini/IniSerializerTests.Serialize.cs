@@ -332,4 +332,77 @@ public partial class IniSerializerTests
 
         Assert.AreEqual(expected, text);
     }
+
+    /// <summary>
+    /// Verifies that a root that implements <see cref="IDictionary{TKey, TValue}" /> keyed by <see cref="string" />,
+    /// but not the non-generic <see cref="System.Collections.IDictionary" />, serializes each entry as a global key, in
+    /// the order the dictionary enumerates them.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenTheRootImplementsOnlyTheGenericDictionaryInterface_ShouldWriteTheGlobalKeys()
+    {
+        var root = new GenericOnlyDictionary<int> { ["b"] = 2, ["a"] = 1 };
+
+        string text = IniSerializer.Serialize(root);
+
+        Assert.AreEqual("b=2\na=1\n", text);
+    }
+
+    /// <summary>
+    /// Verifies that a root whose sections, and the root itself, implement only the generic dictionary interface
+    /// writes the reserved global entry as global keys and every other entry as a section.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenTheSectionsImplementOnlyTheGenericDictionaryInterface_ShouldWriteEachSection()
+    {
+        var root = new GenericOnlyDictionary<GenericOnlyDictionary<string>>
+        {
+            ["db"] = new() { ["host"] = "x" },
+            ["global"] = new() { ["a"] = "1" },
+        };
+        var options = new IniSerializerOptions { GlobalSectionName = "global" };
+
+        string text = IniSerializer.Serialize(root, options);
+
+        Assert.AreEqual("a=1\n[db]\nhost=x\n", text);
+    }
+
+    /// <summary>
+    /// Verifies that a section member whose type implements only the generic dictionary interface is written as a
+    /// section of its entries.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenASectionMemberImplementsOnlyTheGenericDictionaryInterface_ShouldWriteItsEntries()
+    {
+        var config = new GenericOnlySectionConfig
+        {
+            Name = "app",
+            Logging = new GenericOnlyDictionary<string> { ["level"] = "info", ["sink"] = "console" },
+        };
+
+        string text = IniSerializer.Serialize(config);
+
+        Assert.AreEqual("Name=app\n[Logging]\nlevel=info\nsink=console\n", text);
+    }
+
+    /// <summary>
+    /// Verifies that a section entry whose value implements only the generic dictionary interface nests beyond INI's
+    /// two levels, as a <see cref="Dictionary{TKey, TValue}" /> value does, and throws
+    /// <see cref="IniSerializationException" /> naming the entry.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenASectionEntryImplementsOnlyTheGenericDictionaryInterface_ShouldThrowIniSerializationException()
+    {
+        var root = new Dictionary<string, Dictionary<string, object>>
+        {
+            ["db"] = new() { ["inner"] = new GenericOnlyDictionary<string> { ["host"] = "x" } },
+        };
+
+        var ex = Assert.ThrowsExactly<IniSerializationException>(() =>
+        {
+            _ = IniSerializer.Serialize(root);
+        });
+
+        Assert.IsTrue(ex.Message.Contains("'inner'", StringComparison.Ordinal), ex.Message);
+    }
 }

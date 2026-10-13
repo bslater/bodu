@@ -208,4 +208,40 @@ public partial class DotEnvSerializerTests
 
         Assert.AreEqual(expected, text);
     }
+
+    /// <summary>
+    /// Verifies that a root that implements <see cref="IDictionary{TKey, TValue}" /> keyed by <see cref="string" />,
+    /// but not the non-generic <see cref="System.Collections.IDictionary" />, serializes each entry as a key/value line,
+    /// in the order the dictionary enumerates them.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenTheRootImplementsOnlyTheGenericDictionaryInterface_ShouldWriteEachEntry()
+    {
+        var map = new GenericOnlyDictionary<int> { ["B"] = 2, ["A"] = 1 };
+
+        string text = DotEnvSerializer.Serialize(map);
+
+        Assert.AreEqual("B=2\nA=1\n", text);
+    }
+
+    /// <summary>
+    /// Verifies that an entry whose value is <see langword="null" />, in a root that implements only the generic
+    /// dictionary interface, is left out unless the options' default ignore condition is
+    /// <see cref="IgnoreCondition.Never" />, as it is in a <see cref="Dictionary{TKey, TValue}" />.
+    /// </summary>
+    /// <param name="condition">The options' default ignore condition.</param>
+    /// <param name="expected">The text written.</param>
+    [TestMethod]
+    [DataRow(IgnoreCondition.Never, "A=\nB=b\n")]
+    [DataRow(IgnoreCondition.WhenWritingNull, "B=b\n")]
+    [DataRow(IgnoreCondition.WhenWritingDefault, "B=b\n")]
+    public void Serialize_WhenAGenericOnlyDictionaryValueIsNull_ShouldLeaveItOutUnlessTheConditionIsNever(IgnoreCondition condition, string expected)
+    {
+        var options = new DotEnvSerializerOptions { DefaultIgnoreCondition = condition };
+        var map = new GenericOnlyDictionary<string?> { ["A"] = null, ["B"] = "b" };
+
+        string text = DotEnvSerializer.Serialize(map, options);
+
+        Assert.AreEqual(expected, text);
+    }
 }

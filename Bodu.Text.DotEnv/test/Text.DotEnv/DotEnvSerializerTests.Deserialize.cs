@@ -281,4 +281,19 @@ public partial class DotEnvSerializerTests
 
         Assert.IsTrue(ex.Message.Contains("IReadOnlyDictionary", StringComparison.Ordinal), ex.Message);
     }
+
+    /// <summary>
+    /// Verifies that a root that implements <see cref="IDictionary{TKey, TValue}" /> keyed by <see cref="string" />,
+    /// but not the non-generic <see cref="System.Collections.IDictionary" />, is created and bound through the generic
+    /// interface, each entry converted to the value type.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenTheRootImplementsOnlyTheGenericDictionaryInterface_ShouldBindEachEntry()
+    {
+        GenericOnlyDictionary<int> map = DotEnvSerializer.Deserialize<GenericOnlyDictionary<int>>("B=2\nA=1\n");
+
+        CollectionAssert.AreEqual(new[] { "B", "A" }, map.Keys.ToArray());
+        Assert.AreEqual(2, map["B"]);
+        Assert.AreEqual(1, map["A"]);
+    }
 }
