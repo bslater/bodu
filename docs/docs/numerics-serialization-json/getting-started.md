@@ -87,10 +87,10 @@ Fraction<BigInteger> quoted = JsonSerializer.Deserialize<Fraction<BigInteger>>(
 ### `BigDecimal` and `Complex<T>`
 
 ```csharp
-BigDecimal price = BigDecimal.Parse("12.340");
+BigDecimal price = BigDecimal.Parse("12.340");                          // 12.34 - the trailing zero is dropped
 
-JsonSerializer.Serialize(price, options);                               // {"unscaledValue":12340,"scale":3}
-JsonSerializer.Serialize(price, compact);                               // "12.340"
+JsonSerializer.Serialize(price, options);                               // {"unscaledValue":1234,"scale":2}
+JsonSerializer.Serialize(price, compact);                               // "12.34"
 
 var z = new Complex<double>(3, 4);
 

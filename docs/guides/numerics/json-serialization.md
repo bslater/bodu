@@ -51,7 +51,7 @@ var compact = new JsonSerializerOptions()
 
 `DiscreteInterval<T>` serializes through the `Interval<T>` shape over its canonical closed integer bounds (compact form `"[1, 5]"`), and `IntervalSet<T>` serializes as a JSON **array** of its `Interval<T>` pieces (empty set → `[]`). Both honour the selected policy.
 
-`BigDecimal` serializes as the canonical object `{ "unscaledValue": 12340, "scale": 3 }` under `Strict` (the unscaled value is a raw JSON number, so an arbitrary-magnitude mantissa round-trips exactly) and as the plain decimal string `"12.340"` under `Compact`. `Lenient` reads either shape. The string form is used for `Compact` - rather than a bare JSON number - because many consumers narrow long numbers to IEEE-754 `double`.
+`BigDecimal` serializes as the canonical object `{ "unscaledValue": 1234, "scale": 2 }` under `Strict` (the unscaled value is a raw JSON number, so an arbitrary-magnitude mantissa round-trips exactly) and as the plain decimal string `"12.34"` under `Compact`. `Lenient` reads either shape. The string form is used for `Compact` - rather than a bare JSON number - because many consumers narrow long numbers to IEEE-754 `double`.
 
 `Complex<T>` serializes as the canonical object `{ "real": 3, "imaginary": 4 }` under `Strict` and `Lenient` - a finite component is a JSON number, while a non-finite one is written as the string `"NaN"`, `"Infinity"`, or `"-Infinity"` (either form is accepted on read) - and as the `"<3; 4>"` string under `Compact`, delegating to `Complex<T>.ToString` / `TryParse` under the invariant culture.
 

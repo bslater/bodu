@@ -23,7 +23,7 @@ namespace Bodu.Numerics.Serialization.Json;
 /// <list type="bullet">
 /// <item>
 /// <description>
-/// <see cref="NumericsJsonPolicy.Strict" /> - canonical object form <c>{ "unscaledValue": 12340, "scale": 3 }</c>. The
+/// <see cref="NumericsJsonPolicy.Strict" /> - canonical object form <c>{ "unscaledValue": 1234, "scale": 2 }</c>. The
 /// unscaled value is written as a raw JSON number and may be read from a number or a numeric string, so an
 /// arbitrary-magnitude value round-trips without precision loss.
 /// </description>
@@ -36,7 +36,7 @@ namespace Bodu.Numerics.Serialization.Json;
 /// </item>
 /// <item>
 /// <description>
-/// <see cref="NumericsJsonPolicy.Compact" /> - the plain decimal string <c>"12.340"</c>. Because JSON numbers can lose
+/// <see cref="NumericsJsonPolicy.Compact" /> - the plain decimal string <c>"12.34"</c>. Because JSON numbers can lose
 /// precision in some consumers, the value is written as a string rather than a bare number.
 /// </description>
 /// </item>

@@ -82,7 +82,7 @@ DiscreteInterval<int>.Open(1, 2).IsEmpty;  // True  - no integer lies strictly b
 
 ## `BigDecimal`
 
-`BigDecimal` is an unbounded decimal: a `BigInteger` unscaled value paired with a non-negative `int` scale, so the value is `unscaledValue × 10^-scale`. It grows to whatever precision a value needs - there is no `MinValue`/`MaxValue` and arithmetic never overflows. Add, subtract, and multiply are exact; division computes to a default 50-digit working precision (half-to-even) unless you pass an explicit scale and rounding mode.
+`BigDecimal` is an unbounded decimal: a `BigInteger` unscaled value paired with a non-negative `int` scale, so the value is `unscaledValue × 10^-scale`. It grows to whatever precision a value needs - there is no `MinValue`/`MaxValue`, and only an operation whose `int` scale would overflow throws (`OverflowException`). Add, subtract, and multiply are exact; division computes to a default 50-digit working precision (half-to-even) unless you pass an explicit scale and rounding mode.
 
 ```csharp
 using Bodu.Numerics;
@@ -96,7 +96,7 @@ BigDecimal big = BigDecimal.Parse("123456789012345678901234567890.123456789",
 Highlights:
 
 - Exact `Add` / `Subtract` / `Multiply` / `Negate` / `Abs` / `Pow`; `Divide` with a default precision or an explicit scale and `MidpointRounding`; `Remainder`.
-- Value-based equality and ordering (`1.0` equals `1.00`), scale-preserving formatting until you `Round` / `Floor` / `Ceiling` / `Truncate`.
+- One canonical form with trailing zeros removed, so `1.0` and `1.00` are the same value and compare and hash equal; format with `F<n>` to show a fixed number of places.
 - Implicit lifts from `int`, `long`, `BigInteger`, and `decimal`; explicit conversions to/from `double` and to `BigInteger` / `decimal`.
 - Parsing of plain and scientific decimal text across `string`, `ReadOnlySpan<char>`, and UTF-8; `G` and `F` formatting through `IFormattable` / `ISpanFormattable` / `IUtf8SpanFormattable`.
 - The full generic-math surface - `INumber<BigDecimal>`, `ISignedNumber<BigDecimal>` (`Radix` 10) - so it composes with `INumber<T>`-constrained code.

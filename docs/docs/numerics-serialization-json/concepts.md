@@ -55,8 +55,8 @@ A bounded side carries its endpoint and inclusivity flag; an unbounded side is a
 ## `BigDecimal` shape
 
 ```json
-{ "unscaledValue": 12340, "scale": 3 }
-"12.340"
+{ "unscaledValue": 1234, "scale": 2 }
+"12.34"
 ```
 
 `Strict` writes the exact pair - an arbitrary-magnitude unscaled mantissa as a raw JSON number plus the decimal scale - and `Compact` writes the plain decimal string. `Lenient` reads either. The string form is used for `Compact`, rather than a bare JSON number, because many consumers narrow long numbers to IEEE-754 `double`.

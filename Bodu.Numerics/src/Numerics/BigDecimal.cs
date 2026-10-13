@@ -74,6 +74,9 @@ public readonly partial struct BigDecimal
     /// <param name="scale">
     /// The base-ten scale; a negative scale multiplies the unscaled value by <c>10<sup>-scale</sup></c>.
     /// </param>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="scale" /> is less than -1,000,000, and <paramref name="unscaledValue" /> is not zero.
+    /// </exception>
     public BigDecimal(BigInteger unscaledValue, int scale)
     {
         Normalize(ref unscaledValue, ref scale);

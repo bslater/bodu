@@ -44,7 +44,7 @@ One policy value shapes every registered converter:
 | `Lenient` | as `Strict`, plus a top-level string accepted on read | as `Strict`, plus `"min"` / `"max"` aliases and defaulted inclusivity | Spreadsheet / external-feed ingest. Writes as `Strict`. |
 | `Compact` | string `"3/4"` | ISO 31-11 bracket string `"[1, 5)"`, `"∅"` for empty | Compact payloads where size matters. |
 
-`BigDecimal` serializes as the canonical object `{ "unscaledValue": 12340, "scale": 3 }` under `Strict` - the unscaled value is a raw JSON number, so an arbitrary-magnitude mantissa round-trips exactly - and as the plain decimal string `"12.340"` under `Compact` (a string rather than a bare number, because many consumers narrow long JSON numbers to `double`). `Lenient` reads either shape.
+`BigDecimal` serializes as the canonical object `{ "unscaledValue": 1234, "scale": 2 }` under `Strict` - the unscaled value is a raw JSON number, so an arbitrary-magnitude mantissa round-trips exactly - and as the plain decimal string `"12.34"` under `Compact` (a string rather than a bare number, because many consumers narrow long JSON numbers to `double`). `Lenient` reads either shape.
 
 Converters can also be registered individually (for example only fractions, or a single closed backing type) via `options.Converters.Add(new FractionJsonConverterFactory(NumericsJsonPolicy.Compact))`.
 

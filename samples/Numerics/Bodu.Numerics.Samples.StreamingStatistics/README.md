@@ -129,8 +129,8 @@ of `0..99` is `49.5` and the true p95 is about `94`; the single-pass estimates l
 ## Scenario 4 - BigDecimalArithmetic
 
 **Intent.** Show `BigDecimal` as an arbitrary-precision decimal built from an unscaled `BigInteger`
-and a base-10 scale: arithmetic is exact and scale-preserving, while division and rounding are
-explicit about the scale and midpoint mode they use.
+and a base-10 scale: arithmetic is exact and every result is held in canonical form, trailing zeros
+removed, while division and rounding are explicit about the scale and midpoint mode they use.
 
 **What it does.** Parses `0.10` and `0.20` and adds them (exactly `0.3`), builds `123.45` directly
 from an unscaled integer and a scale, multiplies (scales add), divides `1 / 3` to an explicit

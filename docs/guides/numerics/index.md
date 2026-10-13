@@ -20,8 +20,7 @@ types covering common but missing gaps in the .NET BCL:
 - **[`BigDecimal`](xref:Bodu.Numerics.BigDecimal)** - an immutable
   arbitrary-precision decimal (`BigInteger` unscaled value plus an
   `int` scale). Use it for exact decimal values that exceed
-  `System.Decimal`'s 28-29 digit precision or its exponent range, or
-  that must preserve trailing-zero scale.
+  `System.Decimal`'s 28-29 digit precision or its exponent range.
 - **[`RunningStatistics<T>`](xref:Bodu.Numerics.RunningStatistics`1)**
   / **[`RunningQuantile<T>`](xref:Bodu.Numerics.RunningQuantile`1)** -
   single-pass, constant-space stream accumulators: Welford
