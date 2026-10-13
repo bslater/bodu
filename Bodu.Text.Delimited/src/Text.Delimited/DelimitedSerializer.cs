@@ -293,7 +293,10 @@ public static partial class DelimitedSerializer
     {
         var reader = new Utf8DelimitedReader(utf8Delimited, options);
         rows = [];
-        List<string>? currentRow = null;
+
+        // One list collects every row's fields in turn, and each row keeps an array of them.
+        var currentRow = new List<string>();
+        bool inRow = false;
         int depth = 0;
 
         while (reader.Read())
@@ -303,22 +306,28 @@ public static partial class DelimitedSerializer
                 case DelimitedTokenType.StartArray:
                 case DelimitedTokenType.StartObject:
                     if (++depth == 2)
-                        currentRow = [];
+                    {
+                        currentRow.Clear();
+                        inRow = true;
+                    }
+
                     break;
 
                 case DelimitedTokenType.EndArray:
                 case DelimitedTokenType.EndObject:
-                    if (depth == 2 && currentRow is not null)
+                    if (depth == 2 && inRow)
                     {
                         rows.Add([.. currentRow]);
-                        currentRow = null;
+                        inRow = false;
                     }
 
                     depth--;
                     break;
 
                 case DelimitedTokenType.String:
-                    currentRow?.Add(reader.GetString());
+                    if (inRow)
+                        currentRow.Add(reader.GetString());
+
                     break;
 
                 default:
