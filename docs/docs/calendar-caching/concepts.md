@@ -43,10 +43,13 @@ The **cache unit** is one territory's occurrences for one whole civil (Gregorian
 | Resource version | An ordinal string token (see [below](#time-to-live-vs-resource-version)). |
 
 A query is always decomposed into whole years. A single day, a sub-year range, and a multi-year range all resolve
-through the same per-year entries; the assembled occurrences are then clipped to the requested window by their
-emitted `Date`. The unit is deliberately coarse: resolving one year is a pure function of resource, territory, and
-year, and a single-day query for a cached year costs a cache read rather than a recompute. A year that yields no
-occurrences is still a valid, cacheable entry - it records that the year *was* computed.
+through the same per-year entries; the assembled occurrences are then clipped to the requested window by their span,
+as the engine selects them: an occurrence is kept when any day from its emitted `Date` to its `EndDate` falls in the
+window. A year's entry holds every occurrence in effect during the year, so a multi-day occurrence that runs over the
+new year is held by both years' entries, and a range spanning both returns it once. The unit is deliberately coarse:
+resolving one year is a pure function of resource, territory, and year, and a single-day query for a cached year
+costs a cache read rather than a recompute. A year that yields no occurrences is still a valid, cacheable entry - it
+records that the year *was* computed.
 
 A <xref:Bodu.Globalization.Calendar.NotableDateFilter> is never part of the key. The filtered `Resolve` overloads
 apply the filter to the assembled unfiltered result, so every filter shares the same cached years.

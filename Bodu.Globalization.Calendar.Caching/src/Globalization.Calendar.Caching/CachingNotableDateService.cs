@@ -21,16 +21,24 @@ namespace Bodu.Globalization.Calendar.Caching;
 /// <para>
 /// Every query is answered per civil year: a range is decomposed into the years it spans, each year is served from the
 /// cache when a fresh, version-matching entry exists or otherwise recomputed for the whole year and written back, and
-/// the assembled occurrences are clipped to the requested window by their emitted date. Because the notable-date engine
-/// resolves per Gregorian year, a whole-year entry is the reusable unit: a later single-day or sub-range query for the
-/// same year is served without recomputing, and a query for exactly one whole civil year is served as the cached list
-/// itself with no copying.
+/// the assembled occurrences are clipped to the requested window by their span, as the wrapped service selects them: an
+/// occurrence is kept when any day from its emitted date to its last day falls within the window. Because the
+/// notable-date engine resolves per Gregorian year, a whole-year entry is the reusable unit: a later single-day or
+/// sub-range query for the same year is served without recomputing, and a query for exactly one whole civil year is
+/// served as the cached list itself with no copying.
+/// </para>
+/// <para>
+/// A civil year's entry holds every occurrence whose span overlaps the year, so a multi-day occurrence that starts in
+/// one year and runs into the next is held by both years' entries. A range spanning several years therefore takes such
+/// an occurrence from the entry of the year it starts in, or from the first year's entry when it starts before the
+/// range's first year, and never returns it twice.
 /// </para>
 /// <para>
 /// Output ordering relies on the <see cref="INotableDateCache" /> ordering contract - cached occurrences round-trip in
-/// the order supplied, which is the wrapped service's date-then-identity ordering, and emitted dates in one civil year
-/// always precede the next year's - so assembled results are ordered without re-sorting. As a safeguard, the assembled
-/// result is verified with a linear scan, and only a non-conforming cache backend pays a full sort.
+/// the order supplied, which is the wrapped service's date-then-identity ordering, and the occurrences taken from one
+/// civil year's entry always precede those taken from the next year's - so assembled results are ordered without
+/// re-sorting. As a safeguard, the assembled result is verified with a linear scan, and only a non-conforming cache
+/// backend pays a full sort.
 /// </para>
 /// <para>
 /// The filtered overloads apply the filter after assembling the unfiltered result, exactly as the wrapped service does,
@@ -195,13 +203,13 @@ public sealed class CachingNotableDateService
                     occurrences = ComputeAndStoreYear(territory, year, version, ttl, now);
                 }
 
-                AppendInRange(assembled, occurrences, range);
+                AppendInRange(assembled, occurrences, range, EmittedFrom(year, firstYear));
             }
         }
         else
         {
             for (int year = firstYear; year <= lastYear; year++)
-                AppendInRange(assembled, ResolveYear(territory, year, version, ttl, now), range);
+                AppendInRange(assembled, ResolveYear(territory, year, version, ttl, now), range, EmittedFrom(year, firstYear));
         }
 
         return EnsureOrdered(assembled);
@@ -315,7 +323,7 @@ public sealed class CachingNotableDateService
     /// <param name="version">The resource version token entries are keyed by.</param>
     /// <param name="ttl">The time-to-live freshness is evaluated against.</param>
     /// <param name="now">The lookup instant.</param>
-    /// <returns>The occurrences emitted within the year, unfiltered, in the wrapped service's order.</returns>
+    /// <returns>The occurrences whose span overlaps the year, unfiltered, in the wrapped service's order.</returns>
     private IReadOnlyList<NotableDate> ResolveYear(string territory, int year, string version, TimeSpan ttl, DateTimeOffset now)
     {
         NotableDateCacheEntry? entry = _cache.GetYear(territory, year, version, ttl, now);
@@ -551,7 +559,7 @@ public sealed class CachingNotableDateService
     }
 
     /// <summary>
-    /// Copies the occurrences whose emitted date falls within the requested window into a new list, preserving order.
+    /// Copies the occurrences whose span intersects the requested window into a new list, preserving order.
     /// </summary>
     /// <param name="occurrences">The year's occurrences, in stored order.</param>
     /// <param name="range">The requested window.</param>
@@ -559,22 +567,47 @@ public sealed class CachingNotableDateService
     private static List<NotableDate> Clip(IReadOnlyList<NotableDate> occurrences, DateRange range)
     {
         List<NotableDate> clipped = new(occurrences.Count);
-        AppendInRange(clipped, occurrences, range);
+        AppendInRange(clipped, occurrences, range, DateOnly.MinValue);
         return clipped;
     }
 
     /// <summary>
-    /// Appends the occurrences whose emitted date falls within the requested window, preserving order.
+    /// Returns the earliest emitted date taken from a civil year's entry when a range spanning several years is
+    /// assembled, so an occurrence held by two years' entries is taken only once.
+    /// </summary>
+    /// <param name="year">The civil year whose entry is being appended.</param>
+    /// <param name="firstYear">The first civil year of the range.</param>
+    /// <returns>
+    /// <see cref="DateOnly.MinValue" /> for the first year, whose entry also supplies the occurrences that start before
+    /// the range's first year; otherwise 1 January of <paramref name="year" />, since an occurrence that starts earlier
+    /// was already taken from the entry of the year it starts in.
+    /// </returns>
+    private static DateOnly EmittedFrom(int year, int firstYear) =>
+        year == firstYear ? DateOnly.MinValue : new DateOnly(year, 1, 1);
+
+    /// <summary>
+    /// Appends the occurrences whose span intersects the requested window, preserving order, skipping those emitted
+    /// before a given date.
     /// </summary>
     /// <param name="target">The list the in-range occurrences are appended to.</param>
     /// <param name="occurrences">The year's occurrences, in stored order.</param>
     /// <param name="range">The requested window.</param>
-    private static void AppendInRange(List<NotableDate> target, IReadOnlyList<NotableDate> occurrences, DateRange range)
+    /// <param name="emittedFrom">The earliest emitted date to take; earlier occurrences are skipped.</param>
+    /// <remarks>
+    /// An occurrence intersects the window when it is emitted on or before the window's last day and its last day, the
+    /// emitted date plus its duration less one, is on or after the window's first day: the test the wrapped service
+    /// applies, so a window that cuts a multi-day occurrence keeps it.
+    /// </remarks>
+    private static void AppendInRange(List<NotableDate> target, IReadOnlyList<NotableDate> occurrences, DateRange range, DateOnly emittedFrom)
     {
         for (int i = 0; i < occurrences.Count; i++)
         {
             NotableDate occurrence = occurrences[i];
-            if (occurrence.Date >= range.StartDate && occurrence.Date <= range.EndDate)
+            if (occurrence.Date < emittedFrom || occurrence.Date > range.EndDate)
+                continue;
+
+            long lastDayNumber = (long)occurrence.Date.DayNumber + Math.Max(1, occurrence.DurationDays) - 1;
+            if (lastDayNumber >= range.StartDate.DayNumber)
                 target.Add(occurrence);
         }
     }

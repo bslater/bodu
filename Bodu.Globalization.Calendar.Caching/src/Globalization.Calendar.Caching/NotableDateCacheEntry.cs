@@ -10,28 +10,29 @@ using Bodu.Globalization.Calendar;
 namespace Bodu.Globalization.Calendar.Caching;
 
 /// <summary>
-/// Represents one cached unit of notable-date resolution: every occurrence emitted within a single civil year for a
+/// Represents one cached unit of notable-date resolution: every occurrence in effect during a single civil year for a
 /// single territory under a single resource version, together with the UTC instant the year was computed, which drives
 /// expiry.
 /// </summary>
 /// <param name="Territory">
 /// The territory the occurrences were resolved for, as the caller supplied it; a cache normalizes it for keying.
 /// </param>
-/// <param name="Year">The civil year the occurrences were emitted within.</param>
+/// <param name="Year">The civil year the occurrences are in effect during.</param>
 /// <param name="ResourceVersion">
 /// The version token of the resource the occurrences were computed from; a change invalidates the entry.
 /// </param>
 /// <param name="Occurrences">
-/// The occurrences emitted within <paramref name="Year" />, unfiltered and in the order they were computed (the
-/// notable-date service's date-then-identity order), which backends preserve per the <see cref="INotableDateCache" />
-/// ordering contract.
+/// The occurrences whose span overlaps <paramref name="Year" />, including a multi-day occurrence that starts in the
+/// previous year, unfiltered and in the order they were computed (the notable-date service's date-then-identity order),
+/// which backends preserve per the <see cref="INotableDateCache" /> ordering contract.
 /// </param>
 /// <param name="ComputedAtUtc">The UTC instant at which the year was computed and written to the cache.</param>
 /// <remarks>
 /// <para>
 /// A civil year is the natural cache unit because the notable-date engine computes per Gregorian year: resolving one
 /// year is a pure function of the resource, the territory, and the year. A range query is assembled from the per-year
-/// entries it spans, then clipped to the requested window by each occurrence's emitted date.
+/// entries it spans, then clipped to the requested window by each occurrence's span, so an occurrence that starts
+/// before the window and is still in effect inside it is kept.
 /// </para>
 /// <para>
 /// An entry with an empty <see cref="Occurrences" /> list is a valid, cacheable result: it records that the year was
