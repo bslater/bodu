@@ -57,7 +57,9 @@ namespace Bodu.Numerics.Serialization.Json;
 /// </list>
 /// <para>
 /// Under every policy, a payload that cannot form an interval, a NaN endpoint included, is reported as
-/// <see cref="JsonException" />.
+/// <see cref="JsonException" />. A half-bounded interval whose bounded endpoint is the infinity on its unbounded side,
+/// such as <c>[Infinity, +&#x221E;)</c>, holds no value and is the empty interval, so it is written, and read, as
+/// <see cref="Interval{T}.Empty" /> is.
 /// </para>
 /// </remarks>
 public sealed class IntervalJsonConverter<T>

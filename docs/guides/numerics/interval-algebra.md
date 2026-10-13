@@ -312,8 +312,13 @@ nonNegative.IsBounded;                              // False
 Interval<int>.AtLeast(0) & Interval<int>.AtMost(10);   // [0, 10]
 ```
 
-An unbounded interval is never empty; its `Length` is infinite, so reading
-`Length` throws <xref:System.InvalidOperationException>. Unbounded intervals
+An unbounded interval is never empty, except a half-line whose bounded
+endpoint is the infinity on its unbounded side: that side holds no infinity,
+so `Interval<double>.AtLeast(double.PositiveInfinity)`, `GreaterThan` of the
+same value, and `AtMost` or `LessThan` of `double.NegativeInfinity` hold no
+value and return `Interval<double>.Empty`. An unbounded interval's `Length`
+is infinite, so reading `Length` throws
+<xref:System.InvalidOperationException>. Unbounded intervals
 format with the `±∞` glyphs (`[0, +∞)`, `(-∞, 5]`) and parse back from the
 same text.
 

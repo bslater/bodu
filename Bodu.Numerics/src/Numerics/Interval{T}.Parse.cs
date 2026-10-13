@@ -38,6 +38,10 @@ public readonly partial struct Interval<T> :
     /// <see cref="double" />, therefore reads back as itself, while an infinite endpoint on an open side reads back as
     /// an unbounded side, which holds the same finite values but is not equal to the bounded interval.
     /// </para>
+    /// <para>
+    /// A half-bounded text whose bounded endpoint is the infinity on its unbounded side, such as <c>[Infinity, +∞)</c>,
+    /// holds no value and reads as <see cref="Empty" />, as the half-bounded factories return it.
+    /// </para>
     /// </remarks>
     /// <example>
     /// <code language="csharp">
@@ -246,7 +250,15 @@ public readonly partial struct Interval<T> :
                 flags |= UpperInclusiveFlag;
         }
 
-        result = new Interval<T>(lower, upper, flags);
+        // A half-bounded result goes through its factory, which returns Empty when the bounded endpoint is the infinity
+        // on the unbounded side (as in "[Infinity, +∞)"), since that side holds no infinity.
+        result = (flags & (LowerUnboundedFlag | UpperUnboundedFlag)) switch
+        {
+            LowerUnboundedFlag | UpperUnboundedFlag => All,
+            UpperUnboundedFlag => lowerInclusive ? AtLeast(lower) : GreaterThan(lower),
+            LowerUnboundedFlag => upperInclusive ? AtMost(upper) : LessThan(upper),
+            _ => new Interval<T>(lower, upper, flags),
+        };
         return true;
     }
 

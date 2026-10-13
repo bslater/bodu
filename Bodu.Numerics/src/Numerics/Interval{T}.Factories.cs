@@ -228,8 +228,15 @@ public readonly partial struct Interval<T>
     /// <paramref name="lower" />.
     /// </summary>
     /// <param name="lower">The inclusive lower endpoint.</param>
-    /// <returns>A closed-below, upper-unbounded interval.</returns>
+    /// <returns>
+    /// A closed-below, upper-unbounded interval, or <see cref="Empty" /> when <paramref name="lower" /> is positive
+    /// infinity.
+    /// </returns>
     /// <exception cref="ArgumentException"><paramref name="lower" /> is NaN.</exception>
+    /// <remarks>
+    /// The unbounded upper side holds every finite value but not positive infinity, so an interval from positive
+    /// infinity upward holds no value and is returned as <see cref="Empty" />, as bounds that admit no value are.
+    /// </remarks>
     /// <example>
     /// <code language="csharp">
     ///<![CDATA[
@@ -243,7 +250,9 @@ public readonly partial struct Interval<T>
     {
         ThrowIfNaNEndpoint(lower);
 
-        return new(lower, T.Zero, (byte)(LowerInclusiveFlag | UpperUnboundedFlag));
+        return T.IsPositiveInfinity(lower)
+            ? Empty
+            : new(lower, T.Zero, (byte)(LowerInclusiveFlag | UpperUnboundedFlag));
     }
 
     /// <summary>
@@ -251,8 +260,15 @@ public readonly partial struct Interval<T>
     /// <paramref name="lower" />.
     /// </summary>
     /// <param name="lower">The exclusive lower endpoint.</param>
-    /// <returns>An open-below, upper-unbounded interval.</returns>
+    /// <returns>
+    /// An open-below, upper-unbounded interval, or <see cref="Empty" /> when <paramref name="lower" /> is positive
+    /// infinity.
+    /// </returns>
     /// <exception cref="ArgumentException"><paramref name="lower" /> is NaN.</exception>
+    /// <remarks>
+    /// The unbounded upper side holds every finite value but not positive infinity, so an interval above positive
+    /// infinity holds no value and is returned as <see cref="Empty" />, as bounds that admit no value are.
+    /// </remarks>
     /// <example>
     /// <code language="csharp">
     ///<![CDATA[
@@ -266,7 +282,9 @@ public readonly partial struct Interval<T>
     {
         ThrowIfNaNEndpoint(lower);
 
-        return new(lower, T.Zero, UpperUnboundedFlag);
+        return T.IsPositiveInfinity(lower)
+            ? Empty
+            : new(lower, T.Zero, UpperUnboundedFlag);
     }
 
     /// <summary>
@@ -274,8 +292,15 @@ public readonly partial struct Interval<T>
     /// <paramref name="upper" />.
     /// </summary>
     /// <param name="upper">The inclusive upper endpoint.</param>
-    /// <returns>A lower-unbounded, closed-above interval.</returns>
+    /// <returns>
+    /// A lower-unbounded, closed-above interval, or <see cref="Empty" /> when <paramref name="upper" /> is negative
+    /// infinity.
+    /// </returns>
     /// <exception cref="ArgumentException"><paramref name="upper" /> is NaN.</exception>
+    /// <remarks>
+    /// The unbounded lower side holds every finite value but not negative infinity, so an interval up to negative
+    /// infinity holds no value and is returned as <see cref="Empty" />, as bounds that admit no value are.
+    /// </remarks>
     /// <example>
     /// <code language="csharp">
     ///<![CDATA[
@@ -289,7 +314,9 @@ public readonly partial struct Interval<T>
     {
         ThrowIfNaNEndpoint(upper);
 
-        return new(T.Zero, upper, (byte)(LowerUnboundedFlag | UpperInclusiveFlag));
+        return T.IsNegativeInfinity(upper)
+            ? Empty
+            : new(T.Zero, upper, (byte)(LowerUnboundedFlag | UpperInclusiveFlag));
     }
 
     /// <summary>
@@ -297,8 +324,15 @@ public readonly partial struct Interval<T>
     /// <paramref name="upper" />.
     /// </summary>
     /// <param name="upper">The exclusive upper endpoint.</param>
-    /// <returns>A lower-unbounded, open-above interval.</returns>
+    /// <returns>
+    /// A lower-unbounded, open-above interval, or <see cref="Empty" /> when <paramref name="upper" /> is negative
+    /// infinity.
+    /// </returns>
     /// <exception cref="ArgumentException"><paramref name="upper" /> is NaN.</exception>
+    /// <remarks>
+    /// The unbounded lower side holds every finite value but not negative infinity, so an interval below negative
+    /// infinity holds no value and is returned as <see cref="Empty" />, as bounds that admit no value are.
+    /// </remarks>
     /// <example>
     /// <code language="csharp">
     ///<![CDATA[
@@ -312,6 +346,8 @@ public readonly partial struct Interval<T>
     {
         ThrowIfNaNEndpoint(upper);
 
-        return new(T.Zero, upper, LowerUnboundedFlag);
+        return T.IsNegativeInfinity(upper)
+            ? Empty
+            : new(T.Zero, upper, LowerUnboundedFlag);
     }
 }

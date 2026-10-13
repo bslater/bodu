@@ -95,6 +95,12 @@ public readonly partial struct Interval<T>
     /// </description>
     /// </item>
     /// </list>
+    /// <para>
+    /// A side that is unbounded never makes an interval empty, but a half-bounded interval whose bounded endpoint is
+    /// the infinity on its unbounded side, such as <c>AtLeast(+Infinity)</c> over <see cref="double" />, holds no
+    /// value, since that side holds no infinity: the half-bounded factories and the parser return <see cref="Empty" />
+    /// for it.
+    /// </para>
     /// </remarks>
     /// <value><see langword="true" /> when the interval is empty; otherwise <see langword="false" />.</value>
     /// <example>
