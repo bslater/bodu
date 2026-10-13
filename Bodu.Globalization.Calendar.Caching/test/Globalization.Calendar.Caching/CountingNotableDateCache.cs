@@ -21,6 +21,12 @@ internal sealed class CountingNotableDateCache
     /// <summary>Whether the batch seam is exposed through a wrapping reader.</summary>
     private readonly bool _supportsBatch;
 
+    /// <summary>The number of per-year reads, counted atomically across threads.</summary>
+    private int _getYearCount;
+
+    /// <summary>The number of batch reads, counted atomically across threads.</summary>
+    private int _getYearsCount;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="CountingNotableDateCache" /> class.
     /// </summary>
@@ -37,13 +43,13 @@ internal sealed class CountingNotableDateCache
     /// Gets the number of <see cref="GetYear" /> calls observed.
     /// </summary>
     /// <value>The per-year read count.</value>
-    public int GetYearCount { get; private set; }
+    public int GetYearCount => Volatile.Read(ref _getYearCount);
 
     /// <summary>
     /// Gets the number of batch reads observed.
     /// </summary>
     /// <value>The batch read count.</value>
-    public int GetYearsCount { get; private set; }
+    public int GetYearsCount => Volatile.Read(ref _getYearsCount);
 
     /// <summary>
     /// Creates the cache surface the service under test should consume: the double itself when the batch seam is
@@ -56,7 +62,7 @@ internal sealed class CountingNotableDateCache
     /// <inheritdoc />
     public NotableDateCacheEntry? GetYear(string territory, int year, string resourceVersion, TimeSpan ttl, DateTimeOffset asOf)
     {
-        GetYearCount++;
+        _ = Interlocked.Increment(ref _getYearCount);
         return _inner.GetYear(territory, year, resourceVersion, ttl, asOf);
     }
 
@@ -71,7 +77,7 @@ internal sealed class CountingNotableDateCache
     /// <inheritdoc />
     NotableDateCacheEntry?[] INotableDateCacheBatchReader.GetYears(string territory, int firstYear, int lastYear, string resourceVersion, TimeSpan ttl, DateTimeOffset asOf)
     {
-        GetYearsCount++;
+        _ = Interlocked.Increment(ref _getYearsCount);
         return ((INotableDateCacheBatchReader)_inner).GetYears(territory, firstYear, lastYear, resourceVersion, ttl, asOf);
     }
 

@@ -17,6 +17,9 @@ internal sealed class CountingNotableDateService
     /// <summary>The occurrence factory invoked once per requested range, keyed on the range's start year.</summary>
     private readonly Func<int, IReadOnlyList<NotableDate>> _factory;
 
+    /// <summary>The number of range resolutions, counted atomically across threads.</summary>
+    private int _resolveCount;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="CountingNotableDateService" /> class.
     /// </summary>
@@ -33,7 +36,7 @@ internal sealed class CountingNotableDateService
     /// Gets the number of times <see cref="Resolve(DateRange, string)" /> has been invoked.
     /// </summary>
     /// <value>The invocation count.</value>
-    public int ResolveCount { get; private set; }
+    public int ResolveCount => Volatile.Read(ref _resolveCount);
 
     /// <inheritdoc />
     public IReadOnlyList<NotableDate> Resolve(DateOnly date, string territory) =>
@@ -42,7 +45,7 @@ internal sealed class CountingNotableDateService
     /// <inheritdoc />
     public IReadOnlyList<NotableDate> Resolve(DateRange range, string territory)
     {
-        ResolveCount++;
+        _ = Interlocked.Increment(ref _resolveCount);
 
         List<NotableDate> occurrences = new();
         for (int year = range.StartDate.Year; year <= range.EndDate.Year; year++)
