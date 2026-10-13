@@ -31,4 +31,29 @@ public sealed partial class Utf8LineCursorTests
     {
         Assert.AreEqual(3, Utf8LineCursor.EndOfLine("abc"u8, 0));
     }
+
+    /// <summary>
+    /// Verifies that the end of a line is found past a run longer than a vector of bytes, from a position inside the
+    /// source.
+    /// </summary>
+    [TestMethod]
+    public void EndOfLine_WhenTheLineIsLongerThanAVector_ShouldReturnTerminatorPosition()
+    {
+        byte[] source = Encoding.UTF8.GetBytes("x\n" + new string('a', 100) + "\r\nb");
+
+        Assert.AreEqual(102, Utf8LineCursor.EndOfLine(source, 2));
+    }
+
+    /// <summary>
+    /// Verifies that a scan from the end of the source, or past it, returns its starting position, as a scan a byte at
+    /// a time did.
+    /// </summary>
+    /// <param name="position">The position from which to scan.</param>
+    [TestMethod]
+    [DataRow(3)]
+    [DataRow(4)]
+    public void EndOfLine_WhenThePositionIsAtOrPastTheEnd_ShouldReturnThePosition(int position)
+    {
+        Assert.AreEqual(position, Utf8LineCursor.EndOfLine("abc"u8, position));
+    }
 }
