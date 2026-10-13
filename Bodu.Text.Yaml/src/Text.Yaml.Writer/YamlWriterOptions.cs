@@ -26,7 +26,13 @@ public struct YamlWriterOptions
     /// <summary>
     /// Gets or sets the number of spaces used for each level of block indentation.
     /// </summary>
-    /// <value>The indentation width. A value of zero or less selects the default of two.</value>
+    /// <value>
+    /// The indentation width. A value of zero or less selects the default of two; the largest supported width is 16.
+    /// </value>
+    /// <remarks>
+    /// A value above 16 is not clamped: creating a <see cref="Utf8YamlWriter" /> with it throws
+    /// <see cref="ArgumentOutOfRangeException" />.
+    /// </remarks>
     public int IndentSize
     {
         readonly get => _indentSize;
@@ -36,7 +42,10 @@ public struct YamlWriterOptions
     /// <summary>
     /// Gets or sets the maximum container nesting depth permitted while writing.
     /// </summary>
-    /// <value>The maximum depth. A value of zero or less selects the default of 64.</value>
+    /// <value>
+    /// The maximum depth as set. A value of zero or less selects the default of 64, and a larger value is clamped to
+    /// the hard ceiling of 64; the property returns the value as set, so it reads <c>0</c> until it is set.
+    /// </value>
     public int MaxDepth
     {
         readonly get => _maxDepth;
