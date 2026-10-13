@@ -46,33 +46,18 @@ internal sealed class RbaXlsRateTableSource
     {
         ThrowHelper.ThrowIfNull(era);
 
-        (byte[] bytes, DateTimeOffset? cachedAtUtc) = await GetWorkbookBytesAsync(era, cancellationToken).ConfigureAwait(false);
+        (byte[] bytes, DateTimeOffset? cachedAtUtc) = await CachedDownload.GetOrDownloadAsync(
+            _cache,
+            era,
+            _options.CurrentEraRefreshInterval,
+            _httpClient,
+            () => new Uri(_options.BaseUrl, era.FileName),
+            cancellationToken).ConfigureAwait(false);
 
         using MemoryStream stream = new(bytes, writable: false);
         using var workbook = ExcelBinaryWorkbook.OpenRead(stream, leaveOpen: true);
         RbaRateTable table = RbaRateWorkbookParser.Parse(workbook, _options);
         table.CachedAtUtc = cachedAtUtc;
         return table;
-    }
-
-    /// <summary>
-    /// Returns the era's workbook bytes from the cache, downloading and caching them on a miss.
-    /// </summary>
-    /// <param name="era">The era whose workbook is required.</param>
-    /// <param name="cancellationToken">A token to observe while awaiting the download.</param>
-    /// <returns>
-    /// A task that yields the workbook bytes, with the instant they were cached when the cache served them, or
-    /// <see langword="null" /> when they were just downloaded.
-    /// </returns>
-    private async ValueTask<(byte[] Bytes, DateTimeOffset? CachedAtUtc)> GetWorkbookBytesAsync(RbaEraWorkbook era, CancellationToken cancellationToken)
-    {
-        if (_cache.TryGet(era, _options.CurrentEraRefreshInterval, out byte[]? cached, out DateTimeOffset? cachedAtUtc))
-            return (cached, cachedAtUtc);
-
-        Uri url = new(_options.BaseUrl, era.FileName);
-        byte[] bytes = await _httpClient.GetByteArrayAsync(url, cancellationToken).ConfigureAwait(false);
-        _cache.Store(era, bytes);
-
-        return (bytes, null);
     }
 }

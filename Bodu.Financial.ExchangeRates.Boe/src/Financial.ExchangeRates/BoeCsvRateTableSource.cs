@@ -42,33 +42,16 @@ internal sealed class BoeCsvRateTableSource
     /// <inheritdoc />
     public async ValueTask<BoeRateTable> GetTableAsync(DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken = default)
     {
-        (byte[] bytes, DateTimeOffset? cachedAtUtc) = await GetResponseBytesAsync(startDate, endDate, cancellationToken).ConfigureAwait(false);
+        (byte[] bytes, DateTimeOffset? cachedAtUtc) = await CachedDownload.GetOrDownloadAsync(
+            _cache,
+            (startDate, endDate),
+            _options.RefreshInterval,
+            _httpClient,
+            () => _options.Endpoint.BuildRequestUrl(_options.Series.Select(static series => series.SeriesCode).ToArray(), startDate, endDate),
+            cancellationToken).ConfigureAwait(false);
 
         BoeRateTable table = BoeRateCsvParser.Parse(bytes, _options);
         table.CachedAtUtc = cachedAtUtc;
         return table;
-    }
-
-    /// <summary>
-    /// Returns the range's response bytes from the cache, downloading and caching them on a miss.
-    /// </summary>
-    /// <param name="startDate">The inclusive start of the range.</param>
-    /// <param name="endDate">The inclusive end of the range.</param>
-    /// <param name="cancellationToken">A token to observe while awaiting the download.</param>
-    /// <returns>
-    /// A task that yields the response bytes, with the instant they were cached when the cache served them, or
-    /// <see langword="null" /> when they were just downloaded.
-    /// </returns>
-    private async ValueTask<(byte[] Bytes, DateTimeOffset? CachedAtUtc)> GetResponseBytesAsync(DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken)
-    {
-        if (_cache.TryGet((startDate, endDate), _options.RefreshInterval, out byte[]? cached, out DateTimeOffset? cachedAtUtc))
-            return (cached, cachedAtUtc);
-
-        string[] codes = _options.Series.Select(static series => series.SeriesCode).ToArray();
-        Uri url = _options.Endpoint.BuildRequestUrl(codes, startDate, endDate);
-        byte[] bytes = await _httpClient.GetByteArrayAsync(url, cancellationToken).ConfigureAwait(false);
-        _cache.Store((startDate, endDate), bytes);
-
-        return (bytes, null);
     }
 }

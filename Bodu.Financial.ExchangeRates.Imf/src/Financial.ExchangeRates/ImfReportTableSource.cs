@@ -21,8 +21,8 @@ internal sealed class ImfReportTableSource
     /// <summary>The provider options supplying the base address, report path, refresh interval, and currency-name map.</summary>
     private readonly ImfRateProviderOptions _options;
 
-    /// <summary>The report byte cache.</summary>
-    private readonly IImfReportCache _cache;
+    /// <summary>The report byte cache, seen through the byte-cache contract the shared download helper reads.</summary>
+    private readonly ImfReportByteCache _cache;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ImfReportTableSource" /> class.
@@ -38,7 +38,7 @@ internal sealed class ImfReportTableSource
 
         _httpClient = httpClient;
         _options = options;
-        _cache = cache;
+        _cache = new ImfReportByteCache(cache);
     }
 
     /// <inheritdoc />
@@ -46,35 +46,20 @@ internal sealed class ImfReportTableSource
     {
         ThrowHelper.ThrowIfNull(month);
 
-        (byte[] bytes, DateTimeOffset? cachedAtUtc) = await GetReportBytesAsync(month, cancellationToken).ConfigureAwait(false);
+        (byte[] bytes, DateTimeOffset? cachedAtUtc) = await CachedDownload.GetOrDownloadAsync(
+            _cache,
+            month,
+            _options.RefreshInterval,
+            _httpClient,
+            () => new Uri(
+                _options.BaseAddress,
+                string.Create(
+                    CultureInfo.InvariantCulture,
+                    $"{_options.ReportPath}?SelectDate={month.SelectDate:yyyy-MM-dd}&reportType={_options.ReportType}&tsvflag=Y")),
+            cancellationToken).ConfigureAwait(false);
 
         ImfRateTable table = ImfReportParser.Parse(bytes, _options);
         table.CachedAtUtc = cachedAtUtc;
         return table;
-    }
-
-    /// <summary>
-    /// Returns the report's bytes from the cache, downloading and caching them on a miss.
-    /// </summary>
-    /// <param name="month">The report month whose file is required.</param>
-    /// <param name="cancellationToken">A token to observe while awaiting the download.</param>
-    /// <returns>
-    /// A task that yields the report bytes, with the instant they were cached when the cache served them, or
-    /// <see langword="null" /> when they were just downloaded.
-    /// </returns>
-    private async ValueTask<(byte[] Bytes, DateTimeOffset? CachedAtUtc)> GetReportBytesAsync(ImfReportMonth month, CancellationToken cancellationToken)
-    {
-        if (_cache.TryGet(month, _options.RefreshInterval, out byte[]? cached, out DateTimeOffset? cachedAtUtc))
-            return (cached, cachedAtUtc);
-
-        Uri url = new(
-            _options.BaseAddress,
-            string.Create(
-                CultureInfo.InvariantCulture,
-                $"{_options.ReportPath}?SelectDate={month.SelectDate:yyyy-MM-dd}&reportType={_options.ReportType}&tsvflag=Y"));
-        byte[] bytes = await _httpClient.GetByteArrayAsync(url, cancellationToken).ConfigureAwait(false);
-        _cache.Store(month, bytes);
-
-        return (bytes, null);
     }
 }
