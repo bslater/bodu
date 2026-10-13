@@ -196,7 +196,7 @@ namespace Bodu {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Resolution policy: workingDays &apos;{0}&apos; is not a seven-character working-week pattern..
+        ///   Looks up a localized string similar to Resolution policy: workingDays &apos;{0}&apos; is not a seven-character, Sunday-first binary working-week pattern such as 0111110..
         /// </summary>
         internal static string Validation_InvalidWorkingDays {
             get {

@@ -109,7 +109,7 @@
     <value>Notable date '{0}', rule '{1}': '{2}' is not a valid month value. Expected a full English month name or an integer between 1 and 12.</value>
   </data>
   <data name="Validation_InvalidWorkingDays" xml:space="preserve">
-    <value>Resolution policy: workingDays '{0}' is not a seven-character working-week pattern.</value>
+    <value>Resolution policy: workingDays '{0}' is not a seven-character, Sunday-first binary working-week pattern such as 0111110.</value>
   </data>
   <data name="Validation_InvalidEnumValue" xml:space="preserve">
     <value>The {0} value '{1}' is not recognized; expected one of: {2}.</value>

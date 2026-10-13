@@ -62,7 +62,7 @@ Codes are stable identifiers: they are safe to match on, suppress by, or documen
 | `BODU-CAL-MONTH` | Error | A strategy's month is outside the valid range for its calendar. |
 | `BODU-CAL-DAY` | Error | A strategy's day is outside the valid range for its month/calendar. |
 | `BODU-CAL-ENUM` | Error | A field that takes one of a fixed set of names (a category, a collision or duplicate policy, a trigger, action or emission mode, a weekday, a week ordinal, a direction, a boundary, a calendar, …) holds a value that names none of them, such as a misspelling or a number. Names are matched ignoring case; an absent value keeps the field's default. In XML the schema reports it too. |
-| `BODU-CAL-WORKING-DAYS` | Error | The resolution policy's `workingDays` is not a seven-character working-week pattern. In XML the schema reports it too. |
+| `BODU-CAL-WORKING-DAYS` | Error | The resolution policy's `workingDays` is not the seven-character, Sunday-first binary pattern (`0111110`); a letter mask such as `_MTWTF_` is rejected too. In XML the schema reports it too. |
 | `BODU-CAL-YEARS` | Error | A rule's or adjustment scope's `fromYear` is after its `toYear`. |
 | `BODU-CAL-RECURRENCE` | Error | A recurrence declaration is invalid. |
 | `BODU-CAL-STRATEGY` | Error | A strategy value lies outside the strategy's range (for example an `<OrdinalDayOfMonth>` ordinal beyond 31, ISO week 54, or a zero ordinal). In XML the schema reports most of these too. |

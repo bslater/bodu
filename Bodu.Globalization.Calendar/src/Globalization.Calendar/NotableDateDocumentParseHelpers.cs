@@ -23,8 +23,8 @@ internal static class NotableDateDocumentParseHelpers
     ];
 
     /// <summary>
-    /// Parses a Sunday-first seven-character working-week pattern, falling back to the default working week when the
-    /// value is absent or blank, and recording an error diagnostic when it is not a pattern.
+    /// Parses a Sunday-first seven-character binary working-week pattern, falling back to the default working week when
+    /// the value is absent or blank, and recording an error diagnostic when it is not such a pattern.
     /// </summary>
     /// <param name="value">The working-week pattern, or <see langword="null" />.</param>
     /// <param name="diagnostics">The collection that receives the diagnostic for a malformed pattern.</param>
@@ -37,7 +37,9 @@ internal static class NotableDateDocumentParseHelpers
         if (string.IsNullOrWhiteSpace(value))
             return null;
 
-        if (DayOfWeekSet.TryParse(value, out DayOfWeekSet workingWeek))
+        // Only the binary form the XSD and the JSON schema define is accepted; the letter masks DayOfWeekSet also reads
+        // are not part of the document format.
+        if (DayOfWeekSet.TryParseExact(value, "0", out DayOfWeekSet workingWeek))
             return workingWeek;
 
         diagnostics.Add(new NotableDateValidationDiagnostic(
