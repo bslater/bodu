@@ -720,6 +720,30 @@ public partial class NotableDateDocumentBuilderTests
     }
 
     /// <summary>
+    /// Verifies that a text field the loader does not read, a metadata name, description or source, an adjustment
+    /// policy's description or a rule's comment, holding an object or an array, which the builder's document model holds
+    /// only as text, is rejected with a <see cref="NotSupportedException" /> rather than an
+    /// <see cref="InvalidOperationException" />.
+    /// </summary>
+    /// <param name="field">The placeholder of the text field.</param>
+    /// <param name="literal">The object or array, as a JSON literal.</param>
+    [TestMethod]
+    [DataRow("metadata.name", "{}")]
+    [DataRow("metadata.description", "[]")]
+    [DataRow("metadata.sources", "{}")]
+    [DataRow("policy.description", "{ \"en\": \"Policy\" }")]
+    [DataRow("rule.comment", "[]")]
+    public void FromJson_WhenUnreadTextFieldIsObjectOrArray_ShouldThrowNotSupportedException(string field, string literal)
+    {
+        string json = TextFieldJson(field, literal);
+
+        _ = Assert.ThrowsExactly<NotSupportedException>(() =>
+        {
+            _ = NotableDateDocumentBuilder.FromJson(json);
+        });
+    }
+
+    /// <summary>
     /// Resolves every imported resource name to the one library resource the text test document imports.
     /// </summary>
     /// <param name="name">The imported resource's name.</param>
