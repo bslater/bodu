@@ -108,7 +108,7 @@ The convenience method <xref:Bodu.Numerics.Fraction`1>.`ToPercentString(provider
 | Whole + glyph | `"2⅜"`, `"-1¾"` | `19/8`, `-7/4` |
 | Percentage | `"75%"`, `"100/3%"` | `3/4`, `1/3` |
 
-Parsing is lenient about whitespace - leading and trailing whitespace is trimmed, and the whole / fractional parts of a mixed number are trimmed individually. A `+` or `-` sign at the start applies to the entire result; for mixed numbers the sign therefore rides on the whole + fraction sum, not the whole part alone. The trailing `%` divides the value by 100: the parsed denominator is multiplied by 100 and the result reduced to lowest terms.
+Parsing is lenient about whitespace - leading and trailing whitespace is trimmed, and the whole / fractional parts of a mixed number are trimmed individually. A sign at the start applies to the entire result; for mixed numbers the sign therefore rides on the whole + fraction sum, not the whole part alone. The sign is the provider's `NumberFormatInfo.NegativeSign` or `PositiveSign`, or an ASCII `-` or `+`, which every culture accepts (see [Culture handling](#culture-handling)). The trailing `%` divides the value by 100: the parsed denominator is multiplied by 100 and the result reduced to lowest terms.
 
 <!-- compile -->
 ```csharp
@@ -127,7 +127,7 @@ The numeric components are read with `NumberStyles.None`, so scientific notation
 
 ## Culture handling
 
-`Fraction<T>` text is digit-slash-digit by construction, so most cultures behave identically - there is no decimal separator, group separator, or percent sign placement to vary. The `IFormatProvider` argument is forwarded to `BigInteger.ToString(provider)` and `BigInteger.TryParse(text, NumberStyles.None, provider, ...)` for the numeric components, but .NET writes and reads those digits as ASCII `0`-`9` in every culture (a culture's native digits are informational only), so Arabic-Indic or other native digits are neither emitted nor accepted; formatting does take the negative sign of a negative value from the provider. The structural characters - `/`, the mixed-number space, glyph codepoints, and the trailing `%` - are invariant.
+`Fraction<T>` text is digit-slash-digit by construction, so most cultures behave identically - there is no decimal separator, group separator, or percent sign placement to vary. The `IFormatProvider` argument is forwarded to `BigInteger.ToString(provider)` and `BigInteger.TryParse(text, NumberStyles.None, provider, ...)` for the numeric components, but .NET writes and reads those digits as ASCII `0`-`9` in every culture (a culture's native digits are informational only), so Arabic-Indic or other native digits are neither emitted nor accepted. The sign does vary: formatting takes the negative sign of a negative value from the provider (U+2212 MINUS SIGN under `sv-SE`, a bidirectional mark and a sign under `fa-IR`, `ar-SA` or `he-IL`), and parsing accepts the provider's `NegativeSign` and `PositiveSign` as well as the ASCII `-` and `+`, so text formatted under a culture parses back under the same culture. The `U` format writes an ASCII `-` before a glyph. The structural characters - `/`, the mixed-number space, glyph codepoints, and the trailing `%` - are invariant.
 
 The JSON converter passes <xref:System.Globalization.CultureInfo>.`InvariantCulture` to both `ToString` and `Parse` so the wire form remains stable regardless of the ambient culture. For application-level formatting where you want the structural form to be the same on every machine, prefer passing `CultureInfo.InvariantCulture` explicitly:
 

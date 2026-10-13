@@ -18,6 +18,12 @@ public readonly partial struct Fraction<T> :
     /// <param name="provider">The culture used to interpret the numeric components.</param>
     /// <returns>The rational value the text represents.</returns>
     /// <exception cref="FormatException">Thrown if <paramref name="utf8Text" /> is not a valid fraction.</exception>
+    /// <remarks>
+    /// A leading sign may be the <see cref="System.Globalization.NumberFormatInfo.NegativeSign" /> or
+    /// <see cref="System.Globalization.NumberFormatInfo.PositiveSign" /> of <paramref name="provider" />, as the
+    /// formatter writes it, or the ASCII <c>-</c> or <c>+</c>, so text formatted under a culture parses back under the
+    /// same culture.
+    /// </remarks>
     public static Fraction<T> Parse(ReadOnlySpan<byte> utf8Text, IFormatProvider? provider) =>
         Parse(Encoding.UTF8.GetString(utf8Text), provider);
 
@@ -28,6 +34,12 @@ public readonly partial struct Fraction<T> :
     /// <param name="provider">The culture used to interpret the numeric components.</param>
     /// <param name="result">When this method returns, contains the parsed value, or zero on failure.</param>
     /// <returns><see langword="true" /> if parsing succeeded; otherwise, <see langword="false" />.</returns>
+    /// <remarks>
+    /// A leading sign may be the <see cref="System.Globalization.NumberFormatInfo.NegativeSign" /> or
+    /// <see cref="System.Globalization.NumberFormatInfo.PositiveSign" /> of <paramref name="provider" />, as the
+    /// formatter writes it, or the ASCII <c>-</c> or <c>+</c>, so text formatted under a culture parses back under the
+    /// same culture.
+    /// </remarks>
     public static bool TryParse(ReadOnlySpan<byte> utf8Text, IFormatProvider? provider, out Fraction<T> result) =>
         TryParse(Encoding.UTF8.GetString(utf8Text), provider, out result);
 }

@@ -54,6 +54,11 @@ public readonly partial struct Fraction<T> :
     /// <returns>The rational value the string represents.</returns>
     /// <exception cref="ArgumentNullException">Thrown if <paramref name="s" /> is <see langword="null" />.</exception>
     /// <exception cref="FormatException">Thrown if <paramref name="s" /> is not a valid fraction.</exception>
+    /// <remarks>
+    /// A leading sign may be the <see cref="NumberFormatInfo.NegativeSign" /> or
+    /// <see cref="NumberFormatInfo.PositiveSign" /> of <paramref name="provider" />, as the formatter writes it, or the
+    /// ASCII <c>-</c> or <c>+</c>, so text formatted under a culture parses back under the same culture.
+    /// </remarks>
     public static Fraction<T> Parse(string s, IFormatProvider? provider)
     {
         ThrowHelper.ThrowIfNull(s);
@@ -68,6 +73,11 @@ public readonly partial struct Fraction<T> :
     /// <param name="provider">The culture used to interpret the numeric components.</param>
     /// <returns>The rational value the span represents.</returns>
     /// <exception cref="FormatException">Thrown if <paramref name="s" /> is not a valid fraction.</exception>
+    /// <remarks>
+    /// A leading sign may be the <see cref="NumberFormatInfo.NegativeSign" /> or
+    /// <see cref="NumberFormatInfo.PositiveSign" /> of <paramref name="provider" />, as the formatter writes it, or the
+    /// ASCII <c>-</c> or <c>+</c>, so text formatted under a culture parses back under the same culture.
+    /// </remarks>
     public static Fraction<T> Parse(ReadOnlySpan<char> s, IFormatProvider? provider)
     {
         return TryParseCore(s, provider, out Fraction<T> result)
@@ -111,6 +121,11 @@ public readonly partial struct Fraction<T> :
     /// <param name="provider">The culture used to interpret the numeric components.</param>
     /// <param name="result">When this method returns, contains the parsed value, or zero on failure.</param>
     /// <returns><see langword="true" /> if parsing succeeded; otherwise, <see langword="false" />.</returns>
+    /// <remarks>
+    /// A leading sign may be the <see cref="NumberFormatInfo.NegativeSign" /> or
+    /// <see cref="NumberFormatInfo.PositiveSign" /> of <paramref name="provider" />, as the formatter writes it, or the
+    /// ASCII <c>-</c> or <c>+</c>, so text formatted under a culture parses back under the same culture.
+    /// </remarks>
     public static bool TryParse(string? s, IFormatProvider? provider, out Fraction<T> result)
     {
         if (s is null)
@@ -129,6 +144,11 @@ public readonly partial struct Fraction<T> :
     /// <param name="provider">The culture used to interpret the numeric components.</param>
     /// <param name="result">When this method returns, contains the parsed value, or zero on failure.</param>
     /// <returns><see langword="true" /> if parsing succeeded; otherwise, <see langword="false" />.</returns>
+    /// <remarks>
+    /// A leading sign may be the <see cref="NumberFormatInfo.NegativeSign" /> or
+    /// <see cref="NumberFormatInfo.PositiveSign" /> of <paramref name="provider" />, as the formatter writes it, or the
+    /// ASCII <c>-</c> or <c>+</c>, so text formatted under a culture parses back under the same culture.
+    /// </remarks>
     public static bool TryParse(ReadOnlySpan<char> s, IFormatProvider? provider, out Fraction<T> result) =>
         TryParseCore(s, provider, out result);
 
@@ -155,17 +175,7 @@ public readonly partial struct Fraction<T> :
                 return false;
         }
 
-        bool negative = false;
-        if (s[0] == '-')
-        {
-            negative = true;
-            s = s[1..].TrimStart();
-        }
-        else if (s[0] == '+')
-        {
-            s = s[1..].TrimStart();
-        }
-
+        s = StripLeadingSign(s, provider, out bool negative).TrimStart();
         if (s.IsEmpty)
             return false;
 
@@ -189,6 +199,46 @@ public readonly partial struct Fraction<T> :
         catch (OverflowException)
         {
             return false;
+        }
+    }
+
+    /// <summary>
+    /// Removes a leading sign from <paramref name="s" />: the <see cref="NumberFormatInfo.NegativeSign" /> or
+    /// <see cref="NumberFormatInfo.PositiveSign" /> of <paramref name="provider" />, which the formatter writes, or the
+    /// ASCII hyphen-minus or plus sign, which every culture accepts.
+    /// </summary>
+    /// <param name="s">The non-empty, trimmed text to inspect.</param>
+    /// <param name="provider">The culture whose signs are recognized alongside the ASCII signs.</param>
+    /// <param name="negative">
+    /// When this method returns, <see langword="true" /> if a negative sign was removed; otherwise
+    /// <see langword="false" />.
+    /// </param>
+    /// <returns>The text after the sign, or <paramref name="s" /> unchanged when it carries no leading sign.</returns>
+    private static ReadOnlySpan<char> StripLeadingSign(ReadOnlySpan<char> s, IFormatProvider? provider, out bool negative)
+    {
+        // The culture's signs are tested first because they may be longer than one character (a bidirectional mark
+        // before the sign, as under fa-IR, ar-SA or he-IL) or be U+2212 MINUS SIGN (as under sv-SE).
+        NumberFormatInfo info = NumberFormatInfo.GetInstance(provider);
+        negative = false;
+
+        if (info.NegativeSign.Length > 0 && s.StartsWith(info.NegativeSign, StringComparison.Ordinal))
+        {
+            negative = true;
+            return s[info.NegativeSign.Length..];
+        }
+
+        if (info.PositiveSign.Length > 0 && s.StartsWith(info.PositiveSign, StringComparison.Ordinal))
+            return s[info.PositiveSign.Length..];
+
+        switch (s[0])
+        {
+            case '-':
+                negative = true;
+                return s[1..];
+            case '+':
+                return s[1..];
+            default:
+                return s;
         }
     }
 
