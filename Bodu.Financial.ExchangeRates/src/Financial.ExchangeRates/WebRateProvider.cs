@@ -447,7 +447,8 @@ public abstract class WebRateProvider
     /// <para>
     /// Returning <see langword="null" /> from <paramref name="publish" /> suppresses the snapshot rebuild and
     /// completion log (the loaded key was already committed by another operation). The timestamp is captured
-    /// immediately after fetching, before entering the publication lock.
+    /// immediately after fetching, before entering the publication lock; a <paramref name="publish" /> whose table was
+    /// served from a disk cache stamps the cache entry's stored time instead, the time its bytes were fetched.
     /// </para>
     /// <para>
     /// <paramref name="publish" /> should record its unit as loaded only after

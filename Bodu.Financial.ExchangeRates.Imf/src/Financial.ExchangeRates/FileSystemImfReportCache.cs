@@ -53,6 +53,20 @@ public sealed class FileSystemImfReportCache
         return TryGetCore(month, refreshInterval, out bytes);
     }
 
+    /// <inheritdoc cref="IImfReportCache.TryGet(ImfReportMonth, TimeSpan, out byte[], out DateTimeOffset?)" />
+    /// <remarks>
+    /// The stored time is the cache file's last-write time. Intentionally hides the unguarded base member so calls
+    /// through this type (and through <see cref="IImfReportCache" />) validate their arguments before touching the file
+    /// system.
+    /// </remarks>
+    /// <exception cref="ArgumentNullException"><paramref name="month" /> is <see langword="null" />.</exception>
+    public new bool TryGet(ImfReportMonth month, TimeSpan refreshInterval, [MaybeNullWhen(false)] out byte[] bytes, out DateTimeOffset? storedAtUtc)
+    {
+        ThrowHelper.ThrowIfNull(month);
+
+        return TryGetCore(month, refreshInterval, out bytes, out storedAtUtc);
+    }
+
     /// <inheritdoc />
     /// <remarks>
     /// Intentionally hides the unguarded base member so calls through this type (and through

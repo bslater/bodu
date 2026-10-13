@@ -398,8 +398,11 @@ public sealed class EcbRateProvider
             fetchAsync: ct => _source.GetTableAsync(feed, ct),
             logExpectedFailure: ex => Log.FeedLoadFailed(_logger, _options.DownloadFailedLogLevel, feed.Name, ex),
             logUnexpectedFailure: ex => Log.FeedLoadUnexpectedError(_logger, feed.Name, ex),
-            publish: (table, fetchedAt) =>
+            publish: (table, loadedAt) =>
             {
+                // A feed served from the disk cache was fetched when its entry was written.
+                DateTimeOffset fetchedAt = table.CachedAtUtc ?? loadedAt;
+
                 if (IsFeedCurrent(feed, through))
                     return null;
 

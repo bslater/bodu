@@ -130,6 +130,50 @@ public sealed class FileSystemImfReportCacheTests
     }
 
     /// <summary>
+    /// Verifies that a hit reports the cache file's last-write time as the instant the report was stored.
+    /// </summary>
+    [TestMethod]
+    public void TryGet_WhenHitWithStoredTime_ShouldReportTheFileWriteTime()
+    {
+        string directory = CreateTempDirectory();
+        try
+        {
+            FileSystemImfReportCache cache = new(directory);
+            ImfReportMonth month = new(2026, 4);
+            cache.Store(month, [1, 2, 3]);
+            string path = Path.Combine(directory, month.FileName);
+            File.SetLastWriteTimeUtc(path, DateTime.UtcNow.AddHours(-3));
+            DateTimeOffset written = new(File.GetLastWriteTimeUtc(path), TimeSpan.Zero);
+
+            bool hit = ((IImfReportCache)cache).TryGet(month, TimeSpan.FromHours(1), out _, out DateTimeOffset? storedAtUtc);
+
+            Assert.IsTrue(hit);
+            Assert.AreEqual(written, storedAtUtc);
+        }
+        finally
+        {
+            Cleanup(directory);
+        }
+    }
+
+    /// <summary>
+    /// Verifies that reading a <see langword="null" /> month with a stored time throws
+    /// <see cref="ArgumentNullException" /> naming it.
+    /// </summary>
+    [TestMethod]
+    public void TryGet_WhenMonthIsNullWithStoredTime_ShouldThrowArgumentNullException()
+    {
+        FileSystemImfReportCache cache = new(CreateTempDirectory());
+
+        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = cache.TryGet(null!, TimeSpan.FromHours(1), out _, out _);
+        });
+
+        Assert.AreEqual("month", ex.ParamName);
+    }
+
+    /// <summary>
     /// Verifies that a <see langword="null" /> directory falls back to a folder under the system temporary path.
     /// </summary>
     [TestMethod]

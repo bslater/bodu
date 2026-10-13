@@ -31,6 +31,15 @@ internal sealed class ImfRateTable
     public IReadOnlyList<ImfRateObservation> Observations { get; }
 
     /// <summary>
+    /// Gets or sets the instant the table's bytes were fetched from the source when they were served from a disk cache.
+    /// </summary>
+    /// <value>
+    /// The cache entry's stored time, or <see langword="null" /> when the bytes were just downloaded (the provider then
+    /// stamps the load with the current time).
+    /// </value>
+    public DateTimeOffset? CachedAtUtc { get; set; }
+
+    /// <summary>
     /// Enumerates the table as <see cref="ExchangeRate" /> observations, each quoting the US dollar against a currency
     /// on a given date.
     /// </summary>

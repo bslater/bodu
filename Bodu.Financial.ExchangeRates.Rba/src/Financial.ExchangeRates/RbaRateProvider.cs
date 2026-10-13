@@ -415,8 +415,11 @@ public sealed class RbaRateProvider
             fetchAsync: ct => _source.GetTableAsync(era, ct),
             logExpectedFailure: ex => Log.EraLoadFailed(_logger, _options.DownloadFailedLogLevel, era.Label, ex),
             logUnexpectedFailure: ex => Log.EraLoadUnexpectedError(_logger, era.Label, ex),
-            publish: (table, fetchedAt) =>
+            publish: (table, loadedAt) =>
             {
+                // An era served from the disk cache was fetched when its entry was written.
+                DateTimeOffset fetchedAt = table.CachedAtUtc ?? loadedAt;
+
                 if (IsEraCurrent(era, through))
                     return null;
 

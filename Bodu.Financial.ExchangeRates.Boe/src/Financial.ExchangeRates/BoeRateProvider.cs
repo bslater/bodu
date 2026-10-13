@@ -325,8 +325,11 @@ public sealed class BoeRateProvider
             fetchAsync: ct => _source.GetTableAsync(startDate, endDate, ct),
             logExpectedFailure: ex => Log.FeedLoadFailed(_logger, _options.DownloadFailedLogLevel, startDate, endDate, ex),
             logUnexpectedFailure: ex => Log.FeedLoadUnexpectedError(_logger, startDate, endDate, ex),
-            publish: (table, fetchedAt) =>
+            publish: (table, loadedAt) =>
             {
+                // A response served from the disk cache was fetched when its entry was written.
+                DateTimeOffset fetchedAt = table.CachedAtUtc ?? loadedAt;
+
                 foreach (BoeSeriesInfo info in table.GetSeriesInfo())
                     _series[info.Pair] = info;
 

@@ -46,10 +46,12 @@ internal sealed class ImfReportTableSource
     {
         ThrowHelper.ThrowIfNull(month);
 
-        byte[] bytes = await GetReportBytesAsync(month, cancellationToken).ConfigureAwait(false);
+        (byte[] bytes, DateTimeOffset? cachedAtUtc) = await GetReportBytesAsync(month, cancellationToken).ConfigureAwait(false);
 
         using MemoryStream stream = new(bytes, writable: false);
-        return ImfReportParser.Parse(stream, _options);
+        ImfRateTable table = ImfReportParser.Parse(stream, _options);
+        table.CachedAtUtc = cachedAtUtc;
+        return table;
     }
 
     /// <summary>
@@ -57,11 +59,14 @@ internal sealed class ImfReportTableSource
     /// </summary>
     /// <param name="month">The report month whose file is required.</param>
     /// <param name="cancellationToken">A token to observe while awaiting the download.</param>
-    /// <returns>A task that yields the report bytes.</returns>
-    private async ValueTask<byte[]> GetReportBytesAsync(ImfReportMonth month, CancellationToken cancellationToken)
+    /// <returns>
+    /// A task that yields the report bytes, with the instant they were cached when the cache served them, or
+    /// <see langword="null" /> when they were just downloaded.
+    /// </returns>
+    private async ValueTask<(byte[] Bytes, DateTimeOffset? CachedAtUtc)> GetReportBytesAsync(ImfReportMonth month, CancellationToken cancellationToken)
     {
-        if (_cache.TryGet(month, _options.RefreshInterval, out byte[]? cached))
-            return cached;
+        if (_cache.TryGet(month, _options.RefreshInterval, out byte[]? cached, out DateTimeOffset? cachedAtUtc))
+            return (cached, cachedAtUtc);
 
         Uri url = new(
             _options.BaseAddress,
@@ -71,6 +76,6 @@ internal sealed class ImfReportTableSource
         byte[] bytes = await _httpClient.GetByteArrayAsync(url, cancellationToken).ConfigureAwait(false);
         _cache.Store(month, bytes);
 
-        return bytes;
+        return (bytes, null);
     }
 }

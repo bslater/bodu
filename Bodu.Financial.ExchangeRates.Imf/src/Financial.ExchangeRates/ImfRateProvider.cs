@@ -407,8 +407,11 @@ public sealed class ImfRateProvider
             fetchAsync: ct => _source.GetTableAsync(month, ct),
             logExpectedFailure: ex => Log.ReportLoadFailed(_logger, _options.DownloadFailedLogLevel, month.Key, ex),
             logUnexpectedFailure: ex => Log.ReportLoadUnexpectedError(_logger, month.Key, ex),
-            publish: (table, fetchedAt) =>
+            publish: (table, loadedAt) =>
             {
+                // A report served from the disk cache was fetched when its entry was written.
+                DateTimeOffset fetchedAt = table.CachedAtUtc ?? loadedAt;
+
                 if (IsMonthCurrent(month, through))
                     return null;
 
