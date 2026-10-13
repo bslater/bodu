@@ -63,14 +63,13 @@ public static partial class Base64
     /// <returns>The exact decoded byte count.</returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is undefined.</exception>
     /// <exception cref="FormatException">
-    /// Thrown when the input contains invalid characters or the digit count is not a valid Base64 length.
+    /// Thrown when the input is not valid Base64 for the variant and styles, that is, when
+    /// <see cref="Decode(ReadOnlySpan{char}, Base64Variant, BaseFormatStyles)" /> would reject it.
     /// </exception>
-    public static int GetDecodedLength(ReadOnlySpan<char> source, Base64Variant variant = Base64Variant.Standard, BaseFormatStyles styles = BaseFormatStyles.None)
-    {
-        return !TryCountSymbols(source, variant, styles, out int symbolCount)
-            ? throw new FormatException(EncodingResourceStrings.Format_Invalid_Base64VariantAlphabet)
-            : (symbolCount * 3) / 4;
-    }
+    public static int GetDecodedLength(ReadOnlySpan<char> source, Base64Variant variant = Base64Variant.Standard, BaseFormatStyles styles = BaseFormatStyles.None) =>
+        TryMeasure(source, variant, styles, out int byteCount, out string? error)
+            ? byteCount
+            : throw new FormatException(error);
 
     /// <summary>
     /// Returns the number of characters produced by encoding <paramref name="byteCount" /> bytes using the Standard
@@ -164,11 +163,12 @@ public static partial class Base64
     /// <param name="variant">The variant.</param>
     /// <param name="styles">Parsing styles.</param>
     /// <returns>
-    /// <see langword="true" /> when the input would decode cleanly; otherwise <see langword="false" />.
+    /// <see langword="true" /> when <see cref="Decode(ReadOnlySpan{char}, Base64Variant, BaseFormatStyles)" /> with the
+    /// same variant and styles would succeed; otherwise <see langword="false" />.
     /// </returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is undefined.</exception>
     public static bool IsValid(ReadOnlySpan<char> source, Base64Variant variant = Base64Variant.Standard, BaseFormatStyles styles = BaseFormatStyles.None) =>
-        TryCountSymbols(source, variant, styles, out _);
+        TryMeasure(source, variant, styles, out _, out _);
 
     /// <summary>
     /// Attempts to compute the exact decoded byte count for <paramref name="source" />.
@@ -183,17 +183,8 @@ public static partial class Base64
     /// <see langword="true" /> when the input would decode cleanly; otherwise <see langword="false" />.
     /// </returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is undefined.</exception>
-    public static bool TryGetDecodedLength(ReadOnlySpan<char> source, out int byteCount, Base64Variant variant = Base64Variant.Standard, BaseFormatStyles styles = BaseFormatStyles.None)
-    {
-        if (!TryCountSymbols(source, variant, styles, out int symbolCount))
-        {
-            byteCount = 0;
-            return false;
-        }
-
-        byteCount = (symbolCount * 3) / 4;
-        return true;
-    }
+    public static bool TryGetDecodedLength(ReadOnlySpan<char> source, out int byteCount, Base64Variant variant = Base64Variant.Standard, BaseFormatStyles styles = BaseFormatStyles.None) =>
+        TryMeasure(source, variant, styles, out byteCount, out _);
 
     /// <summary>
     /// Validates that <paramref name="variant" /> is a defined enum value.
@@ -207,19 +198,33 @@ public static partial class Base64
     }
 
     /// <summary>
+    /// Returns the six-bit value of <paramref name="value" /> in the supplied Base64 variant's alphabet.
+    /// </summary>
+    /// <param name="value">The character to look up.</param>
+    /// <param name="variant">The variant.</param>
+    /// <returns>
+    /// The symbol value, from <c>0</c> to <c>63</c>, or <c>-1</c> when the character is not a data symbol.
+    /// </returns>
+    private static int GetSymbolValue(char value, Base64Variant variant) => value switch
+    {
+        >= 'A' and <= 'Z' => value - 'A',
+        >= 'a' and <= 'z' => value - 'a' + 26,
+        >= '0' and <= '9' => value - '0' + 52,
+        '+' when variant != Base64Variant.UrlSafe => 62,
+        '/' when variant != Base64Variant.UrlSafe => 63,
+        '-' when variant == Base64Variant.UrlSafe => 62,
+        '_' when variant == Base64Variant.UrlSafe => 63,
+        _ => -1,
+    };
+
+    /// <summary>
     /// Indicates whether <paramref name="value" /> is part of the supplied Base64 variant's alphabet.
     /// </summary>
     /// <param name="value">The character to test.</param>
     /// <param name="variant">The variant.</param>
     /// <returns><see langword="true" /> when the character is a valid data symbol.</returns>
-    private static bool IsAlphabetCharacter(char value, Base64Variant variant)
-    {
-        bool isLetter = value is (>= 'A' and <= 'Z') or (>= 'a' and <= 'z');
-        bool isDigit = value is >= '0' and <= '9';
-        return isLetter || isDigit || (variant == Base64Variant.UrlSafe
-            ? value is '-' or '_'
-            : value is '+' or '/');
-    }
+    private static bool IsAlphabetCharacter(char value, Base64Variant variant) =>
+        GetSymbolValue(value, variant) >= 0;
 
     /// <summary>
     /// Determines whether the encoder should emit <c>=</c> padding for the supplied variant and options.
@@ -248,27 +253,39 @@ public static partial class Base64
         variant == Base64Variant.Mime || options.HasFlag(BaseFormattingOptions.InsertLineBreaks);
 
     /// <summary>
-    /// Walks <paramref name="source" />, validating each non-decoration character, and reports the data symbol count.
-    /// Also enforces RFC 4648 §4 structural constraints (terminal-quantum length and padding alignment) so that
-    /// <see cref="IsValid" /> matches the strict decoder.
+    /// Validates <paramref name="source" /> by the rules
+    /// <see cref="Decode(ReadOnlySpan{char}, Base64Variant, BaseFormatStyles)" /> applies, and reports the decoded byte
+    /// count without decoding, so that the validation members accept exactly the input the decoder accepts.
     /// </summary>
     /// <param name="source">The input characters.</param>
     /// <param name="variant">The variant.</param>
-    /// <param name="styles">Parsing styles.</param>
-    /// <param name="symbolCount">
-    /// When this method returns, contains the number of data symbols (excluding padding).
+    /// <param name="styles">The parsing styles.</param>
+    /// <param name="byteCount">
+    /// When this method returns, contains the number of bytes the input decodes to, or <c>0</c> on failure.
     /// </param>
-    /// <returns>
-    /// <see langword="true" /> when every character is valid AND the data quantum is structurally well-formed;
-    /// otherwise <see langword="false" />.
-    /// </returns>
-    private static bool TryCountSymbols(ReadOnlySpan<char> source, Base64Variant variant, BaseFormatStyles styles, out int symbolCount)
+    /// <param name="error">
+    /// When this method returns <see langword="false" />, contains the reason the decoder would reject the input.
+    /// </param>
+    /// <returns><see langword="true" /> when the input would decode; otherwise <see langword="false" />.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is undefined.</exception>
+    /// <remarks>
+    /// The decoder strips whitespace when permitted, rejects any character outside the variant alphabet and any data
+    /// after padding, completes a partial final quantum with padding when padding may be missing, and then requires
+    /// whole four-character quanta whose padding exactly fills the final one (RFC 4648 §4). Under
+    /// <see cref="BaseFormatStyles.RequireCanonicalEncoding" /> it also requires the unused low bits of the last symbol
+    /// to be zero.
+    /// </remarks>
+    private static bool TryMeasure(ReadOnlySpan<char> source, Base64Variant variant, BaseFormatStyles styles, out int byteCount, out string? error)
     {
         EnsureValidVariant(variant);
 
         bool ignoreWhitespace = styles.HasFlag(BaseFormatStyles.IgnoreWhitespace) || variant == Base64Variant.Mime;
-        symbolCount = 0;
-        int paddingSeen = 0;
+        bool allowMissingPadding = styles.HasFlag(BaseFormatStyles.AllowMissingPadding) || variant == Base64Variant.UrlSafe;
+
+        byteCount = 0;
+        int symbolCount = 0;
+        int paddingCount = 0;
+        int lastSymbolValue = 0;
 
         foreach (char c in source)
         {
@@ -277,62 +294,50 @@ public static partial class Base64
 
             if (c == PaddingChar)
             {
-                paddingSeen++;
+                paddingCount++;
                 continue;
             }
 
-            if (paddingSeen > 0)
+            int value = GetSymbolValue(c, variant);
+            if (value < 0 || paddingCount > 0)
             {
-                symbolCount = 0;
+                error = EncodingResourceStrings.Format_Invalid_Base64Alphabet;
                 return false;
             }
 
-            if (!IsAlphabetCharacter(c, variant))
-            {
-                symbolCount = 0;
-                return false;
-            }
-
+            lastSymbolValue = value;
             symbolCount++;
         }
 
-        // Terminal-quantum data character count must be in {0, 2, 3, 4} per RFC 4648 §4.
-        int dataMod = symbolCount % 4;
-        if (dataMod == 1)
+        // The decoder completes a partial final quantum of two or three characters with padding; a lone character
+        // past the last whole quantum cannot be completed.
+        int retained = symbolCount + paddingCount;
+        if (allowMissingPadding && (retained % 4) is 2 or 3)
+            paddingCount += 4 - (retained % 4);
+
+        int dataRemainder = symbolCount % 4;
+        if (dataRemainder == 1 || ((symbolCount + paddingCount) % 4) != 0 || paddingCount != (4 - dataRemainder) % 4)
         {
-            symbolCount = 0;
+            error = EncodingResourceStrings.Format_Invalid_Base64;
             return false;
         }
 
-        // Padding alignment: Standard / Mime require canonical padding by default. UrlSafe and AllowMissingPadding
-        // bypass the "must have padding" requirement. In all variants, if padding IS present it must match the
-        // canonical count for the data - partial or excessive padding ("TQ===") is always rejected.
-        int expectedPadding = (4 - dataMod) % 4;
-        bool padIsRequired = !styles.HasFlag(BaseFormatStyles.AllowMissingPadding)
-            && variant != Base64Variant.UrlSafe;
-
-        if (padIsRequired)
+        // A final quantum of two characters leaves four unused bits in its last symbol, one of three leaves two.
+        int unusedBitsMask = dataRemainder switch
         {
-            int totalSymbols = symbolCount + paddingSeen;
-            if ((totalSymbols % 4) != 0)
-            {
-                symbolCount = 0;
-                return false;
-            }
+            2 => 0x0F,
+            3 => 0x03,
+            _ => 0,
+        };
 
-            if (paddingSeen != expectedPadding)
-            {
-                symbolCount = 0;
-                return false;
-            }
-        }
-        else if (paddingSeen != 0 && paddingSeen != expectedPadding)
+        if (styles.HasFlag(BaseFormatStyles.RequireCanonicalEncoding) && (lastSymbolValue & unusedBitsMask) != 0)
         {
-            // AllowMissingPadding / UrlSafe mode: padding may be absent OR canonical, but never partial / excessive.
-            symbolCount = 0;
+            error = EncodingResourceStrings.Format_Invalid_Base64NonCanonical;
             return false;
         }
 
+        byteCount = (symbolCount * 3) / 4;
+        error = null;
         return true;
     }
 }

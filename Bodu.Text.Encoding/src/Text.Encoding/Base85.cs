@@ -249,57 +249,14 @@ public static partial class Base85
     /// delimiter pair (Ascii85 only).
     /// </param>
     /// <returns>
-    /// <see langword="true" /> when every retained character is in the variant alphabet or is a recognised shortcut.
+    /// <see langword="true" /> when <see cref="Decode(ReadOnlySpan{char}, Base85Variant, BaseFormatStyles)" /> with the
+    /// same variant and styles would succeed: every retained character is in the variant alphabet or is a shortcut at a
+    /// group boundary, the trailing group is decodable for the variant, and no group overflows 32 bits; otherwise
+    /// <see langword="false" />.
     /// </returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is undefined.</exception>
-    public static bool IsValid(ReadOnlySpan<char> source, Base85Variant variant = Base85Variant.Ascii85, BaseFormatStyles styles = BaseFormatStyles.None)
-    {
-        sbyte[] lookup = GetLookup(variant);
-        bool ignoreWhitespace = styles.HasFlag(BaseFormatStyles.IgnoreWhitespace);
-        bool isAscii85 = variant == Base85Variant.Ascii85;
-
-        if (isAscii85 && styles.HasFlag(BaseFormatStyles.AllowPrefix))
-            source = StripAscii85Delimiters(source, ignoreWhitespace);
-
-        // Walk the input and validate both alphabet membership AND structural rules so IsValid agrees with the
-        // strict decoder. For Ascii85 the 'z' shortcut may only appear at a group boundary; trailing partial groups
-        // must be 2, 3, or 4 chars (1 cannot represent any byte). Z85 requires the symbol count to be a multiple
-        // of 5.
-        int symbolsThisGroup = 0;
-        int totalSymbols = 0;
-
-        foreach (char c in source)
-        {
-            if (ignoreWhitespace && c is ' ' or '\t' or '\r' or '\n')
-                continue;
-
-            if (isAscii85 && c == ZeroShortcut)
-            {
-                if (symbolsThisGroup != 0)
-                    return false;
-
-                continue;
-            }
-
-            if (c >= lookup.Length || lookup[c] < 0)
-                return false;
-
-            symbolsThisGroup++;
-            totalSymbols++;
-            if (symbolsThisGroup == 5)
-                symbolsThisGroup = 0;
-        }
-
-        if (variant == Base85Variant.Z85)
-        {
-            // Z85 requires the input length (excluding stripped whitespace) to be an exact multiple of five.
-            return symbolsThisGroup == 0;
-        }
-
-        // Ascii85: terminal partial group of 1 character cannot produce any byte and is rejected. 0, 2, 3, 4 are
-        // permitted (0 = no partial; 2/3/4 = 1/2/3 bytes of tail per the partial-group rule).
-        return symbolsThisGroup != 1;
-    }
+    public static bool IsValid(ReadOnlySpan<char> source, Base85Variant variant = Base85Variant.Ascii85, BaseFormatStyles styles = BaseFormatStyles.None) =>
+        TryDecodeCore(source, variant, styles, Span<byte>.Empty, measureOnly: true, out _, out _);
 
     /// <summary>
     /// Builds a 128-entry lookup table mapping alphabet characters to their numeric value.

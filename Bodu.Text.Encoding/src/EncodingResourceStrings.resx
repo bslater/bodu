@@ -160,9 +160,6 @@
   <data name="Format_Invalid_Base32TerminalQuantum" xml:space="preserve">
     <value>Base32 input has an invalid number of data characters for the final quantum.</value>
   </data>
-  <data name="Format_Invalid_Base32VariantAlphabet" xml:space="preserve">
-    <value>Input contains characters outside the Base32 variant alphabet.</value>
-  </data>
   <data name="Format_Invalid_Base45CharacterNotInAlphabet" xml:space="preserve">
     <value>Input contains a character outside the Base45 alphabet: '{0}'.</value>
   </data>
@@ -195,9 +192,6 @@
   </data>
   <data name="Format_Invalid_Base64NonCanonical" xml:space="preserve">
     <value>Base64 input is not in canonical form - unused trailing bits are non-zero.</value>
-  </data>
-  <data name="Format_Invalid_Base64VariantAlphabet" xml:space="preserve">
-    <value>Input contains characters outside the Base64 variant alphabet.</value>
   </data>
   <data name="Format_Invalid_Base85CharacterNotInAlphabet" xml:space="preserve">
     <value>Input contains a character outside the Base85 variant alphabet: '{0}'.</value>

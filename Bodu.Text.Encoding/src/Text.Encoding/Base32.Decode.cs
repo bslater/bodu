@@ -57,7 +57,7 @@ public static partial class Base32
 
         byte[] buffer = new byte[GetMaxDecodedLength(chars.Length)];
 
-        if (!DecodeCore(chars, lookup, ignoreWhitespace, padIsRequired, strictQuantum, requireCanonical, buffer, out int written, out string? error))
+        if (!DecodeCore(chars, lookup, ignoreWhitespace, padIsRequired, strictQuantum, requireCanonical, buffer, measureOnly: false, out int written, out string? error))
             throw new FormatException(error);
 
         if (written == buffer.Length)
@@ -127,11 +127,12 @@ public static partial class Base32
         bool strictQuantum = variant is Base32Variant.Standard or Base32Variant.HexExtended;
         bool requireCanonical = style.HasFlag(BaseFormatStyles.RequireCanonicalEncoding);
 
-        return DecodeCore(chars, lookup, ignoreWhitespace, padIsRequired, strictQuantum, requireCanonical, destination, out bytesWritten, out _);
+        return DecodeCore(chars, lookup, ignoreWhitespace, padIsRequired, strictQuantum, requireCanonical, destination, measureOnly: false, out bytesWritten, out _);
     }
 
     /// <summary>
-    /// Core decoder that walks the input characters once, validating and accumulating into the destination span.
+    /// Core decoder that walks the input characters once, validating and accumulating into the destination span, or,
+    /// when <paramref name="measureOnly" /> is set, validating and counting the bytes without writing them.
     /// </summary>
     /// <param name="chars">The input characters.</param>
     /// <param name="lookup">The variant lookup table.</param>
@@ -146,16 +147,20 @@ public static partial class Base32
     /// <param name="requireCanonical">
     /// Whether the input must be in canonical form - the unused bits of the final partial group must be zero.
     /// </param>
-    /// <param name="destination">The destination span.</param>
+    /// <param name="destination">The destination span. Ignored when <paramref name="measureOnly" /> is set.</param>
+    /// <param name="measureOnly">
+    /// Whether to validate and count the decoded bytes without writing them, so that the validation members apply
+    /// exactly the rules the decoder applies.
+    /// </param>
     /// <param name="bytesWritten">
-    /// When this method returns, contains the number of bytes written, or <c>0</c> on failure.
+    /// When this method returns, contains the number of bytes written (or counted), or <c>0</c> on failure.
     /// </param>
     /// <param name="error">
     /// When this method returns <see langword="false" />, contains the failure reason, or <see langword="null" /> on
     /// success.
     /// </param>
     /// <returns><see langword="true" /> on success; <see langword="false" /> on any validation failure.</returns>
-    private static bool DecodeCore(ReadOnlySpan<char> chars, sbyte[] lookup, bool ignoreWhitespace, bool requireExactPadding, bool strictQuantum, bool requireCanonical, Span<byte> destination, out int bytesWritten, out string? error)
+    private static bool DecodeCore(ReadOnlySpan<char> chars, sbyte[] lookup, bool ignoreWhitespace, bool requireExactPadding, bool strictQuantum, bool requireCanonical, Span<byte> destination, bool measureOnly, out int bytesWritten, out string? error)
     {
         bytesWritten = 0;
         error = null;
@@ -205,13 +210,18 @@ public static partial class Base32
             if (bitsAccumulated >= 8)
             {
                 bitsAccumulated -= 8;
-                if (bytesWritten >= destination.Length)
+                if (!measureOnly)
                 {
-                    bytesWritten = 0;
-                    return false;
+                    if (bytesWritten >= destination.Length)
+                    {
+                        bytesWritten = 0;
+                        return false;
+                    }
+
+                    destination[bytesWritten] = (byte)((accumulator >> bitsAccumulated) & 0xFF);
                 }
 
-                destination[bytesWritten++] = (byte)((accumulator >> bitsAccumulated) & 0xFF);
+                bytesWritten++;
             }
         }
 

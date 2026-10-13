@@ -141,7 +141,7 @@ public static partial class Base85
             return OperationStatus.Done;
 
         byte[] buffer = new byte[GetMaxDecodedLength(source.Length)];
-        if (!TryDecodeCore(source, variant, styles, buffer, out int written, out _))
+        if (!TryDecodeCore(source, variant, styles, buffer, measureOnly: false, out int written, out _))
             return OperationStatus.InvalidData;
 
         if (destination.Length < written)

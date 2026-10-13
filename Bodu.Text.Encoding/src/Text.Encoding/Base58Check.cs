@@ -149,8 +149,9 @@ public static class Base58Check
         if (!Base58.IsValid(source, variant, styles))
             return false;
 
-        int upper = Base58.GetMaxDecodedLength(source.Length);
-        byte[] rented = ArrayPool<byte>.Shared.Rent(upper);
+        // Each character decodes to at most one byte (a leading alphabet[0] to exactly one), so the input length bounds
+        // the decoded length even for a long run of leading zero bytes, which Base58.GetMaxDecodedLength undercounts.
+        byte[] rented = ArrayPool<byte>.Shared.Rent(source.Length);
         try
         {
             if (!Base58.TryDecode(source, rented, out int decodedLength, variant, styles))
