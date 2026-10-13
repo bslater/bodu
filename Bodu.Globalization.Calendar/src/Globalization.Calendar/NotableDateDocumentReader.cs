@@ -373,7 +373,7 @@ internal static class NotableDateDocumentReader
             (int month, string? monthAlias) = ParseFixedMonth(fixedStrategy.Scalar("month"), calendar, notableDateId, ruleId, diagnostics);
             return new FixedDateStrategy(
                 month,
-                Math.Clamp(ParseInt(fixedStrategy.Scalar("day"), 1, "fixed day", diagnostics), 1, 31),
+                ParseInt(fixedStrategy.Scalar("day"), 1, "fixed day", diagnostics),
                 calendar,
                 ParseBool(fixedStrategy.Scalar("sweepCalendarYears"), false, "fixed sweepCalendarYears", diagnostics),
                 ParseBool(fixedStrategy.Scalar("skipLeapMonth"), false, "fixed skipLeapMonth", diagnostics),
@@ -392,7 +392,7 @@ internal static class NotableDateDocumentReader
         {
             return new WeekdayNearDateStrategy(
                 ParseMonth(weekdayNearDate.Scalar("month"), notableDateId, ruleId, diagnostics),
-                Math.Clamp(ParseInt(weekdayNearDate.Scalar("day"), 1, "weekdayNearDate day", diagnostics), 1, 31),
+                ParseInt(weekdayNearDate.Scalar("day"), 1, "weekdayNearDate day", diagnostics),
                 ParseEnum(weekdayNearDate.Scalar("dayOfWeek"), DayOfWeek.Monday, "weekdayNearDate dayOfWeek", diagnostics),
                 ParseEnum(weekdayNearDate.Scalar("direction"), WeekdayProximity.OnOrAfter, "weekdayNearDate direction", diagnostics));
         }
