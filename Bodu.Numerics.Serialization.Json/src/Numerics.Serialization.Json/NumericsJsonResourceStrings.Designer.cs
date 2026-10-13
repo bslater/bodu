@@ -250,6 +250,15 @@ namespace Bodu.Numerics.Serialization.Json {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The '{0}' property must not be NaN, because an interval endpoint must be an ordered value..
+        /// </summary>
+        internal static string Json_Invalid_IntervalEndpointNaN {
+            get {
+                return ResourceManager.GetString("Json_Invalid_IntervalEndpointNaN", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The 'lower' property must be a number or a numeric string..
         /// </summary>
         internal static string Json_Invalid_LowerMustBeNumber {

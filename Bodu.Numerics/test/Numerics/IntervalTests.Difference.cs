@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Numerics;
+
 namespace Bodu.Numerics;
 
 public partial class IntervalTests
@@ -88,5 +90,59 @@ public partial class IntervalTests
     public void Difference_WhenThisIsEmpty_ShouldReturnEmpty()
     {
         Assert.AreEqual(0, Interval<int>.Empty.Difference(Interval<int>.Closed(0, 10)).Count);
+    }
+
+    /// <summary>
+    /// Verifies that Difference over <see cref="double" /> leaves exactly the values of the first catalogue interval
+    /// that the second lacks, in ordered pieces that each hold a value, so an unbounded side removes no bounded
+    /// infinite endpoint.
+    /// </summary>
+    [TestMethod]
+    public void Difference_WhenOperandsReachInfinity_ForDouble_ShouldAgreeWithPointMembership() =>
+        AssertDifferenceAgreesWithMembership<double>();
+
+    /// <summary>
+    /// Verifies that Difference over <see cref="float" /> leaves exactly the values of the first catalogue interval
+    /// that the second lacks, in ordered pieces that each hold a value, so an unbounded side removes no bounded
+    /// infinite endpoint.
+    /// </summary>
+    [TestMethod]
+    public void Difference_WhenOperandsReachInfinity_ForSingle_ShouldAgreeWithPointMembership() =>
+        AssertDifferenceAgreesWithMembership<float>();
+
+    /// <summary>
+    /// Verifies that Difference over <see cref="Half" /> leaves exactly the values of the first catalogue interval that
+    /// the second lacks, in ordered pieces that each hold a value, so an unbounded side removes no bounded infinite
+    /// endpoint.
+    /// </summary>
+    [TestMethod]
+    public void Difference_WhenOperandsReachInfinity_ForHalf_ShouldAgreeWithPointMembership() =>
+        AssertDifferenceAgreesWithMembership<Half>();
+
+    /// <summary>
+    /// Asserts that <see cref="Interval{T}.Difference(Interval{T})" /> leaves exactly the values of each catalogue
+    /// interval that the other lacks, as disjoint ordered pieces that each hold a value.
+    /// </summary>
+    /// <typeparam name="T">The floating-point endpoint type.</typeparam>
+    private static void AssertDifferenceAgreesWithMembership<T>()
+        where T : IFloatingPointIeee754<T>
+    {
+        Interval<T>[] catalog = IntervalMembershipOracle.Catalog<T>();
+        var failures = new List<string>();
+
+        foreach (Interval<T> a in catalog)
+        {
+            int aMask = IntervalMembershipOracle.Mask(a);
+            foreach (Interval<T> b in catalog)
+            {
+                int expected = aMask & ~IntervalMembershipOracle.Mask(b);
+                Interval<T>[] pieces = IntervalMembershipOracle.Pieces(a.Difference(b));
+                string? defect = IntervalMembershipOracle.FindPieceDefect(pieces, requireGap: false);
+                if (IntervalMembershipOracle.Mask(pieces) != expected || defect is not null)
+                    failures.Add($"{a}.Difference({b}) returned {string.Join(" | ", pieces)} {defect}");
+            }
+        }
+
+        Assert.AreEqual(0, failures.Count, string.Join("; ", failures.Take(8)));
     }
 }

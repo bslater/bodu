@@ -31,7 +31,8 @@ public partial class IntervalTests
     }
 
     /// <summary>
-    /// Verifies that an unbounded interval is never empty and includes values on the unbounded side.
+    /// Verifies that an unbounded interval anchored at a finite value is not empty and includes values on the unbounded
+    /// side.
     /// </summary>
     [TestMethod]
     public void Unbounded_WhenTestedForMembership_ShouldExtendToInfinity()

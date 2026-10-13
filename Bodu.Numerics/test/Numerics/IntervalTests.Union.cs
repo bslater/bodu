@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Numerics;
+
 namespace Bodu.Numerics;
 
 public partial class IntervalTests
@@ -106,5 +108,119 @@ public partial class IntervalTests
     {
         Assert.IsTrue(Interval<int>.Closed(3, 9).TryUnion(Interval<int>.Closed(1, 5), out Interval<int> result));
         Assert.AreEqual(Interval<int>.Closed(1, 9), result);
+    }
+
+    /// <summary>
+    /// Verifies that TryUnion over <see cref="double" /> succeeds exactly when the values of two catalogue intervals
+    /// form one run, and then returns those values, so an unbounded side meets a bounded infinite endpoint rather than
+    /// reaching past it.
+    /// </summary>
+    [TestMethod]
+    public void TryUnion_WhenOperandsReachInfinity_ForDouble_ShouldAgreeWithPointMembership() =>
+        AssertTryUnionAgreesWithMembership<double>();
+
+    /// <summary>
+    /// Verifies that TryUnion over <see cref="float" /> succeeds exactly when the values of two catalogue intervals
+    /// form one run, and then returns those values, so an unbounded side meets a bounded infinite endpoint rather than
+    /// reaching past it.
+    /// </summary>
+    [TestMethod]
+    public void TryUnion_WhenOperandsReachInfinity_ForSingle_ShouldAgreeWithPointMembership() =>
+        AssertTryUnionAgreesWithMembership<float>();
+
+    /// <summary>
+    /// Verifies that TryUnion over <see cref="Half" /> succeeds exactly when the values of two catalogue intervals form
+    /// one run, and then returns those values, so an unbounded side meets a bounded infinite endpoint rather than
+    /// reaching past it.
+    /// </summary>
+    [TestMethod]
+    public void TryUnion_WhenOperandsReachInfinity_ForHalf_ShouldAgreeWithPointMembership() =>
+        AssertTryUnionAgreesWithMembership<Half>();
+
+    /// <summary>
+    /// Asserts that <see cref="Interval{T}.TryUnion(Interval{T}, out Interval{T})" /> succeeds for every pair of
+    /// catalogue intervals whose values form one run or none, and only those, with a result that holds exactly those
+    /// values.
+    /// </summary>
+    /// <typeparam name="T">The floating-point endpoint type.</typeparam>
+    private static void AssertTryUnionAgreesWithMembership<T>()
+        where T : IFloatingPointIeee754<T>
+    {
+        Interval<T>[] catalog = IntervalMembershipOracle.Catalog<T>();
+        var failures = new List<string>();
+
+        foreach (Interval<T> a in catalog)
+        {
+            int aMask = IntervalMembershipOracle.Mask(a);
+            foreach (Interval<T> b in catalog)
+            {
+                int expected = aMask | IntervalMembershipOracle.Mask(b);
+                bool united = a.TryUnion(b, out Interval<T> result);
+                bool expectedUnited = expected == 0 || IntervalMembershipOracle.IsContiguous(expected);
+                int actual = IntervalMembershipOracle.Mask(result);
+                if (united != expectedUnited || (united && actual != expected) || (!united && !result.IsEmpty))
+                    failures.Add($"{a}.TryUnion({b}) returned {united} with {result}");
+            }
+        }
+
+        Assert.AreEqual(0, failures.Count, string.Join("; ", failures.Take(8)));
+    }
+
+    /// <summary>
+    /// Verifies that uniting two catalogue intervals over <see cref="double" />, <see cref="float" /> and
+    /// <see cref="Half" /> gives the same outcome and an equal result in either operand order, including where an
+    /// unbounded side meets an open endpoint at the same infinity.
+    /// </summary>
+    [TestMethod]
+    public void TryUnion_WhenOperandsReachInfinity_ShouldNotDependOnOperandOrder()
+    {
+        AssertTryUnionIsCommutative<double>();
+        AssertTryUnionIsCommutative<float>();
+        AssertTryUnionIsCommutative<Half>();
+    }
+
+    /// <summary>
+    /// Verifies that where an unbounded side and an open endpoint at the same infinity tie, the union keeps the
+    /// unbounded side, whichever operand carries it, and that an unbounded side meets a closed endpoint at its infinity
+    /// as an adjacent interval.
+    /// </summary>
+    [TestMethod]
+    public void TryUnion_WhenUnboundedSideMeetsInfiniteEndpoint_ShouldKeepTheLooserEnd()
+    {
+        Interval<double> openAtInfinity = Interval<double>.Open(0.0, double.PositiveInfinity);
+        Interval<double> unbounded = Interval<double>.GreaterThan(0.0);
+
+        Assert.IsTrue(unbounded.TryUnion(openAtInfinity, out Interval<double> first));
+        Assert.IsTrue(openAtInfinity.TryUnion(unbounded, out Interval<double> second));
+        Assert.IsTrue(unbounded.TryUnion(Interval<double>.Singleton(double.PositiveInfinity), out Interval<double> third));
+
+        Assert.AreEqual(unbounded, first);
+        Assert.AreEqual(unbounded, second);
+        Assert.AreEqual(Interval<double>.OpenClosed(0.0, double.PositiveInfinity), third);
+    }
+
+    /// <summary>
+    /// Asserts that <see cref="Interval{T}.TryUnion(Interval{T}, out Interval{T})" /> gives the same outcome and an
+    /// equal result for every pair of catalogue intervals in either order.
+    /// </summary>
+    /// <typeparam name="T">The floating-point endpoint type.</typeparam>
+    private static void AssertTryUnionIsCommutative<T>()
+        where T : IFloatingPointIeee754<T>
+    {
+        Interval<T>[] catalog = IntervalMembershipOracle.Catalog<T>();
+        var failures = new List<string>();
+
+        foreach (Interval<T> a in catalog)
+        {
+            foreach (Interval<T> b in catalog)
+            {
+                bool forward = a.TryUnion(b, out Interval<T> forwardResult);
+                bool reverse = b.TryUnion(a, out Interval<T> reverseResult);
+                if (forward != reverse || !forwardResult.Equals(reverseResult))
+                    failures.Add($"{a}.TryUnion({b}) is {forward} with {forwardResult}, but the reverse is {reverse} with {reverseResult}");
+            }
+        }
+
+        Assert.AreEqual(0, failures.Count, string.Join("; ", failures.Take(8)));
     }
 }

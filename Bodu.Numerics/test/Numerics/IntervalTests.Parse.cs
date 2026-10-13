@@ -258,4 +258,22 @@ public partial class IntervalTests
         Assert.IsTrue(original.Contains(double.MaxValue));
         Assert.IsTrue(parsed.Contains(double.MaxValue));
     }
+
+    /// <summary>
+    /// Verifies that bracket text for a half-bounded interval whose bounded endpoint is the infinity on its unbounded
+    /// side parses to <see cref="Interval{T}.Empty" />, as the half-bounded factories return it.
+    /// </summary>
+    /// <param name="text">The interval text, read under the invariant culture.</param>
+    [TestMethod]
+    [DataRow("[Infinity, +\u221E)")]
+    [DataRow("(Infinity, +\u221E)")]
+    [DataRow("(-\u221E, -Infinity]")]
+    [DataRow("(-\u221E, -Infinity)")]
+    public void Parse_WhenHalfLineIsAnchoredAtFarInfinity_ShouldReturnEmpty(string text)
+    {
+        Interval<double> parsed = Interval<double>.Parse(text, CultureInfo.InvariantCulture);
+
+        Assert.IsTrue(parsed.IsEmpty, $"'{text}' parsed to {parsed}");
+        Assert.AreEqual(Interval<double>.Empty, parsed);
+    }
 }

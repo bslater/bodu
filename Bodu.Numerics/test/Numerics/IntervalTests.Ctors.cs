@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Numerics;
+
 namespace Bodu.Numerics;
 
 public partial class IntervalTests
@@ -211,5 +213,72 @@ public partial class IntervalTests
         });
 
         Assert.AreEqual(expectedParamName, ex.ParamName);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Interval{T}.AtLeast(T)" /> anchored at positive infinity over <see cref="double" />,
+    /// <see cref="float" /> and <see cref="Half" /> returns <see cref="Interval{T}.Empty" />, since its unbounded side
+    /// holds no infinity and so the interval holds no value.
+    /// </summary>
+    [TestMethod]
+    public void AtLeast_WhenAnchoredAtFarInfinity_ShouldReturnEmpty()
+    {
+        AssertIsTheEmptyInterval(Interval<double>.AtLeast(double.PositiveInfinity));
+        AssertIsTheEmptyInterval(Interval<float>.AtLeast(float.PositiveInfinity));
+        AssertIsTheEmptyInterval(Interval<Half>.AtLeast(Half.PositiveInfinity));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Interval{T}.GreaterThan(T)" /> anchored at positive infinity over <see cref="double" />,
+    /// <see cref="float" /> and <see cref="Half" /> returns <see cref="Interval{T}.Empty" />, since its unbounded side
+    /// holds no infinity and so the interval holds no value.
+    /// </summary>
+    [TestMethod]
+    public void GreaterThan_WhenAnchoredAtFarInfinity_ShouldReturnEmpty()
+    {
+        AssertIsTheEmptyInterval(Interval<double>.GreaterThan(double.PositiveInfinity));
+        AssertIsTheEmptyInterval(Interval<float>.GreaterThan(float.PositiveInfinity));
+        AssertIsTheEmptyInterval(Interval<Half>.GreaterThan(Half.PositiveInfinity));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Interval{T}.AtMost(T)" /> anchored at negative infinity over <see cref="double" />,
+    /// <see cref="float" /> and <see cref="Half" /> returns <see cref="Interval{T}.Empty" />, since its unbounded side
+    /// holds no infinity and so the interval holds no value.
+    /// </summary>
+    [TestMethod]
+    public void AtMost_WhenAnchoredAtFarInfinity_ShouldReturnEmpty()
+    {
+        AssertIsTheEmptyInterval(Interval<double>.AtMost(double.NegativeInfinity));
+        AssertIsTheEmptyInterval(Interval<float>.AtMost(float.NegativeInfinity));
+        AssertIsTheEmptyInterval(Interval<Half>.AtMost(Half.NegativeInfinity));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Interval{T}.LessThan(T)" /> anchored at negative infinity over <see cref="double" />,
+    /// <see cref="float" /> and <see cref="Half" /> returns <see cref="Interval{T}.Empty" />, since its unbounded side
+    /// holds no infinity and so the interval holds no value.
+    /// </summary>
+    [TestMethod]
+    public void LessThan_WhenAnchoredAtFarInfinity_ShouldReturnEmpty()
+    {
+        AssertIsTheEmptyInterval(Interval<double>.LessThan(double.NegativeInfinity));
+        AssertIsTheEmptyInterval(Interval<float>.LessThan(float.NegativeInfinity));
+        AssertIsTheEmptyInterval(Interval<Half>.LessThan(Half.NegativeInfinity));
+    }
+
+    /// <summary>
+    /// Asserts that <paramref name="interval" /> is the empty interval: empty, equal to <see cref="Interval{T}.Empty" />
+    /// with the same hash code, and formatted as the empty-set glyph.
+    /// </summary>
+    /// <typeparam name="T">The floating-point endpoint type.</typeparam>
+    /// <param name="interval">The interval under test.</param>
+    private static void AssertIsTheEmptyInterval<T>(Interval<T> interval)
+        where T : IFloatingPointIeee754<T>
+    {
+        Assert.IsTrue(interval.IsEmpty, $"{interval} is not empty");
+        Assert.AreEqual(Interval<T>.Empty, interval);
+        Assert.AreEqual(Interval<T>.Empty.GetHashCode(), interval.GetHashCode());
+        Assert.AreEqual("\u2205", interval.ToString());
     }
 }

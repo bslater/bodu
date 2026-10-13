@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Numerics;
+
 namespace Bodu.Numerics;
 
 public partial class IntervalTests
@@ -55,5 +57,56 @@ public partial class IntervalTests
         Assert.AreEqual(2, result.Count);
         Assert.AreEqual(Interval<int>.Closed(0, 2), result[0]);
         Assert.AreEqual(Interval<int>.Closed(5, 7), result[1]);
+    }
+
+    /// <summary>
+    /// Verifies that SymmetricDifference over <see cref="double" /> returns exactly the values one catalogue interval
+    /// holds and the other does not, in ordered pieces that each hold a value.
+    /// </summary>
+    [TestMethod]
+    public void SymmetricDifference_WhenOperandsReachInfinity_ForDouble_ShouldAgreeWithPointMembership() =>
+        AssertSymmetricDifferenceAgreesWithMembership<double>();
+
+    /// <summary>
+    /// Verifies that SymmetricDifference over <see cref="float" /> returns exactly the values one catalogue interval
+    /// holds and the other does not, in ordered pieces that each hold a value.
+    /// </summary>
+    [TestMethod]
+    public void SymmetricDifference_WhenOperandsReachInfinity_ForSingle_ShouldAgreeWithPointMembership() =>
+        AssertSymmetricDifferenceAgreesWithMembership<float>();
+
+    /// <summary>
+    /// Verifies that SymmetricDifference over <see cref="Half" /> returns exactly the values one catalogue interval
+    /// holds and the other does not, in ordered pieces that each hold a value.
+    /// </summary>
+    [TestMethod]
+    public void SymmetricDifference_WhenOperandsReachInfinity_ForHalf_ShouldAgreeWithPointMembership() =>
+        AssertSymmetricDifferenceAgreesWithMembership<Half>();
+
+    /// <summary>
+    /// Asserts that <see cref="Interval{T}.SymmetricDifference(Interval{T})" /> returns exactly the values held by one
+    /// catalogue operand and not the other, as disjoint ordered pieces that each hold a value.
+    /// </summary>
+    /// <typeparam name="T">The floating-point endpoint type.</typeparam>
+    private static void AssertSymmetricDifferenceAgreesWithMembership<T>()
+        where T : IFloatingPointIeee754<T>
+    {
+        Interval<T>[] catalog = IntervalMembershipOracle.Catalog<T>();
+        var failures = new List<string>();
+
+        foreach (Interval<T> a in catalog)
+        {
+            int aMask = IntervalMembershipOracle.Mask(a);
+            foreach (Interval<T> b in catalog)
+            {
+                int expected = aMask ^ IntervalMembershipOracle.Mask(b);
+                Interval<T>[] pieces = IntervalMembershipOracle.Pieces(a.SymmetricDifference(b));
+                string? defect = IntervalMembershipOracle.FindPieceDefect(pieces, requireGap: false);
+                if (IntervalMembershipOracle.Mask(pieces) != expected || defect is not null)
+                    failures.Add($"{a}.SymmetricDifference({b}) returned {string.Join(" | ", pieces)} {defect}");
+            }
+        }
+
+        Assert.AreEqual(0, failures.Count, string.Join("; ", failures.Take(8)));
     }
 }

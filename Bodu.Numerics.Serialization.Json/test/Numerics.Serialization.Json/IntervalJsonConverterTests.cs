@@ -13,7 +13,7 @@ namespace Bodu.Numerics.Serialization.Json;
 /// not already covered by the policy-matrix suite.
 /// </summary>
 [TestClass]
-public class IntervalJsonConverterTests
+public partial class IntervalJsonConverterTests
 {
     /// <summary>
     /// Builds a <see cref="JsonSerializerOptions" /> seeded with the Numerics converters under the Strict policy.

@@ -113,7 +113,10 @@ public static class Interval
     /// </summary>
     /// <typeparam name="T">The endpoint type, inferred at the call site.</typeparam>
     /// <param name="lower">The inclusive lower endpoint.</param>
-    /// <returns>A closed-below, upper-unbounded interval.</returns>
+    /// <returns>
+    /// A closed-below, upper-unbounded interval, or <see cref="Interval{T}.Empty" /> when <paramref name="lower" /> is
+    /// positive infinity.
+    /// </returns>
     /// <exception cref="ArgumentException"><paramref name="lower" /> is NaN.</exception>
     public static Interval<T> AtLeast<T>(T lower)
         where T : INumber<T> =>
@@ -125,7 +128,10 @@ public static class Interval
     /// </summary>
     /// <typeparam name="T">The endpoint type, inferred at the call site.</typeparam>
     /// <param name="lower">The exclusive lower endpoint.</param>
-    /// <returns>An open-below, upper-unbounded interval.</returns>
+    /// <returns>
+    /// An open-below, upper-unbounded interval, or <see cref="Interval{T}.Empty" /> when <paramref name="lower" /> is
+    /// positive infinity.
+    /// </returns>
     /// <exception cref="ArgumentException"><paramref name="lower" /> is NaN.</exception>
     public static Interval<T> GreaterThan<T>(T lower)
         where T : INumber<T> =>
@@ -137,7 +143,10 @@ public static class Interval
     /// </summary>
     /// <typeparam name="T">The endpoint type, inferred at the call site.</typeparam>
     /// <param name="upper">The inclusive upper endpoint.</param>
-    /// <returns>A lower-unbounded, closed-above interval.</returns>
+    /// <returns>
+    /// A lower-unbounded, closed-above interval, or <see cref="Interval{T}.Empty" /> when <paramref name="upper" /> is
+    /// negative infinity.
+    /// </returns>
     /// <exception cref="ArgumentException"><paramref name="upper" /> is NaN.</exception>
     public static Interval<T> AtMost<T>(T upper)
         where T : INumber<T> =>
@@ -149,7 +158,10 @@ public static class Interval
     /// </summary>
     /// <typeparam name="T">The endpoint type, inferred at the call site.</typeparam>
     /// <param name="upper">The exclusive upper endpoint.</param>
-    /// <returns>A lower-unbounded, open-above interval.</returns>
+    /// <returns>
+    /// A lower-unbounded, open-above interval, or <see cref="Interval{T}.Empty" /> when <paramref name="upper" /> is
+    /// negative infinity.
+    /// </returns>
     /// <exception cref="ArgumentException"><paramref name="upper" /> is NaN.</exception>
     public static Interval<T> LessThan<T>(T upper)
         where T : INumber<T> =>

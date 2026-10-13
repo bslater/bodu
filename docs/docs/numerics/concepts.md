@@ -222,7 +222,7 @@ var q4 = Interval<int>.ClosedOpen(273, 365);
 
 ## Unbounded and half-bounded endpoints
 
-A side of an <xref:Bodu.Numerics.Interval`1> may be **unbounded** - extending to `-∞` or `+∞` - rather than bounded by a concrete `T`. Boundedness is tracked as explicit endpoint metadata (spare flag bits), *not* as a floating-point infinity sentinel, so it works uniformly for `int`, `decimal`, and `BigInteger` endpoints. An unbounded side is always open (infinity is never a member) and never makes the interval empty.
+A side of an <xref:Bodu.Numerics.Interval`1> may be **unbounded** - extending to `-∞` or `+∞` - rather than bounded by a concrete `T`. Boundedness is tracked as explicit endpoint metadata (spare flag bits), *not* as a floating-point infinity sentinel, so it works uniformly for `int`, `decimal`, and `BigInteger` endpoints. An unbounded side is always open (it admits every finite value, and the infinity on that side is never a member) and never makes the interval empty, except when the bounded endpoint is that same infinity: `Interval<double>.AtLeast(double.PositiveInfinity)` holds no value and is `Empty`. NaN is never a member of any interval. The set operations treat an unbounded side as an open endpoint at its infinity, so `AtLeast(0)` over `double` does not contain `[0, Infinity]`, and the two intersect in `[0, +∞)`.
 
 The factories are `Interval<T>.AtLeast(a)` = `[a, +∞)`, `GreaterThan(a)` = `(a, +∞)`, `AtMost(b)` = `(-∞, b]`, `LessThan(b)` = `(-∞, b)`, and `All` = `(-∞, +∞)`. `IsBounded` reports whether both sides are finite; `Length` throws for an unbounded interval because the extent is infinite.
 

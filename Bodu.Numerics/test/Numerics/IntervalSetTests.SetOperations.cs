@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Numerics;
+
 namespace Bodu.Numerics;
 
 public partial class IntervalSetTests
@@ -118,5 +120,182 @@ public partial class IntervalSetTests
         IntervalSet<int> set = IntervalSet<int>.Of(Interval<int>.Closed(1, 5), Interval<int>.Closed(10, 20));
 
         Assert.AreEqual(set, set.Complement().Complement());
+    }
+
+    /// <summary>
+    /// Verifies that both Union overloads over <see cref="double" /> hold exactly the values of a catalogue interval
+    /// and another catalogue interval or set, in disjoint, non-adjacent pieces.
+    /// </summary>
+    [TestMethod]
+    public void Union_WhenOperandsReachInfinity_ForDouble_ShouldAgreeWithPointMembership() =>
+        AssertSetUnionAgreesWithMembership<double>();
+
+    /// <summary>
+    /// Verifies that both Union overloads over <see cref="float" /> hold exactly the values of a catalogue interval and
+    /// another catalogue interval or set, in disjoint, non-adjacent pieces.
+    /// </summary>
+    [TestMethod]
+    public void Union_WhenOperandsReachInfinity_ForSingle_ShouldAgreeWithPointMembership() =>
+        AssertSetUnionAgreesWithMembership<float>();
+
+    /// <summary>
+    /// Verifies that both Union overloads over <see cref="Half" /> hold exactly the values of a catalogue interval and
+    /// another catalogue interval or set, in disjoint, non-adjacent pieces.
+    /// </summary>
+    [TestMethod]
+    public void Union_WhenOperandsReachInfinity_ForHalf_ShouldAgreeWithPointMembership() =>
+        AssertSetUnionAgreesWithMembership<Half>();
+
+    /// <summary>
+    /// Verifies that both Intersect overloads over <see cref="double" /> hold exactly the values a one-piece set shares
+    /// with another catalogue interval or set, in disjoint, non-adjacent pieces.
+    /// </summary>
+    [TestMethod]
+    public void Intersect_WhenOperandsReachInfinity_ForDouble_ShouldAgreeWithPointMembership() =>
+        AssertSetIntersectAgreesWithMembership<double>();
+
+    /// <summary>
+    /// Verifies that both Intersect overloads over <see cref="float" /> hold exactly the values a one-piece set shares
+    /// with another catalogue interval or set, in disjoint, non-adjacent pieces.
+    /// </summary>
+    [TestMethod]
+    public void Intersect_WhenOperandsReachInfinity_ForSingle_ShouldAgreeWithPointMembership() =>
+        AssertSetIntersectAgreesWithMembership<float>();
+
+    /// <summary>
+    /// Verifies that both Intersect overloads over <see cref="Half" /> hold exactly the values a one-piece set shares
+    /// with another catalogue interval or set, in disjoint, non-adjacent pieces.
+    /// </summary>
+    [TestMethod]
+    public void Intersect_WhenOperandsReachInfinity_ForHalf_ShouldAgreeWithPointMembership() =>
+        AssertSetIntersectAgreesWithMembership<Half>();
+
+    /// <summary>
+    /// Verifies that both Except overloads over <see cref="double" /> hold exactly the values of a one-piece set that
+    /// another catalogue interval or set lacks, in disjoint, non-adjacent pieces that each hold a value.
+    /// </summary>
+    [TestMethod]
+    public void Except_WhenOperandsReachInfinity_ForDouble_ShouldAgreeWithPointMembership() =>
+        AssertSetExceptAgreesWithMembership<double>();
+
+    /// <summary>
+    /// Verifies that both Except overloads over <see cref="float" /> hold exactly the values of a one-piece set that
+    /// another catalogue interval or set lacks, in disjoint, non-adjacent pieces that each hold a value.
+    /// </summary>
+    [TestMethod]
+    public void Except_WhenOperandsReachInfinity_ForSingle_ShouldAgreeWithPointMembership() =>
+        AssertSetExceptAgreesWithMembership<float>();
+
+    /// <summary>
+    /// Verifies that both Except overloads over <see cref="Half" /> hold exactly the values of a one-piece set that
+    /// another catalogue interval or set lacks, in disjoint, non-adjacent pieces that each hold a value.
+    /// </summary>
+    [TestMethod]
+    public void Except_WhenOperandsReachInfinity_ForHalf_ShouldAgreeWithPointMembership() =>
+        AssertSetExceptAgreesWithMembership<Half>();
+
+    /// <summary>
+    /// Verifies that Complement over <see cref="double" /> holds exactly the values of the whole line that a set of two
+    /// catalogue intervals lacks, in disjoint, non-adjacent pieces that each hold a value.
+    /// </summary>
+    [TestMethod]
+    public void Complement_WhenOperandsReachInfinity_ForDouble_ShouldAgreeWithPointMembership() =>
+        AssertSetComplementAgreesWithMembership<double>();
+
+    /// <summary>
+    /// Verifies that Complement over <see cref="float" /> holds exactly the values of the whole line that a set of two
+    /// catalogue intervals lacks, in disjoint, non-adjacent pieces that each hold a value.
+    /// </summary>
+    [TestMethod]
+    public void Complement_WhenOperandsReachInfinity_ForSingle_ShouldAgreeWithPointMembership() =>
+        AssertSetComplementAgreesWithMembership<float>();
+
+    /// <summary>
+    /// Verifies that Complement over <see cref="Half" /> holds exactly the values of the whole line that a set of two
+    /// catalogue intervals lacks, in disjoint, non-adjacent pieces that each hold a value.
+    /// </summary>
+    [TestMethod]
+    public void Complement_WhenOperandsReachInfinity_ForHalf_ShouldAgreeWithPointMembership() =>
+        AssertSetComplementAgreesWithMembership<Half>();
+
+    /// <summary>
+    /// Asserts that a set built by <paramref name="operation" /> from each pair of catalogue intervals holds the values
+    /// <paramref name="expectedMask" /> selects, in disjoint, non-adjacent pieces that each hold a value.
+    /// </summary>
+    /// <typeparam name="T">The floating-point endpoint type.</typeparam>
+    /// <param name="name">The operation name used in failure messages.</param>
+    /// <param name="operation">Builds the set under test from the two catalogue intervals.</param>
+    /// <param name="expectedMask">Computes the expected probe mask from the operands' probe masks.</param>
+    private static void AssertSetOperationAgreesWithMembership<T>(
+        string name,
+        Func<Interval<T>, Interval<T>, IntervalSet<T>> operation,
+        Func<int, int, int> expectedMask)
+        where T : IFloatingPointIeee754<T>
+    {
+        Interval<T>[] catalog = IntervalMembershipOracle.Catalog<T>();
+        var failures = new List<string>();
+
+        foreach (Interval<T> a in catalog)
+        {
+            int aMask = IntervalMembershipOracle.Mask(a);
+            foreach (Interval<T> b in catalog)
+            {
+                IntervalSet<T> set = operation(a, b);
+                int expected = expectedMask(aMask, IntervalMembershipOracle.Mask(b));
+                string? defect = IntervalMembershipOracle.FindPieceDefect(IntervalMembershipOracle.Pieces(set), requireGap: true);
+                if (IntervalMembershipOracle.Mask(set) != expected || defect is not null)
+                    failures.Add($"{name}({a}, {b}) returned {set} {defect}");
+            }
+        }
+
+        Assert.AreEqual(0, failures.Count, string.Join("; ", failures.Take(8)));
+    }
+
+    /// <summary>
+    /// Asserts that <see cref="IntervalSet{T}.Union(Interval{T})" /> and <see cref="IntervalSet{T}.Union(IntervalSet{T})" />
+    /// agree with point membership over the catalogue.
+    /// </summary>
+    /// <typeparam name="T">The floating-point endpoint type.</typeparam>
+    private static void AssertSetUnionAgreesWithMembership<T>()
+        where T : IFloatingPointIeee754<T>
+    {
+        AssertSetOperationAgreesWithMembership<T>("Union(Interval)", (a, b) => IntervalSet<T>.Of(a).Union(b), (a, b) => a | b);
+        AssertSetOperationAgreesWithMembership<T>("Union(Set)", (a, b) => IntervalSet<T>.Of(a).Union(IntervalSet<T>.Of(b)), (a, b) => a | b);
+    }
+
+    /// <summary>
+    /// Asserts that <see cref="IntervalSet{T}.Intersect(Interval{T})" /> and
+    /// <see cref="IntervalSet{T}.Intersect(IntervalSet{T})" /> agree with point membership over the catalogue.
+    /// </summary>
+    /// <typeparam name="T">The floating-point endpoint type.</typeparam>
+    private static void AssertSetIntersectAgreesWithMembership<T>()
+        where T : IFloatingPointIeee754<T>
+    {
+        AssertSetOperationAgreesWithMembership<T>("Intersect(Interval)", (a, b) => IntervalSet<T>.Of(a).Intersect(b), (a, b) => a & b);
+        AssertSetOperationAgreesWithMembership<T>("Intersect(Set)", (a, b) => IntervalSet<T>.Of(a).Intersect(IntervalSet<T>.Of(b)), (a, b) => a & b);
+    }
+
+    /// <summary>
+    /// Asserts that <see cref="IntervalSet{T}.Except(Interval{T})" /> and <see cref="IntervalSet{T}.Except(IntervalSet{T})" />
+    /// agree with point membership over the catalogue.
+    /// </summary>
+    /// <typeparam name="T">The floating-point endpoint type.</typeparam>
+    private static void AssertSetExceptAgreesWithMembership<T>()
+        where T : IFloatingPointIeee754<T>
+    {
+        AssertSetOperationAgreesWithMembership<T>("Except(Interval)", (a, b) => IntervalSet<T>.Of(a).Except(b), (a, b) => a & ~b);
+        AssertSetOperationAgreesWithMembership<T>("Except(Set)", (a, b) => IntervalSet<T>.Of(a).Except(IntervalSet<T>.Of(b)), (a, b) => a & ~b);
+    }
+
+    /// <summary>
+    /// Asserts that <see cref="IntervalSet{T}.Complement" /> of a set of two catalogue intervals agrees with point
+    /// membership relative to <see cref="Interval{T}.All" />.
+    /// </summary>
+    /// <typeparam name="T">The floating-point endpoint type.</typeparam>
+    private static void AssertSetComplementAgreesWithMembership<T>()
+        where T : IFloatingPointIeee754<T>
+    {
+        int wholeLine = IntervalMembershipOracle.Mask(Interval<T>.All);
+        AssertSetOperationAgreesWithMembership<T>("Complement", (a, b) => IntervalSet<T>.Of(a, b).Complement(), (a, b) => wholeLine & ~(a | b));
     }
 }

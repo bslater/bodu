@@ -95,6 +95,7 @@ Every malformed payload surfaces as `JsonException`; the converters never coerce
 | A fraction whose canonical reduction overflows `T` | `JsonException`. |
 | `{ "empty": true }` carrying endpoint or unbounded properties | `JsonException` - the empty form must stand alone. |
 | A component that is neither a number nor a parseable numeric string; an inclusivity flag that is not a boolean | `JsonException` reporting the type mismatch. |
+| A NaN endpoint on a bounded side of an interval (`"lower": "NaN"`, or `"[NaN, 1]"` in compact form) | `JsonException` - NaN is unordered, so no interval can be formed around it. |
 | A compact string `TryParse` rejects (`"3/"`, `"[1, )"`, `"<3>"`) | `JsonException` carrying the offending text. |
 
 Unknown properties are *ignored* (skipped), matching the BCL convention for forward compatibility.

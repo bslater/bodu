@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Numerics;
+
 namespace Bodu.Numerics;
 
 public partial class IntervalTests
@@ -119,5 +121,184 @@ public partial class IntervalTests
     {
         Assert.IsFalse(Interval<int>.Empty.Contains(Interval<int>.Closed(1, 5)));
         Assert.IsTrue(Interval<int>.Empty.Contains(Interval<int>.Empty));
+    }
+
+    /// <summary>
+    /// Verifies that an interval over <see cref="double" /> with an unbounded side contains neither NaN nor either
+    /// infinity, since an unbounded side admits every finite value and no infinity.
+    /// </summary>
+    /// <param name="shape">The name of the unbounded factory under test.</param>
+    [TestMethod]
+    [DataRow("All")]
+    [DataRow("AtLeast")]
+    [DataRow("GreaterThan")]
+    [DataRow("AtMost")]
+    [DataRow("LessThan")]
+    public void Contains_WhenSideIsUnbounded_ForDouble_ShouldExcludeNaNAndInfinities(string shape) =>
+        AssertExcludesNonFiniteValues<double>(shape);
+
+    /// <summary>
+    /// Verifies that an interval over <see cref="float" /> with an unbounded side contains neither NaN nor either
+    /// infinity, since an unbounded side admits every finite value and no infinity.
+    /// </summary>
+    /// <param name="shape">The name of the unbounded factory under test.</param>
+    [TestMethod]
+    [DataRow("All")]
+    [DataRow("AtLeast")]
+    [DataRow("GreaterThan")]
+    [DataRow("AtMost")]
+    [DataRow("LessThan")]
+    public void Contains_WhenSideIsUnbounded_ForSingle_ShouldExcludeNaNAndInfinities(string shape) =>
+        AssertExcludesNonFiniteValues<float>(shape);
+
+    /// <summary>
+    /// Verifies that an interval over <see cref="Half" /> with an unbounded side contains neither NaN nor either
+    /// infinity, since an unbounded side admits every finite value and no infinity.
+    /// </summary>
+    /// <param name="shape">The name of the unbounded factory under test.</param>
+    [TestMethod]
+    [DataRow("All")]
+    [DataRow("AtLeast")]
+    [DataRow("GreaterThan")]
+    [DataRow("AtMost")]
+    [DataRow("LessThan")]
+    public void Contains_WhenSideIsUnbounded_ForHalf_ShouldExcludeNaNAndInfinities(string shape) =>
+        AssertExcludesNonFiniteValues<Half>(shape);
+
+    /// <summary>
+    /// Verifies that an interval with an unbounded side still contains the largest finite value on that side, for
+    /// <see cref="double" />, <see cref="float" /> and <see cref="Half" />.
+    /// </summary>
+    /// <param name="shape">The name of the unbounded factory under test.</param>
+    [TestMethod]
+    [DataRow("All")]
+    [DataRow("AtLeast")]
+    [DataRow("GreaterThan")]
+    [DataRow("AtMost")]
+    [DataRow("LessThan")]
+    public void Contains_WhenSideIsUnbounded_ShouldContainFiniteExtremeOnThatSide(string shape)
+    {
+        AssertContainsFiniteExtremes<double>(shape);
+        AssertContainsFiniteExtremes<float>(shape);
+        AssertContainsFiniteExtremes<Half>(shape);
+    }
+
+    /// <summary>
+    /// Verifies that a bounded interval whose closed side carries an infinite endpoint contains that infinity, while
+    /// an open side at the same infinity excludes it and no interval contains NaN.
+    /// </summary>
+    [TestMethod]
+    public void Contains_WhenBoundedEndpointIsInfinite_ShouldFollowInclusivity()
+    {
+        Assert.IsTrue(Interval<double>.Closed(0.0, double.PositiveInfinity).Contains(double.PositiveInfinity));
+        Assert.IsTrue(Interval<double>.Closed(double.NegativeInfinity, 0.0).Contains(double.NegativeInfinity));
+        Assert.IsTrue(Interval<float>.Closed(float.NegativeInfinity, float.PositiveInfinity).Contains(float.PositiveInfinity));
+        Assert.IsTrue(Interval<Half>.Closed(Half.NegativeInfinity, (Half)0).Contains(Half.NegativeInfinity));
+
+        Assert.IsFalse(Interval<double>.ClosedOpen(0.0, double.PositiveInfinity).Contains(double.PositiveInfinity));
+        Assert.IsFalse(Interval<double>.OpenClosed(double.NegativeInfinity, 0.0).Contains(double.NegativeInfinity));
+        Assert.IsFalse(Interval<double>.Closed(double.NegativeInfinity, double.PositiveInfinity).Contains(double.NaN));
+    }
+
+    /// <summary>
+    /// Asserts that the unbounded interval named by <paramref name="shape" /> contains neither NaN nor either infinity
+    /// of <typeparamref name="T" />.
+    /// </summary>
+    /// <typeparam name="T">The floating-point endpoint type.</typeparam>
+    /// <param name="shape">The name of the unbounded factory.</param>
+    private static void AssertExcludesNonFiniteValues<T>(string shape)
+        where T : IFloatingPointIeee754<T>
+    {
+        Interval<T> interval = UnboundedFloatingPointShape<T>(shape);
+
+        Assert.IsFalse(interval.Contains(T.NaN), $"{interval} contains NaN");
+        Assert.IsFalse(interval.Contains(T.PositiveInfinity), $"{interval} contains +Infinity");
+        Assert.IsFalse(interval.Contains(T.NegativeInfinity), $"{interval} contains -Infinity");
+    }
+
+    /// <summary>
+    /// Asserts that the unbounded interval named by <paramref name="shape" /> contains the largest finite value of
+    /// <typeparamref name="T" /> on each unbounded side.
+    /// </summary>
+    /// <typeparam name="T">The floating-point endpoint type.</typeparam>
+    /// <param name="shape">The name of the unbounded factory.</param>
+    private static void AssertContainsFiniteExtremes<T>(string shape)
+        where T : IFloatingPointIeee754<T>, IMinMaxValue<T>
+    {
+        Interval<T> interval = UnboundedFloatingPointShape<T>(shape);
+
+        if (interval.LowerUnbounded)
+            Assert.IsTrue(interval.Contains(T.MinValue), $"{interval} excludes {typeof(T).Name}.MinValue");
+
+        if (interval.UpperUnbounded)
+            Assert.IsTrue(interval.Contains(T.MaxValue), $"{interval} excludes {typeof(T).Name}.MaxValue");
+    }
+
+    /// <summary>
+    /// Returns the unbounded interval over <typeparamref name="T" /> named by <paramref name="shape" />, anchored at
+    /// zero where it has a bounded side.
+    /// </summary>
+    /// <typeparam name="T">The floating-point endpoint type.</typeparam>
+    /// <param name="shape">The name of the unbounded factory.</param>
+    /// <returns>The corresponding unbounded interval.</returns>
+    private static Interval<T> UnboundedFloatingPointShape<T>(string shape)
+        where T : IFloatingPointIeee754<T> =>
+        shape switch
+        {
+            "All" => Interval<T>.All,
+            "AtLeast" => Interval<T>.AtLeast(T.Zero),
+            "GreaterThan" => Interval<T>.GreaterThan(T.Zero),
+            "AtMost" => Interval<T>.AtMost(T.Zero),
+            "LessThan" => Interval<T>.LessThan(T.Zero),
+            _ => throw new ArgumentOutOfRangeException(nameof(shape)),
+        };
+
+    /// <summary>
+    /// Verifies that Contains(Interval) over <see cref="double" /> agrees with point membership for every pair of
+    /// catalogue intervals, so an unbounded side does not reach a bounded infinite endpoint.
+    /// </summary>
+    [TestMethod]
+    public void Contains_WhenOperandsReachInfinity_ForDouble_ShouldAgreeWithPointMembership() =>
+        AssertContainsIntervalAgreesWithMembership<double>();
+
+    /// <summary>
+    /// Verifies that Contains(Interval) over <see cref="float" /> agrees with point membership for every pair of
+    /// catalogue intervals, so an unbounded side does not reach a bounded infinite endpoint.
+    /// </summary>
+    [TestMethod]
+    public void Contains_WhenOperandsReachInfinity_ForSingle_ShouldAgreeWithPointMembership() =>
+        AssertContainsIntervalAgreesWithMembership<float>();
+
+    /// <summary>
+    /// Verifies that Contains(Interval) over <see cref="Half" /> agrees with point membership for every pair of
+    /// catalogue intervals, so an unbounded side does not reach a bounded infinite endpoint.
+    /// </summary>
+    [TestMethod]
+    public void Contains_WhenOperandsReachInfinity_ForHalf_ShouldAgreeWithPointMembership() =>
+        AssertContainsIntervalAgreesWithMembership<Half>();
+
+    /// <summary>
+    /// Asserts that <see cref="Interval{T}.Contains(Interval{T})" /> reports every catalogue interval that is a subset
+    /// of another, and only those.
+    /// </summary>
+    /// <typeparam name="T">The floating-point endpoint type.</typeparam>
+    private static void AssertContainsIntervalAgreesWithMembership<T>()
+        where T : IFloatingPointIeee754<T>
+    {
+        Interval<T>[] catalog = IntervalMembershipOracle.Catalog<T>();
+        var failures = new List<string>();
+
+        foreach (Interval<T> a in catalog)
+        {
+            int aMask = IntervalMembershipOracle.Mask(a);
+            foreach (Interval<T> b in catalog)
+            {
+                bool expected = (IntervalMembershipOracle.Mask(b) & ~aMask) == 0;
+                if (a.Contains(b) != expected)
+                    failures.Add($"{a}.Contains({b}) returned {!expected}");
+            }
+        }
+
+        Assert.AreEqual(0, failures.Count, string.Join("; ", failures.Take(8)));
     }
 }

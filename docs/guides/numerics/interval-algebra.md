@@ -304,14 +304,21 @@ floating-point infinity, so the same model works for `int`, `decimal`, and
 ```csharp
 var nonNegative = Interval<double>.AtLeast(0.0);   // [0, +∞)
 nonNegative.Contains(1e308);                        // True
+nonNegative.Contains(double.PositiveInfinity);      // False - an unbounded side holds no infinity
+nonNegative.Contains(Interval<double>.Closed(0.0, double.PositiveInfinity));   // False - nor reaches one
 nonNegative.IsBounded;                              // False
 
 // Set algebra composes with unbounded operands.
 Interval<int>.AtLeast(0) & Interval<int>.AtMost(10);   // [0, 10]
 ```
 
-An unbounded interval is never empty; its `Length` is infinite, so reading
-`Length` throws <xref:System.InvalidOperationException>. Unbounded intervals
+An unbounded interval is never empty, except a half-line whose bounded
+endpoint is the infinity on its unbounded side: that side holds no infinity,
+so `Interval<double>.AtLeast(double.PositiveInfinity)`, `GreaterThan` of the
+same value, and `AtMost` or `LessThan` of `double.NegativeInfinity` hold no
+value and return `Interval<double>.Empty`. An unbounded interval's `Length`
+is infinite, so reading `Length` throws
+<xref:System.InvalidOperationException>. Unbounded intervals
 format with the `±∞` glyphs (`[0, +∞)`, `(-∞, 5]`) and parse back from the
 same text.
 

@@ -52,10 +52,14 @@ namespace Bodu.Numerics;
 /// Unbounded intervals - those with no lower limit, no upper limit, or neither, written <c>(-&#x221E;, b]</c>,
 /// <c>[a, +&#x221E;)</c>, or <c>(-&#x221E;, +&#x221E;)</c> - are representable through the <see cref="AtLeast(T)" />,
 /// <see cref="GreaterThan(T)" />, <see cref="AtMost(T)" />, <see cref="LessThan(T)" />, and <see cref="All" />
-/// factories. An unbounded endpoint carries no concrete value and is always open (infinity is never a member);
-/// <see cref="LowerUnbounded" /> and <see cref="UpperUnbounded" /> report which sides, if any, are unbounded, and
-/// <see cref="IsBounded" /> is <see langword="true" /> only when both sides are finite. An unbounded interval is never
-/// empty, and <see cref="Length" /> is undefined for it.
+/// factories. An unbounded endpoint carries no concrete value and is always open (infinity is never a member), and
+/// every operation treats it as an open endpoint at its infinity: it reaches every finite value but not a bounded
+/// endpoint at that infinity, so <c>AtLeast(0)</c> over <see cref="double" /> does not contain <c>[0, Infinity]</c> and
+/// meets it in <c>[0, +&#x221E;)</c>. <see cref="LowerUnbounded" /> and <see cref="UpperUnbounded" /> report which
+/// sides, if any, are unbounded, and <see cref="IsBounded" /> is <see langword="true" /> only when both sides are
+/// finite. An unbounded interval is never empty, except that a half-bounded interval whose bounded endpoint is the
+/// infinity on its unbounded side, such as <c>AtLeast(+Infinity)</c> over <see cref="double" />, holds no value, so the
+/// factories return <see cref="Empty" /> for it. <see cref="Length" /> is undefined for an unbounded interval.
 /// </para>
 /// <para>
 /// Instances are immutable, structurally equatable, and safe to share. They format using ISO 31-11 interval notation
