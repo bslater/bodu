@@ -187,6 +187,83 @@ public class OandaHistoryResponseParserTests
         Assert.AreEqual(0.6850m, data.Observations[0].Rate);
     }
 
+    /// <summary>
+    /// Verifies that a row's timestamp is dated by its UTC day, its last millisecond included.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenTimestampIsLastMillisecondOfADay_ShouldDateItByThatUtcDay()
+    {
+        byte[] json = Utf8(
+            """
+            { "widget": [ { "baseCurrency": "AUD", "quoteCurrency": "USD", "data": [ [1672790399999, "0.6828"] ] } ] }
+            """);
+
+        PairRateData<OandaSeriesInfo> data = OandaHistoryResponseParser.Parse(json, Request(new(2023, 1, 1), new(2023, 1, 31)), Options);
+
+        Assert.HasCount(1, data.Observations);
+        Assert.AreEqual(new DateOnly(2023, 1, 3), data.Observations[0].Date);
+    }
+
+    /// <summary>
+    /// Verifies that rows timed at the first and last milliseconds a <see cref="DateTimeOffset" /> represents are dated
+    /// by the first and last dates of its range, a timestamp given as a string included.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenTimestampIsAtAnEndOfTheDateRange_ShouldReadIt()
+    {
+        byte[] json = Utf8(
+            """
+            {
+              "widget": [
+                {
+                  "baseCurrency": "AUD",
+                  "quoteCurrency": "USD",
+                  "data": [ [-62135596800000, "0.5"], ["253402300799999", "0.9"] ]
+                }
+              ]
+            }
+            """);
+
+        PairRateData<OandaSeriesInfo> data = OandaHistoryResponseParser.Parse(json, Request(DateOnly.MinValue, DateOnly.MaxValue), Options);
+
+        var byDate = data.Observations.ToDictionary(o => o.Date, o => o.Rate);
+        Assert.HasCount(2, data.Observations);
+        Assert.AreEqual(0.5m, byDate[DateOnly.MinValue]);
+        Assert.AreEqual(0.9m, byDate[DateOnly.MaxValue]);
+    }
+
+    /// <summary>
+    /// Verifies that rows timed outside the range a <see cref="DateTimeOffset" /> represents, or at a fractional
+    /// millisecond, are skipped rather than failing the response.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenTimestampIsNotARepresentableTimestamp_ShouldSkipRow()
+    {
+        byte[] json = Utf8(
+            """
+            {
+              "widget": [
+                {
+                  "baseCurrency": "AUD",
+                  "quoteCurrency": "USD",
+                  "data": [
+                    [-62135596800001, "0.5"],
+                    [253402300800000, "0.6"],
+                    [9223372036854775807, "0.7"],
+                    [1672704000000.5, "0.8"],
+                    [1672704000000, "0.9"]
+                  ]
+                }
+              ]
+            }
+            """);
+
+        PairRateData<OandaSeriesInfo> data = OandaHistoryResponseParser.Parse(json, Request(DateOnly.MinValue, DateOnly.MaxValue), Options);
+
+        Assert.HasCount(1, data.Observations);
+        Assert.AreEqual(0.9m, data.Observations[0].Rate);
+    }
+
     private static CurrencyPairRequest Request(DateOnly startDate, DateOnly endDate) =>
         new(new CurrencyPair(CurrencyCode.AUD, CurrencyCode.USD), startDate, endDate);
 

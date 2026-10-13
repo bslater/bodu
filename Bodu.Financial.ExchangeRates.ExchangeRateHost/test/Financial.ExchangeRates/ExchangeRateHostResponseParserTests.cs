@@ -110,4 +110,61 @@ public sealed class ExchangeRateHostResponseParserTests
             _ = ExchangeRateHostResponseParser.Parse(json, request, "EUR", "USD", Options);
         });
     }
+
+    /// <summary>
+    /// Verifies that a time-series rate given as a number or a numeric string is read, and one that is not positive
+    /// or not numeric is skipped.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenTimeSeriesRatesVaryInKind_ShouldReadOnlyPositiveNumbers()
+    {
+        CurrencyPairRequest request = new(
+            new CurrencyPair(CurrencyCode.EUR, CurrencyCode.USD),
+            new DateOnly(2023, 1, 1),
+            new DateOnly(2023, 1, 31));
+        byte[] json = Encoding.UTF8.GetBytes(
+            """
+            {
+              "success": true,
+              "timeseries": true,
+              "source": "EUR",
+              "quotes": {
+                "2023-01-02": { "EURUSD": "1.0668" },
+                "2023-01-03": { "EURUSD": 1.0546 },
+                "2023-01-04": { "EURUSD": 0 },
+                "2023-01-05": { "EURUSD": -1.05 },
+                "2023-01-06": { "EURUSD": null },
+                "2023-01-07": { "EURUSD": "soon" },
+                "2023-01-08": { "EURUSD": true }
+              }
+            }
+            """);
+
+        PairRateData<ExchangeRateHostSeriesInfo> data = ExchangeRateHostResponseParser.Parse(json, request, "EUR", "USD", Options);
+
+        Assert.AreEqual(2, data.Observations.Count);
+        Assert.AreEqual(1.0668m, data.Observations.Single(o => o.Date == new DateOnly(2023, 1, 2)).Rate);
+        Assert.AreEqual(1.0546m, data.Observations.Single(o => o.Date == new DateOnly(2023, 1, 3)).Rate);
+    }
+
+    /// <summary>
+    /// Verifies that a single-date rate given as a numeric string is read.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenSingleDateRateIsNumericString_ShouldReadIt()
+    {
+        CurrencyPairRequest request = new(
+            new CurrencyPair(CurrencyCode.EUR, CurrencyCode.USD),
+            new DateOnly(2023, 1, 3),
+            new DateOnly(2023, 1, 3));
+        byte[] json = Encoding.UTF8.GetBytes(
+            """
+            { "success": true, "historical": true, "date": "2023-01-03", "source": "EUR", "quotes": { "EURUSD": "1.0546" } }
+            """);
+
+        PairRateData<ExchangeRateHostSeriesInfo> data = ExchangeRateHostResponseParser.Parse(json, request, "EUR", "USD", Options);
+
+        Assert.AreEqual(1, data.Observations.Count);
+        Assert.AreEqual(1.0546m, data.Observations[0].Rate);
+    }
 }

@@ -114,6 +114,73 @@ public class OfxSpotRateHistoryResponseParserTests
         Assert.AreEqual(0.6850m, data.Observations[0].Rate);
     }
 
+    /// <summary>
+    /// Verifies that a point's <c>PointInTime</c> is dated by its UTC day, its last millisecond included.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenPointInTimeIsLastMillisecondOfADay_ShouldDateItByThatUtcDay()
+    {
+        byte[] json = Utf8(
+            """
+            { "HistoricalPoints": [ { "PointInTime": 1672790399999, "InterbankRate": 0.6828 } ] }
+            """);
+
+        PairRateData<OfxSeriesInfo> data = OfxSpotRateHistoryResponseParser.Parse(json, Request(new(2023, 1, 1), new(2023, 1, 31)), Options);
+
+        Assert.HasCount(1, data.Observations);
+        Assert.AreEqual(new DateOnly(2023, 1, 3), data.Observations[0].Date);
+    }
+
+    /// <summary>
+    /// Verifies that points timed at the first and last milliseconds a <see cref="DateTimeOffset" /> represents are
+    /// dated by the first and last dates of its range.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenPointInTimeIsAtAnEndOfTheDateRange_ShouldReadIt()
+    {
+        byte[] json = Utf8(
+            """
+            {
+              "HistoricalPoints": [
+                { "PointInTime": -62135596800000, "InterbankRate": 0.5 },
+                { "PointInTime": 253402300799999, "InterbankRate": 0.9 }
+              ]
+            }
+            """);
+
+        PairRateData<OfxSeriesInfo> data = OfxSpotRateHistoryResponseParser.Parse(json, Request(DateOnly.MinValue, DateOnly.MaxValue), Options);
+
+        Assert.HasCount(2, data.Observations);
+        Assert.AreEqual(DateOnly.MinValue, data.Observations[0].Date);
+        Assert.AreEqual(DateOnly.MaxValue, data.Observations[1].Date);
+    }
+
+    /// <summary>
+    /// Verifies that points timed outside the range a <see cref="DateTimeOffset" /> represents, or at a fractional
+    /// millisecond, are skipped rather than failing the response.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenPointInTimeIsNotARepresentableTimestamp_ShouldSkipPoint()
+    {
+        byte[] json = Utf8(
+            """
+            {
+              "HistoricalPoints": [
+                { "PointInTime": -62135596800001, "InterbankRate": 0.5 },
+                { "PointInTime": 253402300800000, "InterbankRate": 0.6 },
+                { "PointInTime": 9223372036854775807, "InterbankRate": 0.7 },
+                { "PointInTime": 1672704000000.5, "InterbankRate": 0.8 },
+                { "PointInTime": 1672704000000, "InterbankRate": 0.9 }
+              ]
+            }
+            """);
+
+        PairRateData<OfxSeriesInfo> data = OfxSpotRateHistoryResponseParser.Parse(json, Request(DateOnly.MinValue, DateOnly.MaxValue), Options);
+
+        Assert.HasCount(1, data.Observations);
+        Assert.AreEqual(0.9m, data.Observations[0].Rate);
+    }
+
     private static CurrencyPairRequest Request(DateOnly startDate, DateOnly endDate) =>
         new(new CurrencyPair(CurrencyCode.AUD, CurrencyCode.USD), startDate, endDate);
 
