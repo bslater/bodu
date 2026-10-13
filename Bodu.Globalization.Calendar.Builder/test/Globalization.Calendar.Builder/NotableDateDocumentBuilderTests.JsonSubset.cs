@@ -216,7 +216,7 @@ public partial class NotableDateDocumentBuilderTests
     [TestMethod]
     public void FromJson_WhenOptionalSectionsAbsent_ShouldRetainResourceId()
     {
-        var builder = NotableDateDocumentBuilder.FromJson("""{ "resourceId": "demo.min" }""");
+        var builder = NotableDateDocumentBuilder.FromJson("""{ "schemaVersion": "1.0", "resourceId": "demo.min" }""");
 
         Assert.Contains("demo.min", builder.ToJson());
     }
@@ -229,6 +229,7 @@ public partial class NotableDateDocumentBuilderTests
     private static string JsonWithRule(string ruleJson) =>
         $$"""
         {
+          "schemaVersion": "1.0",
           "resourceId": "demo.rule",
           "notableDates": [
             { "id": "nd", "displayName": "ND", "category": "Observance", "rules": [ {{ruleJson}} ] }

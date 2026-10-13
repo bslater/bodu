@@ -135,14 +135,16 @@ public sealed partial class NotableDateDocumentBuilder
     /// policies, imports, uses or overrides is not an object, a rule's <c>strategy</c> and <c>recurrence</c>, or a
     /// <c>PatchRule</c> override's when it carries either, name no recognized kind or more than one between them, an
     /// <c>untilDate</c> declares no end strategy or one that names no recognized kind or more than one, an override's
-    /// <c>operation</c> is absent or names no operation, or an <c>AddRule</c> override has no <c>rule</c>.
+    /// <c>operation</c> is absent or names no operation, an object lacks a property the XML schema requires of it, a
+    /// concept's <c>rules</c> or a weekly recurrence's <c>days</c> holds no item, or an integer lies outside the range
+    /// the XML schema allows.
     /// </exception>
     /// <exception cref="NotSupportedException">
     /// <paramref name="json" /> declares a field the builder's document model cannot hold: an empty <c>tags</c> or
     /// <c>adjustments</c> list on a <c>PatchRule</c> override, an empty <c>adjustments</c> list on an import use, a
-    /// scope rule reference that does not name its <c>notableDateRef</c>, a handler parameter whose value is an object
-    /// or an array, or a metadata name, description or source, an adjustment policy's description or a rule's comment
-    /// that is an object or an array.
+    /// scope rule reference that is a bare rule identifier, a handler parameter whose value is an object or an array,
+    /// or a metadata name, description or source, an adjustment policy's description or a rule's comment that is an
+    /// object or an array.
     /// </exception>
     /// <remarks>
     /// <para>
@@ -203,6 +205,17 @@ public sealed partial class NotableDateDocumentBuilder
     /// diagnostic, rather than adding a rule with an empty identifier.
     /// </para>
     /// <para>
+    /// The values the XML schema requires and the ranges it holds integers to are held to as the loader holds a JSON
+    /// document to them: an object that lacks a property the schema requires of it (the root's <c>schemaVersion</c> and
+    /// <c>resourceId</c>, a concept's <c>id</c>, <c>displayName</c> and <c>category</c>, a strategy's <c>month</c>, …),
+    /// a concept's <c>rules</c> or a weekly recurrence's <c>days</c> that holds no item, and an integer outside the
+    /// schema's range (a day count or interval below 1, a year outside 0 to 65535, a day of the month outside 1 to 31,
+    /// an ISO week outside 1 to 53, or an ordinal that is zero, outside -366 to 366, or written with a plus sign or a
+    /// leading zero) throw a <see cref="FormatException" /> carrying the message of the loader's <c>BODU-CAL-SCHEMA</c>
+    /// diagnostic, rather than being read with a default in the value's place or written for the schema to reject at
+    /// <see cref="Build()" />. An empty list that is optional reads as absent.
+    /// </para>
+    /// <para>
     /// Parsing does not otherwise validate the document: a document the loader would reject for a reason other than a
     /// malformed value, such as a dangling reference, can still parse. Validate with <see cref="Validate()" /> or
     /// <see cref="TryBuild(out NotableDateResource?, out IReadOnlyList{NotableDateValidationDiagnostic})" />, or load
@@ -256,8 +269,9 @@ public sealed partial class NotableDateDocumentBuilder
     /// concepts, rules, adjustment policies, imports, uses or overrides is not an object, a rule's <c>strategy</c> and
     /// <c>recurrence</c>, or a <c>PatchRule</c> override's when it carries either, name no recognized kind or more than
     /// one between them, an <c>untilDate</c> declares no end strategy or one that names no recognized kind or more than
-    /// one, an override's <c>operation</c> is absent or names no operation, or an <c>AddRule</c> override has no
-    /// <c>rule</c>.
+    /// one, an override's <c>operation</c> is absent or names no operation, an object lacks a property the XML schema
+    /// requires of it, a concept's <c>rules</c> or a weekly recurrence's <c>days</c> holds no item, or an integer lies
+    /// outside the range the XML schema allows.
     /// </exception>
     /// <exception cref="NotSupportedException">
     /// <paramref name="json" /> declares a field the builder's document model cannot hold; see
@@ -270,10 +284,12 @@ public sealed partial class NotableDateDocumentBuilder
     {
         ThrowHelper.ThrowIfNull(json);
 
+        // The schema requires both, so neither falls back to a default as an authored document's version does.
+        ThrowIfRequiredMissing(json, NotableDateSchemaType.NotableDateResource);
         NotableDateDocumentBuilder builder = new()
         {
             _resourceId = ScalarText(json, "resourceId"),
-            _schemaVersion = ScalarText(json, "schemaVersion") ?? BuilderXml.DefaultSchemaVersion,
+            _schemaVersion = ScalarText(json, "schemaVersion") ?? string.Empty,
         };
 
         builder.ReadMetadataJson(Property(json, "metadata") as JsonObject);

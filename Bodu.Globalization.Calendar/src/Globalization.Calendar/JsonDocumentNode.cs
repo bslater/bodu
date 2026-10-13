@@ -146,7 +146,7 @@ internal sealed class JsonDocumentNode
     }
 
     /// <inheritdoc />
-    public IReadOnlyList<(string? Qualifier, string Name)> QualifiedReferenceList(string? xmlWrapper, string xmlItem, string qualifierName, string name, string jsonProperty, string field, ICollection<NotableDateValidationDiagnostic> diagnostics)
+    public IReadOnlyList<(string? Qualifier, string Name)> QualifiedReferenceList(string? xmlWrapper, string xmlItem, string qualifierName, string name, string jsonProperty, NotableDateSchemaType itemType, string field, ICollection<NotableDateValidationDiagnostic> diagnostics)
     {
         if (!TryGetProperty(jsonProperty, JsonValueKind.Array, out JsonElement array))
             return [];
@@ -161,6 +161,7 @@ internal sealed class JsonDocumentNode
             else if (item.ValueKind == JsonValueKind.Object)
             {
                 JsonDocumentNode reference = new(item, _diagnostics);
+                reference.CheckRequired(itemType, diagnostics);
                 references.Add((reference.Scalar(qualifierName), reference.Scalar(name) ?? string.Empty));
             }
             else
@@ -195,29 +196,35 @@ internal sealed class JsonDocumentNode
     /// </remarks>
     public void CheckPattern(string? value, NotableDateSchemaPattern pattern, string field, ICollection<NotableDateValidationDiagnostic> diagnostics)
     {
-        if (value is null || NotableDateSchemaPatterns.IsMatch(value, pattern))
-            return;
-
-        diagnostics.Add(new NotableDateValidationDiagnostic(
-            NotableDateValidationSeverity.Error,
-            "BODU-CAL-SCHEMA",
-            string.Format(CultureInfo.CurrentCulture, CalendarResourceStrings.Validation_SchemaPatternMismatch, field, value, NotableDateSchemaPatterns.GetPattern(pattern))));
+        if (value is not null && NotableDateSchemaPatterns.Check(value, pattern, field) is NotableDateValidationDiagnostic diagnostic)
+            diagnostics.Add(diagnostic);
     }
 
     /// <inheritdoc />
     /// <remarks>
-    /// An absent property records a <c>BODU-CAL-SCHEMA</c> error naming the schema type and the property, as the schema
-    /// reports the missing attribute or element in an XML document.
+    /// An absent property records a <c>BODU-CAL-SCHEMA</c> error naming the schema type and the property, and an empty
+    /// required list one naming the list, as the schema reports the missing attribute or element in an XML document.
     /// </remarks>
-    public void CheckRequired(string schemaType, string property, ICollection<NotableDateValidationDiagnostic> diagnostics)
+    public void CheckRequired(NotableDateSchemaType type, ICollection<NotableDateValidationDiagnostic> diagnostics)
     {
-        if (TryGetProperty(property, out _))
-            return;
+        foreach (string property in NotableDateSchemaRequirements.GetRequiredProperties(type))
+        {
+            if (!TryGetProperty(property, out JsonElement value))
+                diagnostics.Add(NotableDateSchemaRequirements.MissingProperty(type, property));
+            else if (value.ValueKind == JsonValueKind.Array && value.GetArrayLength() == 0 && NotableDateSchemaRequirements.RequiresItems(type, property))
+                diagnostics.Add(NotableDateSchemaRequirements.EmptyList(type, property));
+        }
+    }
 
-        diagnostics.Add(new NotableDateValidationDiagnostic(
-            NotableDateValidationSeverity.Error,
-            "BODU-CAL-SCHEMA",
-            string.Format(CultureInfo.CurrentCulture, CalendarResourceStrings.Validation_SchemaRequiredPropertyMissing, schemaType, property)));
+    /// <inheritdoc />
+    /// <remarks>
+    /// A value outside the range records a <c>BODU-CAL-SCHEMA</c> error naming the property, the value and the bound it
+    /// passes, as the schema reports the same value in an XML document.
+    /// </remarks>
+    public void CheckRange(int? value, NotableDateSchemaRange range, string field, ICollection<NotableDateValidationDiagnostic> diagnostics)
+    {
+        if (value is int number && NotableDateSchemaRanges.Check(number, range, field) is NotableDateValidationDiagnostic diagnostic)
+            diagnostics.Add(diagnostic);
     }
 
     /// <summary>

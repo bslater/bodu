@@ -18,6 +18,7 @@ public sealed partial class NotableDateSchemaPatternsTests
     [DataRow("Identifier", "identifier")]
     [DataRow("ResourceIdentifier", "resourceIdentifier")]
     [DataRow("TerritoryCode", "territoryCode")]
+    [DataRow("NonZeroOrdinal", "nonZeroOrdinal")]
     public void GetPattern_ForEachPattern_ShouldReturnTheSchemaPattern(string pattern, string simpleType)
     {
         string actual = NotableDateSchemaPatterns.GetPattern(Enum.Parse<NotableDateSchemaPattern>(pattern));

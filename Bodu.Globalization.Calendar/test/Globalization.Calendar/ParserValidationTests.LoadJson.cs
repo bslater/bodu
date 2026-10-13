@@ -1160,14 +1160,12 @@ public sealed partial class ParserValidationTests
     }
 
     /// <summary>
-    /// Verifies that a JSON scalar field holding the literal <c>null</c> reads as absent, loading as the document that
-    /// omits the field loads.
+    /// Verifies that an optional JSON scalar field holding the literal <c>null</c> reads as absent, loading as the
+    /// document that omits the field loads.
     /// </summary>
     /// <param name="field">The JSON property holding <c>null</c>.</param>
     [TestMethod]
     [DataRow("priority")]
-    [DataRow("category")]
-    [DataRow("displayName")]
     public void LoadJson_WhenScalarValueIsNull_ShouldReadItAsAbsent(string field)
     {
         NotableDateResource withNull = NotableDateResourceLoader.LoadJson(ScalarValueJson(field, "null"));

@@ -95,7 +95,7 @@ internal sealed class XmlDocumentNode
     }
 
     /// <inheritdoc />
-    public IReadOnlyList<(string? Qualifier, string Name)> QualifiedReferenceList(string? xmlWrapper, string xmlItem, string qualifierName, string name, string jsonProperty, string field, ICollection<NotableDateValidationDiagnostic> diagnostics)
+    public IReadOnlyList<(string? Qualifier, string Name)> QualifiedReferenceList(string? xmlWrapper, string xmlItem, string qualifierName, string name, string jsonProperty, NotableDateSchemaType itemType, string field, ICollection<NotableDateValidationDiagnostic> diagnostics)
     {
         XElement? container = xmlWrapper is null ? _element : _element.Element(_ns + xmlWrapper);
         if (container is null)
@@ -115,9 +115,15 @@ internal sealed class XmlDocumentNode
     }
 
     /// <inheritdoc />
-    public void CheckRequired(string schemaType, string property, ICollection<NotableDateValidationDiagnostic> diagnostics)
+    public void CheckRequired(NotableDateSchemaType type, ICollection<NotableDateValidationDiagnostic> diagnostics)
     {
         // The schema validation that precedes reading has already reported a missing required attribute or element.
+    }
+
+    /// <inheritdoc />
+    public void CheckRange(int? value, NotableDateSchemaRange range, string field, ICollection<NotableDateValidationDiagnostic> diagnostics)
+    {
+        // The schema validation that precedes reading has already reported a value outside the range.
     }
 
     /// <inheritdoc />

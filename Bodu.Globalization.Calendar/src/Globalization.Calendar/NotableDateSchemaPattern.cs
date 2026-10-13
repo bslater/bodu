@@ -26,4 +26,9 @@ internal enum NotableDateSchemaPattern
     /// The schema's <c>territoryCode</c> type: a country code, optionally followed by a subdivision code.
     /// </summary>
     TerritoryCode,
+
+    /// <summary>
+    /// The schema's <c>nonZeroOrdinal</c> type: an ordinal other than zero, written with no plus sign or leading zero.
+    /// </summary>
+    NonZeroOrdinal,
 }

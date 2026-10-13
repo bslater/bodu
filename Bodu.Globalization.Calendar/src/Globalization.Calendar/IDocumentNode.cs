@@ -194,17 +194,27 @@ internal interface IDocumentNode
     void CheckPattern(string? value, NotableDateSchemaPattern pattern, string field, ICollection<NotableDateValidationDiagnostic> diagnostics);
 
     /// <summary>
-    /// Checks that this node holds a property the XML schema requires of it, recording an error diagnostic when a JSON
-    /// node lacks it; an XML node is left to the schema, which has checked it.
+    /// Checks that this node holds every property the XML schema requires of its type, recording an error diagnostic
+    /// for each that a JSON node lacks; an XML node is left to the schema, which has checked it.
     /// </summary>
-    /// <param name="schemaType">The name of the XSD complex type this node stands for, used in the diagnostic.</param>
-    /// <param name="property">The name of the JSON property the schema requires.</param>
-    /// <param name="diagnostics">The collection that receives the diagnostic.</param>
+    /// <param name="type">The XSD complex type this node stands for.</param>
+    /// <param name="diagnostics">The collection that receives the diagnostics.</param>
     /// <remarks>
-    /// The JSON literal <c>null</c> counts as absent. A property that holds a value of the wrong kind is present, and
-    /// its node has reported it with <c>BODU-CAL-VALUE</c> when it was read.
+    /// The JSON literal <c>null</c> counts as absent, and a required list counts as absent when it holds no item. A
+    /// property that holds a value of the wrong kind is present, and its node reports it with <c>BODU-CAL-VALUE</c>
+    /// when it is read.
     /// </remarks>
-    void CheckRequired(string schemaType, string property, ICollection<NotableDateValidationDiagnostic> diagnostics);
+    void CheckRequired(NotableDateSchemaType type, ICollection<NotableDateValidationDiagnostic> diagnostics);
+
+    /// <summary>
+    /// Checks an integer read from this node against a range the XML schema holds it to, recording an error diagnostic
+    /// when a JSON value lies outside it; an XML value is left to the schema, which has checked it.
+    /// </summary>
+    /// <param name="value">The value, or <see langword="null" /> when absent or malformed.</param>
+    /// <param name="range">The range the schema holds the value to.</param>
+    /// <param name="field">The name of the JSON property the value was read from, used in the diagnostic.</param>
+    /// <param name="diagnostics">The collection that receives the diagnostic.</param>
+    void CheckRange(int? value, NotableDateSchemaRange range, string field, ICollection<NotableDateValidationDiagnostic> diagnostics);
 
     /// <summary>
     /// Reads a list of references that may be qualified: XML item elements carrying a qualifier attribute and a name
@@ -218,16 +228,22 @@ internal interface IDocumentNode
     /// <param name="qualifierName">The XML attribute and JSON property carrying each reference's qualifier.</param>
     /// <param name="name">The XML attribute and JSON property carrying each reference's name.</param>
     /// <param name="jsonProperty">The JSON array property name.</param>
+    /// <param name="itemType">
+    /// The XSD complex type of each item, whose required properties a JSON object must hold.
+    /// </param>
     /// <param name="field">The name of the field the list belongs to, used in the diagnostics.</param>
     /// <param name="diagnostics">
-    /// The collection that receives the diagnostic for each JSON item that is neither a string nor an object.
+    /// The collection that receives the diagnostic for each JSON item that is neither a string nor an object, or is an
+    /// object without a property its type requires.
     /// </param>
     /// <returns>
     /// The references, each with a <see langword="null" /> qualifier when it carries none; empty when absent.
     /// </returns>
     /// <remarks>
     /// A JSON item that is neither a string nor an object is left out after a <c>BODU-CAL-VALUE</c> error naming its
-    /// JSON kind is recorded for it, so the shortened list never reaches a loaded resource.
+    /// JSON kind is recorded for it, so the shortened list never reaches a loaded resource. A JSON object item is held
+    /// to the properties <paramref name="itemType" /> requires, as <see cref="CheckRequired" /> holds a node; a string
+    /// item, which carries the name alone, is a form only JSON has.
     /// </remarks>
-    IReadOnlyList<(string? Qualifier, string Name)> QualifiedReferenceList(string? xmlWrapper, string xmlItem, string qualifierName, string name, string jsonProperty, string field, ICollection<NotableDateValidationDiagnostic> diagnostics);
+    IReadOnlyList<(string? Qualifier, string Name)> QualifiedReferenceList(string? xmlWrapper, string xmlItem, string qualifierName, string name, string jsonProperty, NotableDateSchemaType itemType, string field, ICollection<NotableDateValidationDiagnostic> diagnostics);
 }

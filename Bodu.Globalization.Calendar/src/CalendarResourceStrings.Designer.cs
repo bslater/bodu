@@ -331,6 +331,33 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The &apos;{0}&apos; object&apos;s &apos;{1}&apos; property holds an empty list, which the schema does not allow..
+        /// </summary>
+        internal static string Validation_SchemaRequiredListEmpty {
+            get {
+                return ResourceManager.GetString("Validation_SchemaRequiredListEmpty", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The &apos;{0}&apos; value &apos;{1}&apos; is less than {2}, the minimum the schema allows..
+        /// </summary>
+        internal static string Validation_SchemaValueBelowMinimum {
+            get {
+                return ResourceManager.GetString("Validation_SchemaValueBelowMinimum", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The &apos;{0}&apos; value &apos;{1}&apos; is greater than {2}, the maximum the schema allows..
+        /// </summary>
+        internal static string Validation_SchemaValueAboveMaximum {
+            get {
+                return ResourceManager.GetString("Validation_SchemaValueAboveMaximum", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Override operation targets notable date '{0}', which does not exist in the resolved resource..
         /// </summary>
         internal static string Validation_OverrideNotableDateNotFound {

@@ -102,24 +102,60 @@ public class JsonDocumentNodeTests
     }
 
     /// <summary>
-    /// Verifies that a required property that is absent, or holds the literal <c>null</c>, records one
-    /// <c>BODU-CAL-SCHEMA</c> error naming the schema type and the property.
+    /// Verifies that a property the node's schema type requires that is absent, or holds the literal <c>null</c>,
+    /// records one <c>BODU-CAL-SCHEMA</c> error naming the schema type and the property.
     /// </summary>
     /// <param name="json">The node's JSON object.</param>
     [TestMethod]
-    [DataRow("{}")]
-    [DataRow("""{ "rule": null }""")]
+    [DataRow("""{ "notableDateRef": "x" }""")]
+    [DataRow("""{ "notableDateRef": "x", "rule": null }""")]
     public void CheckRequired_WhenPropertyIsAbsentOrNull_ShouldRecordSchemaDiagnostic(string json)
     {
         List<NotableDateValidationDiagnostic> diagnostics = new();
 
-        Node(json).CheckRequired("AddRule", "rule", diagnostics);
+        Node(json).CheckRequired(NotableDateSchemaType.AddRule, diagnostics);
 
         NotableDateValidationDiagnostic diagnostic = Assert.ContainsSingle(diagnostics);
         Assert.AreEqual("BODU-CAL-SCHEMA", diagnostic.Code);
         Assert.AreEqual(NotableDateValidationSeverity.Error, diagnostic.Severity);
-        Assert.Contains("'AddRule'", diagnostic.Message);
-        Assert.Contains("'rule'", diagnostic.Message);
+        Assert.AreEqual("The 'AddRule' object has no 'rule' property, which the schema requires.", diagnostic.Message);
+    }
+
+    /// <summary>
+    /// Verifies that every property the node's schema type requires that is absent records its own
+    /// <c>BODU-CAL-SCHEMA</c> error, in the order the type lists them.
+    /// </summary>
+    [TestMethod]
+    public void CheckRequired_WhenSeveralPropertiesAreAbsent_ShouldRecordOneDiagnosticEach()
+    {
+        List<NotableDateValidationDiagnostic> diagnostics = new();
+
+        Node("""{ "category": "Observance" }""").CheckRequired(NotableDateSchemaType.NotableDate, diagnostics);
+
+        CollectionAssert.AreEqual(
+            new[]
+            {
+                "The 'NotableDate' object has no 'id' property, which the schema requires.",
+                "The 'NotableDate' object has no 'displayName' property, which the schema requires.",
+                "The 'NotableDate' object has no 'rules' property, which the schema requires.",
+            },
+            diagnostics.Select(d => d.Message).ToArray());
+    }
+
+    /// <summary>
+    /// Verifies that a required list that holds no item records one <c>BODU-CAL-SCHEMA</c> error naming the schema type
+    /// and the list.
+    /// </summary>
+    [TestMethod]
+    public void CheckRequired_WhenRequiredListIsEmpty_ShouldRecordSchemaDiagnostic()
+    {
+        List<NotableDateValidationDiagnostic> diagnostics = new();
+
+        Node("""{ "days": [ ] }""").CheckRequired(NotableDateSchemaType.WeeklyRecurrence, diagnostics);
+
+        NotableDateValidationDiagnostic diagnostic = Assert.ContainsSingle(diagnostics);
+        Assert.AreEqual("BODU-CAL-SCHEMA", diagnostic.Code);
+        Assert.AreEqual("The 'WeeklyRecurrence' object's 'days' property holds an empty list, which the schema does not allow.", diagnostic.Message);
     }
 
     /// <summary>
@@ -128,14 +164,51 @@ public class JsonDocumentNodeTests
     /// </summary>
     /// <param name="json">The node's JSON object.</param>
     [TestMethod]
-    [DataRow("""{ "rule": {} }""")]
-    [DataRow("""{ "RULE": {} }""")]
-    [DataRow("""{ "rule": 5 }""")]
+    [DataRow("""{ "notableDateRef": "x", "rule": {} }""")]
+    [DataRow("""{ "NOTABLEDATEREF": "x", "RULE": {} }""")]
+    [DataRow("""{ "notableDateRef": 5, "rule": 5 }""")]
     public void CheckRequired_WhenPropertyIsPresent_ShouldRecordNothing(string json)
     {
         List<NotableDateValidationDiagnostic> diagnostics = new();
 
-        Node(json).CheckRequired("AddRule", "rule", diagnostics);
+        Node(json).CheckRequired(NotableDateSchemaType.AddRule, diagnostics);
+
+        Assert.IsEmpty(diagnostics);
+    }
+
+    /// <summary>
+    /// Verifies that a value outside a schema range records one <c>BODU-CAL-SCHEMA</c> error naming the field, the value
+    /// and the bound it passes.
+    /// </summary>
+    /// <param name="value">The value.</param>
+    /// <param name="expected">The expected message.</param>
+    [TestMethod]
+    [DataRow(0, "The 'day' value '0' is less than 1, the minimum the schema allows.")]
+    [DataRow(32, "The 'day' value '32' is greater than 31, the maximum the schema allows.")]
+    public void CheckRange_WhenValueIsOutsideRange_ShouldRecordSchemaDiagnostic(int value, string expected)
+    {
+        List<NotableDateValidationDiagnostic> diagnostics = new();
+
+        Node("{}").CheckRange(value, NotableDateSchemaRange.DayValue, "day", diagnostics);
+
+        NotableDateValidationDiagnostic diagnostic = Assert.ContainsSingle(diagnostics);
+        Assert.AreEqual("BODU-CAL-SCHEMA", diagnostic.Code);
+        Assert.AreEqual(expected, diagnostic.Message);
+    }
+
+    /// <summary>
+    /// Verifies that a value inside a schema range, its bounds included, or an absent value records no diagnostic.
+    /// </summary>
+    /// <param name="value">The value, or <see langword="null" /> for an absent value.</param>
+    [TestMethod]
+    [DataRow(1)]
+    [DataRow(31)]
+    [DataRow(null)]
+    public void CheckRange_WhenValueIsInsideRangeOrAbsent_ShouldRecordNothing(int? value)
+    {
+        List<NotableDateValidationDiagnostic> diagnostics = new();
+
+        Node("{}").CheckRange(value, NotableDateSchemaRange.DayValue, "day", diagnostics);
 
         Assert.IsEmpty(diagnostics);
     }

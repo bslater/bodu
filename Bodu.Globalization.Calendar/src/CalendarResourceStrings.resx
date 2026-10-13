@@ -153,6 +153,15 @@
   <data name="Validation_SchemaRequiredPropertyMissing" xml:space="preserve">
     <value>The '{0}' object has no '{1}' property, which the schema requires.</value>
   </data>
+  <data name="Validation_SchemaRequiredListEmpty" xml:space="preserve">
+    <value>The '{0}' object's '{1}' property holds an empty list, which the schema does not allow.</value>
+  </data>
+  <data name="Validation_SchemaValueBelowMinimum" xml:space="preserve">
+    <value>The '{0}' value '{1}' is less than {2}, the minimum the schema allows.</value>
+  </data>
+  <data name="Validation_SchemaValueAboveMaximum" xml:space="preserve">
+    <value>The '{0}' value '{1}' is greater than {2}, the maximum the schema allows.</value>
+  </data>
   <data name="Validation_OverrideNotableDateNotFound" xml:space="preserve">
     <value>Override operation targets notable date '{0}', which does not exist in the resolved resource.</value>
   </data>

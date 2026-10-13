@@ -24,6 +24,9 @@ public sealed partial class NotableDateSchemaPatternsTests
     [DataRow("TerritoryCode", "AU-NSW")]
     [DataRow("TerritoryCode", "GB-ENG")]
     [DataRow("TerritoryCode", "FR-75")]
+    [DataRow("NonZeroOrdinal", "1")]
+    [DataRow("NonZeroOrdinal", "-366")]
+    [DataRow("NonZeroOrdinal", "10")]
     public void IsMatch_WhenWholeValueMatches_ShouldReturnTrue(string pattern, string value)
     {
         Assert.IsTrue(NotableDateSchemaPatterns.IsMatch(value, Enum.Parse<NotableDateSchemaPattern>(pattern)));
@@ -54,6 +57,11 @@ public sealed partial class NotableDateSchemaPatternsTests
     [DataRow("TerritoryCode", "AU-")]
     [DataRow("TerritoryCode", "AU-NEWSW")]
     [DataRow("TerritoryCode", "AU\n")]
+    [DataRow("NonZeroOrdinal", "0")]
+    [DataRow("NonZeroOrdinal", "-0")]
+    [DataRow("NonZeroOrdinal", "+5")]
+    [DataRow("NonZeroOrdinal", "05")]
+    [DataRow("NonZeroOrdinal", " 5")]
     public void IsMatch_WhenValueBreaksPattern_ShouldReturnFalse(string pattern, string value)
     {
         Assert.IsFalse(NotableDateSchemaPatterns.IsMatch(value, Enum.Parse<NotableDateSchemaPattern>(pattern)));

@@ -445,7 +445,6 @@ public partial class NotableDateDocumentBuilderTests
         ["import use empty adjustments"] = (DefaultFieldPolicyJson, """ "imports": [ { "resource": "lib", "uses": [ { "notableDateRef": "lib-day", "adjustments": [ ] } ] } ], """, string.Empty),
         ["unqualified scope rule reference"] = ("""{ "id": "policy", "scope": { "ruleRefs": [ "r" ] }, "trigger": { "type": "IfWeekend" }, "action": { "type": "MoveToNextWorkingDay" }, "emission": { "mode": "ObservedOnly" } }""", string.Empty, string.Empty),
         ["handler parameter that is an object"] = ("""{ "id": "policy", "trigger": { "type": "IfWeekend" }, "action": { "type": "Custom", "handlerKey": "my-action" }, "emission": { "mode": "ObservedOnly" }, "parameters": { "options": { "fast": true } } }""", string.Empty, string.Empty),
-        ["scope rule reference without a concept"] = ("""{ "id": "policy", "scope": { "ruleRefs": [ { "ruleRef": "r" } ] }, "trigger": { "type": "IfWeekend" }, "action": { "type": "MoveToNextWorkingDay" }, "emission": { "mode": "ObservedOnly" } }""", string.Empty, string.Empty),
     };
 
     /// <summary>
@@ -500,9 +499,9 @@ public partial class NotableDateDocumentBuilderTests
 
     /// <summary>
     /// Verifies that a JSON field the builder's document model cannot represent, an explicitly empty list that clears
-    /// what a patch or an import would otherwise keep, a scope rule reference without its concept, or a handler
-    /// parameter whose value is not a scalar, is rejected with a <see cref="NotSupportedException" /> rather than
-    /// dropped or read differently.
+    /// what a patch or an import would otherwise keep, a scope rule reference that is a bare rule identifier, or a
+    /// handler parameter whose value is not a scalar, is rejected with a <see cref="NotSupportedException" /> rather
+    /// than dropped or read differently.
     /// </summary>
     /// <param name="scenario">The name of the field scenario.</param>
     [TestMethod]
@@ -510,7 +509,6 @@ public partial class NotableDateDocumentBuilderTests
     [DataRow("patch empty adjustments")]
     [DataRow("import use empty adjustments")]
     [DataRow("unqualified scope rule reference")]
-    [DataRow("scope rule reference without a concept")]
     [DataRow("handler parameter that is an object")]
     public void FromJson_WhenFieldCannotBeRepresented_ShouldThrowNotSupportedException(string scenario)
     {
@@ -846,14 +844,12 @@ public partial class NotableDateDocumentBuilderTests
     }
 
     /// <summary>
-    /// Verifies that a JSON scalar field holding the literal <c>null</c> reads as absent, as the loader reads it, so the
-    /// field keeps its default.
+    /// Verifies that an optional JSON scalar field holding the literal <c>null</c> reads as absent, as the loader reads
+    /// it, so the field keeps its default.
     /// </summary>
     /// <param name="field">The JSON property holding <c>null</c>.</param>
     [TestMethod]
     [DataRow("priority")]
-    [DataRow("category")]
-    [DataRow("displayName")]
     public void FromJson_WhenScalarValueIsNull_ShouldBuildWhatLoadJsonLoads(string field)
     {
         string json = ObjectValueJson(field, "null");
