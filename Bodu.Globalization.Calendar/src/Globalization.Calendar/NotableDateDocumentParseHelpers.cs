@@ -187,7 +187,7 @@ internal static class NotableDateDocumentParseHelpers
         diagnostics.Add(new NotableDateValidationDiagnostic(
             NotableDateValidationSeverity.Error,
             "BODU-CAL-MONTH",
-            string.Format(CultureInfo.CurrentCulture, CalendarResourceStrings.Validation_InvalidMonthValue, notableDateId, ruleId, value ?? string.Empty)));
+            string.Format(CultureInfo.CurrentCulture, CalendarResourceStrings.Validation_InvalidCalendarMonthValue, notableDateId, ruleId, value ?? string.Empty, calendar)));
 
         return (1, null);
     }
