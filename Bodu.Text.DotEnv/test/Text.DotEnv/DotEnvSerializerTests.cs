@@ -486,6 +486,30 @@ public partial class DotEnvSerializerTests
     ];
 
     /// <summary>
+    /// Gets dictionary root values whose keys are not strings, each of which serialization must reject with
+    /// <see cref="DotEnvSerializationException" /> naming its type.
+    /// </summary>
+    /// <value>The rows, each a named dictionary and the exception it raises.</value>
+    public static IEnumerable<object[]> NonStringKeyedDictionaryRootValues =>
+    [
+        [new InvalidKat<object>("Hashtable", new Hashtable { ["A"] = "a" }, typeof(DotEnvSerializationException), MessageContains: typeof(Hashtable).ToString())],
+        [new InvalidKat<object>("SortedList", new SortedList { ["A"] = "a" }, typeof(DotEnvSerializationException), MessageContains: typeof(SortedList).ToString())],
+        [new InvalidKat<object>("Dictionary<int, string>", new Dictionary<int, string> { [1] = "a" }, typeof(DotEnvSerializationException), MessageContains: typeof(Dictionary<int, string>).ToString())],
+    ];
+
+    /// <summary>
+    /// Gets dictionary root types whose keys are not strings, each of which deserialization must reject with
+    /// <see cref="DotEnvSerializationException" /> naming its type.
+    /// </summary>
+    /// <value>The rows, each a named dictionary type and the exception it raises.</value>
+    public static IEnumerable<object[]> NonStringKeyedDictionaryRootTypes =>
+    [
+        [new InvalidKat<Type>("Hashtable", typeof(Hashtable), typeof(DotEnvSerializationException), MessageContains: typeof(Hashtable).ToString())],
+        [new InvalidKat<Type>("SortedList", typeof(SortedList), typeof(DotEnvSerializationException), MessageContains: typeof(SortedList).ToString())],
+        [new InvalidKat<Type>("Dictionary<int, string>", typeof(Dictionary<int, string>), typeof(DotEnvSerializationException), MessageContains: typeof(Dictionary<int, string>).ToString())],
+    ];
+
+    /// <summary>
     /// Deserializes text into a root of a type known only at run time, through
     /// <see cref="DotEnvSerializer.Deserialize{T}(string, DotEnvSerializerOptions?)" />, rethrowing the serializer's own exception.
     /// </summary>

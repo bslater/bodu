@@ -64,4 +64,30 @@ public sealed partial class FlatBindingTests
             Assert.IsNull(dictionary, value?.GetType().Name ?? "null");
         }
     }
+
+    /// <summary>
+    /// Verifies that a dictionary whose type is not keyed by <see cref="string" />, whether it implements only the
+    /// non-generic <see cref="IDictionary" />, as <see cref="Hashtable" /> and <see cref="SortedList" /> do, or a
+    /// generic dictionary with other keys, is not a dictionary the serializers write as entries, even when its keys
+    /// are strings.
+    /// </summary>
+    [TestMethod]
+    public void TryGetDictionary_WhenTheValueIsADictionaryWhoseKeysAreNotStrings_ShouldReturnFalse()
+    {
+        object[] values =
+        [
+            new Hashtable { ["a"] = 1 },
+            new SortedList { ["a"] = 1 },
+            new Dictionary<int, string> { [1] = "a" },
+            new Dictionary<object, string> { ["a"] = "a" },
+        ];
+
+        foreach (object value in values)
+        {
+            bool found = FlatBinding.TryGetDictionary(value, out IDictionary? dictionary);
+
+            Assert.IsFalse(found, value.GetType().Name);
+            Assert.IsNull(dictionary, value.GetType().Name);
+        }
+    }
 }

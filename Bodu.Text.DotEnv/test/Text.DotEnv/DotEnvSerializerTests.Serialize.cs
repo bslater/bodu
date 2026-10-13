@@ -87,6 +87,28 @@ public partial class DotEnvSerializerTests
     }
 
     /// <summary>
+    /// Verifies that a dictionary root whose keys are not strings, such as a <see cref="System.Collections.Hashtable" />
+    /// or a <see cref="Dictionary{TKey, TValue}" /> keyed by <see cref="int" />, throws
+    /// <see cref="DotEnvSerializationException" /> naming its type, as a root that is not an object does, rather than
+    /// writing entries that do not read back into it.
+    /// </summary>
+    /// <param name="kat">The dictionary root and the exception it raises.</param>
+    [TestMethod]
+    [DynamicData(
+        nameof(NonStringKeyedDictionaryRootValues),
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
+    public void Serialize_WhenRootIsADictionaryWhoseKeysAreNotStrings_ShouldThrowDotEnvSerializationException(InvalidKat<object> kat)
+    {
+        var ex = Assert.ThrowsExactly<DotEnvSerializationException>(() =>
+        {
+            _ = DotEnvSerializer.Serialize(kat.Input);
+        });
+
+        Assert.IsTrue(ex.Message.Contains(kat.MessageContains!, StringComparison.Ordinal), ex.Message);
+    }
+
+    /// <summary>
     /// Verifies that a dictionary key the reader would not read back throws <see cref="DotEnvSerializationException" />
     /// naming the key, with the writer's <see cref="ArgumentException" /> as the inner exception, rather than writing
     /// text that does not read back.

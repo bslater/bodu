@@ -147,6 +147,28 @@ public partial class DotEnvSerializerTests
     }
 
     /// <summary>
+    /// Verifies that a dictionary root type whose keys are not strings, such as
+    /// <see cref="System.Collections.Hashtable" /> or a <see cref="Dictionary{TKey, TValue}" /> keyed by
+    /// <see cref="int" />, throws <see cref="DotEnvSerializationException" /> naming the type, as a root that is not an
+    /// object does, rather than returning an empty instance.
+    /// </summary>
+    /// <param name="kat">The dictionary root type and the exception it raises.</param>
+    [TestMethod]
+    [DynamicData(
+        nameof(NonStringKeyedDictionaryRootTypes),
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
+    public void Deserialize_WhenRootIsADictionaryWhoseKeysAreNotStrings_ShouldThrowDotEnvSerializationException(InvalidKat<Type> kat)
+    {
+        var ex = Assert.ThrowsExactly<DotEnvSerializationException>(() =>
+        {
+            _ = DeserializeAs(kat.Input, "A=a\n");
+        });
+
+        Assert.IsTrue(ex.Message.Contains(kat.MessageContains!, StringComparison.Ordinal), ex.Message);
+    }
+
+    /// <summary>
     /// Verifies that a POCO without a public parameterless constructor throws
     /// <see cref="DotEnvSerializationException" /> naming the type, rather than the runtime's
     /// <see cref="MissingMethodException" />.
