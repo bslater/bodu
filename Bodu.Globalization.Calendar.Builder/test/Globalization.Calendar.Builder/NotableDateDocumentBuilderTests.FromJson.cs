@@ -790,4 +790,71 @@ public partial class NotableDateDocumentBuilderTests
 
         return json;
     }
+
+    /// <summary>
+    /// Verifies that a JSON scalar field holding an object or an array, which the loader rejects with
+    /// <c>BODU-CAL-VALUE</c> naming the field, is rejected with a <see cref="FormatException" /> naming the field, rather
+    /// than read as absent or failing with an <see cref="InvalidOperationException" />.
+    /// </summary>
+    /// <param name="field">The JSON property holding the value.</param>
+    /// <param name="literal">The object or array, as a JSON literal.</param>
+    [TestMethod]
+    [DataRow("priority", "{}")]
+    [DataRow("priority", "[]")]
+    [DataRow("category", "{}")]
+    [DataRow("category", "[ \"PublicHoliday\" ]")]
+    [DataRow("displayName", "{}")]
+    [DataRow("displayName", "[]")]
+    [DataRow("day", "{}")]
+    public void FromJson_WhenScalarValueIsObjectOrArray_ShouldThrowFormatException(string field, string literal)
+    {
+        string json = ObjectValueJson(field, literal);
+
+        FormatException ex = Assert.ThrowsExactly<FormatException>(() =>
+        {
+            _ = NotableDateDocumentBuilder.FromJson(json);
+        });
+
+        Assert.Contains(field, ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that a JSON scalar field holding the literal <c>null</c> reads as absent, as the loader reads it, so the
+    /// field keeps its default.
+    /// </summary>
+    /// <param name="field">The JSON property holding <c>null</c>.</param>
+    [TestMethod]
+    [DataRow("priority")]
+    [DataRow("category")]
+    [DataRow("displayName")]
+    public void FromJson_WhenScalarValueIsNull_ShouldBuildWhatLoadJsonLoads(string field)
+    {
+        string json = ObjectValueJson(field, "null");
+
+        NotableDateResource loaded = NotableDateResourceLoader.LoadJson(json);
+        NotableDateResource built = NotableDateDocumentBuilder.FromJson(json).Build();
+
+        CollectionAssert.AreEqual(PackBytes(loaded), PackBytes(built), field);
+    }
+
+    /// <summary>
+    /// Builds a JSON document with one fixed concept whose named property, the rule's <c>priority</c>, the concept's
+    /// <c>category</c> or <c>displayName</c>, or the fixed strategy's <c>day</c>, holds the supplied JSON literal.
+    /// </summary>
+    /// <param name="field">The property that holds the literal.</param>
+    /// <param name="literal">The JSON literal.</param>
+    /// <returns>The JSON document.</returns>
+    private static string ObjectValueJson(string field, string literal)
+    {
+        string priority = field == "priority" ? literal : "3";
+        string category = field == "category" ? literal : "\"PublicHoliday\"";
+        string displayName = field == "displayName" ? literal : "\"X\"";
+        string day = field == "day" ? literal : "1";
+
+        return $$"""
+            { "schemaVersion": "1.0", "resourceId": "test.objects",
+              "notableDates": [ { "id": "x", "displayName": {{displayName}}, "category": {{category}},
+                "rules": [ { "id": "r", "priority": {{priority}}, "strategy": { "fixed": { "month": 3, "day": {{day}} } } } ] } ] }
+            """;
+    }
 }
