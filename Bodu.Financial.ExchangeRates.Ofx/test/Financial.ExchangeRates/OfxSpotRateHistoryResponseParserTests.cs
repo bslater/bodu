@@ -181,6 +181,30 @@ public class OfxSpotRateHistoryResponseParserTests
         Assert.AreEqual(0.9m, data.Observations[0].Rate);
     }
 
+    /// <summary>
+    /// Verifies that a historical point that is not a JSON object is skipped like any other malformed point, rather than
+    /// failing the response with <see cref="InvalidOperationException" />.
+    /// </summary>
+    /// <param name="point">The JSON text of a point that is not an object.</param>
+    [TestMethod]
+    [DataRow("5")]
+    [DataRow("\"x\"")]
+    [DataRow("null")]
+    [DataRow("true")]
+    [DataRow("[1]")]
+    public void Parse_WhenHistoricalPointIsNotAnObject_ShouldSkipIt(string point)
+    {
+        byte[] json = Utf8(
+            $$"""
+            { "HistoricalPoints": [ {{point}}, { "PointInTime": 1672704000000, "InterbankRate": 0.6828 } ] }
+            """);
+
+        PairRateData<OfxSeriesInfo> data = OfxSpotRateHistoryResponseParser.Parse(json, Request(new(2023, 1, 1), new(2023, 1, 31)), Options);
+
+        Assert.HasCount(1, data.Observations);
+        Assert.AreEqual(0.6828m, data.Observations[0].Rate);
+    }
+
     private static CurrencyPairRequest Request(DateOnly startDate, DateOnly endDate) =>
         new(new CurrencyPair(CurrencyCode.AUD, CurrencyCode.USD), startDate, endDate);
 
