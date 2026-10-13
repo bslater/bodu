@@ -157,4 +157,64 @@ public partial class Utf8IniReaderTests
             _ = Transcribe("=value\n");
         });
     }
+
+    /// <summary>
+    /// Verifies that a key whose line ends before any <c>=</c> is rejected as a missing assignment on its own line, at
+    /// its line ending, whether that is a LF, a CR LF or a lone CR, rather than taking the <c>=</c> of the next line.
+    /// </summary>
+    /// <param name="testName">The human-readable scenario label.</param>
+    /// <param name="lineEnding">The line ending after each line.</param>
+    [TestMethod]
+    [DataRow("LF", "\n")]
+    [DataRow("CR LF", "\r\n")]
+    [DataRow("lone CR", "\r")]
+    public void Read_WhenAKeyLineEndsBeforeAnAssignment_ShouldThrowIniFormatException(string testName, string lineEnding)
+    {
+        _ = testName;
+
+        IniFormatException ex = Assert.ThrowsExactly<IniFormatException>(() =>
+        {
+            _ = Transcribe($"a=1{lineEnding}key{lineEnding}=value{lineEnding}");
+        });
+
+        Assert.AreEqual(2, ex.LineNumber, "LineNumber");
+        Assert.AreEqual(6 + lineEnding.Length, ex.Offset, "Offset");
+    }
+
+    /// <summary>
+    /// Verifies that a comment and a section header end at a LF, a CR LF or a lone CR, so the entry on the next line is
+    /// read.
+    /// </summary>
+    /// <param name="testName">The human-readable scenario label.</param>
+    /// <param name="lineEnding">The line ending after each line.</param>
+    [TestMethod]
+    [DataRow("LF", "\n")]
+    [DataRow("CR LF", "\r\n")]
+    [DataRow("lone CR", "\r")]
+    public void Read_WhenACommentOrASectionHeaderEndsAtALineEnding_ShouldReadTheEntryOnTheNextLine(string testName, string lineEnding)
+    {
+        _ = testName;
+
+        List<string> tokens = Transcribe($"; one{lineEnding}# two{lineEnding}[s]{lineEnding}a=1{lineEnding}");
+
+        CollectionAssert.AreEqual(
+            new List<string> { "Comment: one", "Comment: two", "Section:s", "Name:a", "String:1" },
+            tokens,
+            string.Join(" | ", tokens));
+    }
+
+    /// <summary>
+    /// Verifies that only a whole byte-order mark is skipped: input that starts with its first two bytes keeps them, so
+    /// they read as one U+FFFD at the start of the first key.
+    /// </summary>
+    [TestMethod]
+    public void Read_WhenTheInputStartsWithPartOfAByteOrderMark_ShouldReadItAsText()
+    {
+        byte[] bytes = [0xEF, 0xBB, .. "a=1\n"u8];
+        var reader = new Utf8IniReader(bytes);
+
+        Assert.IsTrue(reader.Read());
+        Assert.AreEqual(IniTokenType.PropertyName, reader.TokenType);
+        Assert.AreEqual("\uFFFDa", reader.GetString());
+    }
 }

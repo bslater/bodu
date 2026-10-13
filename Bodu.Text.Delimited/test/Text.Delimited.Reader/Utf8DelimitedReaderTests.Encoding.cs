@@ -153,6 +153,87 @@ public partial class Utf8DelimitedReaderTests
     }
 
     /// <summary>
+    /// Verifies that a comment line ends at a LF, a CR LF or a lone CR, so the record on the next line is read.
+    /// </summary>
+    /// <param name="testName">The human-readable scenario label.</param>
+    /// <param name="lineEnding">The line ending after each line.</param>
+    [TestMethod]
+    [DataRow("LF", "\n")]
+    [DataRow("CR LF", "\r\n")]
+    [DataRow("lone CR", "\r")]
+    public void Read_WhenACommentLineEndsAtALineEnding_ShouldReadTheRecordOnTheNextLine(string testName, string lineEnding)
+    {
+        _ = testName;
+        var options = new DelimitedReaderOptions { NoHeader = true, AllowComments = true };
+
+        List<string[]> records = ReadRecords($"a,b{lineEnding}# note{lineEnding}1,2{lineEnding}", options);
+
+        Assert.HasCount(2, records);
+        CollectionAssert.AreEqual(new[] { "a", "b" }, records[0]);
+        CollectionAssert.AreEqual(new[] { "1", "2" }, records[1]);
+    }
+
+    /// <summary>
+    /// Verifies that a record skipped for text after a closing quote is skipped to its LF, CR LF or lone CR, so the
+    /// record on the next line is read.
+    /// </summary>
+    /// <param name="testName">The human-readable scenario label.</param>
+    /// <param name="lineEnding">The line ending after each line.</param>
+    [TestMethod]
+    [DataRow("LF", "\n")]
+    [DataRow("CR LF", "\r\n")]
+    [DataRow("lone CR", "\r")]
+    public void Read_WhenASkippedRecordEndsAtALineEnding_ShouldReadTheRecordOnTheNextLine(string testName, string lineEnding)
+    {
+        _ = testName;
+        var options = new DelimitedReaderOptions { NoHeader = true, MalformedRecordBehavior = DelimitedMalformedRecordBehavior.SkipRecord };
+
+        List<string[]> records = ReadRecords($"\"a\"x,b{lineEnding}c,d{lineEnding}", options);
+
+        Assert.HasCount(1, records);
+        CollectionAssert.AreEqual(new[] { "c", "d" }, records[0]);
+    }
+
+    /// <summary>
+    /// Verifies that an unquoted field ends at the delimiter or at a LF, a CR LF or a lone CR, whichever comes first.
+    /// </summary>
+    /// <param name="testName">The human-readable scenario label.</param>
+    /// <param name="lineEnding">The line ending after each line.</param>
+    [TestMethod]
+    [DataRow("LF", "\n")]
+    [DataRow("CR LF", "\r\n")]
+    [DataRow("lone CR", "\r")]
+    public void Read_WhenUnquotedFieldsEndAtTheDelimiterOrALineEnding_ShouldReadEachField(string testName, string lineEnding)
+    {
+        _ = testName;
+        var options = new DelimitedReaderOptions { NoHeader = true };
+
+        List<string[]> records = ReadRecords($"ab,,c d{lineEnding}{lineEnding}e{lineEnding}f,", options);
+
+        Assert.HasCount(3, records);
+        CollectionAssert.AreEqual(new[] { "ab", string.Empty, "c d" }, records[0]);
+        CollectionAssert.AreEqual(new[] { "e" }, records[1]);
+        CollectionAssert.AreEqual(new[] { "f", string.Empty }, records[2]);
+    }
+
+    /// <summary>
+    /// Verifies that only a whole byte-order mark is skipped: input that starts with its first two bytes keeps them, so
+    /// they read as one U+FFFD at the start of the first field.
+    /// </summary>
+    [TestMethod]
+    public void Read_WhenTheInputStartsWithPartOfAByteOrderMark_ShouldReadItAsFieldText()
+    {
+        byte[] bytes = [0xEF, 0xBB, .. "a,b\n"u8];
+
+        List<string> tokens = Transcribe(bytes, new DelimitedReaderOptions { NoHeader = true });
+
+        CollectionAssert.AreEqual(
+            new List<string> { "StartArray", "StartArray", "String:\uFFFDa", "String:b", "EndArray", "EndArray" },
+            tokens,
+            string.Join(" | ", tokens));
+    }
+
+    /// <summary>
     /// Reads the supplied UTF-8 bytes to completion and renders each token, as <c>Transcribe(string, …)</c> does for
     /// text.
     /// </summary>

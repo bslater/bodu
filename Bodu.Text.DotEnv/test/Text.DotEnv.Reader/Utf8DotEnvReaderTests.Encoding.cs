@@ -190,4 +190,120 @@ public partial class Utf8DotEnvReaderTests
             tokens,
             string.Join(" | ", tokens));
     }
+
+    /// <summary>
+    /// Verifies that a comment ends at a LF, a CR LF or a lone CR, so the entry on the next line is read.
+    /// </summary>
+    /// <param name="testName">The human-readable scenario label.</param>
+    /// <param name="lineEnding">The line ending after each line.</param>
+    [TestMethod]
+    [DataRow("LF", "\n")]
+    [DataRow("CR LF", "\r\n")]
+    [DataRow("lone CR", "\r")]
+    public void Read_WhenACommentEndsAtALineEnding_ShouldReadTheEntryOnTheNextLine(string testName, string lineEnding)
+    {
+        _ = testName;
+
+        List<string> tokens = Transcribe($"# note{lineEnding}A=1{lineEnding}");
+
+        CollectionAssert.AreEqual(
+            new List<string> { "StartObject", "Comment: note", "Name:A", "String:1", "EndObject" },
+            tokens,
+            string.Join(" | ", tokens));
+    }
+
+    /// <summary>
+    /// Verifies that a single-quoted value that meets a LF, a CR LF or a lone CR before its closing quote is reported
+    /// unterminated at its opening quote.
+    /// </summary>
+    /// <param name="testName">The human-readable scenario label.</param>
+    /// <param name="lineEnding">The line ending after each line.</param>
+    [TestMethod]
+    [DataRow("LF", "\n")]
+    [DataRow("CR LF", "\r\n")]
+    [DataRow("lone CR", "\r")]
+    public void Read_WhenASingleQuotedValueMeetsALineEnding_ShouldReportItUnterminatedAtItsOpeningQuote(string testName, string lineEnding)
+    {
+        _ = testName;
+
+        DotEnvFormatException ex = Assert.ThrowsExactly<DotEnvFormatException>(() =>
+        {
+            _ = Transcribe($"A=1{lineEnding}KEY='abc{lineEnding}def'{lineEnding}");
+        });
+
+        Assert.AreEqual(2, ex.LineNumber, "LineNumber");
+        Assert.AreEqual(5, ex.ColumnNumber, "ColumnNumber");
+        Assert.AreEqual(7 + lineEnding.Length, ex.Offset, "Offset");
+    }
+
+    /// <summary>
+    /// Verifies that only a whole byte-order mark is skipped: input that starts with its first two bytes keeps them, so
+    /// they are rejected as the start of a key at the first column and offset zero.
+    /// </summary>
+    [TestMethod]
+    public void Read_WhenTheInputStartsWithPartOfAByteOrderMark_ShouldNotSkipIt()
+    {
+        byte[] bytes = [0xEF, 0xBB, .. "A=1\n"u8];
+
+        DotEnvFormatException ex = Assert.ThrowsExactly<DotEnvFormatException>(() =>
+        {
+            _ = Transcribe(bytes);
+        });
+
+        Assert.AreEqual(1, ex.LineNumber, "LineNumber");
+        Assert.AreEqual(1, ex.ColumnNumber, "ColumnNumber");
+        Assert.AreEqual(0, ex.Offset, "Offset");
+    }
+
+    /// <summary>
+    /// Verifies that bytes that are not valid UTF-8 directly before an escape sequence or a line break in a
+    /// double-quoted value read as U+FFFD, and leave the escape or the line break that follows them as it is.
+    /// </summary>
+    /// <param name="testName">The human-readable scenario label.</param>
+    /// <param name="invalid">The bytes written after <c>a</c> in the value, in hexadecimal.</param>
+    /// <param name="following">The text written after the invalid bytes.</param>
+    /// <param name="expected">The text the value should read as.</param>
+    [TestMethod]
+    [DataRow("before an escaped quote", "E282", "\\\"", "a\uFFFD\"")]
+    [DataRow("before an escaped backslash", "C3", "\\\\", "a\uFFFD\\")]
+    [DataRow("before a newline escape", "F09F98", "\\n", "a\uFFFD\n")]
+    [DataRow("before a line continuation", "80", "\\\nb", "a\uFFFDb")]
+    [DataRow("before a LF", "E282", "\n", "a\uFFFD\n")]
+    [DataRow("before a lone CR", "80", "\r", "a\uFFFD\r")]
+    [DataRow("before a CR LF", "FF", "\r\n", "a\uFFFD\r\n")]
+    public void Read_WhenBytesThatAreNotUtf8PrecedeAnEscapeOrALineBreakInADoubleQuotedValue_ShouldReadAReplacementCharacterBeforeIt(string testName, string invalid, string following, string expected)
+    {
+        _ = testName;
+        byte[] bytes = [.. "K=\"a"u8, .. Convert.FromHexString(invalid), .. Encoding.UTF8.GetBytes(following), .. "\"\nNEXT=1\n"u8];
+
+        List<string> tokens = Transcribe(bytes);
+
+        CollectionAssert.AreEqual(
+            new List<string> { "StartObject", "Name:K", $"String:{expected}", "Name:NEXT", "String:1", "EndObject" },
+            tokens,
+            string.Join(" | ", tokens));
+    }
+
+    /// <summary>
+    /// Verifies that a double-quoted value of thousands of bytes, with characters outside ASCII throughout and with or
+    /// without escape sequences, reads back whole.
+    /// </summary>
+    /// <param name="testName">The human-readable scenario label.</param>
+    /// <param name="unit">The text repeated to form the value, as written between the quotes.</param>
+    /// <param name="decodedUnit">The text <paramref name="unit" /> reads as.</param>
+    [TestMethod]
+    [DataRow("with escapes", "\u00E9\\\"\u20AC\\n\U0001F600x", "\u00E9\"\u20AC\n\U0001F600x")]
+    [DataRow("without escapes", "\u00E9 \u20AC\n\U0001F600x", "\u00E9 \u20AC\n\U0001F600x")]
+    public void Read_WhenADoubleQuotedValueIsLong_ShouldDecodeItWhole(string testName, string unit, string decodedUnit)
+    {
+        _ = testName;
+        string source = "K=\"" + string.Concat(Enumerable.Repeat(unit, 300)) + "\"\nNEXT=1\n";
+        string expected = string.Concat(Enumerable.Repeat(decodedUnit, 300));
+
+        List<string> tokens = Transcribe(source);
+
+        Assert.HasCount(6, tokens);
+        Assert.AreEqual($"String:{expected}", tokens[2]);
+        Assert.AreEqual("Name:NEXT", tokens[3]);
+    }
 }
