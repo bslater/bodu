@@ -557,4 +557,237 @@ public partial class NotableDateDocumentBuilderTests
             .Replace("@imports@", imports, StringComparison.Ordinal)
             .Replace("@patch@", patch, StringComparison.Ordinal);
     }
+
+    /// <summary>
+    /// The well-formed value, as a JSON literal, of every text field the JSON text test document holds, keyed by the
+    /// placeholder that stands for it.
+    /// </summary>
+    private static readonly Dictionary<string, string> s_jsonTextFieldValues = new(StringComparer.Ordinal)
+    {
+        ["schemaVersion"] = "\"1.0\"",
+        ["resourceId"] = "\"test.text\"",
+        ["metadata.name"] = "\"Name\"",
+        ["metadata.description"] = "\"Description\"",
+        ["metadata.sources"] = "\"source\"",
+        ["policy.id"] = "\"policy\"",
+        ["policy.description"] = "\"Policy\"",
+        ["trigger.handlerKey"] = "\"my-trigger\"",
+        ["action.handlerKey"] = "\"my-action\"",
+        ["emission.reason"] = "\"Reason\"",
+        ["import.resource"] = "\"lib\"",
+        ["use.as"] = "\"library-day\"",
+        ["notableDate.id"] = "\"anchor\"",
+        ["notableDate.displayName"] = "\"Anchor\"",
+        ["rule.id"] = "\"r\"",
+        ["rule.comment"] = "\"Comment\"",
+    };
+
+    /// <summary>
+    /// The well-formed item, as a JSON literal, of every list the JSON list test document holds, keyed by the
+    /// placeholder that stands for it.
+    /// </summary>
+    private static readonly Dictionary<string, string> s_jsonListFieldItems = new(StringComparer.Ordinal)
+    {
+        ["categoryPrecedence"] = "\"PublicHoliday\"",
+        ["scope.territories"] = "\"AU\"",
+        ["scope.calendars"] = "\"Gregorian\"",
+        ["scope.categories"] = "\"PublicHoliday\"",
+        ["scope.notableDateRefs"] = "\"anchor\"",
+        ["trigger.weekdays"] = "\"Saturday\"",
+        ["use.adjustments"] = "\"policy\"",
+        ["notableDate.tags"] = "\"civic\"",
+        ["applicability.territories"] = "\"AU\"",
+        ["rule.tags"] = "\"civic\"",
+        ["rule.adjustments"] = "\"policy\"",
+        ["patch.tags"] = "\"civic\"",
+        ["patch.adjustments"] = "\"policy\"",
+    };
+
+    /// <summary>
+    /// Verifies that a JSON text field holding a number or a Boolean, which the loader reads as its text, builds through
+    /// the builder into the same resource the loader loads, compared byte for byte as binary rule packs, rather than
+    /// making the builder throw.
+    /// </summary>
+    /// <param name="field">The placeholder of the text field.</param>
+    /// <param name="literal">The number or Boolean, as a JSON literal.</param>
+    [TestMethod]
+    [DataRow("schemaVersion", "5")]
+    [DataRow("schemaVersion", "true")]
+    [DataRow("resourceId", "true")]
+    [DataRow("metadata.name", "5")]
+    [DataRow("metadata.name", "true")]
+    [DataRow("metadata.description", "5")]
+    [DataRow("metadata.sources", "5")]
+    [DataRow("metadata.sources", "true")]
+    [DataRow("policy.id", "true")]
+    [DataRow("policy.description", "5")]
+    [DataRow("trigger.handlerKey", "5")]
+    [DataRow("trigger.handlerKey", "true")]
+    [DataRow("action.handlerKey", "5")]
+    [DataRow("action.handlerKey", "false")]
+    [DataRow("emission.reason", "5")]
+    [DataRow("emission.reason", "true")]
+    [DataRow("import.resource", "5")]
+    [DataRow("import.resource", "true")]
+    [DataRow("use.as", "true")]
+    [DataRow("notableDate.id", "true")]
+    [DataRow("notableDate.displayName", "5")]
+    [DataRow("notableDate.displayName", "true")]
+    [DataRow("rule.id", "true")]
+    [DataRow("rule.comment", "5")]
+    [DataRow("rule.comment", "true")]
+    public void FromJson_WhenTextFieldIsNumberOrBoolean_ShouldBuildWhatLoadJsonLoads(string field, string literal)
+    {
+        string json = TextFieldJson(field, literal);
+
+        NotableDateResource loaded = NotableDateResourceLoader.LoadJson(json, AnyLibraryResolver);
+        NotableDateResource built = NotableDateDocumentBuilder.FromJson(json).Build(AnyLibraryResolver);
+
+        CollectionAssert.AreEqual(PackBytes(loaded), PackBytes(built), field + " " + literal);
+    }
+
+    /// <summary>
+    /// Verifies that an item of a JSON list of territory codes, references or tags that is a number or a Boolean, which
+    /// the loader rejects with <c>BODU-CAL-VALUE</c>, is rejected with a <see cref="FormatException" /> naming the
+    /// item, rather than an <see cref="InvalidOperationException" />.
+    /// </summary>
+    /// <param name="field">The placeholder of the list holding the item.</param>
+    /// <param name="item">The item, as a JSON literal.</param>
+    [TestMethod]
+    [DataRow("notableDate.tags", "5")]
+    [DataRow("rule.tags", "true")]
+    [DataRow("rule.adjustments", "5")]
+    [DataRow("applicability.territories", "5")]
+    [DataRow("scope.territories", "true")]
+    [DataRow("scope.notableDateRefs", "5")]
+    [DataRow("patch.tags", "5")]
+    [DataRow("patch.adjustments", "true")]
+    [DataRow("use.adjustments", "5")]
+    public void FromJson_WhenTextListItemIsNumberOrBoolean_ShouldThrowFormatException(string field, string item)
+    {
+        string json = ListFieldJson(field, item);
+
+        FormatException ex = Assert.ThrowsExactly<FormatException>(() =>
+        {
+            _ = NotableDateDocumentBuilder.FromJson(json);
+        });
+
+        Assert.Contains("'" + item + "'", ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that an item of a JSON list of enumeration names that is a number or a Boolean, which the loader
+    /// rejects with <c>BODU-CAL-ENUM</c>, is rejected with a <see cref="FormatException" /> naming the item, rather
+    /// than an <see cref="InvalidOperationException" />.
+    /// </summary>
+    /// <param name="field">The placeholder of the list holding the item.</param>
+    /// <param name="item">The item, as a JSON literal.</param>
+    [TestMethod]
+    [DataRow("categoryPrecedence", "1")]
+    [DataRow("trigger.weekdays", "6")]
+    [DataRow("scope.calendars", "0")]
+    [DataRow("scope.categories", "true")]
+    public void FromJson_WhenNameListItemIsNumberOrBoolean_ShouldThrowFormatException(string field, string item)
+    {
+        string json = ListFieldJson(field, item);
+
+        FormatException ex = Assert.ThrowsExactly<FormatException>(() =>
+        {
+            _ = NotableDateDocumentBuilder.FromJson(json);
+        });
+
+        Assert.Contains("'" + item + "'", ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that an enumeration-valued JSON property holding a number, which the loader reads as its digits and
+    /// rejects with <c>BODU-CAL-ENUM</c>, is rejected with a <see cref="FormatException" /> naming the number, rather
+    /// than an <see cref="InvalidOperationException" />.
+    /// </summary>
+    /// <param name="property">The JSON fragment holding the number.</param>
+    [TestMethod]
+    [DataRow("""{ "schemaVersion": "1.0", "resourceId": "test.enum", "resolutionPolicy": { "duplicatePolicy": 1 }, "notableDates": [] }""")]
+    [DataRow("""{ "schemaVersion": "1.0", "resourceId": "test.enum", "notableDates": [ { "id": "x", "displayName": "X", "category": 1, "rules": [ { "id": "r", "strategy": { "fixed": { "month": 3, "day": 1 } } } ] } ] }""")]
+    [DataRow("""{ "schemaVersion": "1.0", "resourceId": "test.enum", "adjustmentPolicies": [ { "id": "p", "trigger": { "type": 1 }, "action": { "type": "None" }, "emission": { "mode": "ActualOnly" } } ], "notableDates": [] }""")]
+    public void FromJson_WhenEnumValueIsJsonNumber_ShouldThrowFormatException(string property)
+    {
+        FormatException ex = Assert.ThrowsExactly<FormatException>(() =>
+        {
+            _ = NotableDateDocumentBuilder.FromJson(property);
+        });
+
+        Assert.Contains("'1'", ex.Message);
+    }
+
+    /// <summary>
+    /// Resolves every imported resource name to the one library resource the text test document imports.
+    /// </summary>
+    /// <param name="name">The imported resource's name.</param>
+    /// <returns>The library resource's JSON.</returns>
+    private static string? AnyLibraryResolver(string name) =>
+        BuilderEnumImportResolver("lib");
+
+    /// <summary>
+    /// Builds a JSON document holding every text field the builder reads, each set to its well-formed value except the
+    /// one named, which holds the supplied JSON literal.
+    /// </summary>
+    /// <param name="field">The placeholder of the field to set.</param>
+    /// <param name="literal">The JSON literal the named field holds.</param>
+    /// <returns>The JSON document.</returns>
+    private static string TextFieldJson(string field, string literal)
+    {
+        string json = """
+            { "schemaVersion": @schemaVersion@, "resourceId": @resourceId@,
+              "metadata": { "name": @metadata.name@, "description": @metadata.description@, "sources": [ @metadata.sources@ ] },
+              "adjustmentPolicies": [ { "id": @policy.id@, "description": @policy.description@,
+                "trigger": { "type": "Custom", "handlerKey": @trigger.handlerKey@ },
+                "action": { "type": "Custom", "handlerKey": @action.handlerKey@ },
+                "emission": { "mode": "ObservedOnly", "reason": @emission.reason@ } } ],
+              "imports": [ { "resource": @import.resource@, "uses": [ { "notableDateRef": "lib-day", "as": @use.as@ } ] } ],
+              "notableDates": [
+                { "id": @notableDate.id@, "displayName": @notableDate.displayName@, "category": "PublicHoliday",
+                  "rules": [ { "id": @rule.id@, "comment": @rule.comment@, "strategy": { "fixed": { "month": 3, "day": 1 } } } ] } ] }
+            """;
+
+        foreach ((string key, string wellFormed) in s_jsonTextFieldValues)
+            json = json.Replace("@" + key + "@", key == field ? literal : wellFormed, StringComparison.Ordinal);
+
+        return json;
+    }
+
+    /// <summary>
+    /// Builds a JSON document holding every list the builder reads, each holding one well-formed item except the one
+    /// named, which holds the supplied JSON literal.
+    /// </summary>
+    /// <param name="field">The placeholder of the list to set.</param>
+    /// <param name="item">The JSON literal the named list holds.</param>
+    /// <returns>The JSON document.</returns>
+    private static string ListFieldJson(string field, string item)
+    {
+        string json = """
+            { "schemaVersion": "1.0", "resourceId": "test.lists",
+              "resolutionPolicy": { "categoryPrecedence": [ @categoryPrecedence@ ] },
+              "adjustmentPolicies": [ { "id": "policy",
+                "scope": { "territories": [ @scope.territories@ ], "calendars": [ @scope.calendars@ ], "categories": [ @scope.categories@ ],
+                  "notableDateRefs": [ @scope.notableDateRefs@ ] },
+                "trigger": { "type": "IfDayOfWeek", "weekdays": [ @trigger.weekdays@ ] },
+                "action": { "type": "MoveToNextWeekday", "dayOfWeek": "Monday" },
+                "emission": { "mode": "ObservedOnly" } } ],
+              "imports": [ { "resource": "lib", "uses": [ { "notableDateRef": "lib-day", "adjustments": [ @use.adjustments@ ] } ] } ],
+              "notableDates": [
+                { "id": "anchor", "displayName": "Anchor", "category": "PublicHoliday", "tags": [ @notableDate.tags@ ],
+                  "rules": [ { "id": "r", "applicability": { "territories": [ @applicability.territories@ ] },
+                    "strategy": { "fixed": { "month": 3, "day": 1 } },
+                    "tags": [ @rule.tags@ ], "adjustments": [ @rule.adjustments@ ] } ] },
+                { "id": "other", "displayName": "O", "category": "Observance",
+                  "rules": [ { "id": "r", "strategy": { "fixed": { "month": 4, "day": 1 } } } ] } ],
+              "overrides": [ { "operation": "PatchRule", "notableDateRef": "other", "ruleRef": "r",
+                "tags": [ @patch.tags@ ], "adjustments": [ @patch.adjustments@ ] } ] }
+            """;
+
+        foreach ((string key, string wellFormed) in s_jsonListFieldItems)
+            json = json.Replace("@" + key + "@", key == field ? item : wellFormed, StringComparison.Ordinal);
+
+        return json;
+    }
 }
