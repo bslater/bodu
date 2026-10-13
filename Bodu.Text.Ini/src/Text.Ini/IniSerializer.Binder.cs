@@ -83,10 +83,10 @@ public static partial class IniSerializer
         foreach (DictionaryEntry entry in dictionary)
         {
             string key = KeyToString(entry.Key);
-            if (FlatBinding.TryGetDictionary(entry.Value, out IDictionary? nested))
+            if (FlatBinding.TryGetDictionary(entry.Value, out IDictionary? nested, out Type? nestedValueType))
             {
                 if (IsGlobalName(key, options))
-                    WriteDictionaryEntries(ref writer, string.Empty, nested, options);
+                    WriteDictionaryEntries(ref writer, string.Empty, nested, nestedValueType, options);
 
                 continue;
             }
@@ -118,10 +118,10 @@ public static partial class IniSerializer
             if (IsGlobalName(key, options))
                 continue;
 
-            if (FlatBinding.TryGetDictionary(entry.Value, out IDictionary? nested))
+            if (FlatBinding.TryGetDictionary(entry.Value, out IDictionary? nested, out Type? nestedValueType))
             {
                 WriteHeader(ref writer, key);
-                WriteDictionaryEntries(ref writer, key, nested, options);
+                WriteDictionaryEntries(ref writer, key, nested, nestedValueType, options);
             }
             else if (entry.Value is null && nullIsSection && !FlatBinding.ShouldSkipDictionaryValue(null, options.DefaultIgnoreCondition))
             {
@@ -205,9 +205,9 @@ public static partial class IniSerializer
     {
         // The reserved global section's entries are written as global keys, so a refused entry is reported as global.
         string entrySection = IsGlobalName(sectionName, options) ? string.Empty : sectionName;
-        if (FlatBinding.TryGetDictionary(body, out IDictionary? dictionary))
+        if (FlatBinding.TryGetDictionary(body, out IDictionary? dictionary, out Type? valueType))
         {
-            WriteDictionaryEntries(ref writer, entrySection, dictionary, options);
+            WriteDictionaryEntries(ref writer, entrySection, dictionary, valueType, options);
             return;
         }
 
@@ -240,16 +240,27 @@ public static partial class IniSerializer
     /// <param name="writer">The writer.</param>
     /// <param name="sectionName">The section the entries are written in, or an empty string for global entries.</param>
     /// <param name="entries">The dictionary to write.</param>
+    /// <param name="valueType">The dictionary's value type.</param>
     /// <param name="options">The serializer options.</param>
     /// <exception cref="IniSerializationException">
     /// Thrown when an entry value is itself a dictionary, whatever its keys, which INI cannot represent inside a
-    /// section, when an entry value is not a scalar, or when an entry's key or value cannot be written so that it reads
-    /// back unchanged.
+    /// section, when an entry value is not a scalar, when a <see langword="null" /> entry that is written has a value
+    /// type that is a string-keyed dictionary or is neither a scalar nor <see cref="object" />, or when an entry's key
+    /// or value cannot be written so that it reads back unchanged.
     /// </exception>
+    /// <remarks>
+    /// An entry is decided by its value. A <see langword="null" /> entry has no value to decide by, so, when the ignore
+    /// condition writes it, <paramref name="valueType" /> decides: a scalar or <see cref="object" /> makes it an empty
+    /// key, a string-keyed dictionary type would be a third level, and any other type, which no empty key reads back
+    /// as, is rejected.
+    /// </remarks>
     [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
     [RequiresDynamicCode(RequiresDynamicCodeMessage)]
-    private static void WriteDictionaryEntries(ref Utf8IniWriter writer, string sectionName, IDictionary entries, IniSerializerOptions options)
+    private static void WriteDictionaryEntries(ref Utf8IniWriter writer, string sectionName, IDictionary entries, Type valueType, IniSerializerOptions options)
     {
+        bool nullNestsDeeper = FlatBinding.TryGetStringKeyedDictionary(valueType, out _);
+        Type? nullUnmappedType = InvariantScalarCodec.GetUnmappedType(null, valueType, InvariantScalarCodec.Classify(valueType));
+
         foreach (DictionaryEntry entry in entries)
         {
             if (entry.Value is IDictionary || FlatBinding.TryGetDictionary(entry.Value, out _))
@@ -259,6 +270,15 @@ public static partial class IniSerializer
                 continue;
 
             string key = KeyToString(entry.Key);
+            if (entry.Value is null)
+            {
+                if (nullNestsDeeper)
+                    throw new IniSerializationException(string.Format(CultureInfo.CurrentCulture, IniResourceStrings.Op_Invalid_IniDepthExceeded, key));
+
+                if (nullUnmappedType is not null)
+                    throw new IniSerializationException(string.Format(CultureInfo.CurrentCulture, IniResourceStrings.Op_Invalid_IniValueNotScalar, sectionName, key, nullUnmappedType));
+            }
+
             ThrowIfNotScalar(entry.Value, sectionName, key);
             WriteEntry(ref writer, sectionName, key, ValueToString(entry.Value));
         }
