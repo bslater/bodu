@@ -131,15 +131,27 @@ public abstract class PairWebRateProvider<TSeries>
     }
 
     /// <inheritdoc />
-    protected sealed override ValueTask EnsureLoadedAsync(CurrencyPair pair, DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken) =>
-        // Coalesce concurrent fetches of the same pair-and-window so only one request is in flight. The shared fetch
-        // runs under a token decoupled from any caller, so one caller's cancellation cannot fault the others;
+    protected sealed override ValueTask EnsureLoadedAsync(CurrencyPair pair, DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken)
+    {
+        // Fetch only the span of the window not yet covered for the pair, so a window that extends one already loaded (a
+        // sliding on-demand look-back window, for example) fetches its new days rather than the whole window again.
+        DateOnly fetchStart;
+        DateOnly fetchEnd;
+        lock (SyncRoot)
+        {
+            if (!TryGetUncoveredSpan(pair, startDate, endDate, out fetchStart, out fetchEnd))
+                return ValueTask.CompletedTask;
+        }
+
+        // Coalesce concurrent fetches of the same pair-and-span so only one request is in flight. The shared fetch runs
+        // under a token decoupled from any caller, so one caller's cancellation cannot fault the others;
         // cancellationToken only abandons this caller's wait.
-        new(LoadCoalescedAsync(
-            $"{pair.From}/{pair.To}:{startDate.DayNumber}-{endDate.DayNumber}",
-            () => IsRangeCovered(pair, startDate, endDate),
-            ct => LoadPairCoreAsync(pair, startDate, endDate, ct),
+        return new ValueTask(LoadCoalescedAsync(
+            $"{pair.From}/{pair.To}:{fetchStart.DayNumber}-{fetchEnd.DayNumber}",
+            () => IsRangeCovered(pair, fetchStart, fetchEnd),
+            ct => LoadPairCoreAsync(pair, fetchStart, fetchEnd, ct),
             cancellationToken));
+    }
 
     /// <inheritdoc />
     protected sealed override bool IsLoaded(CurrencyPair pair, DateOnly startDate, DateOnly endDate)
@@ -240,6 +252,30 @@ public abstract class PairWebRateProvider<TSeries>
     /// <returns><see langword="true" /> when the range is fully covered; otherwise <see langword="false" />.</returns>
     private bool IsRangeCovered(CurrencyPair pair, DateOnly startDate, DateOnly endDate) =>
         _coverage.TryGetValue(pair, out DateRangeCoverage? coverage) && coverage.Contains(startDate, endDate);
+
+    /// <summary>
+    /// Finds the span of the inclusive range not yet fetched for a pair. The caller must hold
+    /// <see cref="WebRateProvider.SyncRoot" />.
+    /// </summary>
+    /// <param name="pair">The pair to check.</param>
+    /// <param name="startDate">The inclusive start of the range.</param>
+    /// <param name="endDate">The inclusive end of the range.</param>
+    /// <param name="fetchStart">
+    /// When this method returns <see langword="true" />, the first day not yet fetched.
+    /// </param>
+    /// <param name="fetchEnd">When this method returns <see langword="true" />, the last day not yet fetched.</param>
+    /// <returns>
+    /// <see langword="true" /> when some day of the range has not been fetched; otherwise <see langword="false" />.
+    /// </returns>
+    private bool TryGetUncoveredSpan(CurrencyPair pair, DateOnly startDate, DateOnly endDate, out DateOnly fetchStart, out DateOnly fetchEnd)
+    {
+        if (_coverage.TryGetValue(pair, out DateRangeCoverage? coverage))
+            return coverage.TryGetUncoveredSpan(startDate, endDate, out fetchStart, out fetchEnd);
+
+        fetchStart = startDate;
+        fetchEnd = endDate;
+        return true;
+    }
 
     /// <summary>
     /// Records the inclusive range as fetched for a pair, merging it into the pair's coverage set. The caller must hold

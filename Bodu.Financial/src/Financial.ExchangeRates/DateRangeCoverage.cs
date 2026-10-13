@@ -18,6 +18,11 @@ namespace Bodu.Financial.ExchangeRates;
 /// begins on or before the day after the earlier one ends - so a genuine gap of one or more days keeps them separate.
 /// </para>
 /// <para>
+/// When a window is not covered, <see cref="TryGetUncoveredSpan(DateOnly, DateOnly, out DateOnly, out DateOnly)" />
+/// reports the span from its first unrecorded day to its last, so a caller can fetch only that span rather than the
+/// whole window again.
+/// </para>
+/// <para>
 /// Instances are not thread-safe; callers that mutate a shared instance must synchronize access themselves.
 /// </para>
 /// </remarks>
@@ -123,7 +128,40 @@ public sealed class DateRangeCoverage
     /// </remarks>
     public bool TryGetUncoveredSpan(DateOnly start, DateOnly end, out DateOnly uncoveredStart, out DateOnly uncoveredEnd)
     {
-        throw new NotImplementedException();
+        ThrowHelper.ThrowIfGreaterThan(start, end);
+
+        uncoveredStart = default;
+        uncoveredEnd = default;
+
+        // Intervals are disjoint and never adjacent, so at most one holds the window's first day and at most one its
+        // last; stepping past each gives the first and last unrecorded days.
+        DateOnly first = start;
+        foreach ((DateOnly Start, DateOnly End) interval in _intervals)
+        {
+            if (interval.Start <= first && interval.End >= first)
+            {
+                if (interval.End >= end)
+                    return false;
+
+                first = interval.End.AddDays(1);
+                break;
+            }
+        }
+
+        DateOnly last = end;
+        for (int i = _intervals.Count - 1; i >= 0; i--)
+        {
+            (DateOnly Start, DateOnly End) interval = _intervals[i];
+            if (interval.Start <= last && interval.End >= last)
+            {
+                last = interval.Start.AddDays(-1);
+                break;
+            }
+        }
+
+        uncoveredStart = first;
+        uncoveredEnd = last;
+        return true;
     }
 
     /// <summary>

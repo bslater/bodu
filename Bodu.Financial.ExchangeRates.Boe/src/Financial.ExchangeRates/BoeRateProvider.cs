@@ -298,13 +298,23 @@ public sealed class BoeRateProvider
     /// <returns>A task that completes when the range has been loaded.</returns>
     private Task LoadRangeInternalAsync(DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken)
     {
-        // Coalesce concurrent loads of the same window so only one download is in flight; joiners await that task. The
+        // Download only the span of the range not yet held, so a range that extends one already loaded (a sliding
+        // on-demand look-back window, for example) fetches its new days rather than the whole range again.
+        DateOnly fetchStart;
+        DateOnly fetchEnd;
+        lock (SyncRoot)
+        {
+            if (!_loadedRanges.TryGetUncoveredSpan(startDate, endDate, TimeProvider.GetUtcNow(), out fetchStart, out fetchEnd))
+                return Task.CompletedTask;
+        }
+
+        // Coalesce concurrent loads of the same span so only one download is in flight; joiners await that task. The
         // shared fetch runs under a token decoupled from any caller, so one caller's cancellation cannot fault the
         // others; cancellationToken only abandons this caller's wait.
         return LoadCoalescedAsync(
-            $"{startDate.DayNumber}-{endDate.DayNumber}",
-            () => _loadedRanges.Contains(startDate, endDate, TimeProvider.GetUtcNow()),
-            ct => LoadRangeCoreAsync(startDate, endDate, ct),
+            $"{fetchStart.DayNumber}-{fetchEnd.DayNumber}",
+            () => _loadedRanges.Contains(fetchStart, fetchEnd, TimeProvider.GetUtcNow()),
+            ct => LoadRangeCoreAsync(fetchStart, fetchEnd, ct),
             cancellationToken);
     }
 

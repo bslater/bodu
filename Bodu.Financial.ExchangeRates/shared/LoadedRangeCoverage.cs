@@ -86,7 +86,25 @@ internal sealed class LoadedRangeCoverage
     /// </exception>
     public bool TryGetUncoveredSpan(DateOnly start, DateOnly end, DateTimeOffset nowUtc, out DateOnly missingStart, out DateOnly missingEnd)
     {
-        throw new NotImplementedException();
+        missingStart = default;
+        missingEnd = default;
+
+        if (Contains(start, end, nowUtc))
+            return false;
+
+        // Step forward from the start past every record that holds the current day, and back from the end likewise;
+        // the range is not wholly held, so the two walks stop on the first and last missing days.
+        DateOnly first = start;
+        while (Reach(first) is { } held)
+            first = held.AddDays(1);
+
+        DateOnly last = end;
+        while (ReachBack(last) is { } heldFrom)
+            last = heldFrom.AddDays(-1);
+
+        missingStart = first;
+        missingEnd = last;
+        return true;
     }
 
     /// <summary>
@@ -116,6 +134,35 @@ internal sealed class LoadedRangeCoverage
             DateOnly openStart = start > finalThrough ? start : finalThrough.AddDays(1);
             _provisional.Add((openStart, end, RatePublication.ExpiresAt(fetchedAtUtc, refreshInterval)));
         }
+    }
+
+    /// <summary>
+    /// Returns the first day of the earliest-starting record, final or provisional, that holds a day.
+    /// </summary>
+    /// <param name="day">The day to look up.</param>
+    /// <returns>
+    /// The first day held by a record that holds <paramref name="day" />, or <see langword="null" /> when none does.
+    /// </returns>
+    private DateOnly? ReachBack(DateOnly day)
+    {
+        DateOnly? reach = null;
+
+        foreach ((DateOnly Start, DateOnly End) interval in _final.Intervals)
+        {
+            if (interval.Start <= day && interval.End >= day)
+            {
+                reach = interval.Start;
+                break;
+            }
+        }
+
+        foreach ((DateOnly Start, DateOnly End, DateTimeOffset _) record in _provisional)
+        {
+            if (record.Start <= day && record.End >= day && (reach is null || record.Start < reach.Value))
+                reach = record.Start;
+        }
+
+        return reach;
     }
 
     /// <summary>

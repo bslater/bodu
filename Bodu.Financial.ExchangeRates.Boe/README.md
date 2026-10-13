@@ -44,7 +44,9 @@ foreach (BoeSeriesInfo info in provider.GetAvailablePairs())
   that misses an unloaded date blocks to download a bounded look-back window ending on it
   (configurable via `OnDemandWindowDays`) only when `AllowSynchronousNetworkAccess` is enabled (it is
   `false` by default, so the provider serves a snapshot of already-loaded data and a
-  synchronous miss does not reach the network).
+  synchronous miss does not reach the network). Only the part of a range not already loaded,
+  from its first missing day to its last, is downloaded, so a look-back window that slides
+  forward one day downloads that day alone.
 - **Caching.** Downloaded range responses are cached on disk (configurable) and refreshed
   on a TTL, since a range ending near today can gain an observation each business day.
   In memory, a loaded range keeps its past days for good, while today (and any later day
