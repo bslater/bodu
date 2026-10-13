@@ -48,10 +48,19 @@ internal sealed class EcbRateTable
     /// currency it does not list (for example <c>TRL</c>, the Turkish lira retired in 2005, which the full-history feed
     /// still quotes) is skipped.
     /// </returns>
+    /// <remarks>
+    /// The ECB lists its days newest first. A table in that order is enumerated from its last observation to its first,
+    /// oldest day first, so that a load appends each rate to its series rather than inserting it ahead of every day the
+    /// series already holds, which made loading the full history quadratic in its length.
+    /// </remarks>
     public IEnumerable<ExchangeRate> EnumerateRates()
     {
-        foreach (EcbRateObservation observation in Observations)
+        IReadOnlyList<EcbRateObservation> observations = Observations;
+        bool newestFirst = observations.Count > 1 && observations[0].Date > observations[^1].Date;
+
+        for (int i = 0; i < observations.Count; i++)
         {
+            EcbRateObservation observation = observations[newestFirst ? observations.Count - 1 - i : i];
             if (!CurrencyInfo.TryGetCurrencyCode(observation.CurrencyCode, out CurrencyCode quote))
                 continue;
 
