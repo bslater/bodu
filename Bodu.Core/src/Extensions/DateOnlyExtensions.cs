@@ -149,18 +149,25 @@ public static partial class DateOnlyExtensions
     /// <param name="dayNumber">The day number (in the system's continuous day count) to compare against.</param>
     /// <param name="dayOfWeek">The target <see cref="DayOfWeek" /> to locate.</param>
     /// <returns>
-    /// The day number of the nearest date that falls on the specified <paramref name="dayOfWeek" />. If two dates are
-    /// equally near (e.g., 3 days before and after), the earlier date is returned.
+    /// The day number of the nearest date that falls on the specified <paramref name="dayOfWeek" /> and that a
+    /// <see cref="DateOnly" /> can represent. If two dates are equally near (e.g., 3 days before and after), the
+    /// earlier date is returned.
     /// </returns>
     /// <remarks>
     /// This method is typically used in date calculations where you need to snap to the closest occurrence of a given
-    /// day of the week relative to a reference date.
+    /// day of the week relative to a reference date. Within six days of <see cref="DateOnly.MinValue" /> or
+    /// <see cref="DateOnly.MaxValue" /> the nearest occurrence can lie outside the range; the occurrence in the other
+    /// direction, at most six days away, is returned instead.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static int GetNearestDayOfWeek(int dayNumber, DayOfWeek dayOfWeek)
     {
         int delta = ((int)dayOfWeek - (int)GetDayOfWeekFromDayNumber(dayNumber) + 7) % 7;
-        return dayNumber + (delta > 3 ? delta - 7 : delta);
+        int nearest = dayNumber + (delta > 3 ? delta - 7 : delta);
+
+        return nearest < 0
+            ? nearest + 7
+            : nearest > DateOnly.MaxValue.DayNumber ? nearest - 7 : nearest;
     }
 
     /// <summary>
