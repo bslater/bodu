@@ -87,4 +87,21 @@ public partial class RecurrenceSetTests
         Assert.AreEqual(new DateTimeOffset(2026, 1, 5, 9, 0, 0, TimeSpan.FromHours(10)), next);
         Assert.AreEqual(TimeSpan.FromHours(10), next!.Value.Offset);
     }
+
+    /// <summary>
+    /// Verifies that the offset overload of the next-occurrence query returns <see langword="null" /> rather than
+    /// throwing when the occurrence's wall-clock time exists but its UTC instant in the query's offset would follow the
+    /// last instant a <see cref="DateTimeOffset" /> can hold.
+    /// </summary>
+    [TestMethod]
+    public void GetNextOccurrence_WhenQueryHasOffset_AndTheOccurrenceFollowsTheLastUtcInstant_ShouldReturnNull()
+    {
+        var set = new RecurrenceSet(
+            new DateTime(9999, 12, 1, 20, 0, 0),
+            [RecurrenceRule.Parse("FREQ=DAILY")]);
+
+        DateTimeOffset? next = set.GetNextOccurrence(new DateTimeOffset(9999, 12, 31, 10, 0, 0, TimeSpan.FromHours(-5)));
+
+        Assert.IsNull(next);
+    }
 }
