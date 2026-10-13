@@ -18,7 +18,8 @@ namespace Bodu.Financial.ExchangeRates;
 /// <c>PointInTime</c> is a Unix timestamp in milliseconds interpreted in UTC and <c>Rate</c> is the price-selected
 /// rate. The OANDA anonymous endpoint serves a server-determined recent window, so rows outside the request's inclusive
 /// range are skipped, as are rows with a missing or non-positive rate. Numeric members are tolerated as JSON numbers or
-/// numeric strings.
+/// numeric strings. An entry whose currency codes are not strings never matches the requested pair, and an entry that
+/// is not an object is reported as missing data.
 /// </remarks>
 internal static class OandaHistoryResponseParser
 {
@@ -49,6 +50,9 @@ internal static class OandaHistoryResponseParser
         }
 
         JsonElement series = SelectSeries(widget, request.Pair);
+        if (series.ValueKind != JsonValueKind.Object)
+            throw NoData(request);
+
         var observations = new List<RateObservation>();
 
         if (series.TryGetProperty("data", out JsonElement data) && data.ValueKind == JsonValueKind.Array)
@@ -58,15 +62,13 @@ internal static class OandaHistoryResponseParser
                 if (row.ValueKind != JsonValueKind.Array || row.GetArrayLength() < 2)
                     continue;
 
-                if (!TryReadUnixMilliseconds(row[0], out long unixMs) || !TryReadRate(row[1], out decimal rate))
+                // A timestamp outside the range a DateTimeOffset represents is skipped, not converted.
+                if (!JsonRateValueReader.TryReadUnixMillisecondsDate(row[0], out DateOnly date)
+                    || !JsonRateValueReader.TryReadPositiveDecimal(row[1], out decimal rate))
+                {
                     continue;
+                }
 
-                // Skip a timestamp outside the range representable by DateTimeOffset rather than crashing on the
-                // ArgumentOutOfRangeException it would raise (FromUnixTimeMilliseconds accepts this window only).
-                if (unixMs is < -62_135_596_800_000 or > 253_402_300_799_999)
-                    continue;
-
-                var date = DateOnly.FromDateTime(DateTimeOffset.FromUnixTimeMilliseconds(unixMs).UtcDateTime);
                 if (date < request.StartDate || date > request.EndDate)
                     continue;
 
@@ -94,6 +96,8 @@ internal static class OandaHistoryResponseParser
             if (entry.ValueKind == JsonValueKind.Object
                 && entry.TryGetProperty("baseCurrency", out JsonElement baseCurrency)
                 && entry.TryGetProperty("quoteCurrency", out JsonElement quoteCurrency)
+                && baseCurrency.ValueKind == JsonValueKind.String
+                && quoteCurrency.ValueKind == JsonValueKind.String
                 && string.Equals(baseCurrency.GetString(), from, StringComparison.OrdinalIgnoreCase)
                 && string.Equals(quoteCurrency.GetString(), to, StringComparison.OrdinalIgnoreCase))
             {
@@ -124,28 +128,6 @@ internal static class OandaHistoryResponseParser
                 string.Format(CultureInfo.CurrentCulture, OandaResourceStrings.Format_Invalid_OandaNoData, request.Pair.From.ToString(), request.Pair.To.ToString()),
                 ex);
         }
-    }
-
-    /// <summary>
-    /// Reads a Unix-millisecond timestamp from a row element, tolerating a JSON number or numeric string.
-    /// </summary>
-    /// <param name="element">The timestamp element.</param>
-    /// <param name="unixMs">When this method returns <see langword="true" />, the Unix-millisecond timestamp.</param>
-    /// <returns><see langword="true" /> when a timestamp was read; otherwise <see langword="false" />.</returns>
-    private static bool TryReadUnixMilliseconds(JsonElement element, out long unixMs) =>
-        JsonRateValueReader.TryReadUnixMilliseconds(element, out unixMs);
-
-    /// <summary>
-    /// Reads the strictly positive rate from a row element, tolerating a JSON number or numeric string.
-    /// </summary>
-    /// <param name="element">The rate element.</param>
-    /// <param name="rate">When this method returns <see langword="true" />, the positive rate.</param>
-    /// <returns><see langword="true" /> when a positive rate was read; otherwise <see langword="false" />.</returns>
-    private static bool TryReadRate(JsonElement element, out decimal rate)
-    {
-        rate = 0m;
-
-        return JsonRateValueReader.TryReadPositiveDecimal(element, out rate);
     }
 
     /// <summary>

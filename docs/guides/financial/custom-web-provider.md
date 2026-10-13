@@ -17,7 +17,7 @@ Two bases, one choice:
 
 | Base | Derive when the feed… | You implement | The base owns |
 |---|---|---|---|
-| <xref:Bodu.Financial.ExchangeRates.PairWebRateProvider`1> | returns **one currency pair per request** (Yahoo, OFX, Fixer, FRED, …) | an `IPairRateSource<TSeries>` (fetch + parse) and `ProviderId` | per-pair coverage tracking, single-flight coalescing per pair-and-window, series discovery, logging |
+| <xref:Bodu.Financial.ExchangeRates.PairWebRateProvider`1> | returns **one currency pair per request** (Yahoo, OFX, Fixer, FRED, …) | an `IPairRateSource<TSeries>` (fetch + parse) and `ProviderId` | per-pair coverage tracking (today and other open days refetched after `RefreshInterval`), single-flight coalescing per pair-and-window, series discovery, logging |
 | <xref:Bodu.Financial.ExchangeRates.WebRateProvider> | returns **many pairs per download** - a whole file, an era, a month (ECB, RBA, BoE, IMF) | `EnsureLoadedAsync`, `IsLoaded`, `ProviderId`, `AllowSynchronousNetworkAccess`, `DefaultLookback` | the accumulator, the snapshot, the lookup matrix, coalescing through `LoadCoalescedAsync` |
 
 `PairWebRateProvider<TSeries>` itself derives from `WebRateProvider`, so both shapes end up with
@@ -29,9 +29,10 @@ the same public surface: `IDatedRateProvider`, `IRateProvider`,
 
 Derive <xref:Bodu.Financial.ExchangeRates.WebRateProviderOptions>. The base carries the shared
 surface (`BaseAddress`, `HttpTimeout`, `UserAgent`, `AllowSynchronousNetworkAccess`,
-`DefaultLookback`, `HistoryAvailability`, `CurrencyAliases`, the `*LogLevel` knobs) and its
-validation; your constructor sets the host and the history depth, and `TryValidateCore`
-guards whatever you add. `MapCurrency` applies the alias map when building a request.
+`DefaultLookback`, `RefreshInterval`, `HistoryAvailability`, `CurrencyAliases`, the
+`*LogLevel` knobs) and its validation; your constructor sets the host and the history
+depth, and `TryValidateCore` guards whatever you add. `MapCurrency` applies the alias map
+when building a request.
 
 ```csharp
 using System.Globalization;

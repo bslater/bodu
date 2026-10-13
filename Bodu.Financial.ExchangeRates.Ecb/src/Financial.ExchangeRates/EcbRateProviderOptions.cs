@@ -73,12 +73,15 @@ public sealed class EcbRateProviderOptions
     public string? CacheDirectory { get; set; }
 
     /// <summary>
-    /// Gets or sets how long a cached copy of a feed remains fresh before it is re-downloaded.
+    /// Gets or sets how long a cached copy of a feed remains fresh before it is re-downloaded, and how long a loaded
+    /// feed serves a request for a day the ECB could still publish before the feed is downloaded again.
     /// </summary>
     /// <value>The refresh interval; defaults to 12 hours.</value>
     /// <remarks>
     /// Every ECB feed extends to the most recent business day, so all feeds are treated as refreshable rather than
-    /// immutable: a cached feed older than this interval is re-downloaded on the next load.
+    /// immutable: a cached feed older than this interval is re-downloaded on the next load. In memory, a loaded feed
+    /// serves for good a request that ends before the day it was downloaded, or on a day it returned rates for; a
+    /// request that reaches a later day downloads the feed again once this interval has passed.
     /// </remarks>
     public TimeSpan RefreshInterval { get; set; } = TimeSpan.FromHours(12);
 

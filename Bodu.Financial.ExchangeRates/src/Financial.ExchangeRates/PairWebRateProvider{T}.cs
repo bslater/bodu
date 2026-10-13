@@ -23,9 +23,16 @@ using Microsoft.Extensions.Logging.Abstractions;
 /// This base sits between <see cref="WebRateProvider" /> (which owns the in-memory accumulator, the immutable snapshot,
 /// and the full lookup matrix) and a concrete pair-based source such as Yahoo Finance or OFX. It implements
 /// <see cref="WebRateProvider.EnsureLoadedAsync" /> and <see cref="WebRateProvider.IsLoaded" /> with a gap-respecting
-/// per-pair <see cref="DateRangeCoverage" /> set so a request that straddles an unfetched interior gap is correctly
-/// treated as uncovered and re-fetched, and coalesces concurrent fetches of the same pair-and-window so only one
-/// request is in flight.
+/// per-pair record of the days fetched, so a request that straddles an unfetched interior gap is correctly treated as
+/// uncovered and re-fetched, and coalesces concurrent fetches of the same pair-and-window so only one request is in
+/// flight.
+/// </para>
+/// <para>
+/// <strong>Refresh.</strong> A fetched day is held for good once it is final: once it has passed (any day before the
+/// UTC date of the fetch) or once the source has returned a rate for it. The other days of a fetch, today and any later
+/// day the source returned no rate for, are held only for <see cref="WebRateProviderOptions.RefreshInterval" />; the
+/// next request that reaches one of them after that fetches it again, so a rate the source publishes later the same day
+/// is served rather than missed for the life of the provider.
 /// </para>
 /// <para>
 /// A derived type supplies <see cref="WebRateProvider.ProviderId" /> and may override
@@ -65,8 +72,8 @@ public abstract class PairWebRateProvider<TSeries>
     /// <summary>The logger that records pair downloads and on-demand network fetches.</summary>
     private readonly ILogger _logger;
 
-    /// <summary>The set of inclusive date ranges fetched so far for each pair. A gap-respecting coverage set is used rather than a single <c>(min, max)</c> envelope so a request that straddles an unfetched interior gap is correctly treated as uncovered and re-fetched.</summary>
-    private readonly Dictionary<CurrencyPair, DateRangeCoverage> _coverage = new();
+    /// <summary>The days fetched so far for each pair: final days for good, open days until the refresh interval passes. A gap-respecting record is used rather than a single <c>(min, max)</c> envelope so a request that straddles an unfetched interior gap is correctly treated as uncovered and re-fetched.</summary>
+    private readonly Dictionary<CurrencyPair, LoadedRangeCoverage> _coverage = new();
 
     /// <summary>The discovered series, keyed by pair.</summary>
     private readonly Dictionary<CurrencyPair, TSeries> _series = new();
@@ -133,18 +140,23 @@ public abstract class PairWebRateProvider<TSeries>
     /// <inheritdoc />
     protected sealed override ValueTask EnsureLoadedAsync(CurrencyPair pair, DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken)
     {
+        // Fetch only the span of the window not yet covered for the pair, so a window that extends one already loaded (a
+        // sliding on-demand look-back window, for example) fetches its new days rather than the whole window again.
+        DateOnly fetchStart;
+        DateOnly fetchEnd;
         lock (SyncRoot)
         {
-            if (IsRangeCovered(pair, startDate, endDate))
+            if (!TryGetUncoveredSpan(pair, startDate, endDate, out fetchStart, out fetchEnd))
                 return ValueTask.CompletedTask;
         }
 
-        // Coalesce concurrent fetches of the same pair-and-window so only one request is in flight. The shared fetch
-        // runs under a token decoupled from any caller, so one caller's cancellation cannot fault the others;
+        // Coalesce concurrent fetches of the same pair-and-span so only one request is in flight. The shared fetch runs
+        // under a token decoupled from any caller, so one caller's cancellation cannot fault the others;
         // cancellationToken only abandons this caller's wait.
         return new ValueTask(LoadCoalescedAsync(
-            $"{pair.From}/{pair.To}:{startDate.DayNumber}-{endDate.DayNumber}",
-            ct => LoadPairCoreAsync(pair, startDate, endDate, ct),
+            $"{pair.From}/{pair.To}:{fetchStart.DayNumber}-{fetchEnd.DayNumber}",
+            () => IsRangeCovered(pair, fetchStart, fetchEnd),
+            ct => LoadPairCoreAsync(pair, fetchStart, fetchEnd, ct),
             cancellationToken));
     }
 
@@ -182,61 +194,62 @@ public abstract class PairWebRateProvider<TSeries>
         $"{pair.From}/{pair.To}";
 
     /// <summary>
-    /// Fetches and stores a pair's observations for the inclusive window, re-checking coverage inside the single-flight
-    /// section so a joiner that arrives after a prior fetch completes does no redundant work.
+    /// Returns the latest date a fetch returned a rate for.
+    /// </summary>
+    /// <param name="data">The parsed pair data.</param>
+    /// <returns>
+    /// The latest observation date in <paramref name="data" />, or <see langword="null" /> when it holds none.
+    /// </returns>
+    private static DateOnly? GetLastDate(PairRateData<TSeries> data)
+    {
+        DateOnly? last = null;
+        foreach (RateObservation observation in data.Observations)
+        {
+            if (last is null || observation.Date > last.Value)
+                last = observation.Date;
+        }
+
+        return last;
+    }
+
+    /// <summary>
+    /// Fetches and stores a pair's observations for the inclusive window through the shared
+    /// <see cref="WebRateProvider.LoadFileFeedAsync{TTable}" /> sequence, which re-checks coverage inside the
+    /// single-flight section so a joiner that arrives after a prior fetch completes does no redundant work.
     /// </summary>
     /// <param name="pair">The currency pair to fetch.</param>
     /// <param name="startDate">The inclusive start of the range.</param>
     /// <param name="endDate">The inclusive end of the range.</param>
     /// <param name="cancellationToken">A token to observe while awaiting the fetch.</param>
     /// <returns>A task that completes when the pair's window has been loaded.</returns>
-    private async Task LoadPairCoreAsync(CurrencyPair pair, DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken)
+    private Task LoadPairCoreAsync(CurrencyPair pair, DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken)
     {
-        lock (SyncRoot)
-        {
-            if (IsRangeCovered(pair, startDate, endDate))
-                return;
-        }
+        // The pair's label is formatted once, as the load starts, and every later entry of the load reuses it.
+        string label = string.Empty;
 
-        string label = FormatPairForLog(pair);
-        CurrencyPairRequest request = new(pair, startDate, endDate);
+        return LoadFileFeedAsync(
+            alreadyLoaded: () => IsRangeCovered(pair, startDate, endDate),
+            logStarting: () =>
+            {
+                label = FormatPairForLog(pair);
+                WebRateProviderLog.PairLoadStarting(_logger, _options.DownloadStartingLogLevel, label);
+            },
+            fetchAsync: ct => _source.GetPairAsync(new CurrencyPairRequest(pair, startDate, endDate), ct),
+            logExpectedFailure: ex => WebRateProviderLog.PairLoadFailed(_logger, _options.DownloadFailedLogLevel, label, ex),
+            logUnexpectedFailure: ex => WebRateProviderLog.PairLoadUnexpectedError(_logger, label, ex),
+            publish: (data, fetchedAt) =>
+            {
+                _series[data.Pair] = data.Series;
 
-        WebRateProviderLog.PairLoadStarting(_logger, _options.DownloadStartingLogLevel, label);
-
-        PairRateData<TSeries> data;
-        try
-        {
-            data = await _source.GetPairAsync(request, cancellationToken).ConfigureAwait(false);
-        }
-        catch (Exception ex) when (ex is HttpRequestException or IOException or FormatException)
-        {
-            // Only the failures a fetch is expected to produce - transport, stream, and malformed-feed errors
-            // (ExchangeRateFormatException derives from FormatException) - are logged as pair-load failures.
-            WebRateProviderLog.PairLoadFailed(_logger, _options.DownloadFailedLogLevel, label, ex);
-            throw;
-        }
-        catch (Exception ex) when (ex is not OperationCanceledException)
-        {
-            // Anything else indicates a probable bug: log it under a distinct event id at Error so it stays
-            // visible in telemetry without being relabelled as a pair failure, then rethrow. Cancellation
-            // (including HttpClient timeouts, which surface as TaskCanceledException) is never logged.
-            WebRateProviderLog.PairLoadUnexpectedError(_logger, label, ex);
-            throw;
-        }
-
-        // Capture the load instant immediately after the download completes so it stamps every rate this pair produces.
-        DateTimeOffset fetchedAt = TimeProvider.GetUtcNow();
-
-        lock (SyncRoot)
-        {
-            _series[data.Pair] = data.Series;
-
-            int count = AddObservations(EnumerateRates(data), fetchedAt);
-            ExtendCoveredRange(pair, startDate, endDate);
-            RebuildSnapshot();
-
-            WebRateProviderLog.PairLoaded(_logger, _options.DownloadCompletedLogLevel, label, count);
-        }
+                // Days the source can still publish (today, and any later day it returned no rate for) are held only
+                // until the refresh interval has passed, so a rate published after this fetch is fetched on a later
+                // request.
+                int count = AddObservations(EnumerateRates(data), fetchedAt);
+                RecordFetchedRange(pair, startDate, endDate, GetLastDate(data), fetchedAt);
+                return count;
+            },
+            logCompleted: count => WebRateProviderLog.PairLoaded(_logger, _options.DownloadCompletedLogLevel, label, count),
+            cancellationToken: cancellationToken);
     }
 
     /// <summary>
@@ -259,31 +272,61 @@ public abstract class PairWebRateProvider<TSeries>
     }
 
     /// <summary>
-    /// Reports whether every day in the inclusive range has already been fetched for a pair. The caller must hold
-    /// <see cref="WebRateProvider.SyncRoot" />.
+    /// Reports whether every day in the inclusive range is held for a pair, either for good or provisionally and not
+    /// yet expired. The caller must hold <see cref="WebRateProvider.SyncRoot" />.
     /// </summary>
     /// <param name="pair">The pair to check.</param>
     /// <param name="startDate">The inclusive start of the range.</param>
     /// <param name="endDate">The inclusive end of the range.</param>
     /// <returns><see langword="true" /> when the range is fully covered; otherwise <see langword="false" />.</returns>
     private bool IsRangeCovered(CurrencyPair pair, DateOnly startDate, DateOnly endDate) =>
-        _coverage.TryGetValue(pair, out DateRangeCoverage? coverage) && coverage.Contains(startDate, endDate);
+        _coverage.TryGetValue(pair, out LoadedRangeCoverage? coverage)
+        && coverage.Contains(startDate, endDate, TimeProvider.GetUtcNow());
 
     /// <summary>
-    /// Records the inclusive range as fetched for a pair, merging it into the pair's coverage set. The caller must hold
-    /// <see cref="WebRateProvider.SyncRoot" />.
+    /// Finds the span of the inclusive range not held for a pair, counting provisionally held days as held until they
+    /// expire. The caller must hold <see cref="WebRateProvider.SyncRoot" />.
     /// </summary>
-    /// <param name="pair">The pair to extend.</param>
+    /// <param name="pair">The pair to check.</param>
     /// <param name="startDate">The inclusive start of the range.</param>
     /// <param name="endDate">The inclusive end of the range.</param>
-    private void ExtendCoveredRange(CurrencyPair pair, DateOnly startDate, DateOnly endDate)
+    /// <param name="fetchStart">
+    /// When this method returns <see langword="true" />, the first day not yet fetched.
+    /// </param>
+    /// <param name="fetchEnd">When this method returns <see langword="true" />, the last day not yet fetched.</param>
+    /// <returns>
+    /// <see langword="true" /> when some day of the range has not been fetched; otherwise <see langword="false" />.
+    /// </returns>
+    private bool TryGetUncoveredSpan(CurrencyPair pair, DateOnly startDate, DateOnly endDate, out DateOnly fetchStart, out DateOnly fetchEnd)
     {
-        if (!_coverage.TryGetValue(pair, out DateRangeCoverage? coverage))
+        if (_coverage.TryGetValue(pair, out LoadedRangeCoverage? coverage))
+            return coverage.TryGetUncoveredSpan(startDate, endDate, TimeProvider.GetUtcNow(), out fetchStart, out fetchEnd);
+
+        fetchStart = startDate;
+        fetchEnd = endDate;
+        return true;
+    }
+
+    /// <summary>
+    /// Records a fetch of the inclusive range for a pair: its final days for good, and the rest until
+    /// <see cref="WebRateProviderOptions.RefreshInterval" /> has passed. The caller must hold
+    /// <see cref="WebRateProvider.SyncRoot" />.
+    /// </summary>
+    /// <param name="pair">The pair fetched.</param>
+    /// <param name="startDate">The inclusive start of the range.</param>
+    /// <param name="endDate">The inclusive end of the range.</param>
+    /// <param name="lastReturnedDate">
+    /// The latest date the fetch returned a rate for, or <see langword="null" /> when it returned none.
+    /// </param>
+    /// <param name="fetchedAtUtc">The instant the fetch completed.</param>
+    private void RecordFetchedRange(CurrencyPair pair, DateOnly startDate, DateOnly endDate, DateOnly? lastReturnedDate, DateTimeOffset fetchedAtUtc)
+    {
+        if (!_coverage.TryGetValue(pair, out LoadedRangeCoverage? coverage))
         {
-            coverage = new DateRangeCoverage();
+            coverage = new LoadedRangeCoverage();
             _coverage[pair] = coverage;
         }
 
-        coverage.Add(startDate, endDate);
+        coverage.Add(startDate, endDate, lastReturnedDate, fetchedAtUtc, _options.RefreshInterval);
     }
 }

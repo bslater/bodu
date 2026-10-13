@@ -9,10 +9,10 @@ namespace Bodu.Financial.ExchangeRates;
 using Microsoft.Extensions.Logging;
 
 /// <summary>
-/// Provides the configuration common to every pair-based web exchange-rate source: the endpoint base address, the HTTP
-/// contract (user agent and timeout), the synchronous-access and look-back behaviour, the currency-alias map, and the
-/// per-concern diagnostic log levels. A concrete source derives from this type to add its own endpoint members and
-/// validation.
+/// Provides the configuration common to every pair-based web exchange-rate source and to the IMF provider: the endpoint
+/// base address, the HTTP contract (user agent and timeout), the synchronous-access, look-back and refresh behavior,
+/// the currency-alias map, and the per-concern diagnostic log levels. A concrete source derives from this type to add
+/// its own endpoint members and validation.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -118,6 +118,22 @@ public abstract class WebRateProviderOptions
     public TimeSpan DefaultLookback { get; set; } = TimeSpan.FromDays(7);
 
     /// <summary>
+    /// Gets or sets how long a load serves a request for a day the source could still publish before that day is
+    /// downloaded again.
+    /// </summary>
+    /// <value>The refresh interval; defaults to 12 hours.</value>
+    /// <remarks>
+    /// A day of a load is final once it has passed (any day before the UTC date on which it was downloaded) or once the
+    /// source has returned a rate for it, and a final day is never downloaded again. The other days of a load, today
+    /// and any later day the source returned no rate for, are open: they are served for this interval, and the next
+    /// request that reaches one of them after the interval has passed downloads it again, so a rate the source
+    /// publishes later the same day is picked up. A source may apply the interval to more than its in-memory loads; the
+    /// derived options type says where. The interval must be greater than zero; <see cref="TryValidate" /> rejects any
+    /// other value.
+    /// </remarks>
+    public TimeSpan RefreshInterval { get; set; } = TimeSpan.FromHours(12);
+
+    /// <summary>
     /// Gets or sets the history depth the provider advertises: how far back it can serve rates. A caller can consult it
     /// before requesting an old date.
     /// </summary>
@@ -208,6 +224,12 @@ public abstract class WebRateProviderOptions
         if (DefaultLookback <= TimeSpan.Zero)
         {
             error = ExchangeRatesResourceStrings.Arg_Invalid_WebExchangeRateOptionsDefaultLookback;
+            return false;
+        }
+
+        if (RefreshInterval <= TimeSpan.Zero)
+        {
+            error = ExchangeRatesResourceStrings.Arg_Invalid_WebExchangeRateOptionsRefreshInterval;
             return false;
         }
 

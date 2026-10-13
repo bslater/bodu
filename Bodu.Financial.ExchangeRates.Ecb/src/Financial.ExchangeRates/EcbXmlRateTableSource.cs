@@ -43,27 +43,17 @@ internal sealed class EcbXmlRateTableSource
     {
         ThrowHelper.ThrowIfNull(feed);
 
-        byte[] bytes = await GetFeedBytesAsync(feed, cancellationToken).ConfigureAwait(false);
+        (byte[] bytes, DateTimeOffset? cachedAtUtc) = await CachedDownload.GetOrDownloadAsync(
+            _cache,
+            feed,
+            _options.RefreshInterval,
+            _httpClient,
+            () => _options.Endpoint.ResolveFeedUrl(feed),
+            cancellationToken).ConfigureAwait(false);
 
         using MemoryStream stream = new(bytes, writable: false);
-        return EcbRateXmlParser.Parse(stream, _options);
-    }
-
-    /// <summary>
-    /// Returns the feed's bytes from the cache, downloading and caching them on a miss.
-    /// </summary>
-    /// <param name="feed">The feed whose file is required.</param>
-    /// <param name="cancellationToken">A token to observe while awaiting the download.</param>
-    /// <returns>A task that yields the feed bytes.</returns>
-    private async ValueTask<byte[]> GetFeedBytesAsync(EcbRateFeed feed, CancellationToken cancellationToken)
-    {
-        if (_cache.TryGet(feed, _options.RefreshInterval, out byte[]? cached))
-            return cached;
-
-        Uri url = _options.Endpoint.ResolveFeedUrl(feed);
-        byte[] bytes = await _httpClient.GetByteArrayAsync(url, cancellationToken).ConfigureAwait(false);
-        _cache.Store(feed, bytes);
-
-        return bytes;
+        EcbRateTable table = EcbRateXmlParser.Parse(stream, _options);
+        table.CachedAtUtc = cachedAtUtc;
+        return table;
     }
 }

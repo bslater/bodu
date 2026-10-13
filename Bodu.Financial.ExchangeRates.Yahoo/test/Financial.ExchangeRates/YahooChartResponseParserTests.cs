@@ -102,4 +102,132 @@ public class YahooChartResponseParserTests
         Assert.AreEqual(new DateOnly(2023, 1, 3), data.Observations[0].Date);
         Assert.AreEqual(0.6828m, data.Observations[0].Rate);
     }
+
+    /// <summary>
+    /// Verifies that a close of a kind other than a number or a numeric string (a boolean, a non-numeric string, or an
+    /// object) causes only that point to be skipped, rather than escaping as <see cref="InvalidOperationException" />.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenCloseIsNotNumeric_ShouldSkipThatPoint()
+    {
+        byte[] json = Chart("[ 1672617600, 1672704000, 1672790400, 1672876800 ]", "[ true, \"n/a\", { \"value\": 1 }, 0.6828 ]");
+
+        PairRateData<YahooSeriesInfo> data = YahooChartResponseParser.Parse(json, CreateRequest(), Symbol, new YahooRateProviderOptions());
+
+        Assert.HasCount(1, data.Observations);
+        Assert.AreEqual(new DateOnly(2023, 1, 5), data.Observations[0].Date);
+        Assert.AreEqual(0.6828m, data.Observations[0].Rate);
+    }
+
+    /// <summary>
+    /// Verifies that a close written as a numeric string is read as the number it spells.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenCloseIsNumericString_ShouldParseIt()
+    {
+        byte[] json = Chart("[ 1672704000 ]", "[ \"0.6828\" ]");
+
+        PairRateData<YahooSeriesInfo> data = YahooChartResponseParser.Parse(json, CreateRequest(), Symbol, new YahooRateProviderOptions());
+
+        Assert.HasCount(1, data.Observations);
+        Assert.AreEqual(0.6828m, data.Observations[0].Rate);
+    }
+
+    /// <summary>
+    /// Verifies that a timestamp of a kind other than a number or a numeric string causes only that point to be
+    /// skipped, rather than escaping as <see cref="InvalidOperationException" />.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenTimestampIsNotNumeric_ShouldSkipThatPoint()
+    {
+        byte[] json = Chart("[ true, \"soon\", null, 1672704000 ]", "[ 0.5, 0.6, 0.7, 0.6828 ]");
+
+        PairRateData<YahooSeriesInfo> data = YahooChartResponseParser.Parse(json, CreateRequest(), Symbol, new YahooRateProviderOptions());
+
+        Assert.HasCount(1, data.Observations);
+        Assert.AreEqual(new DateOnly(2023, 1, 3), data.Observations[0].Date);
+    }
+
+    /// <summary>
+    /// Verifies that a timestamp written as a numeric string is read as the Unix time it spells.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenTimestampIsNumericString_ShouldParseIt()
+    {
+        byte[] json = Chart("[ \"1672704000\" ]", "[ 0.6828 ]");
+
+        PairRateData<YahooSeriesInfo> data = YahooChartResponseParser.Parse(json, CreateRequest(), Symbol, new YahooRateProviderOptions());
+
+        Assert.HasCount(1, data.Observations);
+        Assert.AreEqual(new DateOnly(2023, 1, 3), data.Observations[0].Date);
+    }
+
+    /// <summary>
+    /// Verifies that a <c>chart</c> member that is not an object throws <see cref="ExchangeRateFormatException" />.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenChartIsNotObject_ShouldThrowFormatException()
+    {
+        byte[] json = Encoding.UTF8.GetBytes("""{ "chart": 5 }""");
+
+        _ = Assert.ThrowsExactly<ExchangeRateFormatException>(() =>
+        {
+            _ = YahooChartResponseParser.Parse(json, CreateRequest(), Symbol, new YahooRateProviderOptions());
+        });
+    }
+
+    /// <summary>
+    /// Verifies that a chart result that is not an object throws <see cref="ExchangeRateFormatException" />.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenResultIsNotObject_ShouldThrowFormatException()
+    {
+        byte[] json = Encoding.UTF8.GetBytes("""{ "chart": { "result": [ 5 ], "error": null } }""");
+
+        _ = Assert.ThrowsExactly<ExchangeRateFormatException>(() =>
+        {
+            _ = YahooChartResponseParser.Parse(json, CreateRequest(), Symbol, new YahooRateProviderOptions());
+        });
+    }
+
+    /// <summary>
+    /// Verifies that a quote entry that is not an object throws <see cref="ExchangeRateFormatException" />.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenQuoteIsNotObject_ShouldThrowFormatException()
+    {
+        byte[] json = Encoding.UTF8.GetBytes(
+            """{ "chart": { "result": [ { "timestamp": [ 1672704000 ], "indicators": { "quote": [ 5 ] } } ], "error": null } }""");
+
+        _ = Assert.ThrowsExactly<ExchangeRateFormatException>(() =>
+        {
+            _ = YahooChartResponseParser.Parse(json, CreateRequest(), Symbol, new YahooRateProviderOptions());
+        });
+    }
+
+    /// <summary>
+    /// Verifies that a <c>meta</c> member that is not an object is ignored, and the requested quote currency is used.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenMetaIsNotObject_ShouldUseRequestedQuoteCurrency()
+    {
+        byte[] json = Encoding.UTF8.GetBytes(
+            """{ "chart": { "result": [ { "meta": 5, "timestamp": [ 1672704000 ], "indicators": { "quote": [ { "close": [ 0.6828 ] } ] } } ], "error": null } }""");
+
+        PairRateData<YahooSeriesInfo> data = YahooChartResponseParser.Parse(json, CreateRequest(), Symbol, new YahooRateProviderOptions());
+
+        Assert.AreEqual("USD", data.Series.QuoteIsoCode);
+        Assert.HasCount(1, data.Observations);
+    }
+
+    /// <summary>
+    /// Builds a single-result chart response from the supplied timestamp and close arrays.
+    /// </summary>
+    /// <param name="timestamps">The JSON text of the <c>timestamp</c> array.</param>
+    /// <param name="closes">The JSON text of the <c>close</c> array.</param>
+    /// <returns>The UTF-8 response bytes.</returns>
+    private static byte[] Chart(string timestamps, string closes) =>
+        Encoding.UTF8.GetBytes(
+            "{ \"chart\": { \"result\": [ { \"meta\": { \"currency\": \"USD\" }, \"timestamp\": " + timestamps
+            + ", \"indicators\": { \"quote\": [ { \"close\": " + closes + " } ] } } ], \"error\": null } }");
 }

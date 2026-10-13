@@ -66,8 +66,8 @@ public sealed class ImfRateProvider
     /// <summary>The logger that records report downloads and on-demand network fetches.</summary>
     private readonly ILogger _logger;
 
-    /// <summary>The report months whose data has been loaded.</summary>
-    private readonly HashSet<(int Year, int Month)> _loadedMonths = new();
+    /// <summary>The report months whose data has been loaded, each with the days it can no longer revise and when its open days expire.</summary>
+    private readonly Dictionary<(int Year, int Month), LoadedUnit> _loadedMonths = new();
 
     /// <summary>The discovered currency series, keyed by pair.</summary>
     private readonly Dictionary<CurrencyPair, ImfSeriesInfo> _series = new();
@@ -203,20 +203,16 @@ public sealed class ImfRateProvider
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="month" /> is <see langword="null" />.
     /// </exception>
+    /// <remarks>
+    /// A closed month's report never changes and is loaded once. A month loaded before the IMF published its last day's
+    /// rates is downloaded again once <see cref="WebRateProviderOptions.RefreshInterval" /> has passed since it was
+    /// loaded.
+    /// </remarks>
     public Task LoadMonthAsync(ImfReportMonth month, CancellationToken cancellationToken = default)
     {
         ThrowHelper.ThrowIfNull(month);
 
-        lock (SyncRoot)
-        {
-            if (_loadedMonths.Contains((month.Year, month.Month)))
-                return Task.CompletedTask;
-        }
-
-        // Coalesce concurrent loads of the same month so only one download is in flight; joiners await that shared task.
-        // The shared fetch runs under a token decoupled from any caller, so one caller's cancellation cannot fault the
-        // others; cancellationToken only abandons this caller's wait.
-        return LoadCoalescedAsync(month.Key, ct => LoadMonthCoreAsync(month, ct), cancellationToken);
+        return LoadMonthThroughAsync(month, month.SelectDate, Task.CompletedTask, cancellationToken);
     }
 
     /// <summary>
@@ -229,13 +225,13 @@ public sealed class ImfRateProvider
     /// <exception cref="ArgumentException">
     /// Thrown when <paramref name="endDate" /> precedes <paramref name="startDate" />.
     /// </exception>
-    public async Task LoadRangeAsync(DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken = default)
+    public Task LoadRangeAsync(DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken = default)
     {
+        // The inverted range is reported through the returned task, as it was when this method awaited each month.
         if (endDate < startDate)
-            throw CreateRangeInvertedException(startDate, endDate);
+            return Task.FromException(CreateRangeInvertedException(startDate, endDate));
 
-        for (var month = new DateOnly(startDate.Year, startDate.Month, 1); month <= endDate; month = month.AddMonths(1))
-            await LoadMonthAsync(new ImfReportMonth(month.Year, month.Month), cancellationToken).ConfigureAwait(false);
+        return LoadMonthsThroughAsync(startDate, endDate, cancellationToken);
     }
 
     /// <summary>
@@ -251,11 +247,8 @@ public sealed class ImfRateProvider
     }
 
     /// <inheritdoc />
-    protected override async ValueTask EnsureLoadedAsync(CurrencyPair pair, DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken)
-    {
-        for (var month = new DateOnly(startDate.Year, startDate.Month, 1); month <= endDate; month = month.AddMonths(1))
-            await LoadMonthAsync(new ImfReportMonth(month.Year, month.Month), cancellationToken).ConfigureAwait(false);
-    }
+    protected override ValueTask EnsureLoadedAsync(CurrencyPair pair, DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken) =>
+        new(LoadMonthsThroughAsync(startDate, endDate, cancellationToken));
 
     /// <inheritdoc />
     protected override bool IsLoaded(CurrencyPair pair, DateOnly startDate, DateOnly endDate)
@@ -264,7 +257,8 @@ public sealed class ImfRateProvider
         {
             for (var month = new DateOnly(startDate.Year, startDate.Month, 1); month <= endDate; month = month.AddMonths(1))
             {
-                if (!_loadedMonths.Contains((month.Year, month.Month)))
+                ImfReportMonth reportMonth = new(month.Year, month.Month);
+                if (!IsMonthCurrent(reportMonth, ThroughWithin(reportMonth, endDate)))
                     return false;
             }
         }
@@ -340,28 +334,128 @@ public sealed class ImfRateProvider
     }
 
     /// <summary>
+    /// Returns the last day of a report month a request that ends on a given day needs.
+    /// </summary>
+    /// <param name="month">The report month the request overlaps.</param>
+    /// <param name="endDate">The inclusive end of the request.</param>
+    /// <returns>The earlier of <paramref name="endDate" /> and the month's last day.</returns>
+    private static DateOnly ThroughWithin(ImfReportMonth month, DateOnly endDate) =>
+        month.SelectDate < endDate ? month.SelectDate : endDate;
+
+    /// <summary>
+    /// Loads every month spanning an inclusive date range, each for the days of it the range needs, downloading up to
+    /// four at once but publishing each only after the month before it, so a later month's rates never land ahead of an
+    /// earlier month's in a series.
+    /// </summary>
+    /// <param name="startDate">The inclusive start of the range.</param>
+    /// <param name="endDate">The inclusive end of the range.</param>
+    /// <param name="cancellationToken">A token to observe while awaiting the loads.</param>
+    /// <returns>A task that completes when every covering month has been loaded.</returns>
+    private Task LoadMonthsThroughAsync(DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken)
+    {
+        List<ImfReportMonth> months = [];
+        for (var month = new DateOnly(startDate.Year, startDate.Month, 1); month <= endDate; month = month.AddMonths(1))
+            months.Add(new ImfReportMonth(month.Year, month.Month));
+
+        // ForEachAsync starts one load at a time, in order, so each load is handed the load started before it.
+        Task previous = Task.CompletedTask;
+        return BoundedConcurrency.ForEachAsync(
+            months,
+            BoundedConcurrency.DefaultLimit,
+            month =>
+            {
+                previous = LoadMonthThroughAsync(month, ThroughWithin(month, endDate), previous, cancellationToken);
+                return previous;
+            });
+    }
+
+    /// <summary>
+    /// Loads a report month for a request that needs it through a given day, unless the month as loaded still serves
+    /// that day.
+    /// </summary>
+    /// <param name="month">The report month to load.</param>
+    /// <param name="through">The last day of the month the request needs.</param>
+    /// <param name="publishAfter">A load that must finish, successfully or not, before this month is published.</param>
+    /// <param name="cancellationToken">A token to observe while awaiting the load.</param>
+    /// <returns>A task that completes when the month has been loaded.</returns>
+    private Task LoadMonthThroughAsync(ImfReportMonth month, DateOnly through, Task publishAfter, CancellationToken cancellationToken)
+    {
+        // Coalesce concurrent loads of the same month so only one download is in flight; joiners await that shared task.
+        // The shared fetch runs under a token decoupled from any caller, so one caller's cancellation cannot fault the
+        // others; cancellationToken only abandons this caller's wait.
+        // publishAfter is the load this caller started before this one, and the provider uses no JoinableTaskFactory,
+        // so the foreign-task deadlock VSTHRD003 guards against cannot arise.
+#pragma warning disable VSTHRD003 // Avoid awaiting foreign Tasks
+        return LoadCoalescedAsync(month.Key, () => IsMonthCurrent(month, through), ct => LoadMonthCoreAsync(month, through, publishAfter, ct), cancellationToken);
+#pragma warning restore VSTHRD003
+    }
+
+    /// <summary>
+    /// Downloads a month's report table, then waits for a load to finish, so the month is published after it.
+    /// </summary>
+    /// <param name="month">The report month to download.</param>
+    /// <param name="publishAfter">
+    /// The load to wait for, whether it succeeds or fails, before handing the table on.
+    /// </param>
+    /// <param name="cancellationToken">A token to observe while awaiting the download.</param>
+    /// <returns>A task that yields the downloaded table.</returns>
+    private async ValueTask<ImfRateTable> FetchMonthAsync(ImfReportMonth month, Task publishAfter, CancellationToken cancellationToken)
+    {
+        ImfRateTable table = await _source.GetTableAsync(month, cancellationToken).ConfigureAwait(false);
+
+        // publishAfter is the load this caller started before this one, and the provider uses no JoinableTaskFactory,
+        // so the foreign-task deadlock VSTHRD003 guards against cannot arise.
+#pragma warning disable VSTHRD003 // Avoid awaiting foreign Tasks
+        await publishAfter.ConfigureAwait(ConfigureAwaitOptions.SuppressThrowing);
+#pragma warning restore VSTHRD003
+
+        return table;
+    }
+
+    /// <summary>
+    /// Reports whether a report month has been loaded and, as loaded, still serves a request that needs it through a
+    /// given day. The caller must hold <see cref="WebRateProvider.SyncRoot" />.
+    /// </summary>
+    /// <param name="month">The report month to test.</param>
+    /// <param name="through">The last day of the month the request needs.</param>
+    /// <returns>
+    /// <see langword="true" /> when the month serves the request as loaded; otherwise <see langword="false" />.
+    /// </returns>
+    private bool IsMonthCurrent(ImfReportMonth month, DateOnly through) =>
+        _loadedMonths.TryGetValue((month.Year, month.Month), out LoadedUnit loaded) && loaded.Covers(through, TimeProvider.GetUtcNow());
+
+    /// <summary>
     /// Downloads and stores a single month's report, re-checking the loaded set inside the single-flight section so a
     /// joiner that arrives after a prior load completes does no redundant work.
     /// </summary>
     /// <param name="month">The report month to load.</param>
+    /// <param name="through">The last day of the month the request needs.</param>
+    /// <param name="publishAfter">A load that must finish, successfully or not, before this month is published.</param>
     /// <param name="cancellationToken">A token to observe while awaiting the load.</param>
     /// <returns>A task that completes when the month has been loaded.</returns>
-    private Task LoadMonthCoreAsync(ImfReportMonth month, CancellationToken cancellationToken) =>
+    private Task LoadMonthCoreAsync(ImfReportMonth month, DateOnly through, Task publishAfter, CancellationToken cancellationToken) =>
         LoadFileFeedAsync(
-            alreadyLoaded: () => _loadedMonths.Contains((month.Year, month.Month)),
+            alreadyLoaded: () => IsMonthCurrent(month, through),
             logStarting: () => Log.ReportLoadStarting(_logger, _options.DownloadStartingLogLevel, month.Key),
-            fetchAsync: ct => _source.GetTableAsync(month, ct),
+            fetchAsync: ct => FetchMonthAsync(month, publishAfter, ct),
             logExpectedFailure: ex => Log.ReportLoadFailed(_logger, _options.DownloadFailedLogLevel, month.Key, ex),
             logUnexpectedFailure: ex => Log.ReportLoadUnexpectedError(_logger, month.Key, ex),
-            publish: (table, fetchedAt) =>
+            publish: (table, loadedAt) =>
             {
-                if (!_loadedMonths.Add((month.Year, month.Month)))
+                // A report served from the disk cache was fetched when its entry was written.
+                DateTimeOffset fetchedAt = table.CachedAtUtc ?? loadedAt;
+
+                if (IsMonthCurrent(month, through))
                     return null;
 
                 foreach (ImfSeriesInfo info in table.GetSeriesInfo())
                     _series[info.Pair] = info;
 
-                return AddObservations(table.EnumerateRates(), fetchedAt);
+                // Record the month as loaded only once its observations are in, so a publish that fails part-way leaves
+                // it unloaded and the next request downloads it again.
+                int count = AddObservations(table.EnumerateRates(), fetchedAt);
+                _loadedMonths[(month.Year, month.Month)] = LoadedUnit.Create(month.SelectDate, table.GetLastDate(), fetchedAt, _options.RefreshInterval);
+                return count;
             },
             logCompleted: count => Log.ReportLoaded(_logger, _options.DownloadCompletedLogLevel, month.Key, count),
             cancellationToken: cancellationToken);

@@ -135,7 +135,10 @@ decimal latest = ((IRateProvider)provider).GetRate("AUD", "USD");
 one); with no logger the provider uses `NullLogger`. Each provider's options expose
 per-event `*LogLevel` properties, defaulting to one `Information` line per
 completed download, `Debug` for download starts, and `Trace` for per-observation
-detail.
+detail. Each package logs under event ids no other package uses, so a host can filter
+or route by id: ECB 4101-4106, BoE 4201-4206, RBA 4301-4306, the pair providers' shared
+base 4401-4406 (with the payload cache's 4410-4411 and XE's 4420), the caching packages
+4501-4530, and IMF 4701-4706.
 
 **Downloaded payloads are cached on disk.** The bulk providers (ECB, BoE, RBA, IMF)
 keep a best-effort cache of the raw bytes they downloaded through `EnableDiskCache`
@@ -148,11 +151,13 @@ cache stores parsed, resolved rates in front of the provider.
 exchangerate.host, and FRED - plus the IMF options derive from the abstract
 <xref:Bodu.Financial.ExchangeRates.WebRateProviderOptions>, so they share its surface - the
 `BaseAddress`, `HttpTimeout` (default 30s), `UserAgent`, `AllowSynchronousNetworkAccess`,
-`DefaultLookback` (default 7 days), a `CurrencyAliases` map for non-ISO source symbols,
-and the per-event `*LogLevel` knobs. RBA, ECB, and BoE carry their own option types
-(`RbaRateProviderOptions` and friends) with source-specific settings such as the RBA's
-era list. The DI registration's `configureResilience` parameter tunes the standard
-Polly handler (`HttpStandardResilienceOptions`) wrapped around the named `HttpClient`.
+`DefaultLookback` (default 7 days), `RefreshInterval` (default 12 hours: how long a day
+the source could still publish, such as today, is served before it is fetched again), a
+`CurrencyAliases` map for non-ISO source symbols, and the per-event `*LogLevel` knobs.
+RBA, ECB, and BoE carry their own option types (`RbaRateProviderOptions` and friends)
+with source-specific settings such as the RBA's era list. The DI registration's
+`configureResilience` parameter tunes the standard Polly handler
+(`HttpStandardResilienceOptions`) wrapped around the named `HttpClient`.
 
 ## Reserve Bank of Australia (AUD)
 

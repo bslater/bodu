@@ -46,6 +46,9 @@ public sealed class RateTableBuilder
     /// <summary>The series builders, keyed by (pair, provider).</summary>
     private readonly Dictionary<RateSeriesKey, RateSeriesBuilder> _series;
 
+    /// <summary>The snapshot <see cref="ToSeries" /> last produced for each series, with the builder and builder version it was taken from, so an unchanged series is not copied again.</summary>
+    private readonly Dictionary<RateSeriesKey, (RateSeriesBuilder Builder, int Version, RateSeries Snapshot)> _snapshots = new();
+
     /// <summary>
     /// Initializes a new instance of the <see cref="RateTableBuilder" /> class with no series.
     /// </summary>
@@ -148,7 +151,9 @@ public sealed class RateTableBuilder
         FinancialThrowHelper.ThrowIfInvalidCurrencyPair(pair);
         ThrowHelper.ThrowIfNullOrWhiteSpace(provider);
 
-        return _series.Remove(new RateSeriesKey(pair, provider));
+        var key = new RateSeriesKey(pair, provider);
+        _snapshots.Remove(key);
+        return _series.Remove(key);
     }
 
     /// <summary>
@@ -237,13 +242,33 @@ public sealed class RateTableBuilder
     /// A list of <see cref="RateSeries" /> instances, one per non-empty builder. Empty builders are skipped because an
     /// immutable series must contain at least one observation.
     /// </returns>
+    /// <remarks>
+    /// A series whose builder has not been mutated since the previous call is returned as the same immutable
+    /// <see cref="RateSeries" /> instance that call produced, so taking a snapshot after changing one series copies
+    /// only that series.
+    /// </remarks>
     public IReadOnlyList<RateSeries> ToSeries()
     {
         var snapshots = new List<RateSeries>(_series.Count);
-        foreach (RateSeriesBuilder builder in _series.Values)
+        foreach (KeyValuePair<RateSeriesKey, RateSeriesBuilder> entry in _series)
         {
-            if (!builder.IsEmpty)
-                snapshots.Add(builder.ToSeries());
+            RateSeriesBuilder builder = entry.Value;
+            if (builder.IsEmpty)
+                continue;
+
+            // A series whose builder has not changed since its last snapshot reuses that snapshot rather than copying
+            // its observations again; snapshots are immutable, so sharing one is safe.
+            if (_snapshots.TryGetValue(entry.Key, out (RateSeriesBuilder Builder, int Version, RateSeries Snapshot) cached)
+                && ReferenceEquals(cached.Builder, builder)
+                && cached.Version == builder.Version)
+            {
+                snapshots.Add(cached.Snapshot);
+                continue;
+            }
+
+            RateSeries snapshot = builder.ToSeries();
+            _snapshots[entry.Key] = (builder, builder.Version, snapshot);
+            snapshots.Add(snapshot);
         }
 
         return snapshots;

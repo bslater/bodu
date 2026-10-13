@@ -26,6 +26,13 @@ internal sealed class FixtureImfRateTableSource
     }
 
     /// <summary>
+    /// Gets or sets the last date the simulated source has published, or <see langword="null" /> to serve every
+    /// observation; an observation dated after it is withheld, as a source withholds a day it has not yet published.
+    /// </summary>
+    /// <value>The last published date, or <see langword="null" />.</value>
+    public DateOnly? PublishedThrough { get; set; }
+
+    /// <summary>
     /// Gets the number of times <see cref="GetTableAsync" /> has been invoked.
     /// </summary>
     /// <value>The invocation count.</value>
@@ -39,7 +46,11 @@ internal sealed class FixtureImfRateTableSource
         if (month.Year == 2026 && month.Month == 4)
         {
             using MemoryStream stream = new(ImfFixtures.ReadBytes(ImfFixtures.Rep202604), writable: false);
-            return ValueTask.FromResult(ImfReportParser.Parse(stream, _options));
+            ImfRateTable table = ImfReportParser.Parse(stream, _options);
+            if (PublishedThrough is { } published)
+                table = new ImfRateTable(table.Observations.Where(observation => observation.Date <= published).ToList());
+
+            return ValueTask.FromResult(table);
         }
 
         return ValueTask.FromResult(new ImfRateTable(Array.Empty<ImfRateObservation>()));

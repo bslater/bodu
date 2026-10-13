@@ -59,8 +59,30 @@ internal static class BoeRateCsvParser
         ThrowHelper.ThrowIfNull(stream);
         ThrowHelper.ThrowIfNull(options);
 
-        using StreamReader reader = new(stream);
-        return Parse(reader.ReadToEnd(), options);
+        return Parse(Utf8Content.ReadAll(stream), options);
+    }
+
+    /// <summary>
+    /// Parses the response content from its bytes, reading them directly when they are plain UTF-8.
+    /// </summary>
+    /// <param name="content">The response bytes.</param>
+    /// <param name="options">The provider options supplying the series catalog.</param>
+    /// <returns>The parsed, normalized table.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="options" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="ExchangeRateFormatException">
+    /// Thrown when the content does not contain the expected IADB CSV header.
+    /// </exception>
+    /// <remarks>
+    /// The content is read as the text a <see cref="StreamReader" /> decodes it to, so a byte-order mark and a response
+    /// in another Unicode encoding read as they do through <see cref="Parse(Stream, BoeRateProviderOptions)" />.
+    /// </remarks>
+    public static BoeRateTable Parse(ReadOnlySpan<byte> content, BoeRateProviderOptions options)
+    {
+        ThrowHelper.ThrowIfNull(options);
+
+        return ParseUtf8(Utf8Content.Normalize(content), options);
     }
 
     /// <summary>
@@ -80,12 +102,26 @@ internal static class BoeRateCsvParser
         ThrowHelper.ThrowIfNull(content);
         ThrowHelper.ThrowIfNull(options);
 
+        return ParseUtf8(Encoding.UTF8.GetBytes(content), options);
+    }
+
+    /// <summary>
+    /// Parses UTF-8 response content.
+    /// </summary>
+    /// <param name="content">The UTF-8 response bytes, without a byte-order mark.</param>
+    /// <param name="options">The provider options.</param>
+    /// <returns>The parsed, normalized table.</returns>
+    /// <exception cref="ExchangeRateFormatException">
+    /// Thrown when the content is not a response the parser recognizes.
+    /// </exception>
+    private static BoeRateTable ParseUtf8(ReadOnlySpan<byte> content, BoeRateProviderOptions options)
+    {
         DelimitedDocument? document = null;
         try
         {
             try
             {
-                document = DelimitedDocument.Parse(Encoding.UTF8.GetBytes(content), s_csvOptions);
+                document = DelimitedDocument.Parse(content, s_csvOptions);
             }
             catch (DelimitedFormatException ex)
             {

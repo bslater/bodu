@@ -41,6 +41,15 @@ internal sealed class RbaRateTable
     public IReadOnlyList<RbaRateRow> Rows { get; }
 
     /// <summary>
+    /// Gets or sets the instant the table's bytes were fetched from the source when they were served from a disk cache.
+    /// </summary>
+    /// <value>
+    /// The cache entry's stored time, or <see langword="null" /> when the bytes were just downloaded (the provider then
+    /// stamps the load with the current time).
+    /// </value>
+    public DateTimeOffset? CachedAtUtc { get; set; }
+
+    /// <summary>
     /// Enumerates the table as <see cref="ExchangeRate" /> observations, each quoting the Australian dollar against a
     /// series' currency on a given date.
     /// </summary>
@@ -66,6 +75,22 @@ internal sealed class RbaRateTable
                 }
             }
         }
+    }
+
+    /// <summary>
+    /// Returns the latest date the table holds a row for.
+    /// </summary>
+    /// <returns>The latest row date, or <see langword="null" /> when the table has no rows.</returns>
+    public DateOnly? GetLastDate()
+    {
+        DateOnly? last = null;
+        foreach (RbaRateRow row in Rows)
+        {
+            if (last is null || row.Date > last.Value)
+                last = row.Date;
+        }
+
+        return last;
     }
 
     /// <summary>

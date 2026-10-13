@@ -15,10 +15,18 @@ namespace Bodu.Financial.ExchangeRates;
 /// <remarks>
 /// <para>
 /// This type derives from <see cref="WebRateProviderOptions" />, which supplies the endpoint base address, the HTTP
-/// contract, the synchronous-access and look-back behaviour, and the per-concern log levels. The members declared here
-/// are report-specific: the <see cref="ReportPath" /> and <see cref="ReportType" /> that address the monthly report,
-/// the on-disk cache settings, and the <see cref="CurrencyNames" /> map that resolves an IMF currency label to its ISO
-/// 4217 code. The report is keyless, so no API key is required.
+/// contract, the synchronous-access, look-back and refresh behavior, and the per-concern log levels. The members
+/// declared here are report-specific: the <see cref="ReportPath" /> and <see cref="ReportType" /> that address the
+/// monthly report, the on-disk cache settings, and the <see cref="CurrencyNames" /> map that resolves an IMF currency
+/// label to its ISO 4217 code. The report is keyless, so no API key is required.
+/// </para>
+/// <para>
+/// <strong>Refresh.</strong> The inherited <see cref="WebRateProviderOptions.RefreshInterval" /> governs both the
+/// in-memory months and the on-disk cache. A report cached after its month closed is immutable and is served from cache
+/// regardless of age; a report cached while its month was still growing is subject to the interval, even once the month
+/// has closed. In memory, a loaded month serves for good a request that ends before the day it was downloaded, or on a
+/// day it returned rates for; a request that reaches a later day of the month downloads the month again once the
+/// interval has passed.
 /// </para>
 /// <para>
 /// <strong>USD-anchored, bulk.</strong> The report quotes every reported currency against the US dollar for each
@@ -108,16 +116,6 @@ public sealed class ImfRateProviderOptions
     /// The cache directory, or <see langword="null" /> to use a <c>bodu-imf</c> folder under the system temporary path.
     /// </value>
     public string? CacheDirectory { get; set; }
-
-    /// <summary>
-    /// Gets or sets how long a cached copy of the current month's report remains fresh before it is re-downloaded.
-    /// </summary>
-    /// <value>The refresh interval; defaults to 12 hours.</value>
-    /// <remarks>
-    /// A closed month's report is immutable and is served from cache regardless of age; only the current, still-growing
-    /// month is subject to this interval.
-    /// </remarks>
-    public TimeSpan RefreshInterval { get; set; } = TimeSpan.FromHours(12);
 
     /// <summary>
     /// Gets or sets the map from an IMF currency label (footnote-stripped and trimmed) to its ISO 4217 code, applied

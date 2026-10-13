@@ -15,9 +15,10 @@ namespace Bodu.Financial.ExchangeRates;
 /// <remarks>
 /// <para>
 /// Each report is stored under its month's file name in the cache directory; the file's last-write time serves as the
-/// freshness timestamp. A report for a month strictly before the current UTC month is immutable and is therefore always
-/// served regardless of its age; the report for the current month is treated as stale once it exceeds the supplied
-/// refresh interval, forcing a re-download.
+/// freshness timestamp. A report written after its month had closed (in a later UTC month) holds every day of the month
+/// and never changes, so it is always served regardless of its age. A report written while its month was still open is
+/// treated as stale once it exceeds the supplied refresh interval, forcing a re-download, even after the month has
+/// closed, because it lacks the days the IMF published after it was written.
 /// </para>
 /// <para>
 /// The cache is best-effort: any I/O failure while reading is reported as a miss, and any failure while writing is
@@ -53,6 +54,20 @@ public sealed class FileSystemImfReportCache
         return TryGetCore(month, refreshInterval, out bytes);
     }
 
+    /// <inheritdoc cref="IImfReportCache.TryGet(ImfReportMonth, TimeSpan, out byte[], out DateTimeOffset?)" />
+    /// <remarks>
+    /// The stored time is the cache file's last-write time. Intentionally hides the unguarded base member so calls
+    /// through this type (and through <see cref="IImfReportCache" />) validate their arguments before touching the file
+    /// system.
+    /// </remarks>
+    /// <exception cref="ArgumentNullException"><paramref name="month" /> is <see langword="null" />.</exception>
+    public new bool TryGet(ImfReportMonth month, TimeSpan refreshInterval, [MaybeNullWhen(false)] out byte[] bytes, out DateTimeOffset? storedAtUtc)
+    {
+        ThrowHelper.ThrowIfNull(month);
+
+        return TryGetCore(month, refreshInterval, out bytes, out storedAtUtc);
+    }
+
     /// <inheritdoc />
     /// <remarks>
     /// Intentionally hides the unguarded base member so calls through this type (and through
@@ -77,17 +92,20 @@ public sealed class FileSystemImfReportCache
 
     /// <inheritdoc />
     /// <remarks>
-    /// A report for a month strictly before the current UTC month is closed and immutable, so it is always fresh
-    /// regardless of its file age; only the current (still-accumulating) month is subject to the refresh interval.
+    /// A report written in a UTC month later than its own was written after the month closed, so it is always fresh
+    /// regardless of its file age; a report written during its own month (or earlier) is fresh only while its age does
+    /// not exceed <paramref name="refreshInterval" />.
     /// </remarks>
     /// <exception cref="ArgumentNullException"><paramref name="key" /> is <see langword="null" />.</exception>
     protected override bool IsFresh(ImfReportMonth key, TimeSpan age, TimeSpan refreshInterval)
     {
         ThrowHelper.ThrowIfNull(key);
 
-        DateOnly today = DateOnly.FromDateTime(DateTime.UtcNow);
-        bool isClosedMonth = key.Year < today.Year || (key.Year == today.Year && key.Month < today.Month);
+        // Whether the month had closed is decided at the time the file was written, not now: a report written while its
+        // month was open lacks the days published after it, however long ago the month closed.
+        DateOnly writtenOn = DateOnly.FromDateTime(DateTime.UtcNow - age);
+        bool closedWhenWritten = key.Year < writtenOn.Year || (key.Year == writtenOn.Year && key.Month < writtenOn.Month);
 
-        return isClosedMonth || age <= refreshInterval;
+        return closedWhenWritten || age <= refreshInterval;
     }
 }

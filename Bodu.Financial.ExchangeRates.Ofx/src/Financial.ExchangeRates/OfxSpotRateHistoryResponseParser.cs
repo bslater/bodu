@@ -16,7 +16,8 @@ namespace Bodu.Financial.ExchangeRates;
 /// The response carries a <c>HistoricalPoints</c> array; each point pairs a <c>PointInTime</c> (a Unix timestamp in
 /// milliseconds, interpreted in UTC) with an <c>InterbankRate</c> (the source-to-destination multiplier). OFX returns a
 /// server-determined window, so points outside the request's inclusive range are skipped, as are points with a missing
-/// or non-positive rate. Numeric members are tolerated as JSON numbers or numeric strings.
+/// or non-positive rate and points that are not JSON objects. Numeric members are tolerated as JSON numbers or numeric
+/// strings, so no value of an unexpected kind escapes as <see cref="InvalidOperationException" />.
 /// </remarks>
 internal static class OfxSpotRateHistoryResponseParser
 {
@@ -49,15 +50,13 @@ internal static class OfxSpotRateHistoryResponseParser
 
         foreach (JsonElement point in points.EnumerateArray())
         {
-            if (!TryReadUnixMilliseconds(point, out long unixMs) || !TryReadRate(point, out decimal rate))
+            // A point of any other kind has no members to read; it is skipped like any other malformed point.
+            if (point.ValueKind != JsonValueKind.Object)
                 continue;
 
-            // Skip a timestamp outside the range representable by DateTimeOffset rather than crashing on the
-            // ArgumentOutOfRangeException it would raise (FromUnixTimeMilliseconds accepts this window only).
-            if (unixMs is < -62_135_596_800_000 or > 253_402_300_799_999)
+            if (!TryReadPointInTime(point, out DateOnly date) || !TryReadRate(point, out decimal rate))
                 continue;
 
-            var date = DateOnly.FromDateTime(DateTimeOffset.FromUnixTimeMilliseconds(unixMs).UtcDateTime);
             if (date < request.StartDate || date > request.EndDate)
                 continue;
 
@@ -91,20 +90,21 @@ internal static class OfxSpotRateHistoryResponseParser
     }
 
     /// <summary>
-    /// Reads the <c>PointInTime</c> Unix-millisecond timestamp from a point, tolerating a JSON number or numeric
-    /// string.
+    /// Reads the UTC date of a point's <c>PointInTime</c> Unix-millisecond timestamp, tolerating a JSON number or
+    /// numeric string.
     /// </summary>
     /// <param name="point">The historical-point element.</param>
-    /// <param name="unixMs">When this method returns <see langword="true" />, the Unix-millisecond timestamp.</param>
-    /// <returns><see langword="true" /> when a timestamp was read; otherwise <see langword="false" />.</returns>
-    private static bool TryReadUnixMilliseconds(JsonElement point, out long unixMs)
+    /// <param name="date">When this method returns <see langword="true" />, the UTC date of the timestamp.</param>
+    /// <returns>
+    /// <see langword="true" /> when a timestamp within the range a <see cref="DateTimeOffset" /> represents was read;
+    /// otherwise <see langword="false" />.
+    /// </returns>
+    private static bool TryReadPointInTime(JsonElement point, out DateOnly date)
     {
-        unixMs = 0;
+        date = default;
 
-        if (!point.TryGetProperty("PointInTime", out JsonElement element))
-            return false;
-
-        return JsonRateValueReader.TryReadUnixMilliseconds(element, out unixMs);
+        return point.TryGetProperty("PointInTime", out JsonElement element)
+            && JsonRateValueReader.TryReadUnixMillisecondsDate(element, out date);
     }
 
     /// <summary>

@@ -20,7 +20,7 @@ namespace Bodu.Financial.ExchangeRates;
 /// month's rates.
 /// </remarks>
 [TestClass]
-public class ImfReportTableSourceTests
+public partial class ImfReportTableSourceTests
 {
     /// <summary>
     /// An in-memory report cache that records what it was asked to store.
@@ -38,6 +38,12 @@ public class ImfReportTableSourceTests
         public int StoreCount { get; private set; }
 
         /// <summary>
+        /// Gets the refresh interval of the last lookup.
+        /// </summary>
+        /// <value>The interval, or <see langword="null" /> before any lookup.</value>
+        public TimeSpan? LastRefreshInterval { get; private set; }
+
+        /// <summary>
         /// Seeds the cache without counting it as a store.
         /// </summary>
         /// <param name="month">The report month.</param>
@@ -46,8 +52,11 @@ public class ImfReportTableSourceTests
             _entries[month] = bytes;
 
         /// <inheritdoc />
-        public bool TryGet(ImfReportMonth month, TimeSpan refreshInterval, out byte[] bytes) =>
-            _entries.TryGetValue(month, out bytes!);
+        public bool TryGet(ImfReportMonth month, TimeSpan refreshInterval, out byte[] bytes)
+        {
+            LastRefreshInterval = refreshInterval;
+            return _entries.TryGetValue(month, out bytes!);
+        }
 
         /// <inheritdoc />
         public void Store(ImfReportMonth month, byte[] bytes)
@@ -241,5 +250,38 @@ public class ImfReportTableSourceTests
         _ = Assert.ThrowsExactly<ArgumentNullException>(() => _ = new ImfReportTableSource(null!, options, cache));
         _ = Assert.ThrowsExactly<ArgumentNullException>(() => _ = new ImfReportTableSource(client, null!, cache));
         _ = Assert.ThrowsExactly<ArgumentNullException>(() => _ = new ImfReportTableSource(client, options, null!));
+    }
+
+    /// <summary>
+    /// Verifies that a failed download propagates and leaves nothing in the cache.
+    /// </summary>
+    /// <returns>A task that completes when the assertion has run.</returns>
+    [TestMethod]
+    public async Task GetTableAsync_WhenDownloadFails_ShouldCacheNothing()
+    {
+        RecordingCache cache = new();
+        using HttpClient client = new(new StubHttpMessageHandler([], System.Net.HttpStatusCode.ServiceUnavailable));
+        ImfReportTableSource source = new(client, new ImfRateProviderOptions(), cache);
+
+        _ = await Assert.ThrowsExactlyAsync<HttpRequestException>(async () =>
+        {
+            _ = await source.GetTableAsync(Month);
+        });
+
+        Assert.AreEqual(0, cache.StoreCount);
+    }
+
+    /// <summary>
+    /// Verifies that the cache is consulted with the configured refresh interval.
+    /// </summary>
+    /// <returns>A task that completes when the assertion has run.</returns>
+    [TestMethod]
+    public async Task GetTableAsync_ShouldConsultTheCacheWithTheRefreshInterval()
+    {
+        ImfReportTableSource source = CreateSource(out _, out RecordingCache cache, new ImfRateProviderOptions { RefreshInterval = TimeSpan.FromHours(5) });
+
+        _ = await source.GetTableAsync(Month);
+
+        Assert.AreEqual(TimeSpan.FromHours(5), cache.LastRefreshInterval);
     }
 }

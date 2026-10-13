@@ -46,6 +46,9 @@ public sealed class RateSeriesBuilder
     /// <summary>The mutable buffer holding the live observations.</summary>
     private readonly RateSeriesBuffer _buffer;
 
+    /// <summary>The fetch instant carried onto each snapshot; see <see cref="FetchedAtUtc" />.</summary>
+    private DateTimeOffset? _fetchedAtUtc;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="RateSeriesBuilder" /> class with no observations.
     /// </summary>
@@ -108,7 +111,22 @@ public sealed class RateSeriesBuilder
     /// there onto every <see cref="ExchangeRate" /> the series materializes. Editing the observation buffer does not
     /// change it; assign it explicitly to stamp a fresh load instant.
     /// </remarks>
-    public DateTimeOffset? FetchedAtUtc { get; set; }
+    public DateTimeOffset? FetchedAtUtc
+    {
+        get => _fetchedAtUtc;
+        set
+        {
+            _fetchedAtUtc = value;
+            Version++;
+        }
+    }
+
+    /// <summary>
+    /// Gets a number that changes whenever the builder is mutated, so that a holder of an earlier snapshot can tell
+    /// whether the builder still produces the same series.
+    /// </summary>
+    /// <value>A counter incremented by every mutating member, whether or not the mutation changed anything.</value>
+    internal int Version { get; private set; }
 
     /// <summary>
     /// Gets the number of observations currently held.
@@ -133,8 +151,11 @@ public sealed class RateSeriesBuilder
     /// <exception cref="ArgumentException">
     /// Thrown if an observation already exists for <paramref name="date" />.
     /// </exception>
-    public void Add(DateOnly date, decimal rate) =>
+    public void Add(DateOnly date, decimal rate)
+    {
+        Version++;
         _buffer.Add(date.DayNumber, rate, nameof(rate), nameof(date));
+    }
 
     /// <summary>
     /// Attempts to insert a new observation; returns <see langword="false" /> if one already exists for
@@ -148,8 +169,11 @@ public sealed class RateSeriesBuilder
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown if <paramref name="rate" /> is zero or negative.
     /// </exception>
-    public bool TryAdd(DateOnly date, decimal rate) =>
-        _buffer.TryAdd(date.DayNumber, rate, nameof(rate));
+    public bool TryAdd(DateOnly date, decimal rate)
+    {
+        Version++;
+        return _buffer.TryAdd(date.DayNumber, rate, nameof(rate));
+    }
 
     /// <summary>
     /// Updates the rate for an existing observation; throws if no observation exists for <paramref name="date" />.
@@ -160,8 +184,11 @@ public sealed class RateSeriesBuilder
     /// Thrown if <paramref name="rate" /> is zero or negative.
     /// </exception>
     /// <exception cref="KeyNotFoundException">Thrown if no observation exists for <paramref name="date" />.</exception>
-    public void Set(DateOnly date, decimal rate) =>
+    public void Set(DateOnly date, decimal rate)
+    {
+        Version++;
         _buffer.Set(date.DayNumber, rate, nameof(rate));
+    }
 
     /// <summary>
     /// Attempts to update the rate for an existing observation; returns <see langword="false" /> if none exists.
@@ -174,8 +201,11 @@ public sealed class RateSeriesBuilder
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown if <paramref name="rate" /> is zero or negative.
     /// </exception>
-    public bool TrySet(DateOnly date, decimal rate) =>
-        _buffer.TrySet(date.DayNumber, rate, nameof(rate));
+    public bool TrySet(DateOnly date, decimal rate)
+    {
+        Version++;
+        return _buffer.TrySet(date.DayNumber, rate, nameof(rate));
+    }
 
     /// <summary>
     /// Inserts a new observation or replaces the rate of an existing one for <paramref name="date" />.
@@ -185,8 +215,11 @@ public sealed class RateSeriesBuilder
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown if <paramref name="rate" /> is zero or negative.
     /// </exception>
-    public void Upsert(DateOnly date, decimal rate) =>
+    public void Upsert(DateOnly date, decimal rate)
+    {
+        Version++;
         _buffer.Upsert(date.DayNumber, rate, nameof(rate));
+    }
 
     /// <summary>
     /// Removes the observation for <paramref name="date" /> if present.
@@ -195,7 +228,11 @@ public sealed class RateSeriesBuilder
     /// <returns>
     /// <see langword="true" /> if an observation was removed; <see langword="false" /> if none existed.
     /// </returns>
-    public bool Remove(DateOnly date) => _buffer.Remove(date.DayNumber);
+    public bool Remove(DateOnly date)
+    {
+        Version++;
+        return _buffer.Remove(date.DayNumber);
+    }
 
     /// <summary>
     /// Reports whether an observation exists for <paramref name="date" />.
@@ -232,6 +269,7 @@ public sealed class RateSeriesBuilder
     public void AddRange(IEnumerable<RateObservation> observations)
     {
         ThrowHelper.ThrowIfNull(observations);
+        Version++;
         _buffer.AddRange(observations, nameof(observations));
     }
 
@@ -250,6 +288,7 @@ public sealed class RateSeriesBuilder
     public void UpsertRange(IEnumerable<RateObservation> observations)
     {
         ThrowHelper.ThrowIfNull(observations);
+        Version++;
         _buffer.UpsertRange(observations, nameof(observations));
     }
 
@@ -270,6 +309,7 @@ public sealed class RateSeriesBuilder
     public void AddRange(IEnumerable<(DateOnly Date, decimal Rate)> rates)
     {
         ThrowHelper.ThrowIfNull(rates);
+        Version++;
         _buffer.AddRange(rates.Select(static r => new RateObservation(r.Date, r.Rate)), nameof(rates));
     }
 
@@ -288,6 +328,7 @@ public sealed class RateSeriesBuilder
     public void UpsertRange(IEnumerable<(DateOnly Date, decimal Rate)> rates)
     {
         ThrowHelper.ThrowIfNull(rates);
+        Version++;
         _buffer.UpsertRange(rates.Select(static r => new RateObservation(r.Date, r.Rate)), nameof(rates));
     }
 

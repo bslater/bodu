@@ -127,7 +127,14 @@ public abstract class FileSystemByteCache<TKey>
 
     /// <inheritdoc />
     public bool TryGet(TKey key, TimeSpan refreshInterval, [MaybeNullWhen(false)] out byte[] bytes) =>
-        TryGetCore(key, refreshInterval, out bytes);
+        TryGetCore(key, refreshInterval, out bytes, out _);
+
+    /// <inheritdoc />
+    /// <remarks>
+    /// The stored time is the cache file's last-write time.
+    /// </remarks>
+    public bool TryGet(TKey key, TimeSpan refreshInterval, [MaybeNullWhen(false)] out byte[] bytes, out DateTimeOffset? storedAtUtc) =>
+        TryGetCore(key, refreshInterval, out bytes, out storedAtUtc);
 
     /// <inheritdoc />
     /// <exception cref="ArgumentNullException">
@@ -145,25 +152,38 @@ public abstract class FileSystemByteCache<TKey>
     /// When this method returns <see langword="true" />, the cached bytes; otherwise <see langword="null" />.
     /// </param>
     /// <returns><see langword="true" /> when fresh bytes were read; otherwise <see langword="false" />.</returns>
-    protected bool TryGetCore(TKey key, TimeSpan refreshInterval, [MaybeNullWhen(false)] out byte[] bytes)
+    protected bool TryGetCore(TKey key, TimeSpan refreshInterval, [MaybeNullWhen(false)] out byte[] bytes) =>
+        TryGetCore(key, refreshInterval, out bytes, out _);
+
+    /// <summary>
+    /// Attempts to read the cached bytes for a key when a fresh file exists, together with the file's last-write time.
+    /// </summary>
+    /// <param name="key">The download unit to look up.</param>
+    /// <param name="refreshInterval">The maximum age a cached file may reach before it is treated as stale.</param>
+    /// <param name="bytes">
+    /// When this method returns <see langword="true" />, the cached bytes; otherwise <see langword="null" />.
+    /// </param>
+    /// <param name="storedAtUtc">
+    /// When this method returns <see langword="true" />, the file's last-write time; otherwise <see langword="null" />.
+    /// </param>
+    /// <returns><see langword="true" /> when fresh bytes were read; otherwise <see langword="false" />.</returns>
+    protected bool TryGetCore(TKey key, TimeSpan refreshInterval, [MaybeNullWhen(false)] out byte[] bytes, out DateTimeOffset? storedAtUtc)
     {
         string path = ResolveCachePath(key);
+        bytes = null;
+        storedAtUtc = null;
 
         try
         {
             if (!File.Exists(path))
-            {
-                bytes = null;
                 return false;
-            }
 
-            if (!IsFresh(key, DateTime.UtcNow - File.GetLastWriteTimeUtc(path), refreshInterval))
-            {
-                bytes = null;
+            DateTime writtenUtc = File.GetLastWriteTimeUtc(path);
+            if (!IsFresh(key, DateTime.UtcNow - writtenUtc, refreshInterval))
                 return false;
-            }
 
             bytes = File.ReadAllBytes(path);
+            storedAtUtc = new DateTimeOffset(writtenUtc, TimeSpan.Zero);
             return true;
         }
         catch (IOException ex)

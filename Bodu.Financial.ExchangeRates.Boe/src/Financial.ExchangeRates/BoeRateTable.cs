@@ -39,17 +39,32 @@ internal sealed class BoeRateTable
     public IReadOnlyDictionary<string, BoeSeries> Series { get; }
 
     /// <summary>
+    /// Gets or sets the instant the table's bytes were fetched from the source when they were served from a disk cache.
+    /// </summary>
+    /// <value>
+    /// The cache entry's stored time, or <see langword="null" /> when the bytes were just downloaded (the provider then
+    /// stamps the load with the current time).
+    /// </value>
+    public DateTimeOffset? CachedAtUtc { get; set; }
+
+    /// <summary>
     /// Enumerates the table as <see cref="ExchangeRate" /> observations, each quoting the pound against a currency on a
     /// given date.
     /// </summary>
-    /// <returns>One <see cref="ExchangeRate" /> per observation.</returns>
+    /// <returns>
+    /// One <see cref="ExchangeRate" /> per observation whose currency the ISO 4217 catalog lists; an observation of a
+    /// configured series whose quote code it does not list is skipped.
+    /// </returns>
     public IEnumerable<ExchangeRate> EnumerateRates()
     {
         foreach (BoeRateObservation observation in Observations)
         {
+            if (!CurrencyInfo.TryGetCurrencyCode(observation.CurrencyCode, out CurrencyCode quote))
+                continue;
+
             yield return new ExchangeRate(
                 BoeRateProvider.BaseCurrency,
-                CurrencyInfo.ParseCurrencyCode(observation.CurrencyCode),
+                quote,
                 observation.Date,
                 observation.Rate,
                 BoeRateProvider.ProviderName);
@@ -57,9 +72,27 @@ internal sealed class BoeRateTable
     }
 
     /// <summary>
+    /// Returns the latest date the table holds an observation for.
+    /// </summary>
+    /// <returns>The latest observation date, or <see langword="null" /> when the table is empty.</returns>
+    public DateOnly? GetLastDate()
+    {
+        DateOnly? last = null;
+        foreach (BoeRateObservation observation in Observations)
+        {
+            if (last is null || observation.Date > last.Value)
+                last = observation.Date;
+        }
+
+        return last;
+    }
+
+    /// <summary>
     /// Produces the discovered-pair metadata for the distinct currencies in the table.
     /// </summary>
-    /// <returns>One <see cref="BoeSeriesInfo" /> per distinct quote currency, in first-seen order.</returns>
+    /// <returns>
+    /// One <see cref="BoeSeriesInfo" /> per distinct quote currency the ISO 4217 catalog lists, in first-seen order.
+    /// </returns>
     public IReadOnlyList<BoeSeriesInfo> GetSeriesInfo()
     {
         var seen = new HashSet<string>(StringComparer.Ordinal);
@@ -67,10 +100,10 @@ internal sealed class BoeRateTable
 
         foreach (BoeRateObservation observation in Observations)
         {
-            if (!seen.Add(observation.CurrencyCode))
+            if (!seen.Add(observation.CurrencyCode) || !CurrencyInfo.TryGetCurrencyCode(observation.CurrencyCode, out CurrencyCode quote))
                 continue;
 
-            CurrencyPair pair = new(BoeRateProvider.BaseCurrency, CurrencyInfo.ParseCurrencyCode(observation.CurrencyCode));
+            CurrencyPair pair = new(BoeRateProvider.BaseCurrency, quote);
             Series.TryGetValue(observation.CurrencyCode, out BoeSeries? series);
             result.Add(new BoeSeriesInfo(
                 pair,

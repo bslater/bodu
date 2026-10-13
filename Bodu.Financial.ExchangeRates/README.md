@@ -38,10 +38,13 @@ public sealed class AcmeRateProvider : PairWebRateProvider<AcmeSeriesInfo>
   fixed earliest date, or a rolling window).
 - **`PairWebRateProvider<TSeries>`** - the specialisation for sources that fetch a
   distinct series per currency pair (the shape of the Yahoo, OFX, XE, OANDA, Fixer, exchangerate.host, and FRED feeds),
-  driven by an `IPairRateSource<TSeries>`.
+  driven by an `IPairRateSource<TSeries>`. It keeps a day it has fetched for good once the
+  day has passed or the source has returned a rate for it; today, and any later day the
+  source returned nothing for, is fetched again by the next request that reaches it after
+  `RefreshInterval`, so a rate published later the same day is not missed.
 - **`WebRateProviderOptions`** - the abstract options base carrying `BaseAddress`,
-  `HttpTimeout`, `UserAgent`, `DefaultLookback`, `CurrencyAliases`, and the per-stage
-  log levels every derived options type inherits.
+  `HttpTimeout`, `UserAgent`, `DefaultLookback`, `RefreshInterval` (12 hours by default),
+  `CurrencyAliases`, and the per-stage log levels every derived options type inherits.
 
 ## Shared fetch machinery
 

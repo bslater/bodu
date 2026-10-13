@@ -1,0 +1,69 @@
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="BoeRateProviderTests.Refresh.cs" company="Bodu Pty. Ltd.">
+// Copyright (c) Bodu Pty. Ltd. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
+namespace Bodu.Financial.ExchangeRates;
+
+public partial class BoeRateProviderTests
+{
+    /// <summary>
+    /// Verifies that a range ending today, loaded before the Bank of England published today's rate, is downloaded
+    /// again once the refresh interval has passed, so the rate published later the same day is served.
+    /// </summary>
+    [TestMethod]
+    public async Task LoadRangeAsync_WhenTodayWasNotYetPublished_ShouldLoadAgainAfterTheRefreshInterval()
+    {
+        DateOnly today = new(2023, 1, 4);
+        MutableTimeProvider time = new(new DateTimeOffset(2023, 1, 4, 9, 0, 0, TimeSpan.Zero));
+        BoeRateProviderOptions options = new() { EnableDiskCache = false, RefreshInterval = TimeSpan.FromHours(1) };
+        FixtureBoeRateTableSource source = new(options) { PublishedThrough = new DateOnly(2023, 1, 3) };
+        using BoeRateProvider provider = new(source, options, timeProvider: time);
+
+        await provider.LoadRangeAsync(new DateOnly(2023, 1, 3), today);
+        source.PublishedThrough = today;
+        time.Advance(TimeSpan.FromHours(2));
+        await provider.LoadRangeAsync(new DateOnly(2023, 1, 3), today);
+
+        Assert.AreEqual(2, source.GetTableCallCount);
+        Assert.AreEqual(1.2050m, provider.GetRate("GBP", "USD", today, RateLookupOptions.Exact).Rate.Rate);
+    }
+
+    /// <summary>
+    /// Verifies that a range downloaded after it closed is never downloaded again, however long ago it was loaded.
+    /// </summary>
+    [TestMethod]
+    public async Task LoadRangeAsync_WhenRangeWasClosedWhenLoaded_ShouldNotLoadItAgain()
+    {
+        MutableTimeProvider time = new(new DateTimeOffset(2023, 1, 10, 9, 0, 0, TimeSpan.Zero));
+        BoeRateProviderOptions options = new() { EnableDiskCache = false, RefreshInterval = TimeSpan.FromHours(1) };
+        FixtureBoeRateTableSource source = new(options);
+        using BoeRateProvider provider = new(source, options, timeProvider: time);
+
+        await provider.LoadRangeAsync(new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 8));
+        time.Advance(TimeSpan.FromDays(3));
+        await provider.LoadRangeAsync(new DateOnly(2023, 1, 3), new DateOnly(2023, 1, 8));
+
+        Assert.AreEqual(1, source.GetTableCallCount);
+    }
+
+    /// <summary>
+    /// Verifies that a range ending today is not downloaded again before the refresh interval has passed.
+    /// </summary>
+    [TestMethod]
+    public async Task LoadRangeAsync_WhenRefreshIntervalHasNotPassed_ShouldNotLoadAgain()
+    {
+        DateOnly today = new(2023, 1, 4);
+        MutableTimeProvider time = new(new DateTimeOffset(2023, 1, 4, 9, 0, 0, TimeSpan.Zero));
+        BoeRateProviderOptions options = new() { EnableDiskCache = false, RefreshInterval = TimeSpan.FromHours(1) };
+        FixtureBoeRateTableSource source = new(options) { PublishedThrough = new DateOnly(2023, 1, 3) };
+        using BoeRateProvider provider = new(source, options, timeProvider: time);
+
+        await provider.LoadRangeAsync(new DateOnly(2023, 1, 3), today);
+        time.Advance(TimeSpan.FromMinutes(30));
+        await provider.LoadRangeAsync(new DateOnly(2023, 1, 3), today);
+
+        Assert.AreEqual(1, source.GetTableCallCount);
+    }
+}

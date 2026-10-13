@@ -13,9 +13,15 @@ namespace Bodu.Financial.ExchangeRates;
 /// downloading and serving IMF Representative Exchange Rates.
 /// </summary>
 /// <remarks>
+/// <para>
 /// The messages are produced by the <see cref="LoggerMessageAttribute" /> source generator, so a disabled or
 /// <see cref="Microsoft.Extensions.Logging.Abstractions.NullLogger" /> logger short-circuits before any argument is
 /// formatted.
+/// </para>
+/// <para>
+/// The events use ids 4701 to 4706, ending in the same digits as the other bulk providers' events for the same stage.
+/// No other exchange-rate package uses this range, so a host can filter or route the IMF provider's events by id.
+/// </para>
 /// </remarks>
 internal static partial class Log
 {
@@ -25,7 +31,7 @@ internal static partial class Log
     /// <param name="logger">The logger that receives the message.</param>
     /// <param name="level">The level at which to log the message.</param>
     /// <param name="month">The report month being downloaded.</param>
-    [LoggerMessage(EventId = 4301, Message = "Downloading IMF report '{month}'")]
+    [LoggerMessage(EventId = 4701, Message = "Downloading IMF report '{month}'")]
     public static partial void ReportLoadStarting(ILogger logger, LogLevel level, string month);
 
     /// <summary>
@@ -35,7 +41,7 @@ internal static partial class Log
     /// <param name="level">The level at which to log the message.</param>
     /// <param name="month">The loaded report month.</param>
     /// <param name="rateCount">The number of rate observations accumulated from the report.</param>
-    [LoggerMessage(EventId = 4302, Message = "Loaded IMF report '{month}' with {rateCount} rate observation(s)")]
+    [LoggerMessage(EventId = 4702, Message = "Loaded IMF report '{month}' with {rateCount} rate observation(s)")]
     public static partial void ReportLoaded(ILogger logger, LogLevel level, string month, int rateCount);
 
     /// <summary>
@@ -47,7 +53,7 @@ internal static partial class Log
     /// <param name="toIsoCode">The destination-currency ISO code.</param>
     /// <param name="date">The observation date.</param>
     /// <param name="rate">The observed rate.</param>
-    [LoggerMessage(EventId = 4305, Message = "Ingested IMF observation {fromIsoCode}->{toIsoCode} on {date} = {rate}")]
+    [LoggerMessage(EventId = 4705, Message = "Ingested IMF observation {fromIsoCode}->{toIsoCode} on {date} = {rate}")]
     public static partial void ObservationIngested(ILogger logger, LogLevel level, string fromIsoCode, string toIsoCode, DateOnly date, decimal rate);
 
     /// <summary>
@@ -57,7 +63,7 @@ internal static partial class Log
     /// <param name="level">The level at which to log the message.</param>
     /// <param name="month">The report month whose download failed.</param>
     /// <param name="exception">The exception that caused the failure.</param>
-    [LoggerMessage(EventId = 4303, Message = "Failed to download IMF report '{month}'")]
+    [LoggerMessage(EventId = 4703, Message = "Failed to download IMF report '{month}'")]
     public static partial void ReportLoadFailed(ILogger logger, LogLevel level, string month, Exception exception);
 
     /// <summary>
@@ -66,7 +72,7 @@ internal static partial class Log
     /// <param name="logger">The logger that receives the message.</param>
     /// <param name="level">The level at which to log the message.</param>
     /// <param name="date">The date whose covering report was fetched synchronously.</param>
-    [LoggerMessage(EventId = 4304, Message = "Performed synchronous IMF network fetch to resolve a rate for {date}")]
+    [LoggerMessage(EventId = 4704, Message = "Performed synchronous IMF network fetch to resolve a rate for {date}")]
     public static partial void SynchronousNetworkFetch(ILogger logger, LogLevel level, DateOnly date);
 
     /// <summary>
@@ -76,6 +82,6 @@ internal static partial class Log
     /// <param name="logger">The logger that receives the message.</param>
     /// <param name="month">The report month whose download failed.</param>
     /// <param name="exception">The unexpected exception.</param>
-    [LoggerMessage(EventId = 4306, Level = LogLevel.Error, Message = "Unexpected error downloading IMF report '{month}'")]
+    [LoggerMessage(EventId = 4706, Level = LogLevel.Error, Message = "Unexpected error downloading IMF report '{month}'")]
     public static partial void ReportLoadUnexpectedError(ILogger logger, string month, Exception exception);
 }

@@ -446,8 +446,15 @@ public abstract class WebRateProvider
     /// </para>
     /// <para>
     /// Returning <see langword="null" /> from <paramref name="publish" /> suppresses the snapshot rebuild and
-    /// completion log (the loaded key was already committed by another operation). The timestamp is captured
-    /// immediately after fetching, before entering the publication lock.
+    /// completion log (the loaded key was already committed by another operation); returning zero logs the completion
+    /// but keeps the current snapshot, which an empty publish leaves unchanged. The timestamp is captured immediately
+    /// after fetching, before entering the publication lock; a <paramref name="publish" /> whose table was served from
+    /// a disk cache stamps the cache entry's stored time instead, the time its bytes were fetched.
+    /// </para>
+    /// <para>
+    /// <paramref name="publish" /> should record its unit as loaded only after
+    /// <see cref="AddObservations(IEnumerable{ExchangeRate}, DateTimeOffset?)" /> has returned, so that a failure
+    /// part-way through publishing leaves the unit unloaded and the next request downloads it again.
     /// </para>
     /// </remarks>
     /// <typeparam name="TTable">The provider's parsed feed-table type.</typeparam>
@@ -513,7 +520,10 @@ public abstract class WebRateProvider
             if (count is not int publishedCount)
                 return;
 
-            RebuildSnapshot();
+            // A publish that added no observation left the accumulator as it was, so the snapshot already reflects it.
+            if (publishedCount > 0)
+                RebuildSnapshot();
+
             logCompleted(publishedCount);
         }
     }
@@ -545,6 +555,52 @@ public abstract class WebRateProvider
     protected Task LoadCoalescedAsync(string key, Func<CancellationToken, Task> load, CancellationToken cancellationToken)
     {
         ThrowHelper.ThrowIfNull(key);
+
+        return _loadCoordinator.RunAsync(key, load, cancellationToken);
+    }
+
+    /// <summary>
+    /// Runs <paramref name="load" /> for <paramref name="key" />, or joins the load already in flight for that key,
+    /// unless <paramref name="isLoaded" /> reports that the unit is already loaded: the coverage fast path and the
+    /// coalesced load a derived type's
+    /// <see cref="EnsureLoadedAsync(CurrencyPair, DateOnly, DateOnly, CancellationToken)" /> otherwise writes out
+    /// itself.
+    /// </summary>
+    /// <param name="key">The key identifying the load; equal keys share one in-flight fetch.</param>
+    /// <param name="isLoaded">
+    /// The coverage check, called while holding <see cref="SyncRoot" />; <see langword="true" /> skips the load.
+    /// </param>
+    /// <param name="load">The fetch to run on a miss, invoked with a token decoupled from any single caller.</param>
+    /// <param name="cancellationToken">A token that abandons this caller's wait on the shared fetch.</param>
+    /// <returns>
+    /// A completed task when the unit is already loaded; otherwise a task that completes when the load for
+    /// <paramref name="key" /> completes.
+    /// </returns>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="key" />, <paramref name="isLoaded" /> or <paramref name="load" /> is
+    /// <see langword="null" />.
+    /// </exception>
+    /// <exception cref="OperationCanceledException">
+    /// Thrown when <paramref name="cancellationToken" /> is signaled before the shared fetch completes; the shared
+    /// fetch continues to completion for any other joiner.
+    /// </exception>
+    /// <remarks>
+    /// The check is a fast path only. A caller can join a load started for a unit that another load has since covered,
+    /// so <paramref name="load" /> should check coverage again once it runs, as
+    /// <see cref="LoadFileFeedAsync{TTable}" /> does. The shared fetch runs as
+    /// <see cref="LoadCoalescedAsync(string, Func{CancellationToken, Task}, CancellationToken)" /> describes.
+    /// </remarks>
+    protected Task LoadCoalescedAsync(string key, Func<bool> isLoaded, Func<CancellationToken, Task> load, CancellationToken cancellationToken)
+    {
+        ThrowHelper.ThrowIfNull(key);
+        ThrowHelper.ThrowIfNull(isLoaded);
+        ThrowHelper.ThrowIfNull(load);
+
+        lock (SyncRoot)
+        {
+            if (isLoaded())
+                return Task.CompletedTask;
+        }
 
         return _loadCoordinator.RunAsync(key, load, cancellationToken);
     }

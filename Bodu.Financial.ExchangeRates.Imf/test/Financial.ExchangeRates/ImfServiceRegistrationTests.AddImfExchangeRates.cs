@@ -119,6 +119,22 @@ public partial class ImfServiceRegistrationTests
     }
 
     /// <summary>
+    /// Verifies that a zero refresh interval fails fast through <c>ValidateOnStart</c> when the provider is resolved.
+    /// </summary>
+    [TestMethod]
+    public void AddImfExchangeRates_WhenRefreshIntervalIsZero_ShouldThrowOnResolve()
+    {
+        var services = new ServiceCollection();
+        services.AddFinancialService().AddImfExchangeRates(configure: o => o.RefreshInterval = TimeSpan.Zero);
+        using ServiceProvider provider = services.BuildServiceProvider();
+
+        _ = Assert.ThrowsExactly<OptionsValidationException>(() =>
+        {
+            _ = provider.GetRequiredService<ImfRateProvider>();
+        });
+    }
+
+    /// <summary>
     /// Verifies that the <see cref="OptionsValidationException" /> raised for invalid options carries the
     /// package's resource-backed validation message.
     /// </summary>

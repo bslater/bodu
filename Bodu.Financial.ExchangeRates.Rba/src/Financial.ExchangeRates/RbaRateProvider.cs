@@ -68,8 +68,8 @@ public sealed class RbaRateProvider
     /// <summary>The logger that records era downloads and on-demand network fetches.</summary>
     private readonly ILogger _logger;
 
-    /// <summary>The labels of eras whose data has been loaded.</summary>
-    private readonly HashSet<string> _loadedEras = new(StringComparer.Ordinal);
+    /// <summary>The eras whose data has been loaded, keyed by label, each with the days it can no longer revise and when its open days expire.</summary>
+    private readonly Dictionary<string, LoadedUnit> _loadedEras = new(StringComparer.Ordinal);
 
     /// <summary>The discovered currency series, keyed by pair.</summary>
     private readonly Dictionary<CurrencyPair, RbaSeriesInfo> _series = new();
@@ -204,14 +204,18 @@ public sealed class RbaRateProvider
     /// </summary>
     /// <param name="cancellationToken">A token to observe while awaiting the loads.</param>
     /// <returns>A task that completes when every era has been loaded.</returns>
-    public async Task PreloadAsync(CancellationToken cancellationToken = default)
-    {
-        foreach (RbaEraWorkbook era in _options.Eras)
-            await LoadEraAsync(era, cancellationToken).ConfigureAwait(false);
-    }
+    /// <remarks>
+    /// Up to four eras are downloaded at once, and each is published only after every era before it in the catalog.
+    /// Once a load fails no further era is started; the loads already started finish, and the first failure is then
+    /// thrown.
+    /// </remarks>
+    public Task PreloadAsync(CancellationToken cancellationToken = default) =>
+        LoadErasInOrderAsync(
+            _options.Eras.Select(era => (era, era.End ?? DateOnly.FromDateTime(TimeProvider.GetUtcNow().UtcDateTime))),
+            cancellationToken);
 
     /// <summary>
-    /// Downloads and loads a single era, if it has not already been loaded.
+    /// Downloads and loads a single era, unless it has already been loaded and is still current.
     /// </summary>
     /// <param name="era">The era to load.</param>
     /// <param name="cancellationToken">A token to observe while awaiting the load.</param>
@@ -219,20 +223,16 @@ public sealed class RbaRateProvider
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="era" /> is <see langword="null" />.
     /// </exception>
+    /// <remarks>
+    /// A closed era never changes and is loaded once. The open-ended current era, loaded before the RBA published the
+    /// latest day's rates, is downloaded again once <see cref="RbaRateProviderOptions.CurrentEraRefreshInterval" /> has
+    /// passed since it was loaded.
+    /// </remarks>
     public Task LoadEraAsync(RbaEraWorkbook era, CancellationToken cancellationToken = default)
     {
         ThrowHelper.ThrowIfNull(era);
 
-        lock (SyncRoot)
-        {
-            if (_loadedEras.Contains(era.Label))
-                return Task.CompletedTask;
-        }
-
-        // Coalesce concurrent loads of the same era so only one download is in flight; joiners await that shared task.
-        // The shared fetch runs under a token decoupled from any caller, so one caller's cancellation cannot fault the
-        // others; cancellationToken only abandons this caller's wait.
-        return LoadCoalescedAsync(era.Label, ct => LoadEraCoreAsync(era, ct), cancellationToken);
+        return LoadEraThroughAsync(era, era.End ?? DateOnly.FromDateTime(TimeProvider.GetUtcNow().UtcDateTime), Task.CompletedTask, cancellationToken);
     }
 
     /// <summary>
@@ -276,7 +276,7 @@ public sealed class RbaRateProvider
         {
             foreach (RbaEraWorkbook era in _options.Eras)
             {
-                if (era.Start <= endDate && (era.End is null || era.End.Value >= startDate) && !_loadedEras.Contains(era.Label))
+                if (era.Start <= endDate && (era.End is null || era.End.Value >= startDate) && !IsEraCurrent(era, ThroughWithin(era, endDate)))
                     return false;
             }
 
@@ -353,38 +353,131 @@ public sealed class RbaRateProvider
     /// <param name="endDate">The inclusive end of the range.</param>
     /// <param name="cancellationToken">A token to observe while awaiting the loads.</param>
     /// <returns>A task that completes when the overlapping eras have been loaded.</returns>
-    private async Task LoadRangeInternalAsync(DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken)
+    private Task LoadRangeInternalAsync(DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken) =>
+        LoadErasInOrderAsync(
+            _options.Eras
+                .Where(era => era.Start <= endDate && (era.End is null || era.End.Value >= startDate))
+                .Select(era => (era, ThroughWithin(era, endDate))),
+            cancellationToken);
+
+    /// <summary>
+    /// Loads eras, each through a given day, downloading up to four at once but publishing each only after the one
+    /// before it, so a later era's rates never land ahead of an earlier era's in a series.
+    /// </summary>
+    /// <param name="eras">
+    /// The eras to load, in the order to publish them, each with the last day of it the request needs.
+    /// </param>
+    /// <param name="cancellationToken">A token to observe while awaiting the loads.</param>
+    /// <returns>A task that completes when every era started has been loaded.</returns>
+    private Task LoadErasInOrderAsync(IEnumerable<(RbaEraWorkbook Era, DateOnly Through)> eras, CancellationToken cancellationToken)
     {
-        foreach (RbaEraWorkbook era in _options.Eras)
-        {
-            if (era.Start <= endDate && (era.End is null || era.End.Value >= startDate))
-                await LoadEraAsync(era, cancellationToken).ConfigureAwait(false);
-        }
+        // ForEachAsync starts one load at a time, in order, so each load is handed the load started before it.
+        Task previous = Task.CompletedTask;
+        return BoundedConcurrency.ForEachAsync(
+            eras,
+            BoundedConcurrency.DefaultLimit,
+            unit =>
+            {
+                previous = LoadEraThroughAsync(unit.Era, unit.Through, previous, cancellationToken);
+                return previous;
+            });
     }
+
+    /// <summary>
+    /// Returns the last day of an era a request that ends on a given day needs.
+    /// </summary>
+    /// <param name="era">The era the request overlaps.</param>
+    /// <param name="endDate">The inclusive end of the request.</param>
+    /// <returns>The earlier of <paramref name="endDate" /> and the era's last day.</returns>
+    private static DateOnly ThroughWithin(RbaEraWorkbook era, DateOnly endDate) =>
+        era.End is { } eraEnd && eraEnd < endDate ? eraEnd : endDate;
+
+    /// <summary>
+    /// Loads an era for a request that needs it through a given day, unless the era as loaded still serves that day.
+    /// </summary>
+    /// <param name="era">The era to load.</param>
+    /// <param name="through">The last day of the era the request needs.</param>
+    /// <param name="publishAfter">A load that must finish, successfully or not, before this era is published.</param>
+    /// <param name="cancellationToken">A token to observe while awaiting the load.</param>
+    /// <returns>A task that completes when the era has been loaded.</returns>
+    private Task LoadEraThroughAsync(RbaEraWorkbook era, DateOnly through, Task publishAfter, CancellationToken cancellationToken)
+    {
+        // Coalesce concurrent loads of the same era so only one download is in flight; joiners await that shared task.
+        // The shared fetch runs under a token decoupled from any caller, so one caller's cancellation cannot fault the
+        // others; cancellationToken only abandons this caller's wait.
+        // publishAfter is the load this caller started before this one, and the provider uses no JoinableTaskFactory,
+        // so the foreign-task deadlock VSTHRD003 guards against cannot arise.
+#pragma warning disable VSTHRD003 // Avoid awaiting foreign Tasks
+        return LoadCoalescedAsync(era.Label, () => IsEraCurrent(era, through), ct => LoadEraCoreAsync(era, through, publishAfter, ct), cancellationToken);
+#pragma warning restore VSTHRD003
+    }
+
+    /// <summary>
+    /// Downloads an era's table, then waits for a load to finish, so the era is published after it.
+    /// </summary>
+    /// <param name="era">The era to download.</param>
+    /// <param name="publishAfter">
+    /// The load to wait for, whether it succeeds or fails, before handing the table on.
+    /// </param>
+    /// <param name="cancellationToken">A token to observe while awaiting the download.</param>
+    /// <returns>A task that yields the downloaded table.</returns>
+    private async ValueTask<RbaRateTable> FetchEraAsync(RbaEraWorkbook era, Task publishAfter, CancellationToken cancellationToken)
+    {
+        RbaRateTable table = await _source.GetTableAsync(era, cancellationToken).ConfigureAwait(false);
+
+        // publishAfter is the load this caller started before this one, and the provider uses no JoinableTaskFactory,
+        // so the foreign-task deadlock VSTHRD003 guards against cannot arise.
+#pragma warning disable VSTHRD003 // Avoid awaiting foreign Tasks
+        await publishAfter.ConfigureAwait(ConfigureAwaitOptions.SuppressThrowing);
+#pragma warning restore VSTHRD003
+
+        return table;
+    }
+
+    /// <summary>
+    /// Reports whether an era has been loaded and, as loaded, still serves a request that needs it through a given day.
+    /// The caller must hold <see cref="WebRateProvider.SyncRoot" />.
+    /// </summary>
+    /// <param name="era">The era to test.</param>
+    /// <param name="through">The last day of the era the request needs.</param>
+    /// <returns>
+    /// <see langword="true" /> when the era serves the request as loaded; otherwise <see langword="false" />.
+    /// </returns>
+    private bool IsEraCurrent(RbaEraWorkbook era, DateOnly through) =>
+        _loadedEras.TryGetValue(era.Label, out LoadedUnit loaded) && loaded.Covers(through, TimeProvider.GetUtcNow());
 
     /// <summary>
     /// Downloads and stores a single era, re-checking the loaded set inside the single-flight section so a joiner that
     /// arrives after a prior load completes does no redundant work.
     /// </summary>
     /// <param name="era">The era to load.</param>
+    /// <param name="through">The last day of the era the request needs.</param>
+    /// <param name="publishAfter">A load that must finish, successfully or not, before this era is published.</param>
     /// <param name="cancellationToken">A token to observe while awaiting the load.</param>
     /// <returns>A task that completes when the era has been loaded.</returns>
-    private Task LoadEraCoreAsync(RbaEraWorkbook era, CancellationToken cancellationToken) =>
+    private Task LoadEraCoreAsync(RbaEraWorkbook era, DateOnly through, Task publishAfter, CancellationToken cancellationToken) =>
         LoadFileFeedAsync(
-            alreadyLoaded: () => _loadedEras.Contains(era.Label),
+            alreadyLoaded: () => IsEraCurrent(era, through),
             logStarting: () => Log.EraLoadStarting(_logger, _options.DownloadStartingLogLevel, era.Label),
-            fetchAsync: ct => _source.GetTableAsync(era, ct),
+            fetchAsync: ct => FetchEraAsync(era, publishAfter, ct),
             logExpectedFailure: ex => Log.EraLoadFailed(_logger, _options.DownloadFailedLogLevel, era.Label, ex),
             logUnexpectedFailure: ex => Log.EraLoadUnexpectedError(_logger, era.Label, ex),
-            publish: (table, fetchedAt) =>
+            publish: (table, loadedAt) =>
             {
-                if (!_loadedEras.Add(era.Label))
+                // An era served from the disk cache was fetched when its entry was written.
+                DateTimeOffset fetchedAt = table.CachedAtUtc ?? loadedAt;
+
+                if (IsEraCurrent(era, through))
                     return null;
 
                 foreach (RbaSeriesInfo info in table.GetSeriesInfo())
                     _series[info.Pair] = info;
 
-                return AddObservations(table.EnumerateRates(), fetchedAt);
+                // Record the era as loaded only once its observations are in, so a publish that fails part-way leaves
+                // it unloaded and the next request downloads it again.
+                int count = AddObservations(table.EnumerateRates(), fetchedAt);
+                _loadedEras[era.Label] = LoadedUnit.Create(era.End, table.GetLastDate(), fetchedAt, _options.CurrentEraRefreshInterval);
+                return count;
             },
             logCompleted: count => Log.EraLoaded(_logger, _options.DownloadCompletedLogLevel, era.Label, count),
             cancellationToken: cancellationToken);

@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Text;
 using Bodu.Test;
 
 namespace Bodu.Financial.ExchangeRates;
@@ -78,5 +79,73 @@ public partial class BoeRateCsvParserTests
         {
             _ = BoeRateCsvParser.Parse("<html><body>Service unavailable</body></html>", new BoeRateProviderOptions());
         });
+    }
+
+    /// <summary>
+    /// Verifies that parsing a response's bytes yields the observations parsing its text yields.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenGivenBytes_ShouldYieldWhatParsingTheTextYields()
+    {
+        BoeRateProviderOptions options = new();
+        byte[] bytes = BoeFixtures.ReadBytes(BoeFixtures.Sample);
+
+        BoeRateTable table = BoeRateCsvParser.Parse((ReadOnlySpan<byte>)bytes, options);
+
+        CollectionAssert.AreEqual(BoeRateCsvParser.Parse(BoeFixtures.ReadText(BoeFixtures.Sample), options).Observations.ToList(), table.Observations.ToList());
+    }
+
+    /// <summary>
+    /// Verifies that a UTF-8 byte-order mark leading a response's bytes is not read as part of its header.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenBytesStartWithByteOrderMark_ShouldIgnoreIt()
+    {
+        BoeRateProviderOptions options = new();
+        byte[] bytes = [.. Encoding.UTF8.GetPreamble(), .. BoeFixtures.ReadBytes(BoeFixtures.Sample)];
+
+        BoeRateTable table = BoeRateCsvParser.Parse((ReadOnlySpan<byte>)bytes, options);
+
+        CollectionAssert.AreEqual(ParseSample().Observations.ToList(), table.Observations.ToList());
+    }
+
+    /// <summary>
+    /// Verifies that a response's bytes in UTF-16, marked by its byte-order mark, read as they do through a stream.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenBytesAreUtf16_ShouldReadThemAsAStreamReaderDecodesThem()
+    {
+        BoeRateProviderOptions options = new();
+        byte[] bytes = [.. Encoding.Unicode.GetPreamble(), .. Encoding.Unicode.GetBytes(BoeFixtures.ReadText(BoeFixtures.Sample))];
+
+        BoeRateTable table = BoeRateCsvParser.Parse((ReadOnlySpan<byte>)bytes, options);
+
+        CollectionAssert.AreEqual(ParseSample().Observations.ToList(), table.Observations.ToList());
+    }
+
+    /// <summary>
+    /// Verifies that bytes lacking the <c>DATE</c> header are reported as a format failure.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenBytesLackHeader_ShouldThrowExchangeRateFormatException()
+    {
+        _ = Assert.ThrowsExactly<ExchangeRateFormatException>(() =>
+        {
+            _ = BoeRateCsvParser.Parse("<html><body>Service unavailable</body></html>"u8, new BoeRateProviderOptions());
+        });
+    }
+
+    /// <summary>
+    /// Verifies that parsing bytes without options throws <see cref="ArgumentNullException" /> naming the options.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenGivenBytesWithoutOptions_ShouldThrowArgumentNullException()
+    {
+        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = BoeRateCsvParser.Parse(BoeFixtures.ReadBytes(BoeFixtures.Sample).AsSpan(), null!);
+        });
+
+        Assert.AreEqual("options", ex.ParamName);
     }
 }

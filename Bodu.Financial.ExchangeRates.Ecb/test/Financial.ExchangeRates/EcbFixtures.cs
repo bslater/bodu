@@ -17,6 +17,9 @@ internal static class EcbFixtures
     /// <summary>The file name of the sample <c>eurofxref</c> history feed, embedded under the ECB's own file name.</summary>
     public const string Sample = "eurofxref-hist.xml";
 
+    /// <summary>The file name of a history feed whose older days quote <c>TRL</c>, the Turkish lira retired in 2005, which the ISO 4217 catalog no longer lists.</summary>
+    public const string RetiredCurrency = "eurofxref-hist-retired.xml";
+
     /// <summary>
     /// Reads the raw bytes of an embedded fixture.
     /// </summary>

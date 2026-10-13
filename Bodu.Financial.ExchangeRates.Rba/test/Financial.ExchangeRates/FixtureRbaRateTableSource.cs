@@ -28,6 +28,13 @@ internal sealed class FixtureRbaRateTableSource
     }
 
     /// <summary>
+    /// Gets or sets the last date the simulated source has published, or <see langword="null" /> to serve every
+    /// observation; an observation dated after it is withheld, as a source withholds a day it has not yet published.
+    /// </summary>
+    /// <value>The last published date, or <see langword="null" />.</value>
+    public DateOnly? PublishedThrough { get; set; }
+
+    /// <summary>
     /// Gets the number of times <see cref="GetTableAsync" /> has been invoked.
     /// </summary>
     /// <value>The invocation count.</value>
@@ -40,6 +47,10 @@ internal sealed class FixtureRbaRateTableSource
 
         using MemoryStream stream = RbaFixtures.OpenStream(era.FileName);
         using var workbook = ExcelBinaryWorkbook.OpenRead(stream, leaveOpen: true);
-        return ValueTask.FromResult(RbaRateWorkbookParser.Parse(workbook, _options));
+        RbaRateTable table = RbaRateWorkbookParser.Parse(workbook, _options);
+        if (PublishedThrough is { } published)
+            table = new RbaRateTable(table.Series, table.Rows.Where(row => row.Date <= published).ToList());
+
+        return ValueTask.FromResult(table);
     }
 }

@@ -126,6 +126,15 @@ namespace Bodu.Financial.ExchangeRates {
             get {
                 return ResourceManager.GetString("Arg_Invalid_WebExchangeRateOptionsLogLevel", resourceCulture);
             }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The exchange-rate provider options refresh interval must be greater than zero..
+        /// </summary>
+        internal static string Arg_Invalid_WebExchangeRateOptionsRefreshInterval {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_WebExchangeRateOptionsRefreshInterval", resourceCulture);
+            }
         }        
         /// <summary>
         ///   Looks up a localized string similar to No exchange rate available for {0} -> {1} on {2:yyyy-MM-dd} using {3} within {4} day(s)..

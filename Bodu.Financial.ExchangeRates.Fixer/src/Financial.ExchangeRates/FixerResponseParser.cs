@@ -66,7 +66,7 @@ internal static class FixerResponseParser
                 }
             }
             else if (string.Equals(entry.Name, quoteSymbol, StringComparison.Ordinal)
-                && TryReadDecimal(entry.Value, out decimal singleRate))
+                && JsonRateValueReader.TryReadPositiveDecimal(entry.Value, out decimal singleRate))
             {
                 // Single-date shape: the property name is the quote symbol; the date is the top-level "date".
                 DateOnly date = ReadSingleDate(root, request);
@@ -136,20 +136,7 @@ internal static class FixerResponseParser
     {
         rate = 0m;
 
-        return rates.TryGetProperty(symbol, out JsonElement element) && TryReadDecimal(element, out rate);
-    }
-
-    /// <summary>
-    /// Reads a strictly positive decimal from a JSON element, tolerating a number or numeric string.
-    /// </summary>
-    /// <param name="element">The value element.</param>
-    /// <param name="rate">When this method returns <see langword="true" />, the positive value.</param>
-    /// <returns><see langword="true" /> when a positive value was read; otherwise <see langword="false" />.</returns>
-    private static bool TryReadDecimal(JsonElement element, out decimal rate)
-    {
-        rate = 0m;
-
-        return JsonRateValueReader.TryReadPositiveDecimal(element, out rate);
+        return rates.TryGetProperty(symbol, out JsonElement element) && JsonRateValueReader.TryReadPositiveDecimal(element, out rate);
     }
 
     /// <summary>

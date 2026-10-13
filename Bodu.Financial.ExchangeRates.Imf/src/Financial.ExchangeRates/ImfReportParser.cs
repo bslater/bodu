@@ -68,8 +68,30 @@ internal static class ImfReportParser
         ThrowHelper.ThrowIfNull(stream);
         ThrowHelper.ThrowIfNull(options);
 
-        using StreamReader reader = new(stream);
-        return Parse(reader.ReadToEnd(), options);
+        return Parse(Utf8Content.ReadAll(stream), options);
+    }
+
+    /// <summary>
+    /// Parses the report content from its bytes, reading them directly when they are plain UTF-8.
+    /// </summary>
+    /// <param name="content">The report bytes.</param>
+    /// <param name="options">The provider options supplying the currency-name map.</param>
+    /// <returns>The parsed, normalized table.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="options" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="ExchangeRateFormatException">
+    /// Thrown when the content contains no recognizable header row or yields no usable observations.
+    /// </exception>
+    /// <remarks>
+    /// The content is read as the text a <see cref="StreamReader" /> decodes it to, so a byte-order mark and a report
+    /// in another Unicode encoding read as they do through <see cref="Parse(Stream, ImfRateProviderOptions)" />.
+    /// </remarks>
+    public static ImfRateTable Parse(ReadOnlySpan<byte> content, ImfRateProviderOptions options)
+    {
+        ThrowHelper.ThrowIfNull(options);
+
+        return ParseUtf8(Utf8Content.Normalize(content), options);
     }
 
     /// <summary>
@@ -89,12 +111,26 @@ internal static class ImfReportParser
         ThrowHelper.ThrowIfNull(content);
         ThrowHelper.ThrowIfNull(options);
 
+        return ParseUtf8(Encoding.UTF8.GetBytes(content), options);
+    }
+
+    /// <summary>
+    /// Parses UTF-8 report content.
+    /// </summary>
+    /// <param name="content">The UTF-8 report bytes, without a byte-order mark.</param>
+    /// <param name="options">The provider options.</param>
+    /// <returns>The parsed, normalized table.</returns>
+    /// <exception cref="ExchangeRateFormatException">
+    /// Thrown when the content is not a report the parser recognizes.
+    /// </exception>
+    private static ImfRateTable ParseUtf8(ReadOnlySpan<byte> content, ImfRateProviderOptions options)
+    {
         DelimitedDocument? document = null;
         try
         {
             try
             {
-                document = DelimitedDocument.Parse(Encoding.UTF8.GetBytes(content), s_tsvOptions);
+                document = DelimitedDocument.Parse(content, s_tsvOptions);
             }
             catch (DelimitedFormatException ex)
             {

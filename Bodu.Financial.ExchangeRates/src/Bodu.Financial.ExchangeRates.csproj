@@ -5,7 +5,7 @@
         <TargetFrameworks>$(BoduNetTargets)</TargetFrameworks>
         <RootNamespace>Bodu</RootNamespace>
         <Title>Bodu - Exchange-Rate Provider Infrastructure</Title>
-        <Description>Web exchange-rate provider infrastructure for Bodu.Financial. Provides the WebRateProvider and PairWebRateProvider base classes that per-source provider packages (BoE, ECB, RBA, Yahoo, OFX, XE, OANDA) build on, plus the shared fetch machinery: single-flight request coalescing, file-system response caching, HttpClient construction, and pair-load contracts. Depends only on Bodu.Financial and Microsoft.Extensions.Logging.Abstractions.</Description>
+        <Description>Web exchange-rate provider infrastructure for Bodu.Financial. Provides the WebRateProvider and PairWebRateProvider base classes that per-source provider packages (BoE, ECB, RBA, IMF, Yahoo, OFX, XE, OANDA, Fixer, exchangerate.host, FRED) build on, plus the shared fetch machinery: single-flight request coalescing, file-system response caching, HttpClient construction, and pair-load contracts. Depends only on Bodu.Financial and Microsoft.Extensions.Logging.Abstractions.</Description>
         <PackageTags>$(PackageTags);financial;exchange-rate;forex;fx;provider;http;infrastructure</PackageTags>
     </PropertyGroup>
 
@@ -38,6 +38,12 @@
             <DesignTime>True</DesignTime>
             <AutoGen>True</AutoGen>
         </Compile>
+    </ItemGroup>
+
+    <!-- Shared load-tracking rules; compiled internally into PairWebRateProvider and each file feed that tracks what it has loaded. -->
+    <ItemGroup>
+        <Compile Include="..\shared\RatePublication.cs" Link="Shared\RatePublication.cs" />
+        <Compile Include="..\shared\LoadedRangeCoverage.cs" Link="Shared\LoadedRangeCoverage.cs" />
     </ItemGroup>
 
 </Project>

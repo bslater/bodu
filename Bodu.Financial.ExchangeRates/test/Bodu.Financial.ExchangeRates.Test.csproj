@@ -13,6 +13,24 @@
     <ProjectReference Include="..\src\Bodu.Financial.ExchangeRates.csproj" />
   </ItemGroup>
 
+  <!-- Every exchange-rate package that logs, or could log, so LogEventIdTests can hold their event ids distinct. -->
+  <ItemGroup>
+    <ProjectReference Include="..\..\Bodu.Financial.ExchangeRates.Boe\src\Bodu.Financial.ExchangeRates.Boe.csproj" />
+    <ProjectReference Include="..\..\Bodu.Financial.ExchangeRates.Ecb\src\Bodu.Financial.ExchangeRates.Ecb.csproj" />
+    <ProjectReference Include="..\..\Bodu.Financial.ExchangeRates.Rba\src\Bodu.Financial.ExchangeRates.Rba.csproj" />
+    <ProjectReference Include="..\..\Bodu.Financial.ExchangeRates.Imf\src\Bodu.Financial.ExchangeRates.Imf.csproj" />
+    <ProjectReference Include="..\..\Bodu.Financial.ExchangeRates.Yahoo\src\Bodu.Financial.ExchangeRates.Yahoo.csproj" />
+    <ProjectReference Include="..\..\Bodu.Financial.ExchangeRates.Ofx\src\Bodu.Financial.ExchangeRates.Ofx.csproj" />
+    <ProjectReference Include="..\..\Bodu.Financial.ExchangeRates.Xe\src\Bodu.Financial.ExchangeRates.Xe.csproj" />
+    <ProjectReference Include="..\..\Bodu.Financial.ExchangeRates.Oanda\src\Bodu.Financial.ExchangeRates.Oanda.csproj" />
+    <ProjectReference Include="..\..\Bodu.Financial.ExchangeRates.Fixer\src\Bodu.Financial.ExchangeRates.Fixer.csproj" />
+    <ProjectReference Include="..\..\Bodu.Financial.ExchangeRates.ExchangeRateHost\src\Bodu.Financial.ExchangeRates.ExchangeRateHost.csproj" />
+    <ProjectReference Include="..\..\Bodu.Financial.ExchangeRates.Fred\src\Bodu.Financial.ExchangeRates.Fred.csproj" />
+    <ProjectReference Include="..\..\Bodu.Financial.ExchangeRates.Caching\src\Bodu.Financial.ExchangeRates.Caching.csproj" />
+    <ProjectReference Include="..\..\Bodu.Financial.ExchangeRates.Caching.Sqlite\src\Bodu.Financial.ExchangeRates.Caching.Sqlite.csproj" />
+    <ProjectReference Include="..\..\Bodu.Financial.ExchangeRates.Caching.Distributed\src\Bodu.Financial.ExchangeRates.Caching.Distributed.csproj" />
+  </ItemGroup>
+
   <!-- Shared test infrastructure namespaces from Bodu.Test, imported project-wide. -->
   <ItemGroup>
     <Using Include="Bodu.Test.Logging" />

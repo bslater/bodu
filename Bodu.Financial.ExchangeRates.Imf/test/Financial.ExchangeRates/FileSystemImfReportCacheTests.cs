@@ -96,6 +96,58 @@ public sealed class FileSystemImfReportCacheTests
     }
 
     /// <summary>
+    /// Verifies that a report written while its month was still open, and older than the refresh interval, is reported
+    /// as a miss after the month has closed, because it lacks the days the IMF published after it was written.
+    /// </summary>
+    [TestMethod]
+    public void TryGet_WhenMonthWasOpenWhenCachedAndIsStale_ShouldReturnMiss()
+    {
+        string directory = CreateTempDirectory();
+        try
+        {
+            var cache = new FileSystemImfReportCache(directory);
+            var month = new ImfReportMonth(2023, 1);
+            cache.Store(month, [1, 2, 3]);
+            File.SetLastWriteTimeUtc(Path.Combine(directory, month.FileName), new DateTime(2023, 1, 10, 12, 0, 0, DateTimeKind.Utc));
+
+            bool hit = cache.TryGet(month, TimeSpan.FromHours(12), out _);
+
+            Assert.IsFalse(hit);
+        }
+        finally
+        {
+            Cleanup(directory);
+        }
+    }
+
+    /// <summary>
+    /// Verifies that a report written after its month had closed is served regardless of age, because it holds every
+    /// day of the month.
+    /// </summary>
+    [TestMethod]
+    public void TryGet_WhenMonthHadClosedWhenCached_ShouldReturnBytes()
+    {
+        string directory = CreateTempDirectory();
+        try
+        {
+            var cache = new FileSystemImfReportCache(directory);
+            var month = new ImfReportMonth(2023, 1);
+            byte[] payload = [1, 2, 3];
+            cache.Store(month, payload);
+            File.SetLastWriteTimeUtc(Path.Combine(directory, month.FileName), new DateTime(2023, 2, 5, 12, 0, 0, DateTimeKind.Utc));
+
+            bool hit = cache.TryGet(month, TimeSpan.FromHours(12), out byte[]? bytes);
+
+            Assert.IsTrue(hit);
+            CollectionAssert.AreEqual(payload, bytes);
+        }
+        finally
+        {
+            Cleanup(directory);
+        }
+    }
+
+    /// <summary>
     /// Verifies that reading a <see langword="null" /> month through the unguarded base-type member throws
     /// <see cref="ArgumentNullException" /> instead of failing inside the cache.
     /// </summary>
@@ -127,6 +179,50 @@ public sealed class FileSystemImfReportCacheTests
         });
 
         Assert.AreEqual("key", ex.ParamName);
+    }
+
+    /// <summary>
+    /// Verifies that a hit reports the cache file's last-write time as the instant the report was stored.
+    /// </summary>
+    [TestMethod]
+    public void TryGet_WhenHitWithStoredTime_ShouldReportTheFileWriteTime()
+    {
+        string directory = CreateTempDirectory();
+        try
+        {
+            FileSystemImfReportCache cache = new(directory);
+            ImfReportMonth month = new(2026, 4);
+            cache.Store(month, [1, 2, 3]);
+            string path = Path.Combine(directory, month.FileName);
+            File.SetLastWriteTimeUtc(path, DateTime.UtcNow.AddHours(-3));
+            DateTimeOffset written = new(File.GetLastWriteTimeUtc(path), TimeSpan.Zero);
+
+            bool hit = ((IImfReportCache)cache).TryGet(month, TimeSpan.FromHours(1), out _, out DateTimeOffset? storedAtUtc);
+
+            Assert.IsTrue(hit);
+            Assert.AreEqual(written, storedAtUtc);
+        }
+        finally
+        {
+            Cleanup(directory);
+        }
+    }
+
+    /// <summary>
+    /// Verifies that reading a <see langword="null" /> month with a stored time throws
+    /// <see cref="ArgumentNullException" /> naming it.
+    /// </summary>
+    [TestMethod]
+    public void TryGet_WhenMonthIsNullWithStoredTime_ShouldThrowArgumentNullException()
+    {
+        FileSystemImfReportCache cache = new(CreateTempDirectory());
+
+        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = cache.TryGet(null!, TimeSpan.FromHours(1), out _, out _);
+        });
+
+        Assert.AreEqual("month", ex.ParamName);
     }
 
     /// <summary>

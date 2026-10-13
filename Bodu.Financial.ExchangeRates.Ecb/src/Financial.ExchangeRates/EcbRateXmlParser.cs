@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Xml;
 using System.Xml.Linq;
@@ -28,8 +29,20 @@ namespace Bodu.Financial.ExchangeRates;
 /// </remarks>
 internal static class EcbRateXmlParser
 {
+    /// <summary>The ECB <c>eurofxref</c> vocabulary namespace URI in which the <c>Cube</c> elements are declared.</summary>
+    private const string EcbNamespaceUri = "http://www.ecb.int/vocabulary/2002-08-01/eurofxref";
+
     /// <summary>The ECB <c>eurofxref</c> vocabulary namespace in which the <c>Cube</c> elements are declared.</summary>
-    private static readonly XNamespace s_ecbNamespace = "http://www.ecb.int/vocabulary/2002-08-01/eurofxref";
+    private static readonly XNamespace s_ecbNamespace = EcbNamespaceUri;
+
+    /// <summary>The reader settings <see cref="XDocument.Load(Stream)" /> uses, so a streamed parse accepts and rejects the same documents a loaded one does.</summary>
+    private static readonly XmlReaderSettings s_readerSettings = new()
+    {
+        IgnoreWhitespace = true,
+        DtdProcessing = DtdProcessing.Parse,
+        MaxCharactersFromEntities = 10_000_000,
+        XmlResolver = null,
+    };
 
     /// <summary>
     /// Parses the feed content from a stream.
@@ -41,12 +54,27 @@ internal static class EcbRateXmlParser
     /// Thrown when <paramref name="stream" /> or <paramref name="options" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="ExchangeRateFormatException">
-    /// Thrown when the content is well-formed XML but does not match the expected <c>eurofxref</c> layout.
+    /// Thrown when the content is not well-formed XML or does not match the expected <c>eurofxref</c> layout.
     /// </exception>
+    /// <remarks>
+    /// A seekable stream is read forward once with an <see cref="XmlReader" /> rather than loaded into an
+    /// <see cref="XDocument" />, so parsing the full history does not first build a tree of its hundreds of thousands
+    /// of elements. A feed whose day elements nest inside one another, which the published layout never does, is read
+    /// again through the document model, as is a stream that cannot seek, so every feed yields what it did before.
+    /// </remarks>
     public static EcbRateTable Parse(Stream stream, EcbRateProviderOptions options)
     {
         ThrowHelper.ThrowIfNull(stream);
         ThrowHelper.ThrowIfNull(options);
+
+        if (stream.CanSeek)
+        {
+            long start = stream.Position;
+            if (TryParseStreaming(stream, options, out EcbRateTable? table))
+                return table;
+
+            stream.Position = start;
+        }
 
         XDocument document = Load(stream);
         return Parse(document, options);
@@ -89,7 +117,7 @@ internal static class EcbRateXmlParser
 
             foreach (XElement rateCube in dayCube.Elements(s_ecbNamespace + "Cube"))
             {
-                if (TryParseCell(rateCube, date, options, out EcbRateObservation observation))
+                if (TryParseCell(rateCube.Attribute("currency")?.Value, rateCube.Attribute("rate")?.Value, date, options, out EcbRateObservation observation))
                     observations.Add(observation);
             }
         }
@@ -118,11 +146,95 @@ internal static class EcbRateXmlParser
     }
 
     /// <summary>
+    /// Reads a feed forward with an <see cref="XmlReader" />, collecting the cells of each day element in document
+    /// order.
+    /// </summary>
+    /// <param name="stream">The stream positioned at the start of the feed XML.</param>
+    /// <param name="options">The provider options supplying the currency alias map.</param>
+    /// <param name="table">
+    /// When this method returns <see langword="true" />, the parsed table; otherwise <see langword="null" />.
+    /// </param>
+    /// <returns>
+    /// <see langword="true" /> when the feed was parsed; <see langword="false" /> when a day element nests inside
+    /// another, a layout whose cells the document-model parse orders differently, so the caller parses it that way
+    /// instead.
+    /// </returns>
+    /// <exception cref="ExchangeRateFormatException">
+    /// Thrown when the stream does not contain well-formed XML, or holds no day element.
+    /// </exception>
+    private static bool TryParseStreaming(Stream stream, EcbRateProviderOptions options, [NotNullWhen(true)] out EcbRateTable? table)
+    {
+        table = null;
+        var observations = new List<EcbRateObservation>();
+        int dayCount = 0;
+        int openDayDepth = -1;
+        DateOnly? openDate = null;
+
+        try
+        {
+            using XmlReader reader = XmlReader.Create(stream, s_readerSettings);
+            while (reader.Read())
+            {
+                if (reader.NodeType == XmlNodeType.EndElement)
+                {
+                    if (reader.Depth == openDayDepth)
+                        openDayDepth = -1;
+
+                    continue;
+                }
+
+                if (reader.NodeType != XmlNodeType.Element
+                    || !string.Equals(reader.LocalName, "Cube", StringComparison.Ordinal)
+                    || !string.Equals(reader.NamespaceURI, EcbNamespaceUri, StringComparison.Ordinal))
+                {
+                    continue;
+                }
+
+                string? time = reader.GetAttribute("time");
+
+                // A cube directly inside the open day element is one of its cells.
+                if (openDayDepth >= 0 && reader.Depth == openDayDepth + 1)
+                {
+                    if (time is not null)
+                        return false;
+
+                    if (openDate is { } date
+                        && TryParseCell(reader.GetAttribute("currency"), reader.GetAttribute("rate"), date, options, out EcbRateObservation observation))
+                    {
+                        observations.Add(observation);
+                    }
+
+                    continue;
+                }
+
+                if (time is null)
+                    continue;
+
+                if (openDayDepth >= 0)
+                    return false;
+
+                dayCount++;
+                openDate = TryParseDate(time, out DateOnly parsed) ? parsed : null;
+                openDayDepth = reader.IsEmptyElement ? -1 : reader.Depth;
+            }
+        }
+        catch (XmlException ex)
+        {
+            throw new ExchangeRateFormatException(EcbResourceStrings.Format_Invalid_EcbMalformedXml, ex);
+        }
+
+        if (dayCount == 0)
+            throw new ExchangeRateFormatException(EcbResourceStrings.Format_Invalid_EcbNoDataRows);
+
+        table = new EcbRateTable(observations);
+        return true;
+    }
+
+    /// <summary>
     /// Parses a single inner <c>Cube</c> cell into an observation, resolving and validating the quote currency.
     /// </summary>
-    /// <param name="rateCube">
-    /// The inner <c>Cube</c> element carrying <c>currency</c> and <c>rate</c> attributes.
-    /// </param>
+    /// <param name="currency">The cell's <c>currency</c> attribute, or <see langword="null" /> when absent.</param>
+    /// <param name="rateText">The cell's <c>rate</c> attribute, or <see langword="null" /> when absent.</param>
     /// <param name="date">The observation date inherited from the enclosing day element.</param>
     /// <param name="options">The provider options supplying the currency alias map.</param>
     /// <param name="observation">
@@ -131,12 +243,10 @@ internal static class EcbRateXmlParser
     /// <returns>
     /// <see langword="true" /> when the cell yielded a usable observation; otherwise <see langword="false" />.
     /// </returns>
-    private static bool TryParseCell(XElement rateCube, DateOnly date, EcbRateProviderOptions options, out EcbRateObservation observation)
+    private static bool TryParseCell(string? currency, string? rateText, DateOnly date, EcbRateProviderOptions options, out EcbRateObservation observation)
     {
         observation = default;
 
-        string? currency = rateCube.Attribute("currency")?.Value;
-        string? rateText = rateCube.Attribute("rate")?.Value;
         if (string.IsNullOrWhiteSpace(currency) || string.IsNullOrWhiteSpace(rateText))
             return false;
 

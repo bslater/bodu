@@ -31,6 +31,13 @@ internal sealed class FixtureEcbRateTableSource
     }
 
     /// <summary>
+    /// Gets or sets the last date the simulated source has published, or <see langword="null" /> to serve every
+    /// observation; an observation dated after it is withheld, as a source withholds a day it has not yet published.
+    /// </summary>
+    /// <value>The last published date, or <see langword="null" />.</value>
+    public DateOnly? PublishedThrough { get; set; }
+
+    /// <summary>
     /// Gets the number of times <see cref="GetTableAsync" /> has been invoked.
     /// </summary>
     /// <value>The invocation count.</value>
@@ -42,6 +49,10 @@ internal sealed class FixtureEcbRateTableSource
         GetTableCallCount++;
 
         using MemoryStream stream = EcbFixtures.OpenStream(_fileName);
-        return ValueTask.FromResult(EcbRateXmlParser.Parse(stream, _options));
+        EcbRateTable table = EcbRateXmlParser.Parse(stream, _options);
+        if (PublishedThrough is { } published)
+            table = new EcbRateTable(table.Observations.Where(observation => observation.Date <= published).ToList());
+
+        return ValueTask.FromResult(table);
     }
 }

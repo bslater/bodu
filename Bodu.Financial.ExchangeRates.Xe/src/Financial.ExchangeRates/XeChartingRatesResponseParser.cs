@@ -23,9 +23,11 @@ namespace Bodu.Financial.ExchangeRates;
 /// </para>
 /// <para>
 /// XE returns a server-determined window, so points outside the request's inclusive range are skipped, as are
-/// non-positive rates. When the window has sub-daily granularity, multiple points can map to the same calendar day;
-/// because the points are emitted in chronological order and the accumulator upserts by date, the last point of each
-/// day is the one retained.
+/// non-positive rates. The baseline and the points are read as JSON numbers or numeric strings: a point of any other
+/// kind is skipped (the points after it keep their dates), and a baseline of any other kind, like a batch that is not
+/// an object, is reported as missing data. When the window has sub-daily granularity, multiple points can map to the
+/// same calendar day; because the points are emitted in chronological order and the accumulator upserts by date, the
+/// last point of each day is the one retained.
 /// </para>
 /// </remarks>
 internal static class XeChartingRatesResponseParser
@@ -61,12 +63,13 @@ internal static class XeChartingRatesResponseParser
 
         JsonElement batch = batchList[0];
 
-        if (!TryGetInt64(batch, "startTime", out long startTimeMs)
+        if (batch.ValueKind != JsonValueKind.Object
+            || !TryGetInt64(batch, "startTime", out long startTimeMs)
             || !TryGetInt64(batch, "interval", out long intervalMs)
             || !batch.TryGetProperty("rates", out JsonElement rates)
             || rates.ValueKind != JsonValueKind.Array
             || rates.GetArrayLength() == 0
-            || !rates[0].TryGetDecimal(out decimal baseline))
+            || !JsonRateValueReader.TryReadDecimal(rates[0], out decimal baseline))
         {
             throw NoData(request);
         }
@@ -85,7 +88,7 @@ internal static class XeChartingRatesResponseParser
             // The first element is the baseline offset, not a data point; the published series starts at the second element.
             for (int i = 1; i < count; i++)
             {
-                if (rates[i].TryGetDecimal(out decimal value))
+                if (JsonRateValueReader.TryReadDecimal(rates[i], out decimal value))
                 {
                     decimal rate = DecodeRate(value, baseline);
                     var date = DateOnly.FromDateTime(point);

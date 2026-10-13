@@ -62,6 +62,25 @@ internal sealed class StubPairSource
     }
 
     /// <summary>
+    /// Gets or sets an exception the next fetch throws, after which the source serves normally again.
+    /// </summary>
+    /// <value>The exception the next fetch throws, or <see langword="null" />.</value>
+    public Exception? FailNext { get; set; }
+
+    /// <summary>
+    /// Gets or sets the last date the simulated source has published, or <see langword="null" /> to serve every
+    /// observation; an observation dated after it is withheld, as a source withholds a day it has not yet published.
+    /// </summary>
+    /// <value>The last published date, or <see langword="null" />.</value>
+    public DateOnly? PublishedThrough { get; set; }
+
+    /// <summary>
+    /// Gets the windows the source was asked for, in order.
+    /// </summary>
+    /// <value>Each request's inclusive start and end.</value>
+    public List<(DateOnly Start, DateOnly End)> Requests { get; } = [];
+
+    /// <summary>
     /// Gets the number of times <see cref="GetPairAsync" /> has been invoked.
     /// </summary>
     /// <value>The invocation count.</value>
@@ -71,9 +90,18 @@ internal sealed class StubPairSource
     public ValueTask<PairRateData<string>> GetPairAsync(CurrencyPairRequest request, CancellationToken cancellationToken = default)
     {
         CallCount++;
+        Requests.Add((request.StartDate, request.EndDate));
 
+        if (FailNext is { } failure)
+        {
+            FailNext = null;
+            return ValueTask.FromException<PairRateData<string>>(failure);
+        }
+
+        DateOnly? published = PublishedThrough;
         var inRange = _observations
             .Where(observation => observation.Date >= request.StartDate && observation.Date <= request.EndDate)
+            .Where(observation => published is not { } last || observation.Date <= last)
             .ToList();
 
         string series = $"{request.Pair.From}/{request.Pair.To}";
@@ -118,8 +146,13 @@ internal sealed class TestPairWebRateProvider
     /// <param name="source">The pair source.</param>
     /// <param name="options">The provider options.</param>
     /// <param name="logger">An optional logger receiving the provider diagnostics.</param>
-    public TestPairWebRateProvider(IPairRateSource<string> source, WebRateProviderOptions options, Microsoft.Extensions.Logging.ILogger? logger = null)
-        : base(source, options, logger, ownedHttpClient: null, timeProvider: null)
+    /// <param name="timeProvider">An optional time source; <see langword="null" /> selects the system clock.</param>
+    public TestPairWebRateProvider(
+        IPairRateSource<string> source,
+        WebRateProviderOptions options,
+        Microsoft.Extensions.Logging.ILogger? logger = null,
+        TimeProvider? timeProvider = null)
+        : base(source, options, logger, ownedHttpClient: null, timeProvider)
     {
     }
 

@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Globalization;
 using Microsoft.Extensions.Logging;
 
 namespace Bodu.Financial.ExchangeRates;
@@ -42,6 +43,17 @@ public class WebRateProviderOptionsTests
     }
 
     /// <summary>
+    /// Verifies that <see cref="WebRateProviderOptions.RefreshInterval" /> defaults to 12 hours.
+    /// </summary>
+    [TestMethod]
+    public void RefreshInterval_WhenDefault_ShouldBeTwelveHours()
+    {
+        var options = new TestWebRateProviderOptions();
+
+        Assert.AreEqual(TimeSpan.FromHours(12), options.RefreshInterval);
+    }
+
+    /// <summary>
     /// Verifies that a null base address is rejected.
     /// </summary>
     [TestMethod]
@@ -76,6 +88,37 @@ public class WebRateProviderOptionsTests
     public void TryValidate_WhenDefaultLookbackIsZero_ShouldReturnFalse()
     {
         TestWebRateProviderOptions options = new() { DefaultLookback = TimeSpan.Zero };
+
+        bool valid = options.TryValidate(out string? error);
+
+        Assert.IsFalse(valid);
+        Assert.IsNotNull(error);
+    }
+
+    /// <summary>
+    /// Verifies that a zero refresh interval is rejected with the resource-backed refresh-interval message, since it
+    /// would make every request that reaches a day the source could still publish download it again.
+    /// </summary>
+    [TestMethod]
+    public void TryValidate_WhenRefreshIntervalIsZero_ShouldReturnFalse()
+    {
+        var options = new TestWebRateProviderOptions { RefreshInterval = TimeSpan.Zero };
+
+        bool valid = options.TryValidate(out string? error);
+
+        Assert.IsFalse(valid);
+        Assert.AreEqual(
+            ExchangeRatesResourceStrings.ResourceManager.GetString("Arg_Invalid_WebExchangeRateOptionsRefreshInterval", CultureInfo.CurrentCulture),
+            error);
+    }
+
+    /// <summary>
+    /// Verifies that a negative refresh interval is rejected.
+    /// </summary>
+    [TestMethod]
+    public void TryValidate_WhenRefreshIntervalIsNegative_ShouldReturnFalse()
+    {
+        var options = new TestWebRateProviderOptions { RefreshInterval = TimeSpan.FromHours(-1) };
 
         bool valid = options.TryValidate(out string? error);
 

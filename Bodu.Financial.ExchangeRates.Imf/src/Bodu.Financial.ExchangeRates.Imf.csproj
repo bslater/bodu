@@ -54,4 +54,13 @@
         </Compile>
     </ItemGroup>
 
+  <!-- Shared load-tracking rules; compiled internally into each rate provider that tracks what it has loaded. -->
+  <ItemGroup>
+    <Compile Include="..\..\Bodu.Financial.ExchangeRates\shared\RatePublication.cs" Link="Shared\RatePublication.cs" />
+    <Compile Include="..\..\Bodu.Financial.ExchangeRates\shared\CachedDownload.cs" Link="Shared\CachedDownload.cs" />
+    <Compile Include="..\..\Bodu.Financial.ExchangeRates\shared\Utf8Content.cs" Link="Shared\Utf8Content.cs" />
+    <Compile Include="..\..\Bodu.Financial.ExchangeRates\shared\LoadedUnit.cs" Link="Shared\LoadedUnit.cs" />
+    <Compile Include="..\..\Bodu.Financial.ExchangeRates\shared\BoundedConcurrency.cs" Link="Shared\BoundedConcurrency.cs" />
+  </ItemGroup>
+
 </Project>

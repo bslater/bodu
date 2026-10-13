@@ -67,8 +67,8 @@ public sealed class BoeRateProvider
     /// <summary>The logger that records range downloads and on-demand network fetches.</summary>
     private readonly ILogger _logger;
 
-    /// <summary>The merged inclusive ranges whose data has been loaded; accessed under <see cref="WebRateProvider.SyncRoot" />.</summary>
-    private readonly DateRangeCoverage _loadedRanges = new();
+    /// <summary>The days whose data has been loaded: final days for good, open days until the refresh interval passes; accessed under <see cref="WebRateProvider.SyncRoot" />.</summary>
+    private readonly LoadedRangeCoverage _loadedRanges = new();
 
     /// <summary>The discovered currency series, keyed by pair.</summary>
     private readonly Dictionary<CurrencyPair, BoeSeriesInfo> _series = new();
@@ -223,7 +223,7 @@ public sealed class BoeRateProvider
     {
         lock (SyncRoot)
         {
-            return _loadedRanges.Contains(startDate, endDate);
+            return _loadedRanges.Contains(startDate, endDate, TimeProvider.GetUtcNow());
         }
     }
 
@@ -298,16 +298,24 @@ public sealed class BoeRateProvider
     /// <returns>A task that completes when the range has been loaded.</returns>
     private Task LoadRangeInternalAsync(DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken)
     {
+        // Download only the span of the range not yet held, so a range that extends one already loaded (a sliding
+        // on-demand look-back window, for example) fetches its new days rather than the whole range again.
+        DateOnly fetchStart;
+        DateOnly fetchEnd;
         lock (SyncRoot)
         {
-            if (_loadedRanges.Contains(startDate, endDate))
+            if (!_loadedRanges.TryGetUncoveredSpan(startDate, endDate, TimeProvider.GetUtcNow(), out fetchStart, out fetchEnd))
                 return Task.CompletedTask;
         }
 
-        // Coalesce concurrent loads of the same window so only one download is in flight; joiners await that task. The
+        // Coalesce concurrent loads of the same span so only one download is in flight; joiners await that task. The
         // shared fetch runs under a token decoupled from any caller, so one caller's cancellation cannot fault the
         // others; cancellationToken only abandons this caller's wait.
-        return LoadCoalescedAsync($"{startDate.DayNumber}-{endDate.DayNumber}", ct => LoadRangeCoreAsync(startDate, endDate, ct), cancellationToken);
+        return LoadCoalescedAsync(
+            $"{fetchStart.DayNumber}-{fetchEnd.DayNumber}",
+            () => _loadedRanges.Contains(fetchStart, fetchEnd, TimeProvider.GetUtcNow()),
+            ct => LoadRangeCoreAsync(fetchStart, fetchEnd, ct),
+            cancellationToken);
     }
 
     /// <summary>
@@ -320,18 +328,24 @@ public sealed class BoeRateProvider
     /// <returns>A task that completes when the range has been loaded.</returns>
     private Task LoadRangeCoreAsync(DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken) =>
         LoadFileFeedAsync(
-            alreadyLoaded: () => _loadedRanges.Contains(startDate, endDate),
+            alreadyLoaded: () => _loadedRanges.Contains(startDate, endDate, TimeProvider.GetUtcNow()),
             logStarting: () => Log.FeedLoadStarting(_logger, _options.DownloadStartingLogLevel, startDate, endDate),
             fetchAsync: ct => _source.GetTableAsync(startDate, endDate, ct),
             logExpectedFailure: ex => Log.FeedLoadFailed(_logger, _options.DownloadFailedLogLevel, startDate, endDate, ex),
             logUnexpectedFailure: ex => Log.FeedLoadUnexpectedError(_logger, startDate, endDate, ex),
-            publish: (table, fetchedAt) =>
+            publish: (table, loadedAt) =>
             {
+                // A response served from the disk cache was fetched when its entry was written.
+                DateTimeOffset fetchedAt = table.CachedAtUtc ?? loadedAt;
+
                 foreach (BoeSeriesInfo info in table.GetSeriesInfo())
                     _series[info.Pair] = info;
 
+                // Days the Bank of England can still publish (today, and any later day it has returned no rate for)
+                // are held only until the refresh interval has passed, so a rate published after this download is
+                // downloaded on a later request.
                 int count = AddObservations(table.EnumerateRates(), fetchedAt);
-                _loadedRanges.Add(startDate, endDate);
+                _loadedRanges.Add(startDate, endDate, table.GetLastDate(), fetchedAt, _options.RefreshInterval);
                 return count;
             },
             logCompleted: count => Log.FeedLoaded(_logger, _options.DownloadCompletedLogLevel, startDate, endDate, count),
