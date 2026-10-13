@@ -11,7 +11,7 @@
         `CrcStandard.FromName`. A name given to two standards stops the generator.
       * `CrcStandard.Catalog.cs` - the packed data table (`CatalogEntry[] s_catalog`) and the
         lazy lookup plumbing: `Get(CrcStandards)`, `FromName(string)`, `TryFromName`, `All`.
-        A per-entry cache publishes the first materialised `CrcStandard` via
+        A per-entry cache publishes the first materialized `CrcStandard` via
         `Interlocked.CompareExchange` so reference equality is stable across threads.
 
     Filtering:
@@ -113,7 +113,7 @@ $enumBuilder = [System.Text.StringBuilder]::new()
 [void]$enumBuilder.AppendLine('{')
 [void]$enumBuilder.AppendLine('    /// <summary>')
 [void]$enumBuilder.AppendLine('    /// Identifies a CRC parameter set defined in the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm">CRC RevEng catalogue</a>.')
-[void]$enumBuilder.AppendLine('    /// Pass to <see cref="CrcStandard.Get(CrcStandards)" /> to materialise the corresponding <see cref="CrcStandard" /> on demand.')
+[void]$enumBuilder.AppendLine('    /// Pass to <see cref="CrcStandard.Get(CrcStandards)" /> to materialize the corresponding <see cref="CrcStandard" /> on demand.')
 [void]$enumBuilder.AppendLine('    /// </summary>')
 [void]$enumBuilder.AppendLine('    /// <remarks>')
 if ($hasAliases) {
@@ -224,14 +224,14 @@ foreach ($spec in $supported) {
 }
 [void]$catBuilder.AppendLine('    };')
 [void]$catBuilder.AppendLine()
-[void]$catBuilder.AppendLine('    /// <summary>Lazy per-entry cache: index by <c>(int)CrcStandards</c> ordinal, materialised on first <see cref="Get(CrcStandards)" />.</summary>')
+[void]$catBuilder.AppendLine('    /// <summary>Lazy per-entry cache: index by <c>(int)CrcStandards</c> ordinal, materialized on first <see cref="Get(CrcStandards)" />.</summary>')
 [void]$catBuilder.AppendLine('    private static readonly CrcStandard?[] s_cache = new CrcStandard?[s_catalog.Length];')
 [void]$catBuilder.AppendLine()
 $mapKeys = if ($hasAliases) { 'canonical name or alias' } else { 'canonical name' }
 [void]$catBuilder.AppendLine("    /// <summary>Lazy map from $mapKeys to the enum ordinal. Built on first <see cref=`"FromName(string)`" /> call.</summary>")
 [void]$catBuilder.AppendLine('    private static Dictionary<string, CrcStandards>? s_nameToEnum;')
 [void]$catBuilder.AppendLine()
-[void]$catBuilder.AppendLine('    /// <summary>Lazy snapshot of every catalogue <see cref="CrcStandard" /> instance; materialised on first <see cref="All" /> access.</summary>')
+[void]$catBuilder.AppendLine('    /// <summary>Lazy snapshot of every catalogue <see cref="CrcStandard" /> instance; materialized on first <see cref="All" /> access.</summary>')
 [void]$catBuilder.AppendLine('    private static IReadOnlyList<CrcStandard>? s_all;')
 [void]$catBuilder.AppendLine()
 [void]$catBuilder.AppendLine('    /// <summary>')
@@ -239,7 +239,7 @@ $mapKeys = if ($hasAliases) { 'canonical name or alias' } else { 'canonical name
 [void]$catBuilder.AppendLine('    /// </summary>')
 [void]$catBuilder.AppendLine('    /// <value>A read-only list containing one <see cref="CrcStandard" /> per canonical entry.</value>')
 [void]$catBuilder.AppendLine('    /// <remarks>')
-[void]$catBuilder.AppendLine('    /// <para>The backing array is built lazily on first access and then memoised, so merely loading this type does not construct any')
+[void]$catBuilder.AppendLine('    /// <para>The backing array is built lazily on first access and then memoized, so merely loading this type does not construct any')
 if ($hasAliases) {
     [void]$catBuilder.AppendLine('    /// <see cref="CrcStandard" /> instances. Aliases are not included as separate entries; use <see cref="FromName(string)" /> to')
     [void]$catBuilder.AppendLine('    /// resolve an alias to its canonical instance.</para>')
@@ -259,7 +259,7 @@ else {
 [void]$catBuilder.AppendLine('   }')
 [void]$catBuilder.AppendLine()
 [void]$catBuilder.AppendLine('    /// <summary>')
-[void]$catBuilder.AppendLine('    /// Materialises - or retrieves from cache - the <see cref="CrcStandard" /> identified by the given enum value.')
+[void]$catBuilder.AppendLine('    /// Materializes - or retrieves from cache - the <see cref="CrcStandard" /> identified by the given enum value.')
 [void]$catBuilder.AppendLine('    /// </summary>')
 [void]$catBuilder.AppendLine('    /// <param name="standard">The catalogue entry to resolve. Must be a defined <see cref="CrcStandards" /> value.</param>')
 [void]$catBuilder.AppendLine('    /// <returns>The shared <see cref="CrcStandard" /> instance for <paramref name="standard" />.</returns>')

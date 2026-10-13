@@ -6,7 +6,7 @@
 .DESCRIPTION
     For every CRC standard in crc-specs.json (whose `size` is within -MaxSize), emits a
     DynamicData row carrying the `CrcStandards` enum value and the expected check value. The
-    test method materialises the CrcStandard via `CrcStandard.Get(CrcStandards)` and compares
+    test method materializes the CrcStandard via `CrcStandard.Get(CrcStandards)` and compares
     `new Crc(standard).ComputeHash("123456789")` against the expected value, packed
     little-endian from the CRC width.
 
@@ -102,7 +102,7 @@ foreach ($spec in $emitted) {
 [void]$sb.AppendLine()  
 [void]$sb.AppendLine('    /// <summary>')
 [void]$sb.AppendLine('    /// Verifies that every catalogue CRC standard hashes the reference input <c>"123456789"</c> to the')
-[void]$sb.AppendLine('    /// <c>check</c> value published in the RevEng catalogue. The standard is materialised on demand via')
+[void]$sb.AppendLine('    /// <c>check</c> value published in the RevEng catalogue. The standard is materialized on demand via')
 [void]$sb.AppendLine('    /// <see cref="CrcStandard.Get(CrcStandards)" />.')
 [void]$sb.AppendLine('    /// </summary>')
 [void]$sb.AppendLine('    /// <param name="displayName">The canonical name of the catalogue entry, which labels the row.</param>')

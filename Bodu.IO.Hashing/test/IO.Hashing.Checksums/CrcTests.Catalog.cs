@@ -153,7 +153,7 @@ public partial class CrcTests
 
     /// <summary>
     /// Verifies that every catalogue CRC standard hashes the reference input <c>"123456789"</c> to the
-    /// <c>check</c> value published in the RevEng catalogue. The standard is materialised on demand via
+    /// <c>check</c> value published in the RevEng catalogue. The standard is materialized on demand via
     /// <see cref="CrcStandard.Get(CrcStandards)" />.
     /// </summary>
     /// <param name="displayName">The canonical name of the catalogue entry, which labels the row.</param>
