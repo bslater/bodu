@@ -51,6 +51,34 @@ public partial class ImfRateProviderOptionsTests
     }
 
     /// <summary>
+    /// Verifies that a zero refresh interval is rejected, as the Bank of England and ECB options reject theirs.
+    /// </summary>
+    [TestMethod]
+    public void TryValidate_WhenRefreshIntervalIsZero_ShouldReturnFalse()
+    {
+        var options = new ImfRateProviderOptions { RefreshInterval = TimeSpan.Zero };
+
+        bool valid = options.TryValidate(out string? error);
+
+        Assert.IsFalse(valid);
+        Assert.IsNotNull(error);
+    }
+
+    /// <summary>
+    /// Verifies that a negative refresh interval is rejected.
+    /// </summary>
+    [TestMethod]
+    public void TryValidate_WhenRefreshIntervalIsNegative_ShouldReturnFalse()
+    {
+        var options = new ImfRateProviderOptions { RefreshInterval = TimeSpan.FromMinutes(-5) };
+
+        bool valid = options.TryValidate(out string? error);
+
+        Assert.IsFalse(valid);
+        Assert.IsNotNull(error);
+    }
+
+    /// <summary>
     /// Verifies that a null currency-name map is rejected.
     /// </summary>
     [TestMethod]
