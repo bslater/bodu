@@ -204,6 +204,64 @@ public partial class YamlSerializerTests
         });
     }
 
+    /// <summary>
+    /// Verifies that a string scalar holding an absolute URI reads into a <see cref="Uri" /> member as an absolute URI
+    /// with that original text.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenUriMemberIsAbsolute_ShouldReadAbsoluteUri()
+    {
+        ValueModel<Uri> model = YamlSerializer.Deserialize<ValueModel<Uri>>("Value: https://example.com/a?b=c\n")!;
+
+        Assert.IsNotNull(model.Value);
+        Assert.IsTrue(model.Value.IsAbsoluteUri);
+        Assert.AreEqual(new Uri("https://example.com/a?b=c"), model.Value);
+        Assert.AreEqual("https://example.com/a?b=c", model.Value.OriginalString);
+    }
+
+    /// <summary>
+    /// Verifies that a string scalar holding a relative URI reads into a <see cref="Uri" /> member as a relative URI
+    /// with that original text.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenUriMemberIsRelative_ShouldReadRelativeUri()
+    {
+        ValueModel<Uri> model = YamlSerializer.Deserialize<ValueModel<Uri>>("Value: ../docs/index.html#top\n")!;
+
+        Assert.IsNotNull(model.Value);
+        Assert.IsFalse(model.Value.IsAbsoluteUri);
+        Assert.AreEqual("../docs/index.html#top", model.Value.OriginalString);
+    }
+
+    /// <summary>
+    /// Verifies that a null scalar reads into a <see cref="Uri" /> member as <see langword="null" />.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenUriMemberIsNull_ShouldReadNull()
+    {
+        ValueModel<Uri> model = YamlSerializer.Deserialize<ValueModel<Uri>>("Value: null\n")!;
+
+        Assert.IsNull(model.Value);
+    }
+
+    /// <summary>
+    /// Verifies that a scalar that is neither an absolute nor a relative URI throws
+    /// <see cref="YamlSerializationException" /> at the member, naming <see cref="Uri" /> as the type it cannot be
+    /// converted to.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenUriMemberIsMalformed_ShouldThrowYamlSerializationException()
+    {
+        YamlSerializationException ex = Assert.ThrowsExactly<YamlSerializationException>(() =>
+        {
+            _ = YamlSerializer.Deserialize<ValueModel<Uri>>("Value: http://exa mple.com\n");
+        });
+
+        Assert.AreEqual("Value", ex.Path, "Path");
+        Assert.AreEqual(1, ex.LineNumber, "LineNumber");
+        StringAssert.Contains(ex.Message, typeof(Uri).FullName!);
+    }
+
     /// <summary>A model holding a timestamp.</summary>
     private sealed class BirthRecord
     {
