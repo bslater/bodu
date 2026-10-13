@@ -23,6 +23,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <!-- Copies of the line formats' shared sources (Bodu.Text.Serialization/flat/src), from which the SharedSources
+         tests read every type this package must not compile. -->
+    <EmbeddedResource Include="..\..\Bodu.Text.Serialization\flat\src\*.cs"
+                      LogicalName="LineFormatSharedSources/%(Filename)%(Extension)"
+                      Link="LineFormatSharedSources\%(Filename)%(Extension)" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
   </ItemGroup>
 
