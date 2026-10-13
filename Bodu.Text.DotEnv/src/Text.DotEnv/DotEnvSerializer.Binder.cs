@@ -31,7 +31,8 @@ public static partial class DotEnvSerializer
     /// <param name="declaredType">The declared type of the value.</param>
     /// <param name="options">The serializer options.</param>
     /// <exception cref="DotEnvSerializationException">
-    /// Thrown when the value cannot be mapped to a DotEnv object.
+    /// Thrown when the value cannot be mapped to a DotEnv object, or a member or entry holds a value that is not a
+    /// scalar.
     /// </exception>
     [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
     [RequiresDynamicCode(RequiresDynamicCodeMessage)]
@@ -43,8 +44,8 @@ public static partial class DotEnvSerializer
         {
             (value as IOnSerializing)?.OnSerializing();
 
-            if (FlatBinding.TryGetDictionary(value, out IDictionary? dictionary))
-                WriteDictionary(ref writer, dictionary, options);
+            if (FlatBinding.TryGetDictionary(value, out IDictionary? dictionary, out Type? valueType))
+                WriteDictionary(ref writer, dictionary, valueType, options);
             else if (IsScalarOrEnumerable(value.GetType()))
                 throw new DotEnvSerializationException(string.Format(CultureInfo.CurrentCulture, DotEnvResourceStrings.Op_Invalid_DotEnvRootType, value.GetType()));
             else
@@ -61,17 +62,45 @@ public static partial class DotEnvSerializer
     /// </summary>
     /// <param name="writer">The writer.</param>
     /// <param name="dictionary">The dictionary to write.</param>
+    /// <param name="valueType">The dictionary value type.</param>
     /// <param name="options">The serializer options.</param>
-    private static void WriteDictionary(ref Utf8DotEnvWriter writer, IDictionary dictionary, DotEnvSerializerOptions options)
+    /// <exception cref="DotEnvSerializationException">
+    /// Thrown when an entry that is written holds a value that is not a scalar, or has a key the reader would not read
+    /// back.
+    /// </exception>
+    private static void WriteDictionary(ref Utf8DotEnvWriter writer, IDictionary dictionary, Type valueType, DotEnvSerializerOptions options)
     {
+        FlatScalarKind valueKind = InvariantScalarCodec.Classify(valueType);
+
         foreach (DictionaryEntry entry in dictionary)
         {
             if (FlatBinding.ShouldSkipDictionaryValue(entry.Value, options.DefaultIgnoreCondition))
                 continue;
 
-            WriteKey(ref writer, Convert.ToString(entry.Key, CultureInfo.InvariantCulture) ?? string.Empty);
+            string key = Convert.ToString(entry.Key, CultureInfo.InvariantCulture) ?? string.Empty;
+            ThrowIfNotScalar(entry.Value, valueType, valueKind, key);
+
+            WriteKey(ref writer, key);
             writer.WriteString(ValueToString(entry.Value));
         }
+    }
+
+    /// <summary>
+    /// Throws when the value of a member or dictionary entry is not a scalar, which no DotEnv value reads back as, so
+    /// that it is not written as its <see cref="object.ToString" /> text.
+    /// </summary>
+    /// <param name="value">The value to write.</param>
+    /// <param name="declaredType">The declared type of the member or of the dictionary's values.</param>
+    /// <param name="declaredKind">The scalar kind of <paramref name="declaredType" />.</param>
+    /// <param name="key">The key the value would be written under.</param>
+    /// <exception cref="DotEnvSerializationException">
+    /// Thrown when <paramref name="declaredType" /> is not a scalar and not <see cref="object" />, whatever the value,
+    /// or is <see cref="object" /> and the value is not <see langword="null" /> or a scalar.
+    /// </exception>
+    private static void ThrowIfNotScalar(object? value, Type declaredType, FlatScalarKind declaredKind, string key)
+    {
+        if (InvariantScalarCodec.GetUnmappedType(value, declaredType, declaredKind) is { } unmapped)
+            throw new DotEnvSerializationException(string.Format(CultureInfo.CurrentCulture, DotEnvResourceStrings.Op_Invalid_DotEnvValueNotScalar, key, unmapped));
     }
 
     /// <summary>
@@ -102,6 +131,10 @@ public static partial class DotEnvSerializer
     /// <param name="writer">The writer.</param>
     /// <param name="value">The object to write.</param>
     /// <param name="options">The serializer options.</param>
+    /// <exception cref="DotEnvSerializationException">
+    /// Thrown when two members map to one key, or a member that is written holds a value that is not a scalar or has a
+    /// name the reader would not read back.
+    /// </exception>
     [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
     private static void WritePoco(ref Utf8DotEnvWriter writer, object value, DotEnvSerializerOptions options)
     {
@@ -114,6 +147,8 @@ public static partial class DotEnvSerializer
 
             if (FlatBinding.ShouldSkipOnWrite(memberValue, member.IgnoreCondition, options.DefaultIgnoreCondition))
                 continue;
+
+            ThrowIfNotScalar(memberValue, member.MemberType, member.ScalarKind, member.Name);
 
             WriteKey(ref writer, member.Name);
             writer.WriteString(ValueToString(memberValue, member.ScalarKind));

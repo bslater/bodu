@@ -92,17 +92,43 @@ internal static class FlatBinding
     /// </remarks>
     [RequiresDynamicCode("Reading a dictionary through its generic interface makes a generic method at run time.")]
     [RequiresUnreferencedCode("Reading a dictionary through its generic interface makes a generic method that trimming cannot statically determine.")]
-    internal static bool TryGetDictionary([NotNullWhen(true)] object? value, [NotNullWhen(true)] out IDictionary? dictionary)
+    internal static bool TryGetDictionary([NotNullWhen(true)] object? value, [NotNullWhen(true)] out IDictionary? dictionary) =>
+        TryGetDictionary(value, out dictionary, out _);
+
+    /// <summary>
+    /// Determines whether a value is a dictionary the serializers write as entries, and gets the entries to write and
+    /// the dictionary's value type.
+    /// </summary>
+    /// <param name="value">The value to test.</param>
+    /// <param name="dictionary">
+    /// When this method returns <see langword="true" />, the value itself when it implements <see cref="IDictionary" />,
+    /// or else a copy of its entries, in the order it enumerates them.
+    /// </param>
+    /// <param name="valueType">
+    /// When this method returns <see langword="true" />, the value type of the <see cref="IDictionary{TKey, TValue}" />
+    /// keyed by <see cref="string" /> that the value implements.
+    /// </param>
+    /// <returns>
+    /// <see langword="true" /> when the value's type implements <see cref="IDictionary{TKey, TValue}" /> keyed by
+    /// <see cref="string" />; <see langword="false" /> for any other value, a dictionary with other keys included.
+    /// </returns>
+    [RequiresDynamicCode("Reading a dictionary through its generic interface makes a generic method at run time.")]
+    [RequiresUnreferencedCode("Reading a dictionary through its generic interface makes a generic method that trimming cannot statically determine.")]
+    internal static bool TryGetDictionary(
+        [NotNullWhen(true)] object? value,
+        [NotNullWhen(true)] out IDictionary? dictionary,
+        [NotNullWhen(true)] out Type? valueType)
     {
         // Only an enumerable can implement a dictionary interface, so a scalar, the most common value, never has its
         // type looked up.
-        if (value is IEnumerable and not string && TryGetStringKeyedDictionary(value.GetType(), out Type? valueType))
+        if (value is IEnumerable and not string && TryGetStringKeyedDictionary(value.GetType(), out valueType))
         {
             dictionary = value as IDictionary ?? GetEntryCopier(valueType)(value);
             return true;
         }
 
         dictionary = null;
+        valueType = null;
         return false;
     }
 

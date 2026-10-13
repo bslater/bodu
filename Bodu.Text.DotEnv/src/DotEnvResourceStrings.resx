@@ -103,4 +103,7 @@
   <data name="Op_Invalid_DotEnvUnwritableKey" xml:space="preserve">
     <value>The key '{0}' cannot be written so that it reads back as a DotEnv key.</value>
   </data>
+  <data name="Op_Invalid_DotEnvValueNotScalar" xml:space="preserve">
+    <value>The DotEnv key '{0}' cannot be written: the type '{1}' is not a scalar, so no DotEnv value reads back as it.</value>
+  </data>
 </root>

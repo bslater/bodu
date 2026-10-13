@@ -90,4 +90,39 @@ public sealed partial class FlatBindingTests
             Assert.IsNull(dictionary, value.GetType().Name);
         }
     }
+
+    /// <summary>
+    /// Verifies that the overload that reports the value type gives the value type of the string-keyed dictionary the
+    /// value implements, through the non-generic interface and through the generic one alike.
+    /// </summary>
+    [TestMethod]
+    public void TryGetDictionary_WhenTheValueIsAStringKeyedDictionary_ShouldReportItsValueType()
+    {
+        var dictionary = new Dictionary<string, int> { ["a"] = 1 };
+        var expando = new ExpandoObject();
+
+        bool foundDictionary = FlatBinding.TryGetDictionary(dictionary, out IDictionary? entries, out Type? valueType);
+        bool foundExpando = FlatBinding.TryGetDictionary(expando, out IDictionary? expandoEntries, out Type? expandoValueType);
+
+        Assert.IsTrue(foundDictionary);
+        Assert.AreSame(dictionary, entries);
+        Assert.AreEqual(typeof(int), valueType);
+        Assert.IsTrue(foundExpando);
+        Assert.IsNotNull(expandoEntries);
+        Assert.AreEqual(typeof(object), expandoValueType);
+    }
+
+    /// <summary>
+    /// Verifies that the overload that reports the value type reports none for a value that is not a string-keyed
+    /// dictionary.
+    /// </summary>
+    [TestMethod]
+    public void TryGetDictionary_WhenTheValueIsNotAStringKeyedDictionary_ShouldReportNoValueType()
+    {
+        bool found = FlatBinding.TryGetDictionary(new Hashtable { ["a"] = 1 }, out IDictionary? entries, out Type? valueType);
+
+        Assert.IsFalse(found);
+        Assert.IsNull(entries);
+        Assert.IsNull(valueType);
+    }
 }

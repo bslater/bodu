@@ -39,6 +39,14 @@ namespace Bodu.Text.Delimited;
 /// and a numeric or date member throws <see cref="DelimitedSerializationException" /> for it.
 /// </para>
 /// <para>
+/// A member is written as one field, so its type must be a scalar: a string or character, a number, a
+/// <see cref="bool" />, an enumeration, a date, time or time span, a <see cref="Guid" /> or a <see cref="Uri" />, or
+/// <see cref="object" /> holding one. Writing a record type with a member of any other type, such as a dictionary or a
+/// class with members of its own, throws <see cref="DelimitedSerializationException" />, as does writing an
+/// <see cref="object" /> member that holds such a value, rather than writing the value's <see cref="object.ToString" />
+/// text, which does not read back.
+/// </para>
+/// <para>
 /// Temporal values are written in invariant round-trip forms and read back equal: <see cref="DateTime" /> and
 /// <see cref="DateTimeOffset" /> with the <c>O</c> format, which keeps every tick and the kind or the offset;
 /// <see cref="DateOnly" /> as <c>yyyy-MM-dd</c>; <see cref="TimeOnly" /> as <c>HH:mm:ss.fffffff</c>; and
@@ -70,7 +78,8 @@ public static partial class DelimitedSerializer
     /// <returns>The delimited text.</returns>
     /// <exception cref="DelimitedSerializationException">
     /// Thrown when <typeparamref name="T" /> is not a collection of records, such as a <see cref="string" />, or its
-    /// element type is not a record type but a scalar or a collection.
+    /// element type is not a record type but a scalar or a collection, or when a member of the record type is not a
+    /// scalar, or one declared as <see cref="object" /> holds a value that is not.
     /// </exception>
     /// <exception cref="ArgumentException">
     /// Thrown when the delimiter, quote or comment character of <paramref name="options" /> cannot be used by the
@@ -98,7 +107,8 @@ public static partial class DelimitedSerializer
     /// </exception>
     /// <exception cref="DelimitedSerializationException">
     /// Thrown when <typeparamref name="T" /> is not a collection of records, such as a <see cref="string" />, or its
-    /// element type is not a record type but a scalar or a collection.
+    /// element type is not a record type but a scalar or a collection, or when a member of the record type is not a
+    /// scalar, or one declared as <see cref="object" /> holds a value that is not.
     /// </exception>
     /// <exception cref="ArgumentException">
     /// Thrown when the delimiter, quote or comment character of <paramref name="options" /> cannot be used by the
@@ -162,7 +172,8 @@ public static partial class DelimitedSerializer
     /// </exception>
     /// <exception cref="DelimitedSerializationException">
     /// Thrown when <typeparamref name="T" /> is not a collection of records, such as a <see cref="string" />, or its
-    /// element type is not a record type but a scalar or a collection.
+    /// element type is not a record type but a scalar or a collection, or when a member of the record type is not a
+    /// scalar, or one declared as <see cref="object" /> holds a value that is not.
     /// </exception>
     /// <exception cref="ArgumentException">
     /// Thrown when the delimiter, quote or comment character of <paramref name="options" /> cannot be used by the
