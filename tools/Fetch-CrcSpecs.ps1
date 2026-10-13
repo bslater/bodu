@@ -151,7 +151,7 @@ $entries = for ($i = 0; $i -lt $matches.Count; $i++) {
         $codewords = [string[]]@($prior.codewords)
     }
 
-    # Normalise to empty [string[]] so the emitted JSON contains `[]` (not `null` or `[null]`).
+    # Normalize to empty [string[]] so the emitted JSON contains `[]` (not `null` or `[null]`).
     if ($null -eq $aliases)   { $aliases   = [string[]]@() }
     if ($null -eq $codewords) { $codewords = [string[]]@() }
 

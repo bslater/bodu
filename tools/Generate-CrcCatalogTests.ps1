@@ -6,7 +6,7 @@
 .DESCRIPTION
     For every CRC standard in crc-specs.json (whose `size` is within -MaxSize), emits a
     DynamicData row carrying the `CrcStandards` enum value and the expected check value. The
-    test method materialises the CrcStandard via `CrcStandard.Get(CrcStandards)` and compares
+    test method materializes the CrcStandard via `CrcStandard.Get(CrcStandards)` and compares
     `new Crc(standard).ComputeHash("123456789")` against the expected value, packed
     little-endian from the CRC width.
 
@@ -72,7 +72,10 @@ $sb = [System.Text.StringBuilder]::new()
 [void]$sb.AppendLine()
 [void]$sb.AppendLine('public partial class CrcTests')
 [void]$sb.AppendLine('{')
-[void]$sb.AppendLine('   private static readonly byte[] CatalogCheckInput = Encoding.ASCII.GetBytes("123456789");')
+[void]$sb.AppendLine('    /// <summary>')
+[void]$sb.AppendLine('    /// The ASCII bytes of <c>"123456789"</c>, the input whose CRC each catalogue entry publishes as its <c>check</c> value.')
+[void]$sb.AppendLine('    /// </summary>')
+[void]$sb.AppendLine('    private static readonly byte[] CatalogCheckInput = Encoding.ASCII.GetBytes("123456789");')
 [void]$sb.AppendLine()
 [void]$sb.AppendLine('    /// <summary>')
 [void]$sb.AppendLine('    /// Yields one test row per catalogue CRC standard: the <see cref="CrcStandards" /> enum value and the expected')
@@ -91,12 +94,9 @@ foreach ($spec in $emitted) {
 [void]$sb.AppendLine('    /// <summary>')
 [void]$sb.AppendLine('    /// Gets the display name used by <see cref="DynamicDataAttribute" /> for a test case row.')
 [void]$sb.AppendLine('    /// </summary>')
-[void]$sb.AppendLine('    /// <param name="dataRow">')
-[void]$sb.AppendLine('    /// The test case data row. The first element is expected to contain the human-readable standard name.')
-[void]$sb.AppendLine('    /// </param>')
-[void]$sb.AppendLine('    /// <returns>')
-[void]$sb.AppendLine('    /// The standard name for the current test case, or <c>"Unknown Standard"</c> if the first element is not a <see cref="string" />.')
-[void]$sb.AppendLine('    /// </returns>')
+[void]$sb.AppendLine('    /// <param name="methodInfo">The test method the row belongs to.</param>')
+[void]$sb.AppendLine('    /// <param name="data">The test case data row, whose first element is the human-readable standard name.</param>')
+[void]$sb.AppendLine('    /// <returns>The standard name carried in the first element of <paramref name="data" />.</returns>')
 [void]$sb.AppendLine('    public static string GetCatalogCheckDisplayName(MethodInfo methodInfo, object[] data)')
 [void]$sb.AppendLine('    {')
 [void]$sb.AppendLine('        string name = (string)data[0];')
@@ -105,9 +105,10 @@ foreach ($spec in $emitted) {
 [void]$sb.AppendLine()  
 [void]$sb.AppendLine('    /// <summary>')
 [void]$sb.AppendLine('    /// Verifies that every catalogue CRC standard hashes the reference input <c>"123456789"</c> to the')
-[void]$sb.AppendLine('    /// <c>check</c> value published in the RevEng catalogue. The standard is materialised on demand via')
+[void]$sb.AppendLine('    /// <c>check</c> value published in the RevEng catalogue. The standard is materialized on demand via')
 [void]$sb.AppendLine('    /// <see cref="CrcStandard.Get(CrcStandards)" />.')
 [void]$sb.AppendLine('    /// </summary>')
+[void]$sb.AppendLine('    /// <param name="displayName">The canonical name of the catalogue entry, which labels the row.</param>')
 [void]$sb.AppendLine('    /// <param name="standardId">The catalogue entry under test, identified by <see cref="CrcStandards" />.</param>')
 [void]$sb.AppendLine('    /// <param name="expectedCheck">The expected CRC value, packed little-endian from the CRC width.</param>')
 [void]$sb.AppendLine('    [DataTestMethod]')

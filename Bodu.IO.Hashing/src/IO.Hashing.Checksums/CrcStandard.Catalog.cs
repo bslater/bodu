@@ -13,6 +13,7 @@ namespace Bodu.IO.Hashing.Checksums;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Threading;
 
 public sealed partial class CrcStandard
@@ -21,6 +22,16 @@ public sealed partial class CrcStandard
     /// <summary>Compact value-type row in the packed catalogue data table. Indexed by <see cref="CrcStandards" /> ordinal.</summary>
     private readonly struct CatalogEntry
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CatalogEntry" /> struct with the parameters of one catalogue standard.
+        /// </summary>
+        /// <param name="name">The canonical RevEng name of the standard.</param>
+        /// <param name="size">The width of the CRC, in bits.</param>
+        /// <param name="polynomial">The generator polynomial.</param>
+        /// <param name="initialValue">The register value before the first input byte is processed.</param>
+        /// <param name="reflectIn">A value indicating whether each input byte is reflected before it is processed.</param>
+        /// <param name="reflectOut">A value indicating whether the final register value is reflected before <paramref name="xOrOut" /> is applied.</param>
+        /// <param name="xOrOut">The value XORed into the final register value.</param>
         public CatalogEntry(string name, int size, ulong polynomial, ulong initialValue, bool reflectIn, bool reflectOut, ulong xOrOut)
         {
             Name = name;
@@ -32,15 +43,29 @@ public sealed partial class CrcStandard
             ReflectOut = reflectOut;
         }
 
+        /// <summary>The canonical RevEng name of the standard.</summary>
         public readonly string Name;
+
+        /// <summary>The width of the CRC, in bits.</summary>
         public readonly int Size;
+
+        /// <summary>The generator polynomial.</summary>
         public readonly ulong Polynomial;
+
+        /// <summary>The register value before the first input byte is processed.</summary>
         public readonly ulong InitialValue;
+
+        /// <summary>The value XORed into the final register value.</summary>
         public readonly ulong XOrOut;
+
+        /// <summary>A value indicating whether each input byte is reflected before it is processed.</summary>
         public readonly bool ReflectIn;
+
+        /// <summary>A value indicating whether the final register value is reflected before <see cref="XOrOut" /> is applied.</summary>
         public readonly bool ReflectOut;
     }
 
+    /// <summary>The packed parameters of every catalogue standard, in <see cref="CrcStandards" /> order.</summary>
     private static readonly CatalogEntry[] s_catalog = new CatalogEntry[]
     {
         new CatalogEntry("CRC-3/GSM", 3, 0x3UL, 0x0UL, false, false, 0x7UL),
@@ -157,13 +182,13 @@ public sealed partial class CrcStandard
         new CatalogEntry("CRC-64/XZ", 64, 0x42F0E1EBA9EA3693UL, 0xFFFFFFFFFFFFFFFFUL, true, true, 0xFFFFFFFFFFFFFFFFUL),
     };
 
-    /// <summary>Lazy per-entry cache: index by <c>(int)CrcStandards</c> ordinal, materialised on first <see cref="Get(CrcStandards)" />.</summary>
+    /// <summary>Lazy per-entry cache: index by <c>(int)CrcStandards</c> ordinal, materialized on first <see cref="Get(CrcStandards)" />.</summary>
     private static readonly CrcStandard?[] s_cache = new CrcStandard?[s_catalog.Length];
 
     /// <summary>Lazy map from canonical name or alias to the enum ordinal. Built on first <see cref="FromName(string)" /> call.</summary>
     private static Dictionary<string, CrcStandards>? s_nameToEnum;
 
-    /// <summary>Lazy snapshot of every catalogue <see cref="CrcStandard" /> instance; materialised on first <see cref="All" /> access.</summary>
+    /// <summary>Lazy snapshot of every catalogue <see cref="CrcStandard" /> instance; materialized on first <see cref="All" /> access.</summary>
     private static IReadOnlyList<CrcStandard>? s_all;
 
     /// <summary>
@@ -171,7 +196,7 @@ public sealed partial class CrcStandard
     /// </summary>
     /// <value>A read-only list containing one <see cref="CrcStandard" /> per canonical entry.</value>
     /// <remarks>
-    /// <para>The backing array is built lazily on first access and then memoised, so merely loading this type does not construct any
+    /// <para>The backing array is built lazily on first access and then memoized, so merely loading this type does not construct any
     /// <see cref="CrcStandard" /> instances. Aliases are not included as separate entries; use <see cref="FromName(string)" /> to
     /// resolve an alias to its canonical instance.</para>
     /// </remarks>
@@ -182,11 +207,11 @@ public sealed partial class CrcStandard
             IReadOnlyList<CrcStandard>? cached = Volatile.Read(ref s_all);
             if (cached is not null) return cached;
             return BuildAll();
-         }
-   }
+        }
+    }
 
     /// <summary>
-    /// Materialises - or retrieves from cache - the <see cref="CrcStandard" /> identified by the given enum value.
+    /// Materializes - or retrieves from cache - the <see cref="CrcStandard" /> identified by the given enum value.
     /// </summary>
     /// <param name="standard">The catalogue entry to resolve. Must be a defined <see cref="CrcStandards" /> value.</param>
     /// <returns>The shared <see cref="CrcStandard" /> instance for <paramref name="standard" />.</returns>
@@ -200,7 +225,7 @@ public sealed partial class CrcStandard
     {
         int index = (int)standard;
         if ((uint)index >= (uint)s_catalog.Length)
-            throw new ArgumentOutOfRangeException(nameof(standard), standard, "The specified CrcStandards value is not defined.");
+            throw new ArgumentOutOfRangeException(nameof(standard), standard, HashingResourceStrings.Arg_OutOfRange_CrcStandardUndefined);
 
         CrcStandard? cached = Volatile.Read(ref s_cache[index]);
         if (cached is not null) return cached;
@@ -232,7 +257,7 @@ public sealed partial class CrcStandard
         ThrowHelper.ThrowIfNull(name);
         var map = GetNameToEnumMap();
         if (!map.TryGetValue(name, out CrcStandards standard))
-            throw new KeyNotFoundException($"No CRC standard with the name '{name}' exists in the catalogue.");
+            throw new KeyNotFoundException(string.Format(CultureInfo.CurrentCulture, HashingResourceStrings.IO_KeyNotFound_CrcStandardName, name));
         return Get(standard);
     }
 
@@ -254,6 +279,10 @@ public sealed partial class CrcStandard
         return false;
     }
 
+    /// <summary>
+    /// Returns the map from canonical name or alias to the enum value, building it on first use.
+    /// </summary>
+    /// <returns>The shared name map.</returns>
     private static Dictionary<string, CrcStandards> GetNameToEnumMap()
     {
         Dictionary<string, CrcStandards>? map = Volatile.Read(ref s_nameToEnum);
@@ -261,6 +290,11 @@ public sealed partial class CrcStandard
         return BuildNameLookup();
     }
 
+    /// <summary>
+    /// Builds the map from canonical name or alias to the enum value and publishes it, so that every caller shares the map that
+    /// is published first.
+    /// </summary>
+    /// <returns>The published name map.</returns>
     private static Dictionary<string, CrcStandards> BuildNameLookup()
     {
         var map = new Dictionary<string, CrcStandards>(186, StringComparer.Ordinal);
@@ -455,6 +489,11 @@ public sealed partial class CrcStandard
         return winner ?? map;
     }
 
+    /// <summary>
+    /// Materializes every catalogue standard in declaration order and publishes the read-only snapshot, so that every
+    /// caller shares the snapshot that is published first.
+    /// </summary>
+    /// <returns>The published snapshot of every catalogue standard.</returns>
     private static IReadOnlyList<CrcStandard> BuildAll()
     {
         var array = new CrcStandard[s_catalog.Length];

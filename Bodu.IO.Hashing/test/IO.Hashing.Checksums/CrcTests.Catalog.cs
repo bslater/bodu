@@ -16,7 +16,10 @@ using System.Text;
 
 public partial class CrcTests
 {
-   private static readonly byte[] CatalogCheckInput = Encoding.ASCII.GetBytes("123456789");
+    /// <summary>
+    /// The ASCII bytes of <c>"123456789"</c>, the input whose CRC each catalogue entry publishes as its <c>check</c> value.
+    /// </summary>
+    private static readonly byte[] CatalogCheckInput = Encoding.ASCII.GetBytes("123456789");
 
     /// <summary>
     /// Yields one test row per catalogue CRC standard: the <see cref="CrcStandards" /> enum value and the expected
@@ -142,12 +145,9 @@ public partial class CrcTests
     /// <summary>
     /// Gets the display name used by <see cref="DynamicDataAttribute" /> for a test case row.
     /// </summary>
-    /// <param name="dataRow">
-    /// The test case data row. The first element is expected to contain the human-readable standard name.
-    /// </param>
-    /// <returns>
-    /// The standard name for the current test case, or <c>"Unknown Standard"</c> if the first element is not a <see cref="string" />.
-    /// </returns>
+    /// <param name="methodInfo">The test method the row belongs to.</param>
+    /// <param name="data">The test case data row, whose first element is the human-readable standard name.</param>
+    /// <returns>The standard name carried in the first element of <paramref name="data" />.</returns>
     public static string GetCatalogCheckDisplayName(MethodInfo methodInfo, object[] data)
     {
         string name = (string)data[0];
@@ -156,9 +156,10 @@ public partial class CrcTests
 
     /// <summary>
     /// Verifies that every catalogue CRC standard hashes the reference input <c>"123456789"</c> to the
-    /// <c>check</c> value published in the RevEng catalogue. The standard is materialised on demand via
+    /// <c>check</c> value published in the RevEng catalogue. The standard is materialized on demand via
     /// <see cref="CrcStandard.Get(CrcStandards)" />.
     /// </summary>
+    /// <param name="displayName">The canonical name of the catalogue entry, which labels the row.</param>
     /// <param name="standardId">The catalogue entry under test, identified by <see cref="CrcStandards" />.</param>
     /// <param name="expectedCheck">The expected CRC value, packed little-endian from the CRC width.</param>
     [DataTestMethod]

@@ -168,11 +168,11 @@
   <data name="CharacterSet_SedolValidChars" xml:space="preserve">
     <value>'0'-'9' or uppercase consonant; vowels A/E/I/O/U are not permitted</value>
   </data>
+  <data name="IO_KeyNotFound_CrcStandardName" xml:space="preserve">
+    <value>No CRC standard with the name '{0}' exists in the catalogue.</value>
+  </data>
   <data name="Op_Invalid_AlgorithmAlreadyStarted" xml:space="preserve">
     <value>The algorithm is already in use and cannot be reconfigured after computation has started.</value>
-  </data>
-  <data name="Op_Invalid_CrcStandardNotFound" xml:space="preserve">
-    <value>No CRC standard with the name '{0}' exists in the catalogue.</value>
   </data>
   <data name="Op_Invalid_PadBlockMisaligned" xml:space="preserve">
     <value>{0} returned {1} bytes, which is not a multiple of {2} ({3}). Override {4} to permit a non-aligned final block.</value>
