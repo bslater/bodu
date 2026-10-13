@@ -160,6 +160,28 @@ public static partial class DateOnlyExtensions
     /// </remarks>
     internal static bool TryGetNthDateOfWeekInMonth(int year, int month, DayOfWeek dayOfWeek, WeekOrdinal ordinal, out DateOnly result)
     {
-        throw new NotImplementedException();
+        if (ordinal == Extensions.WeekOrdinal.Last)
+        {
+            result = DateOnly.FromDayNumber(GetLastDateOfWeekInMonthDayNumber(year, month, dayOfWeek));
+            return true;
+        }
+
+        if (ordinal is < Extensions.WeekOrdinal.First or > Extensions.WeekOrdinal.Fifth)
+        {
+            result = default;
+            return false;
+        }
+
+        // Only a fifth occurrence can miss a month of 28 to 31 days. Comparing day numbers with the month's last day
+        // keeps a missing one from ever becoming a date, so December 9999 needs no special case.
+        int dayNumber = GetFirstDateOfWeekInMonthDayNumber(year, month, dayOfWeek) + (((int)ordinal - 1) * 7);
+        if (dayNumber > DateTimeExtensions.GetDayNumberUnchecked(year, month, DateTime.DaysInMonth(year, month)))
+        {
+            result = default;
+            return false;
+        }
+
+        result = DateOnly.FromDayNumber(dayNumber);
+        return true;
     }
 }
