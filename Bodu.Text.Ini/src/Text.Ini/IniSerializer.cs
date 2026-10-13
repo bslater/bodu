@@ -21,9 +21,12 @@ namespace Bodu.Text.Ini;
 /// <para>
 /// INI models a two-level object-of-objects, so the serializer maps a root POCO (or string-keyed dictionary) whose
 /// scalar-convertible members become global keys and whose object-shaped members - section POCOs or
-/// <see cref="IDictionary{TKey, TValue}" /> values keyed by <see cref="string" /> - become sections. A member nested
-/// beyond the second level is rejected. Property names honour <see cref="IniSerializerOptions.PropertyNamingPolicy" />
-/// and the <see cref="Bodu.Text.Serialization.PropertyNameAttribute" /> family; the callback interfaces (<see cref="Bodu.Text.Serialization.IOnSerializing" />
+/// <see cref="IDictionary{TKey, TValue}" /> values keyed by <see cref="string" /> - become sections. A dictionary,
+/// whether the root or a section, that implements only that generic interface, and not the non-generic
+/// <see cref="System.Collections.IDictionary" />, is written and read through it, as a
+/// <see cref="Dictionary{TKey, TValue}" /> is. A member nested beyond the second level is rejected. Property names
+/// honour <see cref="IniSerializerOptions.PropertyNamingPolicy" /> and the
+/// <see cref="Bodu.Text.Serialization.PropertyNameAttribute" /> family; the callback interfaces (<see cref="Bodu.Text.Serialization.IOnSerializing" />
 /// and its siblings) fire around the mapping. Each member name maps to one key or section, its most derived
 /// declaration: a property or field hidden with the <see langword="new" /> modifier is neither written nor read. A type
 /// that maps two members to one name is rejected with <see cref="IniSerializationException" /> before anything is read

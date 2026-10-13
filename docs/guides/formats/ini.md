@@ -51,7 +51,7 @@ AppConfig config = IniSerializer.Deserialize<AppConfig>(
     iniText, new IniSerializerOptions { PropertyNamingPolicy = NamingPolicy.SnakeCaseLower });
 ```
 
-`Dictionary<string, Dictionary<string, string>>` works as an all-sections root. A member nested beyond INI's two levels throws `IniSerializationException`.
+`Dictionary<string, Dictionary<string, string>>` works as an all-sections root. Any type that implements `IDictionary<string, TValue>`, whether or not it also implements the non-generic `IDictionary`, binds as a root or a section dictionary in both directions, as `Dictionary<,>` does. A member nested beyond INI's two levels throws `IniSerializationException`.
 
 ### The global section name
 

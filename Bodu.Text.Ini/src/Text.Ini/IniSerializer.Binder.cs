@@ -43,7 +43,7 @@ public static partial class IniSerializer
 
         (value as IOnSerializing)?.OnSerializing();
 
-        if (value is IDictionary dictionary)
+        if (FlatBinding.TryGetDictionary(value, out IDictionary? dictionary))
             WriteRootDictionary(ref writer, dictionary, options);
         else if (IsScalarOrEnumerable(value.GetType()))
             throw new IniSerializationException(string.Format(CultureInfo.CurrentCulture, IniResourceStrings.Op_Invalid_IniRootNotObject, value.GetType()));
@@ -64,12 +64,14 @@ public static partial class IniSerializer
     /// Thrown when a section nests beyond INI's two levels, or when a key, section name or value cannot be written so
     /// that it reads back unchanged.
     /// </exception>
+    [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
+    [RequiresDynamicCode(RequiresDynamicCodeMessage)]
     private static void WriteRootDictionary(ref Utf8IniWriter writer, IDictionary dictionary, IniSerializerOptions options)
     {
         foreach (DictionaryEntry entry in dictionary)
         {
             string key = KeyToString(entry.Key);
-            if (entry.Value is IDictionary nested)
+            if (FlatBinding.TryGetDictionary(entry.Value, out IDictionary? nested))
             {
                 if (IsGlobalName(key, options))
                     WriteDictionaryEntries(ref writer, string.Empty, nested, options);
@@ -86,7 +88,7 @@ public static partial class IniSerializer
         foreach (DictionaryEntry entry in dictionary)
         {
             string key = KeyToString(entry.Key);
-            if (entry.Value is IDictionary nested && !IsGlobalName(key, options))
+            if (!IsGlobalName(key, options) && FlatBinding.TryGetDictionary(entry.Value, out IDictionary? nested))
             {
                 WriteHeader(ref writer, key);
                 WriteDictionaryEntries(ref writer, key, nested, options);
@@ -168,7 +170,7 @@ public static partial class IniSerializer
     {
         // The reserved global section's entries are written as global keys, so a refused entry is reported as global.
         string entrySection = IsGlobalName(sectionName, options) ? string.Empty : sectionName;
-        if (body is IDictionary dictionary)
+        if (FlatBinding.TryGetDictionary(body, out IDictionary? dictionary))
         {
             WriteDictionaryEntries(ref writer, entrySection, dictionary, options);
             return;
@@ -208,11 +210,13 @@ public static partial class IniSerializer
     /// Thrown when an entry value is itself a dictionary, which INI cannot represent inside a section, or when an
     /// entry's key or value cannot be written so that it reads back unchanged.
     /// </exception>
+    [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
+    [RequiresDynamicCode(RequiresDynamicCodeMessage)]
     private static void WriteDictionaryEntries(ref Utf8IniWriter writer, string sectionName, IDictionary entries, IniSerializerOptions options)
     {
         foreach (DictionaryEntry entry in entries)
         {
-            if (entry.Value is IDictionary)
+            if (FlatBinding.TryGetDictionary(entry.Value, out _))
                 throw new IniSerializationException(string.Format(CultureInfo.CurrentCulture, IniResourceStrings.Op_Invalid_IniDepthExceeded, KeyToString(entry.Key)));
 
             if (FlatBinding.ShouldSkipDictionaryValue(entry.Value, options.DefaultIgnoreCondition))
@@ -318,7 +322,7 @@ public static partial class IniSerializer
     [RequiresDynamicCode(RequiresDynamicCodeMessage)]
     private static object ReadRootDictionary(IniNormalizedDocument document, Type targetType, Type valueType, IniSerializerOptions options)
     {
-        var dictionary = (IDictionary)CreateInstance(FlatBinding.ConcreteDictionaryType(targetType, valueType));
+        object dictionary = CreateInstance(FlatBinding.ConcreteDictionaryType(targetType, valueType));
 
         if (FlatBinding.TryGetStringKeyedDictionary(valueType, out Type? nestedValueType))
         {
@@ -327,11 +331,11 @@ public static partial class IniSerializer
                 if (options.GlobalSectionName is null)
                     throw new IniSerializationException(string.Format(CultureInfo.CurrentCulture, IniResourceStrings.Op_Invalid_IniGlobalWithoutSectionName, targetType));
 
-                dictionary[options.GlobalSectionName] = BuildEntryDictionary(document.GlobalEntries, valueType, nestedValueType);
+                FlatBinding.SetEntry(dictionary, valueType, options.GlobalSectionName, BuildEntryDictionary(document.GlobalEntries, valueType, nestedValueType));
             }
 
             foreach (IniNormalizedSection section in document.Sections)
-                dictionary[section.Name] = BuildEntryDictionary(section.Entries, valueType, nestedValueType);
+                FlatBinding.SetEntry(dictionary, valueType, section.Name, BuildEntryDictionary(section.Entries, valueType, nestedValueType));
 
             return dictionary;
         }
@@ -340,7 +344,7 @@ public static partial class IniSerializer
             throw new IniSerializationException(string.Format(CultureInfo.CurrentCulture, IniResourceStrings.Format_Invalid_IniValueConversion, document.Sections[0].Name, valueType));
 
         foreach ((string key, string raw) in document.GlobalEntries)
-            dictionary[key] = ConvertFromString(raw, valueType, key);
+            FlatBinding.SetEntry(dictionary, valueType, key, ConvertFromString(raw, valueType, key));
 
         return dictionary;
     }
@@ -420,9 +424,9 @@ public static partial class IniSerializer
     {
         if (FlatBinding.TryGetStringKeyedDictionary(targetType, out Type? valueType))
         {
-            var dictionary = (IDictionary)CreateInstance(FlatBinding.ConcreteDictionaryType(targetType, valueType));
+            object dictionary = CreateInstance(FlatBinding.ConcreteDictionaryType(targetType, valueType));
             foreach ((string key, string raw) in entries)
-                dictionary[key] = ConvertFromString(raw, valueType, key);
+                FlatBinding.SetEntry(dictionary, valueType, key, ConvertFromString(raw, valueType, key));
 
             return dictionary;
         }
@@ -514,9 +518,9 @@ public static partial class IniSerializer
     [RequiresDynamicCode(RequiresDynamicCodeMessage)]
     private static object BuildEntryDictionary(List<KeyValuePair<string, string>> entries, Type dictionaryType, Type valueType)
     {
-        var dictionary = (IDictionary)CreateInstance(FlatBinding.ConcreteDictionaryType(dictionaryType, valueType));
+        object dictionary = CreateInstance(FlatBinding.ConcreteDictionaryType(dictionaryType, valueType));
         foreach ((string key, string raw) in entries)
-            dictionary[key] = ConvertFromString(raw, valueType, key);
+            FlatBinding.SetEntry(dictionary, valueType, key, ConvertFromString(raw, valueType, key));
 
         return dictionary;
     }

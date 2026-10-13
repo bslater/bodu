@@ -43,7 +43,7 @@ public static partial class DotEnvSerializer
         {
             (value as IOnSerializing)?.OnSerializing();
 
-            if (value is IDictionary dictionary)
+            if (FlatBinding.TryGetDictionary(value, out IDictionary? dictionary))
                 WriteDictionary(ref writer, dictionary, options);
             else if (IsScalarOrEnumerable(value.GetType()))
                 throw new DotEnvSerializationException(string.Format(CultureInfo.CurrentCulture, DotEnvResourceStrings.Op_Invalid_DotEnvRootType, value.GetType()));
@@ -155,10 +155,10 @@ public static partial class DotEnvSerializer
     [RequiresDynamicCode(RequiresDynamicCodeMessage)]
     private static object ReadDictionary(List<KeyValuePair<string, string>> entries, Type targetType, Type valueType, DotEnvSerializerOptions options)
     {
-        var dictionary = (IDictionary)CreateInstance(FlatBinding.ConcreteDictionaryType(targetType, valueType));
+        object dictionary = CreateInstance(FlatBinding.ConcreteDictionaryType(targetType, valueType));
 
         foreach ((string key, string raw) in entries)
-            dictionary[key] = ConvertFromString(raw, valueType, key);
+            FlatBinding.SetEntry(dictionary, valueType, key, ConvertFromString(raw, valueType, key));
 
         return dictionary;
     }
