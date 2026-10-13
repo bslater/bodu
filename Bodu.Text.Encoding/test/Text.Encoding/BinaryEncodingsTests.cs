@@ -177,4 +177,32 @@ public sealed class BinaryEncodingsTests
         }
     }
 
+    /// <summary>
+    /// Verifies that the <c>base58-flickr</c> name resolves to an encoding that uses Flickr's alphabet, which puts the
+    /// lower-case letters before the upper-case ones: the value 57, the alphabet's last symbol, encodes as <c>Z</c>
+    /// where the Bitcoin alphabet has <c>z</c>, and the value 3392387861 as <c>6aLSHT</c> where Bitcoin's gives
+    /// <c>6Amsit</c>.
+    /// </summary>
+    [TestMethod]
+    public void Get_WhenBase58FlickrName_ShouldEncodeWithFlickrAlphabet()
+    {
+        IBinaryEncoding flickr = BinaryEncodings.Get("base58-flickr");
+
+        Assert.AreEqual("1Z", flickr.Encode(new byte[] { 0x00, 0x39 }));
+        Assert.AreEqual("6aLSHT", flickr.Encode(new byte[] { 0xCA, 0x33, 0xBB, 0x15 }));
+    }
+
+    /// <summary>
+    /// Verifies that the encoding the <c>base58-flickr</c> name resolves to decodes Flickr-alphabet text to the bytes
+    /// Flickr's alphabet assigns it.
+    /// </summary>
+    [TestMethod]
+    public void Get_WhenBase58FlickrName_ShouldDecodeWithFlickrAlphabet()
+    {
+        IBinaryEncoding flickr = BinaryEncodings.Get("base58-flickr");
+
+        CollectionAssert.AreEqual(new byte[] { 0x00, 0x39 }, flickr.Decode("1Z"));
+        CollectionAssert.AreEqual(new byte[] { 0xCA, 0x33, 0xBB, 0x15 }, flickr.Decode("6aLSHT"));
+    }
+
 }
