@@ -29,11 +29,8 @@ public static partial class DateOnlyExtensions
     /// </exception>
     public static bool IsNthDateOfWeekInMonth(this DateOnly date, DayOfWeek dayOfWeek, WeekOrdinal ordinal)
     {
-        // Both enums define one contiguous range, so a range test finds every undefined value without the metadata
-        // lookup ThrowIfEnumValueIsUndefined makes, which cron's searches would pay on every day they test. The
-        // helper still throws, so the exception is the same.
-        if (dayOfWeek is < DayOfWeek.Sunday or > DayOfWeek.Saturday) ThrowHelper.ThrowIfEnumValueIsUndefined(dayOfWeek);
-        if (ordinal is < WeekOrdinal.First or > WeekOrdinal.Last) ThrowHelper.ThrowIfEnumValueIsUndefined(ordinal);
+        ThrowHelper.ThrowIfEnumValueIsUndefined(dayOfWeek);
+        ThrowHelper.ThrowIfEnumValueIsUndefined(ordinal);
 
         if (date.DayOfWeek != dayOfWeek)
         {
