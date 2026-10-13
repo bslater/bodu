@@ -22,7 +22,9 @@ public sealed partial class RecurrenceSet : IParsable<RecurrenceSet>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="s" /> is <see langword="null" />.
     /// </exception>
-    /// <exception cref="FormatException">Thrown when the text is not a valid recurrence-set property block.</exception>
+    /// <exception cref="FormatException">
+    /// Thrown when the text is not a valid recurrence-set property block; the message names the defect.
+    /// </exception>
     public static RecurrenceSet Parse(string s) =>
         Parse(s, null);
 
@@ -37,14 +39,16 @@ public sealed partial class RecurrenceSet : IParsable<RecurrenceSet>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="s" /> is <see langword="null" />.
     /// </exception>
-    /// <exception cref="FormatException">Thrown when the text is not a valid recurrence-set property block.</exception>
+    /// <exception cref="FormatException">
+    /// Thrown when the text is not a valid recurrence-set property block; the message names the defect.
+    /// </exception>
     public static RecurrenceSet Parse(string s, IFormatProvider? provider)
     {
         ThrowHelper.ThrowIfNull(s);
 
-        return TryParseCore(s, out RecurrenceSet? result, out _)
+        return TryParseCore(s, out RecurrenceSet? result, out string? failureMessage)
             ? result
-            : throw new FormatException(RecurrenceResourceStrings.Format_Invalid_RecurrenceSetText);
+            : throw new FormatException(failureMessage ?? RecurrenceResourceStrings.Format_Invalid_RecurrenceSetText);
     }
 
     /// <summary>

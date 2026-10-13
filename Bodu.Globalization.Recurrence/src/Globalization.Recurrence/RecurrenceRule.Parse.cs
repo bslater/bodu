@@ -104,7 +104,9 @@ public sealed partial class RecurrenceRule :
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="s" /> is <see langword="null" />.
     /// </exception>
-    /// <exception cref="FormatException">Thrown when <paramref name="s" /> is not a valid recurrence rule.</exception>
+    /// <exception cref="FormatException">
+    /// Thrown when <paramref name="s" /> is not a valid recurrence rule; the message names the defect.
+    /// </exception>
     public static RecurrenceRule Parse(string s) =>
         Parse(s, null);
 
@@ -117,7 +119,9 @@ public sealed partial class RecurrenceRule :
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="s" /> is <see langword="null" />.
     /// </exception>
-    /// <exception cref="FormatException">Thrown when <paramref name="s" /> is not a valid recurrence rule.</exception>
+    /// <exception cref="FormatException">
+    /// Thrown when <paramref name="s" /> is not a valid recurrence rule; the message names the defect.
+    /// </exception>
     public static RecurrenceRule Parse(string s, IFormatProvider? provider)
     {
         ThrowHelper.ThrowIfNull(s);
@@ -131,12 +135,15 @@ public sealed partial class RecurrenceRule :
     /// <param name="s">The rule text to parse. An optional leading <c>RRULE:</c> prefix is accepted.</param>
     /// <param name="provider">Unused; recurrence-rule text is culture-invariant.</param>
     /// <returns>The parsed rule.</returns>
-    /// <exception cref="FormatException">Thrown when <paramref name="s" /> is not a valid recurrence rule.</exception>
+    /// <exception cref="FormatException">
+    /// Thrown when <paramref name="s" /> is not a valid recurrence rule; the message names the defect.
+    /// </exception>
     public static RecurrenceRule Parse(ReadOnlySpan<char> s, IFormatProvider? provider) =>
-        TryParseCore(s, out RecurrenceRule? result, out _)
+        TryParseCore(s, out RecurrenceRule? result, out string? failureMessage)
             ? result
             : throw new FormatException(
-                string.Format(CultureInfo.CurrentCulture, RecurrenceResourceStrings.Format_Invalid_RecurrenceRuleText, s.ToString()));
+                failureMessage
+                ?? string.Format(CultureInfo.CurrentCulture, RecurrenceResourceStrings.Format_Invalid_RecurrenceRuleText, s.ToString()));
 
     /// <summary>
     /// Attempts to parse the textual form of a recurrence rule.
