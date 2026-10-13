@@ -166,6 +166,41 @@ public partial class IntervalTests
         AssertExcludesNonFiniteValues<Half>(shape);
 
     /// <summary>
+    /// Verifies that an interval with an unbounded side still contains the largest finite value on that side, for
+    /// <see cref="double" />, <see cref="float" /> and <see cref="Half" />.
+    /// </summary>
+    /// <param name="shape">The name of the unbounded factory under test.</param>
+    [TestMethod]
+    [DataRow("All")]
+    [DataRow("AtLeast")]
+    [DataRow("GreaterThan")]
+    [DataRow("AtMost")]
+    [DataRow("LessThan")]
+    public void Contains_WhenSideIsUnbounded_ShouldContainFiniteExtremeOnThatSide(string shape)
+    {
+        AssertContainsFiniteExtremes<double>(shape);
+        AssertContainsFiniteExtremes<float>(shape);
+        AssertContainsFiniteExtremes<Half>(shape);
+    }
+
+    /// <summary>
+    /// Verifies that a bounded interval whose closed side carries an infinite endpoint contains that infinity, while
+    /// an open side at the same infinity excludes it and no interval contains NaN.
+    /// </summary>
+    [TestMethod]
+    public void Contains_WhenBoundedEndpointIsInfinite_ShouldFollowInclusivity()
+    {
+        Assert.IsTrue(Interval<double>.Closed(0.0, double.PositiveInfinity).Contains(double.PositiveInfinity));
+        Assert.IsTrue(Interval<double>.Closed(double.NegativeInfinity, 0.0).Contains(double.NegativeInfinity));
+        Assert.IsTrue(Interval<float>.Closed(float.NegativeInfinity, float.PositiveInfinity).Contains(float.PositiveInfinity));
+        Assert.IsTrue(Interval<Half>.Closed(Half.NegativeInfinity, (Half)0).Contains(Half.NegativeInfinity));
+
+        Assert.IsFalse(Interval<double>.ClosedOpen(0.0, double.PositiveInfinity).Contains(double.PositiveInfinity));
+        Assert.IsFalse(Interval<double>.OpenClosed(double.NegativeInfinity, 0.0).Contains(double.NegativeInfinity));
+        Assert.IsFalse(Interval<double>.Closed(double.NegativeInfinity, double.PositiveInfinity).Contains(double.NaN));
+    }
+
+    /// <summary>
     /// Asserts that the unbounded interval named by <paramref name="shape" /> contains neither NaN nor either infinity
     /// of <typeparamref name="T" />.
     /// </summary>
@@ -179,6 +214,24 @@ public partial class IntervalTests
         Assert.IsFalse(interval.Contains(T.NaN), $"{interval} contains NaN");
         Assert.IsFalse(interval.Contains(T.PositiveInfinity), $"{interval} contains +Infinity");
         Assert.IsFalse(interval.Contains(T.NegativeInfinity), $"{interval} contains -Infinity");
+    }
+
+    /// <summary>
+    /// Asserts that the unbounded interval named by <paramref name="shape" /> contains the largest finite value of
+    /// <typeparamref name="T" /> on each unbounded side.
+    /// </summary>
+    /// <typeparam name="T">The floating-point endpoint type.</typeparam>
+    /// <param name="shape">The name of the unbounded factory.</param>
+    private static void AssertContainsFiniteExtremes<T>(string shape)
+        where T : IFloatingPointIeee754<T>, IMinMaxValue<T>
+    {
+        Interval<T> interval = UnboundedFloatingPointShape<T>(shape);
+
+        if (interval.LowerUnbounded)
+            Assert.IsTrue(interval.Contains(T.MinValue), $"{interval} excludes {typeof(T).Name}.MinValue");
+
+        if (interval.UpperUnbounded)
+            Assert.IsTrue(interval.Contains(T.MaxValue), $"{interval} excludes {typeof(T).Name}.MaxValue");
     }
 
     /// <summary>

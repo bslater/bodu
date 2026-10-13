@@ -19,6 +19,12 @@ public readonly partial struct Interval<T>
     /// <see langword="true" /> when the interval is non-empty and <paramref name="value" /> falls between the endpoints
     /// under the configured inclusivity rules; otherwise <see langword="false" />. An empty interval contains no value.
     /// </returns>
+    /// <remarks>
+    /// An unbounded side admits every finite value but not the infinity on that side, so neither <see cref="All" /> nor
+    /// a half-bounded interval contains an infinity at its unbounded end, while a bounded infinite endpoint, as in
+    /// <c>[0, Infinity]</c> over <see cref="double" />, follows the inclusivity of its side. NaN is never a member of
+    /// any interval.
+    /// </remarks>
     /// <example>
     /// <code language="csharp">
     ///<![CDATA[
@@ -34,11 +40,17 @@ public readonly partial struct Interval<T>
     /// </example>
     public bool Contains(T value)
     {
-        if (IsEmpty)
+        if (IsEmpty || T.IsNaN(value))
             return false;
 
-        bool lowerOk = LowerUnbounded || (LowerInclusive ? value >= _lower : value > _lower);
-        bool upperOk = UpperUnbounded || (UpperInclusive ? value <= _upper : value < _upper);
+        // An unbounded side is open at its infinity: it admits every finite value but not the infinity itself, which
+        // only a bounded endpoint can hold.
+        bool lowerOk = LowerUnbounded
+            ? !T.IsNegativeInfinity(value)
+            : (LowerInclusive ? value >= _lower : value > _lower);
+        bool upperOk = UpperUnbounded
+            ? !T.IsPositiveInfinity(value)
+            : (UpperInclusive ? value <= _upper : value < _upper);
         return lowerOk && upperOk;
     }
 
