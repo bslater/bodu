@@ -1548,4 +1548,112 @@ public partial class NotableDateDocumentBuilderTests
                        { "id": "s", "strategy": { "fixed": { "month": 4, "day": 1 } } } ] } ],
           "overrides": [ @operation@ ] }
         """.Replace("@operation@", operation, StringComparison.Ordinal);
+
+    /// <summary>
+    /// Verifies that a strategy, recurrence or end-strategy attribute value the loader rejects, on a rule, an
+    /// <c>AddRule</c> override's rule or a <c>PatchRule</c> override, is rejected with a <see cref="FormatException" />
+    /// carrying the loader's message, rather than written into the document for the schema to reject at
+    /// <c>Build</c> or failing with the framework's own message.
+    /// </summary>
+    /// <param name="rule">The rule of the concept <c>x</c>, as a JSON object.</param>
+    /// <param name="overrides">The document's overrides, as a JSON member, or empty for none.</param>
+    [TestMethod]
+    [DataRow("""{ "id": "r", "strategy": { "fixed": { "month": 1, "day": 1.5 } } }""", "")]
+    [DataRow("""{ "id": "r", "strategy": { "fixed": { "month": 1, "day": "high" } } }""", "")]
+    [DataRow("""{ "id": "r", "strategy": { "fixed": { "month": 1, "day": true } } }""", "")]
+    [DataRow("""{ "id": "r", "strategy": { "fixed": { "month": 1, "day": 1e1 } } }""", "")]
+    [DataRow("""{ "id": "r", "strategy": { "fixed": { "month": 1, "day": 1, "sweepCalendarYears": "maybe" } } }""", "")]
+    [DataRow("""{ "id": "r", "strategy": { "fixed": { "month": 1, "day": 1, "skipLeapMonth": 2 } } }""", "")]
+    [DataRow("""{ "id": "r", "strategy": { "fixed": { "month": 1, "day": 1, "skipLeapMonth": "TRUE" } } }""", "")]
+    [DataRow("""{ "id": "r", "strategy": { "fixed": { "month": 1.5, "day": 1 } } }""", "")]
+    [DataRow("""{ "id": "r", "strategy": { "fixed": { "month": "Smarch", "day": 1 } } }""", "")]
+    [DataRow("""{ "id": "r", "applicability": { "calendar": "Hebrew" }, "strategy": { "fixed": { "month": "nisan", "day": 15 } } }""", "")]
+    [DataRow("""{ "id": "r", "strategy": { "dayOfWeekInMonth": { "month": 5, "dayOfWeek": "Funday", "weekOrdinal": "First" } } }""", "")]
+    [DataRow("""{ "id": "r", "strategy": { "dayOfWeekInMonth": { "month": 5, "dayOfWeek": "Monday", "weekOrdinal": 1 } } }""", "")]
+    [DataRow("""{ "id": "r", "strategy": { "weekdayNearDate": { "month": 5, "day": 1, "dayOfWeek": "Monday", "direction": "Sideways" } } }""", "")]
+    [DataRow("""{ "id": "r", "strategy": { "weekdayNearDate": { "month": 5, "day": 1, "dayOfWeek": "Monday ", "direction": "After" } } }""", "")]
+    [DataRow("""{ "id": "r", "strategy": { "relativeWeekdayInMonth": { "month": 5, "dayOfWeek": "Monday", "weekOrdinal": "First", "relativeDayOfWeek": "Someday", "direction": "After" } } }""", "")]
+    [DataRow("""{ "id": "r", "strategy": { "offsetFromRule": { "notableDateRef": "anchor", "offsetDays": "soon" } } }""", "")]
+    [DataRow("""{ "id": "r", "strategy": { "weekdayNearRule": { "notableDateRef": "anchor", "dayOfWeek": "Monday", "direction": "After", "referenceYearOffset": 0.5 } } }""", "")]
+    [DataRow("""{ "id": "r", "strategy": { "nthWeekdayFromRule": { "notableDateRef": "anchor", "dayOfWeek": "Monday", "ordinal": "first" } } }""", "")]
+    [DataRow("""{ "id": "r", "strategy": { "workingDayOffsetFromRule": { "notableDateRef": "anchor", "offsetWorkingDays": true } } }""", "")]
+    [DataRow("""{ "id": "r", "strategy": { "workingDayInMonth": { "month": 5, "ordinal": 2.5 } } }""", "")]
+    [DataRow("""{ "id": "r", "strategy": { "ordinalDayOfMonth": { "month": "Smarch", "ordinal": 2 } } }""", "")]
+    [DataRow("""{ "id": "r", "strategy": { "isoWeekDate": { "week": "x", "dayOfWeek": "Monday" } } }""", "")]
+    [DataRow("""{ "id": "r", "strategy": { "dayOfYear": { "ordinal": "last" } } }""", "")]
+    [DataRow("""{ "id": "r", "recurrence": { "dailyInterval": { "anchorDate": "2024-13-01" } } }""", "")]
+    [DataRow("""{ "id": "r", "recurrence": { "dailyInterval": { "anchorDate": "2024-01-01", "intervalDays": "daily" } } }""", "")]
+    [DataRow("""{ "id": "r", "recurrence": { "weekly": { "days": [ "Monday" ], "intervalWeeks": "2x", "anchorDate": "2024-01-01" } } }""", "")]
+    [DataRow("""{ "id": "r", "recurrence": { "weekly": { "days": [ "Monday" ], "anchorDate": " 2024-01-01" } } }""", "")]
+    [DataRow("""{ "id": "r", "recurrence": { "monthlyDay": { "dayOfMonth": 2.5 } } }""", "")]
+    [DataRow("""{ "id": "r", "recurrence": { "monthlyDay": { "dayOfMonth": 2, "invalidDayBehavior": "Nope" } } }""", "")]
+    [DataRow("""{ "id": "r", "recurrence": { "monthlyWeekday": { "dayOfWeek": "Monday", "weekOrdinal": "Penultimate" } } }""", "")]
+    [DataRow("""{ "id": "r", "strategy": { "fixed": { "month": 5, "day": 1 } }, "duration": { "untilDate": { "strategy": { "fixed": { "month": 5, "day": "x" } } } } }""", "")]
+    [DataRow("""{ "id": "r", "strategy": { "fixed": { "month": 5, "day": 1 } } }""", """, "overrides": [ { "operation": "AddRule", "notableDateRef": "x", "rule": { "id": "t", "strategy": { "fixed": { "month": 6, "day": "x" } } } } ]""")]
+    [DataRow("""{ "id": "r", "strategy": { "fixed": { "month": 5, "day": 1 } } }""", """, "overrides": [ { "operation": "PatchRule", "notableDateRef": "x", "ruleRef": "r", "strategy": { "dayOfWeekInMonth": { "month": 5, "dayOfWeek": "Monday", "weekOrdinal": "Tenth" } } } ]""")]
+    [DataRow("""{ "id": "r", "strategy": { "fixed": { "month": 5, "day": 1 } } }""", """, "overrides": [ { "operation": "PatchRule", "notableDateRef": "x", "ruleRef": "r", "recurrence": { "monthlyDay": { "dayOfMonth": "x" } } } ]""")]
+    [DataRow("""{ "id": "r", "strategy": { "fixed": { "month": 5, "day": 1 } } }""", """, "overrides": [ { "operation": "PatchRule", "notableDateRef": "x", "ruleRef": "r", "duration": { "untilDate": { "strategy": { "fixed": { "month": 5, "day": false } } } } } ]""")]
+    public void FromJson_WhenStrategyAttributeValueIsMalformed_ShouldThrowFormatException(string rule, string overrides)
+    {
+        string json = AttributeValueJson(rule, overrides);
+        string expected = LoaderErrorMessage(json);
+
+        FormatException ex = Assert.ThrowsExactly<FormatException>(() =>
+        {
+            _ = NotableDateDocumentBuilder.FromJson(json);
+        });
+
+        Assert.AreEqual(expected, ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that a strategy, recurrence or end-strategy attribute value the loader reads, in a form the schema does
+    /// not accept as written (a name in another case, or a numeric month on a rule in another calendar), builds through
+    /// the builder into the same resource the loader loads, compared byte for byte as binary rule packs, rather than
+    /// being written as given and failing at <c>Build</c>.
+    /// </summary>
+    /// <param name="rule">The rule of the concept <c>x</c>, as a JSON object.</param>
+    /// <param name="overrides">The document's overrides, as a JSON member, or empty for none.</param>
+    [TestMethod]
+    [DataRow("""{ "id": "r", "strategy": { "dayOfWeekInMonth": { "month": 5, "dayOfWeek": "monday", "weekOrdinal": "LAST" } } }""", "")]
+    [DataRow("""{ "id": "r", "strategy": { "weekdayNearDate": { "month": 5, "day": 24, "dayOfWeek": "MONDAY", "direction": "onorbefore" } } }""", "")]
+    [DataRow("""{ "id": "r", "strategy": { "relativeWeekdayInMonth": { "month": 11, "dayOfWeek": "thursday", "weekOrdinal": "fourth", "relativeDayOfWeek": "FRIDAY", "direction": "after" } } }""", "")]
+    [DataRow("""{ "id": "r", "strategy": { "weekdayNearRule": { "notableDateRef": "anchor", "dayOfWeek": "sunday", "direction": "nearest" } } }""", "")]
+    [DataRow("""{ "id": "r", "strategy": { "nthWeekdayFromRule": { "notableDateRef": "anchor", "dayOfWeek": "tuesday", "ordinal": 2 } } }""", "")]
+    [DataRow("""{ "id": "r", "strategy": { "isoWeekDate": { "week": 10, "dayOfWeek": "wednesday" } } }""", "")]
+    [DataRow("""{ "id": "r", "applicability": { "calendar": "Hebrew" }, "strategy": { "fixed": { "month": 7, "day": 15 } } }""", "")]
+    [DataRow("""{ "id": "r", "applicability": { "calendar": "Hijri" }, "strategy": { "fixed": { "month": "9", "day": 1 } } }""", "")]
+    [DataRow("""{ "id": "r", "recurrence": { "monthlyDay": { "dayOfMonth": 31, "invalidDayBehavior": "uselastdayofmonth" } } }""", "")]
+    [DataRow("""{ "id": "r", "recurrence": { "monthlyWeekday": { "dayOfWeek": "friday", "weekOrdinal": "last" } } }""", "")]
+    [DataRow("""{ "id": "r", "strategy": { "fixed": { "month": 5, "day": 1 } }, "duration": { "untilDate": { "strategy": { "weekdayNearDate": { "month": 5, "day": 3, "dayOfWeek": "friday", "direction": "onorafter" } } } } }""", "")]
+    [DataRow("""{ "id": "r", "strategy": { "fixed": { "month": 5, "day": 1 } } }""", """, "overrides": [ { "operation": "PatchRule", "notableDateRef": "x", "ruleRef": "r", "strategy": { "dayOfWeekInMonth": { "month": 6, "dayOfWeek": "saturday", "weekOrdinal": "second" } } } ]""")]
+    [DataRow("""{ "id": "r", "strategy": { "fixed": { "month": 5, "day": 1 } } }""", """, "overrides": [ { "operation": "AddRule", "notableDateRef": "x", "rule": { "id": "t", "applicability": { "calendar": "Hebrew" }, "strategy": { "fixed": { "month": 1, "day": 1 } } } } ]""")]
+    public void FromJson_WhenStrategyAttributeValueIsLoaderForm_ShouldBuildWhatLoadJsonLoads(string rule, string overrides)
+    {
+        string json = AttributeValueJson(rule, overrides);
+
+        NotableDateResource loaded = NotableDateResourceLoader.LoadJson(json);
+        NotableDateResource built = NotableDateDocumentBuilder.FromJson(json).Build();
+
+        CollectionAssert.AreEqual(PackBytes(loaded), PackBytes(built), rule + overrides);
+    }
+
+    /// <summary>
+    /// Builds a JSON document whose concept <c>anchor</c> holds the rule <c>a</c> (1 March) and whose concept
+    /// <c>x</c> holds the supplied rule, with the supplied overrides.
+    /// </summary>
+    /// <param name="rule">The rule of the concept <c>x</c>, as a JSON object.</param>
+    /// <param name="overrides">The document's overrides, as a JSON member, or empty for none.</param>
+    /// <returns>The JSON document.</returns>
+    private static string AttributeValueJson(string rule, string overrides) =>
+        """
+        { "schemaVersion": "1.0", "resourceId": "test.attributes",
+          "notableDates": [
+            { "id": "anchor", "displayName": "Anchor", "category": "PublicHoliday",
+              "rules": [ { "id": "a", "strategy": { "fixed": { "month": 3, "day": 1 } } } ] },
+            { "id": "x", "displayName": "X", "category": "Observance", "rules": [ @rule@ ] } ]
+          @overrides@ }
+        """
+        .Replace("@rule@", rule, StringComparison.Ordinal)
+        .Replace("@overrides@", overrides, StringComparison.Ordinal);
 }
