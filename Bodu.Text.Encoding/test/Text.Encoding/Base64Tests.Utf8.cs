@@ -225,4 +225,91 @@ public sealed partial class Base64Tests
         });
     }
 
+    /// <summary>
+    /// Verifies that <see cref="Base64.EncodeToUtf8(ReadOnlySpan{byte}, Base64Variant, BaseFormattingOptions)" /> with
+    /// the MIME variant writes the CRLF line breaks every 76 characters, so its bytes equal the ASCII bytes of
+    /// <see cref="Base64.Encode(ReadOnlySpan{byte}, Base64Variant, BaseFormattingOptions)" /> for payloads that fill
+    /// none, one, and several lines, padded and unpadded.
+    /// </summary>
+    [TestMethod]
+    public void EncodeToUtf8_WhenMimeVariant_ShouldEqualEncodeOutputBytes()
+    {
+        var mismatches = new List<string>();
+
+        foreach ((byte[] payload, BaseFormattingOptions options) in GetMimeUtf8Cases())
+        {
+            byte[] expected = Ascii(Base64.Encode(payload, Base64Variant.Mime, options));
+            byte[] actual = Base64.EncodeToUtf8(payload, Base64Variant.Mime, options);
+            if (!actual.AsSpan().SequenceEqual(expected))
+                mismatches.Add($"{payload.Length} bytes, {options}");
+        }
+
+        Assert.AreEqual(0, mismatches.Count, string.Join("; ", mismatches));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Base64.EncodeToUtf8(ReadOnlySpan{byte}, IBufferWriter{byte}, Base64Variant, BaseFormattingOptions)" />
+    /// with the MIME variant writes the same bytes as the ASCII bytes of
+    /// <see cref="Base64.Encode(ReadOnlySpan{byte}, Base64Variant, BaseFormattingOptions)" />, line breaks included.
+    /// </summary>
+    [TestMethod]
+    public void EncodeToUtf8_WhenBufferWriterAndMimeVariant_ShouldEqualEncodeOutputBytes()
+    {
+        var mismatches = new List<string>();
+
+        foreach ((byte[] payload, BaseFormattingOptions options) in GetMimeUtf8Cases())
+        {
+            byte[] expected = Ascii(Base64.Encode(payload, Base64Variant.Mime, options));
+            var writer = new ArrayBufferWriter<byte>();
+            int written = Base64.EncodeToUtf8(payload, writer, Base64Variant.Mime, options);
+            if (written != expected.Length || !writer.WrittenSpan.SequenceEqual(expected))
+                mismatches.Add($"{payload.Length} bytes, {options}");
+        }
+
+        Assert.AreEqual(0, mismatches.Count, string.Join("; ", mismatches));
+    }
+
+    /// <summary>
+    /// Verifies that
+    /// <see cref="Base64.TryEncodeToUtf8(ReadOnlySpan{byte}, Span{byte}, out int, Base64Variant, BaseFormattingOptions)" />
+    /// with the MIME variant writes the same bytes as the ASCII bytes of
+    /// <see cref="Base64.Encode(ReadOnlySpan{byte}, Base64Variant, BaseFormattingOptions)" />, line breaks included,
+    /// into a destination of exactly <see cref="Base64.GetEncodedLength(int, Base64Variant, BaseFormattingOptions)" />.
+    /// </summary>
+    [TestMethod]
+    public void TryEncodeToUtf8_WhenMimeVariant_ShouldEqualEncodeOutputBytes()
+    {
+        var mismatches = new List<string>();
+
+        foreach ((byte[] payload, BaseFormattingOptions options) in GetMimeUtf8Cases())
+        {
+            byte[] expected = Ascii(Base64.Encode(payload, Base64Variant.Mime, options));
+            byte[] destination = new byte[Base64.GetEncodedLength(payload.Length, Base64Variant.Mime, options)];
+            bool encoded = Base64.TryEncodeToUtf8(payload, destination, out int written, Base64Variant.Mime, options);
+            if (!encoded || !destination.AsSpan(0, written).SequenceEqual(expected))
+                mismatches.Add($"{payload.Length} bytes, {options}");
+        }
+
+        Assert.AreEqual(0, mismatches.Count, string.Join("; ", mismatches));
+    }
+
+    /// <summary>
+    /// Returns the MIME UTF-8 cases: every payload length from zero to 240 bytes (none to four 76-character lines and a
+    /// partial fifth), padded and unpadded.
+    /// </summary>
+    /// <returns>The payload and formatting option pairs.</returns>
+    private static IEnumerable<(byte[] Payload, BaseFormattingOptions Options)> GetMimeUtf8Cases()
+    {
+        var random = new Random(0x3170);
+
+        for (int length = 0; length <= 240; length++)
+        {
+            byte[] payload = new byte[length];
+            random.NextBytes(payload);
+
+            yield return (payload, BaseFormattingOptions.None);
+            yield return (payload, BaseFormattingOptions.OmitPadding);
+        }
+    }
+
 }
