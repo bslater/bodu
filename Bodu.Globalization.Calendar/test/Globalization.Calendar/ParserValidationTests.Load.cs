@@ -191,6 +191,33 @@ public sealed partial class ParserValidationTests
     }
 
     /// <summary>
+    /// Verifies that a resolution policy whose <c>workingDays</c> is not a seven-character working-week pattern is
+    /// reported with the <c>BODU-CAL-WORKING-DAYS</c> diagnostic rather than escaping as a
+    /// <see cref="FormatException" />.
+    /// </summary>
+    [TestMethod]
+    public void Load_WhenWorkingDaysMalformed_ShouldThrowWorkingDaysDiagnostic()
+    {
+        const string xml = """
+            <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="test.bad">
+              <ResolutionPolicy workingDays="MTWTF" />
+              <NotableDates>
+                <NotableDate id="x" displayName="X" category="PublicHoliday">
+                  <Rules><Rule id="r"><Strategy><Fixed month="March" day="1" /></Strategy></Rule></Rules>
+                </NotableDate>
+              </NotableDates>
+            </NotableDateResource>
+            """;
+
+        NotableDateValidationException ex = Assert.ThrowsExactly<NotableDateValidationException>(() =>
+        {
+            _ = NotableDateResourceLoader.Load(xml);
+        });
+
+        Assert.Contains(d => d.Code == "BODU-CAL-WORKING-DAYS" && d.Severity == NotableDateValidationSeverity.Error, ex.Diagnostics, "BODU-CAL-WORKING-DAYS");
+    }
+
+    /// <summary>
     /// Verifies that the v1 <c>Holiday</c> category token, renamed to <c>PublicHoliday</c> in v2, is rejected with a
     /// schema diagnostic.
     /// </summary>

@@ -296,6 +296,33 @@ public sealed partial class ParserValidationTests
     }
 
     /// <summary>
+    /// Verifies that a JSON resolution policy whose <c>workingDays</c> is not a seven-character working-week pattern is
+    /// reported with the <c>BODU-CAL-WORKING-DAYS</c> diagnostic rather than escaping as a
+    /// <see cref="FormatException" />.
+    /// </summary>
+    /// <param name="workingDays">The malformed working-week pattern.</param>
+    [TestMethod]
+    [DataRow("MTWTF")]
+    [DataRow("01111100")]
+    [DataRow("0111112")]
+    public void LoadJson_WhenWorkingDaysMalformed_ShouldThrowWorkingDaysDiagnostic(string workingDays)
+    {
+        string json = """
+            { "schemaVersion": "1.0", "resourceId": "test.bad",
+              "resolutionPolicy": { "workingDays": "__DAYS__" },
+              "notableDates": [ { "id": "x", "displayName": "X", "category": "PublicHoliday",
+                "rules": [ { "id": "r", "strategy": { "fixed": { "month": 3, "day": 1 } } } ] } ] }
+            """.Replace("__DAYS__", workingDays, StringComparison.Ordinal);
+
+        NotableDateValidationException ex = Assert.ThrowsExactly<NotableDateValidationException>(() =>
+        {
+            _ = NotableDateResourceLoader.LoadJson(json);
+        });
+
+        Assert.Contains(d => d.Code == "BODU-CAL-WORKING-DAYS" && d.Severity == NotableDateValidationSeverity.Error, ex.Diagnostics, "BODU-CAL-WORKING-DAYS");
+    }
+
+    /// <summary>
     /// Builds a JSON document whose one rule, a fixed 1 March, is patched by a <c>PatchRule</c> override.
     /// </summary>
     /// <param name="patch">The JSON <c>PatchRule</c> override object.</param>
