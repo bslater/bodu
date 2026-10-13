@@ -22,7 +22,9 @@ public static partial class DateTimeExtensions
     /// </remarks>
     public static DateTime NearestWeekdayInMonth(this DateTime dateTime)
     {
-        DateOnly result = DateOnly.FromDateTime(dateTime).NearestWeekdayInMonth();
-        return dateTime.AddDays(result.Day - dateTime.Day);
+        DateOnly date = DateOnly.FromDateTime(dateTime);
+
+        // Step whole days as ticks: AddDays takes a double, and the day of the month would decompose both dates again.
+        return dateTime.AddTicks((date.NearestWeekdayInMonth().DayNumber - date.DayNumber) * TicksPerDay);
     }
 }
