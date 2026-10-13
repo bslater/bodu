@@ -57,6 +57,12 @@ public sealed class NotableDateRuleBuilder
     /// <summary>The adjustment policy identifiers applied to the rule, in declaration order.</summary>
     private readonly List<string> _adjustments = new();
 
+    /// <summary>The month <see cref="Fixed(int, int, bool, bool)" /> wrote on the strategy, if any.</summary>
+    private int? _fixedMonth;
+
+    /// <summary>The month <see cref="Fixed(int, int, bool, bool)" /> wrote on the end strategy, if any.</summary>
+    private int? _endFixedMonth;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="NotableDateRuleBuilder" /> class.
     /// </summary>
@@ -204,6 +210,15 @@ public sealed class NotableDateRuleBuilder
     internal EndDateSelection EndSelectionValue { get; private set; } = EndDateSelection.FirstOnOrAfterStart;
 
     /// <summary>
+    /// Gets a value indicating whether the rule is in the Gregorian calendar, declared or by default.
+    /// </summary>
+    /// <value>
+    /// <see langword="true" /> when no calendar or the Gregorian calendar is set; otherwise, <see langword="false" />.
+    /// </value>
+    private bool IsGregorian =>
+        Calendar is null or CalendarSystem.Gregorian;
+
+    /// <summary>
     /// Gets a value indicating whether the applicability scope declares any values.
     /// </summary>
     /// <value>
@@ -321,9 +336,17 @@ public sealed class NotableDateRuleBuilder
     /// </summary>
     /// <param name="calendar">The calendar system.</param>
     /// <returns>The same <see cref="NotableDateRuleBuilder" /> instance, enabling chained calls.</returns>
+    /// <remarks>
+    /// A month that <see cref="Fixed(int, int, bool, bool)" /> has already written, on the strategy or on a calculated
+    /// end strategy, is rewritten in the form <paramref name="calendar" /> reads: its English name in the Gregorian
+    /// calendar, its number in any other.
+    /// </remarks>
     public NotableDateRuleBuilder ForCalendar(CalendarSystem calendar)
     {
         Calendar = calendar;
+
+        WriteFixedMonth(Strategy, _fixedMonth);
+        WriteFixedMonth(EndStrategy, _endFixedMonth);
         return this;
     }
 
@@ -438,25 +461,41 @@ public sealed class NotableDateRuleBuilder
     /// <summary>
     /// Configures the rule with a fixed day-of-month strategy using a numeric month.
     /// </summary>
-    /// <param name="month">The one-based month number.</param>
+    /// <param name="month">The one-based month number in the rule's calendar.</param>
     /// <param name="day">The day of the month.</param>
     /// <param name="skipLeapMonth">A value indicating whether a leap month is skipped on lunisolar calendars.</param>
     /// <param name="sweepCalendarYears">
     /// A value indicating whether the date is swept across adjacent calendar years.
     /// </param>
     /// <returns>The same <see cref="NotableDateRuleBuilder" /> instance, enabling chained calls.</returns>
+    /// <remarks>
+    /// <para>
+    /// The month is written in the form the loader reads in the rule's calendar: its full English name in the Gregorian
+    /// calendar, and its number in any other, where it names that month of the calendar's year. A calendar set later
+    /// with <see cref="ForCalendar(CalendarSystem)" /> rewrites it in that calendar's form.
+    /// </para>
+    /// <para>
+    /// The Hebrew calendar adds Adar II as its seventh month in a leap year, so a number above 6 names a different
+    /// month in a leap year than in a common year; to name a Hebrew month in every year, pass its name, such as
+    /// <c>Nisan</c> or <c>LastAdar</c>, to <see cref="Fixed(string, int, bool, bool)" /> instead.
+    /// </para>
+    /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="month" /> is outside 1 to 12 or <paramref name="day" /> is outside 1 to 31.
+    /// <paramref name="month" /> is outside 1 to 12 on a Gregorian rule, or outside 1 to 13 on a rule whose calendar,
+    /// set by <see cref="ForCalendar(CalendarSystem)" /> before this call, is another; or <paramref name="day" /> is
+    /// outside 1 to 31.
     /// </exception>
     /// <exception cref="InvalidOperationException">A strategy has already been configured on this rule.</exception>
     public NotableDateRuleBuilder Fixed(int month, int day, bool skipLeapMonth = false, bool sweepCalendarYears = false)
     {
         ThrowHelper.ThrowIfLessThan(month, 1);
-        ThrowHelper.ThrowIfGreaterThan(month, 12);
+        ThrowHelper.ThrowIfGreaterThan(month, IsGregorian ? 12 : 13);
         ThrowHelper.ThrowIfLessThan(day, 1);
         ThrowHelper.ThrowIfGreaterThan(day, 31);
 
-        return Fixed(BuilderXml.GetMonthName(month), day, skipLeapMonth, sweepCalendarYears);
+        _ = Fixed(FixedMonthText(month), day, skipLeapMonth, sweepCalendarYears);
+        _fixedMonth = month;
+        return this;
     }
 
     /// <summary>
@@ -848,6 +887,11 @@ public sealed class NotableDateRuleBuilder
     /// <param name="endBoundary">Whether the end anchor is included in the span.</param>
     /// <param name="selection">How the end anchor is selected relative to the start anchor.</param>
     /// <returns>The same <see cref="NotableDateRuleBuilder" /> instance, enabling chained calls.</returns>
+    /// <remarks>
+    /// The end strategy is read in the rule's calendar, so a month that the configurator passes to
+    /// <see cref="Fixed(int, int, bool, bool)" /> is held to that calendar's range and written in its form, and a
+    /// calendar set later with <see cref="ForCalendar(CalendarSystem)" /> rewrites it.
+    /// </remarks>
     /// <exception cref="ArgumentNullException"><paramref name="endStrategy" /> is <see langword="null" />.</exception>
     /// <exception cref="InvalidOperationException">
     /// A fixed duration is already configured, a calculated duration is already configured, or the configurator did not
@@ -859,12 +903,15 @@ public sealed class NotableDateRuleBuilder
         if (DurationDays is not null || EndStrategy is not null)
             throw new InvalidOperationException(BuilderResourceStrings.Op_Invalid_RuleDurationAlreadySet);
 
-        NotableDateRuleBuilder capture = new("end");
+        // The capture starts in the rule's calendar, which the loader reads the end strategy in.
+        NotableDateRuleBuilder capture = new("end") { Calendar = Calendar };
         endStrategy(capture);
         if (capture.Strategy is not XElement selected)
             throw new InvalidOperationException(BuilderResourceStrings.Op_Invalid_RuleDurationAlreadySet);
 
         EndStrategy = selected;
+        _endFixedMonth = capture._fixedMonth;
+        WriteFixedMonth(EndStrategy, _endFixedMonth);
         EndStartBoundary = startBoundary;
         EndEndBoundary = endBoundary;
         EndSelectionValue = selection;
@@ -914,8 +961,11 @@ public sealed class NotableDateRuleBuilder
     /// Replaces the rule's strategy directly when reconstructing a builder from a parsed document.
     /// </summary>
     /// <param name="strategy">The strategy element in the document namespace, or <see langword="null" />.</param>
-    internal void SetParsedStrategy(XElement? strategy) =>
+    internal void SetParsedStrategy(XElement? strategy)
+    {
         Strategy = strategy;
+        _fixedMonth = null;
+    }
 
     /// <summary>
     /// Replaces the rule's recurrence directly when reconstructing a builder from a parsed document.
@@ -938,6 +988,7 @@ public sealed class NotableDateRuleBuilder
     internal void SetParsedDuration(XElement? endStrategy, DateBoundary startBoundary, DateBoundary endBoundary, EndDateSelection selection)
     {
         EndStrategy = endStrategy;
+        _endFixedMonth = null;
         EndStartBoundary = startBoundary;
         EndEndBoundary = endBoundary;
         EndSelectionValue = selection;
@@ -1029,10 +1080,36 @@ public sealed class NotableDateRuleBuilder
         clone.Strategy = Strategy is null ? null : new XElement(Strategy);
         clone.Recurrence = Recurrence is null ? null : new XElement(Recurrence);
         clone.EndStrategy = EndStrategy is null ? null : new XElement(EndStrategy);
+        clone._fixedMonth = _fixedMonth;
+        clone._endFixedMonth = _endFixedMonth;
         clone.EndStartBoundary = EndStartBoundary;
         clone.EndEndBoundary = EndEndBoundary;
         clone.EndSelectionValue = EndSelectionValue;
         return clone;
+    }
+
+    /// <summary>
+    /// Writes a month number as the text the loader reads for a fixed strategy in the rule's calendar.
+    /// </summary>
+    /// <param name="month">The one-based month number.</param>
+    /// <returns>
+    /// The full English month name in the Gregorian calendar; otherwise, the number in the invariant culture.
+    /// </returns>
+    private string FixedMonthText(int month) =>
+        IsGregorian ? BuilderXml.GetMonthName(month) : BuilderXml.Int(month);
+
+    /// <summary>
+    /// Rewrites the month of a fixed strategy that <see cref="Fixed(int, int, bool, bool)" /> configured in the form
+    /// the rule's calendar reads.
+    /// </summary>
+    /// <param name="element">The strategy element, or <see langword="null" /> when none is set.</param>
+    /// <param name="month">
+    /// The month number it was configured with, or <see langword="null" /> when it was configured otherwise.
+    /// </param>
+    private void WriteFixedMonth(XElement? element, int? month)
+    {
+        if (element is not null && month is int value)
+            element.SetAttributeValue("month", FixedMonthText(value));
     }
 
     /// <summary>

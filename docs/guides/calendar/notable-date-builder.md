@@ -50,6 +50,8 @@ r.Algorithm("western-easter");                                       // a named 
 
 The remaining single-date strategies (`OrdinalDayOfMonth`, `DayOfYear`, `IsoWeekDate`, `WeekdayNearRule`, `NthWeekdayFromRule`, `WorkingDayOffsetFromRule`, `WorkingDayInMonth`) and the recurrence sources (`DailyInterval`, `Weekly`, `MonthlyDay`, `MonthlyWeekday`) follow the same shape. Selecting a second strategy on the same rule throws <xref:System.InvalidOperationException> - each rule commits to one. See the [strategy reference](strategy-reference.md) for the full catalogue and [Date calculation algorithms](algorithms.md) for the strategy semantics and the `<Algorithm>` keys.
 
+`Fixed(month, day)` writes the month in the form the loader reads in the rule's calendar: its English name on a Gregorian rule and its number on a rule in another calendar, whether `ForCalendar` is called before or after it. The month runs from 1 to 12, or from 1 to 13 once `ForCalendar` has set a calendar other than Gregorian. A Hebrew month's number shifts in a leap year, so name a Hebrew month by passing its name instead, as in `r.ForCalendar(CalendarSystem.Hebrew).Fixed("Nisan", 15)`.
+
 ## Adjustment policies
 
 A weekend-substitution or "move to the next working day" shift is authored once as a reusable policy and referenced from any rule by id (there are no inline per-rule adjustments):
