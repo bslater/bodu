@@ -239,4 +239,23 @@ public partial class IntervalTests
         Assert.AreEqual(original, parsed, $"Text '{text}' did not parse back to the same interval.");
         Assert.IsTrue(parsed.IsBounded);
     }
+
+    /// <summary>
+    /// Verifies that an infinite endpoint on an open side formats to text that parses back as an unbounded side, which
+    /// holds the same finite values as the bounded interval but is not equal to it.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenOpenEndpointIsInfinite_ShouldReadAsUnboundedSide()
+    {
+        var original = Interval<double>.Open(0.0, double.PositiveInfinity);
+
+        string text = original.ToString(null, CultureInfo.InvariantCulture);
+        Interval<double> parsed = Interval<double>.Parse(text, CultureInfo.InvariantCulture);
+
+        Assert.AreEqual("(0, Infinity)", text);
+        Assert.AreEqual(Interval<double>.GreaterThan(0.0), parsed);
+        Assert.AreNotEqual(original, parsed);
+        Assert.IsTrue(original.Contains(double.MaxValue));
+        Assert.IsTrue(parsed.Contains(double.MaxValue));
+    }
 }

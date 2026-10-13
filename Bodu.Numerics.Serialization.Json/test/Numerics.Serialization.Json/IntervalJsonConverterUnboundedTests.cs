@@ -149,6 +149,22 @@ public class IntervalJsonConverterUnboundedTests
     }
 
     /// <summary>
+    /// Verifies that an infinite endpoint on an open side reads back under the Compact string policy as an unbounded
+    /// side, as the text form does.
+    /// </summary>
+    [TestMethod]
+    public void CompactPolicy_WhenOpenEndpointIsInfinite_ShouldReadBackUnbounded()
+    {
+        JsonSerializerOptions options = Options(NumericsJsonPolicy.Compact);
+
+        string json = JsonSerializer.Serialize(InfiniteEndpoint("Open to +inf"), options);
+        Interval<double> recovered = JsonSerializer.Deserialize<Interval<double>>(json, options);
+
+        Assert.AreEqual("\"(0, Infinity)\"", json);
+        Assert.AreEqual(Interval<double>.GreaterThan(0.0), recovered);
+    }
+
+    /// <summary>
     /// Returns the interval with an infinite bounded endpoint named by <paramref name="shape" />.
     /// </summary>
     /// <param name="shape">The interval name.</param>

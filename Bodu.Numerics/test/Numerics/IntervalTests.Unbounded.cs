@@ -106,7 +106,8 @@ public partial class IntervalTests
     }
 
     /// <summary>
-    /// Verifies that an inclusive bracket against an infinity token fails to parse (infinity is never included).
+    /// Verifies that an inclusive bracket against an infinity token fails to parse for an endpoint type with no
+    /// infinity: an unbounded side is never closed, and <see cref="int" /> has no infinite endpoint value to read.
     /// </summary>
     [TestMethod]
     [DataRow("[0, +∞]")]
