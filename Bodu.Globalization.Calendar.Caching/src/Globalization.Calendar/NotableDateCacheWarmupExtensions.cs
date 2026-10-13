@@ -77,7 +77,7 @@ public static class NotableDateCacheWarmupExtensions
             optionsBuilder.Configure(configure);
 
         optionsBuilder
-            .Validate(static options => options.TryValidate(out _), "Notable-date cache warm-up options are invalid.")
+            .Validate(static options => options.TryValidate(out _), CalendarCachingResourceStrings.Op_Invalid_WarmupOptions)
             .ValidateOnStart();
 
         services.AddHostedService<NotableDateCacheWarmupService>();

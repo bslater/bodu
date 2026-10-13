@@ -69,7 +69,7 @@ public static class SqliteNotableDateCacheExtensions
         if (configure is not null)
             optionsBuilder.Configure(configure);
         optionsBuilder
-            .Validate(static options => options.TryValidate(out _), "SQLite notable-date cache options are invalid.")
+            .Validate(static options => options.TryValidate(out _), CalendarCachingSqliteResourceStrings.Op_Invalid_CacheOptions)
             .ValidateOnStart();
 
         services.TryAddEnumerable(ServiceDescriptor.Singleton<IValidateOptions<SqliteNotableDateCacheOptions>, SqliteCacheStorageStartupValidator>());

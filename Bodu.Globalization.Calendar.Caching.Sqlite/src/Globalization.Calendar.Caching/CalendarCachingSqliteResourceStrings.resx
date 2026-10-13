@@ -67,4 +67,7 @@
   <data name="Op_Invalid_StorageProbeFailed" xml:space="preserve">
     <value>The SQLite notable-date cache database could not be opened at startup: {0}.</value>
   </data>
+  <data name="Op_Invalid_CacheOptions" xml:space="preserve">
+    <value>The SQLite notable-date cache options are invalid.</value>
+  </data>
 </root>

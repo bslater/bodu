@@ -115,6 +115,15 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The binary rule-pack format cannot encode &apos;{0}&apos;; it supports only the built-in calculation strategies, recurrence strategies, and duration definitions..
+        /// </summary>
+        internal static string Op_NotSupported_BinaryPackType {
+            get {
+                return ResourceManager.GetString("Op_NotSupported_BinaryPackType", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The notable-date document failed validation with {0} error diagnostic(s). Inspect the Diagnostics collection for details..
         /// </summary>
         internal static string Op_Invalid_DocumentValidationFailed {
@@ -192,15 +201,6 @@ namespace Bodu {
         internal static string Validation_InvalidWorkingDays {
             get {
                 return ResourceManager.GetString("Validation_InvalidWorkingDays", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Notable date '{0}', rule '{1}': '{2}' is not a valid territory code..
-        /// </summary>
-        internal static string Validation_InvalidTerritoryCode {
-            get {
-                return ResourceManager.GetString("Validation_InvalidTerritoryCode", resourceCulture);
             }
         }
 
@@ -507,24 +507,6 @@ namespace Bodu {
         internal static string Validation_PatchOccurrenceSourceConflict {
             get {
                 return ResourceManager.GetString("Validation_PatchOccurrenceSourceConflict", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to ordinal '{2}' is invalid..
-        /// </summary>
-        internal static string Validation_InvalidOrdinalValue {
-            get {
-                return ResourceManager.GetString("Validation_InvalidOrdinalValue", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to ISO week '{2}' is out of range..
-        /// </summary>
-        internal static string Validation_InvalidWeekValue {
-            get {
-                return ResourceManager.GetString("Validation_InvalidWeekValue", resourceCulture);
             }
         }
 

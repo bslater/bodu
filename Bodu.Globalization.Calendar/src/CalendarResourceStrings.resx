@@ -84,6 +84,9 @@
   <data name="Op_Invalid_NoNonWorkingDayFound" xml:space="preserve">
     <value>No non-working day was found within the search limit.</value>
   </data>
+  <data name="Op_NotSupported_BinaryPackType" xml:space="preserve">
+    <value>The binary rule-pack format cannot encode '{0}'; it supports only the built-in calculation strategies, recurrence strategies, and duration definitions.</value>
+  </data>
   <data name="Validation_DuplicateAdjustmentPolicyId" xml:space="preserve">
     <value>Duplicate adjustment-policy identifier '{0}'.</value>
   </data>
@@ -107,9 +110,6 @@
   </data>
   <data name="Validation_InvalidWorkingDays" xml:space="preserve">
     <value>Resolution policy: workingDays '{0}' is not a seven-character working-week pattern.</value>
-  </data>
-  <data name="Validation_InvalidTerritoryCode" xml:space="preserve">
-    <value>Notable date '{0}', rule '{1}': '{2}' is not a valid territory code.</value>
   </data>
   <data name="Validation_OverrideNotableDateNotFound" xml:space="preserve">
     <value>Override operation targets notable date '{0}', which does not exist in the resolved resource.</value>
@@ -212,12 +212,6 @@
   </data>
   <data name="Validation_PatchOccurrenceSourceConflict" xml:space="preserve">
     <value>Notable date '{0}', rule '{1}': the PatchRule override declares more than one strategy or recurrence; a patched occurrence source must name exactly one.</value>
-  </data>
-  <data name="Validation_InvalidOrdinalValue" xml:space="preserve">
-    <value>Notable date '{0}', rule '{1}': ordinal '{2}' is invalid.</value>
-  </data>
-  <data name="Validation_InvalidWeekValue" xml:space="preserve">
-    <value>Notable date '{0}', rule '{1}': ISO week '{2}' is out of range.</value>
   </data>
   <data name="Validation_ReferenceIsRecurring" xml:space="preserve">
     <value>Notable date '{0}', rule '{1}': referenced rule '{2}' is a recurrence and cannot be used as a singular reference.</value>

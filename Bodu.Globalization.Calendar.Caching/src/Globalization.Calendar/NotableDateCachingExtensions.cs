@@ -114,7 +114,7 @@ public static class NotableDateCachingExtensions
             optionsBuilder.Bind(configuration.GetSection(sectionName));
         if (configure is not null)
             optionsBuilder.Configure(configure);
-        optionsBuilder.Validate(static o => o.TryValidate(out _), "Caching notable-date options are invalid.").ValidateOnStart();
+        optionsBuilder.Validate(static o => o.TryValidate(out _), CalendarCachingResourceStrings.Op_Invalid_CachingOptions).ValidateOnStart();
 
         services.AddSingleton<INotableDateService>(serviceProvider =>
         {

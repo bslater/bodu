@@ -82,5 +82,14 @@ namespace Bodu.Globalization.Calendar.Caching {
                 return ResourceManager.GetString("Op_Invalid_StorageProbeFailed", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The distributed notable-date cache options are invalid..
+        /// </summary>
+        internal static string Op_Invalid_CacheOptions {
+            get {
+                return ResourceManager.GetString("Op_Invalid_CacheOptions", resourceCulture);
+            }
+        }
     }
 }
