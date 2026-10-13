@@ -13,9 +13,10 @@ namespace Bodu.Globalization.Calendar.Algorithms;
 /// <remarks>
 /// The underlying weekday navigation is supplied by the <see cref="DateOnlyExtensions" /> primitives in
 /// <c>Bodu.Core</c> (<see cref="DateOnlyExtensions.NextDateOfWeek(DateOnly, DayOfWeek)" /> and its <c>OrSame</c>/
-/// <c>Previous</c>/<c>Nearest</c> companions). This type layers on only the behavior the resolution pipeline requires
-/// that those primitives do not provide: dispatch over <see cref="WeekdayProximity" />, and a null-returning (rather
-/// than throwing) result at the year extremes and for ordinals that do not occur in a month.
+/// <c>Previous</c>/<c>Nearest</c> companions), and the nth weekday of a month by Core's internal
+/// <c>DateOnlyExtensions.TryGetNthDateOfWeekInMonth</c>. This type layers on only the behavior the resolution pipeline
+/// requires that those primitives do not provide: dispatch over <see cref="WeekdayProximity" />, and a null-returning
+/// (rather than throwing) result at the year extremes and for ordinals that do not occur in a month.
 /// </remarks>
 internal static class WeekdayMath
 {
@@ -84,20 +85,12 @@ internal static class WeekdayMath
     /// </returns>
     public static DateOnly? NthWeekdayInMonth(int year, int month, DayOfWeek dayOfWeek, WeekOrdinal ordinal)
     {
-        // An undefined ordinal names no occurrence. Stepping whole weeks for one would reach the same month of another
-        // year, or leave the range of DateOnly.
+        // An undefined ordinal names no occurrence, and is answered before the weekday is checked.
         if (year < 1 || year > 9999 || month < 1 || month > 12 || ordinal is < WeekOrdinal.First or > WeekOrdinal.Last)
             return null;
 
-        if (ordinal == WeekOrdinal.Last)
-        {
-            DateOnly lastDay = new(year, month, DateTime.DaysInMonth(year, month));
-            return lastDay.PreviousOrSameDateOfWeek(dayOfWeek);
-        }
+        ThrowHelper.ThrowIfEnumValueIsUndefined(dayOfWeek);
 
-        // Only a fifth occurrence can be missing. Comparing days of the month keeps it from ever becoming a date, which in
-        // December 9999 would lie outside the range of DateOnly.
-        int day = new DateOnly(year, month, 1).NextOrSameDateOfWeek(dayOfWeek).Day + (7 * ((int)ordinal - 1));
-        return day <= DateTime.DaysInMonth(year, month) ? new DateOnly(year, month, day) : null;
+        return DateOnlyExtensions.TryGetNthDateOfWeekInMonth(year, month, dayOfWeek, ordinal, out DateOnly date) ? date : null;
     }
 }
