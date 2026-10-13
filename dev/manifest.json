@@ -12329,7 +12329,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.IO.Hashing.Checksums.CrcStandards",
-      "Summary": "<p sourcefile=\"api/Bodu.IO.Hashing.Checksums.CrcStandards.yml\" sourcestartlinenumber=\"1\">Identifies a CRC parameter set defined in the <a href=\"https://reveng.sourceforge.io/crc-catalogue/all.htm\">CRC RevEng catalogue</a>.\nPass to <xref href=\"Bodu.IO.Hashing.Checksums.CrcStandard.Get(Bodu.IO.Hashing.Checksums.CrcStandards)\" data-throw-if-not-resolved=\"false\"></xref> to materialise the corresponding <xref href=\"Bodu.IO.Hashing.Checksums.CrcStandard\" data-throw-if-not-resolved=\"false\"></xref> on demand.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.IO.Hashing.Checksums.CrcStandards.yml\" sourcestartlinenumber=\"1\">Identifies a CRC parameter set defined in the <a href=\"https://reveng.sourceforge.io/crc-catalogue/all.htm\">CRC RevEng catalogue</a>.\nPass to <xref href=\"Bodu.IO.Hashing.Checksums.CrcStandard.Get(Bodu.IO.Hashing.Checksums.CrcStandards)\" data-throw-if-not-resolved=\"false\"></xref> to materialize the corresponding <xref href=\"Bodu.IO.Hashing.Checksums.CrcStandard\" data-throw-if-not-resolved=\"false\"></xref> on demand.</p>\n"
     },
     {
       "type": "ManagedReference",
