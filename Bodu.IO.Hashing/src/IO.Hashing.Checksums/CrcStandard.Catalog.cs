@@ -13,6 +13,7 @@ namespace Bodu.IO.Hashing.Checksums;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Threading;
 
 public sealed partial class CrcStandard
@@ -200,7 +201,7 @@ public sealed partial class CrcStandard
     {
         int index = (int)standard;
         if ((uint)index >= (uint)s_catalog.Length)
-            throw new ArgumentOutOfRangeException(nameof(standard), standard, "The specified CrcStandards value is not defined.");
+            throw new ArgumentOutOfRangeException(nameof(standard), standard, HashingResourceStrings.Arg_OutOfRange_CrcStandardUndefined);
 
         CrcStandard? cached = Volatile.Read(ref s_cache[index]);
         if (cached is not null) return cached;
@@ -232,7 +233,7 @@ public sealed partial class CrcStandard
         ThrowHelper.ThrowIfNull(name);
         var map = GetNameToEnumMap();
         if (!map.TryGetValue(name, out CrcStandards standard))
-            throw new KeyNotFoundException($"No CRC standard with the name '{name}' exists in the catalogue.");
+            throw new KeyNotFoundException(string.Format(CultureInfo.CurrentCulture, HashingResourceStrings.IO_KeyNotFound_CrcStandardName, name));
         return Get(standard);
     }
 

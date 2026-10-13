@@ -214,20 +214,20 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to No CRC standard with the name '{0}' exists in the catalogue..
+        /// </summary>
+        internal static string IO_KeyNotFound_CrcStandardName {
+            get {
+                return ResourceManager.GetString("IO_KeyNotFound_CrcStandardName", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The algorithm is already in use and cannot be reconfigured after computation has started..
         /// </summary>
         internal static string Op_Invalid_AlgorithmAlreadyStarted {
             get {
                 return ResourceManager.GetString("Op_Invalid_AlgorithmAlreadyStarted", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to No CRC standard with the name '{0}' exists in the catalogue..
-        /// </summary>
-        internal static string Op_Invalid_CrcStandardNotFound {
-            get {
-                return ResourceManager.GetString("Op_Invalid_CrcStandardNotFound", resourceCulture);
             }
         }
 
