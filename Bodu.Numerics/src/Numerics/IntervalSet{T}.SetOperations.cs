@@ -155,6 +155,10 @@ public readonly partial struct IntervalSet<T> : IEquatable<IntervalSet<T>>
     /// <c>(-&#x221E;, +&#x221E;)</c>.
     /// </summary>
     /// <returns>The complement set.</returns>
+    /// <remarks>
+    /// The whole line is <see cref="Interval{T}.All" />, which holds every finite value and no infinity, so the
+    /// complement of a set never holds an infinity, whether or not the set does.
+    /// </remarks>
     /// <example>
     /// <code language="csharp">
     ///<![CDATA[

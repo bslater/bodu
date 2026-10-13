@@ -305,6 +305,7 @@ floating-point infinity, so the same model works for `int`, `decimal`, and
 var nonNegative = Interval<double>.AtLeast(0.0);   // [0, +∞)
 nonNegative.Contains(1e308);                        // True
 nonNegative.Contains(double.PositiveInfinity);      // False - an unbounded side holds no infinity
+nonNegative.Contains(Interval<double>.Closed(0.0, double.PositiveInfinity));   // False - nor reaches one
 nonNegative.IsBounded;                              // False
 
 // Set algebra composes with unbounded operands.

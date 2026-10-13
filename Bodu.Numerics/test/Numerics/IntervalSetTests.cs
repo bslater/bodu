@@ -278,4 +278,42 @@ public partial class IntervalSetTests
 
         Assert.AreEqual(0, failures.Count, string.Join("; ", failures.Take(8)));
     }
+
+    /// <summary>
+    /// Verifies that building a set from two catalogue intervals over <see cref="double" />, <see cref="float" /> and
+    /// <see cref="Half" /> gives an equal set in either order, including where an unbounded side meets an open endpoint
+    /// at the same infinity.
+    /// </summary>
+    [TestMethod]
+    public void Of_WhenOperandsReachInfinity_ShouldNotDependOnOperandOrder()
+    {
+        AssertOfIsCommutative<double>();
+        AssertOfIsCommutative<float>();
+        AssertOfIsCommutative<Half>();
+    }
+
+    /// <summary>
+    /// Asserts that <see cref="IntervalSet{T}.Of(Interval{T}[])" /> builds equal sets from every pair of catalogue
+    /// intervals in either order.
+    /// </summary>
+    /// <typeparam name="T">The floating-point endpoint type.</typeparam>
+    private static void AssertOfIsCommutative<T>()
+        where T : IFloatingPointIeee754<T>
+    {
+        Interval<T>[] catalog = IntervalMembershipOracle.Catalog<T>();
+        var failures = new List<string>();
+
+        foreach (Interval<T> a in catalog)
+        {
+            foreach (Interval<T> b in catalog)
+            {
+                var forward = IntervalSet<T>.Of(a, b);
+                var reverse = IntervalSet<T>.Of(b, a);
+                if (!forward.Equals(reverse))
+                    failures.Add($"Of({a}, {b}) is {forward}, but Of({b}, {a}) is {reverse}");
+            }
+        }
+
+        Assert.AreEqual(0, failures.Count, string.Join("; ", failures.Take(8)));
+    }
 }

@@ -202,4 +202,54 @@ public partial class IntervalTests
 
         Assert.AreEqual(0, failures.Count, string.Join("; ", failures.Take(8)));
     }
+
+    /// <summary>
+    /// Verifies that intersecting two catalogue intervals over <see cref="double" />, <see cref="float" /> and
+    /// <see cref="Half" /> gives an equal result in either operand order, including where an unbounded side meets an
+    /// open endpoint at the same infinity.
+    /// </summary>
+    [TestMethod]
+    public void Intersect_WhenOperandsReachInfinity_ShouldNotDependOnOperandOrder()
+    {
+        AssertIntersectIsCommutative<double>();
+        AssertIntersectIsCommutative<float>();
+        AssertIntersectIsCommutative<Half>();
+    }
+
+    /// <summary>
+    /// Verifies that where an unbounded side and an open endpoint at the same infinity tie, the intersection keeps the
+    /// bounded endpoint, whichever operand carries it.
+    /// </summary>
+    [TestMethod]
+    public void Intersect_WhenUnboundedSideMeetsOpenInfiniteEndpoint_ShouldKeepTheBoundedEndpoint()
+    {
+        Interval<double> bounded = Interval<double>.Open(0.0, double.PositiveInfinity);
+        Interval<double> unbounded = Interval<double>.GreaterThan(0.0);
+
+        Assert.AreEqual(bounded, unbounded.Intersect(bounded));
+        Assert.AreEqual(bounded, bounded.Intersect(unbounded));
+    }
+
+    /// <summary>
+    /// Asserts that <see cref="Interval{T}.Intersect(Interval{T})" /> returns equal intervals for every pair of
+    /// catalogue intervals in either order.
+    /// </summary>
+    /// <typeparam name="T">The floating-point endpoint type.</typeparam>
+    private static void AssertIntersectIsCommutative<T>()
+        where T : IFloatingPointIeee754<T>
+    {
+        Interval<T>[] catalog = IntervalMembershipOracle.Catalog<T>();
+        var failures = new List<string>();
+
+        foreach (Interval<T> a in catalog)
+        {
+            foreach (Interval<T> b in catalog)
+            {
+                if (!a.Intersect(b).Equals(b.Intersect(a)))
+                    failures.Add($"{a}.Intersect({b}) is {a.Intersect(b)}, but the reverse is {b.Intersect(a)}");
+            }
+        }
+
+        Assert.AreEqual(0, failures.Count, string.Join("; ", failures.Take(8)));
+    }
 }

@@ -66,7 +66,10 @@ An infinity is an ordinary endpoint value of a floating-point `T`:
 (`IsBounded` is `true`) and is a different interval from the unbounded
 `Interval<double>.AtLeast(0)`. The first contains
 `double.PositiveInfinity`; the second does not, because an unbounded side
-admits every finite value and no infinity. No interval contains NaN.
+admits every finite value and no infinity. No interval contains NaN. The
+set operations follow the same membership: `AtLeast(0)` does not contain
+the bounded interval, the two intersect in `[0, +∞)`, and they unite to
+`[0, Infinity]`.
 
 ## Empty intervals
 

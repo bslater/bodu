@@ -64,6 +64,12 @@ public readonly partial struct Interval<T>
     /// <see langword="false" />. The empty interval is a subset of every interval, so any interval, including the empty
     /// one, contains the empty interval.
     /// </returns>
+    /// <remarks>
+    /// The endpoints compare by the values they admit, as <see cref="Contains(T)" /> does: an unbounded side admits
+    /// every finite value but not its infinity, so it holds the same values as an open endpoint at that infinity and
+    /// fewer than a closed one. <see cref="All" /> therefore does not contain <c>[0, Infinity]</c> over
+    /// <see cref="double" />, while <c>(-&#x221E;, Infinity]</c> contains <see cref="All" />.
+    /// </remarks>
     /// <example>
     /// <code language="csharp">
     ///<![CDATA[
@@ -129,14 +135,15 @@ public readonly partial struct Interval<T>
             return false;
 
         // Two non-empty intervals overlap iff each one's lower endpoint lies below the other's upper endpoint
-        // (respecting inclusivity), where an unbounded side is always below/above any finite endpoint.
+        // (respecting inclusivity), where an unbounded side reaches every finite value but not an infinity.
         return LowerBelowUpper(this, other) && LowerBelowUpper(other, this);
     }
 
     /// <summary>
     /// Determines whether the lower endpoint of <paramref name="a" /> lies below the upper endpoint of
-    /// <paramref name="b" />, treating an unbounded lower as below every value and an unbounded upper as above every
-    /// value. Equal finite endpoints count as below only when both include the shared value.
+    /// <paramref name="b" />, treating an unbounded lower as below every value but negative infinity and an unbounded
+    /// upper as above every value but positive infinity. Equal endpoints count as below only when both include the
+    /// shared value.
     /// </summary>
     /// <param name="a">The interval contributing the lower endpoint.</param>
     /// <param name="b">The interval contributing the upper endpoint.</param>
@@ -145,8 +152,14 @@ public readonly partial struct Interval<T>
     /// </returns>
     private static bool LowerBelowUpper(Interval<T> a, Interval<T> b)
     {
-        if (a.LowerUnbounded || b.UpperUnbounded)
-            return true;
+        // An unbounded side is open at its infinity, so it meets a bounded endpoint at that infinity without sharing
+        // it: an unbounded lower is below every upper but negative infinity, and an unbounded upper is above every
+        // lower but positive infinity.
+        if (a.LowerUnbounded)
+            return b.UpperUnbounded || !T.IsNegativeInfinity(b._upper);
+
+        if (b.UpperUnbounded)
+            return !T.IsPositiveInfinity(a._lower);
 
         int cmp = a._lower.CompareTo(b._upper);
         return cmp < 0 || (cmp == 0 && a.LowerInclusive && b.UpperInclusive);
@@ -162,6 +175,12 @@ public readonly partial struct Interval<T>
     /// <para>
     /// On endpoint ties, the <b>stricter</b> (open) inclusivity wins so that the result is a true subset of both
     /// operands. For example, <c>[1, 5]</c> intersected with <c>(1, 5)</c> yields <c>(1, 5)</c>.
+    /// </para>
+    /// <para>
+    /// An unbounded side reaches every finite value but not a bounded endpoint at its infinity, so <c>AtLeast(0)</c>
+    /// meets <c>[0, Infinity]</c> in <c>[0, +&#x221E;)</c> and does not meet the single value
+    /// <c>[Infinity, Infinity]</c> at all. Where an unbounded side and an open endpoint at the same infinity hold the
+    /// same values, the result keeps the bounded endpoint, whichever operand carries it.
     /// </para>
     /// </remarks>
     /// <example>
@@ -183,9 +202,15 @@ public readonly partial struct Interval<T>
             return Empty;
 
         // The intersection takes the tighter endpoint on each side: the greater lower and the smaller upper. On a value
-        // tie the stricter (open) inclusivity wins, which the endpoint comparisons already encode.
-        Interval<T> lowerSource = CompareLowerWith(other) >= 0 ? this : other;
-        Interval<T> upperSource = CompareUpperWith(other) <= 0 ? this : other;
+        // tie the stricter (open) inclusivity wins, which the endpoint comparisons already encode. An unbounded side and
+        // an open endpoint at the same infinity admit the same values and compare equal; the bounded endpoint is kept,
+        // so the result does not depend on the order of the operands.
+        int lowerOrder = CompareLowerWith(other);
+        int upperOrder = CompareUpperWith(other);
+        bool lowerFromThis = lowerOrder == 0 ? !LowerUnbounded : lowerOrder > 0;
+        bool upperFromThis = upperOrder == 0 ? !UpperUnbounded : upperOrder < 0;
+        Interval<T> lowerSource = lowerFromThis ? this : other;
+        Interval<T> upperSource = upperFromThis ? this : other;
 
         (T lowerValue, byte lowerFlag) = lowerSource.LowerPart();
         (T upperValue, byte upperFlag) = upperSource.UpperPart();
@@ -226,25 +251,31 @@ public readonly partial struct Interval<T>
         if (other.IsEmpty || !Overlaps(other))
             return IntervalPair<T>.Create(this, Interval<T>.Empty);
 
-        // Left remainder: the part of this interval strictly below other's lower endpoint (which is finite here, since
-        // this extends left of it). The cut bound at other.Lower is open when other includes it, closed when it excludes it.
+        // Left remainder: the part of this interval strictly below other's lower endpoint. The cut bound at other.Lower
+        // is open when other includes it, closed when it excludes it. When other's lower side is unbounded, this extends
+        // left of it only by a closed endpoint at negative infinity, which is then the whole remainder.
         Interval<T> left = Interval<T>.Empty;
         if (CompareLowerWith(other) < 0)
         {
             (T lowerValue, byte lowerFlag) = LowerPart();
             byte cutUpperFlag = other.LowerInclusive ? (byte)0 : UpperInclusiveFlag;
-            var candidate = new Interval<T>(lowerValue, other._lower, (byte)(lowerFlag | cutUpperFlag));
+            var candidate = other.LowerUnbounded
+                ? Singleton(_lower)
+                : new Interval<T>(lowerValue, other._lower, (byte)(lowerFlag | cutUpperFlag));
             if (!candidate.IsEmpty)
                 left = candidate;
         }
 
-        // Right remainder: the part of this interval strictly above other's upper endpoint.
+        // Right remainder: the part of this interval strictly above other's upper endpoint, which, when other's upper
+        // side is unbounded, is the closed endpoint at positive infinity alone.
         Interval<T> right = Interval<T>.Empty;
         if (CompareUpperWith(other) > 0)
         {
             (T upperValue, byte upperFlag) = UpperPart();
             byte cutLowerFlag = other.UpperInclusive ? (byte)0 : LowerInclusiveFlag;
-            var candidate = new Interval<T>(other._upper, upperValue, (byte)(cutLowerFlag | upperFlag));
+            var candidate = other.UpperUnbounded
+                ? Singleton(_upper)
+                : new Interval<T>(other._upper, upperValue, (byte)(cutLowerFlag | upperFlag));
             if (!candidate.IsEmpty)
                 right = candidate;
         }
@@ -310,6 +341,12 @@ public readonly partial struct Interval<T>
     /// operand. Union with the empty interval is always defined: an empty operand leaves the other operand unchanged.
     /// </para>
     /// <para>
+    /// An unbounded side counts as an open endpoint at its infinity, so it meets a closed endpoint at that infinity:
+    /// <c>(0, +&#x221E;)</c> and <c>[Infinity, Infinity]</c> over <see cref="double" /> unite to <c>(0, Infinity]</c>.
+    /// Where an unbounded side and an open endpoint at the same infinity hold the same values, the result keeps the
+    /// unbounded side, whichever operand carries it.
+    /// </para>
+    /// <para>
     /// When the two intervals are disjoint with a true gap between them, the union would require two pieces to
     /// represent and this method returns <see langword="false" /> rather than synthesise a non-contiguous result.
     /// Callers that need a multi-piece result should accumulate the operands into a higher-level collection of
@@ -359,9 +396,15 @@ public readonly partial struct Interval<T>
         }
 
         // The contiguous union takes the looser endpoint on each side: the smaller lower and the greater upper. On a
-        // value tie the looser (closed) inclusivity wins, which the endpoint comparisons already encode.
-        Interval<T> lowerSource = CompareLowerWith(other) <= 0 ? this : other;
-        Interval<T> upperSource = CompareUpperWith(other) >= 0 ? this : other;
+        // value tie the looser (closed) inclusivity wins, which the endpoint comparisons already encode. An unbounded
+        // side and an open endpoint at the same infinity admit the same values and compare equal; the unbounded side is
+        // kept, so the result does not depend on the order of the operands.
+        int lowerOrder = CompareLowerWith(other);
+        int upperOrder = CompareUpperWith(other);
+        bool lowerFromThis = lowerOrder == 0 ? LowerUnbounded || !other.LowerUnbounded : lowerOrder < 0;
+        bool upperFromThis = upperOrder == 0 ? UpperUnbounded || !other.UpperUnbounded : upperOrder > 0;
+        Interval<T> lowerSource = lowerFromThis ? this : other;
+        Interval<T> upperSource = upperFromThis ? this : other;
 
         (T lowerValue, byte lowerFlag) = lowerSource.LowerPart();
         (T upperValue, byte upperFlag) = upperSource.UpperPart();
@@ -378,26 +421,59 @@ public readonly partial struct Interval<T>
     /// <param name="other">The interval to test for adjacency.</param>
     /// <returns><see langword="true" /> when the intervals are adjacent; otherwise <see langword="false" />.</returns>
     private bool IsAdjacentTo(Interval<T> other) =>
-        (!UpperUnbounded && !other.LowerUnbounded && _upper == other._lower && (UpperInclusive || other.LowerInclusive))
-        || (!other.UpperUnbounded && !LowerUnbounded && other._upper == _lower && (other.UpperInclusive || LowerInclusive));
+        UpperMeetsLower(this, other) || UpperMeetsLower(other, this);
+
+    /// <summary>
+    /// Determines whether the upper end of <paramref name="a" /> and the lower end of <paramref name="b" /> meet at one
+    /// value that at least one of them includes. An unbounded side counts as an open endpoint at its infinity, so it
+    /// meets a closed endpoint at that infinity.
+    /// </summary>
+    /// <param name="a">The interval contributing the upper end.</param>
+    /// <param name="b">The interval contributing the lower end.</param>
+    /// <returns><see langword="true" /> when the two ends meet; otherwise <see langword="false" />.</returns>
+    private static bool UpperMeetsLower(Interval<T> a, Interval<T> b)
+    {
+        if (a.UpperUnbounded)
+            return !b.LowerUnbounded && b.LowerInclusive && T.IsPositiveInfinity(b._lower);
+
+        if (b.LowerUnbounded)
+            return a.UpperInclusive && T.IsNegativeInfinity(a._upper);
+
+        return a._upper == b._lower && (a.UpperInclusive || b.LowerInclusive);
+    }
 
     /// <summary>
     /// Compares this interval's lower endpoint with <paramref name="other" />'s, ordering an unbounded lower below
-    /// every finite lower and, on a value tie, an inclusive (closed) lower below an open one - so a smaller result
-    /// denotes the endpoint that admits the leftmost values.
+    /// every bounded lower but one at negative infinity and, on a value tie, an inclusive (closed) lower below an open
+    /// one - so a smaller result denotes the endpoint that admits the leftmost values.
     /// </summary>
     /// <param name="other">The interval whose lower endpoint is compared.</param>
     /// <returns>A negative value when this lower is further left, zero when equivalent, otherwise positive.</returns>
+    /// <remarks>
+    /// An unbounded lower admits every finite value but not negative infinity, so it is equivalent to an open lower at
+    /// negative infinity and lies right of a closed one.
+    /// </remarks>
     private int CompareLowerWith(Interval<T> other)
     {
         if (LowerUnbounded)
-            return other.LowerUnbounded ? 0 : -1;
+            return other.LowerUnbounded ? 0 : -CompareBoundedLowerWithUnbounded(other);
         if (other.LowerUnbounded)
-            return 1;
+            return CompareBoundedLowerWithUnbounded(this);
 
         int cmp = _lower.CompareTo(other._lower);
         return cmp != 0 ? cmp : LowerInclusive == other.LowerInclusive ? 0 : LowerInclusive ? -1 : 1;
     }
+
+    /// <summary>
+    /// Compares the bounded lower endpoint of <paramref name="bounded" /> with an unbounded lower side.
+    /// </summary>
+    /// <param name="bounded">The interval whose lower side is bounded.</param>
+    /// <returns>
+    /// A negative value for a closed endpoint at negative infinity, which admits that infinity; zero for an open one,
+    /// which admits the same values as the unbounded side; otherwise a positive value.
+    /// </returns>
+    private static int CompareBoundedLowerWithUnbounded(Interval<T> bounded) =>
+        !T.IsNegativeInfinity(bounded._lower) ? 1 : bounded.LowerInclusive ? -1 : 0;
 
     /// <summary>
     /// Compares the starting (lower) position of this interval with <paramref name="other" /> for ordering disjoint
@@ -410,21 +486,36 @@ public readonly partial struct Interval<T>
 
     /// <summary>
     /// Compares this interval's upper endpoint with <paramref name="other" />'s, ordering an unbounded upper above
-    /// every finite upper and, on a value tie, an inclusive (closed) upper above an open one - so a larger result
-    /// denotes the endpoint that admits the rightmost values.
+    /// every bounded upper but one at positive infinity and, on a value tie, an inclusive (closed) upper above an open
+    /// one - so a larger result denotes the endpoint that admits the rightmost values.
     /// </summary>
     /// <param name="other">The interval whose upper endpoint is compared.</param>
     /// <returns>A negative value when this upper is further left, zero when equivalent, otherwise positive.</returns>
+    /// <remarks>
+    /// An unbounded upper admits every finite value but not positive infinity, so it is equivalent to an open upper at
+    /// positive infinity and lies left of a closed one.
+    /// </remarks>
     private int CompareUpperWith(Interval<T> other)
     {
         if (UpperUnbounded)
-            return other.UpperUnbounded ? 0 : 1;
+            return other.UpperUnbounded ? 0 : -CompareBoundedUpperWithUnbounded(other);
         if (other.UpperUnbounded)
-            return -1;
+            return CompareBoundedUpperWithUnbounded(this);
 
         int cmp = _upper.CompareTo(other._upper);
         return cmp != 0 ? cmp : UpperInclusive == other.UpperInclusive ? 0 : UpperInclusive ? 1 : -1;
     }
+
+    /// <summary>
+    /// Compares the bounded upper endpoint of <paramref name="bounded" /> with an unbounded upper side.
+    /// </summary>
+    /// <param name="bounded">The interval whose upper side is bounded.</param>
+    /// <returns>
+    /// A positive value for a closed endpoint at positive infinity, which admits that infinity; zero for an open one,
+    /// which admits the same values as the unbounded side; otherwise a negative value.
+    /// </returns>
+    private static int CompareBoundedUpperWithUnbounded(Interval<T> bounded) =>
+        !T.IsPositiveInfinity(bounded._upper) ? -1 : bounded.UpperInclusive ? 1 : 0;
 
     /// <summary>
     /// Returns the lower half of this interval as an endpoint value and its packed lower flag, for reassembling a new
