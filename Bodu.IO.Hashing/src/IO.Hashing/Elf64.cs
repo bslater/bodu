@@ -31,7 +31,7 @@ namespace Bodu.IO.Hashing;
 /// identifier maps where 32 bits would invite collisions.
 /// </para>
 /// <para>
-/// <strong>Output and lifecycle.</strong> Produces a 64-bit (8-byte) digest in little-endian byte order.
+/// <strong>Output and lifecycle.</strong> Produces a 64-bit (8-byte) digest in big-endian byte order.
 /// <see cref="System.IO.Hashing.NonCryptographicHashAlgorithm.GetCurrentHash()" /> is non-destructive; instances are
 /// not thread-safe.
 /// </para>

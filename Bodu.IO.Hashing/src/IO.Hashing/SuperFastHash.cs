@@ -31,7 +31,8 @@ namespace Bodu.IO.Hashing;
 /// in-memory hash tables of short keys (32-byte block sums and similar). It has been superseded by the MurmurHash3 /
 /// CityHash / xxHash generation, which beat it on every measurable axis - pick it only when reproducing a digest from
 /// existing SuperFastHash-based code. For new work on short keys prefer <see cref="MurmurHash3_32" /> or
-/// <see cref="Fnv1a32" />; for streaming and very large inputs prefer <see cref="CityHash64" /> or a CRC variant via
+/// <see cref="Fnv1a32" />; for streaming and very large inputs prefer a constant-memory hash such as
+/// <see cref="Fnv1a64" />, <see cref="MurmurHash3" />, or a CRC variant via
 /// <see cref="Bodu.IO.Hashing.Checksums.Crc" />.
 /// </para>
 /// <para>

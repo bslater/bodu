@@ -9,9 +9,8 @@ using System.IO.Hashing;
 namespace Bodu.IO.Hashing.Extensions;
 
 /// <summary>
-/// Extends <see cref="NonCryptographicHashAlgorithm" /> with one-shot hashing, streaming and async input, and
-/// constant-time hash verification - the high-level surface that <see cref="NonCryptographicHashAlgorithm" /> itself
-/// omits.
+/// Extends <see cref="NonCryptographicHashAlgorithm" /> with one-shot hashing, streaming and async input, and hash
+/// verification - the high-level surface that <see cref="NonCryptographicHashAlgorithm" /> itself omits.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -39,7 +38,7 @@ namespace Bodu.IO.Hashing.Extensions;
 /// <description>
 /// <c>ComputeHash</c> / <c>ComputeHashAsync</c> - append, finalize, and reset in a single call, returning the digest as
 /// a freshly allocated <see cref="byte" /> array. Inputs include byte arrays, byte-array slices,
-/// <see cref="System.ReadOnlyMemory{T}" />, and <see cref="System.IO.Stream" />.
+/// <see cref="System.ReadOnlySpan{T}" />, and <see cref="System.IO.Stream" />.
 /// </description>
 /// </item>
 /// <item>
@@ -59,12 +58,11 @@ namespace Bodu.IO.Hashing.Extensions;
 /// </item>
 /// </list>
 /// <para>
-/// All hash comparisons go through
-/// <see cref="System.Security.Cryptography.CryptographicOperations.FixedTimeEquals(System.ReadOnlySpan{byte}, System.ReadOnlySpan{byte})" />
-/// , so verification is constant-time and safe to use against attacker-supplied digests even though the underlying
-/// algorithm itself provides no preimage resistance. The algorithm instance is stateful and reset after each
-/// <c>ComputeHash</c> or <c>VerifyHash</c> call, but it is not thread-safe - share instances only behind explicit
-/// synchronization. Stream overloads do not dispose the supplied stream.
+/// Hash comparisons use an ordinary sequence comparison that stops at the first mismatching byte, so verification is
+/// <b>not</b> constant-time. These are error-detection checks: a non-cryptographic hash is not an authenticator, and an
+/// attacker who controls the input can forge a matching digest whatever the comparison. The algorithm instance is
+/// stateful and reset after each <c>ComputeHash</c> or <c>VerifyHash</c> call, but it is not thread-safe - share
+/// instances only behind explicit synchronization. Stream overloads do not dispose the supplied stream.
 /// </para>
 /// <example>
 /// <code language="csharp">

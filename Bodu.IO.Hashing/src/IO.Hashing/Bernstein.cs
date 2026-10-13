@@ -35,7 +35,7 @@ namespace Bodu.IO.Hashing;
 /// <see cref="MurmurHash3_32" /> is preferable for inputs longer than a few dozen bytes.
 /// </para>
 /// <para>
-/// <strong>Output and lifecycle.</strong> Produces a 32-bit (4-byte) digest in little-endian byte order.
+/// <strong>Output and lifecycle.</strong> Produces a 32-bit (4-byte) digest in big-endian byte order.
 /// <see cref="System.IO.Hashing.NonCryptographicHashAlgorithm.GetCurrentHash()" /> is non-destructive; instances are
 /// not thread-safe.
 /// </para>
