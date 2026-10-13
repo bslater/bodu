@@ -86,8 +86,8 @@ Base58.Decode("IAjdvzr");  // FormatException - 'I' (capital I) excluded
 Base58.Decode("lAjdvzr");  // FormatException - 'l' (lower L) excluded
 ```
 
-This is intentional - a user transcribing `1A1zP` might write `lA1zP` or `IA1zP`, and the decoder rejecting those
-inputs catches the typo at the input boundary rather than silently producing different bytes.
+This is intentional - a user transcribing `1A1zP` might type `l` or `I` for its leading `1`, and the decoder rejecting
+those inputs catches the typo at the input boundary rather than silently producing different bytes.
 
 ## Lenient parsing
 
