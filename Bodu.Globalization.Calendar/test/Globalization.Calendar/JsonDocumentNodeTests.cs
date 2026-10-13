@@ -100,4 +100,43 @@ public class JsonDocumentNodeTests
 
         Assert.IsEmpty(diagnostics);
     }
+
+    /// <summary>
+    /// Verifies that a required property that is absent, or holds the literal <c>null</c>, records one
+    /// <c>BODU-CAL-SCHEMA</c> error naming the schema type and the property.
+    /// </summary>
+    /// <param name="json">The node's JSON object.</param>
+    [TestMethod]
+    [DataRow("{}")]
+    [DataRow("""{ "rule": null }""")]
+    public void CheckRequired_WhenPropertyIsAbsentOrNull_ShouldRecordSchemaDiagnostic(string json)
+    {
+        List<NotableDateValidationDiagnostic> diagnostics = new();
+
+        Node(json).CheckRequired("AddRule", "rule", diagnostics);
+
+        NotableDateValidationDiagnostic diagnostic = Assert.ContainsSingle(diagnostics);
+        Assert.AreEqual("BODU-CAL-SCHEMA", diagnostic.Code);
+        Assert.AreEqual(NotableDateValidationSeverity.Error, diagnostic.Severity);
+        Assert.Contains("'AddRule'", diagnostic.Message);
+        Assert.Contains("'rule'", diagnostic.Message);
+    }
+
+    /// <summary>
+    /// Verifies that a required property that is present, under another case or holding a value of another kind among
+    /// them, records no diagnostic.
+    /// </summary>
+    /// <param name="json">The node's JSON object.</param>
+    [TestMethod]
+    [DataRow("""{ "rule": {} }""")]
+    [DataRow("""{ "RULE": {} }""")]
+    [DataRow("""{ "rule": 5 }""")]
+    public void CheckRequired_WhenPropertyIsPresent_ShouldRecordNothing(string json)
+    {
+        List<NotableDateValidationDiagnostic> diagnostics = new();
+
+        Node(json).CheckRequired("AddRule", "rule", diagnostics);
+
+        Assert.IsEmpty(diagnostics);
+    }
 }

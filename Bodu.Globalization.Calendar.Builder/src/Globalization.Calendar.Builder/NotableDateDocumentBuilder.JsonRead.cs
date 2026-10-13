@@ -447,18 +447,27 @@ public sealed partial class NotableDateDocumentBuilder
     /// </summary>
     /// <param name="overrideJson">The override object.</param>
     /// <returns>The reconstructed override entry.</returns>
+    /// <exception cref="FormatException">
+    /// The override's <c>operation</c> is absent or names no operation, which the loader reports with
+    /// <c>BODU-CAL-ENUM</c>, or an <c>AddRule</c> override has no <c>rule</c>, which the loader reports with
+    /// <c>BODU-CAL-SCHEMA</c>.
+    /// </exception>
     private static OverrideEntry ReadOverrideJson(JsonObject overrideJson)
     {
         string notableDateRef = ScalarText(overrideJson, "notableDateRef") ?? string.Empty;
-        string operation = ScalarText(overrideJson, "operation") ?? string.Empty;
+
+        // The loader reads an absent operation as the empty name, which names no operation.
+        List<NotableDateValidationDiagnostic> diagnostics = new();
+        string? operation = NotableDateDocumentParseHelpers.ParseOverrideOperation(ScalarText(overrideJson, "operation") ?? string.Empty, diagnostics);
+        ThrowIfMalformed(diagnostics);
 
         switch (operation)
         {
             case "AddRule":
-                NotableDateRuleBuilder addRule = ObjectProperty(overrideJson, "rule") is JsonObject ruleJson
-                    ? ReadRuleJson(ruleJson, notableDateRef)
-                    : new NotableDateRuleBuilder(string.Empty);
-                return new OverrideEntry(OverrideOperation.AddRule, notableDateRef, null, addRule);
+                if (ObjectProperty(overrideJson, "rule") is not JsonObject ruleJson)
+                    throw new FormatException(string.Format(CultureInfo.CurrentCulture, CalendarResourceStrings.Validation_SchemaRequiredPropertyMissing, "AddRule", "rule"));
+
+                return new OverrideEntry(OverrideOperation.AddRule, notableDateRef, null, ReadRuleJson(ruleJson, notableDateRef));
 
             case "RemoveRule":
                 return new OverrideEntry(OverrideOperation.RemoveRule, notableDateRef, ScalarText(overrideJson, "ruleRef") ?? string.Empty, null);

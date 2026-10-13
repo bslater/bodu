@@ -115,6 +115,12 @@ internal sealed class XmlDocumentNode
     }
 
     /// <inheritdoc />
+    public void CheckRequired(string schemaType, string property, ICollection<NotableDateValidationDiagnostic> diagnostics)
+    {
+        // The schema validation that precedes reading has already reported a missing required attribute or element.
+    }
+
+    /// <inheritdoc />
     public IReadOnlyList<(string Key, string Value)> KeyValueList(string xmlWrapper, string xmlItem, string xmlKeyAttribute, string xmlValueAttribute, string jsonProperty)
     {
         XElement? container = _element.Element(_ns + xmlWrapper);

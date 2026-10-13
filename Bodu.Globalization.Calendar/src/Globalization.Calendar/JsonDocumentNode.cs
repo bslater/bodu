@@ -194,6 +194,22 @@ internal sealed class JsonDocumentNode
             string.Format(CultureInfo.CurrentCulture, CalendarResourceStrings.Validation_SchemaPatternMismatch, field, value, NotableDateSchemaPatterns.GetPattern(pattern))));
     }
 
+    /// <inheritdoc />
+    /// <remarks>
+    /// An absent property records a <c>BODU-CAL-SCHEMA</c> error naming the schema type and the property, as the schema
+    /// reports the missing attribute or element in an XML document.
+    /// </remarks>
+    public void CheckRequired(string schemaType, string property, ICollection<NotableDateValidationDiagnostic> diagnostics)
+    {
+        if (TryGetProperty(property, out _))
+            return;
+
+        diagnostics.Add(new NotableDateValidationDiagnostic(
+            NotableDateValidationSeverity.Error,
+            "BODU-CAL-SCHEMA",
+            string.Format(CultureInfo.CurrentCulture, CalendarResourceStrings.Validation_SchemaRequiredPropertyMissing, schemaType, property)));
+    }
+
     /// <summary>
     /// Reads the items of an array property as text, returning <see langword="null" /> when the property is absent: a
     /// string by its value, and any other item by its JSON text, so a name parse reports it rather than the list losing

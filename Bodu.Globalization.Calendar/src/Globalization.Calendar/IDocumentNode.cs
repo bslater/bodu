@@ -178,6 +178,19 @@ internal interface IDocumentNode
     void CheckPattern(string? value, NotableDateSchemaPattern pattern, string field, ICollection<NotableDateValidationDiagnostic> diagnostics);
 
     /// <summary>
+    /// Checks that this node holds a property the XML schema requires of it, recording an error diagnostic when a JSON
+    /// node lacks it; an XML node is left to the schema, which has checked it.
+    /// </summary>
+    /// <param name="schemaType">The name of the XSD complex type this node stands for, used in the diagnostic.</param>
+    /// <param name="property">The name of the JSON property the schema requires.</param>
+    /// <param name="diagnostics">The collection that receives the diagnostic.</param>
+    /// <remarks>
+    /// The JSON literal <c>null</c> counts as absent. A property that holds a value of the wrong kind is present, and
+    /// its node has reported it with <c>BODU-CAL-VALUE</c> when it was read.
+    /// </remarks>
+    void CheckRequired(string schemaType, string property, ICollection<NotableDateValidationDiagnostic> diagnostics);
+
+    /// <summary>
     /// Reads a list of references that may be qualified: XML item elements carrying a qualifier attribute and a name
     /// attribute, or a JSON array whose items are objects carrying the same two properties, or strings carrying the
     /// name alone.

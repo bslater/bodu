@@ -22,6 +22,36 @@ internal static class NotableDateDocumentParseHelpers
         "July", "August", "September", "October", "November", "December",
     ];
 
+    /// <summary>The names of the override operations, as the schema writes them.</summary>
+    private static readonly string[] s_overrideOperations = ["AddRule", "PatchRule", "RemoveRule"];
+
+    /// <summary>
+    /// Parses the name of an override operation, ignoring case as every other name is matched, recording an error
+    /// diagnostic when it names no operation.
+    /// </summary>
+    /// <param name="value">The operation's name: an XML element's local name or a JSON <c>operation</c> value.</param>
+    /// <param name="diagnostics">The collection that receives the diagnostic for an unrecognized name.</param>
+    /// <returns>
+    /// <c>AddRule</c>, <c>PatchRule</c> or <c>RemoveRule</c>, as the schema writes it, or <see langword="null" /> when
+    /// <paramref name="value" /> names no operation. A <c>BODU-CAL-ENUM</c> error has then been recorded, so the
+    /// override the caller leaves out never goes unreported.
+    /// </returns>
+    public static string? ParseOverrideOperation(string value, ICollection<NotableDateValidationDiagnostic> diagnostics)
+    {
+        foreach (string operation in s_overrideOperations)
+        {
+            if (string.Equals(operation, value, StringComparison.OrdinalIgnoreCase))
+                return operation;
+        }
+
+        diagnostics.Add(new NotableDateValidationDiagnostic(
+            NotableDateValidationSeverity.Error,
+            "BODU-CAL-ENUM",
+            string.Format(CultureInfo.CurrentCulture, CalendarResourceStrings.Validation_InvalidEnumValue, "override operation", value, string.Join(", ", s_overrideOperations))));
+
+        return null;
+    }
+
     /// <summary>
     /// Parses a Sunday-first seven-character binary working-week pattern, falling back to the default working week when
     /// the value is absent or blank, and recording an error diagnostic when it is not such a pattern.

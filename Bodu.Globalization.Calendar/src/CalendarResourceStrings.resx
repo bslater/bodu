@@ -144,6 +144,9 @@
   <data name="Validation_SchemaPatternMismatch" xml:space="preserve">
     <value>The '{0}' value '{1}' does not match the pattern '{2}' the schema requires.</value>
   </data>
+  <data name="Validation_SchemaRequiredPropertyMissing" xml:space="preserve">
+    <value>The '{0}' object has no '{1}' property, which the schema requires.</value>
+  </data>
   <data name="Validation_OverrideNotableDateNotFound" xml:space="preserve">
     <value>Override operation targets notable date '{0}', which does not exist in the resolved resource.</value>
   </data>

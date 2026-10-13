@@ -627,7 +627,9 @@ internal static class NotableDateDocumentReader
         {
             string notableDateRef = ReadPatterned(operation, "notableDateRef", NotableDateSchemaPattern.Identifier, diagnostics) ?? string.Empty;
 
-            switch (operation.Discriminator("operation"))
+            // An operation that names none, and an AddRule without its rule, are reported rather than dropped, as the
+            // schema rejects both in XML.
+            switch (ParseOverrideOperation(operation.Discriminator("operation"), diagnostics))
             {
                 case "RemoveRule":
                     overrides.Add(new RemoveRuleOverride(notableDateRef, ReadPatterned(operation, "ruleRef", NotableDateSchemaPattern.Identifier, diagnostics) ?? string.Empty));
@@ -639,6 +641,10 @@ internal static class NotableDateDocumentReader
 
                 case "AddRule" when operation.Child("rule") is IDocumentNode rule:
                     overrides.Add(new AddRuleOverride(notableDateRef, ReadRule(rule, notableDateRef, diagnostics)));
+                    break;
+
+                case "AddRule":
+                    operation.CheckRequired("AddRule", "rule", diagnostics);
                     break;
 
                 default:

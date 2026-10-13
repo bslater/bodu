@@ -132,8 +132,9 @@ public sealed partial class NotableDateDocumentBuilder
     /// trigger-month or <c>workingDays</c> value does not parse, a property that holds a value holds an object or an
     /// array, a property that holds an object or a list holds a value of another kind, an item of a list of
     /// identifiers, territory codes or tags is not a string, a rule's <c>strategy</c> and <c>recurrence</c>, or a
-    /// <c>PatchRule</c> override's when it carries either, name no recognized kind or more than one between them, or an
-    /// <c>untilDate</c> declares no end strategy or one that names no recognized kind or more than one.
+    /// <c>PatchRule</c> override's when it carries either, name no recognized kind or more than one between them, an
+    /// <c>untilDate</c> declares no end strategy or one that names no recognized kind or more than one, an override's
+    /// <c>operation</c> is absent or names no operation, or an <c>AddRule</c> override has no <c>rule</c>.
     /// </exception>
     /// <exception cref="NotSupportedException">
     /// <paramref name="json" /> declares a field the builder's document model cannot hold: an empty <c>tags</c> or
@@ -181,7 +182,11 @@ public sealed partial class NotableDateDocumentBuilder
     /// matched ignoring case as the loader matches it, and an <c>untilDate</c> must declare an end strategy that names
     /// exactly one, or the document throws a <see cref="FormatException" /> carrying the message of the loader's
     /// <c>BODU-CAL-RULE-SOURCE</c>, <c>BODU-CAL-DURATION-NOEND</c> or <c>BODU-CAL-DURATION-CONFLICT</c> diagnostic,
-    /// rather than building the first kind alone or none.
+    /// rather than building the first kind alone or none. An override's <c>operation</c> is matched ignoring case, as
+    /// the loader matches it; one that is absent or names no operation throws a <see cref="FormatException" /> carrying
+    /// the message of the loader's <c>BODU-CAL-ENUM</c> diagnostic, rather than being read as a <c>PatchRule</c>, and
+    /// an <c>AddRule</c> override without a <c>rule</c> throws one carrying the message of its <c>BODU-CAL-SCHEMA</c>
+    /// diagnostic, rather than adding a rule with an empty identifier.
     /// </para>
     /// <para>
     /// Parsing does not otherwise validate the document: a document the loader would reject for a reason other than a
@@ -235,8 +240,9 @@ public sealed partial class NotableDateDocumentBuilder
     /// holds a value holds an object or an array, a property that holds an object or a list holds a value of another
     /// kind, an item of a list of identifiers, territory codes or tags is not a string, a rule's <c>strategy</c> and
     /// <c>recurrence</c>, or a <c>PatchRule</c> override's when it carries either, name no recognized kind or more than
-    /// one between them, or an <c>untilDate</c> declares no end strategy or one that names no recognized kind or more
-    /// than one.
+    /// one between them, an <c>untilDate</c> declares no end strategy or one that names no recognized kind or more than
+    /// one, an override's <c>operation</c> is absent or names no operation, or an <c>AddRule</c> override has no
+    /// <c>rule</c>.
     /// </exception>
     /// <exception cref="NotSupportedException">
     /// <paramref name="json" /> declares a field the builder's document model cannot hold; see
