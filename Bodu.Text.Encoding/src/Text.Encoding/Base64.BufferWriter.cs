@@ -62,6 +62,11 @@ public static partial class Base64
     /// <exception cref="ArgumentException">
     /// Thrown when <paramref name="options" /> contains an unsupported flag.
     /// </exception>
+    /// <remarks>
+    /// The bytes written equal the UTF-8 encoding of
+    /// <see cref="Encode(ReadOnlySpan{byte}, Base64Variant, BaseFormattingOptions)" /> with the same arguments; for
+    /// <see cref="Base64Variant.Mime" /> that includes its CRLF line break after every 76 characters.
+    /// </remarks>
     public static int EncodeToUtf8(ReadOnlySpan<byte> source, IBufferWriter<byte> writer, Base64Variant variant = Base64Variant.Standard, BaseFormattingOptions options = BaseFormattingOptions.None)
     {
         ThrowHelper.ThrowIfNull(writer);

@@ -55,6 +55,11 @@ public static partial class Base64
     /// Formatting options. Only <see cref="BaseFormattingOptions.OmitPadding" /> has an effect on the UTF-8 fast path.
     /// </param>
     /// <returns>The UTF-8 encoded Base64 bytes.</returns>
+    /// <remarks>
+    /// The output equals the UTF-8 encoding of
+    /// <see cref="Encode(ReadOnlySpan{byte}, Base64Variant, BaseFormattingOptions)" /> with the same arguments; for
+    /// <see cref="Base64Variant.Mime" /> that includes its CRLF line break after every 76 characters.
+    /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is undefined.</exception>
     /// <exception cref="ArgumentException">
     /// Thrown when <paramref name="options" /> contains any flag other than
@@ -96,6 +101,11 @@ public static partial class Base64
     /// <exception cref="ArgumentException">
     /// Thrown when unsupported flags are set in <paramref name="options" />.
     /// </exception>
+    /// <remarks>
+    /// The bytes written equal the UTF-8 encoding of
+    /// <see cref="Encode(ReadOnlySpan{byte}, Base64Variant, BaseFormattingOptions)" /> with the same arguments; for
+    /// <see cref="Base64Variant.Mime" /> that includes its CRLF line break after every 76 characters.
+    /// </remarks>
     public static bool TryEncodeToUtf8(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesWritten, Base64Variant variant = Base64Variant.Standard, BaseFormattingOptions options = BaseFormattingOptions.None)
     {
         EnsureValidVariant(variant);
@@ -322,13 +332,21 @@ public static partial class Base64
     /// The encode options (only <see cref="BaseFormattingOptions.OmitPadding" /> is honoured).
     /// </param>
     /// <returns>The number of UTF-8 bytes written.</returns>
+    /// <remarks>
+    /// For <see cref="Base64Variant.Mime" /> a CRLF pair is written after every <see cref="MimeLineLength" />
+    /// characters, never after the last one, which is where
+    /// <see cref="Convert.ToBase64String(byte[], Base64FormattingOptions)" /> breaks the lines of the character path,
+    /// so the bytes equal the UTF-8 encoding of that path's output.
+    /// </remarks>
     private static int EncodeIntoUtf8Span(ReadOnlySpan<byte> source, Span<byte> destination, Base64Variant variant, BaseFormattingOptions options)
     {
         string alphabet = variant == Base64Variant.UrlSafe ? UrlSafeAlphabet : StandardAlphabet;
         bool emitPadding = ShouldEmitPadding(variant, options);
+        bool insertLineBreaks = ShouldInsertLineBreaks(variant, options);
 
         int position = 0;
         int dataChars = 0;
+        int lineLength = 0;
         int accumulator = 0;
         int bitsAccumulated = 0;
 
@@ -341,7 +359,7 @@ public static partial class Base64
             {
                 bitsAccumulated -= 6;
                 int symbolIndex = (accumulator >> bitsAccumulated) & 0x3F;
-                destination[position++] = (byte)alphabet[symbolIndex];
+                WriteSymbol((byte)alphabet[symbolIndex], destination, ref position, ref lineLength, insertLineBreaks);
                 dataChars++;
             }
         }
@@ -349,7 +367,7 @@ public static partial class Base64
         if (bitsAccumulated > 0)
         {
             int symbolIndex = (accumulator << (6 - bitsAccumulated)) & 0x3F;
-            destination[position++] = (byte)alphabet[symbolIndex];
+            WriteSymbol((byte)alphabet[symbolIndex], destination, ref position, ref lineLength, insertLineBreaks);
             dataChars++;
         }
 
@@ -357,10 +375,23 @@ public static partial class Base64
         {
             int paddingChars = (4 - (dataChars % 4)) % 4;
             for (int i = 0; i < paddingChars; i++)
-                destination[position++] = (byte)PaddingChar;
+                WriteSymbol((byte)PaddingChar, destination, ref position, ref lineLength, insertLineBreaks);
         }
 
         return position;
+
+        static void WriteSymbol(byte symbol, Span<byte> destination, ref int position, ref int lineLength, bool insertLineBreaks)
+        {
+            if (insertLineBreaks && lineLength == MimeLineLength)
+            {
+                destination[position++] = (byte)'\r';
+                destination[position++] = (byte)'\n';
+                lineLength = 0;
+            }
+
+            destination[position++] = symbol;
+            lineLength++;
+        }
     }
 
     /// <summary>
