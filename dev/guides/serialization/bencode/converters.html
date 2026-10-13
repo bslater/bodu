@@ -239,7 +239,7 @@ options.Converters.Add(new BencodeStringEnumConverter(NamingPolicy.SnakeCaseLowe
 <p>With <code>allowIntegerValues: false</code>, as above, the converter reads names only, as System.Text.Json's <code>JsonStringEnumConverter</code> does from .NET 9: a Bencode integer raises <a class="xref" href="../../../api/Bodu.Text.Bencode.BencodeSerializationException.html">BencodeSerializationException</a>, and so does a byte string that is not a wire name and holds an integer in any of its comma-separated parts, such as <code>1:2</code> or <code>7:Read, 2</code>. It also refuses to write a value that is neither a member nor a combination of defined flags, such as <code>(Status)99</code>, and raises <a class="xref" href="../../../api/Bodu.Text.Bencode.BencodeSerializationException.html">BencodeSerializationException</a> rather than writing decimal text it could not read back. The default handling, and a converter created with <code>allowIntegerValues: true</code>, bind an integer and a byte string that is one, and write such a value as its decimal text.</p>
 <p>The generic forms expose a public parameterless constructor, which is what makes them usable from a <code>[Converter]</code> attribute; the non-generic factory is the options-level, all-enums form. There is no non-generic number-enum converter.</p>
 <h2 id="pattern-6---fail-clearly-on-malformed-data">Pattern 6 - Fail clearly on malformed data</h2>
-<p>By the time <code>Read</code> runs, the document has already parsed - a syntactically malformed document raises <a class="xref" href="../../../api/Bodu.Text.Bencode.BencodeFormatException.html">BencodeFormatException</a> before any converter is consulted. What a converter must handle is a <em>well-formed value that does not fit</em>: the wrong kind, or text that does not parse into the target type. Signal that by throwing <a class="xref" href="../../../api/Bodu.Text.Bencode.BencodeSerializationException.html">BencodeSerializationException</a> - the same type the built-in converters throw, so callers need one catch clause regardless of which converter rejected the value. Hardening the <code>PointConverter</code> from Pattern 1:</p>
+<p>The reader validates the document token by token as the serializer reads it, so a syntactically malformed document raises <a class="xref" href="../../../api/Bodu.Text.Bencode.BencodeFormatException.html">BencodeFormatException</a> wherever the reader meets the fault: before a converter is consulted, inside a converter's own <code>reader.Read()</code> or <code>Skip()</code> call, or after the converter returns. Let that exception propagate rather than catching it in a converter. What a converter must handle is a <em>well-formed value that does not fit</em>: the wrong kind, or text that does not parse into the target type. Signal that by throwing <a class="xref" href="../../../api/Bodu.Text.Bencode.BencodeSerializationException.html">BencodeSerializationException</a> - the same type the built-in converters throw, so callers need one catch clause regardless of which converter rejected the value. Hardening the <code>PointConverter</code> from Pattern 1:</p>
 <pre><code class="lang-csharp">public override Point Read(ref Utf8BencodeReader reader, Type typeToConvert, BencodeSerializerOptions options)
 {
     if (reader.TokenType != BencodeTokenType.ByteString)
@@ -326,13 +326,16 @@ single-threaded validation pass over one options instance, not concurrent
 deserialization. After the call returns, inspect <code>errors</code> to decide whether the
 result is trustworthy.</p>
 <p><strong>Where the two exception families fit.</strong> Recovery only applies to <em>well-formed</em>
-documents - a syntactically broken document raises the format exception
-(<a class="xref" href="../../../api/Bodu.Text.Bencode.BencodeFormatException.html">BencodeFormatException</a>) during parsing, before any
-converter runs, and no converter can intercept it. Once <code>Read</code> is executing, the
-document parsed; from there you choose between recovering (default, partial, or
-collect) and rejecting with the serialization exception
+values. <code>Utf8BencodeReader</code> validates the bytes as it reads them, so a
+syntactically broken document raises the format exception
+(<a class="xref" href="../../../api/Bodu.Text.Bencode.BencodeFormatException.html">BencodeFormatException</a>) wherever the reader meets the
+fault - possibly during a converter's own <code>reader.Read()</code> or <code>Skip()</code> call, and
+possibly after earlier members' converters have run. A converter must not catch
+and swallow it: the reader cannot continue past malformed bytes. For a value that
+is well formed but does not fit, you choose between recovering (default, partial,
+or collect) and rejecting with the serialization exception
 (<a class="xref" href="../../../api/Bodu.Text.Bencode.BencodeSerializationException.html">BencodeSerializationException</a>). Reserve the format
-exception for the parser; never throw it from a converter.</p>
+exception for the reader; never throw it from a converter.</p>
 <h2 id="design-notes---statelessness-and-caching">Design notes - statelessness and caching</h2>
 <p><strong>Write converters stateless.</strong> The serializer resolves the converter for a type once, caches the result on the options instance, and reuses that single converter instance for every subsequent value of the type - across calls and across threads. Instance fields mutated during <code>Read</code> or <code>Write</code> are therefore shared, unsynchronized state. Keep configuration in <code>readonly</code> fields set at construction (the way the built-in string-enum converter takes its naming policy), and derive everything else from the arguments the serializer passes in.</p>
 <p><strong>Options freeze on first use.</strong> As described in <a href="../../../docs/serialization/bencode/concepts.html">core concepts</a>, a <code>BencodeSerializerOptions</code> instance becomes read-only the first time it is used - or eagerly via <code>MakeReadOnly()</code> - and from then on caches its resolved converters and type metadata; later mutation of <code>Converters</code> is rejected. Two practical consequences:</p>
@@ -368,7 +371,7 @@ exception for the parser; never throw it from a converter.</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 2d2f074 · Built: 2026-10-13 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f000587 · Built: 2026-10-13 (UTC)</span>
         </div>
       </div>
     </footer>

@@ -94,7 +94,7 @@
 string text = TomlSerializer.Serialize(config);
 ServerConfig back = TomlSerializer.Deserialize&lt;ServerConfig&gt;(text);
 </code></pre>
-<p><code>Serialize</code> also writes to an <code>IBufferWriter&lt;byte&gt;</code> (UTF-8) or a <code>Stream</code> (with <code>SerializeAsync</code>); <code>Deserialize</code> reads a <code>string</code>, a <code>ReadOnlySpan&lt;byte&gt;</code> (UTF-8), or a <code>Stream</code> (with <code>DeserializeAsync</code>). Output is canonical TOML in document order, so <code>[PropertyOrder]</code> is honored. See <a href="#pattern-8---streams-and-async">Pattern 8</a> for the stream surface.</p>
+<p><code>Serialize</code> also writes to an <code>IBufferWriter&lt;byte&gt;</code> (UTF-8) or a <code>Stream</code> (with <code>SerializeAsync</code>); <code>Deserialize</code> reads a <code>string</code>, a <code>ReadOnlySpan&lt;byte&gt;</code> (UTF-8), or a <code>Stream</code> (with <code>DeserializeAsync</code>). Output is normalized TOML in member order, so <code>[PropertyOrder]</code> is honored. It is deterministic for a given member order but not canonical: equal documents built in different orders serialize differently, so do not hash or sign it. See <a href="#pattern-8---streams-and-async">Pattern 8</a> for the stream surface.</p>
 <h2 id="pattern-2---know-the-type-mapping">Pattern 2 - Know the type mapping</h2>
 <table>
 <thead>
@@ -166,7 +166,7 @@ ServerConfig back = TomlSerializer.Deserialize&lt;ServerConfig&gt;(text);
 </tr>
 </tbody>
 </table>
-<p>TOML has no null: a null member is omitted by default. Dictionary keys may be strings, any integer type, an <code>enum</code>, a <code>Guid</code>, a <code>bool</code>, or a <code>char</code> - non-string keys are written as table keys in their invariant text (quoted when they fall outside the bare-key grammar) and parsed back on read, and a supported-key dictionary is valid at the document root. A <code>Stack&lt;T&gt;</code> round-trip reverses the stack: the writer emits pop order and the reader pushes in document order. The full per-type catalog, including each converter's read tolerances, is in the <a href="builtin-converters.html">built-in converter catalog</a>.</p>
+<p>TOML has no null: a null member is omitted by default. Dictionary keys may be strings, the fixed-width integer types <code>sbyte</code> through <code>ulong</code>, an <code>enum</code>, a <code>Guid</code>, a <code>bool</code>, or a <code>char</code> - non-string keys are written as table keys in their invariant text (quoted when they fall outside the bare-key grammar) and parsed back on read, and a supported-key dictionary is valid at the document root. A <code>Stack&lt;T&gt;</code> round-trip reverses the stack: the writer emits pop order and the reader pushes in document order. The full per-type catalog, including each converter's read tolerances, is in the <a href="builtin-converters.html">built-in converter catalog</a>.</p>
 <p>Choose the <code>byte[]</code> form with <a class="xref" href="../../../api/Bodu.Text.Toml.TomlByteArrayHandling.html">TomlByteArrayHandling</a> and the <code>decimal</code> form with <a class="xref" href="../../../api/Bodu.Text.Toml.TomlDecimalHandling.html">TomlDecimalHandling</a> on the options:</p>
 <!-- compile -->
 <pre><code class="lang-csharp">var options = new TomlSerializerOptions
@@ -254,7 +254,7 @@ node[&quot;Server&quot;]![&quot;Port&quot;] = 9090;
 
 byte[] back = node.ToUtf8Bytes();
 </code></pre>
-<p>The re-emitted document keeps the same canonical layout with only the value changed:</p>
+<p>The re-emitted document keeps the same normalized layout with only the value changed:</p>
 <pre><code class="lang-toml">[Server]
 Host = &quot;localhost&quot;
 Port = 9090
@@ -338,16 +338,19 @@ while (reader.Read())
     }
 }
 </code></pre>
-<p>To emit tokens, drive the <a class="xref" href="../../../api/Bodu.Text.Toml.Writer.Utf8TomlWriter.html">Utf8TomlWriter</a> over an <code>IBufferWriter&lt;byte&gt;</code> or a <code>Stream</code>. Write a structural skeleton with <code>WriteStartTable</code> / <code>WritePropertyName</code> / a typed <code>Write*</code> per value, and <code>Flush</code> (or <code>Dispose</code>) when streaming:</p>
-<pre><code class="lang-csharp">using Bodu.Text.Toml.Writer;
+<p>To emit tokens, drive the <a class="xref" href="../../../api/Bodu.Text.Toml.Writer.Utf8TomlWriter.html">Utf8TomlWriter</a> over an <code>IBufferWriter&lt;byte&gt;</code> or a <code>Stream</code>. Open the root table with <code>WriteStartTable()</code>, write a structural skeleton with <code>WriteStartTable</code> / <code>WritePropertyName</code> / a typed <code>Write*</code> per value, and close the root: the writer buffers the document and emits it when the root table closes. <code>Flush</code> (or <code>Dispose</code>) when streaming:</p>
+<pre><code class="lang-csharp">using System.Buffers;
+using Bodu.Text.Toml.Writer;
 
 var buffer = new ArrayBufferWriter&lt;byte&gt;();
 var writer = new Utf8TomlWriter(buffer);
 
+writer.WriteStartTable();               // the required root table
 writer.WriteStartTable(&quot;server&quot;);
 writer.WriteString(&quot;host&quot;, &quot;localhost&quot;);
 writer.WriteInteger(&quot;port&quot;, 8080);
 writer.WriteEndTable();
+writer.WriteEndTable();                 // closing the root emits the document
 // buffer.WrittenSpan now holds the UTF-8 bytes of:
 //   [server]
 //   host = &quot;localhost&quot;
@@ -407,7 +410,7 @@ catch (TomlSerializationException ex)
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 2d2f074 · Built: 2026-10-13 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: f000587 · Built: 2026-10-13 (UTC)</span>
         </div>
       </div>
     </footer>
