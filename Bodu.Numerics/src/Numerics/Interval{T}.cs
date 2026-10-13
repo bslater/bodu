@@ -6,6 +6,7 @@
 
 using System.Diagnostics;
 using System.Numerics;
+using System.Runtime.CompilerServices;
 
 namespace Bodu.Numerics;
 
@@ -127,17 +128,18 @@ public readonly partial struct Interval<T>
     /// </param>
     /// <remarks>
     /// <para>
-    /// The constructor accepts any combination of endpoints, including <paramref name="lower" /> equal to or greater
-    /// than <paramref name="upper" />. When the supplied bounds do not admit any value, the resulting instance is empty
-    /// and compares equal to <see cref="Empty" />. The original bounds remain readable via <see cref="Lower" /> and
-    /// <see cref="Upper" /> for diagnostic inspection, but participate only as the representation of
-    /// <see cref="Empty" /> in set operations.
+    /// The constructor accepts any ordering of the endpoints, including <paramref name="lower" /> equal to or greater
+    /// than <paramref name="upper" />; only a NaN endpoint is rejected. When the supplied bounds do not admit any
+    /// value, the resulting instance is empty and compares equal to <see cref="Empty" />. The original bounds remain
+    /// readable via <see cref="Lower" /> and <see cref="Upper" /> for diagnostic inspection, but participate only as
+    /// the representation of <see cref="Empty" /> in set operations.
     /// </para>
     /// </remarks>
+    /// <exception cref="ArgumentException"><paramref name="lower" /> or <paramref name="upper" /> is NaN.</exception>
     public Interval(T lower, T upper, bool lowerInclusive, bool upperInclusive)
     {
-        if (T.IsNaN(lower)) throw new ArgumentException(NumericsResourceStrings.Arg_Invalid_IntervalNaNEndpoint, nameof(lower));
-        if (T.IsNaN(upper)) throw new ArgumentException(NumericsResourceStrings.Arg_Invalid_IntervalNaNEndpoint, nameof(upper));
+        ThrowIfNaNEndpoint(lower);
+        ThrowIfNaNEndpoint(upper);
 
         _lower = lower;
         _upper = upper;
@@ -161,5 +163,17 @@ public readonly partial struct Interval<T>
         _lower = lower;
         _upper = upper;
         _flags = flags;
+    }
+
+    /// <summary>
+    /// Throws when <paramref name="value" /> is NaN, the endpoint rule shared by the public constructor and every
+    /// factory: NaN is unordered, so no interval could be formed around it.
+    /// </summary>
+    /// <param name="value">The endpoint value to validate.</param>
+    /// <param name="paramName">The name of the argument being validated; supplied by the compiler.</param>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="value" /> is NaN.</exception>
+    private static void ThrowIfNaNEndpoint(T value, [CallerArgumentExpression(nameof(value))] string? paramName = null)
+    {
+        if (T.IsNaN(value)) throw new ArgumentException(NumericsResourceStrings.Arg_Invalid_IntervalNaNEndpoint, paramName);
     }
 }
