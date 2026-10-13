@@ -18,8 +18,10 @@ namespace Bodu.IO.Hashing.Checksums;
 ///
 /// <para>
 /// The auto-generated <see cref="CrcTests.CatalogCheckVectors" /> data source remains the source of
-/// truth for the full 187-entry catalogue. This KAT-driven test sits alongside it and exercises a
-/// small representative subset through the parameter-based <see cref="CrcStandard" /> constructor,
+/// truth for the catalogue: one check vector for each of the 112 standards <see cref="CrcStandards" />
+/// covers, by canonical name. The published aliases resolve to those standards and are tested separately,
+/// through <see cref="CrcStandard.FromName(string)" />. This KAT-driven test sits alongside it and exercises
+/// a small representative subset through the parameter-based <see cref="CrcStandard" /> constructor,
 /// proving that the standalone parameter API stays in sync with the named-standard catalogue.
 /// </para>
 /// </summary>
