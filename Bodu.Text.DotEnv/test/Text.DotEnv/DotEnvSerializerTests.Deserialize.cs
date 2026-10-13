@@ -238,4 +238,47 @@ public partial class DotEnvSerializerTests
         Assert.IsTrue(ex.Message.Contains(typeof(int?).ToString(), StringComparison.Ordinal), ex.Message);
         Assert.IsInstanceOfType<FormatException>(ex.InnerException);
     }
+
+    /// <summary>
+    /// Verifies that a value-type POCO is created and its members bound.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenTheRootIsAStruct_ShouldBindItsMembers()
+    {
+        PortStruct config = DotEnvSerializer.Deserialize<PortStruct>("Port=5\nHost=h\n");
+
+        Assert.AreEqual(5, config.Port);
+        Assert.AreEqual("h", config.Host);
+    }
+
+    /// <summary>
+    /// Verifies that a dictionary root of a concrete type is created as that type, and one declared as the dictionary
+    /// interface as a <see cref="Dictionary{TKey, TValue}" />, each entry converted to the value type.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenTheRootIsAStringKeyedDictionary_ShouldCreateTheDeclaredTypeOrADictionary()
+    {
+        SortedDictionary<string, int> sorted = DotEnvSerializer.Deserialize<SortedDictionary<string, int>>("B=2\nA=1\n");
+        IDictionary<string, int> declared = DotEnvSerializer.Deserialize<IDictionary<string, int>>("B=2\nA=1\n");
+
+        CollectionAssert.AreEqual(new[] { "A", "B" }, sorted.Keys.ToArray());
+        Assert.AreEqual(2, sorted["B"]);
+        Assert.IsInstanceOfType<Dictionary<string, int>>(declared);
+        Assert.AreEqual(1, declared["A"]);
+    }
+
+    /// <summary>
+    /// Verifies that a root declared as a read-only dictionary interface, which is not a dictionary the serializer
+    /// creates, throws <see cref="DotEnvSerializationException" /> naming the type.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenTheRootIsAReadOnlyDictionaryInterface_ShouldThrowDotEnvSerializationException()
+    {
+        var ex = Assert.ThrowsExactly<DotEnvSerializationException>(() =>
+        {
+            _ = DotEnvSerializer.Deserialize<IReadOnlyDictionary<string, int>>("B=2\n");
+        });
+
+        Assert.IsTrue(ex.Message.Contains("IReadOnlyDictionary", StringComparison.Ordinal), ex.Message);
+    }
 }

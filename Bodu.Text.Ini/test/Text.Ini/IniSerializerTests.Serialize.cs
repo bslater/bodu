@@ -293,4 +293,43 @@ public partial class IniSerializerTests
         Assert.IsTrue(ex.Message.Contains(nameof(DuplicateKeyConfig), StringComparison.Ordinal), ex.Message);
         Assert.IsTrue(ex.Message.Contains("'X'", StringComparison.Ordinal), ex.Message);
     }
+
+    /// <summary>
+    /// Verifies that the options' default ignore condition leaves out the null members, or the null and default ones,
+    /// that it ignores, and that a member's own condition overrides it.
+    /// </summary>
+    /// <param name="condition">The options' default ignore condition.</param>
+    /// <param name="expected">The text written.</param>
+    [TestMethod]
+    [DataRow(IgnoreCondition.Never, "Text=\nZero=0\nOne=1\nFlag=false\nMaybe=\nNullByMember=\n")]
+    [DataRow(IgnoreCondition.WhenWritingNull, "Zero=0\nOne=1\nFlag=false\nNullByMember=\n")]
+    [DataRow(IgnoreCondition.WhenWritingDefault, "One=1\nNullByMember=\n")]
+    public void Serialize_WhenTheDefaultIgnoreConditionIsSet_ShouldLeaveOutTheMembersItIgnores(IgnoreCondition condition, string expected)
+    {
+        var options = new IniSerializerOptions { DefaultIgnoreCondition = condition };
+
+        string text = IniSerializer.Serialize(new ConditionalConfig(), options);
+
+        Assert.AreEqual(expected, text);
+    }
+
+    /// <summary>
+    /// Verifies that a dictionary entry whose value is <see langword="null" /> is left out unless the options' default
+    /// ignore condition is <see cref="IgnoreCondition.Never" />, which writes it with an empty value.
+    /// </summary>
+    /// <param name="condition">The options' default ignore condition.</param>
+    /// <param name="expected">The text written.</param>
+    [TestMethod]
+    [DataRow(IgnoreCondition.Never, "A=\nB=b\n")]
+    [DataRow(IgnoreCondition.WhenWritingNull, "B=b\n")]
+    [DataRow(IgnoreCondition.WhenWritingDefault, "B=b\n")]
+    public void Serialize_WhenADictionaryValueIsNull_ShouldLeaveItOutUnlessTheConditionIsNever(IgnoreCondition condition, string expected)
+    {
+        var options = new IniSerializerOptions { DefaultIgnoreCondition = condition };
+        var map = new Dictionary<string, string?> { ["A"] = null, ["B"] = "b" };
+
+        string text = IniSerializer.Serialize(map, options);
+
+        Assert.AreEqual(expected, text);
+    }
 }

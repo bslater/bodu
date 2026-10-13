@@ -176,6 +176,47 @@ public partial class IniSerializerTests
     }
 
     /// <summary>
+    /// A root model whose members hold null and default values, two of them with an ignore condition of their own.
+    /// </summary>
+    private sealed class ConditionalConfig
+    {
+        /// <summary>Gets or sets a text, <see langword="null" /> unless set.</summary>
+        public string? Text { get; set; }
+
+        /// <summary>Gets or sets a number, zero unless set.</summary>
+        public int Zero { get; set; }
+
+        /// <summary>Gets or sets a number, one unless set.</summary>
+        public int One { get; set; } = 1;
+
+        /// <summary>Gets or sets a flag, <see langword="false" /> unless set.</summary>
+        public bool Flag { get; set; }
+
+        /// <summary>Gets or sets an optional number, <see langword="null" /> unless set.</summary>
+        public int? Maybe { get; set; }
+
+        /// <summary>Gets or sets a number its own condition leaves out while it is zero.</summary>
+        [Bodu.Text.Serialization.Ignore(Condition = IgnoreCondition.WhenWritingDefault)]
+        public int ZeroByMember { get; set; }
+
+        /// <summary>Gets or sets a text its own condition always writes.</summary>
+        [Bodu.Text.Serialization.Ignore(Condition = IgnoreCondition.Never)]
+        public string? NullByMember { get; set; }
+    }
+
+    /// <summary>
+    /// A value-type root model with two members.
+    /// </summary>
+    private struct PortStruct
+    {
+        /// <summary>Gets or sets the port.</summary>
+        public int Port { get; set; }
+
+        /// <summary>Gets or sets the host.</summary>
+        public string? Host { get; set; }
+    }
+
+    /// <summary>
     /// A root model whose global key is a nullable number, which a value that is not a number cannot be converted to.
     /// </summary>
     private sealed class NullableCountConfig

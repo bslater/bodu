@@ -132,6 +132,56 @@ public partial class DotEnvSerializerTests
     }
 
     /// <summary>
+    /// A POCO whose members hold null and default values, two of them with an ignore condition of their own.
+    /// </summary>
+    public sealed class ConditionalConfig
+    {
+        /// <summary>Gets or sets a text, <see langword="null" /> unless set.</summary>
+        /// <value>The text.</value>
+        public string? Text { get; set; }
+
+        /// <summary>Gets or sets a number, zero unless set.</summary>
+        /// <value>The number.</value>
+        public int Zero { get; set; }
+
+        /// <summary>Gets or sets a number, one unless set.</summary>
+        /// <value>The number.</value>
+        public int One { get; set; } = 1;
+
+        /// <summary>Gets or sets a flag, <see langword="false" /> unless set.</summary>
+        /// <value>The flag.</value>
+        public bool Flag { get; set; }
+
+        /// <summary>Gets or sets an optional number, <see langword="null" /> unless set.</summary>
+        /// <value>The number, or <see langword="null" />.</value>
+        public int? Maybe { get; set; }
+
+        /// <summary>Gets or sets a number its own condition leaves out while it is zero.</summary>
+        /// <value>The number.</value>
+        [Bodu.Text.Serialization.Ignore(Condition = IgnoreCondition.WhenWritingDefault)]
+        public int ZeroByMember { get; set; }
+
+        /// <summary>Gets or sets a text its own condition always writes.</summary>
+        /// <value>The text.</value>
+        [Bodu.Text.Serialization.Ignore(Condition = IgnoreCondition.Never)]
+        public string? NullByMember { get; set; }
+    }
+
+    /// <summary>
+    /// A value-type POCO with two members.
+    /// </summary>
+    public struct PortStruct
+    {
+        /// <summary>Gets or sets the port.</summary>
+        /// <value>The port.</value>
+        public int Port { get; set; }
+
+        /// <summary>Gets or sets the host.</summary>
+        /// <value>The host.</value>
+        public string? Host { get; set; }
+    }
+
+    /// <summary>
     /// A POCO whose member is a nullable number, which a value that is not a number cannot be converted to.
     /// </summary>
     public sealed class NullableCountConfig
