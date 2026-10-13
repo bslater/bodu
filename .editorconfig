@@ -403,8 +403,13 @@ indent_size = 2
 # ---------------------------------------------------------------------------------------------------------------
 # Test file overrides - relax rules that are noisy and unhelpful in test code
 # ---------------------------------------------------------------------------------------------------------------
+#
+# The section names test files inside test projects only: a file whose name contains "Test" under a test/ folder or a
+# *.Test or *.Test.Common project folder. A file under src/ keeps the production rules, the XML-doc formatter among
+# them, even when its name contains "Test" (the contract-test bases of Bodu.Financial.ExchangeRates.Testing). A
+# leading **/ matches at least one folder, which every project here sits below.
 
-[**/*Test*.cs]
+[{**/test/**Test*.cs,**/*.Test/**Test*.cs,**/*.Test.Common/**Test*.cs}]
 
 # Underscore separators in test method names are idiomatic MSTest.
 dotnet_diagnostic.CA1707.severity = none
