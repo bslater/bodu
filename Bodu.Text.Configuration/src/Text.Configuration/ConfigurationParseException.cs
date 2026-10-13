@@ -57,8 +57,11 @@ public sealed class ConfigurationParseException
     /// <summary>
     /// Initializes a new instance of the <see cref="ConfigurationParseException" /> class with a default message.
     /// </summary>
+    /// <remarks>
+    /// The default message is read from the library's resources for the current UI culture.
+    /// </remarks>
     public ConfigurationParseException()
-        : base("The configuration document could not be parsed.")
+        : base(ConfigurationResourceStrings.Format_Invalid_ConfigurationDocument)
     {
         Diagnostics = [];
     }
@@ -177,6 +180,6 @@ public sealed class ConfigurationParseException
         ThrowHelper.ThrowIfNull(diagnostics);
         return diagnostics.Count > 0
             ? diagnostics[0].Message
-            : "The configuration document could not be parsed.";
+            : ConfigurationResourceStrings.Format_Invalid_ConfigurationDocument;
     }
 }

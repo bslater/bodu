@@ -204,4 +204,7 @@
   <data name="Op_Invalid_IniSectionKeyNotFound" xml:space="preserve">
     <value>The key '{0}' was not found in the section.</value>
   </data>
+  <data name="Format_Invalid_ConfigurationDocument" xml:space="preserve">
+    <value>The configuration document could not be parsed.</value>
+  </data>
 </root>

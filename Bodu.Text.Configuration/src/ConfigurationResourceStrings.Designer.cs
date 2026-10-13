@@ -320,5 +320,14 @@ namespace Bodu {
                 return ResourceManager.GetString("Op_Invalid_IniSectionKeyNotFound", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The configuration document could not be parsed..
+        /// </summary>
+        internal static string Format_Invalid_ConfigurationDocument {
+            get {
+                return ResourceManager.GetString("Format_Invalid_ConfigurationDocument", resourceCulture);
+            }
+        }
     }
 }
