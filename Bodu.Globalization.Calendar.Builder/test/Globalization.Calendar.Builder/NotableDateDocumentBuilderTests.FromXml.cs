@@ -268,4 +268,221 @@ public partial class NotableDateDocumentBuilderTests
           </NotableDates>
         </NotableDateResource>
         """.Replace("@workingDays@", workingDays, StringComparison.Ordinal);
+
+    /// <summary>
+    /// The well-formed value of every integer-, Boolean- and month-valued attribute the XML scalar test document holds,
+    /// keyed by the placeholder that stands for it.
+    /// </summary>
+    private static readonly Dictionary<string, string> s_xmlScalarFieldValues = new(StringComparer.Ordinal)
+    {
+        ["policy.priority"] = "5",
+        ["scope.fromYear"] = "2000",
+        ["scope.toYear"] = "2100",
+        ["scope.onlyYears"] = "2026",
+        ["scope.exceptYears"] = "2027",
+        ["trigger.month"] = "June",
+        ["trigger.day"] = "15",
+        ["action.days"] = "1",
+        ["action.maxSearchDays"] = "7",
+        ["action.skipWeekends"] = "true",
+        ["action.skipNonWorkingDates"] = "false",
+        ["emission.nonWorking"] = "true",
+        ["use.nonWorking"] = "true",
+        ["notableDate.defaultDurationDays"] = "1",
+        ["notableDate.defaultNonWorkingDay"] = "true",
+        ["rule.priority"] = "3",
+        ["rule.nonWorking"] = "true",
+        ["rule.durationDays"] = "2",
+        ["applicability.fromYear"] = "2000",
+        ["applicability.toYear"] = "2100",
+        ["applicability.everyYears"] = "1",
+        ["applicability.anchorYear"] = "2000",
+        ["applicability.onlyYears"] = "2026",
+        ["applicability.exceptYears"] = "2027",
+        ["patch.priority"] = "4",
+        ["patch.nonWorking"] = "false",
+        ["patch.durationDays"] = "1",
+    };
+
+    /// <summary>
+    /// Verifies that the XML scalar test document reads and builds when every integer-, Boolean- and month-valued
+    /// attribute is well-formed, so each rejection the per-attribute tests observe is caused by the one value they
+    /// replace.
+    /// </summary>
+    [TestMethod]
+    public void FromXml_WhenEveryScalarValueWellFormed_ShouldReadAndBuild()
+    {
+        NotableDateResource resource = NotableDateDocumentBuilder.FromXml(ScalarFieldXml(null, null)).Build(BuilderEnumImportResolver);
+
+        Assert.AreEqual("test.scalars", resource.ResourceId);
+    }
+
+    /// <summary>
+    /// Verifies that an integer-valued XML attribute holding text that is not an integer is rejected with a
+    /// <see cref="FormatException" /> naming the value, as the loader rejects it, rather than dropped.
+    /// </summary>
+    /// <param name="field">The placeholder of the attribute holding the malformed value.</param>
+    [TestMethod]
+    [DataRow("policy.priority")]
+    [DataRow("scope.fromYear")]
+    [DataRow("scope.toYear")]
+    [DataRow("scope.onlyYears")]
+    [DataRow("scope.exceptYears")]
+    [DataRow("trigger.day")]
+    [DataRow("action.days")]
+    [DataRow("action.maxSearchDays")]
+    [DataRow("notableDate.defaultDurationDays")]
+    [DataRow("rule.priority")]
+    [DataRow("rule.durationDays")]
+    [DataRow("applicability.fromYear")]
+    [DataRow("applicability.toYear")]
+    [DataRow("applicability.everyYears")]
+    [DataRow("applicability.anchorYear")]
+    [DataRow("applicability.onlyYears")]
+    [DataRow("applicability.exceptYears")]
+    [DataRow("patch.priority")]
+    [DataRow("patch.durationDays")]
+    public void FromXml_WhenIntegerValueMalformed_ShouldThrowFormatException(string field)
+    {
+        string xml = ScalarFieldXml(field, "high");
+
+        FormatException ex = Assert.ThrowsExactly<FormatException>(() =>
+        {
+            _ = NotableDateDocumentBuilder.FromXml(xml);
+        });
+
+        Assert.Contains("high", ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that an empty integer-valued XML attribute, which the loader reports as a value that does not parse, is
+    /// rejected with a <see cref="FormatException" /> rather than read as absent.
+    /// </summary>
+    [TestMethod]
+    public void FromXml_WhenIntegerValueEmpty_ShouldThrowFormatException()
+    {
+        string xml = ScalarFieldXml("rule.priority", string.Empty);
+
+        _ = Assert.ThrowsExactly<FormatException>(() =>
+        {
+            _ = NotableDateDocumentBuilder.FromXml(xml);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that a Boolean-valued XML attribute holding text that is not a schema Boolean is rejected with a
+    /// <see cref="FormatException" /> naming the value, as the loader rejects it, rather than read as
+    /// <see langword="false" />.
+    /// </summary>
+    /// <param name="field">The placeholder of the attribute holding the malformed value.</param>
+    [TestMethod]
+    [DataRow("action.skipWeekends")]
+    [DataRow("action.skipNonWorkingDates")]
+    [DataRow("emission.nonWorking")]
+    [DataRow("use.nonWorking")]
+    [DataRow("notableDate.defaultNonWorkingDay")]
+    [DataRow("rule.nonWorking")]
+    [DataRow("patch.nonWorking")]
+    public void FromXml_WhenBooleanValueMalformed_ShouldThrowFormatException(string field)
+    {
+        string xml = ScalarFieldXml(field, "maybe");
+
+        FormatException ex = Assert.ThrowsExactly<FormatException>(() =>
+        {
+            _ = NotableDateDocumentBuilder.FromXml(xml);
+        });
+
+        Assert.Contains("maybe", ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that a Boolean-valued XML attribute in a case the schema does not define is rejected with a
+    /// <see cref="FormatException" />, as the loader rejects it, rather than read as <see langword="true" />.
+    /// </summary>
+    /// <param name="value">The Boolean in an undefined case.</param>
+    [TestMethod]
+    [DataRow("TRUE")]
+    [DataRow("True")]
+    public void FromXml_WhenBooleanValueCaseDiffers_ShouldThrowFormatException(string value)
+    {
+        string xml = ScalarFieldXml("rule.nonWorking", value);
+
+        _ = Assert.ThrowsExactly<FormatException>(() =>
+        {
+            _ = NotableDateDocumentBuilder.FromXml(xml);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that an empty adjustment trigger <c>month</c>, which the loader reports as a value that does not parse,
+    /// is rejected with a <see cref="FormatException" /> rather than read as absent.
+    /// </summary>
+    [TestMethod]
+    public void FromXml_WhenTriggerMonthEmpty_ShouldThrowFormatException()
+    {
+        string xml = ScalarFieldXml("trigger.month", string.Empty);
+
+        _ = Assert.ThrowsExactly<FormatException>(() =>
+        {
+            _ = NotableDateDocumentBuilder.FromXml(xml);
+        });
+    }
+
+    /// <summary>
+    /// Builds an XML document holding every integer-, Boolean- and month-valued attribute the builder reads, each set to
+    /// its well-formed value except the one named, which holds the supplied value.
+    /// </summary>
+    /// <param name="field">The placeholder of the attribute to set, or <see langword="null" /> to set none.</param>
+    /// <param name="value">The value the named attribute holds.</param>
+    /// <returns>The XML document.</returns>
+    private static string ScalarFieldXml(string? field, string? value)
+    {
+        string xml = """
+            <?xml version="1.0" encoding="utf-8"?>
+            <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="test.scalars">
+              <AdjustmentPolicies>
+                <AdjustmentPolicy id="policy" priority="@policy.priority@">
+                  <Scope fromYear="@scope.fromYear@" toYear="@scope.toYear@">
+                    <OnlyYear value="@scope.onlyYears@" />
+                    <ExceptYear value="@scope.exceptYears@" />
+                  </Scope>
+                  <Trigger type="IfBeforeFixedDate" month="@trigger.month@" day="@trigger.day@" />
+                  <Action type="AddDays" days="@action.days@" maxSearchDays="@action.maxSearchDays@"
+                          skipWeekends="@action.skipWeekends@" skipNonWorkingDates="@action.skipNonWorkingDates@" />
+                  <Emission mode="ObservedOnly" nonWorking="@emission.nonWorking@" />
+                </AdjustmentPolicy>
+              </AdjustmentPolicies>
+              <Imports>
+                <Import resource="lib"><Use notableDateRef="lib-day" nonWorking="@use.nonWorking@" /></Import>
+              </Imports>
+              <NotableDates>
+                <NotableDate id="anchor" displayName="Anchor" category="PublicHoliday"
+                             defaultDurationDays="@notableDate.defaultDurationDays@" defaultNonWorkingDay="@notableDate.defaultNonWorkingDay@">
+                  <Rules>
+                    <Rule id="r" priority="@rule.priority@" nonWorking="@rule.nonWorking@" durationDays="@rule.durationDays@">
+                      <Applicability fromYear="@applicability.fromYear@" toYear="@applicability.toYear@"
+                                     everyYears="@applicability.everyYears@" anchorYear="@applicability.anchorYear@">
+                        <OnlyYear value="@applicability.onlyYears@" />
+                        <ExceptYear value="@applicability.exceptYears@" />
+                      </Applicability>
+                      <Strategy><Fixed month="March" day="1" /></Strategy>
+                      <Adjustments><Adjustment policyRef="policy" /></Adjustments>
+                    </Rule>
+                  </Rules>
+                </NotableDate>
+                <NotableDate id="other" displayName="Other" category="Observance">
+                  <Rules><Rule id="r"><Strategy><Fixed month="April" day="1" /></Strategy></Rule></Rules>
+                </NotableDate>
+              </NotableDates>
+              <Overrides>
+                <PatchRule notableDateRef="other" ruleRef="r" priority="@patch.priority@" nonWorking="@patch.nonWorking@" durationDays="@patch.durationDays@" />
+              </Overrides>
+            </NotableDateResource>
+            """;
+
+        foreach ((string key, string wellFormed) in s_xmlScalarFieldValues)
+            xml = xml.Replace("@" + key + "@", key == field ? value : wellFormed, StringComparison.Ordinal);
+
+        return xml;
+    }
 }

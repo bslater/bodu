@@ -224,4 +224,187 @@ public partial class NotableDateDocumentBuilderTests
           "notableDates": [ { "id": "x", "displayName": "X", "category": "PublicHoliday",
             "rules": [ { "id": "r", "strategy": { "fixed": { "month": 3, "day": 1 } } } ] } ] }
         """.Replace("@workingDays@", workingDays, StringComparison.Ordinal);
+
+    /// <summary>
+    /// The well-formed value, as a JSON literal, of every integer- and Boolean-valued property the JSON scalar test
+    /// document holds, keyed by the placeholder that stands for it.
+    /// </summary>
+    private static readonly Dictionary<string, string> s_jsonScalarFieldValues = new(StringComparer.Ordinal)
+    {
+        ["policy.priority"] = "5",
+        ["action.days"] = "1",
+        ["action.maxSearchDays"] = "7",
+        ["action.skipWeekends"] = "true",
+        ["action.skipNonWorkingDates"] = "false",
+        ["emission.nonWorking"] = "true",
+        ["notableDate.defaultDurationDays"] = "1",
+        ["notableDate.defaultNonWorkingDay"] = "true",
+        ["rule.priority"] = "3",
+        ["rule.nonWorking"] = "true",
+        ["rule.durationDays"] = "2",
+        ["applicability.fromYear"] = "2000",
+        ["applicability.toYear"] = "2100",
+        ["applicability.everyYears"] = "1",
+        ["applicability.anchorYear"] = "2000",
+        ["applicability.onlyYears"] = "2026",
+        ["applicability.exceptYears"] = "2027",
+        ["patch.priority"] = "4",
+        ["patch.nonWorking"] = "false",
+        ["patch.durationDays"] = "1",
+    };
+
+    /// <summary>
+    /// Verifies that the JSON scalar test document reads and builds when every integer- and Boolean-valued property is
+    /// well-formed, so each rejection the per-property tests observe is caused by the one value they replace.
+    /// </summary>
+    [TestMethod]
+    public void FromJson_WhenEveryScalarValueWellFormed_ShouldReadAndBuild()
+    {
+        NotableDateResource resource = NotableDateDocumentBuilder.FromJson(ScalarFieldJson(null, null)).Build();
+
+        Assert.AreEqual("test.scalars", resource.ResourceId);
+    }
+
+    /// <summary>
+    /// Verifies that an integer-valued JSON property holding text that is not an integer is rejected with a
+    /// <see cref="FormatException" /> naming the value, as the loader rejects it.
+    /// </summary>
+    /// <param name="field">The placeholder of the property holding the malformed value.</param>
+    [TestMethod]
+    [DataRow("policy.priority")]
+    [DataRow("action.days")]
+    [DataRow("action.maxSearchDays")]
+    [DataRow("notableDate.defaultDurationDays")]
+    [DataRow("rule.priority")]
+    [DataRow("rule.durationDays")]
+    [DataRow("applicability.fromYear")]
+    [DataRow("applicability.toYear")]
+    [DataRow("applicability.everyYears")]
+    [DataRow("applicability.anchorYear")]
+    [DataRow("applicability.onlyYears")]
+    [DataRow("applicability.exceptYears")]
+    [DataRow("patch.priority")]
+    [DataRow("patch.durationDays")]
+    public void FromJson_WhenIntegerValueMalformed_ShouldThrowFormatException(string field)
+    {
+        string json = ScalarFieldJson(field, "\"high\"");
+
+        FormatException ex = Assert.ThrowsExactly<FormatException>(() =>
+        {
+            _ = NotableDateDocumentBuilder.FromJson(json);
+        });
+
+        Assert.Contains("high", ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that an integer-valued JSON property holding a number that is not a 32-bit integer, a fraction or a
+    /// value beyond the range, is rejected with a <see cref="FormatException" /> naming the number, as the loader
+    /// rejects it.
+    /// </summary>
+    /// <param name="value">The JSON number.</param>
+    [TestMethod]
+    [DataRow("1.5")]
+    [DataRow("3000000000")]
+    public void FromJson_WhenIntegerValueIsNotInt32_ShouldThrowFormatException(string value)
+    {
+        string json = ScalarFieldJson("rule.priority", value);
+
+        FormatException ex = Assert.ThrowsExactly<FormatException>(() =>
+        {
+            _ = NotableDateDocumentBuilder.FromJson(json);
+        });
+
+        Assert.Contains(value, ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that a Boolean-valued JSON property holding text that is not a Boolean is rejected with a
+    /// <see cref="FormatException" /> naming the value, as the loader rejects it.
+    /// </summary>
+    /// <param name="field">The placeholder of the property holding the malformed value.</param>
+    [TestMethod]
+    [DataRow("action.skipWeekends")]
+    [DataRow("action.skipNonWorkingDates")]
+    [DataRow("emission.nonWorking")]
+    [DataRow("notableDate.defaultNonWorkingDay")]
+    [DataRow("rule.nonWorking")]
+    [DataRow("patch.nonWorking")]
+    public void FromJson_WhenBooleanValueMalformed_ShouldThrowFormatException(string field)
+    {
+        string json = ScalarFieldJson(field, "\"yes\"");
+
+        FormatException ex = Assert.ThrowsExactly<FormatException>(() =>
+        {
+            _ = NotableDateDocumentBuilder.FromJson(json);
+        });
+
+        Assert.Contains("yes", ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that an integer-valued JSON property holding a number in quotes reads as that number, as the loader
+    /// reads it.
+    /// </summary>
+    [TestMethod]
+    public void FromJson_WhenIntegerValueIsNumericText_ShouldReadTheNumber()
+    {
+        NotableDateResource resource = NotableDateDocumentBuilder.FromJson(ScalarFieldJson("rule.priority", "\"7\"")).Build();
+
+        Assert.AreEqual(7, resource.NotableDates.Single(d => d.Id == "anchor").Rules[0].Priority);
+    }
+
+    /// <summary>
+    /// Verifies that a Boolean-valued JSON property holding a schema Boolean as text, or as the number 0 or 1, reads as
+    /// that Boolean, as the loader reads it.
+    /// </summary>
+    /// <param name="value">The Boolean, as a JSON literal.</param>
+    /// <param name="expected">The Boolean the value stands for.</param>
+    [TestMethod]
+    [DataRow("\"false\"", false)]
+    [DataRow("0", false)]
+    [DataRow("1", true)]
+    public void FromJson_WhenBooleanValueIsTextOrNumber_ShouldReadTheBoolean(string value, bool expected)
+    {
+        NotableDateResource resource = NotableDateDocumentBuilder.FromJson(ScalarFieldJson("rule.nonWorking", value)).Build();
+
+        Assert.AreEqual(expected, resource.NotableDates.Single(d => d.Id == "anchor").Rules[0].NonWorking);
+    }
+
+    /// <summary>
+    /// Builds a JSON document holding every integer- and Boolean-valued property the builder reads, each set to its
+    /// well-formed value except the one named, which holds the supplied JSON literal.
+    /// </summary>
+    /// <param name="field">The placeholder of the property to set, or <see langword="null" /> to set none.</param>
+    /// <param name="literal">The JSON literal the named property holds.</param>
+    /// <returns>The JSON document.</returns>
+    private static string ScalarFieldJson(string? field, string? literal)
+    {
+        string json = """
+            { "schemaVersion": "1.0", "resourceId": "test.scalars",
+              "adjustmentPolicies": [ { "id": "policy", "priority": @policy.priority@,
+                "trigger": { "type": "Always" },
+                "action": { "type": "AddDays", "days": @action.days@, "maxSearchDays": @action.maxSearchDays@,
+                  "skipWeekends": @action.skipWeekends@, "skipNonWorkingDates": @action.skipNonWorkingDates@ },
+                "emission": { "mode": "ObservedOnly", "nonWorking": @emission.nonWorking@ } } ],
+              "notableDates": [
+                { "id": "anchor", "displayName": "Anchor", "category": "PublicHoliday",
+                  "defaultNonWorkingDay": @notableDate.defaultNonWorkingDay@, "defaultDurationDays": @notableDate.defaultDurationDays@,
+                  "rules": [ { "id": "r", "priority": @rule.priority@, "nonWorking": @rule.nonWorking@, "durationDays": @rule.durationDays@,
+                    "applicability": { "fromYear": @applicability.fromYear@, "toYear": @applicability.toYear@,
+                      "everyYears": @applicability.everyYears@, "anchorYear": @applicability.anchorYear@,
+                      "onlyYears": [ @applicability.onlyYears@ ], "exceptYears": [ @applicability.exceptYears@ ] },
+                    "strategy": { "fixed": { "month": 3, "day": 1 } },
+                    "adjustments": [ "policy" ] } ] },
+                { "id": "other", "displayName": "Other", "category": "Observance",
+                  "rules": [ { "id": "r", "strategy": { "fixed": { "month": 4, "day": 1 } } } ] } ],
+              "overrides": [ { "operation": "PatchRule", "notableDateRef": "other", "ruleRef": "r",
+                "priority": @patch.priority@, "nonWorking": @patch.nonWorking@, "durationDays": @patch.durationDays@ } ] }
+            """;
+
+        foreach ((string key, string wellFormed) in s_jsonScalarFieldValues)
+            json = json.Replace("@" + key + "@", key == field ? literal : wellFormed, StringComparison.Ordinal);
+
+        return json;
+    }
 }
