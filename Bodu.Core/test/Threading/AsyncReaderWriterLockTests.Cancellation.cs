@@ -188,4 +188,35 @@ public sealed partial class AsyncReaderWriterLockTests
         // Releasing the last active reader must admit the queued reader; a stranded queue would hang here.
         (await deferringReader.AsTask().WaitAsync(TimeSpan.FromSeconds(10))).Dispose();
     }
+
+    /// <summary>
+    /// Verifies that when the only queued writer cancels while a reader is active, the reader queued behind it is
+    /// admitted at once, so readers that arrive later never overtake it.
+    /// </summary>
+    [TestMethod]
+    public async Task WriterAsync_WhenCanceledWhileReadersActive_ShouldAdmitQueuedReadersBeforeLaterReaders()
+    {
+        var sut = new AsyncReaderWriterLock();
+        AsyncReaderWriterLock.Releaser activeReader = await sut.ReaderAsync();
+        using var cts = new CancellationTokenSource();
+
+        ValueTask<AsyncReaderWriterLock.Releaser> canceledWriter = sut.WriterAsync(cts.Token);
+        ValueTask<AsyncReaderWriterLock.Releaser> queuedReader = sut.ReaderAsync();
+        Assert.IsFalse(queuedReader.IsCompleted);
+
+        cts.Cancel();
+        await Assert.ThrowsExactlyAsync<TaskCanceledException>(async () => await canceledWriter);
+
+        // Two later readers, overlapping, are admitted immediately because no writer is active or queued.
+        AsyncReaderWriterLock.Releaser laterReader1 = await sut.ReaderAsync();
+        AsyncReaderWriterLock.Releaser laterReader2 = await sut.ReaderAsync();
+
+        // The reader that queued first must not still be waiting behind them.
+        Assert.AreEqual(0, sut.WaitingReaderCount);
+        (await queuedReader.AsTask().WaitAsync(TimeSpan.FromSeconds(10))).Dispose();
+
+        laterReader2.Dispose();
+        laterReader1.Dispose();
+        activeReader.Dispose();
+    }
 }
