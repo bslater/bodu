@@ -379,6 +379,16 @@ public partial class IniSerializerTests
     }
 
     /// <summary>
+    /// A root model whose only member is a dictionary keyed by <see cref="int" />, which can be neither a section nor
+    /// the reserved global section.
+    /// </summary>
+    private sealed class IntKeyedSectionConfig
+    {
+        /// <summary>Gets or sets the codes.</summary>
+        public Dictionary<int, string>? Codes { get; set; }
+    }
+
+    /// <summary>
     /// A dictionary keyed by <see cref="string" /> that implements the generic
     /// <see cref="IDictionary{TKey, TValue}" /> interface but not the non-generic <see cref="IDictionary" />, and
     /// enumerates its entries in the order they were added.
@@ -528,6 +538,30 @@ public partial class IniSerializerTests
         [new InvalidKat<Type>("int?", typeof(int?), typeof(IniSerializationException), MessageContains: "System.Nullable")],
         [new InvalidKat<Type>("Guid?", typeof(Guid?), typeof(IniSerializationException), MessageContains: "System.Nullable")],
         [new InvalidKat<Type>("DateOnly?", typeof(DateOnly?), typeof(IniSerializationException), MessageContains: "System.Nullable")],
+    ];
+
+    /// <summary>
+    /// Gets dictionary root values whose keys are not strings, each of which serialization must reject with
+    /// <see cref="IniSerializationException" /> naming its type.
+    /// </summary>
+    /// <value>The rows, each a named dictionary and the exception it raises.</value>
+    public static IEnumerable<object[]> NonStringKeyedDictionaryRootValues =>
+    [
+        [new InvalidKat<object>("Hashtable", new Hashtable { ["A"] = "a" }, typeof(IniSerializationException), MessageContains: typeof(Hashtable).ToString())],
+        [new InvalidKat<object>("SortedList", new SortedList { ["A"] = "a" }, typeof(IniSerializationException), MessageContains: typeof(SortedList).ToString())],
+        [new InvalidKat<object>("Dictionary<int, string>", new Dictionary<int, string> { [1] = "a" }, typeof(IniSerializationException), MessageContains: typeof(Dictionary<int, string>).ToString())],
+    ];
+
+    /// <summary>
+    /// Gets dictionary root types whose keys are not strings, each of which deserialization must reject with
+    /// <see cref="IniSerializationException" /> naming its type.
+    /// </summary>
+    /// <value>The rows, each a named dictionary type and the exception it raises.</value>
+    public static IEnumerable<object[]> NonStringKeyedDictionaryRootTypes =>
+    [
+        [new InvalidKat<Type>("Hashtable", typeof(Hashtable), typeof(IniSerializationException), MessageContains: typeof(Hashtable).ToString())],
+        [new InvalidKat<Type>("SortedList", typeof(SortedList), typeof(IniSerializationException), MessageContains: typeof(SortedList).ToString())],
+        [new InvalidKat<Type>("Dictionary<int, string>", typeof(Dictionary<int, string>), typeof(IniSerializationException), MessageContains: typeof(Dictionary<int, string>).ToString())],
     ];
 
     /// <summary>

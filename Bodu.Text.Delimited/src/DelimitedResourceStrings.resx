@@ -97,4 +97,7 @@
   <data name="Format_Invalid_DelimitedFactoryRecordConversion" xml:space="preserve">
     <value>The record factory could not convert a value of delimited record {0} to type '{1}'.</value>
   </data>
+  <data name="Op_Invalid_DelimitedValueNotScalar" xml:space="preserve">
+    <value>The delimited column '{0}' cannot be written: the type '{1}' is not a scalar, so no field reads back as it.</value>
+  </data>
 </root>

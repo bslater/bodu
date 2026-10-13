@@ -23,7 +23,15 @@ namespace Bodu.Text.DotEnv;
 /// <see cref="IDictionary{TKey, TValue}" /> keyed by <see cref="string" />) whose members are strings or types
 /// convertible from a string. A dictionary that implements only that generic interface, and not the non-generic
 /// <see cref="System.Collections.IDictionary" />, is written and read through it, as a
-/// <see cref="Dictionary{TKey, TValue}" /> is. Property names honour
+/// <see cref="Dictionary{TKey, TValue}" /> is. Each member or entry is one value, so its type must be a scalar: a
+/// string or character, a number, a <see cref="bool" />, an enumeration, a date, time or time span, a
+/// <see cref="Guid" /> or a <see cref="Uri" />, or <see cref="object" /> holding one. Writing a member or entry of any
+/// other type, such as a dictionary or a class with members of its own, throws
+/// <see cref="DotEnvSerializationException" />, unless an ignore condition leaves it out, rather than writing the
+/// value's <see cref="object.ToString" /> text, which does not read back. A dictionary whose type is not keyed by
+/// <see cref="string" />, such as a <see cref="System.Collections.Hashtable" /> or a
+/// <see cref="Dictionary{TKey, TValue}" /> keyed by <see cref="int" />, is a collection rather than an object, and is
+/// rejected with <see cref="DotEnvSerializationException" /> when written and when read. Property names honor
 /// <see cref="DotEnvSerializerOptions.PropertyNamingPolicy" /> and the
 /// <see cref="Bodu.Text.Serialization.PropertyNameAttribute" /> family; the callback interfaces (<see cref="Bodu.Text.Serialization.IOnSerializing" />
 /// and its siblings) fire around the mapping. Each member name maps to one key, its most derived declaration: a
@@ -47,9 +55,11 @@ public static partial class DotEnvSerializer
     /// <param name="options">The serializer options, or <see langword="null" /> to use the defaults.</param>
     /// <returns>The DotEnv text.</returns>
     /// <exception cref="DotEnvSerializationException">
-    /// Thrown when <typeparamref name="T" /> cannot be mapped to a DotEnv object, or when a member name or dictionary
-    /// key is not a key the reader reads back (one matching <c>[A-Za-z_][A-Za-z0-9_]*</c>); the message then names the
-    /// key, and the writer's <see cref="ArgumentException" /> is the inner exception.
+    /// Thrown when <typeparamref name="T" /> cannot be mapped to a DotEnv object; when a member or dictionary entry
+    /// that is written is not a scalar, or is declared as <see cref="object" /> and holds a value that is not, and the
+    /// message then names the key; or when a member name or dictionary key is not a key the reader reads back (one
+    /// matching <c>[A-Za-z_][A-Za-z0-9_]*</c>), and the message then names the key, with the writer's
+    /// <see cref="ArgumentException" /> as the inner exception.
     /// </exception>
     [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
     [RequiresDynamicCode(RequiresDynamicCodeMessage)]
@@ -72,9 +82,11 @@ public static partial class DotEnvSerializer
     /// Thrown when <paramref name="destination" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="DotEnvSerializationException">
-    /// Thrown when <typeparamref name="T" /> cannot be mapped to a DotEnv object, or when a member name or dictionary
-    /// key is not a key the reader reads back (one matching <c>[A-Za-z_][A-Za-z0-9_]*</c>); the message then names the
-    /// key, and the writer's <see cref="ArgumentException" /> is the inner exception.
+    /// Thrown when <typeparamref name="T" /> cannot be mapped to a DotEnv object; when a member or dictionary entry
+    /// that is written is not a scalar, or is declared as <see cref="object" /> and holds a value that is not, and the
+    /// message then names the key; or when a member name or dictionary key is not a key the reader reads back (one
+    /// matching <c>[A-Za-z_][A-Za-z0-9_]*</c>), and the message then names the key, with the writer's
+    /// <see cref="ArgumentException" /> as the inner exception.
     /// </exception>
     [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
     [RequiresDynamicCode(RequiresDynamicCodeMessage)]
@@ -103,9 +115,11 @@ public static partial class DotEnvSerializer
     /// Thrown when <paramref name="destination" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="DotEnvSerializationException">
-    /// Thrown when <typeparamref name="T" /> cannot be mapped to a DotEnv object, or when a member name or dictionary
-    /// key is not a key the reader reads back (one matching <c>[A-Za-z_][A-Za-z0-9_]*</c>); the message then names the
-    /// key, and the writer's <see cref="ArgumentException" /> is the inner exception.
+    /// Thrown when <typeparamref name="T" /> cannot be mapped to a DotEnv object; when a member or dictionary entry
+    /// that is written is not a scalar, or is declared as <see cref="object" /> and holds a value that is not, and the
+    /// message then names the key; or when a member name or dictionary key is not a key the reader reads back (one
+    /// matching <c>[A-Za-z_][A-Za-z0-9_]*</c>), and the message then names the key, with the writer's
+    /// <see cref="ArgumentException" /> as the inner exception.
     /// </exception>
     [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
     [RequiresDynamicCode(RequiresDynamicCodeMessage)]

@@ -204,6 +204,20 @@ public partial class DotEnvSerializerTests
     }
 
     /// <summary>
+    /// A POCO with a member whose type is a dictionary, which is not a scalar and maps to no single DotEnv value.
+    /// </summary>
+    public sealed class DictionaryMemberConfig
+    {
+        /// <summary>Gets or sets the name.</summary>
+        /// <value>The name.</value>
+        public string? Name { get; set; }
+
+        /// <summary>Gets or sets the counts.</summary>
+        /// <value>The counts, or <see langword="null" />.</value>
+        public Dictionary<string, int>? Counts { get; set; }
+    }
+
+    /// <summary>
     /// A POCO whose members are dates and times, two of them also in nullable form.
     /// </summary>
     public sealed class TemporalConfig
@@ -483,6 +497,30 @@ public partial class DotEnvSerializerTests
         [new InvalidKat<Type>("int?", typeof(int?), typeof(DotEnvSerializationException), MessageContains: "System.Nullable")],
         [new InvalidKat<Type>("Guid?", typeof(Guid?), typeof(DotEnvSerializationException), MessageContains: "System.Nullable")],
         [new InvalidKat<Type>("DateOnly?", typeof(DateOnly?), typeof(DotEnvSerializationException), MessageContains: "System.Nullable")],
+    ];
+
+    /// <summary>
+    /// Gets dictionary root values whose keys are not strings, each of which serialization must reject with
+    /// <see cref="DotEnvSerializationException" /> naming its type.
+    /// </summary>
+    /// <value>The rows, each a named dictionary and the exception it raises.</value>
+    public static IEnumerable<object[]> NonStringKeyedDictionaryRootValues =>
+    [
+        [new InvalidKat<object>("Hashtable", new Hashtable { ["A"] = "a" }, typeof(DotEnvSerializationException), MessageContains: typeof(Hashtable).ToString())],
+        [new InvalidKat<object>("SortedList", new SortedList { ["A"] = "a" }, typeof(DotEnvSerializationException), MessageContains: typeof(SortedList).ToString())],
+        [new InvalidKat<object>("Dictionary<int, string>", new Dictionary<int, string> { [1] = "a" }, typeof(DotEnvSerializationException), MessageContains: typeof(Dictionary<int, string>).ToString())],
+    ];
+
+    /// <summary>
+    /// Gets dictionary root types whose keys are not strings, each of which deserialization must reject with
+    /// <see cref="DotEnvSerializationException" /> naming its type.
+    /// </summary>
+    /// <value>The rows, each a named dictionary type and the exception it raises.</value>
+    public static IEnumerable<object[]> NonStringKeyedDictionaryRootTypes =>
+    [
+        [new InvalidKat<Type>("Hashtable", typeof(Hashtable), typeof(DotEnvSerializationException), MessageContains: typeof(Hashtable).ToString())],
+        [new InvalidKat<Type>("SortedList", typeof(SortedList), typeof(DotEnvSerializationException), MessageContains: typeof(SortedList).ToString())],
+        [new InvalidKat<Type>("Dictionary<int, string>", typeof(Dictionary<int, string>), typeof(DotEnvSerializationException), MessageContains: typeof(Dictionary<int, string>).ToString())],
     ];
 
     /// <summary>

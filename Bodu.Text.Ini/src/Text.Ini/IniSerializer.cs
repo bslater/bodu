@@ -24,8 +24,11 @@ namespace Bodu.Text.Ini;
 /// <see cref="IDictionary{TKey, TValue}" /> values keyed by <see cref="string" /> - become sections. A dictionary,
 /// whether the root or a section, that implements only that generic interface, and not the non-generic
 /// <see cref="System.Collections.IDictionary" />, is written and read through it, as a
-/// <see cref="Dictionary{TKey, TValue}" /> is. A member nested beyond the second level is rejected. Property names
-/// honour <see cref="IniSerializerOptions.PropertyNamingPolicy" /> and the
+/// <see cref="Dictionary{TKey, TValue}" /> is. A dictionary whose type is not keyed by <see cref="string" />, such as a
+/// <see cref="System.Collections.Hashtable" /> or a <see cref="Dictionary{TKey, TValue}" /> keyed by <see cref="int" />,
+/// is a collection rather than an object or a section, and is rejected with <see cref="IniSerializationException" />,
+/// as the root or as a section, when written and when read. A member nested beyond the second level is rejected.
+/// Property names honor <see cref="IniSerializerOptions.PropertyNamingPolicy" /> and the
 /// <see cref="Bodu.Text.Serialization.PropertyNameAttribute" /> family; the callback interfaces (<see cref="Bodu.Text.Serialization.IOnSerializing" />
 /// and its siblings) fire around the mapping. Each member name maps to one key or section, its most derived
 /// declaration: a property or field hidden with the <see langword="new" /> modifier is neither written nor read. A type

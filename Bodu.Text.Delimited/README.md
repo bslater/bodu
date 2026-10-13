@@ -39,4 +39,4 @@ await foreach (Trade trade in DelimitedSerializer.DeserializeAsyncEnumerableAsyn
     Process(trade);
 ```
 
-Values are carried as text on the wire; scalars convert with `InvariantCulture`. The serializer honours `[PropertyName]`, `[PropertyOrder]` and `[Ignore]` with `IgnoreCondition.Always` from the shared `Bodu.Text.Serialization` attribute family (it does not read `[Required]` or a conditional `[Ignore]`), naming policies, and serialization callbacks. The Regression test tier carries a csv-spectrum-derived RFC 4180 conformance corpus.
+Values are carried as text on the wire; scalars convert with `InvariantCulture`, and a record member that is not a scalar, such as a dictionary or a class, is rejected with `DelimitedSerializationException` when written rather than written as its `ToString()` text. The serializer honors `[PropertyName]`, `[PropertyOrder]` and `[Ignore]` with `IgnoreCondition.Always` from the shared `Bodu.Text.Serialization` attribute family (it does not read `[Required]` or a conditional `[Ignore]`), naming policies, and serialization callbacks. The Regression test tier carries a csv-spectrum-derived RFC 4180 conformance corpus.

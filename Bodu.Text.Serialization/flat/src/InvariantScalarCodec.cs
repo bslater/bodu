@@ -108,6 +108,40 @@ internal static class InvariantScalarCodec
         Classify(type) != FlatScalarKind.None;
 
     /// <summary>
+    /// Gets the type that keeps the value of a member or dictionary entry from being written as one scalar that reads
+    /// back.
+    /// </summary>
+    /// <param name="value">The value to write, or <see langword="null" />.</param>
+    /// <param name="declaredType">The declared type of the member or of the dictionary's values.</param>
+    /// <param name="declaredKind">The scalar kind of <paramref name="declaredType" />.</param>
+    /// <returns>
+    /// <see langword="null" /> when the value maps to a scalar; otherwise <paramref name="declaredType" />, or for a
+    /// member declared as <see cref="object" />, the type of its value.
+    /// </returns>
+    /// <remarks>
+    /// <para>
+    /// A value of a scalar declared type maps, as does one declared as <see cref="object" /> when it is
+    /// <see langword="null" /> or a scalar, which is written by its own type and reads back as its text.
+    /// </para>
+    /// <para>
+    /// Any other declared type, such as a dictionary, a collection or a class with members of its own, maps to no
+    /// single value: <see cref="Parse(string, Type, Policy)" /> converts no text to it, an empty value included, so the
+    /// type is reported whatever the value, <see langword="null" /> included, rather than written as the value's
+    /// <see cref="object.ToString" /> text.
+    /// </para>
+    /// </remarks>
+    internal static Type? GetUnmappedType(object? value, Type declaredType, FlatScalarKind declaredKind)
+    {
+        if (declaredKind != FlatScalarKind.None)
+            return null;
+
+        if (declaredType != typeof(object))
+            return declaredType;
+
+        return value is null || IsScalar(value.GetType()) ? null : value.GetType();
+    }
+
+    /// <summary>
     /// Formats a scalar using the invariant culture and the requested wire-format policy.
     /// </summary>
     /// <param name="value">The scalar value to format.</param>
@@ -136,7 +170,9 @@ internal static class InvariantScalarCodec
     /// <returns>The value's serialized representation.</returns>
     /// <remarks>
     /// A value whose declared type is a scalar is formatted as that scalar, as <see cref="Format(object?, Policy)" />
-    /// formats it; any other value, such as one declared as <see cref="object" />, is formatted by its own type.
+    /// formats it; any other value, such as one declared as <see cref="object" />, is formatted by its own type. The
+    /// Delimited and DotEnv serializers first reject, through
+    /// <see cref="GetUnmappedType(object?, Type, FlatScalarKind)" />, a value that maps to no scalar.
     /// </remarks>
     internal static string Format(object? value, FlatScalarKind declaredKind, Policy policy) =>
         value is null ? string.Empty

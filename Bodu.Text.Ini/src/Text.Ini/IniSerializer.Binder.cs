@@ -61,8 +61,9 @@ public static partial class IniSerializer
     /// <param name="dictionary">The root dictionary.</param>
     /// <param name="options">The serializer options.</param>
     /// <exception cref="IniSerializationException">
-    /// Thrown when a section nests beyond INI's two levels, or when a key, section name or value cannot be written so
-    /// that it reads back unchanged.
+    /// Thrown when a section nests beyond INI's two levels, when an entry's value is a dictionary whose keys are not
+    /// strings, which cannot be a section, or when a key, section name or value cannot be written so that it reads back
+    /// unchanged.
     /// </exception>
     [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
     [RequiresDynamicCode(RequiresDynamicCodeMessage)]
@@ -78,6 +79,10 @@ public static partial class IniSerializer
 
                 continue;
             }
+
+            // A dictionary whose keys are not strings is a collection, which cannot be a section.
+            if (entry.Value is IDictionary)
+                throw new IniSerializationException(string.Format(CultureInfo.CurrentCulture, IniResourceStrings.Op_Invalid_IniDepthExceeded, key));
 
             if (FlatBinding.ShouldSkipDictionaryValue(entry.Value, options.DefaultIgnoreCondition))
                 continue;
@@ -128,6 +133,9 @@ public static partial class IniSerializer
             }
             else if (IsGlobalName(member.Name, options))
             {
+                if (IsUnsupportedEnumerable(member.MemberType))
+                    throw new IniSerializationException(string.Format(CultureInfo.CurrentCulture, IniResourceStrings.Op_Invalid_IniDepthExceeded, member.Name));
+
                 object? memberValue = member.GetValue(value);
                 if (memberValue is not null)
                     WriteSectionBody(ref writer, member.Name, memberValue, options);
@@ -207,8 +215,8 @@ public static partial class IniSerializer
     /// <param name="entries">The dictionary to write.</param>
     /// <param name="options">The serializer options.</param>
     /// <exception cref="IniSerializationException">
-    /// Thrown when an entry value is itself a dictionary, which INI cannot represent inside a section, or when an
-    /// entry's key or value cannot be written so that it reads back unchanged.
+    /// Thrown when an entry value is itself a dictionary, whatever its keys, which INI cannot represent inside a
+    /// section, or when an entry's key or value cannot be written so that it reads back unchanged.
     /// </exception>
     [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
     [RequiresDynamicCode(RequiresDynamicCodeMessage)]
@@ -216,7 +224,7 @@ public static partial class IniSerializer
     {
         foreach (DictionaryEntry entry in entries)
         {
-            if (FlatBinding.TryGetDictionary(entry.Value, out _))
+            if (entry.Value is IDictionary || FlatBinding.TryGetDictionary(entry.Value, out _))
                 throw new IniSerializationException(string.Format(CultureInfo.CurrentCulture, IniResourceStrings.Op_Invalid_IniDepthExceeded, KeyToString(entry.Key)));
 
             if (FlatBinding.ShouldSkipDictionaryValue(entry.Value, options.DefaultIgnoreCondition))
@@ -386,14 +394,14 @@ public static partial class IniSerializer
                 continue;
             }
 
+            if (IsUnsupportedEnumerable(member.MemberType))
+                throw new IniSerializationException(string.Format(CultureInfo.CurrentCulture, IniResourceStrings.Op_Invalid_IniDepthExceeded, member.Name));
+
             if (IsGlobalName(member.Name, options))
             {
                 member.SetValue(instance, ReadSectionBody(document.GlobalEntries, member.MemberType, options));
                 continue;
             }
-
-            if (IsUnsupportedEnumerable(member.MemberType))
-                throw new IniSerializationException(string.Format(CultureInfo.CurrentCulture, IniResourceStrings.Op_Invalid_IniDepthExceeded, member.Name));
 
             IniNormalizedSection? section = FindSection(document, member.Name, comparison);
             if (section is not null)
@@ -609,14 +617,19 @@ public static partial class IniSerializer
         InvariantScalarCodec.IsScalar(type) || IsUnsupportedEnumerable(type);
 
     /// <summary>
-    /// Determines whether a type is a non-dictionary enumerable, which INI cannot represent at any level.
+    /// Determines whether a type is a collection other than a string-keyed dictionary, which INI cannot represent at
+    /// any level.
     /// </summary>
     /// <param name="type">The type to test.</param>
     /// <returns><see langword="true" /> when the type is an unsupported enumerable.</returns>
+    /// <remarks>
+    /// The unsupported collections include every dictionary whose type is not keyed by <see cref="string" />, such as a
+    /// <see cref="Hashtable" /> or a <see cref="Dictionary{TKey, TValue}" /> keyed by <see cref="int" />: its keys
+    /// could not be read back as the type they are, and binding it as an object would read it as empty.
+    /// </remarks>
     private static bool IsUnsupportedEnumerable(Type type) =>
         type != typeof(string)
             && typeof(IEnumerable).IsAssignableFrom(type)
-            && !typeof(IDictionary).IsAssignableFrom(type)
             && !FlatBinding.TryGetStringKeyedDictionary(type, out _);
 
     /// <summary>

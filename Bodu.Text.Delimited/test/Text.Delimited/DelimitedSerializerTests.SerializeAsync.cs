@@ -215,4 +215,51 @@ public partial class DelimitedSerializerTests
         Assert.AreEqual(0, buffered.Length);
         Assert.AreEqual(0, incremental.Length);
     }
+
+    /// <summary>
+    /// Verifies that both <c>SerializeAsync</c> overloads, when the record type has a member whose type is not a
+    /// scalar, throw <see cref="DelimitedSerializationException" /> naming the column and write nothing.
+    /// </summary>
+    /// <returns>A task representing the asynchronous test.</returns>
+    [TestMethod]
+    public async Task SerializeAsync_WhenARecordMemberIsNotAScalar_ShouldThrowDelimitedSerializationException()
+    {
+        var records = new List<DictionaryMemberRecord> { new() { Name = "a", Counts = new Dictionary<string, int> { ["x"] = 1 } } };
+        using var buffered = new MemoryStream();
+        using var incremental = new MemoryStream();
+
+        DelimitedSerializationException bufferedException = await Assert.ThrowsExactlyAsync<DelimitedSerializationException>(async () =>
+        {
+            await DelimitedSerializer.SerializeAsync(buffered, records);
+        });
+        DelimitedSerializationException incrementalException = await Assert.ThrowsExactlyAsync<DelimitedSerializationException>(async () =>
+        {
+            await DelimitedSerializer.SerializeAsync(incremental, ToAsyncEnumerable(records));
+        });
+
+        Assert.IsTrue(bufferedException.Message.Contains("'Counts'", StringComparison.Ordinal), bufferedException.Message);
+        Assert.IsTrue(incrementalException.Message.Contains("'Counts'", StringComparison.Ordinal), incrementalException.Message);
+        Assert.AreEqual(0, buffered.Length);
+        Assert.AreEqual(0, incremental.Length);
+    }
+
+    /// <summary>
+    /// Verifies that the asynchronous-sequence <c>SerializeAsync</c> overload, when a member declared as
+    /// <see cref="object" /> holds a value that is not a scalar, throws <see cref="DelimitedSerializationException" />
+    /// naming the column, rather than writing the value's <see cref="object.ToString" /> text.
+    /// </summary>
+    /// <returns>A task representing the asynchronous test.</returns>
+    [TestMethod]
+    public async Task SerializeAsync_WhenAnObjectMemberHoldsAValueThatIsNotAScalar_ShouldThrowDelimitedSerializationException()
+    {
+        var records = new List<ObjectValueRecord> { new() { Value = new List<int> { 1, 2 } } };
+        using var incremental = new MemoryStream();
+
+        DelimitedSerializationException ex = await Assert.ThrowsExactlyAsync<DelimitedSerializationException>(async () =>
+        {
+            await DelimitedSerializer.SerializeAsync(incremental, ToAsyncEnumerable(records));
+        });
+
+        Assert.IsTrue(ex.Message.Contains("'Value'", StringComparison.Ordinal), ex.Message);
+    }
 }

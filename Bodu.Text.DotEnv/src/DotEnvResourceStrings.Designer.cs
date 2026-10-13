@@ -194,5 +194,14 @@ namespace Bodu {
                 return ResourceManager.GetString("Op_Invalid_DotEnvUnwritableKey", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The DotEnv key '{0}' cannot be written: the type '{1}' is not a scalar, so no DotEnv value reads back as it..
+        /// </summary>
+        internal static string Op_Invalid_DotEnvValueNotScalar {
+            get {
+                return ResourceManager.GetString("Op_Invalid_DotEnvValueNotScalar", resourceCulture);
+            }
+        }
     }
 }

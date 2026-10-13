@@ -262,6 +262,82 @@ public partial class IniSerializerTests
     }
 
     /// <summary>
+    /// Verifies that a dictionary root whose keys are not strings, such as a <see cref="System.Collections.Hashtable" />
+    /// or a <see cref="Dictionary{TKey, TValue}" /> keyed by <see cref="int" />, throws
+    /// <see cref="IniSerializationException" /> naming its type, as a root that is not an object does, rather than
+    /// writing entries that do not read back into it.
+    /// </summary>
+    /// <param name="kat">The dictionary root and the exception it raises.</param>
+    [TestMethod]
+    [DynamicData(
+        nameof(NonStringKeyedDictionaryRootValues),
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
+    public void Serialize_WhenRootIsADictionaryWhoseKeysAreNotStrings_ShouldThrowIniSerializationException(InvalidKat<object> kat)
+    {
+        var ex = Assert.ThrowsExactly<IniSerializationException>(() =>
+        {
+            _ = IniSerializer.Serialize(kat.Input);
+        });
+
+        Assert.IsTrue(ex.Message.Contains(kat.MessageContains!, StringComparison.Ordinal), ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that a section member whose type is a dictionary keyed by <see cref="int" /> throws
+    /// <see cref="IniSerializationException" /> naming the member, rather than writing a section that does not read
+    /// back into it.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenASectionMemberIsADictionaryWhoseKeysAreNotStrings_ShouldThrowIniSerializationException()
+    {
+        var config = new IntKeyedSectionConfig { Codes = new Dictionary<int, string> { [1] = "a" } };
+
+        var ex = Assert.ThrowsExactly<IniSerializationException>(() =>
+        {
+            _ = IniSerializer.Serialize(config);
+        });
+
+        Assert.IsTrue(ex.Message.Contains("'Codes'", StringComparison.Ordinal), ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that the reserved global-section member, when its type is a dictionary keyed by <see cref="int" />,
+    /// throws <see cref="IniSerializationException" /> naming the member, rather than writing global keys that do not
+    /// read back into it.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenTheGlobalSectionMemberIsADictionaryWhoseKeysAreNotStrings_ShouldThrowIniSerializationException()
+    {
+        var config = new IntKeyedSectionConfig { Codes = new Dictionary<int, string> { [1] = "a" } };
+        var options = new IniSerializerOptions { GlobalSectionName = "Codes" };
+
+        var ex = Assert.ThrowsExactly<IniSerializationException>(() =>
+        {
+            _ = IniSerializer.Serialize(config, options);
+        });
+
+        Assert.IsTrue(ex.Message.Contains("'Codes'", StringComparison.Ordinal), ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that a root dictionary entry whose value is a dictionary keyed by <see cref="int" /> throws
+    /// <see cref="IniSerializationException" /> naming the entry, rather than writing it as a section.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenARootEntryIsADictionaryWhoseKeysAreNotStrings_ShouldThrowIniSerializationException()
+    {
+        var root = new Dictionary<string, object> { ["codes"] = new Dictionary<int, string> { [1] = "a" } };
+
+        var ex = Assert.ThrowsExactly<IniSerializationException>(() =>
+        {
+            _ = IniSerializer.Serialize(root);
+        });
+
+        Assert.IsTrue(ex.Message.Contains("'codes'", StringComparison.Ordinal), ex.Message);
+    }
+
+    /// <summary>
     /// Verifies that a global key hiding a base member of the same name with <see langword="new" /> is written once,
     /// from the most derived declaration, and that the hidden member is not written.
     /// </summary>

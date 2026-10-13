@@ -29,6 +29,9 @@ public static partial class DelimitedSerializer
     /// <param name="writer">The writer.</param>
     /// <param name="record">The record instance.</param>
     /// <param name="members">The mapped members.</param>
+    /// <exception cref="DelimitedSerializationException">
+    /// Thrown when a member declared as <see cref="object" /> holds a value that is not a scalar.
+    /// </exception>
     private static void WriteRecord(ref Utf8DelimitedWriter writer, object record, FlatMemberDescriptor[] members)
     {
         (record as IOnSerializing)?.OnSerializing();
@@ -40,7 +43,7 @@ public static partial class DelimitedSerializer
                 continue;
 
             writer.WritePropertyName(member.Name);
-            writer.WriteString(ValueToString(member.GetValue(record), member.ScalarKind));
+            writer.WriteString(MemberValueToString(record, member));
         }
 
         writer.WriteEndObject();
@@ -221,6 +224,43 @@ public static partial class DelimitedSerializer
         InvariantScalarCodec.Format(value, declaredKind, InvariantScalarCodec.Policy.Delimited);
 
     /// <summary>
+    /// Gets a record member's value and converts it to its field text, rejecting a value that is not a scalar.
+    /// </summary>
+    /// <param name="record">The record instance.</param>
+    /// <param name="member">The readable member to write.</param>
+    /// <returns>The field text.</returns>
+    /// <exception cref="DelimitedSerializationException">
+    /// Thrown when the member's value is not a scalar, which no field reads back as: a member declared as
+    /// <see cref="object" /> that holds such a value, since <see cref="GetRecordMembers" /> has rejected every other
+    /// declared type that is not a scalar.
+    /// </exception>
+    private static string MemberValueToString(object record, FlatMemberDescriptor member)
+    {
+        object? value = member.GetValue(record);
+        ThrowIfNotScalar(value, member);
+
+        return ValueToString(value, member.ScalarKind);
+    }
+
+    /// <summary>
+    /// Throws when a record member, or its value, is not a scalar, which no field reads back as, so that it is not
+    /// written as its <see cref="object.ToString" /> text.
+    /// </summary>
+    /// <param name="value">
+    /// The member's value, or <see langword="null" /> to test the member's declared type alone.
+    /// </param>
+    /// <param name="member">The member.</param>
+    /// <exception cref="DelimitedSerializationException">
+    /// Thrown when the member's declared type is not a scalar and not <see cref="object" />, whatever the value, or is
+    /// <see cref="object" /> and the value is not <see langword="null" /> or a scalar.
+    /// </exception>
+    private static void ThrowIfNotScalar(object? value, FlatMemberDescriptor member)
+    {
+        if (InvariantScalarCodec.GetUnmappedType(value, member.MemberType, member.ScalarKind) is { } unmapped)
+            throw new DelimitedSerializationException(string.Format(CultureInfo.CurrentCulture, DelimitedResourceStrings.Op_Invalid_DelimitedValueNotScalar, member.Name, unmapped));
+    }
+
+    /// <summary>
     /// Converts a string into a scalar while preserving this serializer's exception contract.
     /// </summary>
     /// <param name="raw">The raw text.</param>
@@ -307,14 +347,24 @@ public static partial class DelimitedSerializer
     /// </param>
     /// <returns>The ordered member descriptors.</returns>
     /// <exception cref="DelimitedSerializationException">
-    /// Thrown when <paramref name="recordType" /> is a scalar or a collection, or when <paramref name="reading" /> is
-    /// <see langword="true" /> and the type has no public parameterless constructor.
+    /// Thrown when <paramref name="recordType" /> is a scalar or a collection, when <paramref name="reading" /> is
+    /// <see langword="true" /> and the type has no public parameterless constructor, or when
+    /// <paramref name="reading" /> is <see langword="false" /> and a readable member's declared type is neither a
+    /// scalar nor <see cref="object" />.
     /// </exception>
     /// <remarks>
+    /// <para>
     /// A scalar converts as one field and a collection holds values rather than columns, so neither is a record,
     /// although both have public properties (<see cref="string.Length" />, <see cref="DateTime.Year" />,
     /// <see cref="List{T}.Capacity" />) that would otherwise be mapped as columns. The check is made before anything is
     /// read or written, so a type that is not a record is rejected whether or not there are records.
+    /// </para>
+    /// <para>
+    /// Every readable member is written as one field, so a record type with a member that is not a scalar, such as a
+    /// dictionary or a class with members of its own, is rejected for writing in the same way, before the header row;
+    /// its field would be the value's <see cref="object.ToString" /> text, which does not read back. Reading leaves
+    /// such a member alone unless the document has its column.
+    /// </para>
     /// </remarks>
     [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
     private static FlatMemberDescriptor[] GetRecordMembers(
@@ -334,7 +384,18 @@ public static partial class DelimitedSerializer
                 string.Format(CultureInfo.CurrentCulture, DelimitedResourceStrings.Op_Invalid_DelimitedRecordTypeNotCreatable, recordType));
         }
 
-        return GetMembers(recordType, options);
+        FlatMemberDescriptor[] members = GetMembers(recordType, options);
+        if (!reading)
+        {
+            // A member declared as object is tested again, on its value, as each record is written.
+            foreach (FlatMemberDescriptor member in members)
+            {
+                if (member.CanRead)
+                    ThrowIfNotScalar(null, member);
+            }
+        }
+
+        return members;
     }
 
     /// <summary>

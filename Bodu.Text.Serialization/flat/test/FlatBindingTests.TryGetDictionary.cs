@@ -64,4 +64,65 @@ public sealed partial class FlatBindingTests
             Assert.IsNull(dictionary, value?.GetType().Name ?? "null");
         }
     }
+
+    /// <summary>
+    /// Verifies that a dictionary whose type is not keyed by <see cref="string" />, whether it implements only the
+    /// non-generic <see cref="IDictionary" />, as <see cref="Hashtable" /> and <see cref="SortedList" /> do, or a
+    /// generic dictionary with other keys, is not a dictionary the serializers write as entries, even when its keys
+    /// are strings.
+    /// </summary>
+    [TestMethod]
+    public void TryGetDictionary_WhenTheValueIsADictionaryWhoseKeysAreNotStrings_ShouldReturnFalse()
+    {
+        object[] values =
+        [
+            new Hashtable { ["a"] = 1 },
+            new SortedList { ["a"] = 1 },
+            new Dictionary<int, string> { [1] = "a" },
+            new Dictionary<object, string> { ["a"] = "a" },
+        ];
+
+        foreach (object value in values)
+        {
+            bool found = FlatBinding.TryGetDictionary(value, out IDictionary? dictionary);
+
+            Assert.IsFalse(found, value.GetType().Name);
+            Assert.IsNull(dictionary, value.GetType().Name);
+        }
+    }
+
+    /// <summary>
+    /// Verifies that the overload that reports the value type gives the value type of the string-keyed dictionary the
+    /// value implements, through the non-generic interface and through the generic one alike.
+    /// </summary>
+    [TestMethod]
+    public void TryGetDictionary_WhenTheValueIsAStringKeyedDictionary_ShouldReportItsValueType()
+    {
+        var dictionary = new Dictionary<string, int> { ["a"] = 1 };
+        var expando = new ExpandoObject();
+
+        bool foundDictionary = FlatBinding.TryGetDictionary(dictionary, out IDictionary? entries, out Type? valueType);
+        bool foundExpando = FlatBinding.TryGetDictionary(expando, out IDictionary? expandoEntries, out Type? expandoValueType);
+
+        Assert.IsTrue(foundDictionary);
+        Assert.AreSame(dictionary, entries);
+        Assert.AreEqual(typeof(int), valueType);
+        Assert.IsTrue(foundExpando);
+        Assert.IsNotNull(expandoEntries);
+        Assert.AreEqual(typeof(object), expandoValueType);
+    }
+
+    /// <summary>
+    /// Verifies that the overload that reports the value type reports none for a value that is not a string-keyed
+    /// dictionary.
+    /// </summary>
+    [TestMethod]
+    public void TryGetDictionary_WhenTheValueIsNotAStringKeyedDictionary_ShouldReportNoValueType()
+    {
+        bool found = FlatBinding.TryGetDictionary(new Hashtable { ["a"] = 1 }, out IDictionary? entries, out Type? valueType);
+
+        Assert.IsFalse(found);
+        Assert.IsNull(entries);
+        Assert.IsNull(valueType);
+    }
 }

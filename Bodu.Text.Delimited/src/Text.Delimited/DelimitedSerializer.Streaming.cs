@@ -37,7 +37,8 @@ public static partial class DelimitedSerializer
     /// Thrown when <paramref name="destination" /> or <paramref name="records" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="DelimitedSerializationException">
-    /// Thrown when <typeparamref name="TRecord" /> is not a record type but a scalar or a collection.
+    /// Thrown when <typeparamref name="TRecord" /> is not a record type but a scalar or a collection, or when a member
+    /// of it is not a scalar, or one declared as <see cref="object" /> holds a value that is not.
     /// </exception>
     /// <exception cref="ArgumentException">
     /// Thrown when the delimiter, quote or comment character of <paramref name="options" /> cannot be used by the
@@ -338,7 +339,7 @@ public static partial class DelimitedSerializer
             foreach (FlatMemberDescriptor member in members)
             {
                 if (member.CanRead)
-                    writer.WriteString(ValueToString(member.GetValue(record), member.ScalarKind));
+                    writer.WriteString(MemberValueToString(record, member));
             }
 
             writer.WriteEndArray();

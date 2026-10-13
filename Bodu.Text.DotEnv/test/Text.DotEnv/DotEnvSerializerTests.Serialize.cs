@@ -87,6 +87,28 @@ public partial class DotEnvSerializerTests
     }
 
     /// <summary>
+    /// Verifies that a dictionary root whose keys are not strings, such as a <see cref="System.Collections.Hashtable" />
+    /// or a <see cref="Dictionary{TKey, TValue}" /> keyed by <see cref="int" />, throws
+    /// <see cref="DotEnvSerializationException" /> naming its type, as a root that is not an object does, rather than
+    /// writing entries that do not read back into it.
+    /// </summary>
+    /// <param name="kat">The dictionary root and the exception it raises.</param>
+    [TestMethod]
+    [DynamicData(
+        nameof(NonStringKeyedDictionaryRootValues),
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
+    public void Serialize_WhenRootIsADictionaryWhoseKeysAreNotStrings_ShouldThrowDotEnvSerializationException(InvalidKat<object> kat)
+    {
+        var ex = Assert.ThrowsExactly<DotEnvSerializationException>(() =>
+        {
+            _ = DotEnvSerializer.Serialize(kat.Input);
+        });
+
+        Assert.IsTrue(ex.Message.Contains(kat.MessageContains!, StringComparison.Ordinal), ex.Message);
+    }
+
+    /// <summary>
     /// Verifies that a dictionary key the reader would not read back throws <see cref="DotEnvSerializationException" />
     /// naming the key, with the writer's <see cref="ArgumentException" /> as the inner exception, rather than writing
     /// text that does not read back.
@@ -243,5 +265,114 @@ public partial class DotEnvSerializerTests
         string text = DotEnvSerializer.Serialize(map, options);
 
         Assert.AreEqual(expected, text);
+    }
+
+    /// <summary>
+    /// Verifies that a member whose type is not a scalar, such as a <see cref="Dictionary{TKey, TValue}" />, throws
+    /// <see cref="DotEnvSerializationException" /> naming the key and the type, rather than writing the value's
+    /// <see cref="object.ToString" /> text, which does not read back.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenAMemberIsNotAScalar_ShouldThrowDotEnvSerializationException()
+    {
+        var config = new DictionaryMemberConfig { Name = "a", Counts = new Dictionary<string, int> { ["x"] = 1 } };
+
+        var ex = Assert.ThrowsExactly<DotEnvSerializationException>(() =>
+        {
+            _ = DotEnvSerializer.Serialize(config);
+        });
+
+        Assert.IsTrue(ex.Message.Contains("'Counts'", StringComparison.Ordinal), ex.Message);
+        Assert.IsTrue(ex.Message.Contains(typeof(Dictionary<string, int>).ToString(), StringComparison.Ordinal), ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that a <see langword="null" /> member whose type is not a scalar, written because the options' default
+    /// ignore condition is <see cref="IgnoreCondition.Never" />, throws <see cref="DotEnvSerializationException" />
+    /// naming the key, rather than writing an empty value, which does not read back as that type either.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenAMemberThatIsNotAScalarIsNull_ShouldThrowDotEnvSerializationException()
+    {
+        var options = new DotEnvSerializerOptions { DefaultIgnoreCondition = IgnoreCondition.Never };
+        var config = new DictionaryMemberConfig { Name = "a" };
+
+        var ex = Assert.ThrowsExactly<DotEnvSerializationException>(() =>
+        {
+            _ = DotEnvSerializer.Serialize(config, options);
+        });
+
+        Assert.IsTrue(ex.Message.Contains("'Counts'", StringComparison.Ordinal), ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that a <see langword="null" /> member whose type is not a scalar is left out, rather than rejected, when
+    /// the options' default ignore condition leaves out null values, since nothing is written for it.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenAMemberThatIsNotAScalarIsNullAndNullsAreIgnored_ShouldLeaveItOut()
+    {
+        var options = new DotEnvSerializerOptions { DefaultIgnoreCondition = IgnoreCondition.WhenWritingNull };
+
+        string text = DotEnvSerializer.Serialize(new DictionaryMemberConfig { Name = "a" }, options);
+
+        Assert.AreEqual("Name=a\n", text);
+    }
+
+    /// <summary>
+    /// Verifies that a member declared as <see cref="object" /> whose value is not a scalar throws
+    /// <see cref="DotEnvSerializationException" /> naming the key and the value's type, rather than writing the value's
+    /// <see cref="object.ToString" /> text.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenAnObjectMemberHoldsAValueThatIsNotAScalar_ShouldThrowDotEnvSerializationException()
+    {
+        var config = new ObjectValueConfig { Value = new List<int> { 1, 2 } };
+
+        var ex = Assert.ThrowsExactly<DotEnvSerializationException>(() =>
+        {
+            _ = DotEnvSerializer.Serialize(config);
+        });
+
+        Assert.IsTrue(ex.Message.Contains("'Value'", StringComparison.Ordinal), ex.Message);
+        Assert.IsTrue(ex.Message.Contains(typeof(List<int>).ToString(), StringComparison.Ordinal), ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that a dictionary root whose value type is not a scalar throws
+    /// <see cref="DotEnvSerializationException" /> naming the key, rather than writing the value's
+    /// <see cref="object.ToString" /> text.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenADictionaryValueTypeIsNotAScalar_ShouldThrowDotEnvSerializationException()
+    {
+        var map = new Dictionary<string, List<int>> { ["A"] = [1] };
+
+        var ex = Assert.ThrowsExactly<DotEnvSerializationException>(() =>
+        {
+            _ = DotEnvSerializer.Serialize(map);
+        });
+
+        Assert.IsTrue(ex.Message.Contains("'A'", StringComparison.Ordinal), ex.Message);
+        Assert.IsTrue(ex.Message.Contains(typeof(List<int>).ToString(), StringComparison.Ordinal), ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that an entry of a dictionary root with <see cref="object" /> values whose value is not a scalar throws
+    /// <see cref="DotEnvSerializationException" /> naming the key and the value's type, rather than writing the value's
+    /// <see cref="object.ToString" /> text.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenADictionaryValueIsNotAScalar_ShouldThrowDotEnvSerializationException()
+    {
+        var map = new Dictionary<string, object> { ["A"] = "a", ["B"] = new Dictionary<string, string> { ["x"] = "y" } };
+
+        var ex = Assert.ThrowsExactly<DotEnvSerializationException>(() =>
+        {
+            _ = DotEnvSerializer.Serialize(map);
+        });
+
+        Assert.IsTrue(ex.Message.Contains("'B'", StringComparison.Ordinal), ex.Message);
+        Assert.IsTrue(ex.Message.Contains(typeof(Dictionary<string, string>).ToString(), StringComparison.Ordinal), ex.Message);
     }
 }

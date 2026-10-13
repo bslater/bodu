@@ -172,5 +172,14 @@ namespace Bodu {
                 return ResourceManager.GetString("Format_Invalid_DelimitedFactoryRecordConversion", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The delimited column '{0}' cannot be written: the type '{1}' is not a scalar, so no field reads back as it..
+        /// </summary>
+        internal static string Op_Invalid_DelimitedValueNotScalar {
+            get {
+                return ResourceManager.GetString("Op_Invalid_DelimitedValueNotScalar", resourceCulture);
+            }
+        }
     }
 }
