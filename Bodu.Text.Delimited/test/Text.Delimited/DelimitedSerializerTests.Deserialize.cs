@@ -607,4 +607,21 @@ public partial class DelimitedSerializerTests
         Assert.IsTrue(ex.Message.Contains(nameof(DuplicateColumnRecord), StringComparison.Ordinal), ex.Message);
         Assert.IsTrue(ex.Message.Contains("'X'", StringComparison.Ordinal), ex.Message);
     }
+
+    /// <summary>
+    /// Verifies that a field that cannot be converted throws <see cref="DelimitedSerializationException" /> naming the
+    /// column and the member's declared type, a nullable one included, with the conversion error as the inner exception.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenAFieldCannotBeConverted_ShouldNameTheColumnAndTheDeclaredType()
+    {
+        var ex = Assert.ThrowsExactly<DelimitedSerializationException>(() =>
+        {
+            _ = DelimitedSerializer.Deserialize<NullableCountRecord>("Count\r\nabc\r\n");
+        });
+
+        Assert.IsTrue(ex.Message.Contains("'Count'", StringComparison.Ordinal), ex.Message);
+        Assert.IsTrue(ex.Message.Contains(typeof(int?).ToString(), StringComparison.Ordinal), ex.Message);
+        Assert.IsInstanceOfType<FormatException>(ex.InnerException);
+    }
 }

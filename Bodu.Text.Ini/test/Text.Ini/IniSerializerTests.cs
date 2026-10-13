@@ -176,6 +176,15 @@ public partial class IniSerializerTests
     }
 
     /// <summary>
+    /// A root model whose global key is a nullable number, which a value that is not a number cannot be converted to.
+    /// </summary>
+    private sealed class NullableCountConfig
+    {
+        /// <summary>Gets or sets the optional count (a global key).</summary>
+        public int? Count { get; set; }
+    }
+
+    /// <summary>
     /// A root model whose global keys are dates and times, two of them also in nullable form.
     /// </summary>
     private sealed class TemporalConfig

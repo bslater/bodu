@@ -154,4 +154,18 @@ public partial class DotEnvSerializerTests
 
         Assert.IsTrue(ex.Message.Contains("'HOST_NAME'", StringComparison.Ordinal), ex.Message);
     }
+
+    /// <summary>
+    /// Verifies that a member declared as <see cref="object" /> is written in the form of its value's own type: a
+    /// <see cref="DateTime" /> in its round-trip form.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenAMemberIsDeclaredAsObject_ShouldFormatTheValueByItsOwnType()
+    {
+        var config = new ObjectValueConfig { Value = new DateTime(2026, 1, 2, 3, 4, 5, DateTimeKind.Utc).AddTicks(1234567) };
+
+        string text = DotEnvSerializer.Serialize(config);
+
+        Assert.AreEqual("Value=2026-01-02T03:04:05.1234567Z\n", text);
+    }
 }

@@ -360,4 +360,21 @@ public partial class IniSerializerTests
         Assert.IsTrue(ex.Message.Contains(nameof(DuplicateKeyConfig), StringComparison.Ordinal), ex.Message);
         Assert.IsTrue(ex.Message.Contains("'X'", StringComparison.Ordinal), ex.Message);
     }
+
+    /// <summary>
+    /// Verifies that a value that cannot be converted throws <see cref="IniSerializationException" /> naming the key
+    /// and the member's declared type, a nullable one included, with the conversion error as the inner exception.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenAValueCannotBeConverted_ShouldNameTheKeyAndTheDeclaredType()
+    {
+        var ex = Assert.ThrowsExactly<IniSerializationException>(() =>
+        {
+            _ = IniSerializer.Deserialize<NullableCountConfig>("Count=abc\n");
+        });
+
+        Assert.IsTrue(ex.Message.Contains("'Count'", StringComparison.Ordinal), ex.Message);
+        Assert.IsTrue(ex.Message.Contains(typeof(int?).ToString(), StringComparison.Ordinal), ex.Message);
+        Assert.IsInstanceOfType<FormatException>(ex.InnerException);
+    }
 }

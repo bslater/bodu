@@ -132,6 +132,26 @@ public partial class DotEnvSerializerTests
     }
 
     /// <summary>
+    /// A POCO whose member is a nullable number, which a value that is not a number cannot be converted to.
+    /// </summary>
+    public sealed class NullableCountConfig
+    {
+        /// <summary>Gets or sets the optional count.</summary>
+        /// <value>The count, or <see langword="null" />.</value>
+        public int? Count { get; set; }
+    }
+
+    /// <summary>
+    /// A POCO whose member is declared as <see cref="object" />, so the type of its value is known only at run time.
+    /// </summary>
+    public sealed class ObjectValueConfig
+    {
+        /// <summary>Gets or sets the value.</summary>
+        /// <value>The value, of any type.</value>
+        public object? Value { get; set; }
+    }
+
+    /// <summary>
     /// A POCO whose members are dates and times, two of them also in nullable form.
     /// </summary>
     public sealed class TemporalConfig

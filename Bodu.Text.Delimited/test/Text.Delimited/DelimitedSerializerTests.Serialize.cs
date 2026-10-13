@@ -505,4 +505,16 @@ public partial class DelimitedSerializerTests
         Assert.IsTrue(ex.Message.Contains(nameof(DuplicateColumnRecord), StringComparison.Ordinal), ex.Message);
         Assert.IsTrue(ex.Message.Contains("'X'", StringComparison.Ordinal), ex.Message);
     }
+
+    /// <summary>
+    /// Verifies that a member declared as <see cref="object" /> is written in the form of its value's own type: a
+    /// <see cref="DateOnly" /> in its round-trip form.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenAMemberIsDeclaredAsObject_ShouldFormatTheValueByItsOwnType()
+    {
+        string text = DelimitedSerializer.Serialize(new List<ObjectValueRecord> { new() { Value = new DateOnly(2026, 1, 2) } });
+
+        Assert.AreEqual("Value\r\n2026-01-02\r\n", text);
+    }
 }
