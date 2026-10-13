@@ -89,6 +89,9 @@
   <data name="Op_NotSupported_JsonFeature" xml:space="preserve">
     <value>The document cannot be serialized to JSON because it uses the feature '{0}', which the JSON subset schema cannot represent. Use XML serialization for full-fidelity documents.</value>
   </data>
+  <data name="Op_NotSupported_JsonFieldNotRepresentable" xml:space="preserve">
+    <value>The JSON document declares {0}, which the document builder cannot represent. Load the document with NotableDateResourceLoader.LoadJson instead.</value>
+  </data>
   <data name="Arg_Invalid_UnknownFileExtension" xml:space="preserve">
     <value>The file path '{0}' has an unrecognized extension. Use a '.xml', '.json', or '.bcal' extension, or specify the format explicitly.</value>
   </data>

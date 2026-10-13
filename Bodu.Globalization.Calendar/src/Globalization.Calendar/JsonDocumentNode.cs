@@ -66,14 +66,22 @@ internal sealed class JsonDocumentNode
 
     /// <inheritdoc />
     public IReadOnlyList<string> ScalarList(string? xmlWrapper, string xmlItem, string xmlAttribute, string jsonProperty) =>
-        ReadScalarList(jsonProperty) ?? [];
+        ReadItemTexts(jsonProperty) ?? [];
 
     /// <inheritdoc />
     public IReadOnlyList<string>? OptionalScalarList(string? xmlWrapper, string xmlItem, string xmlAttribute, string jsonProperty) =>
-        ReadScalarList(jsonProperty);
+        ReadItemTexts(jsonProperty);
 
     /// <inheritdoc />
-    public IReadOnlyList<int> IntList(string? xmlWrapper, string xmlItem, string xmlAttribute, string jsonProperty)
+    public IReadOnlyList<string> TextList(string? xmlWrapper, string xmlItem, string xmlAttribute, string jsonProperty, string field, ICollection<NotableDateValidationDiagnostic> diagnostics) =>
+        ReadStrings(jsonProperty, field, diagnostics) ?? [];
+
+    /// <inheritdoc />
+    public IReadOnlyList<string>? OptionalTextList(string? xmlWrapper, string xmlItem, string xmlAttribute, string jsonProperty, string field, ICollection<NotableDateValidationDiagnostic> diagnostics) =>
+        ReadStrings(jsonProperty, field, diagnostics);
+
+    /// <inheritdoc />
+    public IReadOnlyList<int> IntList(string? xmlWrapper, string xmlItem, string xmlAttribute, string jsonProperty, string field, ICollection<NotableDateValidationDiagnostic> diagnostics)
     {
         if (!TryGetProperty(jsonProperty, out JsonElement array) || array.ValueKind != JsonValueKind.Array)
             return [];
@@ -81,7 +89,10 @@ internal sealed class JsonDocumentNode
         List<int> values = new();
         foreach (JsonElement item in array.EnumerateArray())
         {
-            if (item.ValueKind == JsonValueKind.Number && item.TryGetInt32(out int result))
+            // An item is read as a scalar property is, so a number in quotes is accepted and any other item, a fraction
+            // or a Boolean among them, is reported by its JSON text rather than dropped.
+            string text = item.ValueKind == JsonValueKind.String ? item.GetString() ?? string.Empty : item.GetRawText();
+            if (NotableDateDocumentParseHelpers.ParseNullableInt(text, field, diagnostics) is int result)
                 values.Add(result);
         }
 
@@ -89,7 +100,7 @@ internal sealed class JsonDocumentNode
     }
 
     /// <inheritdoc />
-    public IReadOnlyList<(string? Qualifier, string Name)> QualifiedReferenceList(string? xmlWrapper, string xmlItem, string qualifierName, string name, string jsonProperty)
+    public IReadOnlyList<(string? Qualifier, string Name)> QualifiedReferenceList(string? xmlWrapper, string xmlItem, string qualifierName, string name, string jsonProperty, string field, ICollection<NotableDateValidationDiagnostic> diagnostics)
     {
         if (!TryGetProperty(jsonProperty, out JsonElement array) || array.ValueKind != JsonValueKind.Array)
             return [];
@@ -105,6 +116,10 @@ internal sealed class JsonDocumentNode
             {
                 JsonDocumentNode reference = new(item);
                 references.Add((reference.Scalar(qualifierName), reference.Scalar(name) ?? string.Empty));
+            }
+            else
+            {
+                NotableDateDocumentParseHelpers.AddValueError(diagnostics, CalendarResourceStrings.Validation_InvalidReferenceItem, field, item.GetRawText());
             }
         }
 
@@ -128,11 +143,35 @@ internal sealed class JsonDocumentNode
     }
 
     /// <summary>
-    /// Reads the string items of an array property, returning <see langword="null" /> when the property is absent.
+    /// Reads the items of an array property as text, returning <see langword="null" /> when the property is absent: a
+    /// string by its value, and any other item by its JSON text, so a name parse reports it rather than the list losing
+    /// it.
     /// </summary>
     /// <param name="jsonProperty">The JSON array property name.</param>
+    /// <returns>The item texts, or <see langword="null" /> when absent.</returns>
+    private List<string>? ReadItemTexts(string jsonProperty)
+    {
+        if (!TryGetProperty(jsonProperty, out JsonElement array) || array.ValueKind != JsonValueKind.Array)
+            return null;
+
+        List<string> values = new();
+        foreach (JsonElement item in array.EnumerateArray())
+            values.Add(item.ValueKind == JsonValueKind.String ? item.GetString() ?? string.Empty : item.GetRawText());
+
+        return values;
+    }
+
+    /// <summary>
+    /// Reads the string items of an array property, returning <see langword="null" /> when the property is absent and
+    /// recording a <c>BODU-CAL-VALUE</c> error for each item that is not a string.
+    /// </summary>
+    /// <param name="jsonProperty">The JSON array property name.</param>
+    /// <param name="field">The name of the field the array belongs to, used in the diagnostics.</param>
+    /// <param name="diagnostics">
+    /// The collection that receives the diagnostic for each item that is not a string.
+    /// </param>
     /// <returns>The string values, or <see langword="null" /> when absent.</returns>
-    private List<string>? ReadScalarList(string jsonProperty)
+    private List<string>? ReadStrings(string jsonProperty, string field, ICollection<NotableDateValidationDiagnostic> diagnostics)
     {
         if (!TryGetProperty(jsonProperty, out JsonElement array) || array.ValueKind != JsonValueKind.Array)
             return null;
@@ -142,6 +181,8 @@ internal sealed class JsonDocumentNode
         {
             if (item.ValueKind == JsonValueKind.String)
                 values.Add(item.GetString() ?? string.Empty);
+            else
+                NotableDateDocumentParseHelpers.AddValueError(diagnostics, CalendarResourceStrings.Validation_InvalidTextItem, field, item.GetRawText());
         }
 
         return values;

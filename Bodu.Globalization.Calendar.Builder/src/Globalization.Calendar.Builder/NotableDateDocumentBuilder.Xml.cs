@@ -89,15 +89,26 @@ public sealed partial class NotableDateDocumentBuilder
     /// <paramref name="xml" /> is <see langword="null" />, empty, or white-space.
     /// </exception>
     /// <exception cref="FormatException">
-    /// <paramref name="xml" /> is not well-formed or is not a notable-date document.
+    /// <paramref name="xml" /> is not well-formed or is not a notable-date document, or an enumeration, integer,
+    /// Boolean, trigger-month or <c>workingDays</c> value does not parse.
     /// </exception>
     /// <remarks>
     /// <para>
-    /// Parsing is lenient and does not validate the document: an unrecognized enumeration token becomes the
-    /// enumeration's default or is dropped (a misspelled category becomes <see cref="NotableDateCategory.None" />, and
-    /// a misspelled resolution policy value disappears), a malformed integer is dropped, and any Boolean other than
-    /// <c>true</c> or <c>1</c> reads as <see langword="false" />. A document the loader would reject can therefore
-    /// parse and even build with different data. Validate with <see cref="Validate()" /> or
+    /// Enumeration values and the working week are read with the loader's rules, so they never parse into data the
+    /// loader would read differently: an enumeration value must name a member (ignoring case; a number is not a name),
+    /// and <c>workingDays</c> must be the seven-character, Sunday-first binary pattern. Any other value throws a
+    /// <see cref="FormatException" /> carrying the message of the loader's <c>BODU-CAL-ENUM</c> or
+    /// <c>BODU-CAL-WORKING-DAYS</c> diagnostic.
+    /// </para>
+    /// <para>
+    /// Integers, Booleans and an adjustment trigger's month are read with the loader's rules too: a present value must
+    /// be a 32-bit integer, an XML-schema Boolean literal (<c>true</c>, <c>false</c>, <c>1</c> or <c>0</c>), or a month
+    /// name or number, and any other value throws a <see cref="FormatException" /> carrying the message of the loader's
+    /// <c>BODU-CAL-VALUE</c> diagnostic.
+    /// </para>
+    /// <para>
+    /// Parsing does not otherwise validate the document: a document the loader would reject for a reason other than a
+    /// malformed value, such as a dangling reference, can still parse. Validate with <see cref="Validate()" /> or
     /// <see cref="TryBuild(out NotableDateResource?, out IReadOnlyList{NotableDateValidationDiagnostic})" />, or load
     /// the text with <see cref="NotableDateResourceLoader" />, when the input is not trusted.
     /// </para>
@@ -139,7 +150,13 @@ public sealed partial class NotableDateDocumentBuilder
     /// <param name="document">The notable-date document.</param>
     /// <returns>A new <see cref="NotableDateDocumentBuilder" /> populated from the document.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="document" /> is <see langword="null" />.</exception>
-    /// <exception cref="FormatException">The root element is not a notable-date resource element.</exception>
+    /// <exception cref="FormatException">
+    /// The root element is not a notable-date resource element, or an enumeration, integer, Boolean, trigger-month or
+    /// <c>workingDays</c> value does not parse.
+    /// </exception>
+    /// <remarks>
+    /// Values are read as <see cref="FromXml(string)" /> reads them; see its remarks.
+    /// </remarks>
     public static NotableDateDocumentBuilder FromXDocument(XDocument document)
     {
         ThrowHelper.ThrowIfNull(document);
@@ -437,16 +454,7 @@ public sealed partial class NotableDateDocumentBuilder
             element.Add(new XElement(rule.Recurrence));
 
         if (rule.EndStrategy is not null)
-        {
-            element.Add(new XElement(
-                BuilderXml.Namespace + "Duration",
-                new XElement(
-                    BuilderXml.Namespace + "UntilDate",
-                    new XAttribute("startBoundary", rule.EndStartBoundary.ToString()),
-                    new XAttribute("endBoundary", rule.EndEndBoundary.ToString()),
-                    new XAttribute("selection", rule.EndSelectionValue.ToString()),
-                    new XElement(BuilderXml.Namespace + "Strategy", new XElement(rule.EndStrategy)))));
-        }
+            element.Add(BuildDurationElement(rule));
 
         XElement? tags = BuildTagsElement(rule.Tags);
         if (tags is not null) element.Add(tags);
@@ -456,6 +464,21 @@ public sealed partial class NotableDateDocumentBuilder
 
         return element;
     }
+
+    /// <summary>
+    /// Builds the <c>Duration</c> element of a rule or patch whose span ends on a calculated date.
+    /// </summary>
+    /// <param name="rule">The rule or patch declaring the end strategy.</param>
+    /// <returns>The serialized duration element.</returns>
+    private static XElement BuildDurationElement(NotableDateRuleBuilder rule) =>
+        new(
+            BuilderXml.Namespace + "Duration",
+            new XElement(
+                BuilderXml.Namespace + "UntilDate",
+                new XAttribute("startBoundary", rule.EndStartBoundary.ToString()),
+                new XAttribute("endBoundary", rule.EndEndBoundary.ToString()),
+                new XAttribute("selection", rule.EndSelectionValue.ToString()),
+                new XElement(BuilderXml.Namespace + "Strategy", new XElement(rule.EndStrategy!))));
 
     /// <summary>
     /// Writes the optional scalar attributes shared by rules and patches onto the supplied element.
@@ -585,6 +608,12 @@ public sealed partial class NotableDateDocumentBuilder
 
         if (rule.Strategy is not null)
             element.Add(new XElement(BuilderXml.Namespace + "Strategy", new XElement(rule.Strategy)));
+
+        if (rule.Recurrence is not null)
+            element.Add(new XElement(rule.Recurrence));
+
+        if (rule.EndStrategy is not null)
+            element.Add(BuildDurationElement(rule));
 
         XElement? tags = BuildTagsElement(rule.Tags);
         if (tags is not null) element.Add(tags);

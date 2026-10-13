@@ -51,11 +51,17 @@ internal static class NotableDateDocumentParseHelpers
     }
 
     /// <summary>
-    /// Parses a trigger comparison month expressed as a full English month name or an integer between 1 and 12.
+    /// Parses a trigger comparison month expressed as a full English month name or an integer between 1 and 12,
+    /// recording an error diagnostic when a present value is neither.
     /// </summary>
-    /// <param name="value">The raw month value, or <see langword="null" />.</param>
-    /// <returns>The one-based month, or <see langword="null" /> when absent or invalid.</returns>
-    public static int? ParseTriggerMonth(string? value)
+    /// <param name="value">The raw month value, or <see langword="null" /> when absent.</param>
+    /// <param name="field">The name of the field the value belongs to, used in the diagnostic.</param>
+    /// <param name="diagnostics">The collection that receives the diagnostic for a malformed value.</param>
+    /// <returns>
+    /// The one-based month, or <see langword="null" /> when the value is absent or malformed. A malformed value has
+    /// then recorded a <c>BODU-CAL-VALUE</c> error, so the absent month never reaches a loaded resource.
+    /// </returns>
+    public static int? ParseTriggerMonth(string? value, string field, ICollection<NotableDateValidationDiagnostic> diagnostics)
     {
         if (value is null)
             return null;
@@ -64,7 +70,11 @@ internal static class NotableDateDocumentParseHelpers
             return numeric;
 
         int index = Array.FindIndex(s_monthNames, n => string.Equals(n, value, StringComparison.OrdinalIgnoreCase));
-        return index >= 0 ? index + 1 : null;
+        if (index >= 0)
+            return index + 1;
+
+        AddValueError(diagnostics, CalendarResourceStrings.Validation_InvalidTriggerMonth, field, value);
+        return null;
     }
 
     /// <summary>
@@ -218,50 +228,68 @@ internal static class NotableDateDocumentParseHelpers
         [.. values.Select(value => ParseEnum(value, fallback, field, diagnostics))];
 
     /// <summary>
-    /// Parses an integer value, falling back to a default when parsing fails.
+    /// Parses an integer value, falling back to a default when the value is absent and recording an error diagnostic
+    /// when a present value is not a 32-bit integer.
     /// </summary>
-    /// <param name="value">The raw value.</param>
-    /// <param name="fallback">The value returned when parsing fails.</param>
+    /// <param name="value">The raw value, or <see langword="null" /> when absent.</param>
+    /// <param name="fallback">The value returned when the value is absent or malformed.</param>
+    /// <param name="field">The name of the field the value belongs to, used in the diagnostic.</param>
+    /// <param name="diagnostics">The collection that receives the diagnostic for a malformed value.</param>
     /// <returns>The parsed integer, or <paramref name="fallback" />.</returns>
-    public static int ParseInt(string? value, int fallback) =>
-        int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out int result) ? result : fallback;
+    public static int ParseInt(string? value, int fallback, string field, ICollection<NotableDateValidationDiagnostic> diagnostics) =>
+        ParseNullableInt(value, field, diagnostics) ?? fallback;
 
     /// <summary>
-    /// Parses an optional integer value.
+    /// Parses an optional integer value, recording an error diagnostic when a present value is not a 32-bit integer.
     /// </summary>
-    /// <param name="value">The raw value, or <see langword="null" />.</param>
-    /// <returns>The parsed integer, or <see langword="null" /> when absent or invalid.</returns>
-    public static int? ParseNullableInt(string? value) =>
-        int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out int result) ? result : null;
-
-    /// <summary>
-    /// Parses a boolean value expressed in XML-schema form (<c>true</c>/<c>false</c>/<c>1</c>/<c>0</c>), falling back
-    /// to a default when parsing fails.
-    /// </summary>
-    /// <param name="value">The raw value.</param>
-    /// <param name="fallback">The value returned when parsing fails.</param>
-    /// <returns>The parsed boolean, or <paramref name="fallback" />.</returns>
-    public static bool ParseBool(string? value, bool fallback)
+    /// <param name="value">The raw value, or <see langword="null" /> when absent.</param>
+    /// <param name="field">The name of the field the value belongs to, used in the diagnostic.</param>
+    /// <param name="diagnostics">The collection that receives the diagnostic for a malformed value.</param>
+    /// <returns>
+    /// The parsed integer, or <see langword="null" /> when the value is absent or malformed. A malformed value has then
+    /// recorded a <c>BODU-CAL-VALUE</c> error, so the absent value never reaches a loaded resource.
+    /// </returns>
+    /// <remarks>
+    /// The value is read with the invariant culture, allowing a leading sign and surrounding white space, as the
+    /// schema's integer types do.
+    /// </remarks>
+    public static int? ParseNullableInt(string? value, string field, ICollection<NotableDateValidationDiagnostic> diagnostics)
     {
         if (value is null)
-            return fallback;
+            return null;
 
-        try
-        {
-            return XmlConvert.ToBoolean(value);
-        }
-        catch (FormatException)
-        {
-            return fallback;
-        }
+        if (int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out int result))
+            return result;
+
+        AddValueError(diagnostics, CalendarResourceStrings.Validation_InvalidIntegerValue, field, value);
+        return null;
     }
 
     /// <summary>
-    /// Parses an optional boolean value expressed in XML-schema form.
+    /// Parses a Boolean value expressed in XML-schema form (<c>true</c>/<c>false</c>/<c>1</c>/<c>0</c>), falling back
+    /// to a default when the value is absent and recording an error diagnostic when a present value is not such a
+    /// literal.
     /// </summary>
-    /// <param name="value">The raw value, or <see langword="null" />.</param>
-    /// <returns>The parsed boolean, or <see langword="null" /> when absent or invalid.</returns>
-    public static bool? ParseNullableBool(string? value)
+    /// <param name="value">The raw value, or <see langword="null" /> when absent.</param>
+    /// <param name="fallback">The value returned when the value is absent or malformed.</param>
+    /// <param name="field">The name of the field the value belongs to, used in the diagnostic.</param>
+    /// <param name="diagnostics">The collection that receives the diagnostic for a malformed value.</param>
+    /// <returns>The parsed Boolean, or <paramref name="fallback" />.</returns>
+    public static bool ParseBool(string? value, bool fallback, string field, ICollection<NotableDateValidationDiagnostic> diagnostics) =>
+        ParseNullableBool(value, field, diagnostics) ?? fallback;
+
+    /// <summary>
+    /// Parses an optional Boolean value expressed in XML-schema form, recording an error diagnostic when a present
+    /// value is not such a literal.
+    /// </summary>
+    /// <param name="value">The raw value, or <see langword="null" /> when absent.</param>
+    /// <param name="field">The name of the field the value belongs to, used in the diagnostic.</param>
+    /// <param name="diagnostics">The collection that receives the diagnostic for a malformed value.</param>
+    /// <returns>
+    /// The parsed Boolean, or <see langword="null" /> when the value is absent or malformed. A malformed value has then
+    /// recorded a <c>BODU-CAL-VALUE</c> error, so the absent value never reaches a loaded resource.
+    /// </returns>
+    public static bool? ParseNullableBool(string? value, string field, ICollection<NotableDateValidationDiagnostic> diagnostics)
     {
         if (value is null)
             return null;
@@ -272,7 +300,44 @@ internal static class NotableDateDocumentParseHelpers
         }
         catch (FormatException)
         {
+            AddValueError(diagnostics, CalendarResourceStrings.Validation_InvalidBooleanValue, field, value);
             return null;
         }
     }
+
+    /// <summary>
+    /// Parses an optional ISO-8601 <c>yyyy-MM-dd</c> date, recording an error diagnostic when a present value is not
+    /// such a date.
+    /// </summary>
+    /// <param name="value">The raw value, or <see langword="null" /> when absent.</param>
+    /// <param name="field">The name of the field the value belongs to, used in the diagnostic.</param>
+    /// <param name="diagnostics">The collection that receives the diagnostic for a malformed value.</param>
+    /// <returns>
+    /// The parsed date, or <see langword="null" /> when the value is absent or malformed. A malformed value has then
+    /// recorded a <c>BODU-CAL-VALUE</c> error, so the absent value never reaches a loaded resource.
+    /// </returns>
+    public static DateOnly? ParseNullableDate(string? value, string field, ICollection<NotableDateValidationDiagnostic> diagnostics)
+    {
+        if (value is null)
+            return null;
+
+        if (DateOnly.TryParseExact(value, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateOnly result))
+            return result;
+
+        AddValueError(diagnostics, CalendarResourceStrings.Validation_InvalidDateValue, field, value);
+        return null;
+    }
+
+    /// <summary>
+    /// Records the <c>BODU-CAL-VALUE</c> error diagnostic for a present value that does not parse as its field's type.
+    /// </summary>
+    /// <param name="diagnostics">The collection that receives the diagnostic.</param>
+    /// <param name="format">The resource format string, taking the field name and the value.</param>
+    /// <param name="field">The name of the field the value belongs to.</param>
+    /// <param name="value">The malformed value.</param>
+    public static void AddValueError(ICollection<NotableDateValidationDiagnostic> diagnostics, string format, string field, string value) =>
+        diagnostics.Add(new NotableDateValidationDiagnostic(
+            NotableDateValidationSeverity.Error,
+            "BODU-CAL-VALUE",
+            string.Format(CultureInfo.CurrentCulture, format, field, value)));
 }

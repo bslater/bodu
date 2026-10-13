@@ -26,7 +26,7 @@ Every document the builder can express serializes to XML, and builder-canonical 
 
 Hand-authored XML is normalized, not preserved: the builder parses into its object model and re-emits its canonical form, so insignificant whitespace, attribute ordering, XML comments, and alternative lexical forms from a hand-written file are replaced by the canonical rendering. What *is* guaranteed for any XML the loader accepts - hand-authored or generated - is semantic equivalence: the re-emitted document builds a resource that resolves the same occurrences, which is the guarantee the bundled-catalogue sweep pins across every shipped catalogue.
 
-Parsing is not validation. `FromXml`, `FromJson`, and `Load` are lenient: an unrecognized enumeration token becomes the default or is dropped (a misspelled category becomes `None`, and a misspelled `duplicatePolicy` disappears), a malformed integer is dropped, and any Boolean other than `true` or `1` reads as `false`. A document the loader would reject can therefore parse, and even `Build()`, with different data, so the equivalence above holds only for input the loader accepts. Validate untrusted input with `Validate()` / `TryBuild(...)` or by loading it with <xref:Bodu.Globalization.Calendar.NotableDateResourceLoader>. `FromJson` also throws `InvalidOperationException`, not `FormatException`, for a value of the wrong JSON type (for example `"priority": "5"`).
+Parsing is not validation, but `FromXml`, `FromJson`, and `Load` read every value with the loader's rules: an enumeration value must name a member (ignoring case; a number is not a name), `workingDays` must be the seven-character, Sunday-first binary pattern, an integer must be a 32-bit integer, a Boolean must be `true`, `false`, `1` or `0`, and a trigger `month` must be a month name or a number from 1 to 12. Any other value throws `FormatException` with the message of the loader's `BODU-CAL-ENUM`, `BODU-CAL-WORKING-DAYS` or `BODU-CAL-VALUE` diagnostic, so a misspelled value is never read as a default, and a value the loader accepts (a JSON number in quotes, for example) reads as the loader reads it. The readers do not otherwise validate: a document the loader would reject for another reason, such as a dangling reference, can still parse, so the equivalence above holds only for input the loader accepts. Validate untrusted input with `Validate()` / `TryBuild(...)` or by loading it with <xref:Bodu.Globalization.Calendar.NotableDateResourceLoader>. `FromJson` also throws `InvalidOperationException`, not `FormatException`, for a number or Boolean where text belongs (for example `"displayName": 5`), which the loader reads as its text.
 
 ## JSON is a subset - the lossiness runs one way
 
@@ -46,9 +46,20 @@ Features outside the JSON subset (each rejection pinned by `…JsonSubset.ToJson
 | Trigger refinements: month, day, week ordinal, custom trigger handler keys | Adjustment policies |
 | Action refinements: replacement rule references, custom action handler keys, handler parameters | Adjustment policies |
 | Scope year bounds (`FromYear` / `ToYear` / `OnlyYear` / `ExceptYear`) and notable-date / rule scope references | Adjustment scopes |
-| Override patches carrying applicability, strategy, tag, or adjustment changes | Overrides |
+| Override patches carrying applicability, strategy, recurrence, duration-end, tag, or adjustment changes | Overrides |
 
 Serialize such documents as XML. Scopes confined to territories, calendars, and categories - and lunisolar strategy flags - are inside the subset and round-trip through JSON unchanged.
+
+The subset limits only what `ToJson()` writes. `FromJson` reads every field <xref:Bodu.Globalization.Calendar.NotableDateResourceLoader> reads from JSON, the features above included, so `FromJson(json).Build()` produces the same resource as `NotableDateResourceLoader.LoadJson(json)` for any document both accept (pinned by `…FromJson.FromJson_WhenDocumentDeclaresField_ShouldBuildWhatLoadJsonLoads`, which compares the two as binary rule packs). A few JSON fields have no counterpart in the builder's document model, whose full form is the XML schema, and `FromJson` throws <xref:System.NotSupportedException> for them rather than dropping them:
+
+| JSON field the builder cannot hold | Why |
+|---|---|
+| An empty `tags` or `adjustments` list on a `PatchRule` override | The loader reads an empty list as "clear the rule's list"; the schema has no empty `<Tags>` or `<Adjustments>` element. |
+| An empty `adjustments` list on an import `use` | The same, for the imported concept's rules. |
+| A scope `ruleRefs` item that does not name its `notableDateRef` (a bare string, or an object without it) | The schema's scope `<Rule>` element requires both references. |
+| A handler parameter whose value is an object or an array | The loader keeps it as its original JSON text, which a parsed document no longer carries. |
+
+Load such documents with `NotableDateResourceLoader.LoadJson` instead.
 
 ## Build parity: what you serialize is what the runtime loads
 

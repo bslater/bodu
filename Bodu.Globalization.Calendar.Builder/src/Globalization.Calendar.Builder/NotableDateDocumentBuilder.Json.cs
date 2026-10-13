@@ -128,19 +128,43 @@ public sealed partial class NotableDateDocumentBuilder
     /// <paramref name="json" /> is <see langword="null" />, empty, or white-space.
     /// </exception>
     /// <exception cref="FormatException">
-    /// <paramref name="json" /> is not well-formed or is not a notable-date document.
+    /// <paramref name="json" /> is not well-formed or is not a notable-date document, or an enumeration, integer,
+    /// Boolean, trigger-month or <c>workingDays</c> value does not parse.
     /// </exception>
     /// <exception cref="InvalidOperationException">
-    /// A property carries a value of the wrong JSON type, for example <c>"priority": "5"</c> (a string where a number
+    /// A property carries a value of the wrong JSON type, for example <c>"displayName": 5</c> (a number where text
     /// belongs) or a numeric tag.
+    /// </exception>
+    /// <exception cref="NotSupportedException">
+    /// <paramref name="json" /> declares a field the builder's document model cannot hold: an empty <c>tags</c> or
+    /// <c>adjustments</c> list on a <c>PatchRule</c> override, an empty <c>adjustments</c> list on an import use, a
+    /// scope rule reference that does not name its <c>notableDateRef</c>, or a handler parameter whose value is an
+    /// object or an array.
     /// </exception>
     /// <remarks>
     /// <para>
-    /// Parsing is lenient and does not validate the document: an unrecognized enumeration token becomes the
-    /// enumeration's default or is dropped (a misspelled category becomes <see cref="NotableDateCategory.None" />, and
-    /// a misspelled resolution policy value disappears), a malformed integer is dropped, and any Boolean other than
-    /// <c>true</c> or <c>1</c> reads as <see langword="false" />. A document the loader would reject can therefore
-    /// parse and even build with different data. Validate with <see cref="Validate()" /> or
+    /// Enumeration values and the working week are read with the loader's rules, so they never parse into data the
+    /// loader would read differently: an enumeration value must name a member (ignoring case; a number is not a name),
+    /// and <c>workingDays</c> must be the seven-character, Sunday-first binary pattern. Any other value throws a
+    /// <see cref="FormatException" /> carrying the message of the loader's <c>BODU-CAL-ENUM</c> or
+    /// <c>BODU-CAL-WORKING-DAYS</c> diagnostic.
+    /// </para>
+    /// <para>
+    /// Integers, Booleans and an adjustment trigger's month are read with the loader's rules too: a present value must
+    /// be a 32-bit integer, an XML-schema Boolean literal (<c>true</c>, <c>false</c>, <c>1</c> or <c>0</c>), or a month
+    /// name or number, and any other value throws a <see cref="FormatException" /> carrying the message of the loader's
+    /// <c>BODU-CAL-VALUE</c> diagnostic.
+    /// </para>
+    /// <para>
+    /// Every field the loader's <c>LoadJson</c> reads is read, including those outside the JSON subset that
+    /// <see cref="ToJson()" /> writes (imports, the trigger and action refinements, handler parameters, scope rule
+    /// references and year bounds, and a <c>PatchRule</c> override's applicability, strategy, recurrence, duration,
+    /// tags and adjustments), so the builder and the loader read the same document into the same resource. The few
+    /// fields the builder's model cannot hold throw a <see cref="NotSupportedException" /> rather than being dropped.
+    /// </para>
+    /// <para>
+    /// Parsing does not otherwise validate the document: a document the loader would reject for a reason other than a
+    /// malformed value, such as a dangling reference, can still parse. Validate with <see cref="Validate()" /> or
     /// <see cref="TryBuild(out NotableDateResource?, out IReadOnlyList{NotableDateValidationDiagnostic})" />, or load
     /// the text with <see cref="NotableDateResourceLoader" />, when the input is not trusted.
     /// </para>
@@ -185,6 +209,17 @@ public sealed partial class NotableDateDocumentBuilder
     /// <param name="json">The notable-date document JSON object.</param>
     /// <returns>A new <see cref="NotableDateDocumentBuilder" /> populated from the object.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="json" /> is <see langword="null" />.</exception>
+    /// <exception cref="FormatException">
+    /// An enumeration, integer, Boolean, trigger-month or <c>workingDays</c> value does not parse.
+    /// </exception>
+    /// <exception cref="InvalidOperationException">A property carries a value of the wrong JSON type.</exception>
+    /// <exception cref="NotSupportedException">
+    /// <paramref name="json" /> declares a field the builder's document model cannot hold; see
+    /// <see cref="FromJson(string)" />.
+    /// </exception>
+    /// <remarks>
+    /// Values are read as <see cref="FromJson(string)" /> reads them; see its remarks.
+    /// </remarks>
     public static NotableDateDocumentBuilder FromJsonObject(JsonObject json)
     {
         ThrowHelper.ThrowIfNull(json);
@@ -198,6 +233,7 @@ public sealed partial class NotableDateDocumentBuilder
         builder.ReadMetadataJson(json["metadata"] as JsonObject);
         builder.ReadResolutionPolicyJson(json["resolutionPolicy"] as JsonObject);
         builder.ReadAdjustmentPoliciesJson(json["adjustmentPolicies"] as JsonArray);
+        builder.ReadImportsJson(json["imports"] as JsonArray);
         builder.ReadNotableDatesJson(json["notableDates"] as JsonArray);
         builder.ReadOverridesJson(json["overrides"] as JsonArray);
 
@@ -594,13 +630,15 @@ public sealed partial class NotableDateDocumentBuilder
     /// <param name="result">The override object receiving the patch scalars.</param>
     /// <param name="entry">The patch override operation.</param>
     /// <exception cref="NotSupportedException">
-    /// The patch configures applicability, a strategy, tags, or adjustments.
+    /// The patch configures applicability, a strategy, a recurrence, a duration end, tags, or adjustments.
     /// </exception>
     private static void WritePatchJson(JsonObject result, OverrideEntry entry)
     {
         NotableDateRuleBuilder rule = entry.Rule!;
         if (rule.HasApplicability) throw UnsupportedJsonFeature("override patch applicability");
         if (rule.Strategy is not null) throw UnsupportedJsonFeature("override patch strategy");
+        if (rule.Recurrence is not null) throw UnsupportedJsonFeature("override patch recurrence");
+        if (rule.EndStrategy is not null) throw UnsupportedJsonFeature("override patch duration");
         if (rule.Tags.Count > 0) throw UnsupportedJsonFeature("override patch tags");
         if (rule.Adjustments.Count > 0) throw UnsupportedJsonFeature("override patch adjustments");
 

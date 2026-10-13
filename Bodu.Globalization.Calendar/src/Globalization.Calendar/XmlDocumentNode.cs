@@ -4,7 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Globalization;
 using System.Xml.Linq;
 
 namespace Bodu.Globalization.Calendar;
@@ -71,7 +70,15 @@ internal sealed class XmlDocumentNode
         ReadScalarList(xmlWrapper, xmlItem, xmlAttribute);
 
     /// <inheritdoc />
-    public IReadOnlyList<int> IntList(string? xmlWrapper, string xmlItem, string xmlAttribute, string jsonProperty)
+    public IReadOnlyList<string> TextList(string? xmlWrapper, string xmlItem, string xmlAttribute, string jsonProperty, string field, ICollection<NotableDateValidationDiagnostic> diagnostics) =>
+        ReadScalarList(xmlWrapper, xmlItem, xmlAttribute) ?? [];
+
+    /// <inheritdoc />
+    public IReadOnlyList<string>? OptionalTextList(string? xmlWrapper, string xmlItem, string xmlAttribute, string jsonProperty, string field, ICollection<NotableDateValidationDiagnostic> diagnostics) =>
+        ReadScalarList(xmlWrapper, xmlItem, xmlAttribute);
+
+    /// <inheritdoc />
+    public IReadOnlyList<int> IntList(string? xmlWrapper, string xmlItem, string xmlAttribute, string jsonProperty, string field, ICollection<NotableDateValidationDiagnostic> diagnostics)
     {
         XElement? container = xmlWrapper is null ? _element : _element.Element(_ns + xmlWrapper);
         if (container is null)
@@ -80,7 +87,7 @@ internal sealed class XmlDocumentNode
         List<int> values = new();
         foreach (XElement item in container.Elements(_ns + xmlItem))
         {
-            if (int.TryParse((string?)item.Attribute(xmlAttribute), NumberStyles.Integer, CultureInfo.InvariantCulture, out int result))
+            if (NotableDateDocumentParseHelpers.ParseNullableInt((string?)item.Attribute(xmlAttribute), field, diagnostics) is int result)
                 values.Add(result);
         }
 
@@ -88,7 +95,7 @@ internal sealed class XmlDocumentNode
     }
 
     /// <inheritdoc />
-    public IReadOnlyList<(string? Qualifier, string Name)> QualifiedReferenceList(string? xmlWrapper, string xmlItem, string qualifierName, string name, string jsonProperty)
+    public IReadOnlyList<(string? Qualifier, string Name)> QualifiedReferenceList(string? xmlWrapper, string xmlItem, string qualifierName, string name, string jsonProperty, string field, ICollection<NotableDateValidationDiagnostic> diagnostics)
     {
         XElement? container = xmlWrapper is null ? _element : _element.Element(_ns + xmlWrapper);
         if (container is null)
