@@ -298,6 +298,15 @@ namespace Bodu.Financial {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to MinorUnitsOverride {0} is outside the supported range 0 to 28..
+        /// </summary>
+        internal static string Arg_OutOfRange_MinorUnitsOverride {
+            get {
+                return ResourceManager.GetString("Arg_OutOfRange_MinorUnitsOverride", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Rate must be greater than zero..
         /// </summary>
         internal static string Arg_OutOfRange_RateNotPositive {
