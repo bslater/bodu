@@ -7,6 +7,7 @@
 using System.Collections.Concurrent;
 using System.Globalization;
 using Bodu.Caching;
+using Bodu.Globalization.Calendar.RangeResolution;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
@@ -21,17 +22,25 @@ namespace Bodu.Globalization.Calendar.Caching;
 /// <para>
 /// Every query is answered per civil year: a range is decomposed into the years it spans, each year is served from the
 /// cache when a fresh, version-matching entry exists or otherwise recomputed for the whole year and written back, and
-/// the assembled occurrences are clipped to the requested window by their span, as the wrapped service selects them: an
-/// occurrence is kept when any day from its emitted date to its last day falls within the window. Because the
+/// the assembled occurrences are clipped to the requested window as the wrapped service selects them: by default an
+/// occurrence is kept when any day from its emitted date to its last day falls within the window, and under the
+/// resource's <see cref="ObservedDateRangePolicy" /> its actual span, or either span, decides instead. Because the
 /// notable-date engine resolves per Gregorian year, a whole-year entry is the reusable unit: a later single-day or
 /// sub-range query for the same year is served without recomputing, and a query for exactly one whole civil year is
 /// served as the cached list itself with no copying.
 /// </para>
 /// <para>
-/// A civil year's entry holds every occurrence whose span overlaps the year, so a multi-day occurrence that starts in
-/// one year and runs into the next is held by both years' entries. A range spanning several years therefore takes such
-/// an occurrence from the entry of the year it starts in, or from the first year's entry when it starts before the
+/// A civil year's entry holds every occurrence the wrapped service includes in the year, by default every occurrence
+/// whose span overlaps it, so a multi-day occurrence that starts in one year and runs into the next is held by both
+/// years' entries. A range spanning several years therefore takes such an occurrence from the entry of the year its
+/// controlling span starts in (the emitted span by default, the actual span or the earlier of the two under the
+/// resource's <see cref="ObservedDateRangePolicy" />), or from the first year's entry when that span starts before the
 /// range's first year, and never returns it twice.
+/// </para>
+/// <para>
+/// The decorator learns the observed-date range policy from the resource provider it observes, or else from the
+/// <see cref="NotableDateService" /> or <see cref="ReloadableNotableDateService" /> it wraps. Around any other
+/// <see cref="INotableDateService" />, with no provider, it clips by the emitted span.
 /// </para>
 /// <para>
 /// Output ordering relies on the <see cref="INotableDateCache" /> ordering contract - cached occurrences round-trip in
@@ -167,6 +176,7 @@ public sealed class CachingNotableDateService
 
         int firstYear = range.StartDate.Year;
         int lastYear = range.EndDate.Year;
+        ObservedDateRangePolicy inclusion = ResolveInclusionPolicy();
 
         if (firstYear == lastYear)
         {
@@ -177,7 +187,7 @@ public sealed class CachingNotableDateService
             if (range.StartDate.DayOfYear == 1 && range.EndDate.Month == 12 && range.EndDate.Day == 31)
                 return EnsureOrdered(year);
 
-            return EnsureOrdered(Clip(year, range));
+            return EnsureOrdered(Clip(year, range, inclusion));
         }
 
         List<NotableDate> assembled = new();
@@ -203,13 +213,13 @@ public sealed class CachingNotableDateService
                     occurrences = ComputeAndStoreYear(territory, year, version, ttl, now);
                 }
 
-                AppendInRange(assembled, occurrences, range, EmittedFrom(year, firstYear));
+                AppendInRange(assembled, occurrences, range, TakenFrom(year, firstYear), inclusion);
             }
         }
         else
         {
             for (int year = firstYear; year <= lastYear; year++)
-                AppendInRange(assembled, ResolveYear(territory, year, version, ttl, now), range, EmittedFrom(year, firstYear));
+                AppendInRange(assembled, ResolveYear(territory, year, version, ttl, now), range, TakenFrom(year, firstYear), inclusion);
         }
 
         return EnsureOrdered(assembled);
@@ -559,58 +569,93 @@ public sealed class CachingNotableDateService
     }
 
     /// <summary>
-    /// Copies the occurrences whose span intersects the requested window into a new list, preserving order.
+    /// Copies the occurrences the window includes into a new list, preserving order.
     /// </summary>
     /// <param name="occurrences">The year's occurrences, in stored order.</param>
     /// <param name="range">The requested window.</param>
+    /// <param name="inclusion">The observed-date range policy that decides inclusion.</param>
     /// <returns>The clipped occurrences.</returns>
-    private static List<NotableDate> Clip(IReadOnlyList<NotableDate> occurrences, DateRange range)
+    private static List<NotableDate> Clip(IReadOnlyList<NotableDate> occurrences, DateRange range, ObservedDateRangePolicy inclusion)
     {
         List<NotableDate> clipped = new(occurrences.Count);
-        AppendInRange(clipped, occurrences, range, DateOnly.MinValue);
+        AppendInRange(clipped, occurrences, range, DateOnly.MinValue, inclusion);
         return clipped;
     }
 
     /// <summary>
-    /// Returns the earliest emitted date taken from a civil year's entry when a range spanning several years is
+    /// Returns the earliest controlling date taken from a civil year's entry when a range spanning several years is
     /// assembled, so an occurrence held by two years' entries is taken only once.
     /// </summary>
     /// <param name="year">The civil year whose entry is being appended.</param>
     /// <param name="firstYear">The first civil year of the range.</param>
     /// <returns>
-    /// <see cref="DateOnly.MinValue" /> for the first year, whose entry also supplies the occurrences that start before
-    /// the range's first year; otherwise 1 January of <paramref name="year" />, since an occurrence that starts earlier
-    /// was already taken from the entry of the year it starts in.
+    /// <see cref="DateOnly.MinValue" /> for the first year, whose entry also supplies the occurrences whose controlling
+    /// span starts before the range's first year; otherwise 1 January of <paramref name="year" />, since an occurrence
+    /// whose controlling span starts earlier was already taken from the entry of the year it starts in.
     /// </returns>
-    private static DateOnly EmittedFrom(int year, int firstYear) =>
+    private static DateOnly TakenFrom(int year, int firstYear) =>
         year == firstYear ? DateOnly.MinValue : new DateOnly(year, 1, 1);
 
     /// <summary>
-    /// Appends the occurrences whose span intersects the requested window, preserving order, skipping those emitted
+    /// Appends the occurrences the window includes, preserving order, skipping those whose controlling span starts
     /// before a given date.
     /// </summary>
     /// <param name="target">The list the in-range occurrences are appended to.</param>
     /// <param name="occurrences">The year's occurrences, in stored order.</param>
     /// <param name="range">The requested window.</param>
-    /// <param name="emittedFrom">The earliest emitted date to take; earlier occurrences are skipped.</param>
+    /// <param name="takenFrom">
+    /// The earliest controlling start to take; occurrences that start earlier are skipped.
+    /// </param>
+    /// <param name="inclusion">The observed-date range policy that decides inclusion.</param>
     /// <remarks>
-    /// An occurrence intersects the window when it is emitted on or before the window's last day and its last day, the
-    /// emitted date plus its duration less one, is on or after the window's first day: the test the wrapped service
-    /// applies, so a window that cuts a multi-day occurrence keeps it.
+    /// The window includes an occurrence by the test the wrapped service applies: by default its emitted span, from its
+    /// emitted date through its duration, intersects the window, so a window that cuts a multi-day occurrence keeps it;
+    /// under <see cref="ObservedDateRangePolicy.ActualOccurrenceControlsInclusion" /> its actual span does, and under
+    /// <see cref="ObservedDateRangePolicy.BothOccurrencesControlInclusion" /> either does. The controlling start is the
+    /// first day of the span that decides inclusion, the earlier of the two under the either policy.
     /// </remarks>
-    private static void AppendInRange(List<NotableDate> target, IReadOnlyList<NotableDate> occurrences, DateRange range, DateOnly emittedFrom)
+    private static void AppendInRange(List<NotableDate> target, IReadOnlyList<NotableDate> occurrences, DateRange range, DateOnly takenFrom, ObservedDateRangePolicy inclusion)
     {
         for (int i = 0; i < occurrences.Count; i++)
         {
             NotableDate occurrence = occurrences[i];
-            if (occurrence.Date < emittedFrom || occurrence.Date > range.EndDate)
-                continue;
+            DateOnly actual = occurrence.ActualDate ?? occurrence.Date;
+            (DateOnly start, bool included) = inclusion switch
+            {
+                ObservedDateRangePolicy.ActualOccurrenceControlsInclusion =>
+                    (actual, SpanIntersects(actual, occurrence.DurationDays, range)),
+                ObservedDateRangePolicy.BothOccurrencesControlInclusion =>
+                    (actual < occurrence.Date ? actual : occurrence.Date, SpanIntersects(actual, occurrence.DurationDays, range) || SpanIntersects(occurrence.Date, occurrence.DurationDays, range)),
+                _ => (occurrence.Date, SpanIntersects(occurrence.Date, occurrence.DurationDays, range)),
+            };
 
-            long lastDayNumber = (long)occurrence.Date.DayNumber + Math.Max(1, occurrence.DurationDays) - 1;
-            if (lastDayNumber >= range.StartDate.DayNumber)
+            if (included && start >= takenFrom)
                 target.Add(occurrence);
         }
     }
+
+    /// <summary>
+    /// Determines whether a span, from a first day through a duration, intersects a window.
+    /// </summary>
+    /// <param name="start">The span's first day.</param>
+    /// <param name="durationDays">The span's duration in days.</param>
+    /// <param name="range">The window.</param>
+    /// <returns>
+    /// <see langword="true" /> when the span intersects the window; otherwise <see langword="false" />.
+    /// </returns>
+    private static bool SpanIntersects(DateOnly start, int durationDays, DateRange range) =>
+        start <= range.EndDate && (long)start.DayNumber + Math.Max(1, durationDays) - 1 >= range.StartDate.DayNumber;
+
+    /// <summary>
+    /// Returns the observed-date range policy that decides which occurrences of a cached year a window includes: the
+    /// policy of the resource the decorator observes, or else of the <see cref="NotableDateService" /> or
+    /// <see cref="ReloadableNotableDateService" /> it wraps, or else the emitted span's.
+    /// </summary>
+    /// <returns>The policy in effect.</returns>
+    private ObservedDateRangePolicy ResolveInclusionPolicy() =>
+        _versionSource?.Current.ResolutionPolicy.ObservedDateRangePolicy
+        ?? (_inner as IResolutionPolicySource)?.ResolutionPolicy.ObservedDateRangePolicy
+        ?? ObservedDateRangePolicy.ObservedOccurrenceControlsInclusion;
 
     /// <summary>
     /// Returns the occurrences ordered by emitted date then identity, verifying the expected order with a linear scan

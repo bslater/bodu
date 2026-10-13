@@ -41,7 +41,7 @@ namespace Bodu.Globalization.Calendar;
 /// <seealso cref="MutableNotableDateResourceProvider" /> <seealso cref="NotableDateService" />
 /// <seealso href="../guides/calendar/dependency-injection.html">Calendar dependency injection (guide)</seealso>
 public sealed class ReloadableNotableDateService
-    : INotableDateService
+    : INotableDateService, IResolutionPolicySource
 {
     /// <summary>The provider supplying the resource currently in effect.</summary>
     private readonly INotableDateResourceProvider _provider;
@@ -117,6 +117,10 @@ public sealed class ReloadableNotableDateService
     /// <inheritdoc />
     public IReadOnlyList<string> GetSupportedTerritories() =>
         Current().GetSupportedTerritories();
+
+    /// <inheritdoc />
+    ResolutionPolicy IResolutionPolicySource.ResolutionPolicy =>
+        _provider.Current.ResolutionPolicy;
 
     /// <inheritdoc />
     public IReadOnlyList<CalendarSystem> GetSupportedCalendars() =>

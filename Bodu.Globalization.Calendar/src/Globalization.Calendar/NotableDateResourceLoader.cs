@@ -519,6 +519,10 @@ public static class NotableDateResourceLoader
     {
         ILogger log = logger ?? NullLogger.Instance;
 
+        // The document's duplicate policy settles its own declarations before its imports are composed, so an imported
+        // document keeps its composition rules and an override targets the concept the policy keeps.
+        document = NotableDateDuplicateSettler.Settle(document);
+
         (List<AdjustmentPolicy> policies, List<NotableDateDefinition> concepts) =
             ResolveImports(document, resourceResolver, new HashSet<string>(StringComparer.Ordinal), diagnostics);
 

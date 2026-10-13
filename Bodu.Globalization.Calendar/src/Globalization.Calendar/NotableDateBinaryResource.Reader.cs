@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateBinaryResource.Reader.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -34,9 +34,10 @@ public static partial class NotableDateBinaryResource
             throw new NotableDateBinaryFormatException(CalendarResourceStrings.Format_Invalid_BinaryMagic);
 
         // Version 1 scopes store rule identifiers alone, which still match the rule in any concept; version 2 adds
-        // qualified notableDateRef/ruleRef references with the same layout, so one decoder reads both.
+        // qualified notableDateRef/ruleRef references, and version 3 applied span and observed-date range policies, with
+        // the same layout, so one decoder reads all three.
         ushort version = BinaryPrimitives.ReadUInt16LittleEndian(header.AsSpan(4));
-        if (version is < NotableDateBinaryFormat.Version or > NotableDateBinaryFormat.QualifiedScopeRuleVersion)
+        if (version is < NotableDateBinaryFormat.Version or > NotableDateBinaryFormat.RangePolicyVersion)
         {
             throw new NotableDateBinaryFormatException(
                 string.Format(
@@ -44,7 +45,7 @@ public static partial class NotableDateBinaryResource
                     CalendarResourceStrings.Format_Invalid_BinaryVersion,
                     version,
                     NotableDateBinaryFormat.Version,
-                    NotableDateBinaryFormat.QualifiedScopeRuleVersion));
+                    NotableDateBinaryFormat.RangePolicyVersion));
         }
 
         using MemoryStream buffered = new();

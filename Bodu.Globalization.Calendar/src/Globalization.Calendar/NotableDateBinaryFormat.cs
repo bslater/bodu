@@ -30,6 +30,9 @@ internal static class NotableDateBinaryFormat
     /// <summary>The format version written for a pack whose adjustment scopes hold a qualified <c>notableDateRef/ruleRef</c> rule reference. The layout is the same as <see cref="Version" />; the number exists so a reader that predates qualified references rejects the pack instead of matching the reference against rule identifiers alone.</summary>
     public const ushort QualifiedScopeRuleVersion = 2;
 
+    /// <summary>The format version written for a pack whose span collision policy is not <see cref="RangeResolution.CollisionPolicy.KeepAll" /> or whose observed-date range policy is not <see cref="RangeResolution.ObservedDateRangePolicy.ObservedOccurrenceControlsInclusion" />, whatever its scopes hold. The layout is the same as <see cref="Version" />; the number exists so a reader from before the policies were applied rejects the pack instead of resolving it as though they were their defaults.</summary>
+    public const ushort RangePolicyVersion = 3;
+
     /// <summary>The header length in bytes: magic (4) + version (2) + flags (2) + payload SHA-256 (32).</summary>
     public const int HeaderLength = 40;
 

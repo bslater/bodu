@@ -61,11 +61,15 @@ public static partial class NotableDateBinaryResource
         WriteResource(writer, resource);
         byte[] payload = writer.ToPayload();
 
-        // A pack is written at the base version unless a scope holds a qualified rule reference, so packs without one
-        // stay byte-identical to, and readable by, readers that predate qualified references.
-        ushort version = resource.AdjustmentPolicies.Any(p => p.Scope.HasQualifiedRuleRefs)
-            ? NotableDateBinaryFormat.QualifiedScopeRuleVersion
-            : NotableDateBinaryFormat.Version;
+        // A pack is written at the lowest version whose meaning it needs, so packs that need neither qualified rule
+        // references nor an applied span or observed-date range policy stay byte-identical to, and readable by, older
+        // readers, and an older reader rejects a pack it would misread.
+        ushort version = resource.ResolutionPolicy.SpanCollisionPolicy != CollisionPolicy.KeepAll
+            || resource.ResolutionPolicy.ObservedDateRangePolicy != ObservedDateRangePolicy.ObservedOccurrenceControlsInclusion
+                ? NotableDateBinaryFormat.RangePolicyVersion
+                : resource.AdjustmentPolicies.Any(p => p.Scope.HasQualifiedRuleRefs)
+                    ? NotableDateBinaryFormat.QualifiedScopeRuleVersion
+                    : NotableDateBinaryFormat.Version;
 
         Span<byte> header = stackalloc byte[NotableDateBinaryFormat.HeaderLength];
         NotableDateBinaryFormat.Magic.CopyTo(header);

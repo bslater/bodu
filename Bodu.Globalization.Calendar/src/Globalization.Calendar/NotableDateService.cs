@@ -57,8 +57,8 @@ namespace Bodu.Globalization.Calendar;
 /// <seealso cref="NotableDateResourceLoader" /> <seealso cref="NotableDateFilter" />
 /// <seealso href="../guides/calendar/building-the-service.html">Building and extending the service (guide)</seealso>
 /// <seealso href="../guides/calendar/resolution-pipeline.html">The resolution pipeline (guide)</seealso>
-public sealed class NotableDateService
-    : INotableDateService
+public sealed partial class NotableDateService
+    : INotableDateService, IResolutionPolicySource
 {
     /// <summary>The loaded resource the service draws occurrences from.</summary>
     private readonly NotableDateResource _resource;
@@ -134,6 +134,9 @@ public sealed class NotableDateService
         ThrowHelper.ThrowIfNull(territory);
         ThrowHelper.ThrowIfGreaterThan(range.StartDate, range.EndDate);
 
+        if (UsesRangePolicies())
+            return ResolveWithRangePolicies(range, territory);
+
         int firstYear = Math.Max(1, range.StartDate.Year - 1);
         int lastYear = Math.Min(9999, range.EndDate.Year + 1);
 
@@ -185,6 +188,10 @@ public sealed class NotableDateService
 
         return [.. Resolve(range, territory).Where(filter.Matches)];
     }
+
+    /// <inheritdoc />
+    ResolutionPolicy IResolutionPolicySource.ResolutionPolicy =>
+        _resource.ResolutionPolicy;
 
     /// <inheritdoc />
     public IReadOnlyList<string> GetSupportedTerritories() =>
