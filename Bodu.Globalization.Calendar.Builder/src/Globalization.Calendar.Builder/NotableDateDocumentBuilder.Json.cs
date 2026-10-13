@@ -169,11 +169,14 @@ public sealed partial class NotableDateDocumentBuilder
     /// Every field the loader's <c>LoadJson</c> reads is read, including those outside the JSON subset that
     /// <see cref="ToJson()" /> writes (imports, the trigger and action refinements, handler parameters, scope rule
     /// references and year bounds, and a <c>PatchRule</c> override's applicability, strategy, recurrence, duration,
-    /// tags and adjustments), so the builder and the loader read the same document into the same resource. The few
-    /// fields the builder's model cannot hold throw a <see cref="NotSupportedException" /> rather than being dropped. A
-    /// <c>PatchRule</c> override that carries a <c>strategy</c> or a <c>recurrence</c> must name exactly one recognized
-    /// kind between them, matched ignoring case as the loader matches it, or it throws a <see cref="FormatException" />
-    /// carrying the message of the loader's <c>BODU-CAL-RULE-SOURCE</c> diagnostic.
+    /// tags and adjustments), so the builder and the loader read the same document into the same resource. Property
+    /// names are matched ignoring case, as the loader matches them, so <c>"Strategy"</c> reads as <c>"strategy"</c>,
+    /// and each strategy and recurrence attribute is written under its schema name, while a property the loader does
+    /// not read is ignored, as the loader ignores it. The few fields the builder's model cannot hold throw a
+    /// <see cref="NotSupportedException" /> rather than being dropped. A <c>PatchRule</c> override that carries a
+    /// <c>strategy</c> or a <c>recurrence</c> must name exactly one recognized kind between them, matched ignoring case
+    /// as the loader matches it, or it throws a <see cref="FormatException" /> carrying the message of the loader's
+    /// <c>BODU-CAL-RULE-SOURCE</c> diagnostic.
     /// </para>
     /// <para>
     /// Parsing does not otherwise validate the document: a document the loader would reject for a reason other than a
@@ -241,16 +244,16 @@ public sealed partial class NotableDateDocumentBuilder
 
         NotableDateDocumentBuilder builder = new()
         {
-            _resourceId = ScalarText(json["resourceId"]),
-            _schemaVersion = ScalarText(json["schemaVersion"]) ?? BuilderXml.DefaultSchemaVersion,
+            _resourceId = ScalarText(json, "resourceId"),
+            _schemaVersion = ScalarText(json, "schemaVersion") ?? BuilderXml.DefaultSchemaVersion,
         };
 
-        builder.ReadMetadataJson(json["metadata"] as JsonObject);
-        builder.ReadResolutionPolicyJson(json["resolutionPolicy"] as JsonObject);
-        builder.ReadAdjustmentPoliciesJson(json["adjustmentPolicies"] as JsonArray);
-        builder.ReadImportsJson(json["imports"] as JsonArray);
-        builder.ReadNotableDatesJson(json["notableDates"] as JsonArray);
-        builder.ReadOverridesJson(json["overrides"] as JsonArray);
+        builder.ReadMetadataJson(Property(json, "metadata") as JsonObject);
+        builder.ReadResolutionPolicyJson(ObjectProperty(json, "resolutionPolicy"));
+        builder.ReadAdjustmentPoliciesJson(ArrayProperty(json, "adjustmentPolicies"));
+        builder.ReadImportsJson(ArrayProperty(json, "imports"));
+        builder.ReadNotableDatesJson(ArrayProperty(json, "notableDates"));
+        builder.ReadOverridesJson(ArrayProperty(json, "overrides"));
 
         return builder;
     }

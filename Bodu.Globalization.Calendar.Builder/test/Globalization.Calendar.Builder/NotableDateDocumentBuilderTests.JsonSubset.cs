@@ -238,19 +238,31 @@ public partial class NotableDateDocumentBuilderTests
 
     /// <summary>
     /// Verifies that a JSON strategy attribute is normalized into the XML form: a numeric month becomes its English
-    /// month name, a Boolean flag becomes its lowercase literal, and a JSON <c>null</c> becomes an empty attribute.
+    /// month name, a Boolean flag becomes its lowercase literal, and a name in another case becomes the schema name.
     /// </summary>
     /// <param name="strategyJson">The strategy object JSON.</param>
     /// <param name="expectedFragment">The XML fragment expected after normalization.</param>
     [TestMethod]
     [DataRow("""{ "fixed": { "month": 1, "day": 1 } }""", "month=\"January\"", DisplayName = "numeric month")]
     [DataRow("""{ "fixed": { "month": "January", "day": 1, "skipLeapMonth": false } }""", "skipLeapMonth=\"false\"", DisplayName = "boolean false")]
-    [DataRow("""{ "fixed": { "month": "January", "day": 1, "skipLeapMonth": null } }""", "skipLeapMonth=\"\"", DisplayName = "null attribute")]
+    [DataRow("""{ "fixed": { "month": "January", "day": 1, "SkipLeapMonth": true } }""", "skipLeapMonth=\"true\"", DisplayName = "name in another case")]
     public void FromJson_WhenStrategyAttributeVaries_ShouldNormalizeInXml(string strategyJson, string expectedFragment)
     {
         string xml = NotableDateDocumentBuilder.FromJson(JsonWithRule($$"""{ "id": "r", "strategy": {{strategyJson}} }""")).ToXml();
 
         Assert.Contains(expectedFragment, xml);
+    }
+
+    /// <summary>
+    /// Verifies that a JSON strategy attribute holding the literal <c>null</c>, which the loader reads as absent, is
+    /// left out of the XML form rather than written as an empty attribute the schema rejects.
+    /// </summary>
+    [TestMethod]
+    public void FromJson_WhenStrategyAttributeIsNull_ShouldOmitItFromXml()
+    {
+        string xml = NotableDateDocumentBuilder.FromJson(JsonWithRule("""{ "id": "r", "strategy": { "fixed": { "month": "January", "day": 1, "skipLeapMonth": null } } }""")).ToXml();
+
+        Assert.DoesNotContain("skipLeapMonth", xml);
     }
 
     /// <summary>
