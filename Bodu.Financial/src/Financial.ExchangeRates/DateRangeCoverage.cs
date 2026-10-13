@@ -98,6 +98,35 @@ public sealed class DateRangeCoverage
     }
 
     /// <summary>
+    /// Finds the span of a window that is not yet recorded: from its first unrecorded day to its last.
+    /// </summary>
+    /// <param name="start">The inclusive first date of the window to test.</param>
+    /// <param name="end">The inclusive last date of the window to test.</param>
+    /// <param name="uncoveredStart">
+    /// When this method returns <see langword="true" />, the first day of the window that has not been recorded;
+    /// otherwise <see langword="default" />.
+    /// </param>
+    /// <param name="uncoveredEnd">
+    /// When this method returns <see langword="true" />, the last day of the window that has not been recorded;
+    /// otherwise <see langword="default" />.
+    /// </param>
+    /// <returns>
+    /// <see langword="true" /> when some day of the window has not been recorded; <see langword="false" /> when every
+    /// day has (the window is <see cref="Contains(DateOnly, DateOnly)" />).
+    /// </returns>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="start" /> is later than <paramref name="end" />.
+    /// </exception>
+    /// <remarks>
+    /// A caller that fetches only the reported span, rather than the whole window, fetches every missing day at the
+    /// cost of at most the recorded days between the first and last missing ones, in a single request.
+    /// </remarks>
+    public bool TryGetUncoveredSpan(DateOnly start, DateOnly end, out DateOnly uncoveredStart, out DateOnly uncoveredEnd)
+    {
+        throw new NotImplementedException();
+    }
+
+    /// <summary>
     /// Reports whether the supplied date has been recorded.
     /// </summary>
     /// <param name="date">The date to test.</param>

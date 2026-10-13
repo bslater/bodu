@@ -38,6 +38,12 @@ internal sealed class FixtureBoeRateTableSource
     public DateOnly? PublishedThrough { get; set; }
 
     /// <summary>
+    /// Gets the windows the source was asked for, in order.
+    /// </summary>
+    /// <value>Each request's inclusive start and end.</value>
+    public List<(DateOnly Start, DateOnly End)> Requests { get; } = [];
+
+    /// <summary>
     /// Gets the number of times <see cref="GetTableAsync" /> has been invoked.
     /// </summary>
     /// <value>The invocation count.</value>
@@ -47,6 +53,7 @@ internal sealed class FixtureBoeRateTableSource
     public ValueTask<BoeRateTable> GetTableAsync(DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken = default)
     {
         GetTableCallCount++;
+        Requests.Add((startDate, endDate));
 
         using MemoryStream stream = BoeFixtures.OpenStream(_fileName);
         BoeRateTable table = BoeRateCsvParser.Parse(stream, _options);

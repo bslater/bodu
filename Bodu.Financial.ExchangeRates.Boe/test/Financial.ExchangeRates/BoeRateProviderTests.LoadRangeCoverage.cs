@@ -100,4 +100,51 @@ public partial class BoeRateProviderTests
 
         Assert.AreEqual(3, source.GetTableCallCount);
     }
+
+    /// <summary>
+    /// Verifies that a range extending one already loaded downloads only its new days.
+    /// </summary>
+    [TestMethod]
+    public async Task LoadRangeAsync_WhenRangeExtendsLoadedRange_ShouldDownloadOnlyTheNewDays()
+    {
+        (BoeRateProvider provider, FixtureBoeRateTableSource source) = Create(allowSync: false);
+
+        await provider.LoadRangeAsync(new DateOnly(2023, 6, 1), new DateOnly(2023, 6, 10));
+        await provider.LoadRangeAsync(new DateOnly(2023, 6, 1), new DateOnly(2023, 6, 12));
+
+        Assert.AreEqual((new DateOnly(2023, 6, 11), new DateOnly(2023, 6, 12)), source.Requests[^1]);
+    }
+
+    /// <summary>
+    /// Verifies that a range spanning a day left between two loaded ranges downloads only that day, not the whole
+    /// range again.
+    /// </summary>
+    [TestMethod]
+    public async Task LoadRangeAsync_WhenLoadedRangesHaveGap_ShouldDownloadOnlyTheGap()
+    {
+        (BoeRateProvider provider, FixtureBoeRateTableSource source) = Create(allowSync: false);
+
+        await provider.LoadRangeAsync(new DateOnly(2023, 4, 1), new DateOnly(2023, 4, 14));
+        await provider.LoadRangeAsync(new DateOnly(2023, 4, 16), new DateOnly(2023, 4, 30));
+        await provider.LoadRangeAsync(new DateOnly(2023, 4, 1), new DateOnly(2023, 4, 30));
+
+        Assert.HasCount(3, source.Requests);
+        Assert.AreEqual((new DateOnly(2023, 4, 15), new DateOnly(2023, 4, 15)), source.Requests[2]);
+    }
+
+    /// <summary>
+    /// Verifies that sliding a lookup forward one day, as on-demand single-rate lookups do, downloads only the new day
+    /// rather than the whole look-back window again.
+    /// </summary>
+    [TestMethod]
+    public async Task GetRateAsync_WhenLookupSlidesForwardOneDay_ShouldDownloadOnlyTheNewDay()
+    {
+        (BoeRateProvider provider, FixtureBoeRateTableSource source) = Create(allowSync: false);
+
+        _ = await provider.GetRateAsync("GBP", "USD", new DateOnly(2023, 1, 3), RateLookupOptions.PreviousWithin(30));
+        _ = await provider.GetRateAsync("GBP", "USD", new DateOnly(2023, 1, 4), RateLookupOptions.PreviousWithin(30));
+
+        Assert.HasCount(2, source.Requests);
+        Assert.AreEqual((new DateOnly(2023, 1, 4), new DateOnly(2023, 1, 4)), source.Requests[1]);
+    }
 }

@@ -118,4 +118,19 @@ public partial class PairWebRateProviderTests
         Assert.AreEqual(2, source.CallCount);
         Assert.AreSame(before, provider.GetLoadedSnapshot());
     }
+
+    /// <summary>
+    /// Verifies that a window extending one already covered for the pair fetches only its new days.
+    /// </summary>
+    [TestMethod]
+    public async Task LoadPairAsync_WhenWindowExtendsCoveredWindow_ShouldFetchOnlyTheNewDays()
+    {
+        StubPairSource source = new(new RateObservation(Known, 0.6828m));
+        using TestPairWebRateProvider provider = new(source, new TestWebRateProviderOptions());
+
+        await provider.LoadPairAsync("AUD", "USD", RangeStart, RangeEnd);
+        await provider.LoadPairAsync("AUD", "USD", RangeStart, new DateOnly(2023, 2, 5));
+
+        Assert.AreEqual((new DateOnly(2023, 2, 1), new DateOnly(2023, 2, 5)), source.Requests[^1]);
+    }
 }

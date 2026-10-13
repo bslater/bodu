@@ -68,6 +68,12 @@ internal sealed class StubPairSource
     public Exception? FailNext { get; set; }
 
     /// <summary>
+    /// Gets the windows the source was asked for, in order.
+    /// </summary>
+    /// <value>Each request's inclusive start and end.</value>
+    public List<(DateOnly Start, DateOnly End)> Requests { get; } = [];
+
+    /// <summary>
     /// Gets the number of times <see cref="GetPairAsync" /> has been invoked.
     /// </summary>
     /// <value>The invocation count.</value>
@@ -77,6 +83,7 @@ internal sealed class StubPairSource
     public ValueTask<PairRateData<string>> GetPairAsync(CurrencyPairRequest request, CancellationToken cancellationToken = default)
     {
         CallCount++;
+        Requests.Add((request.StartDate, request.EndDate));
 
         if (FailNext is { } failure)
         {

@@ -66,6 +66,30 @@ internal sealed class LoadedRangeCoverage
     }
 
     /// <summary>
+    /// Finds the span of an inclusive range not held: from its first missing day to its last, counting provisionally
+    /// held days as held until they expire.
+    /// </summary>
+    /// <param name="start">The inclusive first day of the range.</param>
+    /// <param name="end">The inclusive last day of the range.</param>
+    /// <param name="nowUtc">The current instant, against which provisional records expire.</param>
+    /// <param name="missingStart">
+    /// When this method returns <see langword="true" />, the first day not held; otherwise <see langword="default" />.
+    /// </param>
+    /// <param name="missingEnd">
+    /// When this method returns <see langword="true" />, the last day not held; otherwise <see langword="default" />.
+    /// </param>
+    /// <returns>
+    /// <see langword="true" /> when some day of the range is not held; otherwise <see langword="false" />.
+    /// </returns>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="start" /> is later than <paramref name="end" />.
+    /// </exception>
+    public bool TryGetUncoveredSpan(DateOnly start, DateOnly end, DateTimeOffset nowUtc, out DateOnly missingStart, out DateOnly missingEnd)
+    {
+        throw new NotImplementedException();
+    }
+
+    /// <summary>
     /// Records a download of an inclusive range: its final days for good, and the rest until the refresh interval has
     /// passed.
     /// </summary>
