@@ -8,6 +8,7 @@ using System.Globalization;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Xml.Linq;
+using Bodu.Globalization.Calendar.Algorithms;
 using Bodu.Globalization.Calendar.RangeResolution;
 
 namespace Bodu.Globalization.Calendar.Builder;
@@ -292,8 +293,9 @@ public sealed partial class NotableDateDocumentBuilder
     /// </param>
     /// <returns>The reconstructed rule builder.</returns>
     /// <exception cref="FormatException">
-    /// The rule's <c>strategy</c> and <c>recurrence</c> name no recognized kind or more than one between them, or its
-    /// <c>untilDate</c> declares no end strategy or one that names no recognized kind or more than one.
+    /// The rule's <c>strategy</c> and <c>recurrence</c> name no recognized kind or more than one between them, its
+    /// <c>untilDate</c> declares no end strategy or one that names no recognized kind or more than one, or a strategy
+    /// or recurrence attribute value does not parse.
     /// </exception>
     private static NotableDateRuleBuilder ReadRuleJson(JsonObject ruleJson, string notableDateId)
     {
@@ -303,6 +305,7 @@ public sealed partial class NotableDateDocumentBuilder
         ThrowIfOccurrenceSourceInvalid(strategyJson, recurrenceJson, notableDateId, rule.Id, patch: false);
 
         JsonObject? applicability = ObjectProperty(ruleJson, "applicability");
+        CalendarSystem? calendar = applicability is null ? null : ParseNullableEnum<CalendarSystem>(ScalarText(applicability, "calendar"), "calendar");
 
         rule.SetParsedScalars(
             JsonInt(ruleJson, "priority", "rule priority"),
@@ -310,7 +313,7 @@ public sealed partial class NotableDateDocumentBuilder
             JsonBool(ruleJson, "nonWorking", "rule nonWorking"),
             JsonInt(ruleJson, "durationDays", "durationDays"),
             UnreadText(ruleJson, "comment", "a rule comment that is an object or an array"),
-            applicability is null ? null : ParseNullableEnum<CalendarSystem>(ScalarText(applicability, "calendar"), "calendar"),
+            calendar,
             applicability is null ? null : JsonInt(applicability, "fromYear", "applicability fromYear"),
             applicability is null ? null : JsonInt(applicability, "toYear", "applicability toYear"),
             applicability is null ? null : JsonInt(applicability, "everyYears", "applicability everyYears"),
@@ -323,12 +326,14 @@ public sealed partial class NotableDateDocumentBuilder
             ReadTextArray(ArrayProperty(ruleJson, "tags"), "rule tags"),
             ReadTextArray(ArrayProperty(ruleJson, "adjustments"), "rule adjustments"));
 
-        rule.SetParsedStrategy(BuildStrategyElement(strategyJson));
+        // The loader reads a fixed month in the calendar the applicability names, Gregorian when it names none.
+        CalendarSystem strategyCalendar = calendar ?? CalendarSystem.Gregorian;
+        rule.SetParsedStrategy(BuildStrategyElement(strategyJson, strategyCalendar, notableDateId, rule.Id));
 
-        if (BuildRecurrenceElement(recurrenceJson) is XElement recurrence)
+        if (BuildRecurrenceElement(recurrenceJson, notableDateId, rule.Id) is XElement recurrence)
             rule.SetParsedRecurrence(recurrence);
 
-        ReadUntilDateJson(ruleJson, rule, notableDateId);
+        ReadUntilDateJson(ruleJson, rule, strategyCalendar, notableDateId);
 
         return rule;
     }
@@ -339,19 +344,21 @@ public sealed partial class NotableDateDocumentBuilder
     /// </summary>
     /// <param name="owner">The rule or override object.</param>
     /// <param name="rule">The rule builder that receives the duration.</param>
+    /// <param name="calendar">The calendar the rule's fixed months are read in.</param>
     /// <param name="notableDateId">
     /// The identifier of the concept the rule belongs to, used in exception messages.
     /// </param>
     /// <exception cref="FormatException">
-    /// The <c>untilDate</c> declares no end strategy, or one that names no recognized kind or more than one.
+    /// The <c>untilDate</c> declares no end strategy, or one that names no recognized kind or more than one, or an end
+    /// strategy attribute value does not parse.
     /// </exception>
-    private static void ReadUntilDateJson(JsonObject owner, NotableDateRuleBuilder rule, string notableDateId)
+    private static void ReadUntilDateJson(JsonObject owner, NotableDateRuleBuilder rule, CalendarSystem calendar, string notableDateId)
     {
         if (ObjectProperty(owner, "duration") is not JsonObject duration || ObjectProperty(duration, "untilDate") is not JsonObject untilDate)
             return;
 
         rule.SetParsedDuration(
-            BuildEndStrategyElement(untilDate, notableDateId, rule.Id),
+            BuildEndStrategyElement(untilDate, calendar, notableDateId, rule.Id),
             ParseNullableEnum<DateBoundary>(ScalarText(untilDate, "startBoundary"), "untilDate startBoundary") ?? DateBoundary.Inclusive,
             ParseNullableEnum<DateBoundary>(ScalarText(untilDate, "endBoundary"), "untilDate endBoundary") ?? DateBoundary.Inclusive,
             ParseNullableEnum<EndDateSelection>(ScalarText(untilDate, "selection"), "untilDate selection") ?? EndDateSelection.FirstOnOrAfterStart);
@@ -362,6 +369,7 @@ public sealed partial class NotableDateDocumentBuilder
     /// loader requires.
     /// </summary>
     /// <param name="untilDate">The <c>untilDate</c> object.</param>
+    /// <param name="calendar">The calendar the rule's fixed months are read in.</param>
     /// <param name="notableDateId">
     /// The identifier of the concept the rule belongs to, used in exception messages.
     /// </param>
@@ -370,13 +378,13 @@ public sealed partial class NotableDateDocumentBuilder
     /// <exception cref="FormatException">
     /// The <c>untilDate</c> declares no end strategy, which the loader reports with <c>BODU-CAL-DURATION-NOEND</c>, or
     /// one that names no recognized kind, reported the same way, or more than one, which the loader reports with
-    /// <c>BODU-CAL-DURATION-CONFLICT</c>.
+    /// <c>BODU-CAL-DURATION-CONFLICT</c>, or an attribute value of the end strategy does not parse.
     /// </exception>
-    private static XElement BuildEndStrategyElement(JsonObject untilDate, string notableDateId, string ruleId)
+    private static XElement BuildEndStrategyElement(JsonObject untilDate, CalendarSystem calendar, string notableDateId, string ruleId)
     {
         JsonObject? strategyJson = ObjectProperty(untilDate, "strategy");
         int kinds = CountKinds(strategyJson, s_jsonStrategyKinds.Keys);
-        if (kinds == 1 && BuildStrategyElement(strategyJson) is XElement element)
+        if (kinds == 1 && BuildStrategyElement(strategyJson, calendar, notableDateId, ruleId) is XElement element)
             return element;
 
         string format = strategyJson is null
@@ -392,15 +400,21 @@ public sealed partial class NotableDateDocumentBuilder
     /// Reconstructs a <c>Recurrence</c> element from a JSON recurrence object, from its first recognized kind.
     /// </summary>
     /// <param name="recurrenceJson">The recurrence object, or <see langword="null" /> when absent.</param>
+    /// <param name="notableDateId">
+    /// The identifier of the concept the rule belongs to, used in exception messages.
+    /// </param>
+    /// <param name="ruleId">The identifier of the rule, used in exception messages.</param>
     /// <returns>
     /// The reconstructed recurrence element, or <see langword="null" /> when the object is absent or names no
     /// recognized kind.
     /// </returns>
+    /// <exception cref="FormatException">An attribute value of the recurrence does not parse.</exception>
     /// <remarks>
-    /// Each attribute's name is matched as the loader matches it, ignoring case, and the attribute is written under its
-    /// schema name; a property the loader does not read is ignored, as the loader ignores it.
+    /// Each attribute is read as the loader reads it, its name matched ignoring case and its value parsed with the
+    /// loader's rules, and is written under its schema name in the form the schema accepts; a property the loader does
+    /// not read is ignored, as the loader ignores it.
     /// </remarks>
-    private static XElement? BuildRecurrenceElement(JsonObject? recurrenceJson)
+    private static XElement? BuildRecurrenceElement(JsonObject? recurrenceJson, string notableDateId, string ruleId)
     {
         if (recurrenceJson is null)
             return null;
@@ -410,7 +424,8 @@ public sealed partial class NotableDateDocumentBuilder
             if (ObjectProperty(recurrenceJson, kind) is not JsonObject body)
                 continue;
 
-            XElement element = BuildKindElement(elementName, attributes, body);
+            // A recurrence reads no month, so the calendar it is read in does not matter.
+            XElement element = BuildKindElement(kind, elementName, attributes, body, CalendarSystem.Gregorian, notableDateId, ruleId);
             if (string.Equals(kind, "weekly", StringComparison.Ordinal) && ArrayProperty(body, "days") is JsonArray days)
             {
                 foreach (JsonNode? day in days)
@@ -485,7 +500,8 @@ public sealed partial class NotableDateDocumentBuilder
     /// <returns>The reconstructed patch override entry.</returns>
     /// <exception cref="FormatException">
     /// The override carries a <c>strategy</c> or a <c>recurrence</c>, and the two name no recognized kind or more than
-    /// one, or its <c>untilDate</c> declares no end strategy or one that names no recognized kind or more than one.
+    /// one, its <c>untilDate</c> declares no end strategy or one that names no recognized kind or more than one, or a
+    /// strategy or recurrence attribute value does not parse.
     /// </exception>
     private static OverrideEntry ReadPatchOverrideJson(JsonObject overrideJson, string notableDateRef)
     {
@@ -499,13 +515,14 @@ public sealed partial class NotableDateDocumentBuilder
 
         // A patch that carries an applicability replaces the rule's whole applicability, an empty one included, so a
         // present applicability always declares its calendar: the default, Gregorian, when the patch names none.
+        CalendarSystem? calendar = applicability is null ? null : ParseNullableEnum<CalendarSystem>(ScalarText(applicability, "calendar"), "calendar") ?? CalendarSystem.Gregorian;
         rule.SetParsedScalars(
             JsonInt(overrideJson, "priority", "patch priority"),
             ParseNullableEnum<NotableDateCategory>(ScalarText(overrideJson, "category"), "category"),
             JsonBool(overrideJson, "nonWorking", "patch nonWorking"),
             JsonInt(overrideJson, "durationDays", "durationDays"),
             null,
-            applicability is null ? null : ParseNullableEnum<CalendarSystem>(ScalarText(applicability, "calendar"), "calendar") ?? CalendarSystem.Gregorian,
+            calendar,
             applicability is null ? null : JsonInt(applicability, "fromYear", "applicability fromYear"),
             applicability is null ? null : JsonInt(applicability, "toYear", "applicability toYear"),
             applicability is null ? null : JsonInt(applicability, "everyYears", "applicability everyYears"),
@@ -518,12 +535,15 @@ public sealed partial class NotableDateDocumentBuilder
             ReadPatchListJson(ArrayProperty(overrideJson, "tags"), "patch tags", "an empty tags list on a PatchRule override"),
             ReadPatchListJson(ArrayProperty(overrideJson, "adjustments"), "patch adjustments", "an empty adjustments list on a PatchRule override"));
 
-        rule.SetParsedStrategy(BuildStrategyElement(strategyJson));
+        // The loader reads the patch's fixed months in the calendar of the applicability it carries, Gregorian when it
+        // carries none.
+        CalendarSystem strategyCalendar = calendar ?? CalendarSystem.Gregorian;
+        rule.SetParsedStrategy(BuildStrategyElement(strategyJson, strategyCalendar, notableDateRef, ruleRef));
 
-        if (BuildRecurrenceElement(recurrenceJson) is XElement recurrence)
+        if (BuildRecurrenceElement(recurrenceJson, notableDateRef, ruleRef) is XElement recurrence)
             rule.SetParsedRecurrence(recurrence);
 
-        ReadUntilDateJson(overrideJson, rule, notableDateRef);
+        ReadUntilDateJson(overrideJson, rule, strategyCalendar, notableDateRef);
 
         return new OverrideEntry(OverrideOperation.PatchRule, notableDateRef, ruleRef, rule);
     }
@@ -650,15 +670,22 @@ public sealed partial class NotableDateDocumentBuilder
     /// Builds an XML strategy element from a JSON strategy object, from its first recognized kind.
     /// </summary>
     /// <param name="strategyJson">The strategy object, or <see langword="null" /> when absent.</param>
+    /// <param name="calendar">The calendar the rule's fixed months are read in.</param>
+    /// <param name="notableDateId">
+    /// The identifier of the concept the rule belongs to, used in exception messages.
+    /// </param>
+    /// <param name="ruleId">The identifier of the rule, used in exception messages.</param>
     /// <returns>
     /// The reconstructed strategy element, or <see langword="null" /> when the object is absent or names no recognized
     /// kind.
     /// </returns>
+    /// <exception cref="FormatException">An attribute value of the strategy does not parse.</exception>
     /// <remarks>
-    /// Each attribute's name is matched as the loader matches it, ignoring case, and the attribute is written under its
-    /// schema name; a property the loader does not read is ignored, as the loader ignores it.
+    /// Each attribute is read as the loader reads it, its name matched ignoring case and its value parsed with the
+    /// loader's rules, and is written under its schema name in the form the schema accepts; a property the loader does
+    /// not read is ignored, as the loader ignores it.
     /// </remarks>
-    private static XElement? BuildStrategyElement(JsonObject? strategyJson)
+    private static XElement? BuildStrategyElement(JsonObject? strategyJson, CalendarSystem calendar, string notableDateId, string ruleId)
     {
         if (strategyJson is null)
             return null;
@@ -666,7 +693,7 @@ public sealed partial class NotableDateDocumentBuilder
         foreach ((string kind, (string elementName, string[] attributes)) in s_jsonStrategyKinds)
         {
             if (ObjectProperty(strategyJson, kind) is JsonObject body)
-                return BuildKindElement(elementName, attributes, body);
+                return BuildKindElement(kind, elementName, attributes, body, calendar, notableDateId, ruleId);
         }
 
         return null;
@@ -676,46 +703,93 @@ public sealed partial class NotableDateDocumentBuilder
     /// Builds the XML element of a strategy or recurrence kind from its JSON body, writing each attribute the loader
     /// reads under its schema name, in the order the body holds them.
     /// </summary>
+    /// <param name="kind">The kind's JSON name, which the loader's messages name the attribute after.</param>
     /// <param name="elementName">The local name of the kind's XML element.</param>
     /// <param name="attributes">The schema names of the attributes the loader reads from the kind's body.</param>
     /// <param name="body">The kind's JSON body.</param>
+    /// <param name="calendar">The calendar a fixed month is read in.</param>
+    /// <param name="notableDateId">
+    /// The identifier of the concept the rule belongs to, used in exception messages.
+    /// </param>
+    /// <param name="ruleId">The identifier of the rule, used in exception messages.</param>
     /// <returns>The kind's XML element.</returns>
+    /// <exception cref="FormatException">An attribute value does not parse.</exception>
     /// <remarks>
     /// An attribute takes its value from the first property that bears its name, ignoring case, and is not the JSON
     /// literal <c>null</c>, as the loader reads it; any other property is ignored, as the loader ignores it.
     /// </remarks>
-    private static XElement BuildKindElement(string elementName, string[] attributes, JsonObject body)
+    private static XElement BuildKindElement(string kind, string elementName, string[] attributes, JsonObject body, CalendarSystem calendar, string notableDateId, string ruleId)
     {
         XElement element = new(BuilderXml.Namespace + elementName);
         foreach (KeyValuePair<string, JsonNode?> property in body)
         {
             string? attribute = Array.Find(attributes, name => string.Equals(name, property.Key, StringComparison.OrdinalIgnoreCase));
             if (property.Value is not null && attribute is not null && element.Attribute(attribute) is null)
-                element.SetAttributeValue(attribute, ConvertStrategyAttribute(attribute, property.Value));
+                element.SetAttributeValue(attribute, ReadKindAttribute(kind, attribute, ReadScalar(property.Value, attribute)!, calendar, notableDateId, ruleId));
         }
 
         return element;
     }
 
     /// <summary>
-    /// Converts a JSON strategy attribute value into the string form expected by the XML schema, normalizing months and
-    /// Boolean literals.
+    /// Reads a strategy or recurrence attribute value with the loader's rules and returns the form the XML schema
+    /// accepts, which the loader reads back as the same value.
     /// </summary>
-    /// <param name="name">The attribute's schema name.</param>
-    /// <param name="value">The attribute value.</param>
-    /// <returns>The string form of the attribute value.</returns>
-    private static string ConvertStrategyAttribute(string name, JsonNode value)
+    /// <param name="kind">The kind's JSON name, which the loader's messages name the attribute after.</param>
+    /// <param name="attribute">The attribute's schema name.</param>
+    /// <param name="value">The attribute's text, as the loader reads it.</param>
+    /// <param name="calendar">The calendar a fixed month is read in.</param>
+    /// <param name="notableDateId">
+    /// The identifier of the concept the rule belongs to, used in exception messages.
+    /// </param>
+    /// <param name="ruleId">The identifier of the rule, used in exception messages.</param>
+    /// <returns>
+    /// The value's schema form: an enumeration's member name, an integer's invariant digits, a Boolean's lowercase
+    /// literal, a date as <c>yyyy-MM-dd</c>, a month as its English name, or, for a fixed month in a calendar other
+    /// than the Gregorian, as its number or its month alias; a reference or a key as given.
+    /// </returns>
+    /// <exception cref="FormatException">
+    /// <paramref name="value" /> does not parse, which the loader reports with <c>BODU-CAL-VALUE</c>,
+    /// <c>BODU-CAL-ENUM</c> or <c>BODU-CAL-MONTH</c>.
+    /// </exception>
+    private static string ReadKindAttribute(string kind, string attribute, string value, CalendarSystem calendar, string notableDateId, string ruleId)
     {
-        if (string.Equals(name, "month", StringComparison.Ordinal) && value.GetValueKind() == JsonValueKind.Number)
-            return BuilderXml.GetMonthName((int)value);
+        string field = kind + " " + attribute;
 
-        return value.GetValueKind() switch
+        switch (attribute)
         {
-            JsonValueKind.True => "true",
-            JsonValueKind.False => "false",
-            JsonValueKind.Number => ((int)value).ToString(CultureInfo.InvariantCulture),
-            _ => ReadScalar(value, name) ?? string.Empty,
-        };
+            case "month" when string.Equals(kind, "fixed", StringComparison.Ordinal):
+                (int month, string? alias) = ParseFixedMonth(value, calendar, notableDateId, ruleId);
+                return calendar == CalendarSystem.Gregorian ? BuilderXml.GetMonthName(month) : alias ?? BuilderXml.Int(month);
+
+            case "month":
+                return BuilderXml.GetMonthName(ParseMonth(value, notableDateId, ruleId));
+
+            case "dayOfWeek" or "relativeDayOfWeek":
+                return ParseEnum<DayOfWeek>(value, field).ToString();
+
+            case "weekOrdinal":
+                return ParseEnum<WeekOrdinal>(value, field).ToString();
+
+            case "direction":
+                return ParseEnum<WeekdayProximity>(value, field).ToString();
+
+            case "invalidDayBehavior":
+                return ParseEnum<InvalidDayOfMonthBehavior>(value, field).ToString();
+
+            case "skipLeapMonth" or "sweepCalendarYears":
+                return BuilderXml.Bool(ParseNullableBool(value, field) ?? false);
+
+            case "anchorDate":
+                return (ParseNullableDate(value, field) ?? default).ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
+
+            case "day" or "offsetDays" or "referenceYearOffset" or "ordinal" or "offsetWorkingDays" or "week"
+                or "intervalDays" or "intervalWeeks" or "dayOfMonth" or "intervalMonths":
+                return BuilderXml.Int(ParseNullableInt(value, field) ?? 0);
+
+            default:
+                return value;
+        }
     }
 
     /// <summary>

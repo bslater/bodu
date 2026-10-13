@@ -129,9 +129,9 @@ public sealed partial class NotableDateDocumentBuilder
     /// </exception>
     /// <exception cref="FormatException">
     /// <paramref name="json" /> is not well-formed or is not a notable-date document, an enumeration, integer, Boolean,
-    /// trigger-month or <c>workingDays</c> value does not parse, a property that holds a value holds an object or an
-    /// array, a property that holds an object or a list holds a value of another kind, an item of a list of
-    /// identifiers, territory codes or tags is not a string, a rule's <c>strategy</c> and <c>recurrence</c>, or a
+    /// date, month, trigger-month or <c>workingDays</c> value does not parse, a property that holds a value holds an
+    /// object or an array, a property that holds an object or a list holds a value of another kind, an item of a list
+    /// of identifiers, territory codes or tags is not a string, a rule's <c>strategy</c> and <c>recurrence</c>, or a
     /// <c>PatchRule</c> override's when it carries either, name no recognized kind or more than one between them, an
     /// <c>untilDate</c> declares no end strategy or one that names no recognized kind or more than one, an override's
     /// <c>operation</c> is absent or names no operation, or an <c>AddRule</c> override has no <c>rule</c>.
@@ -156,6 +156,15 @@ public sealed partial class NotableDateDocumentBuilder
     /// be a 32-bit integer, an XML-schema Boolean literal (<c>true</c>, <c>false</c>, <c>1</c> or <c>0</c>), or a month
     /// name or number, and any other value throws a <see cref="FormatException" /> carrying the message of the loader's
     /// <c>BODU-CAL-VALUE</c> diagnostic.
+    /// </para>
+    /// <para>
+    /// The attribute values of a strategy, a recurrence and an end strategy are read the same way, each as the loader
+    /// reads it: an integer, a Boolean, a weekday, week ordinal, direction or invalid-day behavior, a <c>yyyy-MM-dd</c>
+    /// date, and a month, a fixed strategy's in the calendar the rule's applicability names. A value the loader rejects
+    /// throws a <see cref="FormatException" /> carrying the message of its <c>BODU-CAL-VALUE</c>, <c>BODU-CAL-ENUM</c>
+    /// or <c>BODU-CAL-MONTH</c> diagnostic, and a value it reads is written in the form the schema accepts: a name in
+    /// another case as the member's name, a number in quotes by its digits, and a month as its English name, or a fixed
+    /// month in a calendar other than the Gregorian as its number or its month alias.
     /// </para>
     /// <para>
     /// Text is read as the loader reads it: a string verbatim, a number by its invariant digits, and a Boolean as
@@ -236,13 +245,13 @@ public sealed partial class NotableDateDocumentBuilder
     /// <returns>A new <see cref="NotableDateDocumentBuilder" /> populated from the object.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="json" /> is <see langword="null" />.</exception>
     /// <exception cref="FormatException">
-    /// An enumeration, integer, Boolean, trigger-month or <c>workingDays</c> value does not parse, a property that
-    /// holds a value holds an object or an array, a property that holds an object or a list holds a value of another
-    /// kind, an item of a list of identifiers, territory codes or tags is not a string, a rule's <c>strategy</c> and
-    /// <c>recurrence</c>, or a <c>PatchRule</c> override's when it carries either, name no recognized kind or more than
-    /// one between them, an <c>untilDate</c> declares no end strategy or one that names no recognized kind or more than
-    /// one, an override's <c>operation</c> is absent or names no operation, or an <c>AddRule</c> override has no
-    /// <c>rule</c>.
+    /// An enumeration, integer, Boolean, date, month, trigger-month or <c>workingDays</c> value does not parse, a
+    /// property that holds a value holds an object or an array, a property that holds an object or a list holds a value
+    /// of another kind, an item of a list of identifiers, territory codes or tags is not a string, a rule's
+    /// <c>strategy</c> and <c>recurrence</c>, or a <c>PatchRule</c> override's when it carries either, name no
+    /// recognized kind or more than one between them, an <c>untilDate</c> declares no end strategy or one that names no
+    /// recognized kind or more than one, an override's <c>operation</c> is absent or names no operation, or an
+    /// <c>AddRule</c> override has no <c>rule</c>.
     /// </exception>
     /// <exception cref="NotSupportedException">
     /// <paramref name="json" /> declares a field the builder's document model cannot hold; see
