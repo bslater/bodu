@@ -104,4 +104,20 @@ public partial class DateTimeExtensionsTests
 
         Assert.AreEqual(input, actual);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.PreviousOrSameDateOfWeek(DateTime, DayOfWeek)" /> throws
+    /// <see cref="ArgumentOutOfRangeException" /> naming the <c>dateTime</c> argument when the occurrence precedes the
+    /// first date a <see cref="DateTime" /> can represent.
+    /// </summary>
+    [TestMethod]
+    public void PreviousOrSameDateOfWeek_WhenOccurrenceIsOutsideDateTimeRange_ShouldThrowArgumentOutOfRangeExceptionForDate()
+    {
+        var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = DateTime.MinValue.PreviousOrSameDateOfWeek(DayOfWeek.Sunday);
+        });
+
+        Assert.AreEqual("dateTime", ex.ParamName);
+    }
 }

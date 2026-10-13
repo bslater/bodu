@@ -67,4 +67,19 @@ public partial class DateOnlyExtensionsTests
         Assert.IsTrue(actual >= DateOnly.MinValue);
     }
 
+    /// <summary>
+    /// Verifies that <see cref="DateOnlyExtensions.PreviousDateOfWeek(DateOnly, DayOfWeek)" /> throws
+    /// <see cref="ArgumentOutOfRangeException" /> naming the <c>date</c> argument when the occurrence precedes the
+    /// first date a <see cref="DateOnly" /> can represent.
+    /// </summary>
+    [TestMethod]
+    public void PreviousDateOfWeek_WhenOccurrenceIsOutsideDateOnlyRange_ShouldThrowArgumentOutOfRangeExceptionForDate()
+    {
+        var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = DateOnly.MinValue.PreviousDateOfWeek(DayOfWeek.Sunday);
+        });
+
+        Assert.AreEqual("date", ex.ParamName);
+    }
 }

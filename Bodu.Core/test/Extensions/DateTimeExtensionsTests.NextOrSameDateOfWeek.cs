@@ -103,4 +103,20 @@ public partial class DateTimeExtensionsTests
 
         Assert.IsGreaterThanOrEqualTo(DateTime.MinValue, actual);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.NextOrSameDateOfWeek(DateTime, DayOfWeek)" /> throws
+    /// <see cref="ArgumentOutOfRangeException" /> naming the <c>dateTime</c> argument when the occurrence follows the
+    /// last date a <see cref="DateTime" /> can represent.
+    /// </summary>
+    [TestMethod]
+    public void NextOrSameDateOfWeek_WhenOccurrenceIsOutsideDateTimeRange_ShouldThrowArgumentOutOfRangeExceptionForDate()
+    {
+        var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = DateTime.MaxValue.NextOrSameDateOfWeek(DayOfWeek.Saturday);
+        });
+
+        Assert.AreEqual("dateTime", ex.ParamName);
+    }
 }
