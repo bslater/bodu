@@ -405,7 +405,7 @@ public sealed partial class MerkleTree
     /// <param name="loop">The parallel loop to run.</param>
     /// <remarks>
     /// Cancellation surfaces as the <see cref="OperationCanceledException" /> the loop itself throws. Every worker's
-    /// algorithm is disposed by the loop's local finalizer whether the loop completes, faults or is cancelled. Several
+    /// algorithm is disposed by the loop's local finalizer whether the loop completes, faults or is canceled. Several
     /// workers can fault on the same input at once; the first fault is the one a sequential computation would have
     /// raised, and the others are its echoes.
     /// </remarks>

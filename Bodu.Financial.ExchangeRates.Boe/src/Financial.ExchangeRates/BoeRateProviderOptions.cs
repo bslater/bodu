@@ -64,9 +64,9 @@ public sealed class BoeRateProviderOptions
     }
 
     /// <summary>
-    /// Gets or sets the catalogue of currency series to request, mapping each quote currency to its IADB series code.
+    /// Gets or sets the catalog of currency series to request, mapping each quote currency to its IADB series code.
     /// </summary>
-    /// <value>The series catalogue; defaults to <see cref="BoeSeries.Default" />.</value>
+    /// <value>The series catalog; defaults to <see cref="BoeSeries.Default" />.</value>
     public IReadOnlyList<BoeSeries> Series { get; set; } = BoeSeries.Default;
 
     /// <summary>

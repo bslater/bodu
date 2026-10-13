@@ -68,10 +68,10 @@ internal sealed class StripedAsyncLockSet<TKey>
     /// Acquires the key's lock asynchronously, without blocking a thread while waiting.
     /// </summary>
     /// <param name="key">The key whose lock is required.</param>
-    /// <param name="cancellationToken">Cancels the wait; a cancelled wait acquires nothing.</param>
+    /// <param name="cancellationToken">Cancels the wait; a canceled wait acquires nothing.</param>
     /// <returns>A releaser that must be disposed to release the lock.</returns>
     /// <exception cref="OperationCanceledException">
-    /// Thrown when <paramref name="cancellationToken" /> is cancelled before the lock is acquired; nothing is held in
+    /// Thrown when <paramref name="cancellationToken" /> is canceled before the lock is acquired; nothing is held in
     /// that case, so the caller has nothing to release.
     /// </exception>
     public async ValueTask<Releaser> AcquireAsync(TKey key, CancellationToken cancellationToken)

@@ -10,7 +10,7 @@ namespace Bodu.Collections.Generic;
 
 /// <summary>
 /// Represents a sorted set augmented with order statistics - an <see cref="ISet{T}" /> that keeps its elements in
-/// comparer order and answers nearest-neighbour (<see cref="TryGetFloor" /> / <see cref="TryGetCeiling" /> /
+/// comparer order and answers nearest-neighbor (<see cref="TryGetFloor" /> / <see cref="TryGetCeiling" /> /
 /// <see cref="TryGetHigher" /> / <see cref="TryGetLower" />), rank/select (<see cref="IndexOf" /> /
 /// <see cref="GetAt" />), and range-counting queries in O(log n).
 /// </summary>
@@ -24,7 +24,7 @@ namespace Bodu.Collections.Generic;
 /// <para>
 /// Compared with <see cref="SortedSet{T}" />, this type adds rank/select (<see cref="IndexOf" /> is the zero-based rank
 /// of an element; <see cref="GetAt" /> is the k-th smallest element), O(log n) <see cref="CountInRange" />, the four
-/// nearest-neighbour queries, and cheap <see cref="Ascending" /> / <see cref="Descending" /> / <see cref="Range" />
+/// nearest-neighbor queries, and cheap <see cref="Ascending" /> / <see cref="Descending" /> / <see cref="Range" />
 /// views. Unlike <see cref="SortedSet{T}" />, <see langword="null" /> elements are rejected, consistent with the rest
 /// of the Bodu collection family.
 /// </para>

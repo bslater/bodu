@@ -11,7 +11,7 @@ namespace Bodu.Text.Formats.Generators;
 /// strategy.
 /// </summary>
 /// <param name="PropertyName">The CLR property name.</param>
-/// <param name="WireName">The resolved column or key name, honouring <c>[PropertyName]</c>.</param>
+/// <param name="WireName">The resolved column or key name, honoring <c>[PropertyName]</c>.</param>
 /// <param name="Scalar">The scalar conversion strategy for the property type.</param>
 /// <param name="IsNullable">Whether the property type is a <see cref="Nullable{T}" /> value type.</param>
 /// <param name="TypeDisplay">

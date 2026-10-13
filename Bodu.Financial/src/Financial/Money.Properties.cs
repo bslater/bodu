@@ -21,13 +21,13 @@ public readonly partial struct Money
     /// Gets the currency identifying this value.
     /// </summary>
     /// <value>
-    /// The stored <see cref="CurrencyCode" />, or <see cref="CurrencyCode.None" /> for a default-initialised value.
+    /// The stored <see cref="CurrencyCode" />, or <see cref="CurrencyCode.None" /> for a default-initialized value.
     /// </value>
     public CurrencyCode Code =>
         _code;
 
     /// <summary>
-    /// Gets the ISO 4217 alphabetic code identifying the currency, or an empty string for a default-initialised value.
+    /// Gets the ISO 4217 alphabetic code identifying the currency, or an empty string for a default-initialized value.
     /// </summary>
     /// <value>
     /// The currency's ISO code, used by the formatting, parsing, and serialization paths that consult the string-keyed
@@ -37,14 +37,14 @@ public readonly partial struct Money
         _code == CurrencyCode.None ? string.Empty : _code.ToString();
 
     /// <summary>
-    /// Gets a value indicating whether this value is a default-initialised, currency-less <see cref="Money" />.
+    /// Gets a value indicating whether this value is a default-initialized, currency-less <see cref="Money" />.
     /// </summary>
     /// <value>
     /// <see langword="true" /> when this value was produced by <c>default(Money)</c> and therefore carries no currency;
     /// otherwise <see langword="false" />.
     /// </value>
     /// <remarks>
-    /// A default-initialised <see cref="Money" /> is the unavoidable zero value of the struct, not a valid financial
+    /// A default-initialized <see cref="Money" /> is the unavoidable zero value of the struct, not a valid financial
     /// zero. It carries no currency and is rejected by every arithmetic, allocation, and conversion operation; use
     /// <see cref="Zero(CurrencyCode)" /> to obtain a usable zero for a specific currency. Equality, hashing, and
     /// formatting remain safe to call so diagnostic surfaces do not throw.
@@ -57,7 +57,7 @@ public readonly partial struct Money
     /// </summary>
     /// <value>
     /// <see langword="true" /> when this value carries an ISO code; otherwise <see langword="false" /> for a
-    /// default-initialised value.
+    /// default-initialized value.
     /// </value>
     public bool HasCurrency =>
         _code != CurrencyCode.None;
@@ -70,7 +70,7 @@ public readonly partial struct Money
     /// precision as reported by <see cref="CurrencyRegistry" />, or zero when the currency is unknown to the registry.
     /// </value>
     /// <remarks>
-    /// A value materialised by the settlement path (<see cref="CalculatedMoney.RoundToMoney(MonetaryContext?)" />) at a
+    /// A value materialized by the settlement path (<see cref="CalculatedMoney.RoundToMoney(MonetaryContext?)" />) at a
     /// precision other than the currency's registered minor units reports that explicit scale, keeping the stored
     /// precision and the reported minor units self-consistent. Ordinary construction always resolves the precision from
     /// the registry.

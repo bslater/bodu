@@ -20,7 +20,7 @@ namespace Bodu.Text.Yaml;
 /// The serializer maps public properties (and optionally fields) of plain CLR types, the built-in scalar and collection
 /// types, dictionaries keyed by <see cref="string" />, a fixed-width integer type, an enumeration, <see cref="Guid" />,
 /// <see cref="bool" />, or <see cref="char" />, and enumerations. Mapping is driven by converters resolved through
-/// <see cref="YamlSerializerOptions.GetConverter(Type)" /> over the shared serialization metadata; custom behaviour is
+/// <see cref="YamlSerializerOptions.GetConverter(Type)" /> over the shared serialization metadata; custom behavior is
 /// supplied through <see cref="YamlConverter{T}" /> instances registered on <see cref="YamlSerializerOptions" />.
 /// </remarks>
 public static partial class YamlSerializer

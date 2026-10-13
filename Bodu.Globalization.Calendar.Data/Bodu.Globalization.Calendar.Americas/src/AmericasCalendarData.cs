@@ -78,7 +78,7 @@ public static class AmericasCalendarData
 
     /// <summary>
     /// Resolves an imported resource name to its content. The pan-American <c>americas-common</c> hub is served from
-    /// this pack's embedded resources; every other name (the shared catalogues such as <c>christian-western</c> and
+    /// this pack's embedded resources; every other name (the shared catalogs such as <c>christian-western</c> and
     /// <c>global-core</c>, including those that <c>americas-common</c> itself imports) is delegated to
     /// <see cref="CommonNotableDateResources" />.
     /// </summary>

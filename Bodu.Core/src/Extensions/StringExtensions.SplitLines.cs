@@ -35,7 +35,7 @@ public static partial class StringExtensions
     }
 
     /// <summary>
-    /// Iterates the lines of <paramref name="value" />, honouring CRLF/CR/LF boundaries and respecting the
+    /// Iterates the lines of <paramref name="value" />, honoring CRLF/CR/LF boundaries and respecting the
     /// <paramref name="removeEmptyLines" /> filter.
     /// </summary>
     /// <param name="value">The source string.</param>

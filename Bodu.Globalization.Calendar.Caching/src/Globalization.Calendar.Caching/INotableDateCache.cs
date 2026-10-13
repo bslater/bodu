@@ -21,7 +21,7 @@ namespace Bodu.Globalization.Calendar.Caching;
 /// <see cref="GetYear" /> returns an entry only while it is fresh, and <see cref="StoreYear" /> prunes stale and
 /// superseded-version entries as it merges, so the backing store self-cleans over time. An entry is served only when
 /// its <see cref="NotableDateCacheEntry.ResourceVersion" /> matches the requested version, so a resource reload -
-/// signalled by a changed version token - forces a recompute rather than serving stale data.
+/// signaled by a changed version token - forces a recompute rather than serving stale data.
 /// </para>
 /// <para>
 /// Territory is normalized case-insensitively for keying, so <c>us</c> and <c>US</c> address the same entry; a

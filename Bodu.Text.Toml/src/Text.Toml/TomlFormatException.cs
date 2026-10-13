@@ -13,7 +13,7 @@ namespace Bodu.Text.Toml;
 /// <para>
 /// Raised by the TOML reader - and therefore surfaced by <c>TomlSerializer</c> while deserializing - when the source
 /// text cannot be interpreted as a valid TOML document: for example, an unterminated string, an invalid escape
-/// sequence, a duplicate key, a redefinition of a table, or an out-of-range integer. The error is signalled through the
+/// sequence, a duplicate key, a redefinition of a table, or an out-of-range integer. The error is signaled through the
 /// <see cref="FormatException" /> hierarchy so callers can catch it alongside other parse failures.
 /// </para>
 /// <para>

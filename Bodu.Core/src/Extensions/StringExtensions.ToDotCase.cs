@@ -43,10 +43,10 @@ public static partial class StringExtensions
         JoinLowerWords(value, options, '.');
 
     /// <summary>
-    /// Tokenises <paramref name="value" />, lower-cases every word using the culture from <paramref name="options" />,
+    /// Tokenizes <paramref name="value" />, lower-cases every word using the culture from <paramref name="options" />,
     /// and joins the words with <paramref name="separator" />.
     /// </summary>
-    /// <param name="value">The string to tokenise and join.</param>
+    /// <param name="value">The string to tokenize and join.</param>
     /// <param name="options">The acronym, mixed-case, and culture configuration.</param>
     /// <param name="separator">The character placed between adjacent words.</param>
     /// <returns>The lower-cased, separator-joined form of <paramref name="value" />.</returns>

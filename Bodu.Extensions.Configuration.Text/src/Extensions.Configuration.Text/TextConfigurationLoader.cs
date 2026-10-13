@@ -37,7 +37,7 @@ namespace Bodu.Extensions.Configuration.Text;
 /// </item>
 /// <item>
 /// <description>
-/// Key case is normalised: the output dictionary uses <see cref="StringComparer.OrdinalIgnoreCase" />, matching the
+/// Key case is normalized: the output dictionary uses <see cref="StringComparer.OrdinalIgnoreCase" />, matching the
 /// Microsoft conventions.
 /// </description>
 /// </item>

@@ -258,7 +258,7 @@ public readonly partial struct ConfigurationKey
     /// Determines whether <paramref name="c" /> is one of the configured segment separators.
     /// </summary>
     /// <param name="c">The character to test.</param>
-    /// <param name="separators">The recognised separator characters.</param>
+    /// <param name="separators">The recognized separator characters.</param>
     /// <returns><see langword="true" /> when <paramref name="c" /> matches a separator.</returns>
     private static bool IsSeparator(char c, IReadOnlyList<char> separators)
     {
@@ -286,7 +286,7 @@ public readonly partial struct ConfigurationKey
     /// segment.
     /// </summary>
     /// <param name="rawKey">The raw key to split.</param>
-    /// <param name="options">The key options supplying the mapping and the recognised separators.</param>
+    /// <param name="options">The key options supplying the mapping and the recognized separators.</param>
     /// <returns>The ordered segments produced by the split.</returns>
     /// <exception cref="ArgumentException">
     /// A segment was empty or whitespace alone and empty segments are not permitted.

@@ -15,7 +15,7 @@ public readonly partial struct Money
     /// <param name="parts">The number of shares to allocate.</param>
     /// <returns>The per-share allocation.</returns>
     /// <exception cref="InvalidOperationException">
-    /// This value is a default-initialised, currency-less <see cref="Money" />.
+    /// This value is a default-initialized, currency-less <see cref="Money" />.
     /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="parts" /> is less than or equal to zero.
@@ -45,7 +45,7 @@ public readonly partial struct Money
     /// remainder, with ties broken by stable input order. Zero-ratio slots never receive residual.
     /// </returns>
     /// <exception cref="InvalidOperationException">
-    /// This value is a default-initialised, currency-less <see cref="Money" />.
+    /// This value is a default-initialized, currency-less <see cref="Money" />.
     /// </exception>
     /// <exception cref="ArgumentException">The ratios are empty, contain a negative value, or sum to zero.</exception>
     public Money[] Allocate(ReadOnlySpan<decimal> ratios)

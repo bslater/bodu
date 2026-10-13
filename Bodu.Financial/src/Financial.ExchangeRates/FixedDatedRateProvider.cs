@@ -18,7 +18,7 @@ namespace Bodu.Financial.ExchangeRates;
 /// <remarks>
 /// <para>
 /// Use this provider as the read-side hand-off from an <see cref="RateTableBuilder" /> built during data ingest. The
-/// <see cref="RateTableBuilder.ToBook" /> method materialises the multi-provider book, and this provider then selects
+/// <see cref="RateTableBuilder.ToBook" /> method materializes the multi-provider book, and this provider then selects
 /// rates from it using either the single available provider per pair, or the supplied priority list.
 /// </para>
 /// <para>
@@ -110,7 +110,7 @@ public sealed class FixedDatedRateProvider
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="FixedDatedRateProvider" /> class by materialising the supplied
+    /// Initializes a new instance of the <see cref="FixedDatedRateProvider" /> class by materializing the supplied
     /// observations into an <see cref="RateBook" /> first.
     /// </summary>
     /// <param name="rates">The exchange-rate observations to store, in any order.</param>
@@ -300,7 +300,7 @@ public sealed class FixedDatedRateProvider
         new(GetRates(fromIsoCode, toIsoCode, startDate, endDate));
 
     /// <summary>
-    /// Materialises the supplied observations into a multi-provider <see cref="RateBook" />, validating that each pair
+    /// Materializes the supplied observations into a multi-provider <see cref="RateBook" />, validating that each pair
     /// carries observations from a single provider only.
     /// </summary>
     /// <param name="rates">The observations to group.</param>

@@ -19,7 +19,7 @@ namespace Bodu.Text.Encoding;
 /// </para>
 /// <para>
 /// <see cref="QuotedPrintableEncodingMode.Binary" /> treats the whole input as arbitrary octets and escapes CR and LF;
-/// <see cref="QuotedPrintableEncodingMode.Text" /> recognises canonical CRLF pairs as hard line breaks. Encoding always
+/// <see cref="QuotedPrintableEncodingMode.Text" /> recognizes canonical CRLF pairs as hard line breaks. Encoding always
 /// emits uppercase hex; decoding is strict by default but accepts lowercase hex, bare line feeds, and
 /// transport-inserted trailing whitespace under the corresponding <see cref="QuotedPrintableDecodingOptions" /> flags.
 /// </para>
@@ -312,7 +312,7 @@ public static partial class QuotedPrintable
     private static char ToHexDigit(int nibble) => (char)(nibble < 10 ? '0' + nibble : 'A' + (nibble - 10));
 
     /// <summary>
-    /// Attempts to map a hexadecimal digit to its value, honouring the lowercase relaxation.
+    /// Attempts to map a hexadecimal digit to its value, honoring the lowercase relaxation.
     /// </summary>
     /// <param name="c">The candidate digit.</param>
     /// <param name="allowLowercase">Whether lowercase <c>a</c>-<c>f</c> are accepted.</param>

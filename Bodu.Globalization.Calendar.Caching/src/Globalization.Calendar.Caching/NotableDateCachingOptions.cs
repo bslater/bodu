@@ -64,7 +64,7 @@ public sealed class NotableDateCachingOptions
     /// </summary>
     /// <value>
     /// A fraction in <c>[0, 1)</c>; defaults to <c>0</c>, which disables refresh-ahead entirely and preserves the plain
-    /// serve-until-expiry behaviour.
+    /// serve-until-expiry behavior.
     /// </value>
     /// <remarks>
     /// <para>

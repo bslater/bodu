@@ -33,7 +33,7 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <para>
 /// Because ECB has no chaining state, the transform is stateless - repeated <see cref="Transform" /> calls produce the
-/// same result for the same input - and is trivially parallelisable.
+/// same result for the same input - and is trivially parallelizable.
 /// </para>
 /// </remarks>
 /// <example>

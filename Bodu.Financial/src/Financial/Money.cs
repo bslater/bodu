@@ -16,8 +16,8 @@ namespace Bodu.Financial;
 /// <remarks>
 /// <para>
 /// <see cref="Money" /> is the runtime-tagged counterpart of <see cref="Money{TCurrency}" />. Use it when the currency
-/// is data rather than part of the type - for example, when deserialising payloads that carry the currency code, or
-/// when modelling a generic invoicing engine that processes arbitrary currencies. The trade-off is that cross-currency
+/// is data rather than part of the type - for example, when deserializing payloads that carry the currency code, or
+/// when modeling a generic invoicing engine that processes arbitrary currencies. The trade-off is that cross-currency
 /// arithmetic and comparison surface as <see cref="InvalidOperationException" /> at runtime instead of as compile
 /// errors.
 /// </para>
@@ -58,12 +58,12 @@ public readonly partial struct Money
     /// <summary>The rounded amount in the major unit of the currency identified by <see cref="_code" />.</summary>
     private readonly decimal _amount;
 
-    /// <summary>The currency identifying this value, or <see cref="CurrencyCode.None" /> for a default-initialised value.</summary>
+    /// <summary>The currency identifying this value, or <see cref="CurrencyCode.None" /> for a default-initialized value.</summary>
     private readonly CurrencyCode _code;
 
     /// <summary>The explicit minor-unit scale plus one, or <c>0</c> when no explicit scale is associated and the precision is derived from <see cref="CurrencyRegistry" />.</summary>
     /// <remarks>
-    /// The "+1" bias lets a default-initialised <see cref="Money" /> (all-zero fields) mean "use the registry" rather
+    /// The "+1" bias lets a default-initialized <see cref="Money" /> (all-zero fields) mean "use the registry" rather
     /// than "explicit scale 0". A value of <c>n + 1</c> denotes an explicit minor-unit scale of <c>n</c> in the range
     /// <c>0</c>..<c>28</c>, set only by the internal explicit-scale settlement path (<see cref="FromExplicitScale(decimal, CurrencyCode, int, MidpointRounding)" />)
     /// used by <see cref="CalculatedMoney.RoundToMoney(MonetaryContext?)" />.
@@ -76,7 +76,7 @@ public readonly partial struct Money
     /// </summary>
     /// <param name="amount">The monetary amount in the major unit.</param>
     /// <param name="code">The currency identifying this value.</param>
-    /// <param name="rounding">The midpoint-rounding rule applied when normalising to the minor-unit precision.</param>
+    /// <param name="rounding">The midpoint-rounding rule applied when normalizing to the minor-unit precision.</param>
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="code" /> is <see cref="CurrencyCode.None" /> or is not a defined <see cref="CurrencyCode" />
     /// member.
@@ -109,7 +109,7 @@ public readonly partial struct Money
     /// <summary>
     /// Creates a <see cref="Money" /> from an amount and currency already at the currency's minor-unit precision.
     /// </summary>
-    /// <param name="amount">The normalised amount.</param>
+    /// <param name="amount">The normalized amount.</param>
     /// <param name="code">The currency.</param>
     /// <returns>The wrapped <see cref="Money" />.</returns>
     internal static Money FromNormalized(decimal amount, CurrencyCode code) =>
@@ -166,11 +166,11 @@ public readonly partial struct Money
         new(MoneyMath.Round(amount, MinorUnits, rounding), _code, _explicitScalePlusOne);
 
     /// <summary>
-    /// Throws when this value is a default-initialised, currency-less <see cref="Money" /> that must not participate in
+    /// Throws when this value is a default-initialized, currency-less <see cref="Money" /> that must not participate in
     /// a financial operation.
     /// </summary>
     /// <exception cref="InvalidOperationException">
-    /// This value carries no ISO code (a default-initialised <see cref="Money" />).
+    /// This value carries no ISO code (a default-initialized <see cref="Money" />).
     /// </exception>
     private void EnsureHasCurrency()
     {

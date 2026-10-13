@@ -36,7 +36,7 @@ namespace Bodu.Financial.Currencies;
 /// <remarks>
 /// This record is the runtime counterpart of an <see cref="ICurrency" /> tag type. The runtime-tagged <c>Money</c> and
 /// the <c>MoneyBag</c> aggregate operate against <see cref="CurrencyRegistry" /> entries of this shape so they can
-/// handle currencies the consumer learns about at runtime (for example, from a deserialised JSON payload).
+/// handle currencies the consumer learns about at runtime (for example, from a deserialized JSON payload).
 /// </remarks>
 public sealed record CurrencyInfo(
     string IsoCode,
@@ -128,7 +128,7 @@ public sealed record CurrencyInfo(
     /// <summary>
     /// Gets alternative symbols that may also denote the currency.
     /// </summary>
-    /// <value>The additional symbols recognised for the currency.</value>
+    /// <value>The additional symbols recognized for the currency.</value>
     public IReadOnlyList<string> AlternativeSymbols { get; init; } = Array.Empty<string>();
 
     /// <summary>
@@ -158,7 +158,7 @@ public sealed record CurrencyInfo(
     /// </returns>
     /// <remarks>
     /// The match is case-sensitive: only the canonical three-uppercase-letter ISO form resolves successfully. The
-    /// <see cref="CurrencyCode.None" /> sentinel and any code outside the shipped catalogue surface here as
+    /// <see cref="CurrencyCode.None" /> sentinel and any code outside the shipped catalog surface here as
     /// <see langword="false" />.
     /// </remarks>
     public static bool TryGetCurrencyCode(string isoCode, out CurrencyCode code)
@@ -206,7 +206,7 @@ public sealed record CurrencyInfo(
     /// <returns>The matching enum member.</returns>
     /// <exception cref="InvalidOperationException">
     /// The currency's <see cref="IsoCode" /> does not correspond to any <see cref="CurrencyCode" /> member (for
-    /// example, a currency outside the shipped ISO 4217 catalogue).
+    /// example, a currency outside the shipped ISO 4217 catalog).
     /// </exception>
     public CurrencyCode ToCurrencyCode()
     {

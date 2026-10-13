@@ -15,8 +15,8 @@ namespace Bodu.Text.Configuration;
 /// <remarks>
 /// <para>
 /// The options bag is a profile-grouped set of <c>init</c>-only properties. Start from a named preset that matches the
-/// hosting flavour - <see cref="Bodu" /> for the default Bodu Text Configuration semantics,
-/// <see cref="EditorConfigCompatible" /> for EditorConfig alignment, <see cref="Strict" /> for fail-fast behaviour, or
+/// hosting flavor - <see cref="Bodu" /> for the default Bodu Text Configuration semantics,
+/// <see cref="EditorConfigCompatible" /> for EditorConfig alignment, <see cref="Strict" /> for fail-fast behavior, or
 /// <see cref="Relaxed" /> for lenient parsing - and override the specific properties that need to differ. Use
 /// <see cref="For(ConfigurationProfile)" /> when the profile is data-driven (for example, read from configuration).
 /// </para>
@@ -33,7 +33,7 @@ namespace Bodu.Text.Configuration;
 /// lookups consistent. Instances are safe to cache and share across threads because every property is <c>init</c>-only.
 /// </para>
 /// <para>
-/// <see cref="Profile" /> only labels the option set. The individual properties carry the behaviour, so start from a
+/// <see cref="Profile" /> only labels the option set. The individual properties carry the behavior, so start from a
 /// preset or <see cref="For(ConfigurationProfile)" /> to select a profile, and set every property that the variation
 /// needs.
 /// </para>
@@ -64,10 +64,10 @@ public sealed partial class ConfigurationParseOptions
     /// <summary>
     /// Gets the profile this option set was created from. The default is <see cref="ConfigurationProfile.Bodu" />.
     /// </summary>
-    /// <value>The profile the option set is labelled with.</value>
+    /// <value>The profile the option set is labeled with.</value>
     /// <remarks>
     /// The property is informational: the parser does not read it, and setting it changes no other property. Use
-    /// <see cref="For(ConfigurationProfile)" /> or a preset to select a profile's behaviour.
+    /// <see cref="For(ConfigurationProfile)" /> or a preset to select a profile's behavior.
     /// </remarks>
     public ConfigurationProfile Profile { get; init; } = ConfigurationProfile.Bodu;
 

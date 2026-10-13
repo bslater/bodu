@@ -12,7 +12,7 @@ namespace Bodu.Globalization.Calendar.RangeResolution;
 /// </summary>
 /// <remarks>
 /// <para>
-/// The emission mode makes observed-date behaviour explicit and query-width independent: a single-day query and a range
+/// The emission mode makes observed-date behavior explicit and query-width independent: a single-day query and a range
 /// query that both span the relevant dates return the same actual-versus-observed answer because inclusion is decided
 /// by the emitted occurrence, not by the query shape.
 /// </para>

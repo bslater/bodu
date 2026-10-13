@@ -15,11 +15,11 @@ namespace Bodu.Financial.ExchangeRates;
 /// <remarks>
 /// <para>
 /// This type derives from <see cref="WebRateProviderOptions" />, which supplies the endpoint base address, the HTTP
-/// contract, the synchronous-access and look-back behaviour, the currency-alias map, and the per-concern log levels.
-/// The members declared here are OFX-specific: the <see cref="HistoryPath" /> template into which the currency codes
-/// and the requested inclusive date range (as Unix-millisecond bounds) are substituted, the requested decimal
-/// precision, and the reporting interval sent as the <c>ReportingInterval</c> query parameter. The response is
-/// additionally range-filtered to the requested dates as a defensive measure.
+/// contract, the synchronous-access and look-back behavior, the currency-alias map, and the per-concern log levels. The
+/// members declared here are OFX-specific: the <see cref="HistoryPath" /> template into which the currency codes and
+/// the requested inclusive date range (as Unix-millisecond bounds) are substituted, the requested decimal precision,
+/// and the reporting interval sent as the <c>ReportingInterval</c> query parameter. The response is additionally
+/// range-filtered to the requested dates as a defensive measure.
 /// </para>
 /// <para>
 /// Every member carries a working default, so the options bind cleanly through <c>Microsoft.Extensions.Options</c> and

@@ -99,7 +99,7 @@ public readonly partial struct Fraction<T>
     /// </exception>
     /// <remarks>
     /// The approximation is derived from the convergents of the continued-fraction expansion and is the closest
-    /// rational value subject to the denominator bound, matching the behaviour of the best-approximation algorithm used
+    /// rational value subject to the denominator bound, matching the behavior of the best-approximation algorithm used
     /// by other rational-number libraries.
     /// </remarks>
     /// <example>

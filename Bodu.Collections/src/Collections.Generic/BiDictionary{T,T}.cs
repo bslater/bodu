@@ -16,7 +16,7 @@ namespace Bodu.Collections.Generic;
 /// <typeparam name="TValue">Specifies the type of values in the dictionary.</typeparam>
 /// <remarks>
 /// <para>
-/// <see cref="BiDictionary{TKey, TValue}" /> is the .NET analogue of Guava's <c>BiMap</c>, Python's <c>bidict</c>, and
+/// <see cref="BiDictionary{TKey, TValue}" /> is the .NET analog of Guava's <c>BiMap</c>, Python's <c>bidict</c>, and
 /// Apache Commons' <c>BidiMap</c>: a hash-based map that maintains a second, inverse index from values back to keys so
 /// that <see cref="TryGetKey(TValue, out TKey)" />, <see cref="ContainsValue(TValue)" />, and
 /// <see cref="RemoveValue(TValue)" /> are O(1) operations rather than linear scans. The two indexes are kept atomically

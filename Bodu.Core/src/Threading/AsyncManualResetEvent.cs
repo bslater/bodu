@@ -14,7 +14,7 @@ namespace Bodu.Threading;
 /// </summary>
 /// <remarks>
 /// <para>
-/// <see cref="AsyncManualResetEvent" /> is the asynchronous analogue of <see cref="ManualResetEventSlim" />. Callers
+/// <see cref="AsyncManualResetEvent" /> is the asynchronous analog of <see cref="ManualResetEventSlim" />. Callers
 /// await <see cref="WaitAsync()" />; a call to <see cref="Set" /> completes all outstanding waits and leaves the event
 /// signaled so that subsequent waits complete immediately. <see cref="Reset" /> returns the event to the unsignaled
 /// state.

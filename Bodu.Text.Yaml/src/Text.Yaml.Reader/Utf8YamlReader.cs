@@ -19,7 +19,7 @@ namespace Bodu.Text.Yaml.Reader;
 /// reader. YAML cannot be tokenized in a single forward pass because indentation context, back-referencing aliases,
 /// merge keys, and document boundaries all require look-ahead and composition. The constructor therefore copies the
 /// source and fully parses it into an in-memory node store; <see cref="Read" /> then walks that store in document
-/// order. In that respect the reader is the analogue of the sibling <c>TomlDocumentReader</c> cursor rather than the
+/// order. In that respect the reader is the analog of the sibling <c>TomlDocumentReader</c> cursor rather than the
 /// streaming <c>Utf8TomlReader</c> scanner.
 /// </para>
 /// <para>

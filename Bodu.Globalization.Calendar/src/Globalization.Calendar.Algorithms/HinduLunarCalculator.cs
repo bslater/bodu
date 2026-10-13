@@ -26,7 +26,7 @@ namespace Bodu.Globalization.Calendar.Algorithms;
 /// <para>
 /// Results are accurate to within a day or two for the modern era. The Lahiri ayanamsa and the mean tithi length are
 /// approximations, so a festival whose tithi begins very near sunrise can differ by a day from a published panchanga.
-/// Festivals fixed by a nakshatra rather than a tithi (for example Onam) are not modelled here.
+/// Festivals fixed by a nakshatra rather than a tithi (for example Onam) are not modeled here.
 /// </para>
 /// </remarks>
 internal static class HinduLunarCalculator
@@ -157,7 +157,7 @@ internal static class HinduLunarCalculator
     /// <returns>The chronological new moons and their solar signs.</returns>
     /// <remarks>
     /// The sign is evaluated at the conjunction instant, not at the start of the civil day: a new moon falling on a
-    /// sidereal ingress day otherwise reads the pre-ingress sign, which pairs it with its neighbouring month and
+    /// sidereal ingress day otherwise reads the pre-ingress sign, which pairs it with its neighboring month and
     /// fabricates a phantom adhika month one lunation early (Chaitra 1991/2010, Kartika 2009).
     /// </remarks>
     private static List<(DateOnly NewMoon, int Sign)> GatherNewMoons(int year)

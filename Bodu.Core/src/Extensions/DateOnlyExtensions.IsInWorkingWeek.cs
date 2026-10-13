@@ -19,7 +19,7 @@ public static partial class DateOnlyExtensions
     /// <paramref name="workingWeek" />; otherwise, <see langword="false" />.
     /// </returns>
     /// <remarks>
-    /// This predicate considers only the day-of-week dimension. It does not consult any holiday catalogue. Combine it
+    /// This predicate considers only the day-of-week dimension. It does not consult any holiday catalog. Combine it
     /// with a notable-date service when both working-week and holiday awareness are required.
     /// </remarks>
     public static bool IsInWorkingWeek(this DateOnly date, DayOfWeekSet workingWeek) =>

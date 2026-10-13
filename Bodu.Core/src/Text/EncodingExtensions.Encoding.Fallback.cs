@@ -181,7 +181,7 @@ public static partial class EncodingExtensions
     /// </exception>
     /// <remarks>
     /// Only the built-in <see cref="System.Text.EncoderExceptionFallback" /> /
-    /// <see cref="System.Text.DecoderExceptionFallback" /> types are recognised. Custom fallback subclasses return
+    /// <see cref="System.Text.DecoderExceptionFallback" /> types are recognized. Custom fallback subclasses return
     /// <see langword="false" />.
     /// </remarks>
     public static bool UsesExceptionFallbacks(this System.Text.Encoding encoding)
@@ -206,7 +206,7 @@ public static partial class EncodingExtensions
     /// </exception>
     /// <remarks>
     /// Only the built-in <see cref="System.Text.EncoderReplacementFallback" /> /
-    /// <see cref="System.Text.DecoderReplacementFallback" /> types are recognised. Custom fallback subclasses return
+    /// <see cref="System.Text.DecoderReplacementFallback" /> types are recognized. Custom fallback subclasses return
     /// <see langword="false" />.
     /// </remarks>
     public static bool UsesReplacementFallbacks(this System.Text.Encoding encoding)

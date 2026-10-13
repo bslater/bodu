@@ -90,7 +90,7 @@ public sealed partial class MerkleTree
     /// pass every challenge for ever.
     /// </para>
     /// <para>
-    /// That behaviour is RFC 6962 working as specified, not a defect here. When the size comes from an untrusted party,
+    /// That behavior is RFC 6962 working as specified, not a defect here. When the size comes from an untrusted party,
     /// verify against a length-bound root with
     /// <see cref="VerifyInclusionBound(ReadOnlySpan{byte}, long, long, long, ReadOnlySpan{byte}, IReadOnlyList{ReadOnlyMemory{byte}})" />
     /// instead, which fails closed on a size the publisher did not commit to.

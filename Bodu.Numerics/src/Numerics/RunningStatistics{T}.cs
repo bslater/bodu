@@ -27,7 +27,7 @@ namespace Bodu.Numerics;
 /// <para>
 /// This is a <b>mutable value type</b>. Store it in a mutable field or local and pass it by <see langword="ref" />; do
 /// not capture it in a lambda or iterator that expects reference semantics - each copy accumulates independently from
-/// the point of the copy. That copy behaviour is also the supported way to checkpoint: assigning the accumulator to
+/// the point of the copy. That copy behavior is also the supported way to checkpoint: assigning the accumulator to
 /// another variable snapshots its state. The <see langword="default" /> value is the valid empty accumulator.
 /// </para>
 /// <para>

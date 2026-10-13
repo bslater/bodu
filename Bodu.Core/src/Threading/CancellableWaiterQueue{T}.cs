@@ -7,7 +7,7 @@
 namespace Bodu.Threading;
 
 /// <summary>
-/// Shared FIFO queue and cancellation lifetime for contended asynchronous synchronisation primitives. The owning
+/// Shared FIFO queue and cancellation lifetime for contended asynchronous synchronization primitives. The owning
 /// primitive retains responsibility for its own permit, ownership, signal and fairness policies.
 /// </summary>
 /// <remarks>
@@ -21,7 +21,7 @@ namespace Bodu.Threading;
 /// <typeparam name="TResult">The result supplied to a queued waiter when it is granted access.</typeparam>
 internal sealed class CancellableWaiterQueue<TResult>
 {
-    /// <summary>The owning primitive's synchronization object, used when cancelling queued waiters.</summary>
+    /// <summary>The owning primitive's synchronization object, used when canceling queued waiters.</summary>
     private readonly object _gate;
 
     /// <summary>The pending waiters, held in first-in, first-out order.</summary>
@@ -93,7 +93,7 @@ internal sealed class CancellableWaiterQueue<TResult>
     /// <param name="cancellationToken">The token associated with the cancellation.</param>
     /// <param name="afterUnlinkUnderLock">An optional callback invoked while the owner's gate is held.</param>
     /// <remarks>
-    /// The task is cancelled after the gate is released. A waiter that has already received its result remains
+    /// The task is canceled after the gate is released. A waiter that has already received its result remains
     /// completed; cancellation does not replace a successful grant.
     /// </remarks>
     internal void Cancel(
@@ -113,7 +113,7 @@ internal sealed class CancellableWaiterQueue<TResult>
     }
 
     /// <summary>
-    /// Asynchronously waits for a queued waiter to be granted or cancelled.
+    /// Asynchronously waits for a queued waiter to be granted or canceled.
     /// </summary>
     /// <param name="node">The queue node representing the waiter.</param>
     /// <param name="cancellationToken">The token used to cancel the pending wait.</param>

@@ -21,13 +21,13 @@ public enum MoneyParseMode
     /// <summary>
     /// Accept everything <see cref="StrictIso" /> accepts and, when no ISO code is present, a leading or trailing
     /// currency symbol that <see cref="MoneyParseOptions.CurrencyLookup" /> resolves to exactly one currency. The
-    /// shipped catalogue carries no symbols, so symbol text parses only through a caller-supplied lookup that provides
+    /// shipped catalog carries no symbols, so symbol text parses only through a caller-supplied lookup that provides
     /// them.
     /// </summary>
     CultureAware = 1,
 
     /// <summary>
-    /// Accept everything <see cref="StrictIso" /> accepts and a lower-case ISO code, which is normalised to upper case
+    /// Accept everything <see cref="StrictIso" /> accepts and a lower-case ISO code, which is normalized to upper case
     /// before resolution.
     /// </summary>
     LenientImport = 2,

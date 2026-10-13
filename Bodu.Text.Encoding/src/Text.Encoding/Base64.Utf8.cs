@@ -329,7 +329,7 @@ public static partial class Base64
     /// <param name="destination">The destination span.</param>
     /// <param name="variant">The variant.</param>
     /// <param name="options">
-    /// The encode options (only <see cref="BaseFormattingOptions.OmitPadding" /> is honoured).
+    /// The encode options (only <see cref="BaseFormattingOptions.OmitPadding" /> is honored).
     /// </param>
     /// <returns>The number of UTF-8 bytes written.</returns>
     /// <remarks>

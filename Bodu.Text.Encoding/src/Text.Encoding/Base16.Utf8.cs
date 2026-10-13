@@ -109,7 +109,7 @@ public static partial class Base16
     /// <param name="destination">The destination UTF-8 byte span.</param>
     /// <param name="bytesWritten">When this method returns, contains the number of UTF-8 bytes written.</param>
     /// <param name="options">
-    /// Formatting options. Only <see cref="BaseFormattingOptions.UpperCase" /> is honoured; line-break / spacing /
+    /// Formatting options. Only <see cref="BaseFormattingOptions.UpperCase" /> is honored; line-break / spacing /
     /// prefix flags are not supported on the UTF-8 fast path.
     /// </param>
     /// <returns>
@@ -171,7 +171,7 @@ public static partial class Base16
     /// <param name="bytesWritten">When this method returns, contains the number of UTF-8 bytes written.</param>
     /// <param name="variant">The Base16 alphabet case.</param>
     /// <param name="options">
-    /// Additional formatting options. Only <see cref="BaseFormattingOptions.UpperCase" /> is honoured;
+    /// Additional formatting options. Only <see cref="BaseFormattingOptions.UpperCase" /> is honored;
     /// <paramref name="variant" /> takes precedence over it for the alphabet case.
     /// </param>
     /// <returns>

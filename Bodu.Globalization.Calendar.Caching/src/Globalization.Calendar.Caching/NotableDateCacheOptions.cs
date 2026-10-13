@@ -22,7 +22,7 @@ public class NotableDateCacheOptions
     /// </summary>
     /// <value>
     /// <see langword="true" /> to rethrow the underlying storage failure; <see langword="false" /> (the default) to
-    /// keep the best-effort behaviour the <see cref="INotableDateCache" /> contract describes.
+    /// keep the best-effort behavior the <see cref="INotableDateCache" /> contract describes.
     /// </value>
     /// <remarks>
     /// <para>

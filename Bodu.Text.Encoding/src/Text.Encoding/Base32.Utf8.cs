@@ -121,7 +121,7 @@ public static partial class Base32
     /// <param name="lookup">The variant lookup table.</param>
     /// <param name="styles">Parsing styles.</param>
     /// <param name="isFinalBlock">Whether the input is the final block.</param>
-    /// <param name="variant">The variant (used to determine padding behaviour).</param>
+    /// <param name="variant">The variant (used to determine padding behavior).</param>
     /// <param name="consumed">Updated with the number of source units consumed.</param>
     /// <param name="written">Updated with the number of bytes written.</param>
     /// <returns>An <see cref="OperationStatus" /> describing the outcome.</returns>
@@ -309,7 +309,7 @@ public static partial class Base32
     /// <param name="destination">The destination byte span.</param>
     /// <param name="variant">The variant.</param>
     /// <param name="options">
-    /// The encode options (only <see cref="BaseFormattingOptions.OmitPadding" /> is honoured).
+    /// The encode options (only <see cref="BaseFormattingOptions.OmitPadding" /> is honored).
     /// </param>
     /// <returns>The number of UTF-8 bytes written.</returns>
     private static int EncodeIntoUtf8Span(ReadOnlySpan<byte> source, Span<byte> destination, Base32Variant variant, BaseFormattingOptions options)

@@ -47,7 +47,7 @@ public sealed partial class MerkleTree
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="blockSize" /> is less than or equal to zero.
     /// </exception>
-    /// <exception cref="OperationCanceledException"><paramref name="cancellationToken" /> was cancelled.</exception>
+    /// <exception cref="OperationCanceledException"><paramref name="cancellationToken" /> was canceled.</exception>
     /// <remarks>
     /// <para>
     /// The stream is read once, forward only, and never buffered in full. Retaining the leaf hashes costs
@@ -96,7 +96,7 @@ public sealed partial class MerkleTree
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="blockSize" /> is less than or equal to zero.
     /// </exception>
-    /// <exception cref="OperationCanceledException"><paramref name="cancellationToken" /> was cancelled.</exception>
+    /// <exception cref="OperationCanceledException"><paramref name="cancellationToken" /> was canceled.</exception>
     /// <remarks>
     /// Reads are awaited, so the calling thread is free while the stream is slow; leaf hashing happens on the
     /// continuation thread, or on parallel workers when the instance is configured for them. The result is the same
@@ -143,7 +143,7 @@ public sealed partial class MerkleTree
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="blockSize" /> is less than or equal to zero.
     /// </exception>
-    /// <exception cref="OperationCanceledException"><paramref name="cancellationToken" /> was cancelled.</exception>
+    /// <exception cref="OperationCanceledException"><paramref name="cancellationToken" /> was canceled.</exception>
     /// <remarks>
     /// The overload to prefer on a parallel instance when the bytes are already in memory: every block is sliced and
     /// hashed inside its own worker, so nothing is copied and the whole per-block cost parallelizes.
@@ -207,7 +207,7 @@ public sealed partial class MerkleTree
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="blockSize" /> is less than or equal to zero.
     /// </exception>
-    /// <exception cref="OperationCanceledException"><paramref name="cancellationToken" /> was cancelled.</exception>
+    /// <exception cref="OperationCanceledException"><paramref name="cancellationToken" /> was canceled.</exception>
     public MerkleBlockComputation ComputeBlocked(
         byte[] source,
         int blockSize,
@@ -233,7 +233,7 @@ public sealed partial class MerkleTree
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="blockSize" /> is less than or equal to zero.
     /// </exception>
-    /// <exception cref="OperationCanceledException"><paramref name="cancellationToken" /> was cancelled.</exception>
+    /// <exception cref="OperationCanceledException"><paramref name="cancellationToken" /> was canceled.</exception>
     /// <remarks>
     /// <para>
     /// Peak memory is <c>O(blockSize + log n × <see cref="HashLength" />)</c> on a sequential instance: the read
@@ -285,7 +285,7 @@ public sealed partial class MerkleTree
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="blockSize" /> is less than or equal to zero.
     /// </exception>
-    /// <exception cref="OperationCanceledException"><paramref name="cancellationToken" /> was cancelled.</exception>
+    /// <exception cref="OperationCanceledException"><paramref name="cancellationToken" /> was canceled.</exception>
     /// <remarks>
     /// The asynchronous twin of
     /// <see cref="ComputeRootOfBlocks(Stream, int, MerkleTreeDiagnostics, CancellationToken)" />: reads are awaited,
@@ -332,7 +332,7 @@ public sealed partial class MerkleTree
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="blockSize" /> is less than or equal to zero.
     /// </exception>
-    /// <exception cref="OperationCanceledException"><paramref name="cancellationToken" /> was cancelled.</exception>
+    /// <exception cref="OperationCanceledException"><paramref name="cancellationToken" /> was canceled.</exception>
     public byte[] ComputeRootOfBlocks(
         ReadOnlyMemory<byte> source,
         int blockSize,
@@ -390,7 +390,7 @@ public sealed partial class MerkleTree
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="blockSize" /> is less than or equal to zero.
     /// </exception>
-    /// <exception cref="OperationCanceledException"><paramref name="cancellationToken" /> was cancelled.</exception>
+    /// <exception cref="OperationCanceledException"><paramref name="cancellationToken" /> was canceled.</exception>
     public byte[] ComputeRootOfBlocks(
         byte[] source,
         int blockSize,

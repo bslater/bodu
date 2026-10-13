@@ -11,10 +11,10 @@ namespace Bodu.IO.Biff;
 /// binary file format and are shared by BIFF5 and BIFF8 except where a member's documentation says otherwise.
 /// </summary>
 /// <remarks>
-/// The enumeration is a curated catalogue, not the full record set: a record whose identifier is not listed here is
-/// still readable through <see cref="BiffReader.RecordId" /> and <see cref="BiffReader.ValueSpan" />, and can be
-/// written through <see cref="BiffWriter.WriteRecord(ushort, ReadOnlySpan{byte})" />. Encountering an unlisted
-/// identifier is never an error.
+/// The enumeration is a curated catalog, not the full record set: a record whose identifier is not listed here is still
+/// readable through <see cref="BiffReader.RecordId" /> and <see cref="BiffReader.ValueSpan" />, and can be written
+/// through <see cref="BiffWriter.WriteRecord(ushort, ReadOnlySpan{byte})" />. Encountering an unlisted identifier is
+/// never an error.
 /// </remarks>
 public enum BiffRecordType : ushort
 {

@@ -25,7 +25,7 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// Server-side lifetime is a separate concern: each written blob is stamped with an absolute expiration of the caching
 /// duration plus <see cref="EntryExpirationMargin" />, so a key whose pair stops being queried self-evicts from the
 /// backing store instead of lingering forever. Set the margin to <see langword="null" /> to write entries without any
-/// server-side expiration (the pre-margin behaviour).
+/// server-side expiration (the pre-margin behavior).
 /// </para>
 /// </remarks>
 public class DistributedRateCacheOptions

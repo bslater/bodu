@@ -9,7 +9,7 @@ namespace Bodu.Sequences;
 /// <summary>
 /// Provides static factory methods that produce lazily evaluated <see cref="IEnumerable{T}" /> sequences without
 /// materializing the underlying collection - both general-purpose shapes (<c>Range</c>, <c>NextWhile</c>,
-/// <c>Factory</c>) and a catalogue of well-known mathematical sequences (Fibonacci, Farey, Leibniz, look-and-say, and
+/// <c>Factory</c>) and a catalog of well-known mathematical sequences (Fibonacci, Farey, Leibniz, look-and-say, and
 /// Thue-Morse).
 /// </summary>
 /// <remarks>
@@ -28,11 +28,11 @@ namespace Bodu.Sequences;
 /// can adapt non-collection iteration sources to the LINQ pipeline.
 /// </para>
 /// <para>
-/// The mathematical catalogue is intentionally narrow - it covers reference sequences that appear repeatedly in
-/// numerical recipes, algorithm exercises, and educational material, but it is not a general-purpose recurrence
-/// framework. Bounding rules differ per generator: Fibonacci and Leibniz take a half-open value window (<c>min</c>
-/// inclusive, <c>max</c> exclusive), while Farey, Thue-Morse, and look-and-say take an order or count. Refer to each
-/// member's documentation for the exact bounding rule.
+/// The mathematical catalog is intentionally narrow - it covers reference sequences that appear repeatedly in numerical
+/// recipes, algorithm exercises, and educational material, but it is not a general-purpose recurrence framework.
+/// Bounding rules differ per generator: Fibonacci and Leibniz take a half-open value window (<c>min</c> inclusive,
+/// <c>max</c> exclusive), while Farey, Thue-Morse, and look-and-say take an order or count. Refer to each member's
+/// documentation for the exact bounding rule.
 /// </para>
 /// <para>
 /// All sequences returned by this type are single-pass with respect to side effects in their generator delegate:

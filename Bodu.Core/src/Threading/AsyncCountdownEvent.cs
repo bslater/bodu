@@ -14,7 +14,7 @@ namespace Bodu.Threading;
 /// </summary>
 /// <remarks>
 /// <para>
-/// <see cref="AsyncCountdownEvent" /> is the asynchronous analogue of <see cref="CountdownEvent" />. It starts with a
+/// <see cref="AsyncCountdownEvent" /> is the asynchronous analog of <see cref="CountdownEvent" />. It starts with a
 /// positive count; each <see cref="Signal()" /> decrements the count, and when the count reaches zero every caller
 /// awaiting <see cref="WaitAsync()" /> is released. The count may be raised again with <see cref="AddCount()" /> while
 /// it is still above zero.

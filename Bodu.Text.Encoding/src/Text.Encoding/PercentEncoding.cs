@@ -21,7 +21,7 @@ namespace Bodu.Text.Encoding;
 /// <para>
 /// The byte-oriented surfaces operate on ASCII percent-encoded text; the <see cref="EncodeString" /> and
 /// <see cref="DecodeString" /> helpers bridge .NET strings through a configurable text encoding (UTF-8 by default).
-/// This type is not a URL parser: it does not resolve relative URLs, normalise hosts, paths, dot-segments, or scheme
+/// This type is not a URL parser: it does not resolve relative URLs, normalize hosts, paths, dot-segments, or scheme
 /// casing, implement IDNA or IRI processing, accept the obsolete <c>%uXXXX</c> syntax, or depend on <c>System.Web</c>.
 /// </para>
 /// <para>

@@ -9,8 +9,8 @@ namespace Bodu.Financial.Currencies;
 /// <summary>
 /// Supplies the ambient <see cref="ICurrencyLookup" /> that the runtime-tagged <see cref="Money" /> and
 /// <see cref="CalculatedMoney" /> consult when they resolve a currency by ISO code. The seam lets a host or test
-/// substitute a custom currency catalogue without threading a lookup dependency through every value-type construction,
-/// while leaving the default behaviour identical to a direct <see cref="CurrencyRegistry" /> lookup.
+/// substitute a custom currency catalog without threading a lookup dependency through every value-type construction,
+/// while leaving the default behavior identical to a direct <see cref="CurrencyRegistry" /> lookup.
 /// </summary>
 /// <remarks>
 /// <para>

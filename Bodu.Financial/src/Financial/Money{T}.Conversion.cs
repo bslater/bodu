@@ -22,12 +22,12 @@ public readonly partial struct Money<TCurrency>
     /// </returns>
     /// <exception cref="InvalidOperationException">
     /// <typeparamref name="TCurrency" /> is a custom tag whose ISO code is not in the shipped
-    /// <see cref="CurrencyCode" /> catalogue.
+    /// <see cref="CurrencyCode" /> catalog.
     /// </exception>
     /// <remarks>
     /// For a shipped currency the conversion is lossless: <typeparamref name="TCurrency" /> determines the currency,
     /// which is encoded into the runtime <see cref="Money.Code" />. An <c>implicit</c> operator is also provided so
-    /// typed values flow into runtime APIs without an explicit cast. A custom tag outside the catalogue has no runtime
+    /// typed values flow into runtime APIs without an explicit cast. A custom tag outside the catalog has no runtime
     /// representation, so the conversion compiles for it but throws at run time.
     /// </remarks>
     public Money ToMoney() =>
@@ -40,7 +40,7 @@ public readonly partial struct Money<TCurrency>
     /// <returns>A <see cref="CalculatedMoney" /> with this value's amount.</returns>
     /// <exception cref="InvalidOperationException">
     /// <typeparamref name="TCurrency" /> is a custom tag whose ISO code is not in the shipped
-    /// <see cref="CurrencyCode" /> catalogue.
+    /// <see cref="CurrencyCode" /> catalog.
     /// </exception>
     public CalculatedMoney ToCalculated() =>
         new(_amount, RuntimeCurrencyCode());
@@ -52,7 +52,7 @@ public readonly partial struct Money<TCurrency>
     /// <returns>The runtime-tagged equivalent.</returns>
     /// <exception cref="InvalidOperationException">
     /// <typeparamref name="TCurrency" /> is a custom tag whose ISO code is not in the shipped
-    /// <see cref="CurrencyCode" /> catalogue; the conversion compiles for such a tag but throws at run time.
+    /// <see cref="CurrencyCode" /> catalog; the conversion compiles for such a tag but throws at run time.
     /// </exception>
     public static implicit operator Money(Money<TCurrency> value)
     {
@@ -65,7 +65,7 @@ public readonly partial struct Money<TCurrency>
     /// <returns>The <see cref="CurrencyCode" /> member for the tag's ISO code.</returns>
     /// <exception cref="InvalidOperationException">
     /// <typeparamref name="TCurrency" /> is a custom tag whose ISO code is not in the shipped
-    /// <see cref="CurrencyCode" /> catalogue.
+    /// <see cref="CurrencyCode" /> catalog.
     /// </exception>
     private static CurrencyCode RuntimeCurrencyCode()
     {
@@ -232,7 +232,7 @@ public readonly partial struct Money<TCurrency>
     /// </exception>
     /// <remarks>
     /// Equivalent to <c>FromFraction(ToFraction() * factor, rounding)</c> but expresses the common multiply-then-round
-    /// pattern in a single call. Inherits the exact <see cref="BigInteger" /> rounding behaviour of
+    /// pattern in a single call. Inherits the exact <see cref="BigInteger" /> rounding behavior of
     /// <see cref="FromFraction(Bodu.Numerics.Fraction{BigInteger}, MidpointRounding)" />.
     /// </remarks>
     public Money<TCurrency> MultiplyExact(Fraction<BigInteger> factor, MidpointRounding rounding = MidpointRounding.ToEven) =>

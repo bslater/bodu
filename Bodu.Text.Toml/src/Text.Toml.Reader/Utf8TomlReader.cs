@@ -73,7 +73,7 @@ public ref partial struct Utf8TomlReader
     /// <summary>Whether the reader is still positioned at the document start, where a byte-order mark may be skipped.</summary>
     private bool _atStart;
 
-    /// <summary>Whether the last failed read stopped because the buffer ended mid-token and more data may follow, signalling <see cref="Read" /> to restore the pre-read snapshot.</summary>
+    /// <summary>Whether the last failed read stopped because the buffer ended mid-token and more data may follow, signaling <see cref="Read" /> to restore the pre-read snapshot.</summary>
     private bool _needMoreData;
 
     /// <summary>The cursor position within <see cref="_source" />.</summary>

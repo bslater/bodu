@@ -9,7 +9,7 @@ namespace Bodu.Globalization.Calendar.Algorithms;
 /// <summary>
 /// Computes the date of a notable date for a Gregorian year from a closed-form or tabular algorithm. Implementations
 /// are registered under a key and dispatched by the <see cref="AlgorithmDateStrategy" /> when a rule references that
-/// key, allowing the algorithm catalogue to be extended beyond the built-in computations.
+/// key, allowing the algorithm catalog to be extended beyond the built-in computations.
 /// </summary>
 /// <remarks>
 /// <para>

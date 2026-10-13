@@ -19,8 +19,8 @@ namespace Bodu.Financial.ExchangeRates;
 /// a reference date via <see cref="EarliestDate(DateOnly)" />.
 /// </para>
 /// <para>
-/// The default catalogue is exposed through <see cref="Default" />. The named singletons <see cref="Daily" />,
-/// <see cref="Last90Days" />, and <see cref="Full" /> let callers compose a custom catalogue, and the file names can be
+/// The default catalog is exposed through <see cref="Default" />. The named singletons <see cref="Daily" />,
+/// <see cref="Last90Days" />, and <see cref="Full" /> let callers compose a custom catalog, and the file names can be
 /// overridden through the provider options if the ECB changes them.
 /// </para>
 /// </remarks>
@@ -79,13 +79,13 @@ public sealed class EcbRateFeed
     public static EcbRateFeed Full { get; } = new("hist", "eurofxref-hist.xml", null);
 
     /// <summary>
-    /// Gets the default catalogue of ECB feeds, ordered from the narrowest look-back to the widest.
+    /// Gets the default catalog of ECB feeds, ordered from the narrowest look-back to the widest.
     /// </summary>
     /// <value>
-    /// The ordered, immutable default feed catalogue: the ninety-day feed followed by the full-history feed.
+    /// The ordered, immutable default feed catalog: the ninety-day feed followed by the full-history feed.
     /// </value>
     /// <remarks>
-    /// The latest-day feed is omitted from the default catalogue because the ninety-day feed already contains the most
+    /// The latest-day feed is omitted from the default catalog because the ninety-day feed already contains the most
     /// recent day; include <see cref="Daily" /> explicitly when a minimal latest-only download is preferred.
     /// </remarks>
     public static IReadOnlyList<EcbRateFeed> Default { get; } =
@@ -148,7 +148,7 @@ public sealed class EcbRateFeed
     /// Finds the narrowest feed in <paramref name="feeds" /> expected to cover the specified date.
     /// </summary>
     /// <param name="date">The date to resolve.</param>
-    /// <param name="feeds">The feed catalogue to search, ordered from narrowest to widest look-back.</param>
+    /// <param name="feeds">The feed catalog to search, ordered from narrowest to widest look-back.</param>
     /// <param name="asOf">The reference date, typically the current date.</param>
     /// <returns>The covering feed, or <see langword="null" /> when no feed covers <paramref name="date" />.</returns>
     /// <exception cref="ArgumentNullException">

@@ -12,11 +12,11 @@ namespace Bodu.Extensions;
 public static partial class StringExtensions
 {
     /// <summary>
-    /// Returns <paramref name="value" /> with combining diacritic marks removed, normalising accented Latin characters
+    /// Returns <paramref name="value" /> with combining diacritic marks removed, normalizing accented Latin characters
     /// to their unaccented base form.
     /// </summary>
     /// <param name="value">The string to strip. Must not be <see langword="null" />.</param>
-    /// <returns>The string with non-spacing combining marks stripped after Unicode FormD normalisation.</returns>
+    /// <returns>The string with non-spacing combining marks stripped after Unicode FormD normalization.</returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="value" /> is <see langword="null" />.
     /// </exception>
@@ -30,7 +30,7 @@ public static partial class StringExtensions
     /// <para>
     /// This is the canonical pattern for accent-insensitive search keys and is intentionally limited to diacritic
     /// stripping - it does not transliterate non-Latin scripts (e.g. Cyrillic, CJK) and does not case-fold. For full
-    /// search normalisation combine this with <c>ToLowerInvariant</c> and <see cref="CollapseWhitespace(string)" />.
+    /// search normalization combine this with <c>ToLowerInvariant</c> and <see cref="CollapseWhitespace(string)" />.
     /// </para>
     /// </remarks>
     public static string RemoveDiacritics(this string value)

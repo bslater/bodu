@@ -20,9 +20,9 @@ namespace Bodu.Extensions.Configuration.Text;
 /// <remarks>
 /// <para>
 /// Nested tables contribute a <see cref="ConfigurationPath.KeyDelimiter" /> segment per level; array elements
-/// contribute their zero-based index as a segment, mirroring the behaviour of the framework JSON configuration
-/// provider. Keys are compared case-insensitively, so two TOML keys that differ only in case map to the same
-/// configuration key and are rejected as a duplicate.
+/// contribute their zero-based index as a segment, mirroring the behavior of the framework JSON configuration provider.
+/// Keys are compared case-insensitively, so two TOML keys that differ only in case map to the same configuration key
+/// and are rejected as a duplicate.
 /// </para>
 /// <para>
 /// The document is read through the read-only <see cref="TomlDocument" /> object model from the <c>Bodu.Text.Toml</c>

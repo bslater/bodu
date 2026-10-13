@@ -28,9 +28,9 @@ namespace Bodu.Formats.Outlook.Pst;
 /// </para>
 /// <para>
 /// The CRC is table-driven CRC-32 (reflected polynomial <c>0xEDB88320</c>) with a zero initial value and no final
-/// exclusive-or - the catalogued CRC-32 in <c>Bodu.IO.Hashing</c> applies the standard pre/post conditioning this
-/// format omits, so the checksum runs the format's parameters over the shared <see cref="CrcCore" /> engine
-/// source-compiled from <c>Bodu.IO.Hashing/shared</c> (no package dependency).
+/// exclusive-or - the cataloged CRC-32 in <c>Bodu.IO.Hashing</c> applies the standard pre/post conditioning this format
+/// omits, so the checksum runs the format's parameters over the shared <see cref="CrcCore" /> engine source-compiled
+/// from <c>Bodu.IO.Hashing/shared</c> (no package dependency).
 /// </para>
 /// <para>
 /// This file lives in <c>Bodu.Formats.Outlook/shared/</c> and is source-compiled into each Outlook format reader -

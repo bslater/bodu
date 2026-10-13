@@ -18,7 +18,7 @@ public static partial class StringExtensions
     /// <returns>The prefixed text.</returns>
     /// <exception cref="ArgumentNullException">Thrown when either argument is <see langword="null" />.</exception>
     /// <remarks>
-    /// Line boundaries are recognised at <c>\r\n</c>, <c>\n</c>, and bare <c>\r</c>. An empty
+    /// Line boundaries are recognized at <c>\r\n</c>, <c>\n</c>, and bare <c>\r</c>. An empty
     /// <paramref name="prefix" /> returns the input unchanged. Commonly used to add a comment marker to a block of
     /// source - e.g. <c>"line1\nline2".PrefixLines("// ")</c>.
     /// </remarks>

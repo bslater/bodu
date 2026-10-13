@@ -19,7 +19,7 @@ namespace Bodu.Collections.Generic;
 /// <typeparam name="TValue">Specifies the type of values stored in the table's cells.</typeparam>
 /// <remarks>
 /// <para>
-/// <see cref="Table{TRow, TColumn, TValue}" /> is the .NET analogue of Guava's <c>Table</c>: a map keyed by two
+/// <see cref="Table{TRow, TColumn, TValue}" /> is the .NET analog of Guava's <c>Table</c>: a map keyed by two
 /// independent keys - a row and a column - whose reason to exist is the <i>projections</i>. A plain
 /// <c>Dictionary&lt;(TRow, TColumn), TValue&gt;</c> already covers flat two-key lookup; adopt this type when you also
 /// need <see cref="Row(TRow)" /> ("all cells of this row") or <see cref="Column(TColumn)" /> ("this column across all
@@ -43,7 +43,7 @@ namespace Bodu.Collections.Generic;
 /// order of cells within a row follow the unspecified, insertion-biased order of
 /// <see cref="System.Collections.Generic.Dictionary{TKey, TValue}" /> - do not rely on it. The views delegate to the
 /// live backing dictionaries, so mutating the table while enumerating the table or one of its views surfaces the
-/// standard <see cref="System.Collections.Generic.Dictionary{TKey, TValue}" /> fail-fast behaviour (<see cref="InvalidOperationException" />).
+/// standard <see cref="System.Collections.Generic.Dictionary{TKey, TValue}" /> fail-fast behavior (<see cref="InvalidOperationException" />).
 /// </para>
 /// <para>
 /// <see cref="Table{TRow, TColumn, TValue}" /> is not thread-safe. Concurrent reads and writes, including through the
@@ -454,7 +454,7 @@ public sealed partial class Table<TRow, TColumn, TValue> : IEnumerable<KeyValueP
     /// <remarks>
     /// All cells of one row are contiguous, but the order of rows and of cells within a row follows the unspecified,
     /// insertion-biased order of <see cref="System.Collections.Generic.Dictionary{TKey, TValue}" /> - do not rely on
-    /// it. Mutating the table while enumerating surfaces the standard dictionary fail-fast behaviour (<see cref="InvalidOperationException" />).
+    /// it. Mutating the table while enumerating surfaces the standard dictionary fail-fast behavior (<see cref="InvalidOperationException" />).
     /// </remarks>
     public IEnumerator<KeyValuePair<(TRow Row, TColumn Column), TValue>> GetEnumerator()
     {

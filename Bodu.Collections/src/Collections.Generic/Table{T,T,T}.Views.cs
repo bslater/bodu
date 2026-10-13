@@ -67,8 +67,8 @@ public sealed partial class Table<TRow, TColumn, TValue>
     /// </para>
     /// <para>
     /// Every member is an O(1) delegation to the row's live cell dictionary. Mutating the table while enumerating the
-    /// view surfaces the standard <see cref="System.Collections.Generic.Dictionary{TKey, TValue}" /> fail-fast
-    /// behaviour (<see cref="InvalidOperationException" />).
+    /// view surfaces the standard <see cref="System.Collections.Generic.Dictionary{TKey, TValue}" /> fail-fast behavior
+    /// (<see cref="InvalidOperationException" />).
     /// </para>
     /// </remarks>
     public IReadOnlyDictionary<TColumn, TValue> Row(TRow row)
@@ -97,7 +97,7 @@ public sealed partial class Table<TRow, TColumn, TValue>
     /// cost: <see cref="IReadOnlyCollection{T}.Count" /> and each full enumeration scan every row and are O(rows) per
     /// access, while the per-row lookups (the indexer, <c>ContainsKey</c>, <c>TryGetValue</c>) are O(1). Mutating the
     /// table while enumerating the view surfaces the standard
-    /// <see cref="System.Collections.Generic.Dictionary{TKey, TValue}" /> fail-fast behaviour (<see cref="InvalidOperationException" />).
+    /// <see cref="System.Collections.Generic.Dictionary{TKey, TValue}" /> fail-fast behavior (<see cref="InvalidOperationException" />).
     /// </para>
     /// </remarks>
     public IReadOnlyDictionary<TRow, TValue> Column(TColumn column)
@@ -116,7 +116,7 @@ public sealed partial class Table<TRow, TColumn, TValue>
     /// </returns>
     /// <remarks>
     /// The sequence enumerates the backing store's row keys lazily, so mutating the table while iterating surfaces the
-    /// standard <see cref="System.Collections.Generic.Dictionary{TKey, TValue}" /> fail-fast behaviour (<see cref="InvalidOperationException" />).
+    /// standard <see cref="System.Collections.Generic.Dictionary{TKey, TValue}" /> fail-fast behavior (<see cref="InvalidOperationException" />).
     /// Because empty rows are never retained, every yielded view holds at least one cell at the moment it is yielded.
     /// </remarks>
     public IEnumerable<KeyValuePair<TRow, IReadOnlyDictionary<TColumn, TValue>>> RowMap()

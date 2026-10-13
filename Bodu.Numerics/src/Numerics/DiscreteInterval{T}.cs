@@ -18,7 +18,7 @@ namespace Bodu.Numerics;
 /// <para>
 /// <see cref="DiscreteInterval{T}" /> is the discrete counterpart to the continuous <see cref="Interval{T}" />. Where
 /// <see cref="Interval{T}" /> models a continuum of real coordinates, <see cref="DiscreteInterval{T}" /> models the set
-/// of representable integers between its bounds, which changes two behaviours fundamentally:
+/// of representable integers between its bounds, which changes two behaviors fundamentally:
 /// </para>
 /// <list type="bullet">
 /// <item>

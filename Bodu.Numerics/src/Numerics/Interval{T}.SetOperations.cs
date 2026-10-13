@@ -348,7 +348,7 @@ public readonly partial struct Interval<T>
     /// </para>
     /// <para>
     /// When the two intervals are disjoint with a true gap between them, the union would require two pieces to
-    /// represent and this method returns <see langword="false" /> rather than synthesise a non-contiguous result.
+    /// represent and this method returns <see langword="false" /> rather than synthesize a non-contiguous result.
     /// Callers that need a multi-piece result should accumulate the operands into a higher-level collection of
     /// intervals.
     /// </para>

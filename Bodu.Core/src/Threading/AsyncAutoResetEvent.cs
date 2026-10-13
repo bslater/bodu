@@ -14,7 +14,7 @@ namespace Bodu.Threading;
 /// </summary>
 /// <remarks>
 /// <para>
-/// <see cref="AsyncAutoResetEvent" /> is the asynchronous analogue of <see cref="AutoResetEvent" />. When a waiter is
+/// <see cref="AsyncAutoResetEvent" /> is the asynchronous analog of <see cref="AutoResetEvent" />. When a waiter is
 /// queued, <see cref="Set" /> releases the longest-waiting caller (strict FIFO) and consumes the signal. When no waiter
 /// is queued, the signal is latched so that the next <see cref="WaitAsync()" /> completes immediately; the event holds
 /// at most one pending signal.

@@ -23,7 +23,7 @@ namespace Bodu.Financial.ExchangeRates;
 /// refreshed and the request is retried once.
 /// </para>
 /// <para>
-/// XE returns a server-determined window rather than honouring an explicit date range, so the parser restricts the
+/// XE returns a server-determined window rather than honoring an explicit date range, so the parser restricts the
 /// parsed observations to the request's inclusive range.
 /// </para>
 /// </remarks>

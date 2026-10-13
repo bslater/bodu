@@ -61,7 +61,7 @@ public class SqliteRateCacheOptions
     /// <para>
     /// A supplied value is not parsed or validated when the options are constructed - only its presence is checked. A
     /// malformed or unusable connection string is therefore not rejected up front; it surfaces later at connect time,
-    /// where the cache's best-effort behaviour degrades to an empty read or a skipped write rather than throwing.
+    /// where the cache's best-effort behavior degrades to an empty read or a skipped write rather than throwing.
     /// </para>
     /// </remarks>
     public string? ConnectionString { get; set; }

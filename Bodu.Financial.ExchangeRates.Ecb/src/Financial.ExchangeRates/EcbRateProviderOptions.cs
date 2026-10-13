@@ -54,9 +54,9 @@ public sealed class EcbRateProviderOptions
     }
 
     /// <summary>
-    /// Gets or sets the catalogue of feeds to draw from, ordered from the narrowest look-back to the widest.
+    /// Gets or sets the catalog of feeds to draw from, ordered from the narrowest look-back to the widest.
     /// </summary>
-    /// <value>The feed catalogue; defaults to <see cref="EcbRateFeed.Default" />.</value>
+    /// <value>The feed catalog; defaults to <see cref="EcbRateFeed.Default" />.</value>
     public IReadOnlyList<EcbRateFeed> Feeds { get; set; } = EcbRateFeed.Default;
 
     /// <summary>

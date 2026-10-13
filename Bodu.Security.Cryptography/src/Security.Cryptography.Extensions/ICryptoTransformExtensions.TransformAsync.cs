@@ -43,10 +43,10 @@ public static partial class ICryptoTransformExtensions
     /// </para>
     /// <para>
     /// The final block is written only when <paramref name="sourceStream" /> has been read to its end. If the operation
-    /// is cancelled or fails partway through, the exception propagates and <paramref name="targetStream" /> holds only
+    /// is canceled or fails partway through, the exception propagates and <paramref name="targetStream" /> holds only
     /// the output already written; the transform is never finalized, so no padded final block is appended to the
-    /// partial output, and a token that is already cancelled writes nothing at all. Treat a target that saw a failure
-    /// as incomplete and discard it.
+    /// partial output, and a token that is already canceled writes nothing at all. Treat a target that saw a failure as
+    /// incomplete and discard it.
     /// </para>
     /// <para>
     /// Neither <paramref name="sourceStream" /> nor <paramref name="targetStream" /> is disposed by this method. When

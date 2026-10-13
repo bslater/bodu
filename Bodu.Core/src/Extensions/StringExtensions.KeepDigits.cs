@@ -17,7 +17,7 @@ public static partial class StringExtensions
     /// Thrown when <paramref name="value" /> is <see langword="null" />.
     /// </exception>
     /// <remarks>
-    /// Membership is determined via <see cref="char.IsDigit(char)" />, which recognises every Unicode digit (Nd)
+    /// Membership is determined via <see cref="char.IsDigit(char)" />, which recognizes every Unicode digit (Nd)
     /// character - not just ASCII <c>0-9</c>.
     /// </remarks>
     public static string KeepDigits(this string value) =>

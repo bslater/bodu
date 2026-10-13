@@ -18,7 +18,7 @@ public static partial class StringExtensions
     /// otherwise the trimmed value.
     /// </returns>
     /// <remarks>
-    /// Useful for input sanitisation pipelines where whitespace-only entries should collapse to a missing-data sentinel
+    /// Useful for input sanitization pipelines where whitespace-only entries should collapse to a missing-data sentinel
     /// rather than an empty string.
     /// </remarks>
     public static string? TrimToNull(this string? value)

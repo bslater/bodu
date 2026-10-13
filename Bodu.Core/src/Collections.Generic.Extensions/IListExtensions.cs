@@ -26,7 +26,7 @@ namespace Bodu.Collections.Generic.Extensions;
 /// </para>
 /// <para>
 /// Equality-based methods accept an optional <see cref="IEqualityComparer{T}" />. When omitted,
-/// <see cref="EqualityComparer{T}.Default" /> is used, matching the BCL convention so behaviour is consistent with the
+/// <see cref="EqualityComparer{T}.Default" /> is used, matching the BCL convention so behavior is consistent with the
 /// rest of the framework.
 /// </para>
 /// </remarks>

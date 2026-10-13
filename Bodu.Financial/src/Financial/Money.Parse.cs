@@ -25,7 +25,7 @@ public readonly partial struct Money
     /// Text carrying more fractional digits than the currency's registered minor units - a unit price such as
     /// <c>"USD 12.345678"</c> - parses to a value reporting that finer scale from <see cref="MinorUnits" />, making
     /// this method the inverse of the round-trip (<c>"R"</c>) format. Text at or below the registered precision parses
-    /// at the registry precision, unchanged from earlier behaviour.
+    /// at the registry precision, unchanged from earlier behavior.
     /// </remarks>
     /// <example>
     /// <code language="csharp">

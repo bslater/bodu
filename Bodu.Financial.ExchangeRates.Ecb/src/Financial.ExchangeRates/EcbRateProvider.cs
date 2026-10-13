@@ -217,7 +217,7 @@ public sealed class EcbRateProvider
     /// <returns>A task that completes when the full history has been loaded.</returns>
     /// <remarks>
     /// Because each ECB feed extends from its earliest date to the most recent business day, the widest feed in the
-    /// catalogue subsumes the narrower ones; preloading therefore loads that single feed rather than every overlapping
+    /// catalog subsumes the narrower ones; preloading therefore loads that single feed rather than every overlapping
     /// feed.
     /// </remarks>
     public Task PreloadAsync(CancellationToken cancellationToken = default) =>
@@ -434,8 +434,7 @@ public sealed class EcbRateProvider
     }
 
     /// <summary>
-    /// Selects the widest feed in the catalogue - the full-history feed when present, otherwise the last configured
-    /// feed.
+    /// Selects the widest feed in the catalog - the full-history feed when present, otherwise the last configured feed.
     /// </summary>
     /// <returns>The widest feed.</returns>
     private EcbRateFeed SelectWidestFeed()

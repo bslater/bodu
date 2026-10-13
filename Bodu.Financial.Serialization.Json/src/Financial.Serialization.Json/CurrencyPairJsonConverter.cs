@@ -18,7 +18,7 @@ namespace Bodu.Financial.Serialization.Json;
 /// <remarks>
 /// <para>
 /// <see cref="FinancialJsonPolicy.Strict" /> and <see cref="FinancialJsonPolicy.Lenient" /> use the canonical object
-/// form <c>{ "from": "USD", "to": "JPY" }</c>; Lenient additionally normalises lowercase ISO codes to uppercase and
+/// form <c>{ "from": "USD", "to": "JPY" }</c>; Lenient additionally normalizes lowercase ISO codes to uppercase and
 /// trims surrounding whitespace. <see cref="FinancialJsonPolicy.Compact" /> uses the slash-separated string form
 /// <c>"USD/JPY"</c>.
 /// </para>
@@ -82,7 +82,7 @@ public sealed class CurrencyPairJsonConverter
     /// Reads the compact string form <c>"FROM/TO"</c> (e.g. <c>"USD/JPY"</c>).
     /// </summary>
     /// <param name="reader">The reader positioned at the value.</param>
-    /// <returns>The deserialised pair.</returns>
+    /// <returns>The deserialized pair.</returns>
     /// <exception cref="JsonException">
     /// Thrown when the token is not a string, or when the string is not a valid pair representation.
     /// </exception>
@@ -110,10 +110,10 @@ public sealed class CurrencyPairJsonConverter
     }
 
     /// <summary>
-    /// Reads the canonical object form (Strict / Lenient policies share the same shape; Lenient normalises ISO codes).
+    /// Reads the canonical object form (Strict / Lenient policies share the same shape; Lenient normalizes ISO codes).
     /// </summary>
     /// <param name="reader">The reader positioned at the value.</param>
-    /// <returns>The deserialised pair.</returns>
+    /// <returns>The deserialized pair.</returns>
     /// <exception cref="JsonException">
     /// Thrown when the JSON shape is invalid or a required property is missing.
     /// </exception>

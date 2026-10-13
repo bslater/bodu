@@ -10,7 +10,7 @@ namespace Bodu.Text.Delimited;
 
 /// <summary>
 /// Provides configuration for <see cref="DelimitedSerializer" />, controlling column naming, case sensitivity, field
-/// inclusion, and the delimiter, quote, comment character, and header behaviour.
+/// inclusion, and the delimiter, quote, comment character, and header behavior.
 /// </summary>
 /// <remarks>
 /// An options instance becomes read-only the first time it is used; mutating a property after that point throws

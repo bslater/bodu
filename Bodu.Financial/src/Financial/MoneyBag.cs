@@ -84,7 +84,7 @@ public sealed partial class MoneyBag
     /// </summary>
     /// <param name="balances">The starting balances.</param>
     /// <exception cref="ArgumentNullException"><paramref name="balances" /> is <see langword="null" />.</exception>
-    /// <exception cref="ArgumentException">A balance carries no currency (default-initialised).</exception>
+    /// <exception cref="ArgumentException">A balance carries no currency (default-initialized).</exception>
     public MoneyBag(IEnumerable<Money> balances)
     {
         ThrowHelper.ThrowIfNull(balances);
@@ -163,7 +163,7 @@ public sealed partial class MoneyBag
     /// <param name="amount">The amount to add.</param>
     /// <returns>The updated bag.</returns>
     /// <exception cref="ArgumentException">
-    /// <paramref name="amount" /> has no currency (default-initialised).
+    /// <paramref name="amount" /> has no currency (default-initialized).
     /// </exception>
     /// <remarks>
     /// The bag is a settlement-precision container: the incoming amount is rounded to its currency's registered minor
@@ -191,7 +191,7 @@ public sealed partial class MoneyBag
     }
 
     /// <summary>
-    /// Normalises an incoming amount to its currency's registered minor-unit precision.
+    /// Normalizes an incoming amount to its currency's registered minor-unit precision.
     /// </summary>
     /// <param name="amount">The amount entering the bag.</param>
     /// <returns>The amount rounded to the registered minor units using banker's rounding.</returns>
@@ -211,7 +211,7 @@ public sealed partial class MoneyBag
     /// <returns>The updated bag.</returns>
     /// <exception cref="InvalidOperationException">
     /// <typeparamref name="TCurrency" /> is a custom tag whose ISO code is not in the shipped
-    /// <see cref="CurrencyCode" /> catalogue.
+    /// <see cref="CurrencyCode" /> catalog.
     /// </exception>
     public MoneyBag Add<TCurrency>(Money<TCurrency> amount)
         where TCurrency : ICurrency =>
@@ -223,7 +223,7 @@ public sealed partial class MoneyBag
     /// <param name="amount">The amount to subtract.</param>
     /// <returns>The updated bag.</returns>
     /// <exception cref="InvalidOperationException">
-    /// <paramref name="amount" /> is a default-initialised, currency-less <see cref="Money" />.
+    /// <paramref name="amount" /> is a default-initialized, currency-less <see cref="Money" />.
     /// </exception>
     public MoneyBag Subtract(Money amount) =>
         Add(-amount);
@@ -236,7 +236,7 @@ public sealed partial class MoneyBag
     /// <returns>The updated bag.</returns>
     /// <exception cref="InvalidOperationException">
     /// <typeparamref name="TCurrency" /> is a custom tag whose ISO code is not in the shipped
-    /// <see cref="CurrencyCode" /> catalogue.
+    /// <see cref="CurrencyCode" /> catalog.
     /// </exception>
     public MoneyBag Subtract<TCurrency>(Money<TCurrency> amount)
         where TCurrency : ICurrency =>
@@ -359,7 +359,7 @@ public sealed partial class MoneyBag
     /// <returns>The updated bag.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="left" /> is <see langword="null" />.</exception>
     /// <exception cref="InvalidOperationException">
-    /// <paramref name="right" /> is a default-initialised, currency-less <see cref="Money" />.
+    /// <paramref name="right" /> is a default-initialized, currency-less <see cref="Money" />.
     /// </exception>
     public static MoneyBag operator -(MoneyBag left, Money right)
     {

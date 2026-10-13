@@ -30,7 +30,7 @@ internal sealed class RateSeriesBuffer
     /// <summary>The default growable capacity used when the buffer first needs to grow.</summary>
     private const int DefaultCapacity = 16;
 
-    /// <summary>The backing day-number array. Slots <c>[0, _count)</c> are live and strictly ascending; trailing slots are uninitialised capacity.</summary>
+    /// <summary>The backing day-number array. Slots <c>[0, _count)</c> are live and strictly ascending; trailing slots are uninitialized capacity.</summary>
     private int[] _dayNumbers;
 
     /// <summary>The backing rate array. Slots <c>[0, _count)</c> are live and aligned with <see cref="_dayNumbers" />.</summary>

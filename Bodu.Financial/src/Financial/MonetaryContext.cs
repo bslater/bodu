@@ -18,7 +18,7 @@ namespace Bodu.Financial;
 /// A <see cref="MonetaryContext" /> is supplied to operations rather than embedded in a <see cref="Money" /> value, so
 /// the same amount can participate in calculations under different policies without carrying mutable state. Operations
 /// that accept a nullable context treat <see langword="null" /> as <see cref="Default" />, preserving the historical
-/// banker's-rounding behaviour.
+/// banker's-rounding behavior.
 /// </para>
 /// <para>
 /// The members that accept a context are <see cref="Money{TCurrency}.Multiply(decimal, MonetaryContext)" />, which

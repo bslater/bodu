@@ -10,7 +10,7 @@ namespace Bodu.Text.Bencode.Nodes;
 /// Defines the customizations applied to a mutable Bencode (BEP 3) node tree.
 /// </summary>
 /// <remarks>
-/// The options govern in-memory behaviour only; they do not affect serialization, which always emits canonical Bencode
+/// The options govern in-memory behavior only; they do not affect serialization, which always emits canonical Bencode
 /// with dictionary keys in ascending bytewise order regardless of the configured comparison.
 /// </remarks>
 public struct BencodeNodeOptions

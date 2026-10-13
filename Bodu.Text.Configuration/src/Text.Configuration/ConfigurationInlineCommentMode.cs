@@ -35,7 +35,7 @@ public enum ConfigurationInlineCommentMode
 
     /// <summary>
     /// Recognize an inline comment when, and only when, the comment prefix is preceded by at least one ASCII whitespace
-    /// character. This is the default Bodu behaviour and minimizes the risk of accidentally truncating values that
+    /// character. This is the default Bodu behavior and minimizes the risk of accidentally truncating values that
     /// legitimately contain <c>#</c> or <c>;</c>.
     /// </summary>
     WhitespaceIntroduced = 1,

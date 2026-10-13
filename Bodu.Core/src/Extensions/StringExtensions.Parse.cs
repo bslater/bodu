@@ -29,7 +29,7 @@ public static partial class StringExtensions
     /// </exception>
     /// <remarks>
     /// Provides a fluent <c>"42".Parse&lt;int&gt;()</c> form that flows from the string variable, in addition to the
-    /// static <c>T.Parse</c> factory. The invariant culture is used by default to keep behaviour stable across machines
+    /// static <c>T.Parse</c> factory. The invariant culture is used by default to keep behavior stable across machines
     /// and locales.
     /// </remarks>
     public static T Parse<T>(this string value)

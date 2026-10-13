@@ -11,8 +11,8 @@ namespace Bodu.Extensions;
 /// <see cref="StringExtensions.ToSlug(string, SlugOptions)" />.
 /// </summary>
 /// <remarks>
-/// Instances are immutable once constructed: every property is <c>init</c>-only. Construct a customised instance with
-/// an object initialiser, or use <see cref="Default" /> for the standard configuration.
+/// Instances are immutable once constructed: every property is <c>init</c>-only. Construct a customized instance with
+/// an object initializer, or use <see cref="Default" /> for the standard configuration.
 /// </remarks>
 public sealed class SlugOptions
 {

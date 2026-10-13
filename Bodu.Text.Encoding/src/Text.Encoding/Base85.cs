@@ -15,11 +15,11 @@ namespace Bodu.Text.Encoding;
 /// characters per four-byte group - a payload expansion of 25 %, compared to Base64's 33 % and Base16's 100 %.
 /// </para>
 /// <para>
-/// The Adobe Ascii85 variant recognises the character <c>z</c> as a shortcut for four zero bytes and permits partial
+/// The Adobe Ascii85 variant recognizes the character <c>z</c> as a shortcut for four zero bytes and permits partial
 /// trailing groups of one, two, or three bytes (output grows by one character per byte plus one). The Z85 variant
 /// requires the input to be a whole multiple of four bytes and does not use any shortcut. The
 /// <see cref="Base85Variant.GitCompact" /> variant uses the Git binary-patch alphabet with the same compact
-/// partial-tail behaviour as Ascii85 but without the <c>z</c> shortcut or the Adobe delimiters; it implements only the
+/// partial-tail behavior as Ascii85 but without the <c>z</c> shortcut or the Adobe delimiters; it implements only the
 /// alphabet and does not parse Git binary patches. The exact Git binary-patch line primitive (always five characters
 /// per group, with the decoded length carried out of band) is available through the <c>EncodeGitPadded</c> /
 /// <c>DecodeGitPadded</c> helpers.
@@ -28,9 +28,9 @@ namespace Bodu.Text.Encoding;
 /// Base85 has no padding character. The <see cref="BaseFormattingOptions.UpperCase" />,
 /// <see cref="BaseFormattingOptions.InsertSpacing" />, <see cref="BaseFormattingOptions.InsertLineBreaks" />, and
 /// <see cref="BaseFormattingOptions.OmitPadding" /> flags are ignored on the encode side.
-/// <see cref="BaseFormattingOptions.IncludePrefix" /> is honoured for the <see cref="Base85Variant.Ascii85" />
-/// variant - when set, the output is wrapped in the Adobe Ascii85 <c>&lt;~</c> / <c>~&gt;</c> delimiter pair. The flag
-/// is ignored for <see cref="Base85Variant.Z85" />.
+/// <see cref="BaseFormattingOptions.IncludePrefix" /> is honored for the <see cref="Base85Variant.Ascii85" /> variant -
+/// when set, the output is wrapped in the Adobe Ascii85 <c>&lt;~</c> / <c>~&gt;</c> delimiter pair. The flag is ignored
+/// for <see cref="Base85Variant.Z85" />.
 /// </para>
 /// <para>
 /// On the decode side, <see cref="BaseFormatStyles.IgnoreWhitespace" /> permits whitespace in the input.

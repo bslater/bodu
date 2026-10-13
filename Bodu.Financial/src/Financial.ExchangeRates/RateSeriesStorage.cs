@@ -299,10 +299,10 @@ internal sealed class RateSeriesStorage
     }
 
     /// <summary>
-    /// Materialises a normalised list of <c>(dayNumber, rate)</c> pairs into the exact-sized owned arrays.
+    /// Materializes a normalized list of <c>(dayNumber, rate)</c> pairs into the exact-sized owned arrays.
     /// </summary>
     /// <param name="normalised">The pre-sorted, pre-deduplicated, validated buffer to copy from.</param>
-    /// <returns>A new <see cref="RateSeriesStorage" /> wrapping the materialised arrays.</returns>
+    /// <returns>A new <see cref="RateSeriesStorage" /> wrapping the materialized arrays.</returns>
     private static RateSeriesStorage MaterialiseFromNormalised(List<(int DayNumber, decimal Rate)> normalised)
     {
         int[] dayNumbers = new int[normalised.Count];

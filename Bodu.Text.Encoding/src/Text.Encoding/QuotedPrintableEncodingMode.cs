@@ -19,7 +19,7 @@ public enum QuotedPrintableEncodingMode : byte
     Binary = 0,
 
     /// <summary>
-    /// Recognises a canonical CRLF (<c>0x0D 0x0A</c>) pair in the source as a hard line break, emitted using the
+    /// Recognizes a canonical CRLF (<c>0x0D 0x0A</c>) pair in the source as a hard line break, emitted using the
     /// configured newline. A lone CR or lone LF is not a canonical break and is escaped as <c>=0D</c> or <c>=0A</c>.
     /// </summary>
     Text = 1,

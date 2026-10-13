@@ -23,7 +23,7 @@ public enum MoneyBagConversionRoundingPolicy
 {
     /// <summary>
     /// Sum every converted balance as a raw <see cref="decimal" /> first, then round the aggregate once to the
-    /// destination currency's minor-unit precision. This is the default - it minimises the cumulative rounding error in
+    /// destination currency's minor-unit precision. This is the default - it minimizes the cumulative rounding error in
     /// a portfolio FX total.
     /// </summary>
     SumRawThenRound = 0,

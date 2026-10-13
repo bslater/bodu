@@ -73,7 +73,7 @@ public static class MiddleEastCalendarData
 
     /// <summary>
     /// Resolves an imported resource name to its content. The pan-regional <c>middleeast-common</c> hub is served from
-    /// this pack's embedded resources; every other name (the shared catalogues such as <c>global-islamic</c> and
+    /// this pack's embedded resources; every other name (the shared catalogs such as <c>global-islamic</c> and
     /// <c>global-jewish</c>, including those that <c>middleeast-common</c> itself imports) is delegated to
     /// <see cref="CommonNotableDateResources" />.
     /// </summary>

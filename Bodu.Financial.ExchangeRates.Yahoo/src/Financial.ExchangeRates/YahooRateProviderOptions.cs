@@ -12,10 +12,10 @@ namespace Bodu.Financial.ExchangeRates;
 /// <remarks>
 /// <para>
 /// This type derives from <see cref="WebRateProviderOptions" />, which supplies the endpoint base address, the HTTP
-/// contract, the synchronous-access and look-back behaviour, the currency-alias map, and the per-concern log levels.
-/// The members declared here are Yahoo-specific: the <see cref="ChartPath" /> template and the
-/// <see cref="SymbolFormat" /> used to build the foreign-exchange ticker. The chart bar interval is fixed at one day,
-/// and the date range is supplied per call through the provider's lookup and range methods.
+/// contract, the synchronous-access and look-back behavior, the currency-alias map, and the per-concern log levels. The
+/// members declared here are Yahoo-specific: the <see cref="ChartPath" /> template and the <see cref="SymbolFormat" />
+/// used to build the foreign-exchange ticker. The chart bar interval is fixed at one day, and the date range is
+/// supplied per call through the provider's lookup and range methods.
 /// </para>
 /// <para>
 /// Every member carries a working default, so the options bind cleanly through <c>Microsoft.Extensions.Options</c> and

@@ -188,7 +188,7 @@ public partial struct RunningQuantile<T>
 
     /// <summary>
     /// Performs one steady-state P² update: locates the sample's cell, shifts the affected marker positions, advances
-    /// every desired position by its per-observation increment, and re-centres the three middle markers.
+    /// every desired position by its per-observation increment, and re-centers the three middle markers.
     /// </summary>
     /// <param name="x">The widened sample value.</param>
     private void AddSteadyState(double x)

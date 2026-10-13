@@ -14,8 +14,8 @@ namespace Bodu.Extensions;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Instances are immutable once constructed: every property is <c>init</c>-only. Construct a customised instance with
-/// an object initialiser, or use <see cref="Default" /> for the standard configuration.
+/// Instances are immutable once constructed: every property is <c>init</c>-only. Construct a customized instance with
+/// an object initializer, or use <see cref="Default" /> for the standard configuration.
 /// </para>
 /// <para>
 /// The same options object is consumed by every rich casing overload -
@@ -33,7 +33,7 @@ namespace Bodu.Extensions;
 /// </remarks>
 public sealed class WordCasingOptions
 {
-    /// <summary>The default acronym catalogue applied when an instance does not supply its own list.</summary>
+    /// <summary>The default acronym catalog applied when an instance does not supply its own list.</summary>
     private static readonly string[] s_defaultAcronyms =
     [
         "API", "ASCII", "ATO", "BCL", "CPU", "CSS", "CSV", "DNS", "DTO", "EOF",
@@ -59,11 +59,11 @@ public sealed class WordCasingOptions
     public static WordCasingOptions Default => s_default;
 
     /// <summary>
-    /// Gets the known acronyms recognised during tokenisation and casing.
+    /// Gets the known acronyms recognized during tokenization and casing.
     /// </summary>
     /// <value>
     /// Defaults to a built-in list of 38 common technology acronyms. Supply a custom collection to extend or replace
-    /// the catalogue.
+    /// the catalog.
     /// </value>
     public IReadOnlyCollection<string> Acronyms { get; init; } = s_defaultAcronyms;
 
@@ -92,9 +92,9 @@ public sealed class WordCasingOptions
     /// <value>Defaults to <see langword="true" />.</value>
     /// <remarks>
     /// Only <see cref="StringExtensions.ToTitleCase(string, WordCasingOptions)" /> and
-    /// <see cref="StringExtensions.ToSentenceCase(string, WordCasingOptions)" /> read this flag. The tokeniser used by
-    /// the other case converters (camel, Pascal, snake, kebab, train, constant, dot) canonicalises tokens that match a
-    /// <see cref="Acronyms" /> entry unconditionally, so those converters render known acronyms in their catalogue
+    /// <see cref="StringExtensions.ToSentenceCase(string, WordCasingOptions)" /> read this flag. The tokenizer used by
+    /// the other case converters (camel, Pascal, snake, kebab, train, constant, dot) canonicalizes tokens that match a
+    /// <see cref="Acronyms" /> entry unconditionally, so those converters render known acronyms in their catalog
     /// spelling regardless of this setting.
     /// </remarks>
     public bool PreserveAcronyms { get; init; } = true;

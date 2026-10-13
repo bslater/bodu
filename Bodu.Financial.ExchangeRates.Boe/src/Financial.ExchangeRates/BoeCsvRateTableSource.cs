@@ -16,7 +16,7 @@ internal sealed class BoeCsvRateTableSource
     /// <summary>The HTTP client used to download range responses.</summary>
     private readonly HttpClient _httpClient;
 
-    /// <summary>The provider options supplying the endpoint, series catalogue, and refresh interval.</summary>
+    /// <summary>The provider options supplying the endpoint, series catalog, and refresh interval.</summary>
     private readonly BoeRateProviderOptions _options;
 
     /// <summary>The response byte cache, keyed by the inclusive date range.</summary>

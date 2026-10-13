@@ -17,7 +17,7 @@ public static partial class Base32
     /// <param name="variant">The Base32 variant.</param>
     /// <param name="options">
     /// Formatting options. Only <see cref="BaseFormattingOptions.InsertLineBreaks" /> and
-    /// <see cref="BaseFormattingOptions.OmitPadding" /> are honoured; other flags are ignored.
+    /// <see cref="BaseFormattingOptions.OmitPadding" /> are honored; other flags are ignored.
     /// </param>
     /// <returns>A Base32 encoded string.</returns>
     /// <exception cref="ArgumentNullException">
@@ -59,7 +59,7 @@ public static partial class Base32
 
     /// <summary>
     /// Encodes a read-only span of bytes directly into a pre-allocated character destination using the supplied
-    /// variant. Line-break and padding decoration flags are honoured.
+    /// variant. Line-break and padding decoration flags are honored.
     /// </summary>
     /// <param name="bytes">The bytes to encode.</param>
     /// <param name="destination">

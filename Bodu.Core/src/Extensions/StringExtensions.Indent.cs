@@ -23,7 +23,7 @@ public static partial class StringExtensions
     /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="count" /> is negative.</exception>
     /// <remarks>
-    /// Line boundaries are recognised at <c>\r\n</c>, <c>\n</c>, and bare <c>\r</c>. Empty trailing lines (a trailing
+    /// Line boundaries are recognized at <c>\r\n</c>, <c>\n</c>, and bare <c>\r</c>. Empty trailing lines (a trailing
     /// newline followed by nothing) are not indented. When <paramref name="count" /> is zero the input is returned
     /// unchanged.
     /// </remarks>

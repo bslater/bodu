@@ -8,8 +8,8 @@ namespace Bodu.Extensions;
 
 /// <summary>
 /// Provides ergonomic, allocation-aware extension methods on <see cref="string" /> that fill gaps in the BCL -
-/// positive-form null/empty predicates, fluent fallbacks, whitespace and line-ending normalisation, affix management,
-/// substring windowing, case conversion, identifier sanitisation, and generic parsing.
+/// positive-form null/empty predicates, fluent fallbacks, whitespace and line-ending normalization, affix management,
+/// substring windowing, case conversion, identifier sanitization, and generic parsing.
 /// </summary>
 /// <remarks>
 /// <para>

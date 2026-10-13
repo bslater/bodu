@@ -16,10 +16,10 @@ namespace Bodu.Globalization.Calendar;
 /// which occurrences are emitted. Policies are referenced by rules through stable ids.
 /// </para>
 /// <para>
-/// Working-day actions honour <see cref="SkipWeekends" /> and <see cref="SkipNonWorkingDates" />: a day is skipped
-/// while seeking the observed date if it is a weekend (when <see cref="SkipWeekends" /> is set) or already claimed by
-/// another non-working occurrence (when <see cref="SkipNonWorkingDates" /> is set). The latter is what advances a
-/// substitute past a day already taken by another holiday.
+/// Working-day actions honor <see cref="SkipWeekends" /> and <see cref="SkipNonWorkingDates" />: a day is skipped while
+/// seeking the observed date if it is a weekend (when <see cref="SkipWeekends" /> is set) or already claimed by another
+/// non-working occurrence (when <see cref="SkipNonWorkingDates" /> is set). The latter is what advances a substitute
+/// past a day already taken by another holiday.
 /// </para>
 /// </remarks>
 /// <seealso cref="AdjustmentScope" /> <seealso cref="AdjustmentTrigger" /> <seealso cref="AdjustmentAction" />

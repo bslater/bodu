@@ -12,7 +12,7 @@ public static partial class Base64
 {
     /// <summary>
     /// Decodes <paramref name="s" /> as a Standard Base64 string into a byte array, mirroring the lenient whitespace
-    /// behaviour of <see cref="System.Convert.FromBase64String(string)" />. ASCII whitespace anywhere in the input is
+    /// behavior of <see cref="System.Convert.FromBase64String(string)" />. ASCII whitespace anywhere in the input is
     /// silently ignored; the canonical-padding rule and alphabet are otherwise enforced strictly.
     /// </summary>
     /// <param name="s">The Base64 input.</param>
@@ -30,7 +30,7 @@ public static partial class Base64
 
     /// <summary>
     /// Decodes <paramref name="chars" /> as a Standard Base64 character span into a byte array, mirroring the lenient
-    /// whitespace behaviour of <see cref="System.Convert.FromBase64String(string)" />.
+    /// whitespace behavior of <see cref="System.Convert.FromBase64String(string)" />.
     /// </summary>
     /// <param name="chars">The Base64 character span.</param>
     /// <returns>The decoded byte array.</returns>

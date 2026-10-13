@@ -17,11 +17,11 @@ namespace Bodu.Threading;
 /// <typeparam name="T">The type of the lazily produced value.</typeparam>
 /// <remarks>
 /// <para>
-/// <see cref="AsyncLazy{T}" /> is the asynchronous analogue of <see cref="Lazy{T}" />. It wraps a
-/// <see cref="Lazy{T}" /> of <see cref="Task{TResult}" /> with
-/// <see cref="LazyThreadSafetyMode.ExecutionAndPublication" />, so the factory runs exactly once even under concurrent
-/// first access. The produced <see cref="Task{TResult}" /> is cached and may be awaited any number of times, which is
-/// why this type exposes <see cref="Task{TResult}" /> rather than a single-await <see cref="ValueTask{TResult}" />.
+/// <see cref="AsyncLazy{T}" /> is the asynchronous analog of <see cref="Lazy{T}" />. It wraps a <see cref="Lazy{T}" />
+/// of <see cref="Task{TResult}" /> with <see cref="LazyThreadSafetyMode.ExecutionAndPublication" />, so the factory
+/// runs exactly once even under concurrent first access. The produced <see cref="Task{TResult}" /> is cached and may be
+/// awaited any number of times, which is why this type exposes <see cref="Task{TResult}" /> rather than a single-await
+/// <see cref="ValueTask{TResult}" />.
 /// </para>
 /// <para>
 /// When constructed from a synchronous <see cref="Func{TResult}" />, the factory is offloaded to the thread pool via

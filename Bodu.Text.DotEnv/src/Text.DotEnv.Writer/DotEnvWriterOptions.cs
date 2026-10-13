@@ -11,7 +11,7 @@ namespace Bodu.Text.DotEnv.Writer;
 /// </summary>
 /// <remarks>
 /// The options are an immutable value type; assign the <see langword="init" />-only properties through an object
-/// initializer and read <see cref="Default" /> for the standard behaviour.
+/// initializer and read <see cref="Default" /> for the standard behavior.
 /// </remarks>
 public readonly struct DotEnvWriterOptions
 {

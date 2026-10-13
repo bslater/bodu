@@ -17,7 +17,7 @@ public static partial class StringExtensions
     /// Thrown when <paramref name="value" /> is <see langword="null" />.
     /// </exception>
     /// <remarks>
-    /// Membership is determined via <see cref="char.IsLetter(char)" />, which recognises every Unicode letter category
+    /// Membership is determined via <see cref="char.IsLetter(char)" />, which recognizes every Unicode letter category
     /// (Lu, Ll, Lt, Lm, Lo). ASCII digits, punctuation, whitespace, and control characters are stripped.
     /// </remarks>
     public static string KeepLetters(this string value) =>

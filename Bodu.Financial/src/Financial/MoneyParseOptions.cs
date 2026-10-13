@@ -57,8 +57,8 @@ public sealed record MoneyParseOptions
     /// </summary>
     /// <value>The configured lookup, or <see langword="null" />.</value>
     /// <remarks>
-    /// The default <see cref="CurrencyLookupService" /> resolves no symbols, because the shipped catalogue carries
-    /// none; supply a lookup whose <see cref="CurrencyInfo" /> records carry <see cref="CurrencyInfo.Symbol" /> or
+    /// The default <see cref="CurrencyLookupService" /> resolves no symbols, because the shipped catalog carries none;
+    /// supply a lookup whose <see cref="CurrencyInfo" /> records carry <see cref="CurrencyInfo.Symbol" /> or
     /// <see cref="CurrencyInfo.AlternativeSymbols" /> data to parse symbol text.
     /// </remarks>
     public ICurrencyLookup? CurrencyLookup { get; init; }

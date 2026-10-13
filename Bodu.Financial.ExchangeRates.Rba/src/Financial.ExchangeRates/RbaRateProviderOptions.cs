@@ -53,9 +53,9 @@ public sealed class RbaRateProviderOptions
     }
 
     /// <summary>
-    /// Gets or sets the catalogue of era files to draw from.
+    /// Gets or sets the catalog of era files to draw from.
     /// </summary>
-    /// <value>The era catalogue; defaults to <see cref="RbaEraWorkbook.Default" />.</value>
+    /// <value>The era catalog; defaults to <see cref="RbaEraWorkbook.Default" />.</value>
     public IReadOnlyList<RbaEraWorkbook> Eras { get; set; } = RbaEraWorkbook.Default;
 
     /// <summary>

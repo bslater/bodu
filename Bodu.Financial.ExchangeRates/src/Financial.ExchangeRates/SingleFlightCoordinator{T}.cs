@@ -26,10 +26,10 @@ namespace Bodu.Financial.ExchangeRates;
 /// single caller's token. Once started, the operation runs to completion and fulfills the shared promise even if every
 /// caller abandons its wait; the operation itself is invoked with <see cref="CancellationToken.None" /> because its
 /// result populates shared state for the next caller. A caller's <c>cancellationToken</c> governs only that caller's
-/// wait: when it is signalled the caller observes <see cref="OperationCanceledException" /> for itself and stops
-/// waiting, without cancelling the shared operation or affecting any other caller. This makes the coalesced work safe
+/// wait: when it is signaled the caller observes <see cref="OperationCanceledException" /> for itself and stops
+/// waiting, without canceling the shared operation or affecting any other caller. This makes the coalesced work safe
 /// for idempotent cache-warming fetches, where one caller's cancellation must never fault the other joiners. A
-/// reference-counted variant that cancels the shared operation only once <em>all</em> participants have cancelled is a
+/// reference-counted variant that cancels the shared operation only once <em>all</em> participants have canceled is a
 /// deliberate non-goal here. The token-less overloads carry no caller token into the operation and never cancel a
 /// caller's wait.
 /// </para>
@@ -65,7 +65,7 @@ public sealed class SingleFlightCoordinator<TKey>
     /// <summary>
     /// Runs <paramref name="operation" /> for <paramref name="key" />, or joins the operation already in flight for
     /// that key, then awaits its completion, abandoning this caller's wait when <paramref name="cancellationToken" />
-    /// is signalled.
+    /// is signaled.
     /// </summary>
     /// <param name="key">The key that identifies the operation.</param>
     /// <param name="operation">
@@ -78,7 +78,7 @@ public sealed class SingleFlightCoordinator<TKey>
     /// Thrown when <paramref name="key" /> or <paramref name="operation" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="OperationCanceledException">
-    /// Thrown when <paramref name="cancellationToken" /> is signalled before the shared operation completes; the shared
+    /// Thrown when <paramref name="cancellationToken" /> is signaled before the shared operation completes; the shared
     /// operation continues regardless.
     /// </exception>
     public Task RunAsync(TKey key, Func<CancellationToken, Task> operation, CancellationToken cancellationToken)
@@ -111,7 +111,7 @@ public sealed class SingleFlightCoordinator<TKey>
     /// <summary>
     /// Runs <paramref name="operation" /> for <paramref name="key" />, or joins the operation already in flight for
     /// that key, then awaits and returns its result, abandoning this caller's wait when
-    /// <paramref name="cancellationToken" /> is signalled.
+    /// <paramref name="cancellationToken" /> is signaled.
     /// </summary>
     /// <typeparam name="TResult">The result produced by the operation.</typeparam>
     /// <param name="key">The key that identifies the operation.</param>
@@ -125,7 +125,7 @@ public sealed class SingleFlightCoordinator<TKey>
     /// Thrown when <paramref name="key" /> or <paramref name="operation" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="OperationCanceledException">
-    /// Thrown when <paramref name="cancellationToken" /> is signalled before the shared operation completes; the shared
+    /// Thrown when <paramref name="cancellationToken" /> is signaled before the shared operation completes; the shared
     /// operation continues regardless.
     /// </exception>
     public Task<TResult> RunAsync<TResult>(TKey key, Func<CancellationToken, Task<TResult>> operation, CancellationToken cancellationToken)

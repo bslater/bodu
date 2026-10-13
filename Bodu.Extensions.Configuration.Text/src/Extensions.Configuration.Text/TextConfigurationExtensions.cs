@@ -50,7 +50,7 @@ namespace Bodu.Extensions.Configuration.Text;
 /// </list>
 /// </para>
 /// <para>
-/// File-backed registrations honour the standard <see cref="FileConfigurationSource" /> behaviours (reload-on-change,
+/// File-backed registrations honor the standard <see cref="FileConfigurationSource" /> behaviors (reload-on-change,
 /// optional-file, exception wrapping), resolve a relative <c>path</c> through the supplied or builder-default
 /// <see cref="IFileProvider" />, and, when no provider is supplied, read a rooted <c>path</c> from the file system, as
 /// <c>AddJsonFile</c> does. The convention overload uses the builder's default <see cref="IFileProvider" />; note that
@@ -330,7 +330,7 @@ public static class TextConfigurationExtensions
     /// <remarks>
     /// This overload takes a <b>one-shot snapshot</b> of <paramref name="document" /> as it stands when called: the
     /// document is resolved immediately and the flattened values are added in-memory. Unlike the file-based overloads,
-    /// it has <b>no reload-on-change</b> behaviour - subsequent edits to the document or its backing file are not
+    /// it has <b>no reload-on-change</b> behavior - subsequent edits to the document or its backing file are not
     /// reflected in the built configuration.
     /// </remarks>
     /// <exception cref="ArgumentNullException">

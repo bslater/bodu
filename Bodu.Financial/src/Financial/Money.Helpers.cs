@@ -20,7 +20,7 @@ public readonly partial struct Money
     /// The number of fractional digits to round to and report as the value's minor units.
     /// </param>
     /// <param name="rounding">
-    /// The midpoint-rounding rule applied when normalising to <paramref name="minorUnits" />.
+    /// The midpoint-rounding rule applied when normalizing to <paramref name="minorUnits" />.
     /// </param>
     /// <returns>The constructed monetary value carrying an explicit scale.</returns>
     /// <exception cref="ArgumentOutOfRangeException">
@@ -70,11 +70,11 @@ public readonly partial struct Money
     /// </summary>
     /// <param name="minorUnits">The number of fractional digits the result reports as its minor units.</param>
     /// <param name="rounding">
-    /// The midpoint-rounding rule applied when normalising to <paramref name="minorUnits" />.
+    /// The midpoint-rounding rule applied when normalizing to <paramref name="minorUnits" />.
     /// </param>
     /// <returns>The re-scaled monetary value.</returns>
     /// <exception cref="InvalidOperationException">
-    /// This value is a default-initialised, currency-less <see cref="Money" />.
+    /// This value is a default-initialized, currency-less <see cref="Money" />.
     /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="minorUnits" /> is outside the range 0 to 28.
@@ -121,7 +121,7 @@ public readonly partial struct Money
     /// The trimmed monetary value, or this value unchanged when no trailing-zero scale can be removed.
     /// </returns>
     /// <exception cref="InvalidOperationException">
-    /// This value is a default-initialised, currency-less <see cref="Money" />.
+    /// This value is a default-initialized, currency-less <see cref="Money" />.
     /// </exception>
     /// <remarks>
     /// Trimming never changes the numeric amount - only the reported precision. A six-place <c>12.500000 USD</c> trims
@@ -149,7 +149,7 @@ public readonly partial struct Money
     /// </summary>
     /// <param name="amount">The monetary amount in the major unit.</param>
     /// <param name="currency">The currency metadata identifying the result's currency.</param>
-    /// <param name="rounding">The midpoint-rounding rule applied when normalising to the minor-unit precision.</param>
+    /// <param name="rounding">The midpoint-rounding rule applied when normalizing to the minor-unit precision.</param>
     /// <returns>The constructed monetary value.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="currency" /> is <see langword="null" />.</exception>
     /// <exception cref="InvalidOperationException">
@@ -166,7 +166,7 @@ public readonly partial struct Money
     /// </summary>
     /// <param name="amount">The monetary amount in the major unit.</param>
     /// <param name="code">The ISO 4217 currency code.</param>
-    /// <param name="rounding">The midpoint-rounding rule applied when normalising to the minor-unit precision.</param>
+    /// <param name="rounding">The midpoint-rounding rule applied when normalizing to the minor-unit precision.</param>
     /// <returns>The constructed monetary value.</returns>
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="code" /> is <see cref="CurrencyCode.None" /> or is not a defined <see cref="CurrencyCode" />

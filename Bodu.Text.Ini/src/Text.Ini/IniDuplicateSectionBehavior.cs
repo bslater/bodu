@@ -11,7 +11,7 @@ namespace Bodu.Text.Ini;
 /// </summary>
 /// <remarks>
 /// This is the central dialect divergence for INI: Windows profile APIs and many parsers merge repeated sections, while
-/// Python's <c>configparser</c> (in strict mode) rejects them. The behaviour is configurable so a consumer can pin the
+/// Python's <c>configparser</c> (in strict mode) rejects them. The behavior is configurable so a consumer can pin the
 /// dialect it targets.
 /// </remarks>
 public enum IniDuplicateSectionBehavior

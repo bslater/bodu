@@ -15,7 +15,7 @@ namespace Bodu.Financial.ExchangeRates;
 /// <remarks>
 /// <para>
 /// A pair is a strongly typed key intended for use in dictionaries and lookup tables. Compared to a raw tuple of codes,
-/// it centralises validation and makes the directional meaning of each currency obvious at the call site.
+/// it centralizes validation and makes the directional meaning of each currency obvious at the call site.
 /// </para>
 /// </remarks>
 [DebuggerDisplay("{From,nq}/{To,nq}")]

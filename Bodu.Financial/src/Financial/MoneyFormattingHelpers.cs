@@ -49,7 +49,7 @@ internal static class MoneyFormattingHelpers
 
     /// <summary>
     /// Renders <paramref name="amount" /> with <paramref name="isoCode" /> substituted for the culture's currency
-    /// symbol, honouring both <see cref="NumberFormatInfo.CurrencyPositivePattern" /> and
+    /// symbol, honoring both <see cref="NumberFormatInfo.CurrencyPositivePattern" /> and
     /// <see cref="NumberFormatInfo.CurrencyNegativePattern" /> via a cloned <see cref="NumberFormatInfo" />.
     /// </summary>
     /// <param name="amount">The decimal value to render.</param>

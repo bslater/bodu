@@ -57,10 +57,10 @@ public sealed partial class ConfigurationResolveOptions
     /// <summary>
     /// Gets the profile this option set was created from. The default is <see cref="ConfigurationProfile.Bodu" />.
     /// </summary>
-    /// <value>The profile the option set is labelled with.</value>
+    /// <value>The profile the option set is labeled with.</value>
     /// <remarks>
     /// The property is informational: the resolver does not read it, and setting it changes no other property. Use
-    /// <see cref="For(ConfigurationProfile)" /> or a preset to select a profile's behaviour.
+    /// <see cref="For(ConfigurationProfile)" /> or a preset to select a profile's behavior.
     /// </remarks>
     public ConfigurationProfile Profile { get; init; } = ConfigurationProfile.Bodu;
 
@@ -87,7 +87,7 @@ public sealed partial class ConfigurationResolveOptions
     /// preamble's <c>root</c> pair never contributes: it marks the file as the root of its directory tree, and the
     /// document keeps it in its global section for the caller that collects files up the tree.
     /// </summary>
-    /// <value><see langword="true" /> when preamble properties are honoured.</value>
+    /// <value><see langword="true" /> when preamble properties are honored.</value>
     public bool ApplyPreambleProperties { get; init; } = true;
 
     /// <summary>

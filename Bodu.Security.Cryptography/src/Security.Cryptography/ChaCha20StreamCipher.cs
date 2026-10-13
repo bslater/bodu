@@ -20,7 +20,7 @@ namespace Bodu.Security.Cryptography;
 /// keystream blocks on demand through <see cref="NextKeystreamBlock(Span{byte})" />. It is a pure keystream generator
 /// and never observes plaintext; <see cref="StreamCipherTransform" /> combines the keystream with the message by XOR.
 /// This mirrors the role <see cref="TwofishBlockCipher" /> plays for the block-cipher stack, and is the stream-cipher
-/// analogue of <see cref="CtrModeTransform" />.
+/// analog of <see cref="CtrModeTransform" />.
 /// </para>
 /// <para>
 /// The round function follows RFC 8439 Section 2 exactly: a 4×4 matrix of 32-bit little-endian words seeded with the

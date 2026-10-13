@@ -231,7 +231,7 @@ public sealed partial class AsyncDebouncer
     /// </exception>
     /// <remarks>
     /// Once the debouncer has been disposed this method returns immediately - it does not throw
-    /// <see cref="ObjectDisposedException" /> - even when cooperatively-cancelled callbacks are still running their
+    /// <see cref="ObjectDisposedException" /> - even when cooperatively-canceled callbacks are still running their
     /// final iterations. Callers that must observe the end of that residual work should await the task obtained from
     /// <see cref="CurrentExecution" /> before disposal instead.
     /// </remarks>
@@ -324,7 +324,7 @@ public sealed partial class AsyncDebouncer
     /// A run's <see cref="CancellationTokenSource" /> is disposed by <see cref="RunCallbackAsync" /> after the run is
     /// removed from the active set, outside the gate. <see cref="Cancel" /> and <see cref="Dispose" /> capture the
     /// active set under the gate and cancel outside it, so a run captured here may be disposed concurrently by its own
-    /// completing callback. Cancelling an already-disposed source is a benign no-op - the callback has already
+    /// completing callback. Canceling an already-disposed source is a benign no-op - the callback has already
     /// finished - so the resulting <see cref="ObjectDisposedException" /> is swallowed rather than surfaced from the
     /// public <see cref="Cancel" /> / <see cref="Dispose" /> members.
     /// </remarks>

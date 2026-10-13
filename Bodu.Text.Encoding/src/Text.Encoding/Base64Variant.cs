@@ -11,7 +11,7 @@ namespace Bodu.Text.Encoding;
 /// </summary>
 /// <remarks>
 /// All variants share the same byte-to-symbol mapping at the bit level; they differ only in alphabet substitutions and
-/// the default behaviour around padding and line breaks.
+/// the default behavior around padding and line breaks.
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[

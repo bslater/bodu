@@ -91,7 +91,7 @@ public sealed class CachingRateOptions
     /// </summary>
     /// <value>
     /// <see langword="true" /> to skip the inverse probe when the direct pair carries fresh coverage; defaults to
-    /// <see langword="false" />, matching the historical behaviour of always probing the inverse on a direct miss.
+    /// <see langword="false" />, matching the historical behavior of always probing the inverse on a direct miss.
     /// </value>
     /// <remarks>
     /// On a direct-coverage miss the provider normally issues a second backend read for the inverse pair. For a
@@ -127,7 +127,7 @@ public sealed class CachingRateOptions
     /// </summary>
     /// <value>
     /// A fraction in <c>[0, 1)</c>; defaults to <c>0</c>, which disables refresh-ahead entirely and preserves the plain
-    /// serve-until-expiry behaviour.
+    /// serve-until-expiry behavior.
     /// </value>
     /// <remarks>
     /// <para>

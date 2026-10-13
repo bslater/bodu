@@ -13,8 +13,8 @@ namespace Bodu.Financial.ExchangeRates;
 /// <remarks>
 /// The RBA splits its historical daily exchange-rate data into a small set of multi-year files plus an open-ended
 /// "current" file. Each era maps to one downloadable <c>.xls</c> file and the inclusive date range it covers. The
-/// default catalogue is exposed through <see cref="Default" /> and can be overridden via the provider options if the
-/// RBA changes its file names.
+/// default catalog is exposed through <see cref="Default" /> and can be overridden via the provider options if the RBA
+/// changes its file names.
 /// </remarks>
 public sealed class RbaEraWorkbook
 {
@@ -60,9 +60,9 @@ public sealed class RbaEraWorkbook
     public DateOnly? End { get; }
 
     /// <summary>
-    /// Gets the default catalogue of RBA historical daily exchange-rate eras, from 1983 to the current file.
+    /// Gets the default catalog of RBA historical daily exchange-rate eras, from 1983 to the current file.
     /// </summary>
-    /// <value>The ordered, immutable default era catalogue.</value>
+    /// <value>The ordered, immutable default era catalog.</value>
     public static IReadOnlyList<RbaEraWorkbook> Default { get; } =
     [
         new("1983-1986", new DateOnly(1983, 1, 1), new DateOnly(1986, 12, 31)),
@@ -92,7 +92,7 @@ public sealed class RbaEraWorkbook
     /// Finds the era in <paramref name="eras" /> that covers the specified date.
     /// </summary>
     /// <param name="date">The date to resolve.</param>
-    /// <param name="eras">The era catalogue to search.</param>
+    /// <param name="eras">The era catalog to search.</param>
     /// <returns>The covering era, or <see langword="null" /> when no era covers <paramref name="date" />.</returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="eras" /> is <see langword="null" />.

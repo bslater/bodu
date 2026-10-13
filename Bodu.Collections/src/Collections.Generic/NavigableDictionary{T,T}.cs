@@ -10,7 +10,7 @@ namespace Bodu.Collections.Generic;
 
 /// <summary>
 /// Represents a key-sorted dictionary augmented with order statistics - an <see cref="IDictionary{TKey, TValue}" />
-/// that keeps its entries in key comparer order and answers nearest-neighbour ( <see cref="TryGetFloorEntry" /> /
+/// that keeps its entries in key comparer order and answers nearest-neighbor ( <see cref="TryGetFloorEntry" /> /
 /// <see cref="TryGetCeilingEntry" /> / <see cref="TryGetHigherEntry" /> / <see cref="TryGetLowerEntry" />), rank/select
 /// ( <see cref="IndexOfKey" /> / <see cref="GetAt" />), and range-counting queries in O(log n).
 /// </summary>
@@ -26,7 +26,7 @@ namespace Bodu.Collections.Generic;
 /// <para>
 /// Compared with <see cref="SortedDictionary{TKey, TValue}" />, this type adds rank/select ( <see cref="IndexOfKey" />
 /// is the zero-based rank of a key; <see cref="GetAt" /> is the entry with the k-th smallest key), O(log n)
-/// <see cref="CountInRange" />, the four nearest-neighbour queries, and cheap <see cref="Ascending" /> /
+/// <see cref="CountInRange" />, the four nearest-neighbor queries, and cheap <see cref="Ascending" /> /
 /// <see cref="Descending" /> / <see cref="Range" /> views.
 /// </para>
 /// <para>

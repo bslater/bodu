@@ -24,7 +24,7 @@ namespace Bodu.Text.Configuration;
 /// <see cref="ConfigurationResolveOptions.KeyOptions" />; sharing one configured value across both keeps the parsed
 /// model and the resolved view's lookups consistent. The default <see cref="Default" /> mirrors
 /// <c>Microsoft.Extensions.Configuration</c> - case-insensitive ordinal comparison, dot-to-colon mapping, and
-/// <c>{ '.', ':' }</c> as recognised separators.
+/// <c>{ '.', ':' }</c> as recognized separators.
 /// </para>
 /// <para>
 /// Instances are immutable once constructed; <c>init</c>-only setters allow object-initializer syntax for callers that
@@ -45,12 +45,12 @@ namespace Bodu.Text.Configuration;
 /// </remarks>
 public sealed class ConfigurationKeyOptions
 {
-    /// <summary>The separator characters recognised by default when splitting a raw key into segments.</summary>
+    /// <summary>The separator characters recognized by default when splitting a raw key into segments.</summary>
     private static readonly char[] s_defaultSeparators = ['.', ':'];
 
     /// <summary>
     /// Gets the default key options: <see cref="ConfigurationKeyMapping.DotToColon" /> mapping, case-insensitive
-    /// comparison, and <c>.</c> / <c>:</c> separators recognised by parser input.
+    /// comparison, and <c>.</c> / <c>:</c> separators recognized by parser input.
     /// </summary>
     /// <value>A cached default options instance.</value>
     public static ConfigurationKeyOptions Default { get; } = new ConfigurationKeyOptions();
@@ -65,7 +65,7 @@ public sealed class ConfigurationKeyOptions
         new ConfigurationKeyOptions { Mapping = ConfigurationKeyMapping.Identity, LowercaseKeys = true };
 
     /// <summary>
-    /// Gets the segment-separator characters recognised in a raw key when splitting into segments.
+    /// Gets the segment-separator characters recognized in a raw key when splitting into segments.
     /// <see cref="ConfigurationKeyMapping.Identity" /> does not split a key, so it ignores them.
     /// </summary>
     /// <value>A non-empty set of separator characters. The default is <c>{ '.', ':' }</c>.</value>

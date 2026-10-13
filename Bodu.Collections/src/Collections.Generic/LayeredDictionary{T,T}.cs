@@ -17,11 +17,11 @@ namespace Bodu.Collections.Generic;
 /// <typeparam name="TValue">Specifies the type of values in the dictionary.</typeparam>
 /// <remarks>
 /// <para>
-/// <see cref="LayeredDictionary{TKey, TValue}" /> is the .NET analogue of Python's <c>collections.ChainMap</c>: it
-/// groups several dictionaries into a single updatable view without copying them. Lookups search the layers in order
-/// and the <i>first</i> layer containing the key wins - an entry in an earlier layer <i>shadows</i> any entry with the
-/// same key in later layers. The same first-wins precedence model governs <c>Bodu.Text.Configuration</c>'s resolver
-/// chain, where earlier configuration sources take precedence over later ones.
+/// <see cref="LayeredDictionary{TKey, TValue}" /> is the .NET analog of Python's <c>collections.ChainMap</c>: it groups
+/// several dictionaries into a single updatable view without copying them. Lookups search the layers in order and the
+/// <i>first</i> layer containing the key wins - an entry in an earlier layer <i>shadows</i> any entry with the same key
+/// in later layers. The same first-wins precedence model governs <c>Bodu.Text.Configuration</c>'s resolver chain, where
+/// earlier configuration sources take precedence over later ones.
 /// </para>
 /// <para>
 /// The layer <i>list</i> is fixed at construction, but each layer is held by reference and remains fully live:
@@ -30,7 +30,7 @@ namespace Bodu.Collections.Generic;
 /// <see cref="Clear" /> - affect the first layer only, exactly matching Python <c>ChainMap</c> semantics. In
 /// particular, <see cref="Remove(TKey)" /> returns <see langword="false" /> for a key that exists only in deeper
 /// layers, and removing a first-layer entry that shadowed a deeper one makes the deeper value visible again (the
-/// "unshadowing" behaviour).
+/// "unshadowing" behavior).
 /// </para>
 /// <para>
 /// <see cref="Count" />, <see cref="Keys" />, <see cref="Values" />, and enumeration present the merged view: distinct

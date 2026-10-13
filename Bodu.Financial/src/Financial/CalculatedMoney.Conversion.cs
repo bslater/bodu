@@ -11,7 +11,7 @@ namespace Bodu.Financial;
 public readonly partial struct CalculatedMoney
 {
     /// <summary>
-    /// Materialises this high-precision amount as a settlement <see cref="Money" />, rounding according to
+    /// Materializes this high-precision amount as a settlement <see cref="Money" />, rounding according to
     /// <paramref name="context" />.
     /// </summary>
     /// <param name="context">
@@ -19,7 +19,7 @@ public readonly partial struct CalculatedMoney
     /// <see cref="MonetaryContext.Default" />.
     /// </param>
     /// <returns>The settled <see cref="Money" /> in this value's currency.</returns>
-    /// <exception cref="InvalidOperationException">This value carries no ISO code (default-initialised).</exception>
+    /// <exception cref="InvalidOperationException">This value carries no ISO code (default-initialized).</exception>
     /// <exception cref="ArgumentException"><paramref name="context" /> is invalid.</exception>
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="context" /> carries an out-of-range policy.
@@ -78,12 +78,12 @@ public readonly partial struct CalculatedMoney
     }
 
     /// <summary>
-    /// Materialises this high-precision amount as a settlement <see cref="Money" />, rounding to the currency's minor
+    /// Materializes this high-precision amount as a settlement <see cref="Money" />, rounding to the currency's minor
     /// units using the supplied midpoint rule.
     /// </summary>
     /// <param name="rounding">The midpoint-rounding rule applied at the currency's minor-unit precision.</param>
     /// <returns>The settled <see cref="Money" /> in this value's currency.</returns>
-    /// <exception cref="InvalidOperationException">This value carries no ISO code (default-initialised).</exception>
+    /// <exception cref="InvalidOperationException">This value carries no ISO code (default-initialized).</exception>
     public Money RoundToMoney(MidpointRounding rounding) =>
         RoundToMoney(MonetaryContext.Default with { Rounding = new MidpointRoundingStrategy(rounding) });
 }

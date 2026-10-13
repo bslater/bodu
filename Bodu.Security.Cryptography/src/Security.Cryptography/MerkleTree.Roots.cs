@@ -64,7 +64,7 @@ public sealed partial class MerkleTree
     /// holds one, and the recursive node hash otherwise.
     /// </returns>
     /// <exception cref="ArgumentNullException"><paramref name="entries" /> is <see langword="null" />.</exception>
-    /// <exception cref="OperationCanceledException"><paramref name="cancellationToken" /> was cancelled.</exception>
+    /// <exception cref="OperationCanceledException"><paramref name="cancellationToken" /> was canceled.</exception>
     /// <remarks>
     /// On a parallel instance the entries are hashed concurrently, which is worthwhile only when they are individually
     /// large; for a log of short entries the thread coordination outweighs the leaf hashing.

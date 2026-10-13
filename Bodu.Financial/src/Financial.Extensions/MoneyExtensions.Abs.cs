@@ -17,7 +17,7 @@ public static partial class MoneyExtensions
         /// </summary>
         /// <value>A <see cref="Money" /> with the same ISO code and a non-negative amount.</value>
         /// <exception cref="InvalidOperationException">
-        /// This value is a default-initialised, currency-less <see cref="Money" />.
+        /// This value is a default-initialized, currency-less <see cref="Money" />.
         /// </exception>
         public Money Abs
         {
@@ -41,7 +41,7 @@ public static partial class MoneyExtensions
     /// <param name="value">The monetary value whose magnitude is taken.</param>
     /// <returns>A <see cref="Money" /> with the same ISO code and a non-negative amount.</returns>
     /// <exception cref="InvalidOperationException">
-    /// <paramref name="value" /> is a default-initialised, currency-less <see cref="Money" />.
+    /// <paramref name="value" /> is a default-initialized, currency-less <see cref="Money" />.
     /// </exception>
     public static Money Abs(this Money value)
     {
