@@ -14,6 +14,12 @@ namespace Bodu.Financial.ExchangeRates;
 /// </summary>
 internal static class JsonRateValueReader
 {
+    /// <summary>The earliest Unix-millisecond timestamp a <see cref="DateTimeOffset" /> represents: 0001-01-01T00:00:00Z.</summary>
+    private const long MinUnixMilliseconds = -62_135_596_800_000;
+
+    /// <summary>The latest Unix-millisecond timestamp a <see cref="DateTimeOffset" /> represents: 9999-12-31T23:59:59.999Z.</summary>
+    private const long MaxUnixMilliseconds = 253_402_300_799_999;
+
     /// <summary>
     /// Reads a decimal of any sign from a JSON number or invariant numeric string.
     /// </summary>
@@ -99,6 +105,11 @@ internal static class JsonRateValueReader
     /// </returns>
     internal static bool TryReadUnixMillisecondsDate(JsonElement element, out DateOnly date)
     {
-        throw new NotImplementedException();
+        date = default;
+        if (!TryReadUnixMilliseconds(element, out long timestamp) || timestamp is < MinUnixMilliseconds or > MaxUnixMilliseconds)
+            return false;
+
+        date = DateOnly.FromDateTime(DateTimeOffset.FromUnixTimeMilliseconds(timestamp).UtcDateTime);
+        return true;
     }
 }
