@@ -145,5 +145,32 @@ public sealed class XmlDocTypeParamRequiresShortContentAnalyzerTests
         await CreateTest(source).RunAsync(TestContext.CancellationTokenSource.Token);
     }
 
+    /// <summary>
+    /// Verifies that a hand-written file whose name ends in <c>AssemblyAttributes.cs</c> is analyzed, since Roslyn
+    /// does not treat that name as generated.
+    /// </summary>
+    [TestMethod]
+    public async Task Analyze_WhenHandWrittenFileNameEndsInAssemblyAttributes_ShouldReportBODU1406()
+    {
+        var source =
+            "/// <summary>Sample.</summary>\r\n" +
+            "/// <typeparam name=\"T\">The element type. Some additional explanatory prose that should be relocated to a remarks block.</typeparam>\r\n" +
+            "public sealed class Sample<T>\r\n" +
+            "{\r\n" +
+            "    public int X { get; set; }\r\n" +
+            "}\r\n";
+
+        var test = new CSharpAnalyzerTest<XmlDocTypeParamRequiresShortContentAnalyzer, MSTestVerifier>
+        {
+            ReferenceAssemblies = ReferenceAssemblies.Net.Net80,
+        };
+        test.TestState.Sources.Add(("/0/FooAssemblyAttributes.cs", source));
+        test.ExpectedDiagnostics.Add(
+            new DiagnosticResult(DiagnosticDescriptors.XmlDocTypeParamRequiresShortContent)
+                .WithSpan("/0/FooAssemblyAttributes.cs", 2, 5, 2, 25));
+
+        await test.RunAsync(TestContext.CancellationTokenSource.Token);
+    }
+
     public TestContext TestContext { get; set; } = null!;
 }

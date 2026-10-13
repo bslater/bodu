@@ -121,6 +121,32 @@ public sealed class XmlDocCodeRequiresCDataAnalyzerTests
     }
 
     /// <summary>
+    /// Verifies that a hand-written file whose name ends in <c>AssemblyAttributes.cs</c> is analyzed, since Roslyn
+    /// does not treat that name as generated.
+    /// </summary>
+    [TestMethod]
+    public async Task Analyze_WhenHandWrittenFileNameEndsInAssemblyAttributes_ShouldReportBODU1405()
+    {
+        var source =
+            "public sealed class Sample\r\n" +
+            "{\r\n" +
+            "    /// <code>var x = 5;</code>\r\n" +
+            "    public int X { get; set; }\r\n" +
+            "}\r\n";
+
+        var test = new CSharpAnalyzerTest<XmlDocCodeRequiresCDataAnalyzer, MSTestVerifier>
+        {
+            ReferenceAssemblies = ReferenceAssemblies.Net.Net80,
+        };
+        test.TestState.Sources.Add(("/0/FooAssemblyAttributes.cs", source));
+        test.ExpectedDiagnostics.Add(
+            new DiagnosticResult(DiagnosticDescriptors.XmlDocCodeRequiresCData)
+                .WithSpan("/0/FooAssemblyAttributes.cs", 3, 9, 3, 15));
+
+        await test.RunAsync(TestContext.CancellationTokenSource.Token);
+    }
+
+    /// <summary>
     /// Verifies that a <c>&lt;code&gt;</c> element containing only text content (no CDATA) triggers BODU1405.
     /// </summary>
     [TestMethod]
