@@ -10,6 +10,12 @@ namespace Bodu.Numerics;
 
 public readonly partial struct Fraction<T>
 {
+    /// <summary>The number of bits in the significand of a <see cref="decimal" />.</summary>
+    private const int DecimalSignificandBits = 96;
+
+    /// <summary>The largest scale (number of fractional digits) a <see cref="decimal" /> can carry.</summary>
+    private const int DecimalMaximumScale = 28;
+
     /// <summary>
     /// Converts an integer of the backing type to a whole-number <see cref="Fraction{T}" />.
     /// </summary>
@@ -177,11 +183,28 @@ public readonly partial struct Fraction<T>
     /// Converts this rational value to the nearest <see cref="decimal" />.
     /// </summary>
     /// <returns>The decimal approximation of this value.</returns>
+    /// <remarks>
+    /// The value is rounded to the nearest <see cref="decimal" />, ties to even, with as many fractional digits as
+    /// <see cref="decimal" /> can hold for it (at most 28), so a value closer to zero than to the smallest decimal step
+    /// converts to zero. The conversion depends only on the value: it succeeds whenever the value lies inside the range
+    /// of <see cref="decimal" />, even when the canonical numerator or denominator lies outside it.
+    /// </remarks>
     /// <exception cref="OverflowException">
     /// Thrown if this value lies outside the range of <see cref="decimal" />.
     /// </exception>
-    public decimal ToDecimal() =>
-        (decimal)BigNumerator / (decimal)BigDenominator;
+    public decimal ToDecimal()
+    {
+        BigInteger numerator = BigNumerator;
+        BigInteger denominator = BigDenominator;
+
+        // Components that fit decimal's 96-bit significand convert exactly and decimal division rounds their quotient to
+        // the nearest decimal; wider components are divided in BigInteger arithmetic instead, so that only a value
+        // outside decimal's range overflows.
+        return BigInteger.Abs(numerator).GetBitLength() <= DecimalSignificandBits
+            && denominator.GetBitLength() <= DecimalSignificandBits
+            ? (decimal)numerator / (decimal)denominator
+            : ToDecimalScaled(numerator, denominator);
+    }
 
     /// <summary>
     /// Converts this rational value to the nearest <see cref="double" />.
@@ -246,6 +269,71 @@ public readonly partial struct Fraction<T>
 
         double result = Math.ScaleB((double)quotient, -shift);
         return negative ? -result : result;
+    }
+
+    /// <summary>
+    /// Computes the quotient of two arbitrary-magnitude integers as the nearest <see cref="decimal" /> in
+    /// <see cref="BigInteger" /> arithmetic, used when a component does not fit the decimal significand.
+    /// </summary>
+    /// <param name="numerator">The (signed) numerator.</param>
+    /// <param name="denominator">The strictly positive denominator.</param>
+    /// <returns>
+    /// The quotient rounded half to even at the finest scale, at most 28, whose significand fits in 96 bits, without
+    /// trailing fractional zeros, as decimal division gives it.
+    /// </returns>
+    /// <exception cref="OverflowException">The quotient lies outside the range of <see cref="decimal" />.</exception>
+    private static decimal ToDecimalScaled(BigInteger numerator, BigInteger denominator)
+    {
+        bool negative = numerator.Sign < 0;
+        BigInteger magnitude = BigInteger.Abs(numerator);
+
+        // The quotient exceeds 2^(q - 1), where q is the difference of the operands' bit lengths, so from q = 97 it is
+        // beyond every decimal. Below that, a significand at scale s can fit only while 10^s < 2^(97 - q), so the search
+        // starts at that bound (0.30103 rounds log10(2) up) or 28, whichever is smaller, and coarsens until the rounded
+        // significand fits.
+        long quotientBits = magnitude.GetBitLength() - denominator.GetBitLength();
+        if (quotientBits > DecimalSignificandBits)
+            throw new OverflowException(NumericsResourceStrings.Overflow_FractionOutsideDecimalRange);
+
+        int scale = (int)Math.Min(DecimalMaximumScale, (DecimalSignificandBits + 1 - quotientBits) * 30103 / 100000);
+        BigInteger significand;
+        while (true)
+        {
+            significand = BigInteger.DivRem(magnitude * BigInteger.Pow(10, scale), denominator, out BigInteger remainder);
+
+            BigInteger twiceRemainder = remainder << 1;
+            if (twiceRemainder > denominator || (twiceRemainder == denominator && !significand.IsEven))
+                significand++;
+
+            if (significand.GetBitLength() <= DecimalSignificandBits)
+                break;
+
+            if (scale == 0)
+                throw new OverflowException(NumericsResourceStrings.Overflow_FractionOutsideDecimalRange);
+
+            scale--;
+        }
+
+        if (significand.IsZero)
+            return decimal.Zero;
+
+        // Decimal division of whole operands leaves no trailing fractional zeros, so neither does this path.
+        while (scale > 0)
+        {
+            BigInteger shorter = BigInteger.DivRem(significand, 10, out BigInteger digit);
+            if (!digit.IsZero)
+                break;
+
+            significand = shorter;
+            scale--;
+        }
+
+        return new decimal(
+            unchecked((int)(uint)(significand & uint.MaxValue)),
+            unchecked((int)(uint)((significand >> 32) & uint.MaxValue)),
+            unchecked((int)(uint)(significand >> 64)),
+            negative,
+            (byte)scale);
     }
 
     /// <summary>
