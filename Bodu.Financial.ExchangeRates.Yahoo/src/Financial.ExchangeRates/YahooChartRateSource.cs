@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Globalization;
+using Bodu.Extensions;
 
 namespace Bodu.Financial.ExchangeRates;
 
@@ -71,10 +72,10 @@ internal sealed class YahooChartRateSource
             symbol,
             StringComparison.Ordinal);
 
-        long period1 = ToUnixSeconds(request.StartDate);
+        long period1 = request.StartDate.ToUnixTimeSeconds();
 
         // period2 is exclusive at the source, so add a day to keep the requested end date inclusive.
-        long period2 = ToUnixSeconds(request.EndDate.AddDays(1));
+        long period2 = request.EndDate.AddDays(1).ToUnixTimeSeconds();
 
         UriBuilder builder = new(new Uri(_options.BaseAddress, path))
         {
@@ -88,12 +89,4 @@ internal sealed class YahooChartRateSource
 
         return builder.Uri;
     }
-
-    /// <summary>
-    /// Converts a date to Unix seconds at midnight UTC.
-    /// </summary>
-    /// <param name="date">The date to convert.</param>
-    /// <returns>The Unix-second timestamp.</returns>
-    private static long ToUnixSeconds(DateOnly date) =>
-        new DateTimeOffset(date.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc)).ToUnixTimeSeconds();
 }
