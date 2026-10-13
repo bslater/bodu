@@ -24,7 +24,8 @@ namespace Bodu.Text.Ini;
 /// <see cref="IDictionary{TKey, TValue}" /> values keyed by <see cref="string" /> - become sections. A member nested
 /// beyond the second level is rejected. Property names honour <see cref="IniSerializerOptions.PropertyNamingPolicy" />
 /// and the <see cref="Bodu.Text.Serialization.PropertyNameAttribute" /> family; the callback interfaces (<see cref="Bodu.Text.Serialization.IOnSerializing" />
-/// and its siblings) fire around the mapping.
+/// and its siblings) fire around the mapping. Each member name maps to one key or section, its most derived
+/// declaration: a property or field hidden with the <see langword="new" /> modifier is neither written nor read.
 /// </para>
 /// <para>
 /// Deserialization always routes through the normalized document model, applying the options' duplicate-section and

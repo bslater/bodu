@@ -321,55 +321,10 @@ public static partial class DelimitedSerializer
     [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
     private static Member[] GetMembers(
         [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.PublicFields)] Type type,
-        DelimitedSerializerOptions options)
-    {
-        // Reflection returns a member hidden with new beside the member that hides it, so only the most derived
-        // declaration of each name is kept, at the position its name first appeared.
-        var declarations = new List<MemberInfo>();
-        foreach (PropertyInfo property in type.GetProperties(BindingFlags.Public | BindingFlags.Instance))
-        {
-            if (property.GetIndexParameters().Length == 0)
-                KeepMostDerived(declarations, property);
-        }
-
-        if (options.IncludeFields)
-        {
-            foreach (FieldInfo fieldInfo in type.GetFields(BindingFlags.Public | BindingFlags.Instance))
-                KeepMostDerived(declarations, fieldInfo);
-        }
-
-        var members = new List<Member>(declarations.Count);
-        foreach (MemberInfo declaration in declarations)
-        {
-            if (declaration.GetCustomAttribute<IgnoreAttribute>() is { Condition: IgnoreCondition.Always })
-                continue;
-
-            members.Add(declaration is PropertyInfo property ? Member.FromProperty(property, options) : Member.FromField((FieldInfo)declaration, options));
-        }
-
-        return [.. members.OrderBy(static m => m.Order)];
-    }
-
-    /// <summary>
-    /// Adds a member declaration to the list unless the list already holds the same name from a more derived type, and
-    /// replaces, in place, a declaration of the same name that it hides.
-    /// </summary>
-    /// <param name="declarations">The declarations kept so far, one per name.</param>
-    /// <param name="candidate">The declaration to consider.</param>
-    private static void KeepMostDerived(List<MemberInfo> declarations, MemberInfo candidate)
-    {
-        int existing = declarations.FindIndex(declaration => string.Equals(declaration.Name, candidate.Name, StringComparison.Ordinal));
-        if (existing < 0)
-        {
-            declarations.Add(candidate);
-            return;
-        }
-
-        if (candidate.DeclaringType is { } declaringType &&
-            declarations[existing].DeclaringType is { } keptType &&
-            declaringType.IsSubclassOf(keptType))
-        {
-            declarations[existing] = candidate;
-        }
-    }
+        DelimitedSerializerOptions options) =>
+        [.. FlatMemberDiscovery.Enumerate(type, options.IncludeFields)
+            .Select(member => member is PropertyInfo property
+                ? Member.FromProperty(property, options)
+                : Member.FromField((FieldInfo)member, options))
+            .OrderBy(static member => member.Order)];
 }
