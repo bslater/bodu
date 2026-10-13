@@ -2,7 +2,7 @@
 
 > **API stability - Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
 
-Binary-to-text encodings for .NET 8 and .NET 10 - Base16, Base32, Base45, Base58, Base62, Base64, Base85, and Bech32 - with a uniform static API, variant selection, encode-time formatting options, and decode-time leniency styles. Every encoding exposes span, string, UTF-8, and `IBufferWriter<>` surfaces with `Try*` and length-calculation overloads for allocation-free use.
+Binary-to-text encodings for .NET 8 and .NET 10 - Base16, Base32, Base45, Base58, Base62, Base64, Base85, and Bech32, plus Base58Check, Base64Url, percent-encoding, and quoted-printable - with a uniform static API, variant selection, encode-time formatting options, and decode-time leniency styles. The five core encodings (Base16, Base32, Base58, Base64, Base85) expose span, string, UTF-8, and `IBufferWriter<>` surfaces with `Try*` and length-calculation overloads for allocation-free use.
 
 ## Installation
 
@@ -19,10 +19,10 @@ Targets `net8.0` and `net10.0`. All types live in the `Bodu.Text.Encoding` names
 | `Base16` | `Lower`, `Upper` | Hexadecimal |
 | `Base32` | `Standard` (RFC 4648), `HexExtended` (RFC 4648 §7), `Crockford`, `ZBase32` | |
 | `Base45` | - | RFC 9285 (QR payloads) |
-| `Base58` | `BitcoinFlickr`, `Ripple` | `Base58Check` adds a checksum for address-style payloads |
+| `Base58` | `BitcoinFlickr` (the Bitcoin alphabet), `Ripple`, `Flickr` | `Base58Check` adds a checksum for address-style payloads |
 | `Base62` | - | |
 | `Base64` | `Standard` (RFC 4648), `UrlSafe` (§5), `Mime` (RFC 2045) | `Base64Url` is `Base64` with `UrlSafe` bound; it accepts input with or without padding |
-| `Base85` | `Ascii85` (Adobe/PDF), `Z85` (ZeroMQ) | |
+| `Base85` | `Ascii85` (Adobe/PDF), `Z85` (ZeroMQ), `GitCompact` (Git binary patches) | |
 | `Bech32` | `Bech32Encoding` checksum variants | |
 
 ## API shape
@@ -44,7 +44,7 @@ Base32.TryEncode(data, dest, out int written, Base32Variant.Crockford);
 ```
 
 - `Encode` / `Decode`, `TryEncode` / `TryDecode`, `GetEncodedLength` / `GetDecodedLength`.
-- UTF-8 surfaces (`EncodeToUtf8`, `DecodeFromUtf8`) and `IBufferWriter<byte>` / `IBufferWriter<char>` overloads via `BinaryEncodingExtensions`.
+- UTF-8 surfaces (`EncodeToUtf8`, `DecodeFromUtf8`) and `IBufferWriter<byte>` / `IBufferWriter<char>` overloads, as static members of the five core encodings.
 - `BinaryEncodings` provides variant-aware `IBinaryEncoding` instances for polymorphic selection.
 
 `BaseFormattingOptions` (encode) toggles casing, line breaks, prefixes, spacing, and padding omission; `BaseFormatStyles` (decode) controls leniency - prefix tolerance, whitespace skipping, missing padding, and canonical-form enforcement.

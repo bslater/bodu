@@ -18,7 +18,7 @@ input bytes  : 4D 61 6E 20                 (ASCII "Man ", 4 bytes)
               │ 61                                          │
               └── digits 24, 73, 80, 78, 61                 ┘
 encoded text : 9jqo^                       (Ascii85; alphabet '!' (33) + digit)
-              k_kxi                         (Z85; different alphabet ordering)
+              o<}]Z                         (Z85; different alphabet ordering)
 ```
 
 ## Quick reference
@@ -171,7 +171,7 @@ byte[] back   = Base85.DecodeGitPadded(padded, decodedLength: 1);        // { 0x
 | Flag | Effect |
 |---|---|
 | `BaseFormatStyles.IgnoreWhitespace` | Strip ASCII space / tab / CR / LF anywhere |
-| `BaseFormatStyles.AllowPrefix` | No-op for Base85 |
+| `BaseFormatStyles.AllowPrefix` | Ascii85 only: accept and strip an optional `<~` / `~>` delimiter pair (no-op for Z85 and GitCompact) |
 | `BaseFormatStyles.AllowMissingPadding` | No-op for Base85 (no padding character) |
 
 ## Span path
@@ -195,7 +195,8 @@ Base85.GetEncodedLength(data, Base85Variant.Z85);                     // exact -
 ```
 
 Like Base58, Base85 is not streamable: the `EncodeToUtf8` / `DecodeFromUtf8` overloads exist for API consistency
-with the other encodings but treat the input as a single block.
+with the other encodings, but `DecodeFromUtf8` takes no `isFinalBlock` parameter and treats the input as a single
+block.
 
 ## Encoding a GUID
 
@@ -223,9 +224,9 @@ Base85.IsValid("z");                                  // true (z shortcut)
 Base85.IsBase85Digit('!');                            // true
 Base85.IsBase85Digit('z');                            // false (z is the shortcut, not a digit)
 
-Base85.GetEncodedLength(4, Base85Variant.Ascii85);     // 5 (no shortcut path)
-Base85.GetEncodedLength(4, Base85Variant.Z85);         // 5
-Base85.GetMaxDecodedLength(5);                         // 4
+Base85.GetMaxEncodedLength(4, Base85Variant.Ascii85);  // 5 (no shortcut path)
+Base85.GetMaxEncodedLength(4, Base85Variant.Z85);      // 5
+Base85.GetMaxDecodedLength(5);                         // 20 - worst case, every character a 'z' shortcut
 ```
 
 ## Common patterns
@@ -241,12 +242,13 @@ string z85Key = Base85.Encode(secret, Base85Variant.Z85);
 ### PostScript / PDF Ascii85 stream
 
 ```csharp
-string Stream(ReadOnlySpan<byte> binary) => "<~" + Base85.Encode(binary) + "~>";
 // PostScript convention: <~…~> delimits an Ascii85 region
+string stream = Base85.Encode(binary, options: BaseFormattingOptions.IncludePrefix);       // "<~...~>"
+byte[] back   = Base85.Decode(stream, style: BaseFormatStyles.AllowPrefix);                // strips the delimiters
 ```
 
-(The library does not add or strip the `<~`/`~>` delimiters automatically - they are a PostScript convention, not
-part of the encoding itself.)
+For the Ascii85 variant, `BaseFormattingOptions.IncludePrefix` wraps the output in the `<~` / `~>` pair and
+`BaseFormatStyles.AllowPrefix` accepts (and strips) it on decode; both flags are ignored for Z85 and GitCompact.
 
 ## Where to go next
 

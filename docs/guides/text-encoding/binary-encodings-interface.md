@@ -47,6 +47,7 @@ The `BinaryEncodings` static class exposes thread-safe singleton instances for e
 | `BinaryEncodings.Base45` | `Base45.Encode(bytes)` |
 | `BinaryEncodings.Base58` | `Base58.Encode(bytes, Base58Variant.BitcoinFlickr)` |
 | `BinaryEncodings.Base58Ripple` | `Base58.Encode(bytes, Base58Variant.Ripple)` |
+| `BinaryEncodings.Base58Flickr` | `Base58.Encode(bytes, Base58Variant.Flickr)` |
 | `BinaryEncodings.Base62` | `Base62.Encode(bytes)` |
 | `BinaryEncodings.Ascii85` | `Base85.Encode(bytes, Base85Variant.Ascii85)` |
 | `BinaryEncodings.Z85` | `Base85.Encode(bytes, Base85Variant.Z85)` |
@@ -78,8 +79,9 @@ names include canonical forms and common aliases:
 | `base64-urlsafe` | `base64url` |
 | `base64-mime` | - |
 | `base45` | - |
-| `base58` | `base58-bitcoin`, `base58-flickr` |
+| `base58` | `base58-bitcoin` |
 | `base58-ripple` | - |
+| `base58-flickr` | - |
 | `base62` | - |
 | `ascii85` | `base85` |
 | `base85-git` | `git-base85`, `b85` |
@@ -113,10 +115,10 @@ It also exposes per-encoding fluent shortcuts that dispatch through the static c
 
 ```csharp
 data.ToBase16String();     // "deadbeef"
-data.ToBase32String();     // "32W6P3XO"
+data.ToBase32String();     // "32W353Y="
 data.ToBase64String();     // "3q2+7w=="
 data.ToBase58String();     // "6h8cQN"
-data.ToBase85String();     // ".(0%g"
+data.ToBase85String();     // "hQ=N\"
 
 "deadbeef".FromBase16String();
 "3q2+7w==".FromBase64String();

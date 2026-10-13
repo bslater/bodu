@@ -4,7 +4,7 @@ title: Encoding helpers and BOM detection
 
 # Encoding helpers and BOM detection
 
-Separate from the binary radix encodings (Base16-Base85, in `Bodu.Text.Encoding`), the **`Bodu.Text`** library ships a set of helpers for working with the BCL <xref:System.Text.Encoding> itself: zero-ceremony `string`↔`byte[]` conversion, allocation-conscious (pooled / owned-memory) surfaces, byte-order-mark (BOM / preamble) handling, UTF classification, fallback configuration, and chunked transcoding. These are the everyday utilities that make `System.Text.Encoding` pleasant to use without hand-rolling preamble logic or `ArrayPool<byte>` plumbing.
+Separate from the binary radix encodings (Base16-Base85, in `Bodu.Text.Encoding`), the **Bodu.Core** package ships, in the `Bodu.Text` namespace, a set of helpers for working with the BCL <xref:System.Text.Encoding> itself: zero-ceremony `string`↔`byte[]` conversion, allocation-conscious (pooled / owned-memory) surfaces, byte-order-mark (BOM / preamble) handling, UTF classification, fallback configuration, and chunked transcoding. These are the everyday utilities that make `System.Text.Encoding` pleasant to use without hand-rolling preamble logic or `ArrayPool<byte>` plumbing.
 
 Three types make up the surface:
 
@@ -17,7 +17,7 @@ Three types make up the surface:
 `StringEncodingExtensions` removes the `encoding.GetBytes(...)` boilerplate and adds UTF-8 fast paths and preamble-aware variants:
 
 ```csharp
-using Bodu.Text.Encoding;
+using Bodu.Text;
 
 byte[] utf8        = "héllo".ToUtf8Bytes();                       // UTF-8, no BOM
 byte[] utf16       = "héllo".ToBytes(System.Text.Encoding.Unicode);
@@ -36,7 +36,7 @@ if ("héllo".TryEncodeUtf8To(destination, out int n)) { /* … */ }
 
 "héllo".WriteUtf8To(bufferWriter);                    // append to a pipeline
 
-using PooledBufferBuilder<byte> pooled = "héllo".GetUtf8BytesPooled();   // ArrayPool-backed
+using PooledBufferBuilder<byte> pooled = "héllo".GetUtf8BytesPooled();   // ArrayPool-backed (Bodu.Buffers)
 ```
 
 ## Byte-order marks (preambles)
@@ -88,12 +88,13 @@ For large or streamed payloads, the owned-memory and chunked surfaces avoid inte
 using IMemoryOwner<byte> owner = enc.GetBytesOwner(chars);    // caller disposes
 using PooledBufferBuilder<char> chars = enc.GetCharsPooled(bytes);
 
-// Incremental transcoding with explicit backpressure.
-OperationStatus status = enc.EncodeChunk(charSpan, byteDestination, isFinal: true,
-                                         out int charsRead, out int bytesWritten);
+// Incremental transcoding with explicit backpressure: EncodeChunk extends the stateful Encoder.
+System.Text.Encoder encoder = enc.GetEncoder();
+OperationStatus status = encoder.EncodeChunk(charSpan, byteDestination, flush: true,
+                                             out int charsRead, out int bytesWritten);
 ```
 
-`EncodeChunk` / `DecodeChunk` return an <xref:System.Buffers.OperationStatus> (`Done`, `DestinationTooSmall`, `NeedMoreData`, `InvalidData`) so a caller can drive a pull-based loop and grow the destination as needed.
+`EncodeChunk` (on <xref:System.Text.Encoder>) and `DecodeChunk` (on <xref:System.Text.Decoder>) return an <xref:System.Buffers.OperationStatus>: `Done` when the whole chunk was converted, or `DestinationTooSmall` when output remains, so a caller can drive a pull-based loop and grow the destination as needed. Invalid data is never reported as a status: the encoder's or decoder's fallback handles it, throwing under the exception fallback.
 
 ## API summary
 

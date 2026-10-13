@@ -52,7 +52,7 @@ byte[] dump = Base16.Decode(
 | `UpperCase` | Output upper-case digits |
 | `IncludePrefix` | Prepend `0x` |
 | `InsertSpacing` | Single space between byte pairs (no trailing space) |
-| `InsertLineBreaks` | `\r\n` every 64 encoded characters |
+| `InsertLineBreaks` | `\r\n` once a line reaches 64 characters, counting the `0x` prefix and any spaces |
 
 ### Decoration examples
 
@@ -66,11 +66,12 @@ Base16.Encode(hash, BaseFormattingOptions.UpperCase | BaseFormattingOptions.Inse
 // "2C F2 4D BA 5F B0 A3 0E 26 E8 3B 2A C5 B9 E2 9E 1B 16 1E 5C 1F A7 42 5E 73 04 33 62 93 8B 98 24"
 
 Base16.Encode(hash, BaseFormattingOptions.UpperCase | BaseFormattingOptions.IncludePrefix | BaseFormattingOptions.InsertLineBreaks);
-// "0x2CF24DBA5FB0A30E26E83B2AC5B9E29E1B161E5C1FA7425E73043362938B9824"
+// "0x2CF24DBA5FB0A30E26E83B2AC5B9E29E1B161E5C1FA7425E73043362938B98\r\n24"
 ```
 
 `InsertLineBreaks` breaks at 64 chars to match the PEM / hex-dump convention; `InsertSpacing` adds one space
-between every encoded byte. The two are independent.
+between every encoded byte. The `0x` prefix and the spaces count toward the 64, so the prefixed digest above breaks
+two digits early, and with `InsertSpacing` each full line ends in the space that precedes its `\r\n`.
 
 ## Lenient parsing
 
@@ -172,7 +173,8 @@ with `DecodeGuid`, not by re-parsing a `ToString("N")` result.
 ```csharp
 Base16.IsValid("deadbeef");        // true
 Base16.IsValid("dead beef");       // false (whitespace under strict mode)
-Base16.IsValid("0xdead", BaseFormatStyles.AllowPrefix); // false - odd digit count after prefix
+Base16.IsValid("0xdead", BaseFormatStyles.AllowPrefix); // true - "dead" is four digits once the prefix is skipped
+Base16.IsValid("0xdea", BaseFormatStyles.AllowPrefix);  // false - odd digit count after the prefix
 Base16.IsHexDigit('A');            // true
 Base16.IsHexDigit('g');            // false
 

@@ -69,7 +69,7 @@ string display = Base32.Encode(
 ```csharp
 using Bodu.Text.Encoding;
 
-byte[] payload = Base58.Decode("1NS17iag9jJgTHD1VXjvLCEnZuQ3rJDE9L");
+byte[] payload = Base58.Decode("1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa"); // the genesis block's address
 // payload[0] == 0x00 → mainnet P2PKH version byte
 // payload[1..21]    → 20-byte HASH160 of the public key
 // payload[21..25]   → 4-byte double-SHA256 checksum (Base58Check)

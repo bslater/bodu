@@ -10,13 +10,13 @@ alternatives.
 
 ```
 input bytes  : 66 6F 6F 62 61 72             (ASCII "foobar")
-              :                              ┌── 6 bytes = 48 bits ──┐
-              :                              │ 5 chars × 5 = 25 bits │ + 3 bits leftover
-              :                              └──   ─ 5-byte group ─  ┘
+              :                              ┌── 6 bytes = 48 bits ─────────┐
+              :                              │ 10 chars × 5 = 50 bits       │ (2 unused bits in the last char)
+              :                              └── one 5-byte group + 1 byte ─┘
 encoded text : MZXW6YTBOI======              (Standard, 16 chars including padding)
               CPNMUOJ1E8======               (HexExtended)
-              CPNMUOJ1E8                     (Crockford - no padding by default)
-              csrtbarvni                     (Z-Base-32 - lowercase alphabet, no padding)
+              CSQPYRK1E8                     (Crockford - no padding by default)
+              c3zs6aubqe                     (Z-Base-32 - lowercase alphabet, no padding)
 ```
 
 ## Quick reference
@@ -40,7 +40,7 @@ string c = Base32.Encode(data, Base32Variant.Crockford);
 
 // z-base-32 - lowercase human-oriented
 string z = Base32.Encode(data, Base32Variant.ZBase32);
-// (lowercase z-base-32 form)
+// "c3zs6aubqe"
 ```
 
 ## Variant comparison
@@ -117,12 +117,14 @@ single accepted spelling:
 ```csharp
 byte[] bytes = { 0xDE, 0xAD };
 
-string canonical = Base32.Encode(bytes, Base32Variant.Standard);   // the one form the encoder ever emits
-Base32.Decode(canonical, Base32Variant.Standard);                  // ok
-
-// A hand-edited tail whose unused bits are non-zero still decodes to { 0xDE, 0xAD } by default …
+string canonical = Base32.Encode(bytes, Base32Variant.Standard);   // "32WQ====" - the one form the encoder emits
 Base32.Decode(canonical, Base32Variant.Standard,
-    BaseFormatStyles.RequireCanonicalEncoding);                    // … but is rejected under canonical enforcement
+    BaseFormatStyles.RequireCanonicalEncoding);                    // ok
+
+// "32WR====" sets one of the last symbol's four unused bits; it still decodes to { 0xDE, 0xAD } by default …
+Base32.Decode("32WR====", Base32Variant.Standard);                 // ok - { 0xDE, 0xAD }
+Base32.Decode("32WR====", Base32Variant.Standard,
+    BaseFormatStyles.RequireCanonicalEncoding);                    // … but FormatException under canonical enforcement
 ```
 
 Pass `RequireCanonicalEncoding` when each byte sequence must have exactly one accepted spelling - content-addressed
@@ -191,7 +193,7 @@ byte[] secret = RandomNumberGenerator.GetBytes(20);
 string display = Base32.Encode(
     secret,
     Base32Variant.Standard,
-    BaseFormattingOptions.OmitPadding); // e.g. "JBSWY3DPEHPK3PXP"
+    BaseFormattingOptions.OmitPadding); // 32 characters, e.g. "JBSWY3DPEHPK3PXPJBSWY3DPEHPK3PXP"
 ```
 
 ### Crockford-friendly short ID
