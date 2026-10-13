@@ -21,7 +21,7 @@ title: Extending RingBackedCollection<T>
 | `PeekHead()` / `PeekTail()` | Reads without removing. | `Count > 0` |
 | `OverwriteTail(T item)` | Writes at the slot the tail points to (which is the head when full) and advances **both** head and tail; `Count` is unchanged. The eviction primitive. | `Count == Capacity` |
 | `Resize(int newCapacity)` | Replaces the backing array, copying the live region to index 0. | `newCapacity >= Count` and `>= 1` |
-| `RingBackedCollection(int capacity)` / `RingBackedCollection(IEnumerable<T>, int capacity)` | Constructors; `capacity < 1` throws `ArgumentOutOfRangeException`. | - |
+| `RingBackedCollection(int capacity)` / `RingBackedCollection(IEnumerable<T>, int capacity)` | Constructors; a `capacity` below 1 or above <xref:System.Array.MaxLength> throws `ArgumentOutOfRangeException`. | - |
 
 > [!IMPORTANT]
 > The protected mutators perform **no** capacity or emptiness validation - that is what keeps the built-in types' hot paths branch-free. The derived type owns the contract: test `IsFull` / `IsEmpty` (or `Count`) before calling, and throw or evict according to its own policy. Calling a primitive outside its precondition corrupts the ring.

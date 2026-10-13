@@ -142,7 +142,9 @@ public sealed class Deque<T>
     /// The initial capacity (or capacity hint when <see cref="AllowGrow" /> is <see langword="true" />). Must be
     /// greater than zero.
     /// </param>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="capacity" /> is less than 1.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="capacity" /> is less than 1 or greater than <see cref="Array.MaxLength" />.
+    /// </exception>
     public Deque(int capacity)
         : this(capacity, allowGrow: true) { }
 
@@ -155,7 +157,9 @@ public sealed class Deque<T>
     /// throw <see cref="InvalidOperationException" /> from <see cref="AddFirst(T)" /> and <see cref="AddLast(T)" />
     /// (and return <see langword="false" /> from their <c>Try*</c> variants) when full.
     /// </param>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="capacity" /> is less than 1.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="capacity" /> is less than 1 or greater than <see cref="Array.MaxLength" />.
+    /// </exception>
     public Deque(int capacity, bool allowGrow)
         : base(capacity)
     {
@@ -188,7 +192,9 @@ public sealed class Deque<T>
     /// 10.
     /// </remarks>
     /// <exception cref="ArgumentNullException"><paramref name="collection" /> is <see langword="null" />.</exception>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="capacity" /> is less than 1.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="capacity" /> is less than 1 or greater than <see cref="Array.MaxLength" />.
+    /// </exception>
     public Deque(IEnumerable<T> collection, int capacity)
         : this(Materialize(collection), ValidateCapacity(capacity), allowGrow: true) { }
 
@@ -213,7 +219,9 @@ public sealed class Deque<T>
     /// instead, so every element is kept; otherwise its capacity is <paramref name="capacity" />.
     /// </remarks>
     /// <exception cref="ArgumentNullException"><paramref name="collection" /> is <see langword="null" />.</exception>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="capacity" /> is less than 1.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="capacity" /> is less than 1 or greater than <see cref="Array.MaxLength" />.
+    /// </exception>
     /// <exception cref="InvalidOperationException">
     /// <paramref name="allowGrow" /> is <see langword="false" /> and <paramref name="collection" /> contains more
     /// elements than <paramref name="capacity" />.

@@ -100,6 +100,25 @@ public partial class CircularBufferTests
     }
 
     /// <summary>
+    /// Verifies that the (capacity, allowOverwrite) constructor rejects a capacity one above
+    /// <see cref="Array.MaxLength" /> with <see cref="ArgumentOutOfRangeException" /> naming <c>capacity</c>, whether
+    /// or not overwriting is allowed.
+    /// </summary>
+    /// <param name="allowOverwrite">The overwrite policy passed to the constructor.</param>
+    [TestMethod]
+    [DataRow(true)]
+    [DataRow(false)]
+    public void Ctor_WhenOverwritePolicyProvidedAndCapacityExceedsArrayMaxLength_ShouldThrowArgumentOutOfRangeException(bool allowOverwrite)
+    {
+        var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = new CircularBuffer<int>(Array.MaxLength + 1, allowOverwrite);
+        });
+
+        Assert.AreEqual("capacity", ex.ParamName);
+    }
+
+    /// <summary>
     /// Verifies that the buffer defaults to allowing overwrite when capacity is specified without an explicit overwrite flag.
     /// </summary>
     [TestMethod]
