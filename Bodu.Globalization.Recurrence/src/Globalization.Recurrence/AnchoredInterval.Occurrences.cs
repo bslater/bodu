@@ -174,7 +174,7 @@ public sealed partial class AnchoredInterval
     /// </returns>
     public IEnumerable<DateTimeOffset> GetOccurrences(DateTimeOffset anchor)
     {
-        foreach (DateTime occurrence in GetOccurrences(DateTime.SpecifyKind(anchor.DateTime, DateTimeKind.Unspecified)))
+        foreach (DateTime occurrence in GetOccurrences(anchor.DateTime))
         {
             // At a fixed offset the instants ascend with the wall-clock times, so the first one past the last
             // representable instant ends the sequence.
@@ -207,7 +207,7 @@ public sealed partial class AnchoredInterval
         // Occurrence k is the instant anchor.UtcTicks + k * interval, so the first index in the window follows from the
         // UTC distance to its lower bound; each occurrence is built as the unbounded overload builds it, on the
         // anchor's wall-clock ticks with the anchor's offset.
-        DateTime wallClock = DateTime.SpecifyKind(anchor.DateTime, DateTimeKind.Unspecified);
+        DateTime wallClock = anchor.DateTime;
         long interval = Interval.Ticks;
         long last = (DateTime.MaxValue.Ticks - wallClock.Ticks) / interval;
 

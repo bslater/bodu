@@ -554,9 +554,12 @@ public sealed partial class RecurrenceRule
     /// Returns the wall-clock time of a start instant, on which the rule is expanded.
     /// </summary>
     /// <param name="start">The series start.</param>
-    /// <returns>The wall-clock time of <paramref name="start" /> with an unspecified kind.</returns>
+    /// <returns>
+    /// The wall-clock time of <paramref name="start" />, whose kind <see cref="DateTimeOffset.DateTime" /> always
+    /// leaves unspecified.
+    /// </returns>
     private static DateTime ToWallClock(DateTimeOffset start) =>
-        DateTime.SpecifyKind(start.DateTime, DateTimeKind.Unspecified);
+        start.DateTime;
 
     /// <summary>
     /// Returns the wall-clock time an instant has at a UTC offset, clamped to the representable range.
