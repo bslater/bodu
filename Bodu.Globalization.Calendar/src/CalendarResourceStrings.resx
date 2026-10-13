@@ -111,6 +111,9 @@
   <data name="Validation_InvalidWorkingDays" xml:space="preserve">
     <value>Resolution policy: workingDays '{0}' is not a seven-character working-week pattern.</value>
   </data>
+  <data name="Validation_InvalidEnumValue" xml:space="preserve">
+    <value>The {0} value '{1}' is not recognized; expected one of: {2}.</value>
+  </data>
   <data name="Validation_OverrideNotableDateNotFound" xml:space="preserve">
     <value>Override operation targets notable date '{0}', which does not exist in the resolved resource.</value>
   </data>

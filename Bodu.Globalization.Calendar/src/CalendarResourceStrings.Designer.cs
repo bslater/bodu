@@ -205,6 +205,15 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The {0} value &apos;{1}&apos; is not recognized; expected one of: {2}..
+        /// </summary>
+        internal static string Validation_InvalidEnumValue {
+            get {
+                return ResourceManager.GetString("Validation_InvalidEnumValue", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Override operation targets notable date '{0}', which does not exist in the resolved resource..
         /// </summary>
         internal static string Validation_OverrideNotableDateNotFound {
