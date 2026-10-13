@@ -262,7 +262,7 @@ Registered on the options above, a `Shape { Point Origin; string? Label }` write
 | `JsonNamingPolicy.KebabCaseUpper` | `NamingPolicy.KebabCaseUpper` |
 | subclass `JsonNamingPolicy`, override `ConvertName` | subclass `NamingPolicy`, override `ConvertName` |
 
-The separator singletons (`SnakeCase*` / `KebabCase*`) produce the same names as their STJ counterparts for ordinary PascalCase names. `CamelCase` does not always: it lowercases only the first character, where STJ lowercases a leading run of capitals, so `ID` becomes `iD` (STJ: `id`) and `URLValue` becomes `uRLValue` (STJ: `urlValue`). A model whose member names start with an acronym changes its wire keys on migration unless you pin them with `[PropertyName]`:
+The separator singletons (`SnakeCase*` / `KebabCase*`) produce the same names as their STJ counterparts for ordinary PascalCase names. `CamelCase` does not always: it lowercases only the first character, where STJ lowercases a leading run of capitals, so `ID` becomes `iD` (STJ: `id`) and `HTTPServer` becomes `hTTPServer` (STJ: `httpServer`). A model whose member names start with an acronym changes its wire keys on migration unless you pin them with `[PropertyName]`:
 
 ```csharp
 JsonNamingPolicy.SnakeCaseLower.ConvertName("MaxRetryCount");   // max_retry_count
@@ -270,8 +270,8 @@ NamingPolicy.SnakeCaseLower.ConvertName("MaxRetryCount");       // max_retry_cou
 NamingPolicy.CamelCase.ConvertName("MaxRetryCount");            // maxRetryCount
 NamingPolicy.KebabCaseUpper.ConvertName("MaxRetryCount");       // MAX-RETRY-COUNT
 
-JsonNamingPolicy.CamelCase.ConvertName("URLValue");             // urlValue
-NamingPolicy.CamelCase.ConvertName("URLValue");                 // uRLValue
+JsonNamingPolicy.CamelCase.ConvertName("HTTPServer");           // httpServer
+NamingPolicy.CamelCase.ConvertName("HTTPServer");               // hTTPServer
 ```
 
 Two additions have no STJ analogue: the type-level `[NamingPolicy(KnownNamingPolicy.…)]` attribute, which overrides the options-level policy for one type, and the <xref:Bodu.Text.Serialization.KnownNamingPolicy> enum that names the singletons for it. Enum member names are governed by the enum converters, not by `PropertyNamingPolicy` - the same split STJ makes; note, though, that the structured serializers write enums by name by default (see [Enums are written by name](#enums-are-written-by-name)).
