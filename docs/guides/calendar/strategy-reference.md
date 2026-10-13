@@ -8,7 +8,7 @@ Every <xref:Bodu.Globalization.Calendar.NotableDateRule> answers three independe
 
 A rule carries **exactly one** occurrence source:
 
-- a `<Strategy>` - one of the single-occurrence strategies below, yielding at most one date per year; or
+- a `<Strategy>` - one of the single-occurrence strategies below, yielding one date per year (two when a non-Gregorian `<Fixed>` date recurs within one Gregorian year, as a short Hijri month can); or
 - a `<Recurrence>` - one of the recurrence strategies, yielding zero, one, or many dates within a window.
 
 It may additionally carry a `<Duration>` giving the occurrence a span. For the surrounding document model - concepts, applicability, imports, overrides - read [Authoring notable date rules](rule-authoring.md); for every attribute of the surrounding elements, [NotableDateRule and adjustment-policy reference](rule-reference.md).
@@ -47,7 +47,7 @@ Each maps to a public <xref:Bodu.Globalization.Calendar.Algorithms.IDateCalculat
 
 ### Fixed and positional
 
-The first six kinds pin a date by calendar position, with no dependency on any other rule.
+These four kinds pin a date by calendar position, with no dependency on any other rule.
 
 #### `<Fixed>` - a fixed month and day
 

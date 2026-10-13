@@ -96,7 +96,8 @@ public sealed class NotableDateCachingOptions
     /// Set this to the data version of the resource the wrapped service resolves against when that service is not
     /// reloadable, so bumping it invalidates the cache after a data update. When a reloadable resource provider is
     /// observed, the token is derived from the resource identity and reload generation instead and this value is
-    /// unused.
+    /// unused. That derived token counts reloads within one process, so a cache shared between processes needs this
+    /// fixed token, with no provider observed, for every process to agree on it.
     /// </remarks>
     public string? ResourceVersion { get; set; }
 
@@ -125,8 +126,9 @@ public sealed class NotableDateCachingOptions
     /// Validates the option values, throwing when a rule is violated.
     /// </summary>
     /// <exception cref="ArgumentException">
-    /// Thrown when <see cref="Ttl" /> is not strictly positive, or when <see cref="CacheHitLogLevel" /> or
-    /// <see cref="CacheMissLogLevel" /> is not a defined <see cref="LogLevel" />.
+    /// Thrown when <see cref="Ttl" /> is not strictly positive, when <see cref="TtlJitter" /> or
+    /// <see cref="RefreshAheadFraction" /> is outside [0, 1) or is <see cref="double.NaN" />, or when
+    /// <see cref="CacheHitLogLevel" /> or <see cref="CacheMissLogLevel" /> is not a defined <see cref="LogLevel" />.
     /// </exception>
     /// <remarks>
     /// This throwing form preserves the <c>ParamName</c> of the offending option. The dependency-injection registration

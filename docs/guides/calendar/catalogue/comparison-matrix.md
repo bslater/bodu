@@ -39,7 +39,7 @@ The most widely-shared notable dates across the region packs, by bundle. Cells: 
 | Good Friday | N | - | N | N | O | - | - | - | N | N | N | - | - | - |
 | Easter Monday | N | - | N | - | - | - | - | - | N | - | - | - | - | - |
 | International Workers' Day | - | - | N | N | - | - | - | - | - | N | - | N | N | N |
-| Labour Day | N | N | - | - | - | - | - | - | N | - | N | - | - | - |
+| Labour Day | S | N | - | - | - | - | - | - | N | - | N | - | - | - |
 | All Saints' Day | - | - | - | - | - | - | - | - | - | N | - | - | - | - |
 | Christmas Eve | O | - | - | - | - | - | - | - | - | O | - | - | - | - |
 | Eid al-Adha | - | - | - | N | O | - | - | - | - | N | - | - | - | - |
@@ -59,16 +59,16 @@ The most widely-shared notable dates across the region packs, by bundle. Cells: 
 | New Year's Day | N | N | N | N | - | N | N | N | N | N | N | N | N | N | N | N | N | N | N | N | N | N | N | N | N | N | N | - |
 | Christmas Day | N | N | N | N | N | N | N | N | N | N | N | N | N | N | N | N | N | N | N | N | N | N | N | N | N | N | N | N |
 | Easter Sunday | O | O | - | - | O | O | O | O | O | O | O | O | - | O | O | O | O | O | O | O | O | O | O | O | - | O | O | O |
-| Good Friday | - | - | N | - | N | N | N | N | N | N | N | N | - | - | N | - | - | - | - | N | N | O | - | N | N | N | - | N |
-| Easter Monday | N | N | - | - | N | N | N | - | - | N | N | N | - | N | N | N | N | N | N | N | - | N | N | - | - | N | N | N |
+| Good Friday | - | - | N | - | N | N | N | N | N | N | S | N | - | - | N | - | - | - | - | N | N | O | - | N | N | N | - | N |
+| Easter Monday | N | N | - | - | N | N | N | - | - | N | N | S | - | N | N | N | N | N | N | N | - | N | N | - | - | N | N | N |
 | International Workers' Day | - | - | - | - | - | N | - | - | - | - | - | - | - | - | - | - | - | - | - | - | N | - | - | - | - | - | - | - |
 | Labour Day | - | N | N | N | N | - | - | - | N | - | N | - | N | N | N | - | N | N | N | N | - | - | N | N | N | - | N | N |
-| All Saints' Day | N | N | - | - | - | N | - | - | N | N | N | - | - | N | N | - | N | N | N | - | - | - | N | N | - | N | - | N |
+| All Saints' Day | N | N | - | - | - | S | - | - | N | N | N | - | - | N | N | - | N | N | N | - | - | - | N | N | - | N | - | N |
 | Christmas Eve | - | - | N | - | N | O | - | N | - | N | O | O | - | - | - | - | - | N | - | N | - | - | - | - | - | N | - | N |
 | Eid al-Adha | - | - | - | - | - | - | - | - | - | - | - | - | - | - | - | - | - | - | - | - | - | - | - | - | - | - | - | - |
 | Eid al-Fitr | - | - | - | - | - | - | - | - | - | - | - | - | - | - | - | - | - | - | - | - | - | - | - | - | - | - | - | - |
-| Assumption of Mary | N | N | - | - | - | N | - | - | N | - | N | - | - | N | - | - | - | N | N | - | - | - | N | N | - | - | N | - |
-| Epiphany | N | - | - | N | - | N | - | - | N | N | - | - | N | N | - | - | N | - | - | - | - | - | N | - | - | N | - | N |
+| Assumption of Mary | N | N | - | - | - | S | - | - | N | - | N | - | - | N | - | - | - | N | N | - | - | - | N | N | - | - | N | - |
+| Epiphany | N | - | - | N | - | S | - | - | N | N | - | - | N | N | - | - | N | - | - | - | - | - | N | - | - | N | - | N |
 | Father's Day | - | - | - | - | - | O | - | - | - | - | O | O | - | - | - | - | - | - | - | - | - | - | - | - | - | - | - | - |
 | Mother's Day | - | - | - | - | - | O | - | - | - | - | O | - | - | - | - | - | - | - | - | - | - | - | - | - | - | - | - | - |
 | Second Day of Christmas | - | - | N | N | - | N | N | N | - | - | - | - | - | - | N | - | - | N | - | N | - | N | N | - | N | N | - | - |
@@ -123,7 +123,7 @@ The most widely-shared notable dates across the region packs, by bundle. Cells: 
 
 ---
 
-*Generated from the notable-date XML resources by `Bodu.Globalization.Calendar/Generate-NotableDateCatalogue.ps1`. Regenerated (UTC): 2026-09-09T03:00:56Z.* For the calculation recipes deliberately omitted here, see [Territories and regional composition](../territories.md), [Working with non-Gregorian calendars](../non-gregorian-calendars.md), and [Holiday patterns](../holiday-patterns.md); for the API, the <xref:Bodu.Globalization.Calendar> namespace.
+*Generated from the notable-date XML resources by `Bodu.Globalization.Calendar/Generate-NotableDateCatalogue.ps1`. Regenerated (UTC): 2026-10-12T23:44:08Z.* For the calculation recipes deliberately omitted here, see [Territories and regional composition](../territories.md), [Working with non-Gregorian calendars](../non-gregorian-calendars.md), and [Holiday patterns](../holiday-patterns.md); for the API, the <xref:Bodu.Globalization.Calendar> namespace.
 
 ## See also
 

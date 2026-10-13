@@ -258,6 +258,9 @@ public sealed class NotableDateRuleBuilder
     /// <param name="durationDays">The duration in days.</param>
     /// <returns>The same <see cref="NotableDateRuleBuilder" /> instance, enabling chained calls.</returns>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="durationDays" /> is less than 1.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// A calculated end-date duration has already been configured with <see cref="UntilDate" />.
+    /// </exception>
     public NotableDateRuleBuilder WithDurationDays(int durationDays)
     {
         ThrowHelper.ThrowIfLessThan(durationDays, 1);

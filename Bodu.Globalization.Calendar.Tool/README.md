@@ -11,7 +11,9 @@
 `bodu-calendar` - the command-line compiler and lint for Bodu notable-date rule packs.
 
 ```bash
-dotnet tool install -g Bodu.Globalization.Calendar.Tool
+# Not on nuget.org: pack the tool from a clone and install it from that local feed.
+dotnet pack Bodu.Globalization.Calendar.Tool/src -c Release -o ./artifacts
+dotnet tool install --global --add-source ./artifacts Bodu.Globalization.Calendar.Tool
 
 bodu-calendar lint    holidays.xml                    # print every BODU-CAL-* diagnostic
 bodu-calendar compile holidays.xml -o holidays.bcal   # compile to a sealed binary pack

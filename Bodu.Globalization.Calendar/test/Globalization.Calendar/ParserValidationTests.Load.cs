@@ -55,6 +55,58 @@ public sealed partial class ParserValidationTests
     }
 
     /// <summary>
+    /// Verifies that a strategy value outside the strategy's own range - which the schema reports but the parse carries
+    /// on past - is reported as a <c>BODU-CAL-STRATEGY</c> error inside a <see cref="NotableDateValidationException" />
+    /// rather than escaping as the strategy constructor's <see cref="ArgumentOutOfRangeException" />.
+    /// </summary>
+    /// <param name="strategy">The strategy element under test.</param>
+    [TestMethod]
+    [DataRow("""<OrdinalDayOfMonth month="February" ordinal="-40" />""", DisplayName = "Ordinal day of month beyond 31")]
+    [DataRow("""<IsoWeekDate week="54" dayOfWeek="Monday" />""", DisplayName = "ISO week 54")]
+    [DataRow("""<DayOfYear ordinal="0" />""", DisplayName = "Day of year zero")]
+    public void Load_WhenStrategyValueIsOutOfRange_ShouldThrowStrategyDiagnostic(string strategy)
+    {
+        string xml = """
+            <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="test.bad">
+              <NotableDates>
+                <NotableDate id="x" displayName="X" category="PublicHoliday">
+                  <Rules><Rule id="r"><Strategy>__STRATEGY__</Strategy></Rule></Rules>
+                </NotableDate>
+              </NotableDates>
+            </NotableDateResource>
+            """.Replace("__STRATEGY__", strategy, StringComparison.Ordinal);
+
+        NotableDateValidationException ex = Assert.ThrowsExactly<NotableDateValidationException>(() =>
+        {
+            _ = NotableDateResourceLoader.Load(xml);
+        });
+
+        Assert.Contains(d => d.Code == "BODU-CAL-STRATEGY" && d.Severity == NotableDateValidationSeverity.Error, ex.Diagnostics, "BODU-CAL-STRATEGY");
+    }
+
+    /// <summary>
+    /// Verifies that an imported resource whose content is not well-formed is reported as a <c>BODU-CAL-SYNTAX</c> error
+    /// inside a <see cref="NotableDateValidationException" />, rather than escaping as a <see cref="FormatException" />
+    /// that the documentation reserves for the loaded document itself.
+    /// </summary>
+    [TestMethod]
+    public void Load_WhenImportIsNotWellFormed_ShouldThrowSyntaxDiagnostic()
+    {
+        const string xml = """
+            <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="test.bad-import">
+              <Imports><Import resource="broken" /></Imports>
+            </NotableDateResource>
+            """;
+
+        NotableDateValidationException ex = Assert.ThrowsExactly<NotableDateValidationException>(() =>
+        {
+            _ = NotableDateResourceLoader.Load(xml, name => name == "broken" ? "<NotableDateResource><Unclosed>" : null);
+        });
+
+        Assert.Contains(d => d.Code == "BODU-CAL-SYNTAX" && d.Severity == NotableDateValidationSeverity.Error && d.Message.Contains("broken", StringComparison.Ordinal), ex.Diagnostics, "BODU-CAL-SYNTAX");
+    }
+
+    /// <summary>
     /// Verifies that a rule whose <c>Strategy</c> declares no strategy child is rejected with a schema diagnostic, since
     /// the XSD requires exactly one strategy choice.
     /// </summary>
@@ -72,6 +124,36 @@ public sealed partial class ParserValidationTests
     public void Load_WhenRuleHasMultipleStrategies_ShouldThrowSchemaDiagnostic()
     {
         AssertFixtureFailsWith("invalid-multiple-strategies.xml", "BODU-CAL-SCHEMA");
+    }
+
+    /// <summary>
+    /// Verifies that a rule declaring both a <c>Strategy</c> and a <c>Recurrence</c> is reported with the
+    /// <c>BODU-CAL-RULE-SOURCE</c> diagnostic that the JSON path shares, alongside the schema diagnostic.
+    /// </summary>
+    [TestMethod]
+    public void Load_WhenRuleHasStrategyAndRecurrence_ShouldThrowRuleSourceDiagnostic()
+    {
+        const string xml = """
+            <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="test.bad">
+              <NotableDates>
+                <NotableDate id="x" displayName="X" category="PublicHoliday">
+                  <Rules>
+                    <Rule id="r">
+                      <Strategy><Fixed month="March" day="1" /></Strategy>
+                      <Recurrence><Weekly><Day dayOfWeek="Monday" /></Weekly></Recurrence>
+                    </Rule>
+                  </Rules>
+                </NotableDate>
+              </NotableDates>
+            </NotableDateResource>
+            """;
+
+        NotableDateValidationException ex = Assert.ThrowsExactly<NotableDateValidationException>(() =>
+        {
+            _ = NotableDateResourceLoader.Load(xml);
+        });
+
+        Assert.Contains(d => d.Code == "BODU-CAL-RULE-SOURCE" && d.Severity == NotableDateValidationSeverity.Error, ex.Diagnostics, "BODU-CAL-RULE-SOURCE");
     }
 
     /// <summary>

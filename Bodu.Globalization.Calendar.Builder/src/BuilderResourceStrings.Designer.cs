@@ -61,7 +61,7 @@ namespace Bodu {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The file path &apos;{0}&apos; has an unrecognized extension. Use a &apos;.xml&apos; or &apos;.json&apos; extension, or specify the format explicitly..
+        ///   Looks up a localized string similar to The file path &apos;{0}&apos; has an unrecognized extension. Use a &apos;.xml&apos;, &apos;.json&apos;, or &apos;.bcal&apos; extension, or specify the format explicitly..
         /// </summary>
         internal static string Arg_Invalid_UnknownFileExtension {
             get {

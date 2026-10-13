@@ -186,8 +186,17 @@
   <data name="Validation_RecurrenceInvalid" xml:space="preserve">
     <value>Notable date '{0}', rule '{1}': the recurrence definition is invalid. {2}</value>
   </data>
+  <data name="Validation_StrategyInvalid" xml:space="preserve">
+    <value>Notable date '{0}', rule '{1}': the strategy definition is invalid. {2}</value>
+  </data>
+  <data name="Validation_ImportNotWellFormed" xml:space="preserve">
+    <value>Imported resource '{0}' is not a well-formed notable-date document. {1}</value>
+  </data>
+  <data name="Validation_OccurrenceSourceMissing" xml:space="preserve">
+    <value>Notable date '{0}', rule '{1}': the rule declares no recognized strategy or recurrence; exactly one is required.</value>
+  </data>
   <data name="Validation_OccurrenceSourceConflict" xml:space="preserve">
-    <value>Notable date '{0}', rule '{1}': a rule must not declare both a strategy and a recurrence.</value>
+    <value>Notable date '{0}', rule '{1}': the rule declares more than one strategy or recurrence; exactly one is required.</value>
   </data>
   <data name="Validation_InvalidOrdinalValue" xml:space="preserve">
     <value>Notable date '{0}', rule '{1}': ordinal '{2}' is invalid.</value>
@@ -202,7 +211,7 @@
     <value>The input is not a notable-date binary rule pack: the BCAL signature is missing.</value>
   </data>
   <data name="Format_Invalid_BinaryVersion" xml:space="preserve">
-    <value>The binary rule pack declares format version {0}; this reader supports version {1} only.</value>
+    <value>The binary rule pack declares format version {0}; this reader supports versions {1} through {2}.</value>
   </data>
   <data name="Format_Invalid_BinaryTruncated" xml:space="preserve">
     <value>The binary rule pack is truncated.</value>

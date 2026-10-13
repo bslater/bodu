@@ -430,7 +430,34 @@ namespace Bodu {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to a rule must not declare both a strategy and a recurrence..
+        ///   Looks up a localized string similar to the strategy definition is invalid. {2}.
+        /// </summary>
+        internal static string Validation_StrategyInvalid {
+            get {
+                return ResourceManager.GetString("Validation_StrategyInvalid", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Imported resource '{0}' is not a well-formed notable-date document. {1}.
+        /// </summary>
+        internal static string Validation_ImportNotWellFormed {
+            get {
+                return ResourceManager.GetString("Validation_ImportNotWellFormed", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to the rule declares no recognized strategy or recurrence; exactly one is required..
+        /// </summary>
+        internal static string Validation_OccurrenceSourceMissing {
+            get {
+                return ResourceManager.GetString("Validation_OccurrenceSourceMissing", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to the rule declares more than one strategy or recurrence; exactly one is required..
         /// </summary>
         internal static string Validation_OccurrenceSourceConflict {
             get {
@@ -475,7 +502,7 @@ namespace Bodu {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to The binary rule pack declares format version {0}; this reader supports version {1} only..
+        ///   Looks up a localized string similar to The binary rule pack declares format version {0}; this reader supports versions {1} through {2}..
         /// </summary>
         internal static string Format_Invalid_BinaryVersion {
             get {

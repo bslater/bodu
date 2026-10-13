@@ -45,7 +45,9 @@ A pack is **compiled output, not an authoring source**: `NotableDateDocumentBuil
 | **Sealed** | The reader rejects unknown format versions, unknown discriminators, undefined enum values, out-of-range string references, truncation at any byte, trailing bytes, and values outside a model constructor's domain - always as <xref:Bodu.Globalization.Calendar.NotableDateBinaryFormatException> (a `FormatException`), never as an unrelated failure. |
 | **Behavioural fidelity** | A round-tripped resource resolves identically to the original; the test suite pins resolved-occurrence parity for every bundled catalogue and a synthetic document covering every strategy, recurrence, and duration type. |
 
-## Format layout (version 1)
+## Format layout (versions 1 and 2)
+
+Versions 1 and 2 share one layout. A pack is written at version 1 unless an adjustment scope names a concept's rule (`<Rule notableDateRef="…" ruleRef="…" />`): such a scope stores the reference as `notableDateRef/ruleRef`, and the pack is written at version 2 so that a reader from before qualified references rejects it instead of matching the reference against rule identifiers alone. Version 1 packs scope by rule identifier alone, which matches that rule in every concept; the reader accepts both versions and keeps that meaning for a version 1 pack.
 
 Multi-byte integers are little-endian. `varuint` is the 7-bit variable-length encoding; signed values use ZigZag over `varuint`. Strings are referenced by 1-based index into a deduplicating table (index `0` = null); dates are day numbers.
 
@@ -78,14 +80,9 @@ bodu-calendar info holidays.bcal
 
 ## Compiling packs during build
 
-The `Bodu.Globalization.Calendar.Build` package adds MSBuild integration - a development dependency that compiles `NotableDatePack` items to `.bcal` incrementally on every build via the bundled `bodu-calendar` tool, with no runtime reference added to the consuming project:
+The `Bodu.Globalization.Calendar.Build` package adds MSBuild integration - a development dependency that compiles `NotableDatePack` items to `.bcal` incrementally on every build via the bundled `bodu-calendar` tool, with no runtime reference added to the consuming project.
 
-It is [not published to nuget.org](../../docs/package-matrix.md#not-published-to-nugetorg), so reference the project from a clone:
-
-```xml
-<ProjectReference Include="../Bodu.Globalization.Calendar.Build/src/Bodu.Globalization.Calendar.Build.csproj"
-                  ReferenceOutputAssembly="false" OutputItemType="Analyzer" />
-```
+It is [not published to nuget.org](../../docs/package-matrix.md#not-published-to-nugetorg), so pack it from a clone into a local feed and reference the package, or import its `.targets` from the clone; [Compiling packs in MSBuild](tooling/msbuild-integration.md) shows both. A `ProjectReference` to the Build project alone compiles nothing, because it does not import the `.targets`. Either way, the project declares its documents as `NotableDatePack` items:
 
 ```xml
 <ItemGroup>

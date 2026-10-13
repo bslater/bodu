@@ -90,7 +90,24 @@
         "calendars": { "type": "array", "items": { "$ref": "#/$defs/calendarName" } },
         "categories": { "type": "array", "items": { "$ref": "#/$defs/notableDateCategory" } },
         "notableDateRefs": { "type": "array", "items": { "$ref": "#/$defs/identifier" } },
-        "ruleRefs": { "type": "array", "items": { "$ref": "#/$defs/identifier" } }
+        "ruleRefs": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              { "$ref": "#/$defs/scopeRuleRef" },
+              { "$ref": "#/$defs/identifier" }
+            ]
+          }
+        }
+      }
+    },
+    "scopeRuleRef": {
+      "type": "object",
+      "required": [ "notableDateRef", "ruleRef" ],
+      "additionalProperties": false,
+      "properties": {
+        "notableDateRef": { "$ref": "#/$defs/identifier" },
+        "ruleRef": { "$ref": "#/$defs/identifier" }
       }
     },
     "adjustmentPolicy": {

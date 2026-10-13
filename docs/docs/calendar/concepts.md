@@ -44,11 +44,11 @@ The **nominal date** (`NotableDate.ActualDate`) is what the resolution strategy 
 
 The **observed date** (`NotableDate.Date`) is what the adjustment pipeline emits - e.g. *Monday 27 December* when Christmas falls on a Saturday and a weekend-rollover policy relocates it.
 
-Most occurrences have `Date == ActualDate` and `IsObserved == false`. When an adjustment fires, `IsObserved` is `true` and `AdjustmentPolicyId` / `AdjustmentReason` record which policy moved it. Whether the service emits the observed day alone, the nominal day alone, or *both* is governed by the policy's <xref:Bodu.Globalization.Calendar.RangeResolution.EmissionMode> (`ObservedOnly`, `ActualOnly`, `ActualAndObserved`, `Suppress` - plus the `[Obsolete]` `ObservedAsAdditional`, which is normalised to `ActualAndObserved`); which occurrence controls range-query inclusion is governed by the resource's <xref:Bodu.Globalization.Calendar.RangeResolution.ObservedDateRangePolicy>. See [Identity, priority, and observed dates](../../guides/calendar/identity-and-resolution.md) and [Observance adjustment rules](../../guides/calendar/adjustment-rules.md).
+Most occurrences have `Date == ActualDate` and `IsObserved == false`. When an adjustment fires, `IsObserved` is `true` and `AdjustmentPolicyId` / `AdjustmentReason` record which policy moved it. Whether the service emits the observed day alone, the nominal day alone, or *both* is governed by the policy's <xref:Bodu.Globalization.Calendar.RangeResolution.EmissionMode> (`ObservedOnly`, `ActualOnly`, `ActualAndObserved`, `Suppress` - plus the `[Obsolete]` `ObservedAsAdditional`, which is normalised to `ActualAndObserved`); a range query returns an occurrence whose emitted span intersects the window (the resource's <xref:Bodu.Globalization.Calendar.RangeResolution.ObservedDateRangePolicy> is reserved and does not change that). See [Identity, priority, and observed dates](../../guides/calendar/identity-and-resolution.md) and [Observance adjustment rules](../../guides/calendar/adjustment-rules.md).
 
 ## Resolution strategy
 
-Each rule carries exactly one occurrence source: a `<Strategy>` child element (an <xref:Bodu.Globalization.Calendar.Algorithms.IDateCalculationStrategy> producing at most one date per year) or a `<Recurrence>` child element (an <xref:Bodu.Globalization.Calendar.Algorithms.IDateRecurrenceStrategy> producing a frequency-based series). The most common single-date strategies:
+Each rule carries exactly one occurrence source: a `<Strategy>` child element (an <xref:Bodu.Globalization.Calendar.Algorithms.IDateCalculationStrategy> producing one date per year, or two when a non-Gregorian fixed date recurs within one Gregorian year) or a `<Recurrence>` child element (an <xref:Bodu.Globalization.Calendar.Algorithms.IDateRecurrenceStrategy> producing a frequency-based series). The most common single-date strategies:
 
 | Strategy element | What it does |
 |---|---|
@@ -73,7 +73,7 @@ A rule can reference several policies; they are evaluated in priority order. Cus
 
 ## Collision and duplicate resolution
 
-A **collision** occurs when two distinct rules resolve to the same date for the same territory - for example, an adjusted holiday landing on another holiday. The resource's <xref:Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy> decides the outcome: <xref:Bodu.Globalization.Calendar.RangeResolution.CollisionPolicy> (`KeepAll`, `HighestPriorityOnly`, `CategoryPriority`, `Custom`) combined with <xref:Bodu.Globalization.Calendar.RangeResolution.PriorityDirection>, while <xref:Bodu.Globalization.Calendar.RangeResolution.DuplicatePolicy> reconciles identical occurrences. Under `CollisionPolicy.Custom`, a supplied <xref:Bodu.Globalization.Calendar.RangeResolution.INotableDateCollisionResolver> settles the day. See [Identity, priority, and observed-date resolution](../../guides/calendar/identity-and-resolution.md).
+A **collision** occurs when two distinct rules resolve to the same date for the same territory - for example, an adjusted holiday landing on another holiday. The resource's <xref:Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy> decides the outcome: <xref:Bodu.Globalization.Calendar.RangeResolution.CollisionPolicy> (`KeepAll`, `HighestPriorityOnly`, `CategoryPriority`, `Custom`) combined with <xref:Bodu.Globalization.Calendar.RangeResolution.PriorityDirection>, applied to occurrences that share an emitted date. Duplicate identifiers are load errors; the resource's <xref:Bodu.Globalization.Calendar.RangeResolution.DuplicatePolicy> is reserved and not yet applied. Under `CollisionPolicy.Custom`, a supplied <xref:Bodu.Globalization.Calendar.RangeResolution.INotableDateCollisionResolver> settles the day. See [Identity, priority, and observed-date resolution](../../guides/calendar/identity-and-resolution.md).
 
 ## Territory
 
@@ -113,7 +113,7 @@ When a date cannot be expressed as a calendar formula (Easter Sunday, Vesak, Diw
 </Rule>
 ```
 
-Built-in keys (`western-easter`, `orthodox-easter`, `qingming`, `vesak`, `losar`, `matariki`, the Hindu-festival keys, …) are backed by bundled calculators; unknown keys resolve against a custom <xref:Bodu.Globalization.Calendar.Algorithms.NotableDateAlgorithmRegistry>. See [Date calculation algorithms](../../guides/calendar/algorithms.md).
+Built-in keys (`western-easter`, `orthodox-easter`, `qingming`, `vesak`, `losar`, `matariki`, the Hindu-festival keys, …) are backed by bundled calculators; a custom <xref:Bodu.Globalization.Calendar.Algorithms.NotableDateAlgorithmRegistry> is consulted first, so it adds new keys and can override a built-in key of the same name. See [Date calculation algorithms](../../guides/calendar/algorithms.md).
 
 ## Resolved notable date
 
@@ -123,7 +123,7 @@ A <xref:Bodu.Globalization.Calendar.NotableDate> is the immutable output of one 
 |---|---|
 | `Date` | The emitted occurrence date (observed, after any adjustment). |
 | `ActualDate` | The originally calculated (nominal) date. |
-| `IsObserved` | Whether `Date` differs from `ActualDate` because an adjustment applied. |
+| `IsObserved` | Whether this is the observed occurrence emitted by a fired adjustment policy (the date can equal `ActualDate` when the action left it unchanged). |
 | `DisplayName` | The display name (subject to optional localisation). |
 | `Category` | `NotableDateCategory` value. |
 | `TerritoryCode` | The territory the occurrence applies to. |

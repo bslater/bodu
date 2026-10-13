@@ -20,6 +20,9 @@ public static partial class NotableDateTimeOffsetExtensions
     /// <exception cref="ArgumentNullException">
     /// <paramref name="service" /> or <paramref name="territory" /> is <see langword="null" />.
     /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="end" /> is earlier than <paramref name="start" />; the service rejects the inverted range.
+    /// </exception>
     public static IReadOnlyList<NotableDate> EnumerateNotableDates(this DateTimeOffset start, DateTimeOffset end, INotableDateService service, string territory, NotableDateFilter? filter = null) =>
         DateOnly.FromDateTime(start.DateTime).EnumerateNotableDates(DateOnly.FromDateTime(end.DateTime), service, territory, filter);
 }

@@ -42,7 +42,7 @@ Every overload accepts an optional `ILogger` (defaulting to `NullLogger.Instance
 | <xref:Bodu.Globalization.Calendar.Plugins.DelegatingPluginTrustPolicy>`(Func<PluginTrustContext, PluginTrustResult> decide)` | Your delegate says so. | Adapt an existing allowlist, signing service, or configuration store. |
 | <xref:Bodu.Globalization.Calendar.Plugins.AllowAllPluginTrustPolicy> | Always. | **Development and testing only.** |
 
-The [plugin trust guide](../../guides/calendar/plugin-trust.md) states the security boundary plainly - what the gate does and does not evaluate, why user-writable locations should be rejected, and how registration is gated a second time.
+The [plugin trust guide](../../guides/calendar/plugin-trust.md) states the security boundary plainly - what the gate does and does not evaluate (it does not inspect where the file lives, so keeping plugin directories out of reach of untrusted writers is the host's job), and how registration is gated a second time.
 
 ## Install
 

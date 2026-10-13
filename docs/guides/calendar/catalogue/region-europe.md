@@ -176,7 +176,7 @@ Notable dates observed by each country in the **Europe** data pack, grouped by c
 
 | Concept | Non-working | Territory scope | Source | When |
 |---|---|---|---|---|
-| International Women's Day | Yes | National + BE, MV | inline | Fixed 8 Mar |
+| International Women's Day | BE, MV only | National + BE, MV | inline | Fixed 8 Mar |
 | Mother's Day | - | National | [← europe-common](theme-civil-and-christian.md#europe-common) | 2nd Sun May |
 | Father's Day | - | National | [← europe-common](theme-civil-and-christian.md#europe-common) | 3rd Sun Jun |
 
@@ -803,7 +803,7 @@ Notable dates observed by each country in the **Europe** data pack, grouped by c
 
 ---
 
-*Generated from the notable-date XML resources by `Bodu.Globalization.Calendar/Generate-NotableDateCatalogue.ps1`. Regenerated (UTC): 2026-09-09T03:00:56Z.* For the calculation recipes deliberately omitted here, see [Territories and regional composition](../territories.md), [Working with non-Gregorian calendars](../non-gregorian-calendars.md), and [Holiday patterns](../holiday-patterns.md); for the API, the <xref:Bodu.Globalization.Calendar> namespace.
+*Generated from the notable-date XML resources by `Bodu.Globalization.Calendar/Generate-NotableDateCatalogue.ps1`. Regenerated (UTC): 2026-10-12T23:44:08Z.* For the calculation recipes deliberately omitted here, see [Territories and regional composition](../territories.md), [Working with non-Gregorian calendars](../non-gregorian-calendars.md), and [Holiday patterns](../holiday-patterns.md); for the API, the <xref:Bodu.Globalization.Calendar> namespace.
 
 ## See also
 

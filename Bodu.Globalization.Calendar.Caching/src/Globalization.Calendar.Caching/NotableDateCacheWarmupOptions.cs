@@ -24,7 +24,8 @@ public sealed class NotableDateCacheWarmupOptions
     /// Gets the territory codes to warm.
     /// </summary>
     /// <value>
-    /// The territory list; empty by default, which fails validation so an unconfigured warm-up cannot register.
+    /// The territory list; empty by default, which fails options validation, so a host with an unconfigured warm-up
+    /// fails to start.
     /// </value>
     public IList<string> Territories { get; } = new List<string>();
 

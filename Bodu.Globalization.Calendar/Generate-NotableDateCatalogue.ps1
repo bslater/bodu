@@ -185,6 +185,28 @@ function Get-HubInfo([string]$stem) {
 
 $script:ResourceCache = @{}
 
+# Parse one <Rule> element into the rule model shared by concept rules and <AddRule> overrides.
+function Read-RuleNode($r, $nsmgr) {
+    $app = $r.SelectSingleNode('nd:Applicability', $nsmgr)
+    $territories = @()
+    $calendar = ''; $fromYear = ''; $toYear = ''
+    if ($app) {
+        $calendar = $app.GetAttribute('calendar'); $fromYear = $app.GetAttribute('fromYear'); $toYear = $app.GetAttribute('toYear')
+        $territories = @($app.SelectNodes('nd:Territory', $nsmgr) | ForEach-Object { $_.GetAttribute('code') })
+    }
+    $strat = $r.SelectSingleNode('nd:Strategy', $nsmgr)
+    $kind = ''; $attrs = @{}
+    if ($strat) {
+        $se = @($strat.ChildNodes | Where-Object { $_.NodeType -eq 'Element' }) | Select-Object -First 1
+        if ($se) { $kind = $se.LocalName; foreach ($a in $se.Attributes) { $attrs[$a.Name] = $a.Value } }
+    }
+    [pscustomobject]@{
+        Id = $r.GetAttribute('id'); Category = $r.GetAttribute('category'); NonWorking = $r.GetAttribute('nonWorking')
+        DurationDays = $r.GetAttribute('durationDays'); Calendar = $calendar; FromYear = $fromYear; ToYear = $toYear
+        Territories = $territories; StrategyKind = $kind; StrategyAttrs = $attrs; HasApplicability = ($null -ne $app); HasStrategy = ($null -ne $strat)
+    }
+}
+
 function Get-Resource([string]$stem) {
     if ($script:ResourceCache.ContainsKey($stem)) { return $script:ResourceCache[$stem] }
     if (-not $script:Index.ContainsKey($stem)) { throw "Resource '$stem' is not in the index (referenced but not found)." }
@@ -213,26 +235,7 @@ function Get-Resource([string]$stem) {
     $concepts = [System.Collections.Generic.List[object]]::new()
     foreach ($nd in $root.SelectNodes('nd:NotableDates/nd:NotableDate', $nsmgr)) {
         $rules = [System.Collections.Generic.List[object]]::new()
-        foreach ($r in $nd.SelectNodes('nd:Rules/nd:Rule', $nsmgr)) {
-            $app = $r.SelectSingleNode('nd:Applicability', $nsmgr)
-            $territories = @()
-            $calendar = ''; $fromYear = ''; $toYear = ''
-            if ($app) {
-                $calendar = $app.GetAttribute('calendar'); $fromYear = $app.GetAttribute('fromYear'); $toYear = $app.GetAttribute('toYear')
-                $territories = @($app.SelectNodes('nd:Territory', $nsmgr) | ForEach-Object { $_.GetAttribute('code') })
-            }
-            $strat = $r.SelectSingleNode('nd:Strategy', $nsmgr)
-            $kind = ''; $attrs = @{}
-            if ($strat) {
-                $se = @($strat.ChildNodes | Where-Object { $_.NodeType -eq 'Element' }) | Select-Object -First 1
-                if ($se) { $kind = $se.LocalName; foreach ($a in $se.Attributes) { $attrs[$a.Name] = $a.Value } }
-            }
-            [void]$rules.Add([pscustomobject]@{
-                Id = $r.GetAttribute('id'); Category = $r.GetAttribute('category'); NonWorking = $r.GetAttribute('nonWorking')
-                DurationDays = $r.GetAttribute('durationDays'); Calendar = $calendar; FromYear = $fromYear; ToYear = $toYear
-                Territories = $territories; StrategyKind = $kind; StrategyAttrs = $attrs
-            })
-        }
+        foreach ($r in $nd.SelectNodes('nd:Rules/nd:Rule', $nsmgr)) { [void]$rules.Add((Read-RuleNode $r $nsmgr)) }
         [void]$concepts.Add([pscustomobject]@{
             Id = $nd.GetAttribute('id'); DisplayName = $nd.GetAttribute('displayName'); Category = $nd.GetAttribute('category')
             DefaultNonWorking = $nd.GetAttribute('defaultNonWorkingDay'); DefaultDuration = $nd.GetAttribute('defaultDurationDays')
@@ -240,9 +243,24 @@ function Get-Resource([string]$stem) {
         })
     }
 
+    # <Overrides> (AddRule / PatchRule / RemoveRule), applied by Build-RegionModel to the assembled concepts. The
+    # runtime applies only the loaded document's own overrides, never an imported document's, so catalogues and hubs
+    # keep theirs unapplied here too.
+    $overrides = [System.Collections.Generic.List[object]]::new()
+    $ovRoot = $root.SelectSingleNode('nd:Overrides', $nsmgr)
+    if ($ovRoot) {
+        foreach ($op in @($ovRoot.ChildNodes | Where-Object { $_.NodeType -eq 'Element' })) {
+            $ruleNode = if ($op.LocalName -eq 'AddRule') { $op.SelectSingleNode('nd:Rule', $nsmgr) } elseif ($op.LocalName -eq 'PatchRule') { $op } else { $null }
+            [void]$overrides.Add([pscustomobject]@{
+                Op = $op.LocalName; Ref = $op.GetAttribute('notableDateRef'); RuleRef = $op.GetAttribute('ruleRef')
+                Rule = if ($ruleNode) { Read-RuleNode $ruleNode $nsmgr } else { $null }
+            })
+        }
+    }
+
     $model = [pscustomobject]@{
         Stem = $stem; ResourceId = $root.GetAttribute('resourceId'); Bundle = $script:Index[$stem].Bundle
-        Imports = $imports.ToArray(); Concepts = $concepts.ToArray()
+        Imports = $imports.ToArray(); Concepts = $concepts.ToArray(); Overrides = $overrides.ToArray()
     }
     $script:ResourceCache[$stem] = $model
     return $model
@@ -263,7 +281,7 @@ function Copy-Concept($c, [string]$id, [string]$category, [string]$nonWorking, [
         $rules = @($c.Rules | ForEach-Object {
             [pscustomobject]@{ Id = $_.Id; Category = $_.Category; NonWorking = $_.NonWorking; DurationDays = $_.DurationDays
                 Calendar = $_.Calendar; FromYear = $_.FromYear; ToYear = $_.ToYear; Territories = @($territory)
-                StrategyKind = $_.StrategyKind; StrategyAttrs = $_.StrategyAttrs }
+                StrategyKind = $_.StrategyKind; StrategyAttrs = $_.StrategyAttrs; HasApplicability = $true; HasStrategy = $_.HasStrategy }
         })
     }
     [pscustomobject]@{
@@ -390,6 +408,39 @@ function Get-IsNonWorking($concept) {
     return ($concept.DefaultNonWorking -eq 'true')
 }
 
+# Effective non-working flag of one rule: its own nonWorking attribute, else the concept default.
+function Test-RuleNonWorking($rule, $concept) {
+    if ($rule.NonWorking) { return ($rule.NonWorking -eq 'true') }
+    return ($concept.DefaultNonWorking -eq 'true')
+}
+
+# A rule applies nationally when it names no territory or names the country itself.
+function Test-NationalRule($rule, [string]$country) {
+    return ($rule.Territories.Count -eq 0 -or ($rule.Territories -contains $country))
+}
+
+# Region-row "Non-working" cell: 'Yes' when the concept is a non-working day wherever it applies (or nationally),
+# '-' when it is a working observance everywhere, and "<subdivisions> only" when only some subdivision rules are
+# non-working (for example a national working observance that a few states make a statutory holiday).
+function Get-NonWorkingLabel($concept, [string]$country) {
+    $national = @($concept.Rules | Where-Object { Test-NationalRule $_ $country })
+    if ($national.Count -gt 0 -and @($national | Where-Object { Test-RuleNonWorking $_ $concept }).Count -gt 0) { return 'Yes' }
+    $allSubs = [System.Collections.Generic.List[string]]::new()
+    $nwSubs = [System.Collections.Generic.List[string]]::new()
+    foreach ($r in $concept.Rules) {
+        if (Test-NationalRule $r $country) { continue }
+        $nw = Test-RuleNonWorking $r $concept
+        foreach ($t in $r.Territories) {
+            $name = if ($t -like "$country-*") { $t.Substring($country.Length + 1) } else { $t }
+            if (-not $allSubs.Contains($name)) { [void]$allSubs.Add($name) }
+            if ($nw -and -not $nwSubs.Contains($name)) { [void]$nwSubs.Add($name) }
+        }
+    }
+    if ($nwSubs.Count -eq 0) { return '-' }
+    if ($national.Count -eq 0 -and $nwSubs.Count -eq $allSubs.Count) { return 'Yes' }
+    return "$($nwSubs -join ', ') only"
+}
+
 function Get-Calendar($concept) {
     foreach ($r in $concept.Rules) { if ($r.Calendar -and $r.Calendar -ne 'Gregorian') { return $r.Calendar } }
     return 'Gregorian'
@@ -398,6 +449,49 @@ function Get-Calendar($concept) {
 # ---------------------------------------------------------------------------------------------------------------
 # Section D - per-region effective concept model (region inline + imported-with-overrides, local wins).
 # ---------------------------------------------------------------------------------------------------------------
+
+# Mirrors NotableDateRuleOverrideApplier: applies a document's <Overrides> in document order to its assembled
+# concepts. Concepts are copied rather than mutated, because imported concept objects are shared via the cache.
+function Apply-Overrides($concepts, $overrides, [string]$stem) {
+    $list = [System.Collections.Generic.List[object]]::new()
+    foreach ($c in $concepts) { [void]$list.Add($c) }
+    foreach ($ov in $overrides) {
+        $i = -1
+        for ($k = 0; $k -lt $list.Count; $k++) { if ($list[$k].Id -eq $ov.Ref) { $i = $k; break } }
+        if ($i -lt 0) { Add-Warn "Override $($ov.Op) in '$stem' targets unknown concept '$($ov.Ref)'."; continue }
+        $c = $list[$i]
+        $rules = @($c.Rules)
+        switch ($ov.Op) {
+            'AddRule' { $rules = $rules + @($ov.Rule) }
+            'RemoveRule' { $rules = @($rules | Where-Object { $_.Id -ne $ov.RuleRef }) }
+            'PatchRule' {
+                $p = $ov.Rule
+                $rules = @($rules | ForEach-Object {
+                    if ($_.Id -ne $ov.RuleRef) { $_; return }
+                    [pscustomobject]@{
+                        Id = $_.Id
+                        Category = if ($p.Category) { $p.Category } else { $_.Category }
+                        NonWorking = if ($p.NonWorking) { $p.NonWorking } else { $_.NonWorking }
+                        DurationDays = if ($p.DurationDays) { $p.DurationDays } else { $_.DurationDays }
+                        Calendar = if ($p.HasApplicability) { $p.Calendar } else { $_.Calendar }
+                        FromYear = if ($p.HasApplicability) { $p.FromYear } else { $_.FromYear }
+                        ToYear = if ($p.HasApplicability) { $p.ToYear } else { $_.ToYear }
+                        Territories = if ($p.HasApplicability) { $p.Territories } else { $_.Territories }
+                        StrategyKind = if ($p.HasStrategy) { $p.StrategyKind } else { $_.StrategyKind }
+                        StrategyAttrs = if ($p.HasStrategy) { $p.StrategyAttrs } else { $_.StrategyAttrs }
+                        HasApplicability = $_.HasApplicability -or $p.HasApplicability; HasStrategy = $_.HasStrategy -or $p.HasStrategy
+                    }
+                })
+            }
+            default { Add-Warn "Override element '$($ov.Op)' in '$stem' is not recognized."; continue }
+        }
+        $list[$i] = [pscustomobject]@{
+            Id = $c.Id; DisplayName = $c.DisplayName; Category = $c.Category; DefaultNonWorking = $c.DefaultNonWorking
+            DefaultDuration = $c.DefaultDuration; Rules = $rules; Source = $c.Source
+        }
+    }
+    return $list.ToArray()
+}
 
 function Build-RegionModel([string]$regionStem) {
     $res = Get-Resource $regionStem
@@ -412,8 +506,9 @@ function Build-RegionModel([string]$regionStem) {
     }
     $localIds = [System.Collections.Generic.HashSet[string]]::new([string[]]@($res.Concepts | ForEach-Object { $_.Id }), [System.StringComparer]::Ordinal)
     $all = @($imported | Where-Object { -not $localIds.Contains($_.Id) }) + @($res.Concepts)
+    $all = @(Apply-Overrides $all $res.Overrides $regionStem)
 
-    # Subdivisions present anywhere in the file (for the call-out).
+    # Subdivisions present anywhere in the file, overrides included (for the call-out).
     $subs = [System.Collections.Generic.SortedSet[string]]::new([System.StringComparer]::Ordinal)
     foreach ($c in $all) { foreach ($r in $c.Rules) { foreach ($t in $r.Territories) { if ($t -like "$country-*") { [void]$subs.Add($t) } } } }
 
@@ -478,8 +573,8 @@ function Render-CatalogueSection([string]$stem, [string]$themeFile) {
         $hub = Get-HubInfo $stem
         $inlineClause = switch ($res.Concepts.Count) {
             0 { '' }
-            1 { ', and defines one concept of its own the catalogues do not carry' }
-            default { ", and defines $($res.Concepts.Count) concepts of its own the catalogues do not carry" }
+            1 { ', and defines one concept inline' }
+            default { ", and defines $($res.Concepts.Count) concepts inline" }
         }
         $packNoun = if ($hub.PackCount -eq 1) { 'pack' } else { 'packs' }
         [void]$l.Add("$($hub.RegionName) hub (``$($res.ResourceId)``): re-exports shared concepts from the catalogues below$inlineClause. Serves the $($hub.PackCount) $packNoun of the [$($hub.RegionName) region packs]($($hub.RegionFile)) bundle; those that import their shared observances from it are listed under _Observed by_.")
@@ -587,7 +682,7 @@ function Render-RegionPage($page, $models) {
             $rows = @($g.Group | Sort-Object @{ E = { (Get-SortKey $_).M } }, @{ E = { (Get-SortKey $_).D } }, DisplayName)
             foreach ($c in $rows) {
                 $sk = Get-SortKey $c; $when = if ($sk.Rule) { Get-WhenGloss $sk.Rule } else { '-' }
-                $nw = YesNo (Get-IsNonWorking $c)
+                $nw = Get-NonWorkingLabel $c $m.Country
                 $scope = Get-TerritoryScope $c $m.Country
                 $src = if ($c.Source -eq 'inline') { 'inline' } else { "[← $($c.Source)]($(Get-SourceLink $c.Source))" }
                 if ($anyNonGreg) { [void]$l.Add("| $(Esc $c.DisplayName) | $nw | $scope | $(Get-Calendar $c) | $src | $when |") }
@@ -644,9 +739,11 @@ foreach ($stem in $script:RegionStems) {
 # ---------------------------------------------------------------------------------------------------------------
 
 function Get-CellState($concept, [string]$country) {
-    if (Get-IsNonWorking $concept) { return 'N' }
+    # Scope first: a concept that applies only in subdivisions is 'S' whether or not it is non-working there. A
+    # national concept is 'N' when its national rule is non-working, even if some subdivisions differ.
     $scope = Get-TerritoryScope $concept $country
     if ($scope -ne 'National' -and $scope -notlike 'National*') { return 'S' }
+    if (@($concept.Rules | Where-Object { (Test-NationalRule $_ $country) -and (Test-RuleNonWorking $_ $concept) }).Count -gt 0) { return 'N' }
     return 'O'
 }
 
@@ -692,21 +789,21 @@ function Render-MatrixPage($tally, [int]$topN) {
 # Render the overview index page.
 # ---------------------------------------------------------------------------------------------------------------
 
-function Render-IndexPage([int]$catCount, [int]$regionCount, [int]$conceptCount, [int]$matrixRows) {
+function Render-IndexPage([int]$catCount, [int]$regionCount, [int]$conceptCount, [int]$distinctConceptCount, [int]$matrixRows) {
     $l = New-Header 'Notable-date catalogue'
     [void]$l.Add('# Notable-date catalogue')
     [void]$l.Add('')
     [void]$l.Add('What notable dates the calendar data ships, and how regions and territories differ. This catalogue is generated from the `Bodu.Globalization.Calendar` XML resources; it lists the dates and their scope, not the calculation recipes (for those, see the linked guides).')
     [void]$l.Add('')
     $hubLinks = @($script:HubStems | ForEach-Object { "[``$_``]($(Get-SourceLink $_))" }) -join ', '
-    [void]$l.Add("Concepts are authored once in a **shared catalogue** and a **region pack** imports the ones it observes, supplying its own territory scope and non-working status. Each data bundle also ships a **region hub** ($hubLinks) that re-exports the shared concepts its packs have in common - and occasionally defines a few of its own - so those packs import from the hub rather than from each catalogue directly. The pages below present the same data along two axes.")
+    [void]$l.Add("Concepts are authored once in a **shared catalogue** and a **region pack** imports the ones it observes, supplying its own territory scope and non-working status. Four of the five data bundles also ship a **region hub** ($hubLinks) that re-exports the shared concepts its packs have in common - and occasionally defines a few inline - so those packs import from the hub rather than from each catalogue directly; the Asia-Pacific packs import the catalogues directly. The pages below present the same data along two axes.")
     [void]$l.Add('')
     [void]$l.Add('## How to read these pages')
     [void]$l.Add('')
     [void]$l.Add('| Column | Meaning |')
     [void]$l.Add('|---|---|')
     [void]$l.Add('| Category | `PublicHoliday`, `Religious`, `Cultural`, `Observance`, `Remembrance`, … |')
-    [void]$l.Add('| Non-working | `Yes` = a non-working public holiday for the scope shown; `-` = a working observance |')
+    [void]$l.Add('| Non-working | `Yes` = a non-working public holiday for the scope shown; `-` = a working observance; `<subdivisions> only` = a working observance nationally that only the listed subdivisions make non-working |')
     [void]$l.Add('| Territory scope | `National`, a subdivision list (e.g. `ENG, WLS, NIR`), or `National + …` |')
     [void]$l.Add('| Calendar | shown only when non-Gregorian (`Hijri`, `Hebrew`, `Persian`, `ChineseLunisolar`, …) |')
     [void]$l.Add('| Source | `inline` (defined in the region pack) or `← catalogue` / `← <region>-common` (the direct import: a shared catalogue or the bundle''s region hub) |')
@@ -736,7 +833,7 @@ function Render-IndexPage([int]$catCount, [int]$regionCount, [int]$conceptCount,
     [void]$l.Add('')
     [void]$l.Add("- **Catalogues:** $catCount")
     [void]$l.Add("- **Region packs:** $regionCount")
-    [void]$l.Add("- **Distinct concepts (catalogues):** $conceptCount")
+    [void]$l.Add("- **Concept definitions (catalogues):** $conceptCount ($distinctConceptCount distinct)")
     [void]$l.Add("- **Comparison-matrix rows:** $matrixRows")
     [void]$l.Add("- **This page regenerated (UTC):** $RegeneratedUtc")
     [void]$l.Add('')
@@ -774,11 +871,14 @@ function Write-Page([string]$file, $lines) {
 
 $catCount = @($script:Index.Keys | Where-Object { $_ -notlike 'region-*' }).Count
 $conceptCount = (@($script:Index.Keys | Where-Object { $_ -notlike 'region-*' } | ForEach-Object { (Get-Resource $_).Concepts.Count }) | Measure-Object -Sum).Sum
+# Several catalogues define the same concept id (the Islamic concepts in both Islamic catalogues, Catholic feasts in
+# catholic.xml and the region hubs), so the definition count above is not a count of distinct concepts.
+$distinctConceptCount = @($script:Index.Keys | Where-Object { $_ -notlike 'region-*' } | ForEach-Object { (Get-Resource $_).Concepts | ForEach-Object { $_.Id } } | Sort-Object -Unique).Count
 $matrix = Build-Matrix
 $matrixRows = [Math]::Min(18, $matrix.Count)
 
 Write-Host "Generating notable-date catalogue ($($script:RegionStems.Count) regions, $catCount catalogues):"
-Write-Page 'index.md' (Render-IndexPage $catCount $script:RegionStems.Count $conceptCount $matrixRows)
+Write-Page 'index.md' (Render-IndexPage $catCount $script:RegionStems.Count $conceptCount $distinctConceptCount $matrixRows)
 foreach ($tp in $ThemePages) { Write-Page $tp.File (Render-ThemePage $tp $ObservedBy) }
 foreach ($rp in $RegionPages) {
     $models = @($script:RegionStems | Where-Object { $script:Index[$_].Bundle -eq $rp.Bundle } | Sort-Object | ForEach-Object { $AllModels[$_] })

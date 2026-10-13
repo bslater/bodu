@@ -2,7 +2,7 @@
 
 > **API stability - Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
 
-Holiday and observance data for the Middle East, packaged for the `Bodu.Globalization.Calendar` engine. Each supported country ships as a self-contained embedded notable-date pack - national rules plus ISO 3166-2 subdivisions - that imports the shared Islamic (including the Umm al-Qura variant) and Jewish catalogues through the `middleeast-common` hub. Working-week definitions are territory-specific (several territories observe a Friday-Saturday weekend).
+Holiday and observance data for the Middle East, packaged for the `Bodu.Globalization.Calendar` engine. Each supported country ships as a self-contained embedded notable-date pack - national rules plus ISO 3166-2 subdivisions - that draws on the shared catalogues: the UAE, Jordan, Qatar, and Turkey packs import the tabular Islamic catalogue through the `middleeast-common` hub, Saudi Arabia imports the Umm al-Qura variant directly, and Israel imports the Jewish catalogue directly. Working-week definitions are territory-specific (Israel, Jordan, Qatar, and Saudi Arabia observe a Friday-Saturday weekend).
 
 ## Installation
 
@@ -22,7 +22,7 @@ Targets `net8.0` and `net10.0`.
 using Bodu.Globalization.Calendar;
 
 INotableDateService service = MiddleEastCalendarData.CreateService("AE");
-var holidays = service.GetNotableDates(new DateOnly(2026, 1, 1), new DateOnly(2026, 12, 31));
+IReadOnlyList<NotableDate> holidays = service.Resolve(2026, "AE");   // every occurrence in 2026
 ```
 
 The `MiddleEastCalendarData` factory exposes:

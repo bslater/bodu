@@ -31,22 +31,26 @@ public enum AdjustmentAction
     AddDays,
 
     /// <summary>
-    /// Move the occurrence forward to the next instance of the configured weekday.
+    /// Move the occurrence to the configured weekday (<see cref="AdjustmentPolicy.ActionWeekday" />) on or after the
+    /// calculated date; without a configured weekday the date is unchanged.
     /// </summary>
     MoveToNextWeekday,
 
     /// <summary>
-    /// Move the occurrence backward to the previous instance of the configured weekday.
+    /// Move the occurrence to the configured weekday (<see cref="AdjustmentPolicy.ActionWeekday" />) on or before the
+    /// calculated date; without a configured weekday the date is unchanged.
     /// </summary>
     MoveToPreviousWeekday,
 
     /// <summary>
-    /// Move the occurrence forward to the next working day, skipping weekends.
+    /// Move the occurrence forward, starting the day after the calculated date, to the next day the policy's skip rules
+    /// do not block (by default, the next working-week day).
     /// </summary>
     MoveToNextWorkingDay,
 
     /// <summary>
-    /// Move the occurrence backward to the previous working day, skipping weekends.
+    /// Move the occurrence backward, starting the day before the calculated date, to the previous day the policy's skip
+    /// rules do not block (by default, the previous working-week day).
     /// </summary>
     MoveToPreviousWorkingDay,
 

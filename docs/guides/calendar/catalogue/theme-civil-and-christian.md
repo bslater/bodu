@@ -156,7 +156,7 @@ _Observed by:_ [AU](region-asia-pacific.md), [DK](region-europe.md), [HK](region
 
 ## americas-common
 
-Americas hub (`data.americas-common`): re-exports shared concepts from the catalogues below, and defines 4 concepts of its own the catalogues do not carry. Serves the 8 packs of the [Americas region packs](region-americas.md) bundle; those that import their shared observances from it are listed under _Observed by_.
+Americas hub (`data.americas-common`): re-exports shared concepts from the catalogues below, and defines 4 concepts inline. Serves the 8 packs of the [Americas region packs](region-americas.md) bundle; those that import their shared observances from it are listed under _Observed by_.
 
 Re-exports from: `global-core`, `christian-western`, `catholic`, `global-family`, `global-cultural`, `global-environment`, `global-un`.
 
@@ -173,7 +173,7 @@ _Observed by:_ [AR](region-americas.md), [BR](region-americas.md), [CA](region-a
 
 ## europe-common
 
-Europe hub (`data.europe-common`): re-exports shared concepts from the catalogues below, and defines 2 concepts of its own the catalogues do not carry. Serves the 28 packs of the [Europe region packs](region-europe.md) bundle; those that import their shared observances from it are listed under _Observed by_.
+Europe hub (`data.europe-common`): re-exports shared concepts from the catalogues below, and defines 2 concepts inline. Serves the 28 packs of the [Europe region packs](region-europe.md) bundle; those that import their shared observances from it are listed under _Observed by_.
 
 Re-exports from: `global-core`, `christian-western`, `global-family`, `global-cultural`.
 
@@ -204,7 +204,7 @@ _Observed by:_ [EG](region-africa.md), [ET](region-africa.md), [GH](region-afric
 
 ---
 
-*Generated from the notable-date XML resources by `Bodu.Globalization.Calendar/Generate-NotableDateCatalogue.ps1`. Regenerated (UTC): 2026-09-09T03:00:56Z.* For the calculation recipes deliberately omitted here, see [Territories and regional composition](../territories.md), [Working with non-Gregorian calendars](../non-gregorian-calendars.md), and [Holiday patterns](../holiday-patterns.md); for the API, the <xref:Bodu.Globalization.Calendar> namespace.
+*Generated from the notable-date XML resources by `Bodu.Globalization.Calendar/Generate-NotableDateCatalogue.ps1`. Regenerated (UTC): 2026-10-12T23:44:08Z.* For the calculation recipes deliberately omitted here, see [Territories and regional composition](../territories.md), [Working with non-Gregorian calendars](../non-gregorian-calendars.md), and [Holiday patterns](../holiday-patterns.md); for the API, the <xref:Bodu.Globalization.Calendar> namespace.
 
 ## See also
 

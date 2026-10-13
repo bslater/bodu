@@ -89,6 +89,29 @@ internal sealed class JsonDocumentNode
     }
 
     /// <inheritdoc />
+    public IReadOnlyList<(string? Qualifier, string Name)> QualifiedReferenceList(string? xmlWrapper, string xmlItem, string qualifierName, string name, string jsonProperty)
+    {
+        if (!TryGetProperty(jsonProperty, out JsonElement array) || array.ValueKind != JsonValueKind.Array)
+            return [];
+
+        List<(string? Qualifier, string Name)> references = new();
+        foreach (JsonElement item in array.EnumerateArray())
+        {
+            if (item.ValueKind == JsonValueKind.String)
+            {
+                references.Add((null, item.GetString() ?? string.Empty));
+            }
+            else if (item.ValueKind == JsonValueKind.Object)
+            {
+                JsonDocumentNode reference = new(item);
+                references.Add((reference.Scalar(qualifierName), reference.Scalar(name) ?? string.Empty));
+            }
+        }
+
+        return references;
+    }
+
+    /// <inheritdoc />
     public IReadOnlyList<(string Key, string Value)> KeyValueList(string xmlWrapper, string xmlItem, string xmlKeyAttribute, string xmlValueAttribute, string jsonProperty)
     {
         if (!TryGetProperty(jsonProperty, out JsonElement map) || map.ValueKind != JsonValueKind.Object)

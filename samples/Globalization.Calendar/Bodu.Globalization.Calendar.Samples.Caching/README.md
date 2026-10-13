@@ -1,8 +1,9 @@
 # Bodu.Globalization.Calendar.Samples.Caching
 
 Demonstrates the calendar caching layer: the read-through `CachingNotableDateService` decorator
-over the in-memory and durable file backends, explicit cache warm-up of a serving window, and the
-dependency-injection registration that decorates an already-registered `INotableDateService`.
+over the in-memory, file, SQLite and `IDistributedCache` backends, explicit cache warm-up of a
+serving window, and the dependency-injection registration that decorates an already-registered
+`INotableDateService`.
 
 A `CountingNotableDateService` wrapper counts the resolutions that reach the real engine, so every
 cache hit below is proved deterministically by call count rather than by timing.
@@ -57,25 +58,55 @@ range, then writes the same data through the TOML backend.
 ```
 
 The second service instance stands in for a new process, which is what makes the claim testable
-offline. Two formats ship because the choice is about who reads the file: JSON is the default,
-TOML is worth having when the cache is committed or inspected, since it diffs legibly.
+offline. Two formats ship because the choice is about who reads the file: TOML, which
+`AddCachedNotableDateService` writes by default, is worth having when the cache is committed or
+inspected, since it diffs legibly.
 
 **APIs demonstrated.** `JsonNotableDateCache`, `TomlNotableDateCache`,
 `FileNotableDateCacheOptions.CacheDirectory`.
 
-## Scenario 3 - WarmUp
+## Scenario 3 - DurableBackends
+
+**Intent.** The in-memory cache dies with the process. Show the two add-on backends: a SQLite file
+a cold-starting process carries between runs, and an `IDistributedCache` that several processes
+share.
+
+**What it does.** Resolves a year through a `SqliteNotableDateCache`, disposes the service, builds a
+second one over the same database file and repeats the query; then does the same with two services
+over one `DistributedNotableDateCache`, counting engine resolutions throughout. The distributed half
+uses `MemoryDistributedCache`, so the sample stays offline.
+
+**What to expect.**
+
+```text
+  SQLite  cold  :  22 occurrences, engine resolutions = 1   (computed once and written to the database file)
+  SQLite  warm  :  22 occurrences, engine resolutions = 1   (a NEW service over the same file - the count did not move, so this came off disk)
+  database file : 4096 bytes on disk   (what a cold-start CLI or function carries between runs)
+
+  shared  node A:  22 occurrences, engine resolutions = 1   (first node through: computed and published to the shared store)
+  shared  node B:  22 occurrences, engine resolutions = 1   (a second node - it read what node A published rather than recomputing)
+  (swap MemoryDistributedCache for a Redis-backed IDistributedCache and nothing above changes)
+```
+
+Both backends sit behind the same `INotableDateCache` contract, so choosing between them is a
+composition decision at startup rather than a change to calling code.
+
+**APIs demonstrated.** `SqliteNotableDateCache`, `DistributedNotableDateCache`,
+`DistributedNotableDateCacheOptions.KeyPrefix`.
+
+## Scenario 4 - WarmUp
 
 **Intent.** A read-through cache moves the cost rather than removing it, and the caller who pays
 is whoever asks first. Show warming paying it deliberately instead.
 
-**What it does.** Pre-resolves two territories across two civil years, then runs two queries that
-each straddle a year boundary, checking the engine counter before and after.
+**What it does.** Pre-resolves two territories across two civil years, then runs two queries inside
+that window, the first straddling a year boundary, checking the engine counter before and after.
 
 **What to expect.**
 
 ```text
   Warmed 2 territories; engine resolutions during warm-up = 4  (all the engine work, paid deliberately at start-up rather than by whoever asks first)
-  Two cross-window queries served; engine resolutions still = 4  (unchanged - both queries straddle a year boundary, so each touched two cached entries and found them)
+  Two cross-window queries served; engine resolutions still = 4  (unchanged - the first query straddled a year boundary and found both cached years, the second found its one)
 ```
 
 The window is (territory, year) pairs because that is the cache's unit, so warming is exactly as
@@ -87,7 +118,7 @@ caching decorator.
 **APIs demonstrated.** `CachingNotableDateService.Warm(territories, firstYear, lastYear)`, and the
 commented `AddNotableDateCacheWarmup` hosted-service form.
 
-## Scenario 4 - DiRegistration
+## Scenario 5 - DiRegistration
 
 **Intent.** Caching is a deployment decision, not an application one. Show it registered as a
 decorator so consumers never learn whether a cache exists.
@@ -103,14 +134,17 @@ resolves `INotableDateService` from the container, and reports the concrete type
 ```
 
 The TTL matters because the cache holds computed rule output and rule data can be republished - so
-the entry has to expire even though the calculation itself is deterministic. The durable backends
-slot into the same call, which is why moving to SQLite or Redis is a registration line rather than
-a refactor; both are sketched in the scenario's closing comment and omitted here to keep the
-sample dependency-free and offline.
+the entry has to expire even though the calculation itself is deterministic. Without a
+`cacheFactory`, the registration writes a TOML file cache under the temp folder's
+`bodu-notable-dates` directory. The durable backends slot into the same call through
+`cacheFactory`, which is why moving to SQLite or Redis is a registration line rather than a
+refactor; the scenario's closing comment shows those registrations, and the scenario keeps the
+default backend.
 
-**APIs demonstrated.** `AddCachedNotableDateService` (with `configure` and `cacheFactory`),
+**APIs demonstrated.** `AddCachedNotableDateService` (with `configure`),
 `NotableDateCachingOptions.Ttl`, and the commented `AddSqliteNotableDateCache` /
-`AddDistributedNotableDateCache` / `AddRedisNotableDateCache` registrations.
+`AddDistributedNotableDateCache` / `AddRedisNotableDateCache` registrations handed to
+`cacheFactory`.
 
 ## Layout
 
@@ -121,6 +155,7 @@ Bodu.Globalization.Calendar.Samples.Caching/
   CountingNotableDateService.cs       # counts resolutions reaching the real engine
   Scenarios/ReadThroughCaching.cs
   Scenarios/FileBackedCaches.cs
+  Scenarios/DurableBackends.cs
   Scenarios/WarmUp.cs
   Scenarios/DiRegistration.cs
 ```
@@ -132,7 +167,8 @@ dotnet add package Bodu.Globalization.Calendar
 dotnet add package Bodu.Globalization.Calendar.Caching
 dotnet add package Bodu.Globalization.Calendar.DependencyInjection
 dotnet add package Bodu.Globalization.Calendar.AsiaPacific
-# optional durable backends:
+# the durable backends (the DurableBackends scenario):
 dotnet add package Bodu.Globalization.Calendar.Caching.Sqlite
 dotnet add package Bodu.Globalization.Calendar.Caching.Distributed
+dotnet add package Microsoft.Extensions.Caching.Memory   # MemoryDistributedCache, the offline IDistributedCache
 ```

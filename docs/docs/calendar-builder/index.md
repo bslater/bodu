@@ -20,7 +20,7 @@ The builder never validates on its own. `Build()` renders the in-memory model to
 | <xref:Bodu.Globalization.Calendar.Builder.AdjustmentPolicyBuilder> / <xref:Bodu.Globalization.Calendar.Builder.AdjustmentScopeBuilder> | A reusable adjustment policy - trigger (`When`), action (`Then`), emission (`Emit`) - and the scope it applies to. | `AddAdjustmentPolicy(id, configure)` / `WithScope(configure)` |
 | <xref:Bodu.Globalization.Calendar.Builder.ImportBuilder> / <xref:Bodu.Globalization.Calendar.Builder.ImportUseBuilder> | An import of a common catalogue and the `<Use>` directives that re-scope individual concepts. | `AddImport(resource, configure)` / `Use(notableDateRef, configure)` |
 | <xref:Bodu.Globalization.Calendar.Builder.OverrideBuilder> | ID-targeted `AddRule` / `PatchRule` / `RemoveRule` edits applied at load time. | `AddOverride(configure)` |
-| <xref:Bodu.Globalization.Calendar.Builder.ResolutionPolicyBuilder> | The resource-level duplicate, collision, priority, observed-date-range, working-week, and category-precedence settings. | `WithResolutionPolicy(configure)` |
+| <xref:Bodu.Globalization.Calendar.Builder.ResolutionPolicyBuilder> | The resource-level collision, priority, working-week, and category-precedence settings, plus the reserved duplicate, span-collision, and observed-date-range settings (stored but not yet applied). | `WithResolutionPolicy(configure)` |
 
 ### Rule strategies
 

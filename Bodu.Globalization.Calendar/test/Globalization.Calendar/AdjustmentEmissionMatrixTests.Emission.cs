@@ -99,4 +99,79 @@ public sealed partial class AdjustmentEmissionMatrixTests
         Assert.IsFalse(results[0].IsObserved);
         Assert.IsNull(results[0].AdjustmentPolicyId);
     }
+
+    /// <summary>
+    /// Verifies that a fired policy's <c>&lt;Emission nonWorking="true" /&gt;</c> marks the observed occurrence as a
+    /// non-working day while the actual occurrence keeps the concept's working flag. The observance falls on Saturday
+    /// 1 January 2022 and is observed on Monday 3 January.
+    /// </summary>
+    [TestMethod]
+    public void Emission_WhenPolicySetsNonWorking_ShouldApplyFlagToObservedOccurrence()
+    {
+        const string xml = """
+        <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.emission-non-working">
+          <AdjustmentPolicies>
+            <AdjustmentPolicy id="mondayise-as-day-off">
+              <Trigger type="IfWeekend" />
+              <Action type="MoveToNextWeekday" dayOfWeek="Monday" />
+              <Emission mode="ActualAndObserved" reason="Day off in lieu" nonWorking="true" />
+            </AdjustmentPolicy>
+          </AdjustmentPolicies>
+          <NotableDates>
+            <NotableDate id="founders-day" displayName="Founders' Day" category="Observance" defaultNonWorkingDay="false">
+              <Rules><Rule id="x"><Strategy><Fixed month="January" day="1" /></Strategy><Adjustments><Adjustment policyRef="mondayise-as-day-off" /></Adjustments></Rule></Rules>
+            </NotableDate>
+          </NotableDates>
+        </NotableDateResource>
+        """;
+
+        NotableDateService service = new(NotableDateResourceLoader.Load(xml));
+
+        IReadOnlyList<NotableDate> results = service.Resolve(new DateRange(new DateOnly(2022, 1, 1), new DateOnly(2022, 1, 7)), Territory);
+
+        CollectionAssert.AreEqual(
+            new[] { (new DateOnly(2022, 1, 1), false, false), (new DateOnly(2022, 1, 3), true, true) },
+            results.OrderBy(r => r.Date).Select(r => (r.Date, r.IsObserved, r.IsNonWorkingDay)).ToArray());
+    }
+
+    /// <summary>
+    /// Verifies that an observed occurrence made non-working by its policy's <c>nonWorking</c> attribute claims its
+    /// observed day, so a later holiday seeking a working day with <c>skipNonWorkingDates</c> passes over it. The
+    /// observance (Saturday 1 January 2022) is observed as a day off on Monday 3 January, so the Sunday 2 January
+    /// holiday moves to Tuesday 4 January.
+    /// </summary>
+    [TestMethod]
+    public void Emission_WhenPolicySetsNonWorking_ShouldClaimObservedDayForLaterSubstitutes()
+    {
+        const string xml = """
+        <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.emission-non-working-claim">
+          <AdjustmentPolicies>
+            <AdjustmentPolicy id="mondayise-as-day-off">
+              <Trigger type="IfWeekend" />
+              <Action type="MoveToNextWeekday" dayOfWeek="Monday" />
+              <Emission mode="ObservedOnly" reason="Day off in lieu" nonWorking="true" />
+            </AdjustmentPolicy>
+            <AdjustmentPolicy id="next-free-working-day">
+              <Trigger type="IfWeekend" />
+              <Action type="MoveToNextWorkingDay" skipNonWorkingDates="true" />
+              <Emission mode="ObservedOnly" reason="Substitute" />
+            </AdjustmentPolicy>
+          </AdjustmentPolicies>
+          <NotableDates>
+            <NotableDate id="founders-day" displayName="Founders' Day" category="Observance" defaultNonWorkingDay="false">
+              <Rules><Rule id="x"><Strategy><Fixed month="January" day="1" /></Strategy><Adjustments><Adjustment policyRef="mondayise-as-day-off" /></Adjustments></Rule></Rules>
+            </NotableDate>
+            <NotableDate id="second-day" displayName="Second Day" category="PublicHoliday" defaultNonWorkingDay="true">
+              <Rules><Rule id="x"><Strategy><Fixed month="January" day="2" /></Strategy><Adjustments><Adjustment policyRef="next-free-working-day" /></Adjustments></Rule></Rules>
+            </NotableDate>
+          </NotableDates>
+        </NotableDateResource>
+        """;
+
+        NotableDateService service = new(NotableDateResourceLoader.Load(xml));
+
+        IReadOnlyList<NotableDate> results = service.Resolve(new DateRange(new DateOnly(2022, 1, 1), new DateOnly(2022, 1, 7)), Territory);
+
+        Assert.AreEqual(new DateOnly(2022, 1, 4), results.Single(r => r.NotableDateId == "second-day").Date);
+    }
 }

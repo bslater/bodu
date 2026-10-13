@@ -94,6 +94,34 @@ public partial class NotableDateDocumentBuilderTests
     }
 
     /// <summary>
+    /// Verifies that a policy scoped with <see cref="AdjustmentScopeBuilder.ForRule(string, string)" /> applies to that
+    /// concept's rule only, not to a rule with the same identifier in another concept. Both concepts fall on a Saturday
+    /// in 2028 (1 and 8 January); only New Year's Day moves to Monday.
+    /// </summary>
+    [TestMethod]
+    public void Build_WhenScopeNamesConceptRule_ShouldAdjustThatConceptOnly()
+    {
+        NotableDateDocumentBuilder builder = NotableDateDocumentBuilder.Create("demo.rule-scope")
+            .AddAdjustmentPolicy("weekend-to-monday", a => a
+                .When(AdjustmentTrigger.IfWeekend)
+                .Then(AdjustmentAction.MoveToNextWorkingDay)
+                .Emit(RangeResolution.EmissionMode.ObservedOnly)
+                .WithScope(s => s.ForRule("new-years-day", "default")))
+            .AddNotableDate("new-years-day", "New Year's Day", NotableDateCategory.PublicHoliday, d => d
+                .AsNonWorkingByDefault()
+                .AddRule("default", r => r.Fixed(1, 1).WithAdjustment("weekend-to-monday")))
+            .AddNotableDate("second-saturday", "Second Saturday", NotableDateCategory.PublicHoliday, d => d
+                .AsNonWorkingByDefault()
+                .AddRule("default", r => r.Fixed(1, 8).WithAdjustment("weekend-to-monday")));
+
+        IReadOnlyList<NotableDate> occurrences = ServiceFor(builder).Resolve(2028, "US");
+
+        Assert.AreEqual(
+            (new DateOnly(2028, 1, 3), new DateOnly(2028, 1, 8)),
+            (occurrences.Single(n => n.NotableDateId == "new-years-day").Date, occurrences.Single(n => n.NotableDateId == "second-saturday").Date));
+    }
+
+    /// <summary>
     /// Verifies that building a document without a resource id throws <see cref="InvalidOperationException" />.
     /// </summary>
     [TestMethod]

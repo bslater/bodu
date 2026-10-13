@@ -74,7 +74,7 @@ $ bodu-calendar info packs/holidays.bcal
 packs/holidays.bcal: format v1, resource 'contoso-holidays' (schema 1.0), 2 notable date(s), 1 adjustment policy(ies), payload sha256 85504d61441ee72109a3325c0859c7a7a40f2139ef5afc9cc23d012ba3b5a63d.
 ```
 
-`lint` writes diagnostics to standard output; `compile` writes them to standard error when it fails. A missing input file is reported (exit `1`) before the extension is examined, so an existing file with an extension other than `.xml` / `.json` is what produces the usage error. The full code table, with the condition behind each code, is in [Calendar validation diagnostics](../../guides/calendar/validation-diagnostics.md). The tool's entry point is also callable in process - `CalendarTool.Run(args, output, error)` - which is how the Build task and the test suite drive it; see the [namespace overview](xref:Bodu.Globalization.Calendar.Tool).
+`lint` writes diagnostics to standard output; `compile` writes them to standard error when it fails. A missing input file is reported (exit `1`) before the extension is examined, so an existing file with an extension other than `.xml` / `.json` is what produces the usage error. The full code table, with the condition behind each code, is in [Calendar validation diagnostics](../../guides/calendar/validation-diagnostics.md). The tool's entry point is also callable in process - `CalendarTool.Run(args, output, error)` - which is how the test suite drives it; the Build task runs the same entry point out of process, through `dotnet exec` on the tool assembly. See the [namespace overview](xref:Bodu.Globalization.Calendar.Tool).
 
 ## `Bodu.Globalization.Calendar.Build` - the MSBuild integration
 
@@ -82,12 +82,18 @@ packs/holidays.bcal: format v1, resource 'contoso-holidays' (schema 1.0), 2 nota
 
 ### Install
 
-This package is [not published to nuget.org](../package-matrix.md#not-published-to-nugetorg). To use it from a clone, reference the project directly:
+This package is [not published to nuget.org](../package-matrix.md#not-published-to-nugetorg). Pack it from a clone into a local feed, add that folder as a package source in your `nuget.config`, and reference the package:
+
+```bash
+# Not on nuget.org: pack the build package from a clone into a local feed.
+dotnet pack Bodu.Globalization.Calendar.Build/src -c Release -o ./artifacts
+```
 
 ```xml
-<ProjectReference Include="../Bodu.Globalization.Calendar.Build/src/Bodu.Globalization.Calendar.Build.csproj"
-                  ReferenceOutputAssembly="false" OutputItemType="Analyzer" />
+<PackageReference Include="Bodu.Globalization.Calendar.Build" Version="…" PrivateAssets="all" />
 ```
+
+A `ProjectReference` to the Build project is not enough on its own: it does not import the package's `.targets`, so `NotableDatePack` items compile nothing. To build from the clone without packing, import the `.targets` and point it at the clone's build output, as [Compiling packs in MSBuild](../../guides/calendar/tooling/msbuild-integration.md#from-a-clone-without-a-package) shows.
 
 A **development dependency**: the package ships the task assembly under `tasks/`, the `.targets` under `build/`, and the framework-dependent `bodu-calendar` binaries under `tools/`. It adds **no runtime reference** to the consuming project - reference `Bodu.Globalization.Calendar` yourself to load the packs it produces.
 

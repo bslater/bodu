@@ -85,7 +85,8 @@ stand in for two processes sharing a store - both proved by the engine call coun
 The hosted warm-up remains a fenced comment block. A
 `CountingNotableDateService` wrapper counts the resolutions that reach the real engine, so every
 cache hit is proved by call count rather than by timing. *Packages: `Bodu.Globalization.Calendar`,
-`Bodu.Globalization.Calendar.Caching`, `Bodu.Globalization.Calendar.DependencyInjection`,
+`Bodu.Globalization.Calendar.Caching`, `Bodu.Globalization.Calendar.Caching.Sqlite`,
+`Bodu.Globalization.Calendar.Caching.Distributed`, `Bodu.Globalization.Calendar.DependencyInjection`,
 `Bodu.Globalization.Calendar.AsiaPacific`.*
 
 ### Bodu.Globalization.Calendar.Samples.RegionalData
@@ -125,9 +126,10 @@ The rule-pack toolchain - `Bodu.Globalization.Calendar.Build` and the `bodu-cale
 copied beside the application. The program is the consumer side, loading that pack with
 <xref:Bodu.Globalization.Calendar.NotableDateResourceLoader.LoadBinary*> and comparing it against
 parsing the same XML at runtime - same three holidays, 255 bytes against 1,946, and no schema
-validation on the deployment path. A NuGet consumer writes only the item group; the sample's
-explicit `.targets` import and task/tool path overrides are repository plumbing, needed because
-here the task and tool are projects rather than a restored package. *Packages:
+validation on the deployment path. A consumer of the package, packed into a local feed from a
+clone since it is not published to nuget.org, writes only the package reference and the item group;
+the sample's explicit `.targets` import and task/tool path overrides are the plumbing for using
+the clone directly, where the task and tool are projects rather than a restored package. *Packages:
 `Bodu.Globalization.Calendar.Build`, `Bodu.Globalization.Calendar.Tool`.*
 
 ### Bodu.Globalization.Calendar.Samples.ValidationLint
@@ -142,16 +144,13 @@ want. The code catalogue lives in the
 [validation diagnostics guide](../guides/calendar/validation-diagnostics.md). *Packages:
 `Bodu.Globalization.Calendar`, `Bodu.Globalization.Calendar.Builder`.*
 
-## Plugins, by choice
+## Plugins
 
-No sample ships a plugin assembly - a single-project plugin demo would have to load itself under
-the dev-only `AllowAllPluginTrustPolicy`, which is exactly what production hosts must not do.
-Instead, the CustomAlgorithm sample carries a fenced comment block showing the real switch: add
-`Bodu.Globalization.Calendar.Plugins`, mark the plugin assembly with
-`[assembly: NotableDatePlugin(...)]`, and load it through
-<xref:Bodu.Globalization.Calendar.Plugins.NotableDatePluginLoader> under a pinned
-`StrongNamePluginTrustPolicy`, registering the discovered algorithms into the same registry the
-sample already uses.
+Plugin loading has its own sample: **Bodu.Globalization.Calendar.Samples.Plugins** (above) loads
+the separate `…Samples.Plugin.Contoso` assembly under a SHA-256 allow-list, a delegating policy,
+and a composite policy. The CustomAlgorithm sample keeps its algorithm in-process and registers it
+directly into a <xref:Bodu.Globalization.Calendar.Algorithms.NotableDateAlgorithmRegistry>, which is
+the right shape when the algorithm ships with the host.
 
 ## Testing your own data pack
 

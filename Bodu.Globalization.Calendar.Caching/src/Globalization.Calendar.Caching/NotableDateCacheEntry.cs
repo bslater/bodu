@@ -14,7 +14,9 @@ namespace Bodu.Globalization.Calendar.Caching;
 /// single territory under a single resource version, together with the UTC instant the year was computed, which drives
 /// expiry.
 /// </summary>
-/// <param name="Territory">The normalized territory the occurrences were resolved for.</param>
+/// <param name="Territory">
+/// The territory the occurrences were resolved for, as the caller supplied it; a cache normalizes it for keying.
+/// </param>
 /// <param name="Year">The civil year the occurrences were emitted within.</param>
 /// <param name="ResourceVersion">
 /// The version token of the resource the occurrences were computed from; a change invalidates the entry.

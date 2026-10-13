@@ -24,8 +24,11 @@ internal static class NotableDateBinaryFormat
     public static ReadOnlySpan<byte> Magic =>
         "BCAL"u8;
 
-    /// <summary>The current (and only) format version.</summary>
+    /// <summary>The base format version, written for every pack whose adjustment scopes hold no qualified rule reference.</summary>
     public const ushort Version = 1;
+
+    /// <summary>The format version written for a pack whose adjustment scopes hold a qualified <c>notableDateRef/ruleRef</c> rule reference. The layout is the same as <see cref="Version" />; the number exists so a reader that predates qualified references rejects the pack instead of matching the reference against rule identifiers alone.</summary>
+    public const ushort QualifiedScopeRuleVersion = 2;
 
     /// <summary>The header length in bytes: magic (4) + version (2) + flags (2) + payload SHA-256 (32).</summary>
     public const int HeaderLength = 40;

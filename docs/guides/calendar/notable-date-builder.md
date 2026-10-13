@@ -84,7 +84,7 @@ An `AddImport` with no `Use` calls imports every concept the catalogue defines. 
 
 ## Overrides
 
-`AddOverride` authors ID-targeted edits applied at load time. <xref:Bodu.Globalization.Calendar.Builder.OverrideBuilder> offers three operations - `AddRule` (add a rule to an existing concept), `PatchRule` (replace an existing rule), and `RemoveRule` (suppress one):
+`AddOverride` authors ID-targeted edits applied at load time. <xref:Bodu.Globalization.Calendar.Builder.OverrideBuilder> offers three operations - `AddRule` (add a rule to an existing concept), `PatchRule` (overwrite the sections of an existing rule that the delegate configures; everything else is kept), and `RemoveRule` (suppress one):
 
 ```csharp
 builder.AddOverride(o => o

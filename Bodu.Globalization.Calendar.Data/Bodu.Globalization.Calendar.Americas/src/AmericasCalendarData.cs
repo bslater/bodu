@@ -10,8 +10,8 @@ using System.Text;
 namespace Bodu.Globalization.Calendar;
 
 /// <summary>
-/// Provides access to the embedded Americas notable-date resource pack (Canada and the United States), built on the
-/// notable-date schema.
+/// Provides access to the embedded Americas notable-date resource pack (Argentina, Brazil, Canada, Chile, Colombia,
+/// Mexico, Peru, and the United States; see <see cref="SupportedCountries" />), built on the notable-date schema.
 /// </summary>
 /// <remarks>
 /// <para>

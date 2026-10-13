@@ -8,6 +8,23 @@ title: Compiling packs in MSBuild
 
 ## Pattern 1 - reference the package and declare packs
 
+The package is [not published to nuget.org](../../../docs/package-matrix.md#not-published-to-nugetorg), so pack it from a clone into a local feed first:
+
+```bash
+dotnet pack Bodu.Globalization.Calendar.Build/src -c Release -o ./artifacts
+```
+
+Add that folder as a package source in the consuming solution's `nuget.config`, then reference the package at the version `dotnet pack` reported and declare the documents to compile:
+
+```xml
+<!-- nuget.config -->
+<configuration>
+  <packageSources>
+    <add key="bodu-local" value="./artifacts" />
+  </packageSources>
+</configuration>
+```
+
 ```xml
 <ItemGroup>
   <PackageReference Include="Bodu.Globalization.Calendar.Build" Version="…" PrivateAssets="all" />
@@ -26,6 +43,36 @@ title: Compiling packs in MSBuild
 | `ResolverDir` | Optional directory whose `<name>.xml` / `<name>.json` files satisfy the document's imports, consulted before the bundled catalogues - the same semantics as the tool's `--resolver-dir`. |
 
 Each item compiles to `$(NotableDatePackOutputPath)<Filename>.bcal` and, by default, is copied into the project output directory beside the application.
+
+### From a clone, without a package
+
+A `ProjectReference` to the Build project does not work on its own: it does not import the package's `.targets`, so `NotableDatePack` items compile nothing and the build reports no error. To use the clone directly, import the `.targets` yourself and point the task and tool paths at the clone's build output, as the repository's `RulePackToolchain` sample does. The two project references only order the build, so the task and the tool exist before this project's targets run:
+
+```xml
+<PropertyGroup>
+  <!-- The root of your Bodu clone. -->
+  <BoduRepoRoot>$(MSBuildThisFileDirectory)..\bodu\</BoduRepoRoot>
+  <BoduCalendarTaskAssembly>$(BoduRepoRoot)Bodu.Globalization.Calendar.Build\src\bin\$(Configuration)\netstandard2.0\Bodu.Globalization.Calendar.Build.dll</BoduCalendarTaskAssembly>
+  <BoduCalendarToolDll>$(BoduRepoRoot)Bodu.Globalization.Calendar.Tool\src\bin\$(Configuration)\net8.0\Bodu.Globalization.Calendar.Tool.dll</BoduCalendarToolDll>
+</PropertyGroup>
+
+<ItemGroup>
+  <ProjectReference Include="$(BoduRepoRoot)Bodu.Globalization.Calendar.Build\src\Bodu.Globalization.Calendar.Build.csproj"
+                    ReferenceOutputAssembly="false" Private="false" SkipGetTargetFrameworkProperties="true"
+                    UndefineProperties="TargetFramework" />
+  <ProjectReference Include="$(BoduRepoRoot)Bodu.Globalization.Calendar.Tool\src\Bodu.Globalization.Calendar.Tool.csproj"
+                    ReferenceOutputAssembly="false" Private="false" SkipGetTargetFrameworkProperties="true"
+                    UndefineProperties="TargetFramework" />
+</ItemGroup>
+
+<ItemGroup>
+  <NotableDatePack Include="rules\holidays.xml" />
+</ItemGroup>
+
+<Import Project="$(BoduRepoRoot)Bodu.Globalization.Calendar.Build\build\Bodu.Globalization.Calendar.Build.targets" />
+```
+
+Set the two path properties before the `<Import>`: the `.targets` fills them in only when they are empty, with paths into a package layout that a clone does not have. `UndefineProperties="TargetFramework"` lets a multi-targeting project build each referenced project for its own framework.
 
 ## The `CompileNotableDatePack` task
 

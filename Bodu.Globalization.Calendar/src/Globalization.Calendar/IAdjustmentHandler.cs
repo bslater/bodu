@@ -14,23 +14,24 @@ namespace Bodu.Globalization.Calendar;
 /// <para>
 /// A handler is bound to a policy through the policy's handler key and is consulted during the placement phase, after
 /// the actual date has been calculated. It receives the calculated date together with the surrounding resolution
-/// context, so it can resolve other rules or test whether candidate days are already claimed by non-working
-/// occurrences.
+/// context, so it can resolve other rules or test whether candidate days are already claimed by non-working occurrences
+/// (the claimed days include the occurrence's own actual date when it is non-working).
 /// </para>
 /// </remarks>
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
-/// // Move the occurrence to the next day that is not already claimed by another non-working date.
+/// // Move the occurrence to the first later day that no non-working occurrence has claimed. The claimed days include
+/// // this occurrence's own actual date when it is non-working, so the search starts the day after it.
 /// public sealed class NextFreeDayHandler : IAdjustmentHandler
 /// {
 ///     public DateOnly? Adjust(AdjustmentHandlerContext context)
 ///     {
-///         DateOnly date = context.BaseDate;
+///         DateOnly date = context.BaseDate.AddDays(1);
 ///         while (context.IsOccupied(date))
 ///             date = date.AddDays(1);
 ///
-///         return date == context.BaseDate ? null : date; // null leaves it on the calculated date
+///         return date;
 ///     }
 /// }
 ///]]>

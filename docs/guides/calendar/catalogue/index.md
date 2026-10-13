@@ -6,14 +6,14 @@ title: Notable-date catalogue
 
 What notable dates the calendar data ships, and how regions and territories differ. This catalogue is generated from the `Bodu.Globalization.Calendar` XML resources; it lists the dates and their scope, not the calculation recipes (for those, see the linked guides).
 
-Concepts are authored once in a **shared catalogue** and a **region pack** imports the ones it observes, supplying its own territory scope and non-working status. Each data bundle also ships a **region hub** ([`africa-common`](theme-civil-and-christian.md#africa-common), [`americas-common`](theme-civil-and-christian.md#americas-common), [`europe-common`](theme-civil-and-christian.md#europe-common), [`middleeast-common`](theme-civil-and-christian.md#middleeast-common)) that re-exports the shared concepts its packs have in common - and occasionally defines a few of its own - so those packs import from the hub rather than from each catalogue directly. The pages below present the same data along two axes.
+Concepts are authored once in a **shared catalogue** and a **region pack** imports the ones it observes, supplying its own territory scope and non-working status. Four of the five data bundles also ship a **region hub** ([`africa-common`](theme-civil-and-christian.md#africa-common), [`americas-common`](theme-civil-and-christian.md#americas-common), [`europe-common`](theme-civil-and-christian.md#europe-common), [`middleeast-common`](theme-civil-and-christian.md#middleeast-common)) that re-exports the shared concepts its packs have in common - and occasionally defines a few inline - so those packs import from the hub rather than from each catalogue directly; the Asia-Pacific packs import the catalogues directly. The pages below present the same data along two axes.
 
 ## How to read these pages
 
 | Column | Meaning |
 |---|---|
 | Category | `PublicHoliday`, `Religious`, `Cultural`, `Observance`, `Remembrance`, … |
-| Non-working | `Yes` = a non-working public holiday for the scope shown; `-` = a working observance |
+| Non-working | `Yes` = a non-working public holiday for the scope shown; `-` = a working observance; `<subdivisions> only` = a working observance nationally that only the listed subdivisions make non-working |
 | Territory scope | `National`, a subdivision list (e.g. `ENG, WLS, NIR`), or `National + …` |
 | Calendar | shown only when non-Gregorian (`Hijri`, `Hebrew`, `Persian`, `ChineseLunisolar`, …) |
 | Source | `inline` (defined in the region pack) or `← catalogue` / `← <region>-common` (the direct import: a shared catalogue or the bundle's region hub) |
@@ -45,13 +45,13 @@ See also the [cross-region comparison matrix](comparison-matrix.md).
 
 - **Catalogues:** 38
 - **Region packs:** 63
-- **Distinct concepts (catalogues):** 308
+- **Concept definitions (catalogues):** 308 (291 distinct)
 - **Comparison-matrix rows:** 18
-- **This page regenerated (UTC):** 2026-09-09T03:00:56Z
+- **This page regenerated (UTC):** 2026-10-12T23:44:08Z
 
 ---
 
-*Generated from the notable-date XML resources by `Bodu.Globalization.Calendar/Generate-NotableDateCatalogue.ps1`. Regenerated (UTC): 2026-09-09T03:00:56Z.* For the calculation recipes deliberately omitted here, see [Territories and regional composition](../territories.md), [Working with non-Gregorian calendars](../non-gregorian-calendars.md), and [Holiday patterns](../holiday-patterns.md); for the API, the <xref:Bodu.Globalization.Calendar> namespace.
+*Generated from the notable-date XML resources by `Bodu.Globalization.Calendar/Generate-NotableDateCatalogue.ps1`. Regenerated (UTC): 2026-10-12T23:44:08Z.* For the calculation recipes deliberately omitted here, see [Territories and regional composition](../territories.md), [Working with non-Gregorian calendars](../non-gregorian-calendars.md), and [Holiday patterns](../holiday-patterns.md); for the API, the <xref:Bodu.Globalization.Calendar> namespace.
 
 ## See also
 

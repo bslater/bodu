@@ -19,7 +19,7 @@ NotableDateResource resource = NotableDateResourceLoader.Load(xml, CommonNotable
 NotableDateService  service  = new NotableDateService(resource);
 ```
 
-Resolution *behaviour* is carried by the resource itself - its `<ResolutionPolicy>` decides duplicate handling, same-day collisions, the priority direction, observed-date inclusion, and the working week. To change those, edit the document or build the resource differently; see [Identity and resolution](identity-and-resolution.md). Runtime *collaborators* are supplied through <xref:Bodu.Globalization.Calendar.NotableDateServiceOptions>, an object with `init`-only properties (there is no positional-collaborator constructor):
+Resolution *behaviour* is carried by the resource itself - its `<ResolutionPolicy>` decides same-day collisions, the priority direction, category precedence, and the working week (its duplicate, span-collision, and observed-date range settings are reserved and not yet applied). To change those, edit the document or build the resource differently; see [Identity and resolution](identity-and-resolution.md). Runtime *collaborators* are supplied through <xref:Bodu.Globalization.Calendar.NotableDateServiceOptions>, an object with `init`-only properties (there is no positional-collaborator constructor):
 
 | Property | Type | Purpose |
 |---|---|---|
@@ -222,18 +222,22 @@ public sealed class ContosoPlugin : INotableDateAlgorithmPlugin
 
 ### Loading and registering
 
-<xref:Bodu.Globalization.Calendar.Plugins.NotableDatePluginLoader> evaluates trust, activates the plugin, and registers its algorithms. `LoadFrom(Assembly, …)` loads from an already-loaded assembly; `LoadFrom(string assemblyPath, …)` loads the file into a dedicated `AssemblyLoadContext`:
+<xref:Bodu.Globalization.Calendar.Plugins.NotableDatePluginLoader> evaluates trust, activates the plugin, and registers its algorithms. `LoadFrom(string assemblyPath, …)` checks trust and then loads the file into a dedicated `AssemblyLoadContext`; `LoadFrom(Assembly, …)` takes an already-loaded assembly, whose code (module initializers included) may already have run, so it is for trusted input only. See the [plugin trust guide](plugin-trust.md) for why a strong-name token alone is never enough for untrusted input:
 
 ```csharp
-using System.Reflection;
 using Bodu.Globalization.Calendar.Algorithms;
 using Bodu.Globalization.Calendar.Plugins;
 
-// Trust only assemblies whose strong-name public-key token is on the allow-list.
-IPluginTrustPolicy trust = new StrongNamePluginTrustPolicy(allowedPublicKeyTokens);
+// Provenance (strong-name token) and integrity (pinned SHA-256): both must pass.
+IPluginTrustPolicy trust = new CompositePluginTrustPolicy(
+    new StrongNamePluginTrustPolicy(allowedPublicKeyTokens),
+    new FileHashPluginTrustPolicy(new Dictionary<string, byte[]>
+    {
+        ["Contoso.Holidays"] = Convert.FromHexString(pinnedSha256Hex),
+    }));
 
-Assembly assembly = Assembly.LoadFrom("Contoso.Holidays.dll");
-INotableDatePlugin plugin = NotableDatePluginLoader.LoadFrom(assembly, trust);   // throws if untrusted
+// The path overload checks trust before the assembly's code can run.
+INotableDatePlugin plugin = NotableDatePluginLoader.LoadFrom("plugins/Contoso.Holidays.dll", trust);   // throws if untrusted
 
 var registry = new NotableDateAlgorithmRegistry();
 int registered = NotableDatePluginLoader.RegisterAlgorithms(plugin, registry);

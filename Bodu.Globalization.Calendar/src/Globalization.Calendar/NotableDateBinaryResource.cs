@@ -27,6 +27,12 @@ namespace Bodu.Globalization.Calendar;
 /// Writing is byte-stable: the same resource always produces the same bytes, so build systems can use pack outputs for
 /// up-to-date checks.
 /// </para>
+/// <para>
+/// A pack is written at format version 1 unless an adjustment scope names a concept's rule (<c>&lt;Rule notableDateRef="…" ruleRef="…" /&gt;</c>),
+/// which needs version 2. The two versions share one layout; version 2 exists so that a reader predating
+/// concept-qualified rule references rejects the pack instead of matching the reference against rule identifiers alone.
+/// The reader accepts both, and a version 1 scope's rule identifier keeps matching that rule in every concept.
+/// </para>
 /// </remarks>
 /// <seealso cref="NotableDateResourceLoader" /> <seealso cref="NotableDateBinaryFormatException" />
 /// <seealso href="../guides/calendar/binary-rule-packs.html">Binary rule packs (guide)</seealso>
@@ -40,6 +46,11 @@ public static partial class NotableDateBinaryResource
     /// <exception cref="ArgumentNullException">
     /// <paramref name="resource" /> or <paramref name="stream" /> is <see langword="null" />.
     /// </exception>
+    /// <exception cref="NotSupportedException">
+    /// A rule uses a calculation strategy, recurrence strategy, or duration definition outside the sealed set the
+    /// format enumerates, such as a custom <see cref="IDateCalculationStrategy" /> in a resource assembled in code; the
+    /// message names the unsupported type.
+    /// </exception>
     public static void Write(NotableDateResource resource, Stream stream)
     {
         ThrowHelper.ThrowIfNull(resource);
@@ -49,9 +60,15 @@ public static partial class NotableDateBinaryResource
         WriteResource(writer, resource);
         byte[] payload = writer.ToPayload();
 
+        // A pack is written at the base version unless a scope holds a qualified rule reference, so packs without one
+        // stay byte-identical to, and readable by, readers that predate qualified references.
+        ushort version = resource.AdjustmentPolicies.Any(p => p.Scope.HasQualifiedRuleRefs)
+            ? NotableDateBinaryFormat.QualifiedScopeRuleVersion
+            : NotableDateBinaryFormat.Version;
+
         Span<byte> header = stackalloc byte[NotableDateBinaryFormat.HeaderLength];
         NotableDateBinaryFormat.Magic.CopyTo(header);
-        BinaryPrimitives.WriteUInt16LittleEndian(header[4..], NotableDateBinaryFormat.Version);
+        BinaryPrimitives.WriteUInt16LittleEndian(header[4..], version);
         BinaryPrimitives.WriteUInt16LittleEndian(header[6..], 0);
         SHA256.HashData(payload, header[8..]);
 

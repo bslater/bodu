@@ -130,6 +130,21 @@ public sealed partial class NotableDateDocumentBuilder
     /// <exception cref="FormatException">
     /// <paramref name="json" /> is not well-formed or is not a notable-date document.
     /// </exception>
+    /// <exception cref="InvalidOperationException">
+    /// A property carries a value of the wrong JSON type, for example <c>"priority": "5"</c> (a string where a number
+    /// belongs) or a numeric tag.
+    /// </exception>
+    /// <remarks>
+    /// <para>
+    /// Parsing is lenient and does not validate the document: an unrecognized enumeration token becomes the
+    /// enumeration's default or is dropped (a misspelled category becomes <see cref="NotableDateCategory.None" />, and
+    /// a misspelled resolution policy value disappears), a malformed integer is dropped, and any Boolean other than
+    /// <c>true</c> or <c>1</c> reads as <see langword="false" />. A document the loader would reject can therefore
+    /// parse and even build with different data. Validate with <see cref="Validate()" /> or
+    /// <see cref="TryBuild(out NotableDateResource?, out IReadOnlyList{NotableDateValidationDiagnostic})" />, or load
+    /// the text with <see cref="NotableDateResourceLoader" />, when the input is not trusted.
+    /// </para>
+    /// </remarks>
     /// <example>
     /// <code language="csharp">
     ///<![CDATA[

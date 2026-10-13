@@ -22,8 +22,8 @@ public static class WarmUp
     {
         SampleConsole.Scenario(
             "Warming the cache - pre-resolving the serving window",
-            what: "Pre-resolves two territories across two civil years, then runs two queries that each straddle "
-                + "a year boundary, checking the engine counter before and after.",
+            what: "Pre-resolves two territories across two civil years, then runs two queries inside that window, "
+                + "one of them straddling a year boundary, checking the engine counter before and after.",
             why: "A read-through cache moves the cost rather than removing it, and the caller who pays is "
                 + "whoever asks first - which in a freshly deployed service is a real user, at the worst "
                 + "possible moment. Warming pays it deliberately, at start-up, where the latency is nobody's "
@@ -31,9 +31,9 @@ public static class WarmUp
                 + "is exactly as granular as the cache is, with nothing wasted and no gaps. In a hosted "
                 + "application the same thing runs as a background service with a rolling window, which the "
                 + "comment at the end of this scenario sketches.",
-            expect: "The warm-up does all the engine work up front. The two queries afterwards cross year "
-                + "boundaries, so each touches two cached entries, and the engine counter still does not move - "
-                + "every year they needed was already resolved.");
+            expect: "The warm-up does all the engine work up front. The two queries afterwards stay inside the "
+                + "warmed window - the first crosses into the next year, so it touches two cached entries - and the "
+                + "engine counter still does not move: every year they needed was already resolved.");
 
         var engine = new CountingNotableDateService(AsiaPacificCalendarData.CreateService("AU"));
         using var cached = new CachingNotableDateService(
@@ -50,7 +50,7 @@ public static class WarmUp
         _ = cached.Resolve(new DateRange(new DateOnly(2026, 12, 1), new DateOnly(2027, 1, 31)), "AU");
         _ = cached.Resolve(new DateRange(new DateOnly(2027, 3, 1), new DateOnly(2027, 3, 31)), "AU-VIC");
         Console.WriteLine($"  Two cross-window queries served; engine resolutions still = {engine.RangeResolutions}"
-            + "  (unchanged - both queries straddle a year boundary, so each touched two cached entries and found them)");
+            + "  (unchanged - the first query straddled a year boundary and found both cached years, the second found its one)");
 
         // ------------------------------------------------------------------------------------------------
         // In a hosted application, register the warm-up as a background service instead of calling Warm
@@ -58,9 +58,10 @@ public static class WarmUp
         //
         //   builder.Services.AddNotableDateService(AsiaPacificCalendarData.LoadResource("AU"));
         //   builder.Services.AddCachedNotableDateService();
-        //   builder.Services.AddNotableDateCacheWarmup(options =>
+        //   builder.Services.AddNotableDateCacheWarmup(configure: options =>
         //   {
-        //       options.Territories = ["AU", "AU-VIC"];
+        //       options.Territories.Add("AU");
+        //       options.Territories.Add("AU-VIC");
         //       options.YearsBehind = 0;    // warm from the current year...
         //       options.YearsAhead = 1;     // ...through next year, recomputed each run
         //   });

@@ -107,7 +107,8 @@ Hebrew rules are authored with a stable month *name* (`Tishri`, `Kislev`, `Nisan
 |---|---|
 | `Tishri` | New year (Rosh Hashanah). |
 | `Kislev` | Hanukkah anchor. |
-| `AdarI`, `AdarII` | Exist only in leap years; skip the candidate in a non-leap year. |
+| `AdarI` | Month 6: Adar I in a leap year, Adar in a non-leap year, so it resolves every year. |
+| `AdarII` | Exists only in leap years; skips the candidate in a non-leap year. |
 | `LastAdar` | Always resolves (Adar in a non-leap year, Adar II in a leap year) - preferred for Purim and other "final Adar" observances. |
 | `Nisan` | Passover anchor. |
 | `Sivan` | Shavuot. |
@@ -205,7 +206,7 @@ The two can produce Gregorian dates differing by zero or one day for the same Hi
 
 Several non-Gregorian observances are multi-day (Ramadan 30 days, Hanukkah 8 days, Sukkot 7 days, Nowruz up to 13 days). A span can straddle the Gregorian year boundary - a Hanukkah occurrence anchored on 25 Kislev can begin on 26 December and end on 2 January.
 
-A range query includes any occurrence whose span intersects the window, governed by the resource's <xref:Bodu.Globalization.Calendar.RangeResolution.ObservedDateRangePolicy>:
+A range query includes any occurrence whose emitted span intersects the window (the resource's <xref:Bodu.Globalization.Calendar.RangeResolution.ObservedDateRangePolicy> is reserved and does not change this):
 
 ```csharp
 using Bodu.Globalization.Calendar;

@@ -66,9 +66,10 @@ A `<NotableDate>` is one notable-date **concept** - an `id`, a `displayName`, a 
 A `<Rule>` is one calculation recipe. Its required `id` distinguishes it from its siblings under the same concept; the optional attributes (`priority`, `category`, `nonWorking`, `durationDays`, `comment`) override the concept defaults for that recipe. A rule contains, **in order**:
 
 1. an optional `<Applicability>` (calendar, year bounds, territory scope);
-2. exactly one `<Strategy>` (the calculation);
-3. an optional `<Tags>` block;
-4. an optional `<Adjustments>` block of `policyRef` references.
+2. exactly one `<Strategy>` (the calculation) or `<Recurrence>` (a repeating series);
+3. an optional `<Duration>` (a calculated end date for a multi-day span);
+4. an optional `<Tags>` block;
+5. an optional `<Adjustments>` block of `policyRef` references.
 
 ```xml
 <Rule id="au" priority="100" comment="National; substitute Monday when 26 January falls on a weekend.">
@@ -225,7 +226,7 @@ Overrides run during loading and produce a normal immutable resource. *Runtime* 
 
 ## Authoring in JSON
 
-JSON is an equivalent surface for the same document model; the choice is presentation-only. Load it with <xref:Bodu.Globalization.Calendar.NotableDateResourceLoader>'s `LoadJson` overloads (`LoadJson(json)`, `LoadJson(json, resolver)`, `LoadJson(Stream)`). The element names map directly to JSON property names:
+JSON is an equivalent surface for the same document model; the choice is presentation-only. Load it with <xref:Bodu.Globalization.Calendar.NotableDateResourceLoader>'s `LoadJson` overloads (`LoadJson(json)`, `LoadJson(json, resolver)`, `LoadJson(json, resolver, algorithms)`, `LoadJson(Stream)`). The element names map directly to JSON property names:
 
 ```json
 {
@@ -298,6 +299,8 @@ The larger sections map the same way: `<AdjustmentPolicies>` → `adjustmentPoli
 
 JSON and XML are accepted by separate loader entry points - `LoadJson` for JSON, `Load` for XML - and produce identical resources; there is no auto-detection.
 
+A JSON document is not validated against a schema the way an XML document is against the XSD, so a misspelled property name is ignored rather than reported. The semantic checks are shared: a rule that declares no recognized strategy or recurrence, or more than one, fails with `BODU-CAL-RULE-SOURCE` in either format.
+
 ---
 
 ## Year periodicity
@@ -308,7 +311,7 @@ Beyond `fromYear` / `toYear` bounds, `<Applicability>` supports a periodicity pa
 
 ## Validation
 
-Loading parses the document, resolves `<Imports>`, applies `<Overrides>`, assembles the concepts, and runs semantic validation. Any **error**-severity diagnostic throws a <xref:Bodu.Globalization.Calendar.NotableDateValidationException>; its `Diagnostics` collection carries every <xref:Bodu.Globalization.Calendar.NotableDateValidationDiagnostic> ( `Severity`, `Code`, `Message`), so informational and warning diagnostics are visible even when the load succeeds:
+Loading parses the document, resolves `<Imports>`, applies `<Overrides>`, assembles the concepts, and runs semantic validation. Any **error**-severity diagnostic throws a <xref:Bodu.Globalization.Calendar.NotableDateValidationException>; its `Diagnostics` collection carries every <xref:Bodu.Globalization.Calendar.NotableDateValidationDiagnostic> (`Severity`, `Code`, `Message`), warnings and informational messages included. A successful `Load` returns only the resource, so to see the warnings of a document that loads, use `TryLoad` / `TryLoadJson`, which return every diagnostic either way:
 
 ```csharp
 using Bodu.Globalization.Calendar;

@@ -26,20 +26,21 @@ The root element declares the schema namespace, version, and id, and contains it
 
 ### `<ResolutionPolicy>` - resource-level reconciliation
 
-`<ResolutionPolicy>` is optional; an absent element means <xref:Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy>`.Default`. It maps to the loaded `ResolutionPolicy` and decides how the resource reconciles duplicates and collisions and which date controls range inclusion.
+`<ResolutionPolicy>` is optional; an absent element means <xref:Bodu.Globalization.Calendar.RangeResolution.ResolutionPolicy>`.Default`. It maps to the loaded `ResolutionPolicy` and decides how same-day collisions are settled and which days are the working week. Three attributes are **reserved** - accepted and stored, but not yet applied ([#1119](https://github.com/bslater/bodu/issues/1119)) - as the table notes.
 
 | Attribute | Type | Default | Description |
 |---|---|---|---|
-| `duplicatePolicy` | <xref:Bodu.Globalization.Calendar.RangeResolution.DuplicatePolicy> | `Error` | Reconciles *identical* occurrences: `Error`, `KeepFirst`, `KeepLast`, `Merge`. |
-| `sameDayCollisionPolicy` | <xref:Bodu.Globalization.Calendar.RangeResolution.CollisionPolicy> | `KeepAll` | Settles *distinct* rules on the same day: `KeepAll`, `HighestPriorityOnly`, `CategoryPriority`, `Custom`. |
-| `spanCollisionPolicy` | <xref:Bodu.Globalization.Calendar.RangeResolution.CollisionPolicy> | `KeepAll` | Settles overlapping multi-day spans (same value set). |
+| `duplicatePolicy` | <xref:Bodu.Globalization.Calendar.RangeResolution.DuplicatePolicy> | `Error` | **Reserved** (`Error`, `KeepFirst`, `KeepLast`, `Merge`): stored but not applied. Duplicate concept and rule ids are always load errors (`BODU-CAL-DUP-ND`, `BODU-CAL-DUP-RULE`). |
+| `sameDayCollisionPolicy` | <xref:Bodu.Globalization.Calendar.RangeResolution.CollisionPolicy> | `KeepAll` | Settles *distinct* occurrences that share an emitted date: `KeepAll`, `HighestPriorityOnly`, `CategoryPriority`, `Custom`. |
+| `spanCollisionPolicy` | <xref:Bodu.Globalization.Calendar.RangeResolution.CollisionPolicy> | `KeepAll` | **Reserved** (same value set): stored but not applied. Overlapping multi-day spans are never reconciled. |
 | `priorityDirection` | <xref:Bodu.Globalization.Calendar.RangeResolution.PriorityDirection> | `HigherWins` | Whether a larger or smaller `Priority` wins a tie: `HigherWins`, `LowerWins`. |
-| `observedDateRangePolicy` | <xref:Bodu.Globalization.Calendar.RangeResolution.ObservedDateRangePolicy> | `ObservedOccurrenceControlsInclusion` | Which occurrence date governs range-query inclusion: `ObservedOccurrenceControlsInclusion`, `ActualOccurrenceControlsInclusion`, `BothOccurrencesControlInclusion`. |
+| `observedDateRangePolicy` | <xref:Bodu.Globalization.Calendar.RangeResolution.ObservedDateRangePolicy> | `ObservedOccurrenceControlsInclusion` | **Reserved** (`ObservedOccurrenceControlsInclusion`, `ActualOccurrenceControlsInclusion`, `BothOccurrencesControlInclusion`): stored but not applied. A range query always returns an occurrence whose emitted span intersects the window. |
 | `workingDays` | week pattern | Mon-Fri | The working week the weekend-related triggers and working-day arithmetic interpret, as a seven-character Sunday-first mask (e.g. `0111110` = Mon-Fri). Maps to `ResolutionPolicy.WorkingWeek` (a `Bodu.Core` `DayOfWeekSet`). |
 
 An optional `<CategoryPrecedence>` child orders categories for `CollisionPolicy.CategoryPriority`. See [Rule identity, priority, and observed-date resolution](identity-and-resolution.md) for the settlement semantics.
 
 ```xml
+<!-- duplicatePolicy and observedDateRangePolicy are reserved: accepted and stored, not yet applied. -->
 <ResolutionPolicy duplicatePolicy="KeepFirst"
                   sameDayCollisionPolicy="HighestPriorityOnly"
                   priorityDirection="HigherWins"
@@ -74,18 +75,18 @@ An optional `<CategoryPrecedence>` child orders categories for `CollisionPolicy.
 </NotableDate>
 ```
 
-A `<Tags>` block contains one or more `<Tag value="..."/>` elements. Concept-level tags apply to every rule; a rule may add its own `<Tags>` block. Tags survive into `NotableDate.Tags` and are matched by `NotableDateFilter.WithTag` / `WithAnyTag` / `WithAllTags`.
+A `<Tags>` block contains one or more `<Tag value="..."/>` elements. Concept-level tags apply to every rule that declares none of its own; a rule's own `<Tags>` block replaces the concept's tags for that rule. Tags survive into `NotableDate.Tags` and are matched by `NotableDateFilter.WithTag` / `WithAnyTag` / `WithAllTags`.
 
 ---
 
 ## `<Rule>` - the recipe
 
-A `<Rule>` is one calculation recipe for its concept. It contains, **in order**, an optional `<Applicability>`, exactly one `<Strategy>`, an optional `<Tags>`, and an optional `<Adjustments>`.
+A `<Rule>` is one calculation recipe for its concept. It contains, **in order**, an optional `<Applicability>`, exactly one `<Strategy>` or `<Recurrence>`, an optional `<Duration>`, an optional `<Tags>`, and an optional `<Adjustments>`.
 
 | Attribute | Required | Type | Default | Description |
 |---|---|---|---|---|
 | `id` | Yes | identifier | - | Distinguishes this rule from its siblings under the same concept (e.g. `default`, `nsw`, `wa`). Targeted by `<OffsetFromRule ruleRef>` and `<Overrides>`. |
-| `priority` | No | int | `0` | Tie-break weight when several occurrences share a day; how it is applied is governed by the resource's `priorityDirection`. |
+| `priority` | No | int | `0` | Tie-break weight when several occurrences share a day, applied per the resource's `priorityDirection`. It also orders observed-date placement among occurrences with the same actual date, the higher value first. |
 | `category` | No | category | *(concept default)* | Overrides the concept's `category` for this rule. |
 | `nonWorking` | No | bool | *(concept default)* | Overrides `defaultNonWorkingDay` for this rule. |
 | `durationDays` | No | positive int | *(concept default)* | Overrides `defaultDurationDays` for this rule. |
@@ -239,7 +240,7 @@ The strategy first computes the anchor (the `weekOrdinal`-th `dayOfWeek` of `mon
 </NotableDate>
 ```
 
-The referenced rule is resolved first and the offset applied - this is how Good Friday and Easter Monday hang off Easter Sunday. References are resolved cycle-safely within the resource; a self- or mutually-referential chain is reported rather than looping. When the referenced rule produces no occurrence for the year, the offset rule produces none in turn.
+The referenced rule is resolved first and the offset applied - this is how Good Friday and Easter Monday hang off Easter Sunday. References are resolved cycle-safely within the resource: a self- or mutually-referential chain is not reported by validation; it is broken when the dates are resolved, and the rules caught in it produce no occurrence. When the referenced rule produces no occurrence for the year, the offset rule produces none in turn.
 
 ### `<Algorithm>` - dispatch to a named calculator
 
@@ -276,7 +277,7 @@ In place of a `<Strategy>`, a rule may carry a `<Recurrence>` child holding exac
 </Rule>
 ```
 
-`anchorDate` is an ISO-8601 `yyyy-MM-dd` date. A rule declaring both `<Strategy>` and `<Recurrence>`, or neither, is rejected at load time.
+`anchorDate` is an ISO-8601 `yyyy-MM-dd` date. A rule declaring both `<Strategy>` and `<Recurrence>`, or neither, is rejected at load time with `BODU-CAL-RULE-SOURCE`, in XML and JSON alike.
 
 ---
 
@@ -354,15 +355,15 @@ A weekend substitution or "move to next working day" shift is declared once in `
 |---|---|
 | `None` | Records the trigger but leaves the date unchanged. |
 | `AddDays` | Adds `days` (may be negative). |
-| `MoveToNextWeekday` / `MoveToPreviousWeekday` | Moves to the next / previous working-week day. |
-| `MoveToNextWorkingDay` / `MoveToPreviousWorkingDay` | Skips past non-working days (honouring `skipWeekends` / `skipNonWorkingDates`, capped by `maxSearchDays`) to the next / previous working day. |
+| `MoveToNextWeekday` / `MoveToPreviousWeekday` | Moves to the `dayOfWeek` on or after / on or before the actual date, ignoring the working week and other holidays. Without `dayOfWeek` the date is unchanged. |
+| `MoveToNextWorkingDay` / `MoveToPreviousWorkingDay` | Starting the day after / before the actual date, skips the days `skipWeekends` (default `true`) and `skipNonWorkingDates` (default `false`) block, scanning at most `maxSearchDays` days (default `7`; at the bound the last day scanned is used). |
 | `ReplaceWithRule` | Replaces the date with the occurrence of the rule named by `notableDateRef` / `ruleRef`. |
 | `Suppress` | Drops the occurrence. |
 | `Custom` | Delegates to a registered <xref:Bodu.Globalization.Calendar.IAdjustmentHandler> named by `handlerKey`. |
 
 ### `<Emission>` - what is emitted
 
-`<Emission>` has a required `mode` (a <xref:Bodu.Globalization.Calendar.RangeResolution.EmissionMode> value) and optional `reason` and `nonWorking` attributes. The `reason` is carried into `NotableDate.AdjustmentReason`.
+`<Emission>` has a required `mode` (a <xref:Bodu.Globalization.Calendar.RangeResolution.EmissionMode> value) and optional `reason` and `nonWorking` attributes. The `reason` is carried into `NotableDate.AdjustmentReason`; `nonWorking`, when set, replaces the rule's flag on the observed occurrence (`NotableDate.IsNonWorkingDay`) and decides whether it claims its day.
 
 | `mode` | Emits |
 |---|---|
@@ -386,7 +387,7 @@ When `type="Custom"` on a trigger or action, an optional `<Parameters>` block of
 |---|---|---|
 | `Date` | `DateOnly` | The emitted (observed) date - the date to display, after any adjustment. |
 | `ActualDate` | `DateOnly?` | The originally calculated (nominal) date. |
-| `IsObserved` | `bool` | Whether `Date` differs from `ActualDate` because an adjustment applied. |
+| `IsObserved` | `bool` | Whether this is the observed occurrence emitted by a fired adjustment policy; `Date` can equal `ActualDate` when the action left it unchanged. |
 | `EndDate` | `DateOnly` | The inclusive last day (`Date + DurationDays − 1`). |
 | `DurationDays` | `int` | Span in days (`1` for single-day events). |
 | `DisplayName` | `string` | The display name (subject to optional localization). |

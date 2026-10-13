@@ -25,7 +25,8 @@ namespace Bodu.Globalization.Calendar;
 /// IReadOnlyList<NotableDate> dates = service.Resolve(2026, "CA-QC");
 ///
 /// // Replace display names with their French-Canadian forms where the localizer has them.
-/// INotableDateNameLocalizer localizer = new NotableDateNameLocalizer(translations);
+/// INotableDateNameLocalizer localizer = new NotableDateNameLocalizer()
+///     .Register("canada-day", CultureInfo.GetCultureInfo("fr-CA"), "Fête du Canada");
 /// IReadOnlyList<NotableDate> localized = dates.Localize(localizer, CultureInfo.GetCultureInfo("fr-CA"));
 ///]]>
 /// </code>

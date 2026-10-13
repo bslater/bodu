@@ -317,14 +317,19 @@ public sealed partial class NotableDateDocumentBuilder
     /// Serializes the document to a file, inferring the format from the file extension.
     /// </summary>
     /// <param name="path">
-    /// The destination file path. A <c>.xml</c> extension writes XML; a <c>.json</c> extension writes JSON.
+    /// The destination file path. A <c>.xml</c> extension writes XML, a <c>.json</c> extension writes JSON, and a
+    /// <c>.bcal</c> extension writes a binary rule pack.
     /// </param>
     /// <exception cref="ArgumentException">
-    /// <paramref name="path" /> is <see langword="null" />, empty, white-space, or has an unrecognized extension.
+    /// <paramref name="path" /> is <see langword="null" />, empty, white-space, or has an extension other than
+    /// <c>.xml</c>, <c>.json</c>, or <c>.bcal</c>.
     /// </exception>
     /// <exception cref="InvalidOperationException">The document is incomplete.</exception>
     /// <exception cref="NotSupportedException">
     /// A JSON target is requested but the document uses a feature the JSON subset cannot represent.
+    /// </exception>
+    /// <exception cref="NotableDateValidationException">
+    /// A <c>.bcal</c> target is requested and the document produced one or more error diagnostics.
     /// </exception>
     /// <example>
     /// <code language="csharp">
@@ -415,9 +420,22 @@ public sealed partial class NotableDateDocumentBuilder
     /// </param>
     /// <returns>A new <see cref="NotableDateDocumentBuilder" /> populated from the file.</returns>
     /// <exception cref="ArgumentException">
-    /// <paramref name="path" /> is <see langword="null" />, empty, white-space, or has an unrecognized extension.
+    /// <paramref name="path" /> is <see langword="null" />, empty, white-space, or has an extension other than
+    /// <c>.xml</c>, <c>.json</c>, or <c>.bcal</c>.
+    /// </exception>
+    /// <exception cref="NotSupportedException">
+    /// <paramref name="path" /> has a <c>.bcal</c> extension: a binary rule pack is compiled output that cannot be
+    /// reopened for editing (load it with <see cref="NotableDateResourceLoader.LoadBinary(Stream)" />).
     /// </exception>
     /// <exception cref="FormatException">The file content is not a well-formed notable-date document.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// A <c>.json</c> file carries a value of the wrong JSON type (for example a string where a number belongs); see
+    /// <see cref="FromJson(string)" />.
+    /// </exception>
+    /// <remarks>
+    /// Like <see cref="FromXml(string)" /> and <see cref="FromJson(string)" />, loading does not validate the document;
+    /// see their remarks.
+    /// </remarks>
     public static NotableDateDocumentBuilder Load(string path)
     {
         ThrowHelper.ThrowIfNullOrWhiteSpace(path);
@@ -444,7 +462,7 @@ public sealed partial class NotableDateDocumentBuilder
     /// </summary>
     /// <param name="path">The file path to inspect.</param>
     /// <returns>The inferred serialization format.</returns>
-    /// <exception cref="ArgumentException">The extension is neither <c>.xml</c> nor <c>.json</c>.</exception>
+    /// <exception cref="ArgumentException">The extension is not <c>.xml</c>, <c>.json</c>, or <c>.bcal</c>.</exception>
     private static NotableDateDocumentFormat InferFormat(string path)
     {
         string extension = Path.GetExtension(path);
