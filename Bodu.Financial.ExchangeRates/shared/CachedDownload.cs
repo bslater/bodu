@@ -44,6 +44,35 @@ internal static class CachedDownload
         Func<Uri> url,
         CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        ThrowHelper.ThrowIfNull(cache);
+        ThrowHelper.ThrowIfNull(httpClient);
+        ThrowHelper.ThrowIfNull(url);
+
+        return cache.TryGet(key, refreshInterval, out byte[]? cached, out DateTimeOffset? cachedAtUtc)
+            ? ValueTask.FromResult<(byte[] Bytes, DateTimeOffset? CachedAtUtc)>((cached, cachedAtUtc))
+            : DownloadAsync(cache, key, httpClient, url(), cancellationToken);
+    }
+
+    /// <summary>
+    /// Downloads a unit's bytes and caches them.
+    /// </summary>
+    /// <typeparam name="TKey">The type identifying a download unit.</typeparam>
+    /// <param name="cache">The byte cache to fill.</param>
+    /// <param name="key">The download unit.</param>
+    /// <param name="httpClient">The client that downloads the unit.</param>
+    /// <param name="url">The unit's address.</param>
+    /// <param name="cancellationToken">A token to observe while downloading.</param>
+    /// <returns>A task that yields the downloaded bytes, with no cached time.</returns>
+    private static async ValueTask<(byte[] Bytes, DateTimeOffset? CachedAtUtc)> DownloadAsync<TKey>(
+        IByteCache<TKey> cache,
+        TKey key,
+        HttpClient httpClient,
+        Uri url,
+        CancellationToken cancellationToken)
+    {
+        byte[] bytes = await httpClient.GetByteArrayAsync(url, cancellationToken).ConfigureAwait(false);
+        cache.Store(key, bytes);
+
+        return (bytes, null);
     }
 }
