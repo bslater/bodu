@@ -88,7 +88,7 @@ The hooks combine naturally: `OnSerializing` keeps a computed member fresh at th
 
 ```csharp
 using Bodu.Text.Bencode;
-using Bodu.Text.Bencode.Serialization;
+using Bodu.Text.Serialization;
 
 public sealed class Manifest : IOnSerializing, IOnDeserialized
 {

@@ -157,7 +157,7 @@ The generic forms expose a public parameterless constructor, which is what makes
 
 ## Pattern 6 - Fail clearly on malformed data
 
-By the time `Read` runs, the document has already parsed - a syntactically malformed document raises <xref:Bodu.Text.Bencode.BencodeFormatException> before any converter is consulted. What a converter must handle is a *well-formed value that does not fit*: the wrong kind, or text that does not parse into the target type. Signal that by throwing <xref:Bodu.Text.Bencode.BencodeSerializationException> - the same type the built-in converters throw, so callers need one catch clause regardless of which converter rejected the value. Hardening the `PointConverter` from Pattern 1:
+The reader validates the document token by token as the serializer reads it, so a syntactically malformed document raises <xref:Bodu.Text.Bencode.BencodeFormatException> wherever the reader meets the fault: before a converter is consulted, inside a converter's own `reader.Read()` or `Skip()` call, or after the converter returns. Let that exception propagate rather than catching it in a converter. What a converter must handle is a *well-formed value that does not fit*: the wrong kind, or text that does not parse into the target type. Signal that by throwing <xref:Bodu.Text.Bencode.BencodeSerializationException> - the same type the built-in converters throw, so callers need one catch clause regardless of which converter rejected the value. Hardening the `PointConverter` from Pattern 1:
 
 ```csharp
 public override Point Read(ref Utf8BencodeReader reader, Type typeToConvert, BencodeSerializerOptions options)
@@ -259,13 +259,16 @@ deserialization. After the call returns, inspect `errors` to decide whether the
 result is trustworthy.
 
 **Where the two exception families fit.** Recovery only applies to *well-formed*
-documents - a syntactically broken document raises the format exception
-(<xref:Bodu.Text.Bencode.BencodeFormatException>) during parsing, before any
-converter runs, and no converter can intercept it. Once `Read` is executing, the
-document parsed; from there you choose between recovering (default, partial, or
-collect) and rejecting with the serialization exception
+values. `Utf8BencodeReader` validates the bytes as it reads them, so a
+syntactically broken document raises the format exception
+(<xref:Bodu.Text.Bencode.BencodeFormatException>) wherever the reader meets the
+fault - possibly during a converter's own `reader.Read()` or `Skip()` call, and
+possibly after earlier members' converters have run. A converter must not catch
+and swallow it: the reader cannot continue past malformed bytes. For a value that
+is well formed but does not fit, you choose between recovering (default, partial,
+or collect) and rejecting with the serialization exception
 (<xref:Bodu.Text.Bencode.BencodeSerializationException>). Reserve the format
-exception for the parser; never throw it from a converter.
+exception for the reader; never throw it from a converter.
 
 ## Design notes - statelessness and caching
 

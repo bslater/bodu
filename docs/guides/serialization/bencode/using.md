@@ -30,7 +30,7 @@ FileEntry entry = BencodeSerializer.Deserialize<FileEntry>(payload);
 | `object` members | runtime type on write, `BencodeElement` on read |
 | `BencodeNode` / `BencodeElement` / `BencodeDocument` | the value's own kind |
 
-Output is always canonical: dictionary entries are emitted in ascending bytewise key order regardless of member declaration order, and a `null` member is omitted on write. Dictionary keys may be strings, any integer type, an `enum`, a `Guid`, a `bool`, or a `char` - non-string keys are written as their invariant text and parsed back on read. Because every key kind is read as text, a document key that is not valid UTF-8 cannot be read into a dictionary, or into extension data, and throws `BencodeSerializationException` at the key rather than being altered; read such documents, for example a tracker's scrape response keyed by info hashes, through `BencodeDocument` or `Utf8BencodeReader`. A key the model does not map is skipped as usual. A `Stack<T>` round-trip reverses the stack: the writer emits pop order and the reader pushes in document order. The full per-type catalog, including each converter's read tolerances, is in the [built-in converter catalog](builtin-converters.md).
+Output is always canonical: dictionary entries are emitted in ascending bytewise key order regardless of member declaration order, and a `null` member is omitted on write. Dictionary keys may be strings, the fixed-width integer types `sbyte` through `ulong`, an `enum`, a `Guid`, a `bool`, or a `char` - non-string keys are written as their invariant text and parsed back on read. Because every key kind is read as text, a document key that is not valid UTF-8 cannot be read into a dictionary, or into extension data, and throws `BencodeSerializationException` at the key rather than being altered; read such documents, for example a tracker's scrape response keyed by info hashes, through `BencodeDocument` or `Utf8BencodeReader`. A key the model does not map is skipped as usual. A `Stack<T>` round-trip reverses the stack: the writer emits pop order and the reader pushes in document order. The full per-type catalog, including each converter's read tolerances, is in the [built-in converter catalog](builtin-converters.md).
 
 ## Pattern 3 - Worked example: torrent-style metadata
 
@@ -38,7 +38,7 @@ Bencode's natural habitat is torrent metadata: text fields, integers, a nested `
 
 ```csharp
 using Bodu.Text.Bencode;
-using Bodu.Text.Bencode.Serialization;
+using Bodu.Text.Serialization;
 
 public sealed class Torrent
 {

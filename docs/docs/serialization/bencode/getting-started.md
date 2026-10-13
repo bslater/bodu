@@ -69,9 +69,8 @@ using Bodu.Text.Bencode.Document;
 
 using BencodeDocument doc = BencodeDocument.Parse(payload);
 
-BencodeElement info = doc.RootElement.GetProperty("info");
-string name   = info.GetProperty("name").GetString();        // "ubuntu.iso"
-long   length = info.GetProperty("piece length").GetInt64(); // 262144
+string name   = doc.RootElement.GetProperty("Name").GetString();  // "ubuntu.iso"
+long   length = doc.RootElement.GetProperty("Length").GetInt64(); // 1024
 ```
 
 `BencodeDocument` is disposable - wrap it in `using` and copy out any values that must outlive it, since disposal returns its pooled buffer.

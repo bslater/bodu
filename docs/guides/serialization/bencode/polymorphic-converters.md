@@ -139,6 +139,9 @@ using Bodu.Text.Bencode.Writer;
 
 public sealed class ShapeConverter : BencodeConverter<Shape>
 {
+    public override bool CanConvert(Type typeToConvert) =>
+        typeof(Shape).IsAssignableFrom(typeToConvert);
+
     public override Shape Read(ref Utf8BencodeReader reader, Type typeToConvert, BencodeSerializerOptions options)
     {
         if (reader.TokenType != BencodeTokenType.StartDictionary)
@@ -201,6 +204,12 @@ public sealed class ShapeConverter : BencodeConverter<Shape>
 
 The key moves:
 
+- **Override `CanConvert` on the converter too.** After a factory creates a
+  converter the serializer verifies that the *converter* accepts the
+  requested type. `BencodeConverter<Shape>.CanConvert` defaults to an exact
+  match, which would reject `Circle` (with an `InvalidOperationException`)
+  when the factory is asked for a member declared as the subtype; widening
+  it to `IsAssignableFrom` keeps the factory and its product in agreement.
 - **Walk the token stream.** A `StartDictionary` / `PropertyName` / value /
   `EndDictionary` sequence projects the dictionary onto a uniform read
   loop. Call `Skip()` to step over an unknown member's whole value,

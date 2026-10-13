@@ -87,8 +87,8 @@ public sealed class Snapshot : IOnSerialized
 The hooks combine naturally: `OnSerializing` keeps a computed member fresh at the moment of writing, and `OnDeserialized` rejects a document where the same invariant does not hold. Throw the format's serialization exception (<xref:Bodu.Text.Toml.TomlSerializationException>) so callers handle validation failures in the same catch clause as every other binding error:
 
 ```csharp
+using Bodu.Text.Serialization;
 using Bodu.Text.Toml;
-using Bodu.Text.Toml.Serialization;
 
 public sealed class Manifest : IOnSerializing, IOnDeserialized
 {

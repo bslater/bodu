@@ -140,7 +140,7 @@ await using (FileStream stream = File.OpenRead("server.toml"))
 }
 ```
 
-Synchronous `Stream` overloads are also provided.
+A synchronous `Deserialize<T>(Stream)` overload is also provided; writing to a stream is asynchronous only.
 
 ## When something goes wrong
 

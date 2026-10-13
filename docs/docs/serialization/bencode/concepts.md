@@ -28,7 +28,7 @@ Every overload accepts an optional <xref:Bodu.Text.Bencode.BencodeSerializerOpti
 |---|---|---|
 | `Converters` | empty | The user converter list, searched ahead of the built-ins. |
 | `PropertyNamingPolicy` | `null` | The <xref:Bodu.Text.Serialization.NamingPolicy> applied to member names with no explicit `[PropertyName]`. |
-| `PropertyNameCaseInsensitive` | `true` | Whether a document key matches a member name ignoring case on read. |
+| `PropertyNameCaseInsensitive` | `true` | Whether a document key matches a member name ignoring case on read. Under the default, two keys that differ only in case (`Name`, `name`) bind to the same member, so a document carrying both is rejected as a duplicate member unless `AllowDuplicateKeys` is set; set this to `false` to bind each key only to its exact wire name. |
 | `IncludeFields` | `false` | Whether public fields join properties as serializable members. |
 | `DefaultIgnoreCondition` | `Never` | The fallback <xref:Bodu.Text.Serialization.IgnoreCondition> for members with no explicit `[Ignore]`. |
 | `UnmappedMemberHandling` | `Skip` | Whether an unmapped key is skipped or rejected on read (<xref:Bodu.Text.Serialization.UnmappedMemberHandling>). |
