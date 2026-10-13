@@ -22,10 +22,11 @@ namespace Bodu.Financial.ExchangeRates;
 /// </para>
 /// <para>
 /// <strong>Refresh.</strong> The inherited <see cref="WebRateProviderOptions.RefreshInterval" /> governs both the
-/// in-memory months and the on-disk cache. A closed month's report is immutable and is served from cache regardless of
-/// age; only the current, still-growing month is subject to the interval. In memory, a loaded month serves for good a
-/// request that ends before the day it was downloaded, or on a day it returned rates for; a request that reaches a
-/// later day of the month downloads the month again once the interval has passed.
+/// in-memory months and the on-disk cache. A report cached after its month closed is immutable and is served from cache
+/// regardless of age; a report cached while its month was still growing is subject to the interval, even once the month
+/// has closed. In memory, a loaded month serves for good a request that ends before the day it was downloaded, or on a
+/// day it returned rates for; a request that reaches a later day of the month downloads the month again once the
+/// interval has passed.
 /// </para>
 /// <para>
 /// <strong>USD-anchored, bulk.</strong> The report quotes every reported currency against the US dollar for each

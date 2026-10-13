@@ -15,7 +15,8 @@ namespace Bodu.Financial.ExchangeRates;
 /// <remarks>
 /// The IMF publishes one monthly report covering every reported currency for each business day of the month. A month is
 /// therefore the natural download unit: fetching it warms the store for every currency and every business day at once.
-/// The report for a closed month is immutable, which the on-disk cache exploits to keep past months indefinitely.
+/// The report for a closed month is immutable, which the on-disk cache exploits to keep a report downloaded after its
+/// month closed indefinitely.
 /// </remarks>
 public sealed class ImfReportMonth
     : IEquatable<ImfReportMonth>

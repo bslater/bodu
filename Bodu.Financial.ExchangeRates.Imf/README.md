@@ -53,9 +53,10 @@ foreach (ImfSeriesInfo info in provider.GetAvailablePairs())
   `Chinese yuan`, …). `CurrencyNames` maps each label to its ISO 4217 code; a label absent
   from the map is resolved directly against the ISO catalogue, and one that resolves
   neither way is skipped. Extend `CurrencyNames` to add labels not seeded by default.
-- **Monthly cache.** Downloaded reports are cached on disk (configurable). A closed
-  month's report is immutable and is served from cache indefinitely; only the current,
-  still-growing month is refreshed on a TTL (`RefreshInterval`). In memory, likewise, a
+- **Monthly cache.** Downloaded reports are cached on disk (configurable). A report
+  downloaded after its month closed is immutable and is served from cache indefinitely; a
+  report downloaded while its month was still growing is refreshed on a TTL
+  (`RefreshInterval`), even once the month has closed. In memory, likewise, a
   request that reaches a day the IMF had not yet published when its month was loaded
   downloads the month again once `RefreshInterval` has passed. For a durable,
   cross-provider cache, compose with `AddCachedRateProvider<…>` from the
@@ -73,7 +74,7 @@ foreach (ImfSeriesInfo info in provider.GetAvailablePairs())
 | `ReportType` | `REP` | The report-type selector (representative rates). |
 | `EnableDiskCache` | `true` | Persist downloaded reports to an on-disk cache. |
 | `CacheDirectory` | `null` (temp `bodu-imf`) | The on-disk cache directory. |
-| `RefreshInterval` | 12 h | How long the current month's report, cached or loaded, stays fresh (closed months never expire). |
+| `RefreshInterval` | 12 h | How long a month's report downloaded while the month was open, cached or loaded, stays fresh (a report downloaded after its month closed never expires). |
 | `CurrencyNames` | seeded | Maps IMF currency labels to ISO 4217 codes; extend to add labels. |
 | `HttpTimeout` | 30 s | Applied to the `HttpClient` the provider creates, or by the DI registration. |
 | `AllowSynchronousNetworkAccess` | `false` | Opt in to blocking on-demand fetches from synchronous lookups. |

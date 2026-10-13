@@ -12,10 +12,10 @@ namespace Bodu.Financial.ExchangeRates;
 /// Caches the raw bytes of downloaded IMF monthly report files so they need not be re-fetched on every load.
 /// </summary>
 /// <remarks>
-/// A report for a closed month is immutable, so a cached entry for a past month is always fresh; the report for the
-/// current month is still accumulating business days, so it is treated as stale once it is older than a caller-supplied
-/// refresh interval. Implementations are expected to be resilient: a cache failure should manifest as a miss rather
-/// than an exception that breaks rate retrieval.
+/// A report for a closed month is immutable, so an entry cached after its month closed is always fresh; an entry cached
+/// while its month was still accumulating business days is treated as stale once it is older than a caller-supplied
+/// refresh interval, even after the month has closed. Implementations are expected to be resilient: a cache failure
+/// should manifest as a miss rather than an exception that breaks rate retrieval.
 /// </remarks>
 public interface IImfReportCache
 {
