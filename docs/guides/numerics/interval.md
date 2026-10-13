@@ -58,6 +58,14 @@ bool isPercentage = true;
 var range = new Interval<double>(0.0, 100.0, true, isPercentage);
 ```
 
+The constructor and every factory, the half-bounded `AtLeast` /
+`GreaterThan` / `AtMost` / `LessThan` included, reject a NaN endpoint
+with `ArgumentException` naming the endpoint, since NaN is unordered.
+An infinity is an ordinary endpoint value of a floating-point `T`:
+`Interval<double>.Closed(0, double.PositiveInfinity)` is bounded
+(`IsBounded` is `true`) and is a different interval from the unbounded
+`Interval<double>.AtLeast(0)`.
+
 ## Empty intervals
 
 An interval is **empty** when its bounds do not admit any value.
