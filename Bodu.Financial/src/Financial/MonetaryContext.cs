@@ -113,7 +113,8 @@ public sealed record MonetaryContext
     /// rounding entirely.
     /// </returns>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// <see cref="ScalePolicy" /> is not a defined value, or <see cref="ScalePolicy" /> is
+    /// <paramref name="currencyMinorUnits" /> is outside the range 0 to 28, whatever the scale policy;
+    /// <see cref="ScalePolicy" /> is not a defined value; or <see cref="ScalePolicy" /> is
     /// <see cref="ScalePolicy.Custom" /> and <see cref="CustomScale" /> is outside the range 0 to 28.
     /// </exception>
     /// <exception cref="ArgumentException">
@@ -122,6 +123,7 @@ public sealed record MonetaryContext
     /// </exception>
     public int ResolveScale(int currencyMinorUnits)
     {
+        ThrowHelper.ThrowIfOutOfRange(currencyMinorUnits, 0, 28);
         ThrowHelper.ThrowIfEnumValueIsUndefined(ScalePolicy);
 
         return ScalePolicy switch
@@ -143,10 +145,9 @@ public sealed record MonetaryContext
     /// effect.
     /// </returns>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// <see cref="ScalePolicy" /> is not a defined value; <see cref="ScalePolicy" /> is
-    /// <see cref="ScalePolicy.Custom" /> and <see cref="CustomScale" /> is outside the range 0 to 28; or
-    /// <see cref="ScalePolicy" /> is <see cref="ScalePolicy.CurrencyMinorUnits" /> and
-    /// <paramref name="currencyMinorUnits" /> is greater than 28.
+    /// <paramref name="currencyMinorUnits" /> is outside the range 0 to 28, whatever the scale policy;
+    /// <see cref="ScalePolicy" /> is not a defined value; or <see cref="ScalePolicy" /> is
+    /// <see cref="ScalePolicy.Custom" /> and <see cref="CustomScale" /> is outside the range 0 to 28.
     /// </exception>
     /// <exception cref="ArgumentException">
     /// <see cref="ScalePolicy" /> is <see cref="ScalePolicy.Custom" /> but <see cref="CustomScale" /> is
