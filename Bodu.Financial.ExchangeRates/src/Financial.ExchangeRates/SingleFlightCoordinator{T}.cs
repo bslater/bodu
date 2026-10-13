@@ -17,9 +17,9 @@ namespace Bodu.Financial.ExchangeRates;
 /// <para>
 /// This is the classic single-flight (request-coalescing) pattern: when several callers request the same key while a
 /// fetch is already running, they join the running task instead of starting duplicate work. The in-flight entry is
-/// removed as soon as the operation completes - including when it faults - so a failure never poisons the key and the
-/// next caller starts a fresh attempt. Callers that join an in-flight operation observe its outcome, including its
-/// exception.
+/// removed as soon as the operation completes, including when it faults, and before its callers observe the outcome, so
+/// a failure never poisons the key and the next caller starts a fresh attempt. Callers that join an in-flight operation
+/// observe its outcome, including its exception.
 /// </para>
 /// <para>
 /// <strong>Cancellation.</strong> The cancellation-aware overloads decouple the shared operation's lifetime from any
@@ -147,7 +147,7 @@ public sealed class SingleFlightCoordinator<TKey>
     /// </returns>
     /// <remarks>
     /// The winner starts a detached fulfillment task that runs <paramref name="operation" /> with
-    /// <see cref="CancellationToken.None" />, completes the shared promise, and removes the in-flight entry, so the
+    /// <see cref="CancellationToken.None" />, removes the in-flight entry, and completes the shared promise, so the
     /// operation reaches completion for every joiner even when the winner abandons its own wait. Every caller awaits
     /// the shared promise through <see cref="Task.WaitAsync(CancellationToken)" /> so cancellation is observed per
     /// caller and never propagates to the shared operation.
@@ -179,7 +179,7 @@ public sealed class SingleFlightCoordinator<TKey>
     /// <returns>A task that yields the result of the operation for <paramref name="key" /> for this caller.</returns>
     /// <remarks>
     /// The winner starts a detached fulfillment task that runs <paramref name="operation" /> with
-    /// <see cref="CancellationToken.None" />, completes the shared promise, and removes the in-flight entry, so the
+    /// <see cref="CancellationToken.None" />, removes the in-flight entry, and completes the shared promise, so the
     /// operation reaches completion for every joiner even when the winner abandons its own wait. Every caller awaits
     /// the shared promise through <see cref="Task{TResult}.WaitAsync(CancellationToken)" /> so cancellation is observed
     /// per caller and never propagates to the shared operation. The key is bound to a single result type by contract.
@@ -211,24 +211,29 @@ public sealed class SingleFlightCoordinator<TKey>
     /// <returns>A task that completes when the operation has completed and the promise has been fulfilled.</returns>
     /// <remarks>
     /// Runs detached from the winning caller's wait. The operation receives <see cref="CancellationToken.None" /> so it
-    /// runs to completion regardless of which caller cancels, and the in-flight entry is removed in the
-    /// <see langword="finally" /> block so a later call for the key starts a fresh attempt.
+    /// runs to completion regardless of which caller cancels. The in-flight entry is removed before the promise
+    /// completes, so a call made by any caller that has observed the outcome starts a fresh attempt.
     /// </remarks>
     private async Task FulfillAsync(TKey key, Func<CancellationToken, Task> operation, TaskCompletionSource promise)
     {
+        Exception? fault = null;
         try
         {
             await operation(CancellationToken.None).ConfigureAwait(false);
-            promise.SetResult();
         }
         catch (Exception ex)
         {
-            promise.SetException(ex);
+            fault = ex;
         }
-        finally
-        {
-            _inFlight.TryRemove(new KeyValuePair<TKey, Task>(key, promise.Task));
-        }
+
+        // Release the key before completing the promise: a caller resumed by the completion may call again at once,
+        // and that call must start a fresh attempt rather than join the completed entry.
+        _inFlight.TryRemove(new KeyValuePair<TKey, Task>(key, promise.Task));
+
+        if (fault is null)
+            promise.SetResult();
+        else
+            promise.SetException(fault);
     }
 
     /// <summary>
@@ -244,23 +249,28 @@ public sealed class SingleFlightCoordinator<TKey>
     /// <returns>A task that completes when the operation has completed and the promise has been fulfilled.</returns>
     /// <remarks>
     /// Runs detached from the winning caller's wait. The operation receives <see cref="CancellationToken.None" /> so it
-    /// runs to completion regardless of which caller cancels, and the in-flight entry is removed in the
-    /// <see langword="finally" /> block so a later call for the key starts a fresh attempt.
+    /// runs to completion regardless of which caller cancels. The in-flight entry is removed before the promise
+    /// completes, so a call made by any caller that has observed the outcome starts a fresh attempt.
     /// </remarks>
     private async Task FulfillAsync<TResult>(TKey key, Func<CancellationToken, Task<TResult>> operation, TaskCompletionSource<TResult> promise)
     {
+        TResult result = default!;
+        Exception? fault = null;
         try
         {
-            TResult result = await operation(CancellationToken.None).ConfigureAwait(false);
-            promise.SetResult(result);
+            result = await operation(CancellationToken.None).ConfigureAwait(false);
         }
         catch (Exception ex)
         {
-            promise.SetException(ex);
+            fault = ex;
         }
-        finally
-        {
-            _inFlight.TryRemove(new KeyValuePair<TKey, Task>(key, promise.Task));
-        }
+
+        // Release the key before completing the promise, for the reason the non-generic overload gives.
+        _inFlight.TryRemove(new KeyValuePair<TKey, Task>(key, promise.Task));
+
+        if (fault is null)
+            promise.SetResult(result);
+        else
+            promise.SetException(fault);
     }
 }

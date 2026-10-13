@@ -148,6 +148,91 @@ public sealed class SingleFlightCoordinatorTests
     }
 
     /// <summary>
+    /// Verifies that a caller who observes a fault and calls again for the same key, before the faulted operation's
+    /// bookkeeping has finished, starts a fresh attempt rather than receiving the earlier fault.
+    /// </summary>
+    [TestMethod]
+    public async Task RunAsync_WhenCallerRetriesAsSoonAsItObservesAFault_ShouldStartAFreshAttempt()
+    {
+        SingleFlightCoordinator<string> coordinator = new();
+        TaskCompletionSource gate = new(TaskCreationOptions.RunContinuationsAsynchronously);
+
+        async Task FaultingOperation()
+        {
+            await gate.Task;
+            throw new InvalidOperationException("boom");
+        }
+
+        Task first = coordinator.RunAsync("key", FaultingOperation);
+
+        async Task<bool> ObserveFaultThenRetryAsync()
+        {
+            try
+            {
+                await first;
+            }
+            catch (InvalidOperationException)
+            {
+            }
+
+            bool reran = false;
+            try
+            {
+                await coordinator.RunAsync("key", () =>
+                {
+                    reran = true;
+                    return Task.CompletedTask;
+                });
+            }
+            catch (InvalidOperationException)
+            {
+            }
+
+            return reran;
+        }
+
+        // The retry captures a context that runs its continuation inside the completion of the shared operation, the
+        // earliest moment a caller can observe the fault.
+        Task<bool> retried = RunOnInlineContext(ObserveFaultThenRetryAsync);
+        gate.SetResult();
+
+        Assert.IsTrue(await retried);
+    }
+
+    /// <summary>
+    /// Verifies that a caller of the result-producing overload who observes a result and calls again for the same key,
+    /// before the completed operation's bookkeeping has finished, starts a fresh attempt rather than receiving the
+    /// earlier result.
+    /// </summary>
+    [TestMethod]
+    public async Task RunAsync_OfTResult_WhenCallerRetriesAsSoonAsItObservesAResult_ShouldStartAFreshAttempt()
+    {
+        SingleFlightCoordinator<string> coordinator = new();
+        TaskCompletionSource gate = new(TaskCreationOptions.RunContinuationsAsynchronously);
+
+        async Task<int> FirstOperation()
+        {
+            await gate.Task;
+            return 1;
+        }
+
+        Task<int> first = coordinator.RunAsync("key", FirstOperation);
+
+        async Task<int> ObserveResultThenRetryAsync()
+        {
+            _ = await first;
+            return await coordinator.RunAsync("key", () => Task.FromResult(2));
+        }
+
+        // The retry captures a context that runs its continuation inside the completion of the shared operation, the
+        // earliest moment a caller can observe the result.
+        Task<int> retried = RunOnInlineContext(ObserveResultThenRetryAsync);
+        gate.SetResult();
+
+        Assert.AreEqual(2, await retried);
+    }
+
+    /// <summary>
     /// Verifies that the result-producing overload runs the operation once for concurrent same-key callers and yields
     /// the shared result to each of them.
     /// </summary>
@@ -402,5 +487,26 @@ public sealed class SingleFlightCoordinatorTests
         }, CancellationToken.None);
 
         Assert.IsTrue(reran);
+    }
+
+    /// <summary>
+    /// Starts an asynchronous method with <see cref="InlineSynchronizationContext" /> as the current context, so each of
+    /// its awaits resumes inline on the thread that completes the awaited task.
+    /// </summary>
+    /// <typeparam name="T">The method's result type.</typeparam>
+    /// <param name="method">The asynchronous method to start.</param>
+    /// <returns>The task the method returns.</returns>
+    private static Task<T> RunOnInlineContext<T>(Func<Task<T>> method)
+    {
+        SynchronizationContext? previous = SynchronizationContext.Current;
+        SynchronizationContext.SetSynchronizationContext(new InlineSynchronizationContext());
+        try
+        {
+            return method();
+        }
+        finally
+        {
+            SynchronizationContext.SetSynchronizationContext(previous);
+        }
     }
 }
