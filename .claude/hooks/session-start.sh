@@ -1,17 +1,19 @@
 #!/bin/bash
 # Installs the .NET SDK that global.json pins, and the .NET 8 runtime, on
 # session start so the agent can run `dotnet build` and `dotnet test` against
-# bodu.slnx, and repairs the dotnet-dnceng Claude Code plugin whose upstream
-# manifest currently fails validation (see repair_dnceng_plugin below). Only
-# runs in the remote Claude Code on the web environment; on a developer's local
-# machine the SDK is expected to be installed already.
+# bodu.slnx, installs the SDK that Bodu.CodeStyle/global.json pins for the
+# separate Bodu.CodeStyle solution, and repairs the dotnet-dnceng Claude Code
+# plugin whose upstream manifest currently fails validation (see
+# repair_dnceng_plugin below). Only runs in the remote Claude Code on the web
+# environment; on a developer's local machine the SDK is expected to be
+# installed already.
 #
 # SDK 10.0 is required because the solution uses C# 14 language features (for
 # example the `field` keyword on semi-auto properties). An older SDK such as
 # 8.0 cannot compile the sources. global.json pins the exact 10.0 SDK that CI
 # builds with, so the agent sees the same analyzer warnings CI does.
 #
-# The script is idempotent: when the pinned SDK and a .NET 8 runtime are
+# The script is idempotent: when both pinned SDKs and a .NET 8 runtime are
 # already installed it installs nothing, so re-invocation (resume, clear,
 # compact) is essentially free.
 set -euo pipefail
@@ -121,8 +123,16 @@ net8_runtime_installed() {
     command -v dotnet >/dev/null 2>&1 && dotnet --list-runtimes 2>/dev/null | grep -q '^Microsoft\.NETCore\.App 8\.'
 }
 
+# Bodu.CodeStyle is a separate solution with its own global.json, so `dotnet
+# --version` in its folder succeeds only when an SDK satisfying that pin is
+# installed. Without that global.json there is nothing to install.
+codestyle_sdk_installed() {
+    [ -f "$repo_root/Bodu.CodeStyle/global.json" ] || return 0
+    command -v dotnet >/dev/null 2>&1 && (cd "$repo_root/Bodu.CodeStyle" && dotnet --version >/dev/null 2>&1)
+}
+
 # Fast path: nothing to install.
-if pinned_sdk_installed && net8_runtime_installed; then
+if pinned_sdk_installed && net8_runtime_installed && codestyle_sdk_installed; then
     exit 0
 fi
 
@@ -155,6 +165,38 @@ fi
 
 # A fresh installation is not on PATH yet.
 command -v dotnet >/dev/null 2>&1 || ln -sfn "$dotnet_root/dotnet" /usr/local/bin/dotnet
+
+# ---------------------------------------------------------------------------
+# Bodu.CodeStyle SDK
+#
+# Bodu.CodeStyle/global.json pins the SDK line codestyle-build-test.yml builds
+# that solution with (8.0.100, rolling forward to later feature bands). Install
+# the newest SDK of the pinned major.minor channel, which satisfies such a pin,
+# and the exact pinned version only if it does not. --skip-non-versioned-files
+# keeps the newer dotnet executable the installation already has. A failure
+# leaves bodu.slnx buildable, so it is reported and does not stop the session.
+# ---------------------------------------------------------------------------
+install_codestyle_sdk() {
+    local global_json pinned channel
+    global_json="$repo_root/Bodu.CodeStyle/global.json"
+    pinned="$(sed -n 's/.*"version"[[:space:]]*:[[:space:]]*"\([0-9][0-9.]*\)".*/\1/p' "$global_json" | head -1)"
+    channel="${pinned%.*}"
+
+    if [ -n "$pinned" ]; then
+        echo "[session-start] Installing the newest .NET $channel SDK, for Bodu.CodeStyle/global.json ($pinned), into $dotnet_root..."
+        bash "$install_script" --channel "$channel" --install-dir "$dotnet_root" --no-path --skip-non-versioned-files || true
+        codestyle_sdk_installed && return 0
+    fi
+
+    echo "[session-start] Installing the SDK Bodu.CodeStyle/global.json pins into $dotnet_root..."
+    bash "$install_script" --jsonfile "$global_json" --install-dir "$dotnet_root" --no-path --skip-non-versioned-files || true
+    codestyle_sdk_installed
+}
+
+if ! codestyle_sdk_installed; then
+    install_codestyle_sdk \
+        || echo "[session-start] The Bodu.CodeStyle SDK install failed; that solution cannot be built in this session." >&2
+fi
 
 # Suppress first-run telemetry/welcome work so subsequent `dotnet` commands
 # don't pay that cost or write to stdout in unexpected places.
