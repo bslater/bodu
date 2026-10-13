@@ -119,4 +119,97 @@ public partial class IntervalTests
         Assert.IsTrue(interval.Contains(7));
         Assert.IsFalse(interval.Contains(8));
     }
+
+    /// <summary>
+    /// Verifies that <see cref="Interval{T}.AtLeast(T)" /> rejects a NaN endpoint with <see cref="ArgumentException" />
+    /// naming <c>lower</c>, as the constructor does.
+    /// </summary>
+    [TestMethod]
+    public void AtLeast_WhenEndpointIsNaN_ShouldThrowArgumentException()
+    {
+        var ex = Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            _ = Interval<double>.AtLeast(double.NaN);
+        });
+
+        Assert.AreEqual("lower", ex.ParamName);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Interval{T}.GreaterThan(T)" /> rejects a NaN endpoint with <see cref="ArgumentException" />
+    /// naming <c>lower</c>, as the constructor does.
+    /// </summary>
+    [TestMethod]
+    public void GreaterThan_WhenEndpointIsNaN_ShouldThrowArgumentException()
+    {
+        var ex = Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            _ = Interval<double>.GreaterThan(double.NaN);
+        });
+
+        Assert.AreEqual("lower", ex.ParamName);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Interval{T}.AtMost(T)" /> rejects a NaN endpoint with <see cref="ArgumentException" />
+    /// naming <c>upper</c>, as the constructor does.
+    /// </summary>
+    [TestMethod]
+    public void AtMost_WhenEndpointIsNaN_ShouldThrowArgumentException()
+    {
+        var ex = Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            _ = Interval<double>.AtMost(double.NaN);
+        });
+
+        Assert.AreEqual("upper", ex.ParamName);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Interval{T}.LessThan(T)" /> rejects a NaN endpoint with <see cref="ArgumentException" />
+    /// naming <c>upper</c>, as the constructor does.
+    /// </summary>
+    [TestMethod]
+    public void LessThan_WhenEndpointIsNaN_ShouldThrowArgumentException()
+    {
+        var ex = Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            _ = Interval<double>.LessThan(double.NaN);
+        });
+
+        Assert.AreEqual("upper", ex.ParamName);
+    }
+
+    /// <summary>
+    /// Verifies that the bounded factories reject a NaN endpoint with <see cref="ArgumentException" /> naming the
+    /// endpoint, through the constructor's guard.
+    /// </summary>
+    /// <param name="factory">The name of the factory under test.</param>
+    /// <param name="nanLower"><see langword="true" /> to pass NaN as the lower endpoint; otherwise as the upper.</param>
+    /// <param name="expectedParamName">The parameter name the exception must carry.</param>
+    [TestMethod]
+    [DataRow(nameof(Interval<double>.Closed), true, "lower")]
+    [DataRow(nameof(Interval<double>.Open), false, "upper")]
+    [DataRow(nameof(Interval<double>.ClosedOpen), true, "lower")]
+    [DataRow(nameof(Interval<double>.OpenClosed), false, "upper")]
+    [DataRow(nameof(Interval<double>.Singleton), true, "lower")]
+    public void BoundedFactory_WhenEndpointIsNaN_ShouldThrowArgumentException(string factory, bool nanLower, string expectedParamName)
+    {
+        double lower = nanLower ? double.NaN : 0.0;
+        double upper = nanLower ? 1.0 : double.NaN;
+
+        var ex = Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            _ = factory switch
+            {
+                nameof(Interval<double>.Closed) => Interval<double>.Closed(lower, upper),
+                nameof(Interval<double>.Open) => Interval<double>.Open(lower, upper),
+                nameof(Interval<double>.ClosedOpen) => Interval<double>.ClosedOpen(lower, upper),
+                nameof(Interval<double>.OpenClosed) => Interval<double>.OpenClosed(lower, upper),
+                _ => Interval<double>.Singleton(lower),
+            };
+        });
+
+        Assert.AreEqual(expectedParamName, ex.ParamName);
+    }
 }
