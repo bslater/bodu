@@ -135,7 +135,7 @@ internal sealed class CancellableWaiterQueue<TResult>
             : new ValueTask<TResult>(node.Value.Task);
 
     /// <summary>
-    /// Asynchronously waits for a queued waiter to be granted or cancelled through a token that can be canceled.
+    /// Asynchronously waits for a queued waiter to be granted or canceled through a token that can be canceled.
     /// </summary>
     /// <param name="node">The queue node representing the waiter.</param>
     /// <param name="afterUnlinkUnderLock">

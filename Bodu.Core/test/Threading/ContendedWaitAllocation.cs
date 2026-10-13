@@ -20,14 +20,14 @@ internal static class ContendedWaitAllocation
     public const long QueuedWaiterBytes = 192;
 
     /// <summary>
-    /// The most a wait that must queue with a cancellable token may allocate: the waiter, its registration, the boxed
+    /// The most a wait that must queue with a cancelable token may allocate: the waiter, its registration, the boxed
     /// registration state and one state machine (456 bytes), with room for a runtime's layout to differ. A second state
     /// machine wrapped around the first would exceed it.
     /// </summary>
     public const long CancellableQueuedWaiterBytes = 512;
 
     /// <summary>
-    /// The most a write acquisition that must queue with a cancellable token may allocate (528 bytes, with room for a
+    /// The most a write acquisition that must queue with a cancelable token may allocate (528 bytes, with room for a
     /// runtime's layout to differ). A 64-byte delegate created per call for the after-cancellation callback would
     /// exceed it.
     /// </summary>

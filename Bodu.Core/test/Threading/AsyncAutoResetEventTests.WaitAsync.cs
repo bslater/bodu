@@ -127,7 +127,7 @@ public sealed partial class AsyncAutoResetEventTests
     }
 
     /// <summary>
-    /// Verifies that a wait that must queue with a cancellable token allocates its waiter, its registration and the
+    /// Verifies that a wait that must queue with a cancelable token allocates its waiter, its registration and the
     /// queue's one asynchronous state machine, without a second state machine wrapped around it.
     /// </summary>
     [TestMethod]

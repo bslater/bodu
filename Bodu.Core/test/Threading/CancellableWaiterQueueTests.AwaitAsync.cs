@@ -33,7 +33,7 @@ public sealed partial class CancellableWaiterQueueTests
     }
 
     /// <summary>
-    /// Verifies that awaiting without a cancellable token still yields the value the waiter is granted.
+    /// Verifies that awaiting without a cancelable token still yields the value the waiter is granted.
     /// </summary>
     [TestMethod]
     public async Task AwaitAsync_WhenGrantedWithoutCancellationToken_ShouldReturnTheGrant()
@@ -56,7 +56,7 @@ public sealed partial class CancellableWaiterQueueTests
     }
 
     /// <summary>
-    /// Verifies that cancelling the token of a pending wait unlinks the waiter, runs the after-unlink callback under
+    /// Verifies that canceling the token of a pending wait unlinks the waiter, runs the after-unlink callback under
     /// the gate, and surfaces <see cref="TaskCanceledException" /> carrying the token.
     /// </summary>
     [TestMethod]
@@ -86,7 +86,7 @@ public sealed partial class CancellableWaiterQueueTests
     }
 
     /// <summary>
-    /// Verifies that a token cancelled after the waiter has been granted does not replace the grant.
+    /// Verifies that a token canceled after the waiter has been granted does not replace the grant.
     /// </summary>
     [TestMethod]
     public async Task AwaitAsync_WhenTokenCanceledAfterGrant_ShouldReturnTheGrant()
