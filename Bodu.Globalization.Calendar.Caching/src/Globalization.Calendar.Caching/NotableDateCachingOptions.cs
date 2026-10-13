@@ -157,8 +157,11 @@ public sealed class NotableDateCachingOptions
                 nameof(RefreshAheadFraction));
         }
 
-        if (!AreLogLevelsDefined())
+        if (!Enum.IsDefined(CacheHitLogLevel))
             throw new ArgumentException(CalendarCachingResourceStrings.Arg_Invalid_LogLevelUndefined, nameof(CacheHitLogLevel));
+
+        if (!Enum.IsDefined(CacheMissLogLevel))
+            throw new ArgumentException(CalendarCachingResourceStrings.Arg_Invalid_LogLevelUndefined, nameof(CacheMissLogLevel));
     }
 
     /// <summary>
