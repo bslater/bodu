@@ -25,7 +25,10 @@ namespace Bodu.Text.Ini;
 /// beyond the second level is rejected. Property names honour <see cref="IniSerializerOptions.PropertyNamingPolicy" />
 /// and the <see cref="Bodu.Text.Serialization.PropertyNameAttribute" /> family; the callback interfaces (<see cref="Bodu.Text.Serialization.IOnSerializing" />
 /// and its siblings) fire around the mapping. Each member name maps to one key or section, its most derived
-/// declaration: a property or field hidden with the <see langword="new" /> modifier is neither written nor read.
+/// declaration: a property or field hidden with the <see langword="new" /> modifier is neither written nor read. A type
+/// that maps two members to one name is rejected with <see cref="IniSerializationException" /> before anything is read
+/// or written. A member declared with the C# <see langword="required" /> keyword is required, as one marked
+/// <see cref="Bodu.Text.Serialization.RequiredAttribute" /> is: reading a document without its key or section throws.
 /// </para>
 /// <para>
 /// Deserialization always routes through the normalized document model, applying the options' duplicate-section and

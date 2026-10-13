@@ -706,13 +706,23 @@ public static partial class IniSerializer
     /// <param name="type">The type whose members to map.</param>
     /// <param name="options">The serializer options.</param>
     /// <returns>The ordered member descriptors.</returns>
+    /// <exception cref="IniSerializationException">
+    /// Thrown when two members of <paramref name="type" /> map to one name.
+    /// </exception>
     [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
-    private static IEnumerable<Member> GetMembers(
+    private static Member[] GetMembers(
         [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.PublicFields)] Type type,
-        IniSerializerOptions options) =>
-        FlatMemberDiscovery.Enumerate(type, options.IncludeFields)
+        IniSerializerOptions options)
+    {
+        Member[] members = [.. FlatMemberDiscovery.Enumerate(type, options.IncludeFields)
             .Select(member => member is PropertyInfo property
                 ? Member.FromProperty(property, options)
                 : Member.FromField((FieldInfo)member, options))
-            .OrderBy(static member => member.Order);
+            .OrderBy(static member => member.Order)];
+
+        if (FlatMemberDiscovery.FindDuplicateName(members) is { } duplicate)
+            throw new IniSerializationException(string.Format(CultureInfo.CurrentCulture, IniResourceStrings.Op_Invalid_IniDuplicateName, type, duplicate));
+
+        return members;
+    }
 }

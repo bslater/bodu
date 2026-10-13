@@ -23,8 +23,11 @@ namespace Bodu.Text.DotEnv;
 /// <see cref="IDictionary{TKey, TValue}" /> keyed by <see cref="string" />) whose members are strings or types
 /// convertible from a string. Property names honour <see cref="DotEnvSerializerOptions.PropertyNamingPolicy" /> and the
 /// <see cref="Bodu.Text.Serialization.PropertyNameAttribute" /> family; the callback interfaces (<see cref="Bodu.Text.Serialization.IOnSerializing" />
-/// and its siblings) fire around the mapping. Each member name maps to one key, its most derived declaration: a property
-/// or field hidden with the <see langword="new" /> modifier is neither written nor read.
+/// and its siblings) fire around the mapping. Each member name maps to one key, its most derived declaration: a
+/// property or field hidden with the <see langword="new" /> modifier is neither written nor read. A type that maps two
+/// members to one key is rejected with <see cref="DotEnvSerializationException" /> before anything is read or written.
+/// A member declared with the C# <see langword="required" /> keyword is required, as one marked
+/// <see cref="Bodu.Text.Serialization.RequiredAttribute" /> is: reading a document without its key throws.
 /// </para>
 /// <para>
 /// The asynchronous stream overloads buffer the entire document rather than streaming it; only the stream copy is

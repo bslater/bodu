@@ -313,6 +313,9 @@ public static partial class DelimitedSerializer
     /// <param name="type">The record type.</param>
     /// <param name="options">The serializer options.</param>
     /// <returns>The ordered member descriptors.</returns>
+    /// <exception cref="DelimitedSerializationException">
+    /// Thrown when two members of <paramref name="type" /> map to one column.
+    /// </exception>
     /// <remarks>
     /// Each member name is mapped once, to its most derived declaration: a property or field hidden with the
     /// <see langword="new" /> modifier is not mapped, for writing or for reading. When that most derived declaration is
@@ -321,10 +324,20 @@ public static partial class DelimitedSerializer
     [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
     private static Member[] GetMembers(
         [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.PublicFields)] Type type,
-        DelimitedSerializerOptions options) =>
-        [.. FlatMemberDiscovery.Enumerate(type, options.IncludeFields)
+        DelimitedSerializerOptions options)
+    {
+        Member[] members = [.. FlatMemberDiscovery.Enumerate(type, options.IncludeFields)
             .Select(member => member is PropertyInfo property
                 ? Member.FromProperty(property, options)
                 : Member.FromField((FieldInfo)member, options))
             .OrderBy(static member => member.Order)];
+
+        if (FlatMemberDiscovery.FindDuplicateName(members) is { } duplicate)
+        {
+            throw new DelimitedSerializationException(
+                string.Format(CultureInfo.CurrentCulture, DelimitedResourceStrings.Op_Invalid_DelimitedDuplicateColumn, type, duplicate));
+        }
+
+        return members;
+    }
 }

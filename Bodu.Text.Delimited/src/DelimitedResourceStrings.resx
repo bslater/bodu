@@ -88,6 +88,9 @@
   <data name="Op_Invalid_DelimitedRecordTypeNotCreatable" xml:space="preserve">
     <value>The record type '{0}' cannot be created; reading a delimited record needs a public parameterless constructor.</value>
   </data>
+  <data name="Op_Invalid_DelimitedDuplicateColumn" xml:space="preserve">
+    <value>The record type '{0}' maps more than one member to the column '{1}'.</value>
+  </data>
   <data name="Format_Invalid_DelimitedValueConversion" xml:space="preserve">
     <value>The delimited value for column '{0}' could not be converted to type '{1}'.</value>
   </data>

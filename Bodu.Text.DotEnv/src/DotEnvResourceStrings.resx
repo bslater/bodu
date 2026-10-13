@@ -91,6 +91,9 @@
   <data name="Op_Invalid_DotEnvMissingRequiredKey" xml:space="preserve">
     <value>Required DotEnv key '{0}' was not present in the document.</value>
   </data>
+  <data name="Op_Invalid_DotEnvDuplicateKey" xml:space="preserve">
+    <value>The type '{0}' maps more than one member to the DotEnv key '{1}'.</value>
+  </data>
   <data name="Format_Invalid_DotEnvValueConversion" xml:space="preserve">
     <value>The DotEnv value for key '{0}' could not be converted to type '{1}'.</value>
   </data>

@@ -103,6 +103,9 @@
   <data name="Op_Invalid_IniMissingRequiredKey" xml:space="preserve">
     <value>The INI document does not contain the required key '{0}'.</value>
   </data>
+  <data name="Op_Invalid_IniDuplicateName" xml:space="preserve">
+    <value>The type '{0}' maps more than one member to the INI name '{1}'.</value>
+  </data>
   <data name="Op_Invalid_IniGlobalWithoutSectionName" xml:space="preserve">
     <value>The INI document contains global keys that cannot map to '{0}'; set IniSerializerOptions.GlobalSectionName to bind them.</value>
   </data>

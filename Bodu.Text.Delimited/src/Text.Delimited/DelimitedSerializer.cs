@@ -26,7 +26,8 @@ namespace Bodu.Text.Delimited;
 /// honour <see cref="DelimitedSerializerOptions.PropertyNamingPolicy" /> and the
 /// <see cref="Bodu.Text.Serialization.PropertyNameAttribute" /> family. Each member name maps to one column, its most
 /// derived declaration: a property or field hidden with the <see langword="new" /> modifier is neither written nor
-/// read.
+/// read. A record type that maps two members to one column is rejected with
+/// <see cref="DelimitedSerializationException" /> before anything is read or written.
 /// </para>
 /// <para>
 /// Field values convert with the invariant culture. An empty field, or one of white space only, binds

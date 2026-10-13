@@ -192,6 +192,15 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The type '{0}' maps more than one member to the INI name '{1}'..
+        /// </summary>
+        internal static string Op_Invalid_IniDuplicateName {
+            get {
+                return ResourceManager.GetString("Op_Invalid_IniDuplicateName", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The INI document contains global keys that cannot map to '{0}'; set IniSerializerOptions.GlobalSectionName to bind them..
         /// </summary>
         internal static string Op_Invalid_IniGlobalWithoutSectionName {

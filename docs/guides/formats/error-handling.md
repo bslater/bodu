@@ -145,7 +145,7 @@ The DotEnv knobs on <xref:Bodu.Text.DotEnv.Reader.DotEnvReaderOptions> run in th
 
 ## Pattern 5 - DotEnv: binding failures
 
-`DotEnvSerializationException` covers the binding failures: a `[Required]` key that is absent, a value that does not convert, and a type that cannot hold the document:
+`DotEnvSerializationException` covers the binding failures: a `[Required]` key that is absent (a member declared with the C# `required` keyword counts as `[Required]`), a value that does not convert, and a type that cannot hold the document:
 
 ```csharp
 public sealed class ApiSettings
@@ -166,7 +166,7 @@ DotEnvSerializer.Deserialize<ApiSettings>("ApiKey=k\nTimeout=soon\n");
 //   InnerException: FormatException: The input string 'soon' was not in a correct format.
 ```
 
-The type is checked as well. A DotEnv root is an object or a string-keyed dictionary, so a scalar root (a primitive, `string`, an enum, `decimal`, `Guid`, a date or time type, `Uri`, a 128-bit or half-precision number, `BigInteger`, or the nullable form of one) or a collection root throws *DotEnv serialization requires an object or string-keyed dictionary root; the type '...' is not supported.*, from `Serialize` and `Deserialize` alike. Since 1.3.0 that covers every scalar: earlier versions bound `decimal`, `Guid`, the date and time types, `Uri`, the 128-bit and half-precision numbers, `BigInteger` and the nullable forms as objects, through their public properties. Reading into an abstract type, or one with no public parameterless constructor such as a positional `record`, throws *The type '...' cannot be created; reading a DotEnv document into it needs a public parameterless constructor.* rather than the runtime's `MissingMethodException`.
+The type is checked as well. A DotEnv root is an object or a string-keyed dictionary, so a scalar root (a primitive, `string`, an enum, `decimal`, `Guid`, a date or time type, `Uri`, a 128-bit or half-precision number, `BigInteger`, or the nullable form of one) or a collection root throws *DotEnv serialization requires an object or string-keyed dictionary root; the type '...' is not supported.*, from `Serialize` and `Deserialize` alike. Since 1.3.0 that covers every scalar: earlier versions bound `decimal`, `Guid`, the date and time types, `Uri`, the 128-bit and half-precision numbers, `BigInteger` and the nullable forms as objects, through their public properties. Reading into an abstract type, or one with no public parameterless constructor such as a positional `record`, throws *The type '...' cannot be created; reading a DotEnv document into it needs a public parameterless constructor.* rather than the runtime's `MissingMethodException`. A type that maps two members to one key, through `[PropertyName]` or the naming policy, throws *The type '...' maps more than one member to the DotEnv key '...'.* from `Serialize` and `Deserialize` alike, before anything is read or written; INI and Delimited reject such a type the same way.
 
 As with Delimited, a syntax error in the same call is the format exception (`ApiKey="k` → *Unterminated double-quoted DotEnv value beginning on line 1.*), so handlers around `Deserialize<T>` need both clauses.
 

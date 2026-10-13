@@ -54,6 +54,27 @@ internal static class FlatMemberDiscovery
     }
 
     /// <summary>
+    /// Finds the first name that more than one of the mapped members uses, comparing names ordinally.
+    /// </summary>
+    /// <param name="members">The mapped members.</param>
+    /// <returns>The first name mapped more than once, or <see langword="null" /> when every name is distinct.</returns>
+    /// <remarks>
+    /// Two members mapped to one name cannot be written as a document that reads back, so each serializer rejects the
+    /// type before it reads or writes anything. Names that differ only in case are distinct, as they are on the wire.
+    /// </remarks>
+    internal static string? FindDuplicateName(IReadOnlyList<FlatMemberDescriptor> members)
+    {
+        var names = new HashSet<string>(StringComparer.Ordinal);
+        foreach (FlatMemberDescriptor member in members)
+        {
+            if (!names.Add(member.Name))
+                return member.Name;
+        }
+
+        return null;
+    }
+
+    /// <summary>
     /// Adds a member declaration to the list unless the list already holds the same name from a more derived type, and
     /// replaces, in place, a declaration of the same name that it hides.
     /// </summary>

@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Reflection;
+using System.Runtime.CompilerServices;
 
 namespace Bodu.Text.Serialization;
 
@@ -36,7 +37,8 @@ internal class FlatMemberDescriptor
         MemberType = _property?.PropertyType ?? _field!.FieldType;
         CanRead = _property is null || _property.GetMethod is { IsPublic: true };
         CanWrite = _property is not null ? _property.SetMethod is { IsPublic: true } : !_field!.IsInitOnly;
-        Required = member.GetCustomAttribute<RequiredAttribute>() is not null;
+        Required = member.GetCustomAttribute<RequiredAttribute>() is not null
+            || member.IsDefined(typeof(RequiredMemberAttribute), inherit: false);
         IgnoreCondition? condition = member.GetCustomAttribute<IgnoreAttribute>()?.Condition;
         IgnoreCondition = condition == Bodu.Text.Serialization.IgnoreCondition.Always ? null : condition;
         Order = member.GetCustomAttribute<PropertyOrderAttribute>()?.Order ?? 0;
@@ -63,7 +65,8 @@ internal class FlatMemberDescriptor
     public bool CanWrite { get; }
 
     /// <summary>
-    /// Gets a value indicating whether the member is required.
+    /// Gets a value indicating whether the member is required: marked with <see cref="RequiredAttribute" />, or
+    /// declared with the C# <see langword="required" /> keyword, which has the same effect.
     /// </summary>
     public bool Required { get; }
 
