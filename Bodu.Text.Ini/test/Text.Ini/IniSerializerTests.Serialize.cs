@@ -615,4 +615,55 @@ public partial class IniSerializerTests
 
         Assert.IsTrue(ex.Message.Contains("'O'", StringComparison.Ordinal), ex.Message);
     }
+
+    /// <summary>
+    /// Verifies that a <see langword="null" /> entry of a dictionary root whose value type is a section type, written
+    /// because the options' default ignore condition is <see cref="IgnoreCondition.Never" />, is written as an empty
+    /// section, as a POCO root's <see langword="null" /> section member is, rather than as an empty global key.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenANullRootEntryIsASectionUnderNever_ShouldWriteAnEmptySection()
+    {
+        var options = new IniSerializerOptions { DefaultIgnoreCondition = IgnoreCondition.Never };
+        var root = new Dictionary<string, Dictionary<string, string>?> { ["db"] = null, ["x"] = new() { ["k"] = "v" } };
+
+        string text = IniSerializer.Serialize(root, options);
+
+        Assert.AreEqual("[db]\n[x]\nk=v\n", text);
+    }
+
+    /// <summary>
+    /// Verifies that a <see langword="null" /> entry of a dictionary root whose value type is a section type is left
+    /// out under the default ignore condition, which leaves out <see langword="null" /> values.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenANullRootEntryIsASectionAndNullsAreIgnored_ShouldLeaveItOut()
+    {
+        var root = new Dictionary<string, Dictionary<string, string>?> { ["db"] = null, ["x"] = new() { ["k"] = "v" } };
+
+        string text = IniSerializer.Serialize(root);
+
+        Assert.AreEqual("[x]\nk=v\n", text);
+    }
+
+    /// <summary>
+    /// Verifies that a <see langword="null" /> entry of a dictionary root whose value type is neither a scalar,
+    /// <see cref="object" /> nor a section type, written because the options' default ignore condition is
+    /// <see cref="IgnoreCondition.Never" />, throws <see cref="IniSerializationException" /> naming the key and the
+    /// value type, rather than writing an empty key that does not read back as that type.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenANullRootEntryIsNeitherAScalarNorASectionUnderNever_ShouldThrowIniSerializationException()
+    {
+        var options = new IniSerializerOptions { DefaultIgnoreCondition = IgnoreCondition.Never };
+        var root = new Dictionary<string, List<int>?> { ["a"] = null };
+
+        var ex = Assert.ThrowsExactly<IniSerializationException>(() =>
+        {
+            _ = IniSerializer.Serialize(root, options);
+        });
+
+        Assert.IsTrue(ex.Message.Contains("'a'", StringComparison.Ordinal), ex.Message);
+        Assert.IsTrue(ex.Message.Contains(typeof(List<int>).ToString(), StringComparison.Ordinal), ex.Message);
+    }
 }

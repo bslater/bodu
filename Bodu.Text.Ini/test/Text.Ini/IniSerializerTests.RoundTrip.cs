@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Text.Serialization;
+
 namespace Bodu.Text.Ini;
 
 /// <summary>
@@ -161,5 +163,25 @@ public partial class IniSerializerTests
         Assert.AreEqual(DateTimeKind.Utc, restored.MaybeAt!.Value.Kind, text);
         Assert.AreEqual(original.MaybeAtOffset, restored.MaybeAtOffset, text);
         Assert.AreEqual(original.MaybeAtOffset!.Value.Offset, restored.MaybeAtOffset!.Value.Offset, text);
+    }
+
+    /// <summary>
+    /// Verifies that a dictionary root holding a <see langword="null" /> section entry, serialized under
+    /// <see cref="IgnoreCondition.Never" />, reads back with that entry as an empty section and every other section
+    /// unchanged.
+    /// </summary>
+    [TestMethod]
+    public void SerializeDeserialize_WhenANullRootEntryIsASectionUnderNever_ShouldReadBackAnEmptySection()
+    {
+        var options = new IniSerializerOptions { DefaultIgnoreCondition = IgnoreCondition.Never };
+        var root = new Dictionary<string, Dictionary<string, string>?> { ["db"] = null, ["x"] = new() { ["k"] = "v" } };
+
+        Dictionary<string, Dictionary<string, string>?> result =
+            IniSerializer.Deserialize<Dictionary<string, Dictionary<string, string>?>>(IniSerializer.Serialize(root, options), options)!;
+
+        CollectionAssert.AreEqual(new[] { "db", "x" }, result.Keys.ToArray());
+        Assert.IsNotNull(result["db"]);
+        Assert.AreEqual(0, result["db"]!.Count);
+        Assert.AreEqual("v", result["x"]!["k"]);
     }
 }
