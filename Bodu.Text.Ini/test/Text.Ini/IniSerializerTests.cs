@@ -464,6 +464,15 @@ public partial class IniSerializerTests
     }
 
     /// <summary>
+    /// A root model whose section member is a dictionary of lists, a value type that is not a scalar.
+    /// </summary>
+    private sealed class ListValuedSectionConfig
+    {
+        /// <summary>Gets or sets the codes section.</summary>
+        public Dictionary<string, List<int>?>? Codes { get; set; }
+    }
+
+    /// <summary>
     /// A root model with a global scalar member and a member declared as <see cref="object" />, which maps to neither a
     /// key nor a section.
     /// </summary>

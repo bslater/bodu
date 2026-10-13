@@ -666,4 +666,82 @@ public partial class IniSerializerTests
         Assert.IsTrue(ex.Message.Contains("'a'", StringComparison.Ordinal), ex.Message);
         Assert.IsTrue(ex.Message.Contains(typeof(List<int>).ToString(), StringComparison.Ordinal), ex.Message);
     }
+
+    /// <summary>
+    /// Verifies that a <see langword="null" /> entry of a root section whose dictionary value type is not a scalar,
+    /// written because the options' default ignore condition is <see cref="IgnoreCondition.Never" />, throws
+    /// <see cref="IniSerializationException" /> naming the key and the value type, rather than writing an empty key
+    /// that does not read back as that type.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenANullSectionEntryIsNotAScalarUnderNever_ShouldThrowIniSerializationException()
+    {
+        var options = new IniSerializerOptions { DefaultIgnoreCondition = IgnoreCondition.Never };
+        var root = new Dictionary<string, Dictionary<string, List<int>?>> { ["s"] = new() { ["a"] = null } };
+
+        var ex = Assert.ThrowsExactly<IniSerializationException>(() =>
+        {
+            _ = IniSerializer.Serialize(root, options);
+        });
+
+        Assert.IsTrue(ex.Message.Contains("'a'", StringComparison.Ordinal), ex.Message);
+        Assert.IsTrue(ex.Message.Contains(typeof(List<int>).ToString(), StringComparison.Ordinal), ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that a <see langword="null" /> entry of a root section whose dictionary value type is itself a section
+    /// type, a third level, throws <see cref="IniSerializationException" /> naming the key under
+    /// <see cref="IgnoreCondition.Never" />, as a non-null entry of that type does.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenANullSectionEntryIsASectionTypeUnderNever_ShouldThrowIniSerializationException()
+    {
+        var options = new IniSerializerOptions { DefaultIgnoreCondition = IgnoreCondition.Never };
+        var root = new Dictionary<string, Dictionary<string, Dictionary<string, string>?>> { ["s"] = new() { ["a"] = null } };
+
+        var ex = Assert.ThrowsExactly<IniSerializationException>(() =>
+        {
+            _ = IniSerializer.Serialize(root, options);
+        });
+
+        Assert.IsTrue(ex.Message.Contains("'a'", StringComparison.Ordinal), ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that a <see langword="null" /> entry of the reserved global section, when the section's dictionary value
+    /// type is not a scalar, throws <see cref="IniSerializationException" /> naming the key under
+    /// <see cref="IgnoreCondition.Never" />, rather than writing an empty global key.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenANullGlobalSectionEntryIsNotAScalarUnderNever_ShouldThrowIniSerializationException()
+    {
+        var options = new IniSerializerOptions { DefaultIgnoreCondition = IgnoreCondition.Never, GlobalSectionName = "global" };
+        var root = new Dictionary<string, Dictionary<string, List<int>?>> { ["global"] = new() { ["a"] = null } };
+
+        var ex = Assert.ThrowsExactly<IniSerializationException>(() =>
+        {
+            _ = IniSerializer.Serialize(root, options);
+        });
+
+        Assert.IsTrue(ex.Message.Contains("'a'", StringComparison.Ordinal), ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that a <see langword="null" /> entry of a section member's dictionary, when its value type is not a
+    /// scalar, throws <see cref="IniSerializationException" /> naming the key under <see cref="IgnoreCondition.Never" />,
+    /// rather than writing an empty key in the section.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenANullEntryOfASectionMemberIsNotAScalarUnderNever_ShouldThrowIniSerializationException()
+    {
+        var options = new IniSerializerOptions { DefaultIgnoreCondition = IgnoreCondition.Never };
+        var config = new ListValuedSectionConfig { Codes = new Dictionary<string, List<int>?> { ["a"] = null } };
+
+        var ex = Assert.ThrowsExactly<IniSerializationException>(() =>
+        {
+            _ = IniSerializer.Serialize(config, options);
+        });
+
+        Assert.IsTrue(ex.Message.Contains("'a'", StringComparison.Ordinal), ex.Message);
+    }
 }

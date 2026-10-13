@@ -184,4 +184,21 @@ public partial class IniSerializerTests
         Assert.AreEqual(0, result["db"]!.Count);
         Assert.AreEqual("v", result["x"]!["k"]);
     }
+
+    /// <summary>
+    /// Verifies that a <see langword="null" /> entry of a section whose dictionary value type is a nullable scalar,
+    /// serialized under <see cref="IgnoreCondition.Never" /> as an empty key, reads back as <see langword="null" />.
+    /// </summary>
+    [TestMethod]
+    public void SerializeDeserialize_WhenANullSectionEntryIsAScalarUnderNever_ShouldReadBackAsNull()
+    {
+        var options = new IniSerializerOptions { DefaultIgnoreCondition = IgnoreCondition.Never };
+        var root = new Dictionary<string, Dictionary<string, int?>> { ["s"] = new() { ["a"] = null, ["b"] = 1 } };
+
+        Dictionary<string, Dictionary<string, int?>> result =
+            IniSerializer.Deserialize<Dictionary<string, Dictionary<string, int?>>>(IniSerializer.Serialize(root, options), options)!;
+
+        Assert.IsNull(result["s"]["a"]);
+        Assert.AreEqual(1, result["s"]["b"]);
+    }
 }
