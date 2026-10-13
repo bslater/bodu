@@ -588,7 +588,17 @@ public abstract class WebRateProvider
     /// </remarks>
     protected Task LoadCoalescedAsync(string key, Func<bool> isLoaded, Func<CancellationToken, Task> load, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        ThrowHelper.ThrowIfNull(key);
+        ThrowHelper.ThrowIfNull(isLoaded);
+        ThrowHelper.ThrowIfNull(load);
+
+        lock (SyncRoot)
+        {
+            if (isLoaded())
+                return Task.CompletedTask;
+        }
+
+        return _loadCoordinator.RunAsync(key, load, cancellationToken);
     }
 
     /// <summary>
