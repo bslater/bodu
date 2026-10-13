@@ -23,8 +23,10 @@ namespace Bodu.Text.DotEnv;
 /// <see cref="IDictionary{TKey, TValue}" /> keyed by <see cref="string" />) whose members are strings or types
 /// convertible from a string. A dictionary that implements only that generic interface, and not the non-generic
 /// <see cref="System.Collections.IDictionary" />, is written and read through it, as a
-/// <see cref="Dictionary{TKey, TValue}" /> is. Property names honour
-/// <see cref="DotEnvSerializerOptions.PropertyNamingPolicy" /> and the
+/// <see cref="Dictionary{TKey, TValue}" /> is. A dictionary whose type is not keyed by <see cref="string" />, such as a
+/// <see cref="System.Collections.Hashtable" /> or a <see cref="Dictionary{TKey, TValue}" /> keyed by <see cref="int" />,
+/// is a collection rather than an object, and is rejected with <see cref="DotEnvSerializationException" /> when written
+/// and when read. Property names honor <see cref="DotEnvSerializerOptions.PropertyNamingPolicy" /> and the
 /// <see cref="Bodu.Text.Serialization.PropertyNameAttribute" /> family; the callback interfaces (<see cref="Bodu.Text.Serialization.IOnSerializing" />
 /// and its siblings) fire around the mapping. Each member name maps to one key, its most derived declaration: a
 /// property or field hidden with the <see langword="new" /> modifier is neither written nor read. A type that maps two

@@ -28,14 +28,23 @@ namespace Bodu.Text.Serialization;
 /// implements it, and otherwise through the generic interface, so a type that implements only the generic interface is
 /// written and read alike.
 /// </para>
+/// <para>
+/// A dictionary whose type is not keyed by <see cref="string" />, such as a <see cref="Hashtable" />, a
+/// <see cref="SortedList" /> or a <see cref="Dictionary{TKey, TValue}" /> keyed by <see cref="int" />, is not one, even
+/// when the keys it holds are strings: its keys could not be read back from a document as the type they are, so the
+/// serializers reject it as they reject any other collection.
+/// </para>
 /// </remarks>
 internal static class FlatBinding
 {
     /// <summary>The boxed default value of each value type a default test has met.</summary>
     private static readonly ConcurrentDictionary<Type, object> s_defaults = new();
 
-    /// <summary>The entry copier of each type met that is not an <see cref="IDictionary" />, or <see langword="null" />.</summary>
-    private static readonly ConcurrentDictionary<Type, Func<object, OrderedDictionary>?> s_entryCopiers = new();
+    /// <summary>The dictionary value type of each type met that is a string-keyed dictionary, or <see langword="null" /> for each type met that is not one.</summary>
+    private static readonly ConcurrentDictionary<Type, Type?> s_valueTypes = new();
+
+    /// <summary>The entry copier, by value type, of the dictionaries that are not an <see cref="IDictionary" />.</summary>
+    private static readonly ConcurrentDictionary<Type, Func<object, OrderedDictionary>> s_entryCopiers = new();
 
     /// <summary>The entry setter, by value type, of the dictionaries that are not an <see cref="IDictionary" />.</summary>
     private static readonly ConcurrentDictionary<Type, Action<object, string, object?>> s_entrySetters = new();
@@ -54,19 +63,13 @@ internal static class FlatBinding
     /// <param name="type">The type to test.</param>
     /// <param name="valueType">When this method returns <see langword="true" />, the dictionary value type.</param>
     /// <returns><see langword="true" /> when the type is a string-keyed dictionary.</returns>
+    /// <remarks>
+    /// The answer for each type is found once and kept, so a test allocates nothing once its type has been met.
+    /// </remarks>
     internal static bool TryGetStringKeyedDictionary(Type type, [NotNullWhen(true)] out Type? valueType)
     {
-        if (IsStringKeyedDictionary(type, out valueType))
-            return true;
-
-        foreach (Type candidate in type.GetInterfaces())
-        {
-            if (IsStringKeyedDictionary(candidate, out valueType))
-                return true;
-        }
-
-        valueType = null;
-        return false;
+        valueType = s_valueTypes.GetOrAdd(type, static type => FindStringKeyedValueType(type));
+        return valueType is not null;
     }
 
     /// <summary>
@@ -78,28 +81,24 @@ internal static class FlatBinding
     /// or else a copy of its entries, in the order it enumerates them.
     /// </param>
     /// <returns>
-    /// <see langword="true" /> when the value implements <see cref="IDictionary" />, or
-    /// <see cref="IDictionary{TKey, TValue}" /> keyed by <see cref="string" />.
+    /// <see langword="true" /> when the value's type implements <see cref="IDictionary{TKey, TValue}" /> keyed by
+    /// <see cref="string" />; <see langword="false" /> for any other value, a dictionary with other keys included.
     /// </returns>
     /// <remarks>
     /// A value that implements only the generic interface has its entries copied through it, so the serializers write
-    /// it as they write a <see cref="Dictionary{TKey, TValue}" />.
+    /// it as they write a <see cref="Dictionary{TKey, TValue}" />. A <see cref="Hashtable" />, a
+    /// <see cref="SortedList" /> or a <see cref="Dictionary{TKey, TValue}" /> keyed by <see cref="int" /> is not keyed
+    /// by <see cref="string" />, so it is not written as entries even when the keys it holds are strings.
     /// </remarks>
     [RequiresDynamicCode("Reading a dictionary through its generic interface makes a generic method at run time.")]
     [RequiresUnreferencedCode("Reading a dictionary through its generic interface makes a generic method that trimming cannot statically determine.")]
     internal static bool TryGetDictionary([NotNullWhen(true)] object? value, [NotNullWhen(true)] out IDictionary? dictionary)
     {
-        if (value is IDictionary nonGeneric)
+        // Only an enumerable can implement a dictionary interface, so a scalar, the most common value, never has its
+        // type looked up.
+        if (value is IEnumerable and not string && TryGetStringKeyedDictionary(value.GetType(), out Type? valueType))
         {
-            dictionary = nonGeneric;
-            return true;
-        }
-
-        // Only an enumerable can implement the generic interface, so a scalar, the most common value, never searches
-        // its interfaces.
-        if (value is IEnumerable and not string && GetEntryCopier(value.GetType()) is { } copyEntries)
-        {
-            dictionary = copyEntries(value);
+            dictionary = value as IDictionary ?? GetEntryCopier(valueType)(value);
             return true;
         }
 
@@ -215,21 +214,39 @@ internal static class FlatBinding
     }
 
     /// <summary>
-    /// Gets the entry copier of a type that is not an <see cref="IDictionary" />.
+    /// Finds the value type of the <see cref="IDictionary{TKey, TValue}" /> keyed by <see cref="string" /> that a type
+    /// is or implements.
     /// </summary>
-    /// <param name="type">The type of the value to copy.</param>
+    /// <param name="type">The type to search.</param>
     /// <returns>
-    /// The copier, or <see langword="null" /> when the type does not implement <see cref="IDictionary{TKey, TValue}" />
-    /// keyed by <see cref="string" />.
+    /// The dictionary value type, or <see langword="null" /> when the type is not a string-keyed dictionary.
     /// </returns>
+    private static Type? FindStringKeyedValueType(Type type)
+    {
+        if (IsStringKeyedDictionary(type, out Type? valueType))
+            return valueType;
+
+        foreach (Type candidate in type.GetInterfaces())
+        {
+            if (IsStringKeyedDictionary(candidate, out valueType))
+                return valueType;
+        }
+
+        return null;
+    }
+
+    /// <summary>
+    /// Gets the entry copier of the string-keyed dictionaries of a value type that are not an
+    /// <see cref="IDictionary" />.
+    /// </summary>
+    /// <param name="valueType">The dictionary value type.</param>
+    /// <returns>The copier.</returns>
     [RequiresDynamicCode("Reading a dictionary through its generic interface makes a generic method at run time.")]
     [RequiresUnreferencedCode("Reading a dictionary through its generic interface makes a generic method that trimming cannot statically determine.")]
-    private static Func<object, OrderedDictionary>? GetEntryCopier(Type type) =>
+    private static Func<object, OrderedDictionary> GetEntryCopier(Type valueType) =>
         s_entryCopiers.GetOrAdd(
-            type,
-            static type => TryGetStringKeyedDictionary(type, out Type? valueType)
-                ? s_copyEntries.MakeGenericMethod(valueType).CreateDelegate<Func<object, OrderedDictionary>>()
-                : null);
+            valueType,
+            static valueType => s_copyEntries.MakeGenericMethod(valueType).CreateDelegate<Func<object, OrderedDictionary>>());
 
     /// <summary>
     /// Copies the entries of a dictionary that implements <see cref="IDictionary{TKey, TValue}" /> keyed by

@@ -42,7 +42,7 @@ Settings settings = DotEnvSerializer.Deserialize<Settings>(
     envText, new DotEnvSerializerOptions(DotEnvSerializerDefaults.Web));
 ```
 
-`Deserialize<Dictionary<string, string>>` binds the whole file as a dictionary. Any type that implements `IDictionary<string, TValue>` binds the same way in both directions, whether or not it also implements the non-generic `IDictionary`. The write direction (`Serialize`) emits `KEY=value` lines; `DotEnvSerializerOptions.WriteExportPrefix` adds the `export` keyword.
+`Deserialize<Dictionary<string, string>>` binds the whole file as a dictionary. Any type that implements `IDictionary<string, TValue>` binds the same way in both directions, whether or not it also implements the non-generic `IDictionary`. A dictionary whose type is not keyed by `string`, such as `Hashtable`, `SortedList` or `Dictionary<int, string>`, is a collection rather than an object: `Serialize` and `Deserialize` reject it with `DotEnvSerializationException`, as they reject a `List<T>`. The write direction (`Serialize`) emits `KEY=value` lines; `DotEnvSerializerOptions.WriteExportPrefix` adds the `export` keyword.
 
 ## Pattern 3 - author and round-trip with the mutable DOM
 

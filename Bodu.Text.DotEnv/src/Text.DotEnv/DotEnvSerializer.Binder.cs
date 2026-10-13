@@ -281,21 +281,19 @@ public static partial class DotEnvSerializer
     }
 
     /// <summary>
-    /// Determines whether a type is a scalar or a non-dictionary enumerable that cannot be a DotEnv root.
+    /// Determines whether a type is a scalar or a collection, neither of which can be a DotEnv root.
     /// </summary>
-    /// <param name="type">The type to test.</param>
+    /// <param name="type">The type to test, which is not a string-keyed dictionary.</param>
     /// <returns><see langword="true" /> when the type cannot be a DotEnv object root.</returns>
     /// <remarks>
     /// A scalar cannot be a DotEnv root, although many scalars have public properties that would otherwise be bound as
-    /// keys; <see cref="InvariantScalarCodec.IsScalar(Type)" /> lists the scalars.
+    /// keys; <see cref="InvariantScalarCodec.IsScalar(Type)" /> lists the scalars. The callers test for a string-keyed
+    /// dictionary first, so the collections this rejects include every dictionary whose type is not keyed by
+    /// <see cref="string" />, such as a <see cref="Hashtable" /> or a <see cref="Dictionary{TKey, TValue}" /> keyed by
+    /// <see cref="int" />, which would otherwise be bound as an object with no keys.
     /// </remarks>
-    private static bool IsScalarOrEnumerable(Type type)
-    {
-        if (InvariantScalarCodec.IsScalar(type))
-            return true;
-
-        return typeof(IEnumerable).IsAssignableFrom(type) && !typeof(IDictionary).IsAssignableFrom(type);
-    }
+    private static bool IsScalarOrEnumerable(Type type) =>
+        InvariantScalarCodec.IsScalar(type) || typeof(IEnumerable).IsAssignableFrom(type);
 
     /// <summary>
     /// Gets the mapped members of a type, applying naming, inclusion, and ordering rules, from the options' cache.
