@@ -12,8 +12,8 @@ namespace Bodu.Globalization.Recurrence;
 public sealed partial class RecurrenceSet : IParsable<RecurrenceSet>
 {
     /// <summary>
-    /// Parses an iCalendar property block containing a <c>DTSTART</c> line, one or more <c>RRULE</c> lines, and
-    /// optional <c>RDATE</c> / <c>EXDATE</c> lines.
+    /// Parses an iCalendar property block containing a <c>DTSTART</c> line, at least one <c>RRULE</c> or <c>RDATE</c>
+    /// line, and optional <c>EXDATE</c> lines.
     /// </summary>
     /// <param name="s">
     /// The property-block text. Lines other than the recognized recurrence properties are ignored.
