@@ -857,4 +857,99 @@ public partial class NotableDateDocumentBuilderTests
                 "rules": [ { "id": "r", "priority": {{priority}}, "strategy": { "fixed": { "month": 3, "day": {{day}} } } } ] } ] }
             """;
     }
+
+    /// <summary>
+    /// Verifies that a <c>PatchRule</c> override whose <c>strategy</c> or <c>recurrence</c> names no recognized kind,
+    /// which the loader rejects with <c>BODU-CAL-RULE-SOURCE</c>, is rejected with a <see cref="FormatException" />
+    /// carrying the loader's message, rather than built without the occurrence source.
+    /// </summary>
+    /// <param name="patch">The extra <c>PatchRule</c> properties.</param>
+    [TestMethod]
+    [DataRow(""", "strategy": { }""")]
+    [DataRow(""", "strategy": { "unknownKind": { } }""")]
+    [DataRow(""", "recurrence": { }""")]
+    [DataRow(""", "recurrence": { "unknownKind": { } }""")]
+    public void FromJson_WhenPatchOccurrenceSourceNamesNoKind_ShouldThrowFormatException(string patch)
+    {
+        string json = PatchSourceJson(patch);
+        string expected = LoaderRuleSourceMessage(json);
+
+        FormatException ex = Assert.ThrowsExactly<FormatException>(() =>
+        {
+            _ = NotableDateDocumentBuilder.FromJson(json);
+        });
+
+        Assert.AreEqual(expected, ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that a <c>PatchRule</c> override naming two occurrence sources, two strategy kinds or a strategy and a
+    /// recurrence, which the loader rejects with <c>BODU-CAL-RULE-SOURCE</c>, is rejected with a
+    /// <see cref="FormatException" /> carrying the loader's message, rather than built with the first kind alone or left
+    /// for <see cref="NotableDateDocumentBuilder.Build()" /> to reject.
+    /// </summary>
+    /// <param name="patch">The extra <c>PatchRule</c> properties.</param>
+    [TestMethod]
+    [DataRow(""", "strategy": { "fixed": { "month": 5, "day": 2 }, "algorithm": { "key": "western-easter" } }""")]
+    [DataRow(""", "strategy": { "fixed": { "month": 5, "day": 2 } }, "recurrence": { "monthlyDay": { "dayOfMonth": 15 } }""")]
+    public void FromJson_WhenPatchOccurrenceSourceNamesTwoKinds_ShouldThrowFormatException(string patch)
+    {
+        string json = PatchSourceJson(patch);
+        string expected = LoaderRuleSourceMessage(json);
+
+        FormatException ex = Assert.ThrowsExactly<FormatException>(() =>
+        {
+            _ = NotableDateDocumentBuilder.FromJson(json);
+        });
+
+        Assert.AreEqual(expected, ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that a <c>PatchRule</c> override whose occurrence source the loader accepts, a kind named in another
+    /// case or an empty <c>strategy</c> beside a recognized <c>recurrence</c>, builds through the builder into the same
+    /// resource the loader loads.
+    /// </summary>
+    /// <param name="patch">The extra <c>PatchRule</c> properties.</param>
+    [TestMethod]
+    [DataRow(""", "strategy": { "Fixed": { "month": 5, "day": 2 } }""")]
+    [DataRow(""", "strategy": { }, "recurrence": { "monthlyDay": { "dayOfMonth": 15 } }""")]
+    public void FromJson_WhenPatchOccurrenceSourceIsRecognized_ShouldBuildWhatLoadJsonLoads(string patch)
+    {
+        string json = PatchSourceJson(patch);
+
+        NotableDateResource loaded = NotableDateResourceLoader.LoadJson(json);
+        NotableDateResource built = NotableDateDocumentBuilder.FromJson(json).Build();
+
+        CollectionAssert.AreEqual(PackBytes(loaded), PackBytes(built), patch);
+    }
+
+    /// <summary>
+    /// Returns the message of the <c>BODU-CAL-RULE-SOURCE</c> diagnostic the loader reports for a JSON document.
+    /// </summary>
+    /// <param name="json">The JSON document.</param>
+    /// <returns>The diagnostic's message.</returns>
+    private static string LoaderRuleSourceMessage(string json)
+    {
+        NotableDateValidationException ex = Assert.ThrowsExactly<NotableDateValidationException>(() =>
+        {
+            _ = NotableDateResourceLoader.LoadJson(json);
+        });
+
+        return ex.Diagnostics.Single(d => d.Code == "BODU-CAL-RULE-SOURCE").Message;
+    }
+
+    /// <summary>
+    /// Builds a JSON document whose one rule, a fixed 1 April, is patched by a <c>PatchRule</c> override carrying the
+    /// supplied extra properties.
+    /// </summary>
+    /// <param name="patch">The extra <c>PatchRule</c> properties, each preceded by a comma.</param>
+    /// <returns>The JSON document.</returns>
+    private static string PatchSourceJson(string patch) =>
+        """
+        { "schemaVersion": "1.0", "resourceId": "test.patch-source",
+          "notableDates": [ { "id": "other", "displayName": "Other", "category": "Observance",
+            "rules": [ { "id": "r", "strategy": { "fixed": { "month": 4, "day": 1 } } } ] } ],
+          "overrides": [ { "operation": "PatchRule", "notableDateRef": "other", "ruleRef": "r", "priority": 2 @patch@ } ] }
+        """.Replace("@patch@", patch, StringComparison.Ordinal);
 }
