@@ -139,7 +139,8 @@ public partial class IntervalTests
 
     /// <summary>
     /// Asserts that <see cref="Interval{T}.TryUnion(Interval{T}, out Interval{T})" /> succeeds for every pair of
-    /// catalogue intervals whose values form one run, and only those, with a result that holds exactly those values.
+    /// catalogue intervals whose values form one run or none, and only those, with a result that holds exactly those
+    /// values.
     /// </summary>
     /// <typeparam name="T">The floating-point endpoint type.</typeparam>
     private static void AssertTryUnionAgreesWithMembership<T>()
@@ -155,7 +156,7 @@ public partial class IntervalTests
             {
                 int expected = aMask | IntervalMembershipOracle.Mask(b);
                 bool united = a.TryUnion(b, out Interval<T> result);
-                bool expectedUnited = IntervalMembershipOracle.IsContiguous(expected);
+                bool expectedUnited = expected == 0 || IntervalMembershipOracle.IsContiguous(expected);
                 int actual = IntervalMembershipOracle.Mask(result);
                 if (united != expectedUnited || (united && actual != expected) || (!united && !result.IsEmpty))
                     failures.Add($"{a}.TryUnion({b}) returned {united} with {result}");

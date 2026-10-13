@@ -103,4 +103,27 @@ public partial class IntervalJsonConverterTests
             _ = JsonSerializer.Deserialize<Interval<Half>>(NaNLowerEndpointJson, options);
         });
     }
+
+    /// <summary>
+    /// Verifies that reading a half-bounded interval whose bounded endpoint is the infinity on its unbounded side, in the
+    /// object form or the compact form, returns <see cref="Interval{T}.Empty" />, as the half-bounded factories do.
+    /// </summary>
+    /// <param name="policy">The policy under test.</param>
+    /// <param name="json">The JSON payload.</param>
+    [TestMethod]
+    [DataRow(NumericsJsonPolicy.Strict, "{\"lower\":\"Infinity\",\"upperUnbounded\":true,\"lowerInclusive\":true}", DisplayName = "Strict, AtLeast(+Infinity)")]
+    [DataRow(NumericsJsonPolicy.Strict, "{\"lower\":\"Infinity\",\"upperUnbounded\":true,\"lowerInclusive\":false}", DisplayName = "Strict, GreaterThan(+Infinity)")]
+    [DataRow(NumericsJsonPolicy.Strict, "{\"lowerUnbounded\":true,\"upper\":\"-Infinity\",\"upperInclusive\":true}", DisplayName = "Strict, AtMost(-Infinity)")]
+    [DataRow(NumericsJsonPolicy.Lenient, "{\"lowerUnbounded\":true,\"max\":\"-Infinity\",\"upperInclusive\":false}", DisplayName = "Lenient, LessThan(-Infinity)")]
+    [DataRow(NumericsJsonPolicy.Compact, "\"[Infinity, +\u221E)\"", DisplayName = "Compact, AtLeast(+Infinity)")]
+    [DataRow(NumericsJsonPolicy.Compact, "\"(-\u221E, -Infinity)\"", DisplayName = "Compact, LessThan(-Infinity)")]
+    public void Read_WhenHalfLineIsAnchoredAtFarInfinity_ShouldReturnEmpty(NumericsJsonPolicy policy, string json)
+    {
+        JsonSerializerOptions options = new JsonSerializerOptions().AddNumericsJsonConverters(policy);
+
+        Interval<double> result = JsonSerializer.Deserialize<Interval<double>>(json, options);
+
+        Assert.IsTrue(result.IsEmpty, $"{json} read as {result}");
+        Assert.AreEqual(Interval<double>.Empty, result);
+    }
 }

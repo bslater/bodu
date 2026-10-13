@@ -20,9 +20,9 @@ namespace Bodu.Numerics;
 /// catalogue exactly. A probe mask holds bit <c>i</c> when probe <c>i</c> is a member.
 /// </para>
 /// <para>
-/// The four half-bounded intervals anchored at the far infinity (<c>AtLeast(+Infinity)</c>,
-/// <c>GreaterThan(+Infinity)</c>, <c>AtMost(-Infinity)</c> and <c>LessThan(-Infinity)</c>) hold no value, yet are not
-/// empty, so they are left out of the catalogue.
+/// The catalogue includes the four half-bounded intervals anchored at the far infinity (<c>AtLeast(+Infinity)</c>,
+/// <c>GreaterThan(+Infinity)</c>, <c>AtMost(-Infinity)</c> and <c>LessThan(-Infinity)</c>), which hold no value, so every
+/// operation is also held to the empty interval.
 /// </para>
 /// </remarks>
 internal static class IntervalMembershipOracle
@@ -47,10 +47,10 @@ internal static class IntervalMembershipOracle
 
     /// <summary>
     /// Returns the catalogue: bounded intervals with an infinite endpoint, open or closed, on either side or both, the
-    /// unbounded shapes anchored at a finite value or at the near infinity, and finite controls.
+    /// unbounded shapes anchored at a finite value or at either infinity, and finite controls.
     /// </summary>
     /// <typeparam name="T">The floating-point endpoint type.</typeparam>
-    /// <returns>The catalogue intervals, none of them empty.</returns>
+    /// <returns>The catalogue intervals; the four anchored at the far infinity hold no value.</returns>
     public static Interval<T>[] Catalog<T>()
         where T : IFloatingPointIeee754<T>
     {
@@ -90,6 +90,10 @@ internal static class IntervalMembershipOracle
             Interval<T>.GreaterThan(negativeInfinity),
             Interval<T>.AtMost(positiveInfinity),
             Interval<T>.LessThan(positiveInfinity),
+            Interval<T>.AtLeast(positiveInfinity),
+            Interval<T>.GreaterThan(positiveInfinity),
+            Interval<T>.AtMost(negativeInfinity),
+            Interval<T>.LessThan(negativeInfinity),
         ];
     }
 
