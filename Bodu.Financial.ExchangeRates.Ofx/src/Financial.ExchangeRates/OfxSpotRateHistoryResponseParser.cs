@@ -16,7 +16,8 @@ namespace Bodu.Financial.ExchangeRates;
 /// The response carries a <c>HistoricalPoints</c> array; each point pairs a <c>PointInTime</c> (a Unix timestamp in
 /// milliseconds, interpreted in UTC) with an <c>InterbankRate</c> (the source-to-destination multiplier). OFX returns a
 /// server-determined window, so points outside the request's inclusive range are skipped, as are points with a missing
-/// or non-positive rate. Numeric members are tolerated as JSON numbers or numeric strings.
+/// or non-positive rate and points that are not JSON objects. Numeric members are tolerated as JSON numbers or numeric
+/// strings, so no value of an unexpected kind escapes as <see cref="InvalidOperationException" />.
 /// </remarks>
 internal static class OfxSpotRateHistoryResponseParser
 {
@@ -49,6 +50,10 @@ internal static class OfxSpotRateHistoryResponseParser
 
         foreach (JsonElement point in points.EnumerateArray())
         {
+            // A point of any other kind has no members to read; it is skipped like any other malformed point.
+            if (point.ValueKind != JsonValueKind.Object)
+                continue;
+
             if (!TryReadPointInTime(point, out DateOnly date) || !TryReadRate(point, out decimal rate))
                 continue;
 
