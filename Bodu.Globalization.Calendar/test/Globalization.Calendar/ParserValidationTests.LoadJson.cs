@@ -1611,4 +1611,140 @@ public sealed partial class ParserValidationTests
                        { "id": "s", "strategy": { "fixed": { "month": 4, "day": 1 } } } ] } ],
           "overrides": [ @operation@ ] }
         """.Replace("@operation@", operation, StringComparison.Ordinal);
+
+    /// <summary>
+    /// Verifies that a JSON scalar field holding an object or an array is reported with a <c>BODU-CAL-VALUE</c> message
+    /// that names the value's JSON kind rather than quoting its text, so the document builder, which no longer holds the
+    /// text as written, can report it with the same message.
+    /// </summary>
+    /// <param name="field">The JSON property holding the value.</param>
+    /// <param name="literal">The object or array, as a JSON literal.</param>
+    /// <param name="kind">The value's JSON kind, as the message names it.</param>
+    [TestMethod]
+    [DataRow("priority", "{ }", "object")]
+    [DataRow("category", "{ \"en\": \"X\" }", "object")]
+    [DataRow("displayName", "[ 1, 2 ]", "array")]
+    [DataRow("day", "{ \"value\": 1 }", "object")]
+    public void LoadJson_WhenScalarValueIsObjectOrArray_ShouldNameItsKind(string field, string literal, string kind)
+    {
+        string json = ScalarValueJson(field, literal);
+        string expected = $"The '{field}' property holds a JSON {kind}, which is not a string, number or Boolean.";
+
+        NotableDateValidationException ex = Assert.ThrowsExactly<NotableDateValidationException>(() =>
+        {
+            _ = NotableDateResourceLoader.LoadJson(json);
+        });
+
+        Assert.Contains(d => d.Code == "BODU-CAL-VALUE" && d.Message == expected, ex.Diagnostics, expected);
+    }
+
+    /// <summary>
+    /// Verifies that an item of a JSON list of territory codes, references or tags that is not a string is reported with
+    /// a <c>BODU-CAL-VALUE</c> message that names the item's JSON kind rather than quoting its text.
+    /// </summary>
+    /// <param name="placeholder">The placeholder of the list holding the item.</param>
+    /// <param name="item">The item, as a JSON literal.</param>
+    /// <param name="field">The name of the list, as the message names it.</param>
+    /// <param name="kind">The item's JSON kind, as the message names it.</param>
+    [TestMethod]
+    [DataRow("scope.territories", "36", "scope territories", "number")]
+    [DataRow("scope.notableDateRefs", "{ }", "scope notableDateRefs", "object")]
+    [DataRow("use.adjustments", "5", "import use adjustments", "number")]
+    [DataRow("notableDate.tags", "{ \"a\": 1 }", "tags", "object")]
+    [DataRow("applicability.territories", "[ ]", "applicability territories", "array")]
+    [DataRow("rule.tags", "true", "rule tags", "Boolean")]
+    [DataRow("rule.adjustments", "[ \"policy\" ]", "rule adjustments", "array")]
+    [DataRow("patch.tags", "null", "patch tags", "null")]
+    [DataRow("patch.adjustments", "false", "patch adjustments", "Boolean")]
+    public void LoadJson_WhenTextListItemIsNotString_ShouldNameItsKind(string placeholder, string item, string field, string kind)
+    {
+        string json = ListFieldJson(placeholder, item);
+        string expected = $"The {field} list holds a JSON {kind} item, which is not a string.";
+
+        NotableDateValidationException ex = Assert.ThrowsExactly<NotableDateValidationException>(() =>
+        {
+            _ = NotableDateResourceLoader.LoadJson(json, EnumImportResolver);
+        });
+
+        Assert.Contains(d => d.Code == "BODU-CAL-VALUE" && d.Message == expected, ex.Diagnostics, expected);
+    }
+
+    /// <summary>
+    /// Verifies that an item of a JSON scope's <c>ruleRefs</c> that is neither a rule identifier nor a reference object
+    /// is reported with a <c>BODU-CAL-VALUE</c> message that names the item's JSON kind rather than quoting its text.
+    /// </summary>
+    /// <param name="item">The item, as a JSON literal.</param>
+    /// <param name="kind">The item's JSON kind, as the message names it.</param>
+    [TestMethod]
+    [DataRow("5", "number")]
+    [DataRow("true", "Boolean")]
+    [DataRow("null", "null")]
+    [DataRow("[ \"r\" ]", "array")]
+    public void LoadJson_WhenScopeRuleReferenceIsNeitherStringNorObject_ShouldNameItsKind(string item, string kind)
+    {
+        string json = ListFieldJson("scope.ruleRefs", item);
+        string expected = $"The scope ruleRefs list holds a JSON {kind} item, which is neither a rule identifier nor a reference object.";
+
+        NotableDateValidationException ex = Assert.ThrowsExactly<NotableDateValidationException>(() =>
+        {
+            _ = NotableDateResourceLoader.LoadJson(json, EnumImportResolver);
+        });
+
+        Assert.Contains(d => d.Code == "BODU-CAL-VALUE" && d.Message == expected, ex.Diagnostics, expected);
+    }
+
+    /// <summary>
+    /// Verifies that an item of a JSON list of enumeration names that is an object or an array, which no name is, is
+    /// reported with a <c>BODU-CAL-VALUE</c> message that names the item's JSON kind, as a scalar field holding one is,
+    /// rather than quoting its text as a name.
+    /// </summary>
+    /// <param name="placeholder">The placeholder of the list holding the item.</param>
+    /// <param name="item">The item, as a JSON literal.</param>
+    /// <param name="field">The name of the list, as the message names it.</param>
+    /// <param name="kind">The item's JSON kind, as the message names it.</param>
+    [TestMethod]
+    [DataRow("categoryPrecedence", "{ }", "categoryPrecedence", "object")]
+    [DataRow("scope.calendars", "[ \"Gregorian\" ]", "scope calendars", "array")]
+    [DataRow("scope.categories", "{ \"a\": 1 }", "scope categories", "object")]
+    [DataRow("trigger.weekdays", "[ ]", "trigger weekdays", "array")]
+    [DataRow("weekly.days", "{}", "weekly days", "object")]
+    public void LoadJson_WhenNameListItemIsObjectOrArray_ShouldNameItsKind(string placeholder, string item, string field, string kind)
+    {
+        string json = ListFieldJson(placeholder, item);
+        string expected = $"The {field} list holds a JSON {kind} item, which is not a string, number or Boolean.";
+
+        NotableDateValidationException ex = Assert.ThrowsExactly<NotableDateValidationException>(() =>
+        {
+            _ = NotableDateResourceLoader.LoadJson(json, EnumImportResolver);
+        });
+
+        Assert.Contains(d => d.Code == "BODU-CAL-VALUE" && d.Message == expected, ex.Diagnostics, expected);
+    }
+
+    /// <summary>
+    /// Verifies that an item of a JSON year list that is an object or an array, which no integer is, is reported with a
+    /// <c>BODU-CAL-VALUE</c> message that names the item's JSON kind, as a scalar field holding one is, rather than
+    /// quoting its text as an integer.
+    /// </summary>
+    /// <param name="placeholder">The placeholder of the year list holding the item.</param>
+    /// <param name="item">The item, as a JSON literal.</param>
+    /// <param name="field">The name of the list, as the message names it.</param>
+    /// <param name="kind">The item's JSON kind, as the message names it.</param>
+    [TestMethod]
+    [DataRow("scope.onlyYears", "{ \"year\": 2026 }", "scope onlyYears", "object")]
+    [DataRow("scope.exceptYears", "[ 2027 ]", "scope exceptYears", "array")]
+    [DataRow("applicability.onlyYears", "[ ]", "applicability onlyYears", "array")]
+    [DataRow("applicability.exceptYears", "{ }", "applicability exceptYears", "object")]
+    public void LoadJson_WhenYearListItemIsObjectOrArray_ShouldNameItsKind(string placeholder, string item, string field, string kind)
+    {
+        string json = ScalarFieldJson(placeholder, item);
+        string expected = $"The {field} list holds a JSON {kind} item, which is not a string, number or Boolean.";
+
+        NotableDateValidationException ex = Assert.ThrowsExactly<NotableDateValidationException>(() =>
+        {
+            _ = NotableDateResourceLoader.LoadJson(json, EnumImportResolver);
+        });
+
+        Assert.Contains(d => d.Code == "BODU-CAL-VALUE" && d.Message == expected, ex.Diagnostics, expected);
+    }
 }

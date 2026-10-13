@@ -1656,4 +1656,108 @@ public partial class NotableDateDocumentBuilderTests
         """
         .Replace("@rule@", rule, StringComparison.Ordinal)
         .Replace("@overrides@", overrides, StringComparison.Ordinal);
+
+    /// <summary>
+    /// Verifies that a JSON scalar field holding an object or an array written with white space, which the loader
+    /// rejects with <c>BODU-CAL-VALUE</c>, is rejected with a <see cref="FormatException" /> carrying the loader's
+    /// message, rather than one quoting the value as the builder re-serializes it.
+    /// </summary>
+    /// <param name="field">The JSON property holding the value.</param>
+    /// <param name="literal">The object or array, as a JSON literal.</param>
+    [TestMethod]
+    [DataRow("priority", "{ }")]
+    [DataRow("category", "{ \"en\": \"X\" }")]
+    [DataRow("displayName", "[ 1, 2 ]")]
+    [DataRow("day", "{ \"value\": 1 }")]
+    public void FromJson_WhenScalarValueHoldsSpacedObjectOrArray_ShouldThrowLoadersMessage(string field, string literal)
+    {
+        string json = ObjectValueJson(field, literal);
+        string expected = LoaderErrorMessage(json);
+
+        FormatException ex = Assert.ThrowsExactly<FormatException>(() =>
+        {
+            _ = NotableDateDocumentBuilder.FromJson(json);
+        });
+
+        Assert.AreEqual(expected, ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that an item of a JSON list of territory codes, references, tags, enumeration names or years that is an
+    /// object or an array written with white space, which the loader rejects with a single error, is rejected with a
+    /// <see cref="FormatException" /> carrying the loader's message, rather than one quoting the item as the builder
+    /// re-serializes it.
+    /// </summary>
+    /// <param name="document">The test document: <c>list</c> or <c>scalar</c>.</param>
+    /// <param name="field">The placeholder of the list holding the item.</param>
+    /// <param name="item">The item, as a JSON literal.</param>
+    [TestMethod]
+    [DataRow("list", "notableDate.tags", "{ \"a\": 1 }")]
+    [DataRow("list", "rule.adjustments", "[ \"policy\" ]")]
+    [DataRow("list", "applicability.territories", "[ ]")]
+    [DataRow("list", "scope.notableDateRefs", "{ }")]
+    [DataRow("list", "patch.tags", "[ 1, 2 ]")]
+    [DataRow("list", "use.adjustments", "{ \"ref\": \"policy\" }")]
+    [DataRow("list", "categoryPrecedence", "{ }")]
+    [DataRow("list", "scope.calendars", "[ \"Gregorian\" ]")]
+    [DataRow("list", "trigger.weekdays", "[ ]")]
+    [DataRow("scalar", "applicability.onlyYears", "{ \"year\": 2026 }")]
+    [DataRow("scalar", "applicability.exceptYears", "[ 2027 ]")]
+    public void FromJson_WhenListItemIsSpacedObjectOrArray_ShouldThrowLoadersMessage(string document, string field, string item)
+    {
+        string json = document == "list" ? ListFieldJson(field, item) : ScalarFieldJson(field, item);
+        string expected = LoaderErrorMessage(json, AnyLibraryResolver);
+
+        FormatException ex = Assert.ThrowsExactly<FormatException>(() =>
+        {
+            _ = NotableDateDocumentBuilder.FromJson(json);
+        });
+
+        Assert.AreEqual(expected, ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that an item of a JSON scope's <c>ruleRefs</c> that is an array written with white space, which the
+    /// loader rejects with a single error, is rejected with a <see cref="FormatException" /> carrying the loader's
+    /// message.
+    /// </summary>
+    /// <param name="item">The item, as a JSON literal.</param>
+    [TestMethod]
+    [DataRow("[ \"r\" ]")]
+    [DataRow("[ ]")]
+    public void FromJson_WhenScopeRuleReferenceIsSpacedArray_ShouldThrowLoadersMessage(string item)
+    {
+        string json = """
+            { "schemaVersion": "1.0", "resourceId": "test.rulerefs",
+              "adjustmentPolicies": [ { "id": "policy", "scope": { "ruleRefs": [ @item@ ] },
+                "trigger": { "type": "IfWeekend" }, "action": { "type": "MoveToNextWorkingDay" }, "emission": { "mode": "ObservedOnly" } } ],
+              "notableDates": [ { "id": "anchor", "displayName": "Anchor", "category": "PublicHoliday",
+                "rules": [ { "id": "r", "strategy": { "fixed": { "month": 3, "day": 1 } }, "adjustments": [ "policy" ] } ] } ] }
+            """.Replace("@item@", item, StringComparison.Ordinal);
+        string expected = LoaderErrorMessage(json);
+
+        FormatException ex = Assert.ThrowsExactly<FormatException>(() =>
+        {
+            _ = NotableDateDocumentBuilder.FromJson(json);
+        });
+
+        Assert.AreEqual(expected, ex.Message);
+    }
+
+    /// <summary>
+    /// Returns the message of the one error diagnostic the loader reports for a JSON document whose imports a resolver
+    /// supplies.
+    /// </summary>
+    /// <param name="json">The JSON document.</param>
+    /// <param name="resolver">The resolver that supplies the document's imports.</param>
+    /// <returns>The diagnostic's message.</returns>
+    private static string LoaderErrorMessage(string json, Func<string, string?> resolver)
+    {
+        NotableDateValidationException ex = Assert.ThrowsExactly<NotableDateValidationException>(() =>
+        {
+            _ = NotableDateResourceLoader.LoadJson(json, resolver);
+        });
+
+        return ex.Diagnostics.Single(d => d.Severity == NotableDateValidationSeverity.Error).Message;
+    }
 }
