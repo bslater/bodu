@@ -176,7 +176,14 @@ public sealed partial class AnchoredInterval
     {
         foreach (DateTime occurrence in GetOccurrences(DateTime.SpecifyKind(anchor.DateTime, DateTimeKind.Unspecified)))
         {
-            yield return new DateTimeOffset(occurrence, anchor.Offset);
+            // At a fixed offset the instants ascend with the wall-clock times, so the first one past the last
+            // representable instant ends the sequence.
+            if (!occurrence.TryToDateTimeOffset(anchor.Offset, out DateTimeOffset instant))
+            {
+                yield break;
+            }
+
+            yield return instant;
         }
     }
 
@@ -186,7 +193,10 @@ public sealed partial class AnchoredInterval
     /// <param name="anchor">The instant the occurrence series is anchored to.</param>
     /// <param name="from">The inclusive lower bound of the window.</param>
     /// <param name="to">The inclusive upper bound of the window.</param>
-    /// <returns>The occurrences within <c>[from, to]</c> in ascending chronological order.</returns>
+    /// <returns>
+    /// The occurrences within <c>[from, to]</c> in ascending chronological order. The sequence ends at the last
+    /// representable occurrence.
+    /// </returns>
     /// <remarks>
     /// The window bounds are compared as absolute instants, so they may be supplied in offsets that differ from the
     /// anchor's; each returned occurrence carries the anchor's offset. The first occurrence in the window is computed
@@ -203,8 +213,9 @@ public sealed partial class AnchoredInterval
 
         for (long k = NextIndex(from.UtcTicks - anchor.UtcTicks, inclusive: true); k <= last; k++)
         {
-            var occurrence = new DateTimeOffset(wallClock.AddTicks(k * interval), anchor.Offset);
-            if (occurrence > to)
+            // An occurrence past the last representable instant follows every bound the window can have.
+            if (!wallClock.AddTicks(k * interval).TryToDateTimeOffset(anchor.Offset, out DateTimeOffset occurrence)
+                || occurrence > to)
             {
                 yield break;
             }

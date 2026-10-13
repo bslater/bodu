@@ -184,6 +184,8 @@ DateTimeOffset? next = RecurrenceRule.Parse("FREQ=DAILY").GetNextOccurrence(star
 // 2026-01-06 09:00 +10:00
 ```
 
+An occurrence whose instant at the start's offset lies outside the range of `DateTimeOffset`, which can happen only within a day of 9999-12-31, is never returned: `GetNextOccurrence` answers `null`, `GetPreviousOccurrence` passes over it, and both `GetOccurrences` overloads end at the last representable occurrence, as `CronExpression` and `AnchoredInterval` do.
+
 Daylight-saving transitions are the caller's concern - see [Hosting schedules](scheduling-host.md) for converting at the host boundary.
 
 ## Pattern 6 - last working day of the month

@@ -94,7 +94,7 @@ DateTime[] window = sixHourly.GetOccurrences(anchor, from: anchor.AddHours(12), 
 // 12:00, 18:00, 2026-03-09 00:00 - inclusive at both ends
 ```
 
-Every query is O(1) arithmetic - no scanning - and the unbounded enumeration ends at the last representable occurrence; `GetNextOccurrence` answers `null` once `anchor + (k+1)·interval` would exceed `DateTime.MaxValue`.
+Every query is O(1) arithmetic - no scanning - and the enumerations end at the last representable occurrence (for a `DateTimeOffset` anchor, the last whose instant a `DateTimeOffset` can hold, rather than throwing past it); `GetNextOccurrence` answers `null` once `anchor + (k+1)·interval` would exceed `DateTime.MaxValue`.
 
 ## Why the anchor is passed per query
 
