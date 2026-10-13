@@ -146,14 +146,16 @@ jobs:
 
           exit $status
 
-      - name: Build samples and the docs project
+      - name: Build samples, the maintenance tools and the docs project
         run: |
-          # The members of bodu.slnx that the Build step does not reach: every sample project other
-          # than the sample test projects the Build step has already compiled, and docs/doc.csproj,
-          # the container for the documentation sources. Each is compiled the way a test project is:
-          # in Release, for every target framework, with warnings as errors, so a warning in one of
-          # them fails the pull request too. LiveRates and the library samples are compiled here
-          # although the next step does not run them.
+          # The projects the Build step does not reach: every sample project in bodu.slnx other than
+          # the sample test projects the Build step has already compiled; the maintenance generators
+          # under tools/ (the currency catalogue and Hijri observance vector generators), which
+          # tools/solutions/solutions.json keeps out of bodu.slnx so the release pack never builds them;
+          # and docs/doc.csproj, the container for the documentation sources. Each is compiled the way
+          # a test project is: in Release, for every target framework, with warnings as errors, so a
+          # warning in one of them fails the pull request too. LiveRates, the library samples and the
+          # tools are compiled here although the next step does not run them.
           projects=$(grep -oE 'Path="samples/[^"]*\.csproj"' bodu.slnx \
             | sed -E 's/^Path="//; s/"$//; s/\\/\//g' \
             | grep -v '\.Test\.csproj$' \
@@ -164,6 +166,13 @@ jobs:
             exit 1
           fi
 
+          tools=$(git ls-files 'tools/*.csproj' | sort -u)
+
+          if [ -z "$tools" ]; then
+            echo "::error::No tool projects discovered under tools/" >&2
+            exit 1
+          fi
+
           # One build of a generated solution rather than a build per project: MSBuild evaluates the
           # libraries the samples share once and builds the samples in parallel, which takes seconds where
           # a build per project took minutes. A failing sample does not stop the others, so one run
@@ -171,7 +180,7 @@ jobs:
           # reference are built through those references, as the Build step built them.
           solution_dir="$RUNNER_TEMP/samples-solution"
           dotnet new sln --format slnx --name samples --output "$solution_dir"
-          dotnet sln "$solution_dir/samples.slnx" add --in-root --include-references false $projects docs/doc.csproj
+          dotnet sln "$solution_dir/samples.slnx" add --in-root --include-references false $projects $tools docs/doc.csproj
           dotnet build "$solution_dir/samples.slnx" --configuration Release -p:TreatWarningsAsErrors=true
 
       - name: Run samples

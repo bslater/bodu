@@ -7,21 +7,20 @@
 namespace Bodu.Financial.ExchangeRates.Testing;
 
 /// <summary>
-/// Provides the shared contract every pair-based web provider built on
-/// <see cref="PairWebRateProvider{TSeries}" /> must satisfy, layered on top of the general
-/// <see cref="DatedRateProviderContractTests{TProvider}" />. It exercises the per-pair warm-up surface -
-/// <see cref="WebRateProvider.LoadPairAsync" /> and
-/// <see cref="PairWebRateProvider{TSeries}.GetAvailablePairs" /> - that the shared base contributes, so each
-/// concrete source (Yahoo, OFX, …) proves the inherited machinery against its own fixture by deriving a
+/// Provides the shared contract every pair-based web provider built on <see cref="PairWebRateProvider{TSeries}" /> must
+/// satisfy, layered on top of the general <see cref="DatedRateProviderContractTests{TProvider}" />. It exercises the
+/// per-pair warm-up surface - <see cref="WebRateProvider.LoadPairAsync" /> and
+/// <see cref="PairWebRateProvider{TSeries}.GetAvailablePairs" /> - that the shared base contributes, so each concrete
+/// source (Yahoo, OFX, …) proves the inherited machinery against its own fixture by deriving a
 /// <see langword="sealed" /> <c>[TestClass]</c> from this base.
 /// </summary>
 /// <typeparam name="TProvider">The concrete pair-based provider under test.</typeparam>
 /// <typeparam name="TSeries">The provider's series-metadata type surfaced through <c>GetAvailablePairs</c>.</typeparam>
 /// <remarks>
 /// The contract is asserted against whatever pair the subclass seeds through
-/// <see cref="DatedRateProviderContractTests{TProvider}.CanonicalPair" />, so it applies to any pair-based
-/// source without imposing a dataset. The exact <see cref="ArgumentException" /> subtype a provider throws for an
-/// inverted range is source-specific and remains covered by each provider's local tests.
+/// <see cref="DatedRateProviderContractTests{TProvider}.CanonicalPair" />, so it applies to any pair-based source
+/// without imposing a dataset. The exact <see cref="ArgumentException" /> subtype a provider throws for an inverted
+/// range is source-specific and remains covered by each provider's local tests.
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
@@ -59,8 +58,8 @@ public abstract class PairWebRateProviderContractTests<TProvider, TSeries>
     /// <summary>
     /// Gets the history availability the provider is expected to advertise - the declared depth of the upstream source.
     /// Every pair provider must declare one deliberately (an intentional
-    /// <see cref="RateHistoryAvailability.Unbounded" /> included), so this contract fails when a new provider
-    /// forgets to set the value in its options.
+    /// <see cref="RateHistoryAvailability.Unbounded" /> included), so this contract fails when a new provider forgets
+    /// to set the value in its options.
     /// </summary>
     protected abstract RateHistoryAvailability ExpectedHistoryAvailability { get; }
 

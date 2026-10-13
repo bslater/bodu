@@ -7,10 +7,10 @@
 namespace Bodu.Financial.ExchangeRates.Testing;
 
 /// <summary>
-/// Provides the shared contract every <see cref="IDatedRateProvider" /> must satisfy, so a cache-fronted
-/// provider is indistinguishable from a direct one at the API surface. A test project asserts the contract for a
-/// concrete provider by deriving a <see langword="sealed" /> <c>[TestClass]</c> from this base and supplying the seed
-/// knowledge through the abstract members.
+/// Provides the shared contract every <see cref="IDatedRateProvider" /> must satisfy, so a cache-fronted provider is
+/// indistinguishable from a direct one at the API surface. A test project asserts the contract for a concrete provider
+/// by deriving a <see langword="sealed" /> <c>[TestClass]</c> from this base and supplying the seed knowledge through
+/// the abstract members.
 /// </summary>
 /// <typeparam name="TProvider">The concrete provider under test.</typeparam>
 /// <remarks>
@@ -23,11 +23,11 @@ namespace Bodu.Financial.ExchangeRates.Testing;
 /// </para>
 /// <para>
 /// "The same contract" means the same shape and invariants on every path - synchronous results equal their asynchronous
-/// counterparts, <see cref="IDatedRateProvider.GetRate(string, string, DateOnly, RateLookupOptions)" />
-/// throws exactly where the <c>TryGet</c> form returns <see langword="false" />, and every result carries a
-/// self-consistent <see cref="RateProvenance" />. It does not mean identical provenance values: a cache serve
-/// reports <see cref="RateOrigin.Cache" /> while a direct serve reports <see cref="RateOrigin.Live" />,
-/// which is the deliberate signal of where the rate came from.
+/// counterparts, <see cref="IDatedRateProvider.GetRate(string, string, DateOnly, RateLookupOptions)" /> throws exactly
+/// where the <c>TryGet</c> form returns <see langword="false" />, and every result carries a self-consistent
+/// <see cref="RateProvenance" />. It does not mean identical provenance values: a cache serve reports
+/// <see cref="RateOrigin.Cache" /> while a direct serve reports <see cref="RateOrigin.Live" />, which is the deliberate
+/// signal of where the rate came from.
 /// </para>
 /// <example>
 /// <code language="csharp">
@@ -65,7 +65,8 @@ public abstract class DatedRateProviderContractTests<TProvider>
     protected abstract CurrencyPair CanonicalPair { get; }
 
     /// <summary>
-    /// Gets a date for which the seeded provider has a resolvable observation under <see cref="RateLookupOptions.Exact" />.
+    /// Gets a date for which the seeded provider has a resolvable observation under
+    /// <see cref="RateLookupOptions.Exact" />.
     /// </summary>
     /// <value>A date that resolves for <see cref="CanonicalPair" />.</value>
     protected abstract DateOnly KnownDate { get; }
@@ -100,13 +101,15 @@ public abstract class DatedRateProviderContractTests<TProvider>
     /// Gets a value indicating whether the provider returns a synthetic identity rate for a same-currency lookup.
     /// Defaults to <see langword="true" />.
     /// </summary>
-    /// <value><see langword="true" /> when same-currency identity rates are supported; otherwise <see langword="false" />.</value>
+    /// <value>
+    /// <see langword="true" /> when same-currency identity rates are supported; otherwise <see langword="false" />.
+    /// </value>
     protected virtual bool SupportsIdentityRate => true;
 
     /// <summary>
-    /// Gets a value indicating whether the provider guards its public surface with <see cref="ObjectDisposedException" />
-    /// after disposal. Defaults to <see langword="false" /> for providers that are not <see cref="IDisposable" /> or that
-    /// intentionally keep serving an in-memory snapshot after disposal.
+    /// Gets a value indicating whether the provider guards its public surface with
+    /// <see cref="ObjectDisposedException" /> after disposal. Defaults to <see langword="false" /> for providers that
+    /// are not <see cref="IDisposable" /> or that intentionally keep serving an in-memory snapshot after disposal.
     /// </summary>
     /// <value><see langword="true" /> when disposed members throw; otherwise <see langword="false" />.</value>
     protected virtual bool SupportsDisposalGuard => false;
@@ -160,8 +163,8 @@ public abstract class DatedRateProviderContractTests<TProvider>
     }
 
     /// <summary>
-    /// Verifies that the <c>TryGet</c> single-date surface reports failure for a date that does not resolve, rather than
-    /// throwing.
+    /// Verifies that the <c>TryGet</c> single-date surface reports failure for a date that does not resolve, rather
+    /// than throwing.
     /// </summary>
     [TestMethod]
     public void TryGetRate_WhenDateUnavailable_ShouldReturnFalse()
@@ -230,8 +233,8 @@ public abstract class DatedRateProviderContractTests<TProvider>
     }
 
     /// <summary>
-    /// Verifies that a reverse-direction lookup resolves to the reciprocal of the direct rate when the provider supports
-    /// inverse fallback.
+    /// Verifies that a reverse-direction lookup resolves to the reciprocal of the direct rate when the provider
+    /// supports inverse fallback.
     /// </summary>
     [TestMethod]
     public void GetRate_WhenInverseRequested_ShouldReturnReciprocalRate()
@@ -276,8 +279,8 @@ public abstract class DatedRateProviderContractTests<TProvider>
 
     /// <summary>
     /// Verifies that once the provider is disposed every public lookup surface throws
-    /// <see cref="ObjectDisposedException" /> rather than serving from a released in-memory snapshot, so a caller cannot
-    /// keep using a disposed provider.
+    /// <see cref="ObjectDisposedException" /> rather than serving from a released in-memory snapshot, so a caller
+    /// cannot keep using a disposed provider.
     /// </summary>
     [TestMethod]
     public async Task Members_WhenDisposed_ShouldThrowObjectDisposedException()
@@ -309,11 +312,13 @@ public abstract class DatedRateProviderContractTests<TProvider>
     /// <summary>
     /// Creates a cold, seeded provider for the contract under test.
     /// </summary>
-    /// <returns>A newly constructed provider seeded so that <see cref="CanonicalPair" /> resolves on <see cref="KnownDate" />.</returns>
+    /// <returns>
+    /// A newly constructed provider seeded so that <see cref="CanonicalPair" /> resolves on <see cref="KnownDate" />.
+    /// </returns>
     /// <remarks>
-    /// Each call returns an independent instance so a test never observes state left by another. A cache-backed provider
-    /// is returned with an empty cache; <see cref="CreateWarmedProvider" /> drives it into a steady served-from-cache
-    /// state when a test needs one.
+    /// Each call returns an independent instance so a test never observes state left by another. A cache-backed
+    /// provider is returned with an empty cache; <see cref="CreateWarmedProvider" /> drives it into a steady
+    /// served-from-cache state when a test needs one.
     /// </remarks>
     protected abstract TProvider CreateProvider();
 

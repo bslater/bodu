@@ -26,6 +26,17 @@ internal static class Program
 
         """;
 
+    /// <summary>
+    /// The options <c>currencies.json</c> is read with, created once and reused, as <see cref="JsonSerializer" /> caches
+    /// its metadata per options instance.
+    /// </summary>
+    private static readonly JsonSerializerOptions s_catalogueJsonOptions = new()
+    {
+        ReadCommentHandling = JsonCommentHandling.Skip,
+        AllowTrailingCommas = true,
+        PropertyNameCaseInsensitive = true,
+    };
+
     private static int Main(string[] args)
     {
         string repoRoot = LocateRepoRoot();
@@ -246,14 +257,8 @@ internal static class Program
     private static Catalogue ReadCatalogue(string path)
     {
         string json = File.ReadAllText(path);
-        var options = new JsonSerializerOptions
-        {
-            ReadCommentHandling = JsonCommentHandling.Skip,
-            AllowTrailingCommas = true,
-            PropertyNameCaseInsensitive = true,
-        };
 
-        Catalogue? catalogue = JsonSerializer.Deserialize<Catalogue>(json, options);
+        Catalogue? catalogue = JsonSerializer.Deserialize<Catalogue>(json, s_catalogueJsonOptions);
         if (catalogue is null || catalogue.Currencies is null)
             throw new InvalidDataException(CurrencyCatalogueGeneratorResourceStrings.IO_Invalid_CatalogueDeserialize);
 

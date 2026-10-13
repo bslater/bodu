@@ -54,21 +54,9 @@ public static partial class DateTimeExtensions
         ThrowHelper.ThrowIfEnumValueIsUndefined(dayOfWeek);
         ThrowHelper.ThrowIfEnumValueIsUndefined(ordinal);
 
-        switch (ordinal)
-        {
-            case Extensions.WeekOrdinal.First:
-                return new DateTime(GetFirstDateOfWeekInMonthTicks(dateTime, dayOfWeek), dateTime.Kind);
+        if (!DateOnlyExtensions.TryGetNthDateOfWeekInMonth(dateTime.Year, dateTime.Month, dayOfWeek, ordinal, out DateOnly result)) throw new ArgumentOutOfRangeException(nameof(ordinal), string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_Invalid_OrdinalDoesNotExistForMonth, ordinal, dayOfWeek, dateTime.ToString("MMMM yyyy", CultureInfo.CurrentCulture)));
 
-            case Extensions.WeekOrdinal.Last:
-                return dateTime.LastDateOfWeekInMonth(dayOfWeek);
-
-            default:
-                var result = new DateTime(GetFirstDateOfWeekInMonthTicks(dateTime, dayOfWeek) + (((int)ordinal - 1) * TicksPerWeek), dateTime.Kind);
-
-                if (result.Month != dateTime.Month) throw new ArgumentOutOfRangeException(nameof(ordinal), string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_Invalid_OrdinalDoesNotExistForMonth, ordinal, dayOfWeek, dateTime.ToString("MMMM yyyy", CultureInfo.CurrentCulture)));
-
-                return result;
-        }
+        return result.ToDateTime(TimeOnly.MinValue, dateTime.Kind);
     }
 
     /// <summary>
@@ -123,20 +111,8 @@ public static partial class DateTimeExtensions
         ThrowHelper.ThrowIfEnumValueIsUndefined(dayOfWeek);
         ThrowHelper.ThrowIfEnumValueIsUndefined(ordinal);
 
-        switch (ordinal)
-        {
-            case Extensions.WeekOrdinal.First:
-                return new DateTime(GetFirstDateOfWeekInMonthTicks(year, month, dayOfWeek), DateTimeKind.Unspecified);
+        if (!DateOnlyExtensions.TryGetNthDateOfWeekInMonth(year, month, dayOfWeek, ordinal, out DateOnly result)) throw new ArgumentOutOfRangeException(nameof(ordinal), string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_Invalid_OrdinalDoesNotExistForMonth, ordinal, dayOfWeek, new DateTime(year, month, 1).ToString("MMMM yyyy", CultureInfo.CurrentCulture)));
 
-            case Extensions.WeekOrdinal.Last:
-                return new DateTime(GetLastDateOfWeekInMonthAsTicks(year, month, dayOfWeek), DateTimeKind.Unspecified);
-
-            default:
-                var result = new DateTime(GetFirstDateOfWeekInMonthTicks(year, month, dayOfWeek) + (((int)ordinal - 1) * TicksPerWeek), DateTimeKind.Unspecified);
-
-                if (result.Month != month) throw new ArgumentOutOfRangeException(nameof(ordinal), string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_Invalid_OrdinalDoesNotExistForMonth, ordinal, dayOfWeek, new DateTime(year, month, 1).ToString("MMMM yyyy", CultureInfo.CurrentCulture)));
-
-                return result;
-        }
+        return result.ToDateTime(TimeOnly.MinValue, DateTimeKind.Unspecified);
     }
 }

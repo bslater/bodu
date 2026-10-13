@@ -12,7 +12,8 @@ name: Policy Gate
 #     folder ↔ namespace convention.
 #   • bld/check-policy.sh - DIFF-SCOPED (added files / added lines only) so pre-existing
 #     grandfathered stragglers don't block unrelated PRs: copyright banner, file-scoped
-#     namespace, and no string-literal exception messages (resx/ThrowHelper policy).
+#     namespace, and no string-literal exception messages (resx/ThrowHelper policy). Its own
+#     tests (bld/policy/tests) run before it.
 #   • tools/solutions/generate-solutions.py --check - whole-tree: the bodu.*.slnx solution
 #     views match bodu.slnx and tools/solutions/solutions.json, and hold only project entries.
 #
@@ -67,6 +68,11 @@ jobs:
 
       - name: Folder ↔ namespace alignment (whole tree)
         run: bash bld/check-folder-namespace-alignment.sh
+
+      # The checker's own tests run first, so a broken checker cannot pass the change. They hold its
+      # generated-file rule to the one Roslyn's analyzers apply.
+      - name: Coding-policy checker tests
+        run: python3 -m unittest discover -s bld/policy/tests -t bld/policy/tests
 
       - name: Coding-policy checks (diff-scoped)
         env:

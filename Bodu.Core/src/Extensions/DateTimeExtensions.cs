@@ -789,37 +789,6 @@ public static partial class DateTimeExtensions
     }
 
     /// <summary>
-    /// Returns the number of ticks at midnight on the first specified weekday in the given year and month.
-    /// </summary>
-    /// <param name="year">The year component of the target month (expected to be in the range 1 through 9999).</param>
-    /// <param name="month">The month component of the target month (expected to be in the range 1 through 12).</param>
-    /// <param name="dayOfWeek">The <see cref="System.DayOfWeek" /> to locate within the specified month.</param>
-    /// <returns>
-    /// A <see cref="long" /> value representing the number of ticks at midnight on the first occurrence of
-    /// <paramref name="dayOfWeek" /> in the specified month and year.
-    /// </returns>
-    /// <remarks>
-    /// <para>
-    /// The method starts from the first day of the given month and advances to the first matching
-    /// <paramref name="dayOfWeek" /> using modulo arithmetic.
-    /// </para>
-    /// <para>
-    /// The returned tick count corresponds to 00:00:00.000 of the computed date.
-    /// </para>
-    /// <para>
-    /// This method performs no validation. It assumes the specified <paramref name="year" />, <paramref name="month" />
-    /// , and <paramref name="dayOfWeek" /> are within valid ranges and form a valid calendar month.
-    /// </para>
-    /// </remarks>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static long GetFirstDateOfWeekInMonthTicks(int year, int month, DayOfWeek dayOfWeek)
-    {
-        long ticks = DateTimeExtensions.GetDateTicks(year, month, 1);
-        ticks += ((dayOfWeek - DateTimeExtensions.GetDayOfWeekFromTicks(ticks) + 7) % 7) * DateTimeExtensions.TicksPerDay;
-        return ticks;
-    }
-
-    /// <summary>
     /// Computes the week number of the year using the <see cref="CalendarWeekRule.FirstDay" /> rule.
     /// </summary>
     /// <param name="dayOfYear">Zero-based day index within the year (e.g., Jan 1 = 0).</param>
@@ -887,37 +856,6 @@ public static partial class DateTimeExtensions
     /// The tick count at midnight of the last <paramref name="dayOfWeek" /> in <paramref name="dateTime" />'s month.
     /// </returns>
     private static long GetLastDateOfWeekInMonthAsTicks(DateTime dateTime, DayOfWeek dayOfWeek) => DateTimeExtensions.GetLastDateOfWeekInMonth(DateTimeExtensions.GetLastDateOfMonthTicks(dateTime), dayOfWeek);
-
-    /// <summary>
-    /// Returns the number of ticks at midnight on the last specified weekday in the given year and month.
-    /// </summary>
-    /// <param name="year">The calendar year (1 through 9999).</param>
-    /// <param name="month">The calendar month (1 through 12).</param>
-    /// <param name="dayOfWeek">The <see cref="System.DayOfWeek" /> to locate within the month.</param>
-    /// <returns>
-    /// A <see cref="long" /> value representing the number of ticks at 00:00:00.000 on the last occurrence of
-    /// <paramref name="dayOfWeek" /> in the specified <paramref name="year" /> and <paramref name="month" />.
-    /// </returns>
-    /// <remarks>
-    /// <para>
-    /// This method starts from the last day of the given month and steps backward to find the final occurrence of the
-    /// specified <paramref name="dayOfWeek" />.
-    /// </para>
-    /// <para>
-    /// The result is a tick value normalized to midnight and avoids object allocation.
-    /// </para>
-    /// <para>
-    /// No validation is performed; the caller is responsible for ensuring all parameters are within valid calendar
-    /// ranges.
-    /// </para>
-    /// </remarks>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static long GetLastDateOfWeekInMonthAsTicks(int year, int month, DayOfWeek dayOfWeek)
-    {
-        long ticks = DateTimeExtensions.GetDateTicks(year, month, DateTime.DaysInMonth(year, month));
-        ticks += ((dayOfWeek - DateTimeExtensions.GetDayOfWeekFromTicks(ticks) - 7) % 7) * DateTimeExtensions.TicksPerDay;
-        return ticks;
-    }
 
     /// <summary>
     /// Returns the number of ticks representing the time-of-day portion of the specified <see cref="DateTime" />.
