@@ -44,6 +44,21 @@ public partial class DelimitedSerializerTests
     }
 
     /// <summary>
+    /// Verifies that deserializing 1,000 rows of ten fields into <see cref="string" /> arrays allocates little more
+    /// than the rows themselves, at most 424 bytes a row for its ten field strings and its array, within 64 KiB for the
+    /// document, rather than a list for every row it collects.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenRowsHaveTenFields_ShouldAllocateLittleMoreThanTheRows()
+    {
+        byte[] document = System.Text.Encoding.UTF8.GetBytes(DelimitedSerializer.Serialize(CreateTenNumberRecords()));
+
+        long allocated = MeasureAllocations(() => DelimitedSerializer.Deserialize<string[]>(document.AsSpan()));
+
+        Assert.IsLessThanOrEqualTo((AllocationRecordCount * 424L) + (64 * 1024), allocated, $"Allocated {allocated} B; .NET {Environment.Version}.");
+    }
+
+    /// <summary>
     /// Creates the records the allocation tests write.
     /// </summary>
     /// <returns><see cref="AllocationRecordCount" /> records, each with its index in its first column.</returns>
