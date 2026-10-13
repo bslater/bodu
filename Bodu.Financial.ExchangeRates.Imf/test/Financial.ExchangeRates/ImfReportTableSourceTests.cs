@@ -20,7 +20,7 @@ namespace Bodu.Financial.ExchangeRates;
 /// month's rates.
 /// </remarks>
 [TestClass]
-public class ImfReportTableSourceTests
+public partial class ImfReportTableSourceTests
 {
     /// <summary>
     /// An in-memory report cache that records what it was asked to store.

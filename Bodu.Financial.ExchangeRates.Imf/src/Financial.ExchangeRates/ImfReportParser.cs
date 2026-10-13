@@ -73,6 +73,25 @@ internal static class ImfReportParser
     }
 
     /// <summary>
+    /// Parses the report content from its bytes, reading them directly when they are plain UTF-8.
+    /// </summary>
+    /// <param name="content">The report bytes.</param>
+    /// <param name="options">The provider options supplying the currency-name map.</param>
+    /// <returns>The parsed, normalized table.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="options" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="ExchangeRateFormatException">
+    /// Thrown when the content contains no recognizable header row or yields no usable observations.
+    /// </exception>
+    /// <remarks>
+    /// The content is read as the text a <see cref="StreamReader" /> decodes it to, so a byte-order mark and a report
+    /// in another Unicode encoding read as they do through <see cref="Parse(Stream, ImfRateProviderOptions)" />.
+    /// </remarks>
+    public static ImfRateTable Parse(ReadOnlySpan<byte> content, ImfRateProviderOptions options) =>
+        throw new NotImplementedException();
+
+    /// <summary>
     /// Parses the report content from a string.
     /// </summary>
     /// <param name="content">The tab-separated report content.</param>

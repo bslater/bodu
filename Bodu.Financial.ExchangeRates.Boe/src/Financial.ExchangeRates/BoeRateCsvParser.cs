@@ -64,6 +64,25 @@ internal static class BoeRateCsvParser
     }
 
     /// <summary>
+    /// Parses the response content from its bytes, reading them directly when they are plain UTF-8.
+    /// </summary>
+    /// <param name="content">The response bytes.</param>
+    /// <param name="options">The provider options supplying the series catalog.</param>
+    /// <returns>The parsed, normalized table.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="options" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="ExchangeRateFormatException">
+    /// Thrown when the content does not contain the expected IADB CSV header.
+    /// </exception>
+    /// <remarks>
+    /// The content is read as the text a <see cref="StreamReader" /> decodes it to, so a byte-order mark and a response
+    /// in another Unicode encoding read as they do through <see cref="Parse(Stream, BoeRateProviderOptions)" />.
+    /// </remarks>
+    public static BoeRateTable Parse(ReadOnlySpan<byte> content, BoeRateProviderOptions options) =>
+        throw new NotImplementedException();
+
+    /// <summary>
     /// Parses the response content from a string.
     /// </summary>
     /// <param name="content">The CSV content.</param>

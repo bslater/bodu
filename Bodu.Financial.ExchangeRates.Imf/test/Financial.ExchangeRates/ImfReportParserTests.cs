@@ -133,4 +133,78 @@ public sealed class ImfReportParserTests
             _ = ImfReportParser.Parse(content, options);
         });
     }
+
+    /// <summary>
+    /// Verifies that parsing a report's bytes yields the observations parsing its text yields.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenGivenBytes_ShouldYieldWhatParsingTheTextYields()
+    {
+        ImfRateProviderOptions options = new();
+        byte[] bytes = ImfFixtures.ReadBytes(ImfFixtures.Rep202604);
+
+        ImfRateTable table = ImfReportParser.Parse((ReadOnlySpan<byte>)bytes, options);
+
+        CollectionAssert.AreEqual(ImfReportParser.Parse(ImfFixtures.ReadText(ImfFixtures.Rep202604), options).Observations.ToList(), table.Observations.ToList());
+    }
+
+    /// <summary>
+    /// Verifies that a UTF-8 byte-order mark leading a report's bytes is not read as part of its first row.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenBytesStartWithByteOrderMark_ShouldIgnoreIt()
+    {
+        ImfRateProviderOptions options = new();
+        byte[] bytes = [.. Encoding.UTF8.GetPreamble(), .. ImfFixtures.ReadBytes(ImfFixtures.Rep202604)];
+
+        ImfRateTable table = ImfReportParser.Parse((ReadOnlySpan<byte>)bytes, options);
+
+        CollectionAssert.AreEqual(ImfReportParser.Parse(ImfFixtures.ReadText(ImfFixtures.Rep202604), options).Observations.ToList(), table.Observations.ToList());
+    }
+
+    /// <summary>
+    /// Verifies that a report's bytes in UTF-16, marked by its byte-order mark, read as they do through a stream.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenBytesAreUtf16_ShouldReadThemAsAStreamReaderDecodesThem()
+    {
+        ImfRateProviderOptions options = new();
+        string text = ImfFixtures.ReadText(ImfFixtures.Rep202604);
+        byte[] bytes = [.. Encoding.Unicode.GetPreamble(), .. Encoding.Unicode.GetBytes(text)];
+
+        ImfRateTable table = ImfReportParser.Parse((ReadOnlySpan<byte>)bytes, options);
+
+        CollectionAssert.AreEqual(ImfReportParser.Parse(text, options).Observations.ToList(), table.Observations.ToList());
+    }
+
+    /// <summary>
+    /// Verifies that bytes lacking any recognizable header row are reported as a format failure.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenBytesLackHeader_ShouldThrowExchangeRateFormatException()
+    {
+        ImfRateProviderOptions options = new();
+        byte[] bytes = ImfFixtures.ReadBytes(ImfFixtures.ErrorNoTsv);
+
+        _ = Assert.ThrowsExactly<ExchangeRateFormatException>(() =>
+        {
+            _ = ImfReportParser.Parse((ReadOnlySpan<byte>)bytes, options);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that parsing bytes without options throws <see cref="ArgumentNullException" /> naming the options.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenGivenBytesWithoutOptions_ShouldThrowArgumentNullException()
+    {
+        byte[] bytes = ImfFixtures.ReadBytes(ImfFixtures.Rep202604);
+
+        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = ImfReportParser.Parse((ReadOnlySpan<byte>)bytes, null!);
+        });
+
+        Assert.AreEqual("options", ex.ParamName);
+    }
 }
