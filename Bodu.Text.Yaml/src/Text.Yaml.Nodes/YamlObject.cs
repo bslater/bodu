@@ -15,7 +15,8 @@ namespace Bodu.Text.Yaml.Nodes;
 /// <remarks>
 /// A node may appear at most once in a tree. Adding or assigning a value that already belongs to a container, this
 /// mapping included, throws an <see cref="InvalidOperationException" />; removing an entry or replacing its value
-/// detaches the value so that it can be added elsewhere.
+/// detaches the value so that it can be added elsewhere. Adding the mapping to itself or to one of its own descendants
+/// throws an <see cref="InvalidOperationException" /> as well.
 /// </remarks>
 public sealed class YamlObject
     : YamlNode,
@@ -46,7 +47,8 @@ public sealed class YamlObject
     /// <value>The mapped node, or <see langword="null" />.</value>
     /// <exception cref="ArgumentNullException"><paramref name="key" /> is <see langword="null" />.</exception>
     /// <exception cref="InvalidOperationException">
-    /// The assigned node already belongs to a container, and is not the value mapped to <paramref name="key" />.
+    /// The assigned node already belongs to a container, and is not the value mapped to <paramref name="key" />; or the
+    /// assigned node is this mapping or one of its ancestors.
     /// </exception>
     /// <remarks>
     /// Assigning over an entry detaches the replaced node, so that it can be added elsewhere. Assigning an entry's
@@ -68,7 +70,7 @@ public sealed class YamlObject
             if (exists && ReferenceEquals(existing, value))
                 return;
 
-            value?.ThrowIfAttached();
+            value?.ThrowIfCannotJoin(this);
 
             if (!exists)
                 _order.Add(key);
@@ -87,7 +89,7 @@ public sealed class YamlObject
     /// <exception cref="ArgumentNullException"><paramref name="key" /> is <see langword="null" />.</exception>
     /// <exception cref="ArgumentException">An entry with the same key already exists.</exception>
     /// <exception cref="InvalidOperationException">
-    /// <paramref name="value" /> already belongs to a container.
+    /// <paramref name="value" /> already belongs to a container, or is this mapping or one of its ancestors.
     /// </exception>
     public void Add(string key, YamlNode? value)
     {
@@ -95,7 +97,7 @@ public sealed class YamlObject
         if (_entries.ContainsKey(key))
             throw new ArgumentException(YamlResourceStrings.Arg_Invalid_YamlDuplicateKey, nameof(key));
 
-        value?.ThrowIfAttached();
+        value?.ThrowIfCannotJoin(this);
 
         _order.Add(key);
         _entries[key] = value;

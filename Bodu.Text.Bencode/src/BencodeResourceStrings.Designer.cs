@@ -616,6 +616,15 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to A node cannot be added to itself or to one of its own descendants..
+        /// </summary>
+        internal static string Op_Invalid_NodeCycle {
+            get {
+                return ResourceManager.GetString("Op_Invalid_NodeCycle", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to A Bencode value of kind '{1}' cannot be converted to type '{0}'..
         /// </summary>
         internal static string Op_Invalid_NodeValueConversion {

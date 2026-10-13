@@ -16,9 +16,10 @@ namespace Bodu.Text.Toml.Nodes;
 /// <remarks>
 /// Elements are kept in insertion order, which is also the order in which they are serialized. An element may be
 /// <see langword="null" /> in memory, but an array containing a <see langword="null" /> element cannot be written
-/// because TOML has no null token. Adding a node that already belongs to a container, this one included, throws an
-/// <see cref="InvalidOperationException" />; removing or replacing an element detaches it, clearing its
-/// <see cref="TomlNode.Parent" /> so it can be added to another container.
+/// because TOML has no null token. Adding a node that already belongs to a container, this one included, or adding the
+/// array to itself or to one of its own descendants, throws an <see cref="InvalidOperationException" />; removing or
+/// replacing an element detaches it, clearing its <see cref="TomlNode.Parent" /> so it can be added to another
+/// container.
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
@@ -96,7 +97,7 @@ public sealed class TomlArray
     /// </exception>
     /// <exception cref="InvalidOperationException">
     /// Thrown when the assigned node already belongs to a container, this array included, and is not the element at
-    /// <paramref name="index" />.
+    /// <paramref name="index" />; or when the assigned node is this array or one of its ancestors.
     /// </exception>
     /// <remarks>
     /// Assigning over an existing element detaches the replaced node, clearing its <see cref="TomlNode.Parent" />.
@@ -163,7 +164,7 @@ public sealed class TomlArray
     /// </remarks>
     public void Insert(int index, TomlNode? item)
     {
-        item?.ThrowIfAttached();
+        item?.ThrowIfCannotJoin(this);
 
         _items.Insert(index, item);
         item?.AssignParent(this);

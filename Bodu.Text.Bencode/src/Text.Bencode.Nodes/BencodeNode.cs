@@ -26,7 +26,8 @@ namespace Bodu.Text.Bencode.Nodes;
 /// </para>
 /// <para>
 /// Each node has at most one parent, and appears in it once. Adding a node that already belongs to a container, the
-/// same one included, throws an <see cref="InvalidOperationException" />.
+/// same one included, throws an <see cref="InvalidOperationException" />, as does adding a container to itself or to
+/// one of its own descendants, which would make the tree a cycle.
 /// </para>
 /// <example>
 /// <code language="csharp">
@@ -400,7 +401,7 @@ public abstract class BencodeNode
     /// </param>
     /// <exception cref="InvalidOperationException">
     /// Thrown when <paramref name="value" /> already belongs to a container, this node's parent included, and is not
-    /// this node itself.
+    /// this node itself, or when <paramref name="value" /> is this node's parent or one of its ancestors.
     /// </exception>
     /// <remarks>
     /// When this node has no parent the call does nothing. After a successful replacement this node's
@@ -637,29 +638,39 @@ public abstract class BencodeNode
     /// </summary>
     /// <param name="parent">The container taking ownership of this node.</param>
     /// <exception cref="InvalidOperationException">
-    /// Thrown when this node already belongs to a container, <paramref name="parent" /> included.
+    /// Thrown when this node already belongs to a container, <paramref name="parent" /> included, or is
+    /// <paramref name="parent" /> or one of its ancestors.
     /// </exception>
     internal void AssignParent(BencodeNode parent)
     {
-        ThrowIfAttached();
+        ThrowIfCannotJoin(parent);
         Parent = parent;
     }
 
     /// <summary>
-    /// Enforces the rule that a node belongs to at most one container and appears in it once, without assigning the
-    /// parent, so that a container can check a node before it commits to holding it.
+    /// Enforces the rules a node must meet to join a container, without assigning the parent, so that a container can
+    /// check a node before it commits to holding it: the node belongs to no container yet, and it is neither the
+    /// container nor one of the container's ancestors, either of which would make the tree a cycle.
     /// </summary>
+    /// <param name="parent">The container that would take ownership of this node.</param>
     /// <exception cref="InvalidOperationException">
-    /// Thrown when this node already belongs to a container, including the one that would hold it.
+    /// Thrown when this node already belongs to a container, including <paramref name="parent" />, or is
+    /// <paramref name="parent" /> or one of its ancestors.
     /// </exception>
     /// <remarks>
     /// A container that is asked to hold a node in the slot the node already occupies treats that as no change rather
     /// than calling this method.
     /// </remarks>
-    internal void ThrowIfAttached()
+    internal void ThrowIfCannotJoin(BencodeNode parent)
     {
         if (Parent is not null)
             throw new InvalidOperationException(BencodeResourceStrings.Op_Invalid_NodeAlreadyHasParent);
+
+        for (BencodeNode? ancestor = parent; ancestor is not null; ancestor = ancestor.Parent)
+        {
+            if (ReferenceEquals(ancestor, this))
+                throw new InvalidOperationException(BencodeResourceStrings.Op_Invalid_NodeCycle);
+        }
     }
 
     /// <summary>

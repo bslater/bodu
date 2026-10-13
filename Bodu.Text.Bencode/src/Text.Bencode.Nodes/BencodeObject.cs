@@ -21,9 +21,9 @@ namespace Bodu.Text.Bencode.Nodes;
 /// <see cref="Reader.Utf8BencodeReader" />. In-memory ordering is not contractual: the writer emits entries in
 /// canonical ascending bytewise key order regardless of insertion order. A value may be <see langword="null" /> in
 /// memory, but an object containing a <see langword="null" /> value cannot be written because Bencode has no null
-/// token. Adding a node that already belongs to a container, this one included, throws an
-/// <see cref="InvalidOperationException" />; removing or replacing a value detaches it, clearing its
-/// <see cref="BencodeNode.Parent" /> so it can be added to another container.
+/// token. Adding a node that already belongs to a container, this one included, or adding the object to itself or to
+/// one of its own descendants, throws an <see cref="InvalidOperationException" />; removing or replacing a value
+/// detaches it, clearing its <see cref="BencodeNode.Parent" /> so it can be added to another container.
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
@@ -142,7 +142,7 @@ public sealed class BencodeObject
     /// </exception>
     /// <exception cref="InvalidOperationException">
     /// Thrown when the assigned node already belongs to a container, this object included, and is not the value mapped
-    /// to <paramref name="key" />.
+    /// to <paramref name="key" />; or when the assigned node is this object or one of its ancestors.
     /// </exception>
     /// <remarks>
     /// Assigning over an existing entry detaches the replaced node, clearing its <see cref="BencodeNode.Parent" />.
@@ -182,7 +182,7 @@ public sealed class BencodeObject
         // A value already held under this key falls through to the dictionary, which reports the duplicate key; a value
         // held anywhere else, under another key of this dictionary included, is rejected before anything changes.
         if (value is not null && !(ReferenceEquals(value.Parent, this) && _properties.ContainsKey(key)))
-            value.ThrowIfAttached();
+            value.ThrowIfCannotJoin(this);
 
         _properties.Add(key, value);
         value?.AssignParent(this);

@@ -17,9 +17,9 @@ namespace Bodu.Text.Toml.Nodes;
 /// Entries are kept in insertion order - including across removals - which is also the order in which they are
 /// serialized: the TOML writer emits a table's members in document order rather than re-sorting them. A value may be
 /// <see langword="null" /> in memory, but a table containing a <see langword="null" /> value cannot be written because
-/// TOML has no null token. Adding a node that already belongs to a container, this one included, throws an
-/// <see cref="InvalidOperationException" />; removing or replacing a value detaches it, clearing its
-/// <see cref="TomlNode.Parent" /> so it can be added to another container.
+/// TOML has no null token. Adding a node that already belongs to a container, this one included, or adding the object
+/// to itself or to one of its own descendants, throws an <see cref="InvalidOperationException" />; removing or
+/// replacing a value detaches it, clearing its <see cref="TomlNode.Parent" /> so it can be added to another container.
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
@@ -167,7 +167,7 @@ public sealed class TomlObject
     /// </exception>
     /// <exception cref="InvalidOperationException">
     /// Thrown when the assigned node already belongs to a container, this object included, and is not the value mapped
-    /// to <paramref name="key" />.
+    /// to <paramref name="key" />; or when the assigned node is this object or one of its ancestors.
     /// </exception>
     /// <remarks>
     /// Assigning over an existing entry detaches the replaced node, clearing its <see cref="TomlNode.Parent" />.
@@ -211,7 +211,7 @@ public sealed class TomlObject
         // A value already held under this key falls through to the dictionary, which reports the duplicate key; a value
         // held anywhere else, under another key of this table included, is rejected before anything changes.
         if (value is not null && !(ReferenceEquals(value.Parent, this) && _properties.ContainsKey(key)))
-            value.ThrowIfAttached();
+            value.ThrowIfCannotJoin(this);
 
         _properties.Add(key, value);
         _order.Add(key);
