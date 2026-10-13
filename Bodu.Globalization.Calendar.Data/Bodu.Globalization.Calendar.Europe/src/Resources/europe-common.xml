@@ -16,14 +16,16 @@
       weekend adjustment on its own import <Use> directive. The import resolver resolves europe-common's own
       imports transitively, so a region that imports a concept from here receives the fully resolved catalogue rule.
 
-    * The common Catholic fixed-date feasts the main catalogues do not carry - Assumption of Mary and Immaculate
-      Conception - are DEFINED INLINE here as the single European source of truth, so the Catholic member states
-      cherry-pick them uniformly rather than each re-declaring them.
+    * The two Catholic fixed-date feasts the Catholic member states share - Assumption of Mary and Immaculate
+      Conception - are DEFINED INLINE here as the single European source of truth, so those states cherry-pick
+      them uniformly from this hub rather than each re-declaring them. The catholic catalogue carries both feasts
+      too; the European packs take them from this hub instead.
 
   Anchor note: any Easter-derived date a country adopts (Good Friday, Easter Monday, Ascension Day, Whit Sunday,
   Whit Monday, Corpus Christi) resolves against the Easter Sunday anchor, which is re-exported here too. Importing
   the offset feast pulls the anchor transitively. Orthodox-tradition countries (Bulgaria, Cyprus, Greece, Romania)
-  instead import the Orthodox Easter cycle directly from christian-orthodox and do not use this Western anchor.
+  instead declare the Orthodox Easter cycle inline, each feast offset from a local "orthodox-easter-sunday" concept
+  computed by the "orthodox-easter" algorithm, and do not use this Western anchor.
 -->
 <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="data.europe-common">
 
@@ -76,9 +78,9 @@
   <NotableDates>
 
     <!--
-      Common Catholic fixed-date feasts not carried by the main catalogues, defined here as the single European
-      source of truth so the Catholic member states can cherry-pick them uniformly. Re-exported as working religious
-      observances by default; a member state that observes one as a non-working public holiday sets
+      Common Catholic fixed-date feasts, defined here as the single European source of truth so the Catholic member
+      states can cherry-pick them uniformly (the catholic catalogue carries both too). Re-exported as working
+      religious observances by default; a member state that observes one as a non-working public holiday sets
       category="PublicHoliday" nonWorking="true" on its own <Use>.
     -->
 

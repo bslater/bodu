@@ -83,8 +83,8 @@ foreach (NotableDate date in y2026)
 Query a single day or an arbitrary range with the instance overloads:
 
 ```csharp
-IReadOnlyList<NotableDate> july4 = service.Resolve(new DateOnly(2026, 7, 4), "US");
-// → Independence Day, 4 July 2026
+IReadOnlyList<NotableDate> july3 = service.Resolve(new DateOnly(2026, 7, 3), "US");
+// → Independence Day, observed on Friday 3 July 2026 (ActualDate 4 July, a Saturday)
 ```
 
 ## Compose several territories
@@ -98,7 +98,7 @@ NotableDateService us = AmericasCalendarData.CreateService("US");
 NotableDateService gb = EuropeCalendarData.CreateService("GB");
 NotableDateService au = AsiaPacificCalendarData.CreateService("AU");
 
-IReadOnlyList<NotableDate> independenceDay = us.Resolve(new DateOnly(2026, 7, 4),  "US");
+IReadOnlyList<NotableDate> independenceDay = us.Resolve(new DateOnly(2026, 7, 3),  "US"); // observed
 IReadOnlyList<NotableDate> christmas       = gb.Resolve(new DateOnly(2026, 12, 25), "GB");
 IReadOnlyList<NotableDate> australiaDay    = au.Resolve(new DateOnly(2026, 1, 26),  "AU");
 ```

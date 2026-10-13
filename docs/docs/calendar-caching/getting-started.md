@@ -49,8 +49,9 @@ using var calendar = new CachingNotableDateService(
 // First call computes the whole of 2026 through the engine and caches it.
 IReadOnlyList<NotableDate> year = calendar.Resolve(2026, "US");
 
-// Same civil year: served from the cache, clipped to the day.
-IReadOnlyList<NotableDate> independenceDay = calendar.Resolve(new DateOnly(2026, 7, 4), "US");
+// Same civil year: served from the cache, clipped to the day. Independence Day 2026 falls on a Saturday and is
+// observed on Friday 3 July.
+IReadOnlyList<NotableDate> independenceDay = calendar.Resolve(new DateOnly(2026, 7, 3), "US");
 
 // A filter is applied after assembly, so it shares the cached year.
 IReadOnlyList<NotableDate> publicHolidays = calendar.Resolve(
