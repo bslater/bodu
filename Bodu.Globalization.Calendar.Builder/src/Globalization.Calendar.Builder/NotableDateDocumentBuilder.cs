@@ -431,14 +431,16 @@ public sealed partial class NotableDateDocumentBuilder
     /// </exception>
     /// <exception cref="NotSupportedException">
     /// <paramref name="path" /> has a <c>.bcal</c> extension: a binary rule pack is compiled output that cannot be
-    /// reopened for editing (load it with <see cref="NotableDateResourceLoader.LoadBinary(Stream)" />).
+    /// reopened for editing (load it with <see cref="NotableDateResourceLoader.LoadBinary(Stream)" />); or a
+    /// <c>.json</c> file declares a field the builder's document model cannot hold; see <see cref="FromJson(string)" />.
     /// </exception>
     /// <exception cref="FormatException">
-    /// The file content is not a well-formed notable-date document, or an enumeration, integer, Boolean, trigger-month
-    /// or <c>workingDays</c> value does not parse.
+    /// The file content is not a well-formed notable-date document, an enumeration, integer, Boolean, trigger-month or
+    /// <c>workingDays</c> value does not parse, or an item of a JSON list of identifiers, territory codes or tags is
+    /// not a string.
     /// </exception>
     /// <exception cref="InvalidOperationException">
-    /// A <c>.json</c> file carries a value of the wrong JSON type (for example a string where a number belongs); see
+    /// A property of a strategy or a recurrence in a <c>.json</c> file holds an object or an array; see
     /// <see cref="FromJson(string)" />.
     /// </exception>
     /// <remarks>
