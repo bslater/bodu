@@ -37,6 +37,16 @@
       to track whichever SDK is actually available.
     -->
     <AnalysisLevel>latest-recommended</AnalysisLevel>
+
+    <!--
+      The main solution restores the analyzer package at the version Directory.Packages.props pins for
+      Bodu.CodeStyle.XmlDocumentation, from the bodu-local feed that CI's pack steps and
+      bld/pack-codestyle-analyzer.* write. This subtree is not part of the lock-step release, so it does
+      not take BoduBaseVersion from bld/Versioning.props: it packs at that pin, and its assemblies carry
+      it too. Change the two together; bld/policy/tests/test_codestyle_package_version.py holds them
+      equal.
+    -->
+    <VersionPrefix>1.0.0</VersionPrefix>
   </PropertyGroup>
 
 </Project>

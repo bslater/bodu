@@ -154,6 +154,12 @@ The packaging project produces a NuGet that lays out the analyzer, code fix, and
 The packed `.nupkg` is committed to `local-packages/` so a fresh clone restores out-of-the-box without an
 explicit pack step.
 
+The package version is the one `Directory.Packages.props` pins (1.0.0). `Bodu.CodeStyle/Directory.Build.props`
+sets it for the whole subtree, which is not part of the lock-step release and so does not take `BoduBaseVersion`,
+so every pack (the scripts below and CI's pack steps) writes exactly the package the build restores.
+`bld/policy/tests/test_codestyle_package_version.py`, which the Policy Gate runs, holds the two equal and the
+committed `.nupkg` to that version.
+
 ### Updating the analyzer in `Bodu.Core` and the other library projects
 
 ```bash

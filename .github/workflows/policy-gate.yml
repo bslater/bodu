@@ -69,8 +69,17 @@ jobs:
       - name: Folder ↔ namespace alignment (whole tree)
         run: bash bld/check-folder-namespace-alignment.sh
 
+      # The checker tests evaluate the Bodu.CodeStyle analyzer package with MSBuild from Bodu.CodeStyle/,
+      # as CI packs it, so they need the SDK Bodu.CodeStyle/global.json pins (the one
+      # codestyle-build-test.yml installs).
+      - name: Setup .NET SDK 8.0
+        uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: 8.0.x
+
       # The checker's own tests run first, so a broken checker cannot pass the change. They hold its
-      # generated-file rule to the one Roslyn's analyzers apply.
+      # generated-file rule to the one Roslyn's analyzers apply, and the analyzer package's version to
+      # the Directory.Packages.props pin.
       - name: Coding-policy checker tests
         run: python3 -m unittest discover -s bld/policy/tests -t bld/policy/tests
 

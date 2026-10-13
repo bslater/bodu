@@ -6,8 +6,11 @@
 # Run once after cloning the repo, and again whenever you change anything under Bodu.CodeStyle/
 # that should be picked up by Bodu.Core and the other library projects.
 #
-# Because the analyzer keeps a constant 1.0.0 version, NuGet's global cache must be evicted so
-# that consumer projects re-extract the freshly-packed contents on their next restore.
+# The analyzer packs at the constant version Directory.Packages.props pins (1.0.0), set for the
+# whole Bodu.CodeStyle subtree in Bodu.CodeStyle/Directory.Build.props rather than taken from the
+# lock-step BoduBaseVersion, so the pack writes the package the build restores. Because that
+# version never changes, NuGet's global cache must be evicted so that consumer projects re-extract
+# the freshly-packed contents on their next restore.
 set -euo pipefail
 
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
