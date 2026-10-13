@@ -100,14 +100,14 @@ public static class BinaryEncodingExtensions
     public static byte[] FromBase32String(this string base32) => Base32.FromBase32String(base32);
 
     /// <summary>
-    /// Decodes a Bitcoin/Flickr Base58 string into a byte array.
+    /// Decodes a Bitcoin Base58 string into a byte array.
     /// </summary>
     /// <param name="base58">The Base58 input.</param>
     /// <returns>The decoded bytes.</returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="base58" /> is <see langword="null" />.
     /// </exception>
-    /// <exception cref="FormatException">Thrown when the input is not valid Bitcoin/Flickr Base58.</exception>
+    /// <exception cref="FormatException">Thrown when the input is not valid Bitcoin Base58.</exception>
     public static byte[] FromBase58String(this string base58) => Base58.FromBase58String(base58);
 
     /// <summary>
@@ -167,7 +167,7 @@ public static class BinaryEncodingExtensions
     public static string ToBase32String(this ReadOnlySpan<byte> bytes) => Base32.ToBase32String(bytes);
 
     /// <summary>
-    /// Encodes <paramref name="bytes" /> using the Bitcoin/Flickr Base58 alphabet.
+    /// Encodes <paramref name="bytes" /> using the Bitcoin Base58 alphabet.
     /// </summary>
     /// <param name="bytes">The bytes to encode.</param>
     /// <returns>The Base58 string.</returns>
@@ -177,7 +177,7 @@ public static class BinaryEncodingExtensions
     public static string ToBase58String(this byte[] bytes) => Base58.ToBase58String(bytes);
 
     /// <summary>
-    /// Encodes <paramref name="bytes" /> using the Bitcoin/Flickr Base58 alphabet.
+    /// Encodes <paramref name="bytes" /> using the Bitcoin Base58 alphabet.
     /// </summary>
     /// <param name="bytes">The bytes to encode.</param>
     /// <returns>The Base58 string.</returns>

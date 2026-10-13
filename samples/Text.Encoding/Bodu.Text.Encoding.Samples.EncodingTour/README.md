@@ -222,7 +222,7 @@ the base58 instance to show alphabet checking on untrusted input (Bitcoin Base58
 
   base16-lower     -> '426f647521'  (Base16 / hexadecimal, lower case (default Bodu Base16 form; compatible with Convert.ToHexStringLower).)
   base32-crockford -> '89QP8X91'  (Crockford Base32 (0-9, A-Z minus I/L/O/U; no padding).)
-  base58           -> '8VjE9ma'  (Bitcoin/Flickr Base58 (1-9, A-Z minus O/I, a-z minus l).)
+  base58           -> '8VjE9ma'  (Bitcoin Base58 (1-9, A-Z minus O/I, a-z minus l).)
   base64-urlsafe   -> 'Qm9kdSE'  (RFC 4648 §5 URL- and filename-safe Base64 (-, _; no padding).)
   z85              -> '?MsJX'  (ZeroMQ Z85 (RFC 32 shell-safe alphabet, 4-byte aligned).)
   (the loop above never names a concrete codec - adding an encoding to the catalogue needs no change here)

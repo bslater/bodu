@@ -589,7 +589,7 @@ namespace Bodu {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Input is not valid Bitcoin/Flickr Base58..
+        ///   Looks up a localized string similar to Input is not valid Bitcoin Base58..
         /// </summary>
         internal static string Format_Invalid_BitcoinFlickrBase58 {
             get {

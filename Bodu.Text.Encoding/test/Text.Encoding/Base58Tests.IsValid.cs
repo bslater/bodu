@@ -10,7 +10,7 @@ public sealed partial class Base58Tests
 {
 
     /// <summary>
-    /// Verifies that <see cref="Base58.IsBase58Digit" /> recognises Bitcoin/Flickr alphabet characters.
+    /// Verifies that <see cref="Base58.IsBase58Digit" /> recognises Bitcoin alphabet characters.
     /// </summary>
     [TestMethod]
     public void IsBase58Digit_WhenBitcoinFlickrSymbol_ShouldReturnTrue()
@@ -34,7 +34,7 @@ public sealed partial class Base58Tests
         Assert.IsFalse(Base58.IsBase58Digit('!'));
     }
     /// <summary>
-    /// Verifies that <see cref="Base58.IsValid" /> returns <see langword="true" /> for a canonical Bitcoin/Flickr
+    /// Verifies that <see cref="Base58.IsValid" /> returns <see langword="true" /> for a canonical Bitcoin
     /// input.
     /// </summary>
     [TestMethod]
@@ -83,7 +83,7 @@ public sealed partial class Base58Tests
 
     /// <summary>
     /// Verifies that <see cref="Base58.IsValid" /> recognises the Ripple variant alphabet - driving the variant
-    /// branch independently from the Bitcoin/Flickr default.
+    /// branch independently from the Bitcoin default.
     /// </summary>
     [TestMethod]
     public void IsValid_WhenRippleVariantAndRippleAlphabetInput_ShouldReturnTrue() =>
@@ -100,7 +100,7 @@ public sealed partial class Base58Tests
     [TestCategory("Regression")]
     public void IsValid_WhenInputExceedsMaxLength_ShouldReturnFalse()
     {
-        // '1' is the zero symbol of the Bitcoin/Flickr alphabet, so the input is otherwise well-formed.
+        // '1' is the zero symbol of the Bitcoin alphabet, so the input is otherwise well-formed.
         string tooLong = new string('1', Base58.MaxDecodeInputLength + 1);
 
         Assert.IsFalse(Base58.IsValid(tooLong.AsSpan(), Base58Variant.BitcoinFlickr));

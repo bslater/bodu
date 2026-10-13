@@ -136,12 +136,12 @@ public sealed class GuidEncodingTests
 
     /// <summary>
     /// Verifies that <see cref="Base58.TryDecodeGuid" /> returns <see langword="false" /> for input containing a
-    /// character outside the variant alphabet (e.g. <c>'0'</c> or <c>'O'</c> in Bitcoin/Flickr).
+    /// character outside the variant alphabet (e.g. <c>'0'</c> or <c>'O'</c> in Bitcoin).
     /// </summary>
     [TestMethod]
     public void Base58_TryDecodeGuid_WhenInvalidAlphabet_ShouldReturnFalse()
     {
-        // '0' and 'O' are intentionally excluded from the Bitcoin/Flickr alphabet.
+        // '0' and 'O' are intentionally excluded from the Bitcoin alphabet.
         bool ok = Base58.TryDecodeGuid("0000O".AsSpan(), out Guid value);
 
         Assert.IsFalse(ok);

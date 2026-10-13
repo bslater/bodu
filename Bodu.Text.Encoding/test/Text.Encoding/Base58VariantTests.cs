@@ -27,6 +27,7 @@ public sealed class Base58VariantTests
     {
         Assert.AreEqual(0, (int)Base58Variant.BitcoinFlickr);
         Assert.AreEqual(1, (int)Base58Variant.Ripple);
+        Assert.AreEqual(2, (int)Base58Variant.Flickr);
     }
 
 }

@@ -20,8 +20,8 @@ namespace Bodu.Text.Encoding;
 /// original <c>payload</c> after verifying the checksum; if the checksum disagrees the decoder fails.
 /// </para>
 /// <para>
-/// Leading zero bytes in the payload are preserved by the underlying Base58 encoder as leading alphabet[0] characters
-/// (typically <c>1</c> in the Bitcoin/Flickr alphabet).
+/// Leading zero bytes in the payload are preserved by the underlying Base58 encoder as leading alphabet[0] characters (<c>1</c>
+/// in the Bitcoin alphabet).
 /// </para>
 /// </remarks>
 /// <example>

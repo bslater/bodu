@@ -38,7 +38,7 @@ public sealed partial class Base58Tests
 
     /// <summary>
     /// Verifies that <see cref="Base58.Encode(ReadOnlySpan{byte}, Base58Variant)" /> reproduces every Bitcoin Core
-    /// Known Answer Test vector for the Bitcoin/Flickr alphabet.
+    /// Known Answer Test vector for the Bitcoin alphabet.
     /// </summary>
     /// <param name="vector">A KAT vector.</param>
     [TestMethod]
@@ -52,7 +52,7 @@ public sealed partial class Base58Tests
         Assert.AreEqual(vector.Encoded, actual);
     }
     /// <summary>
-    /// Verifies that <see cref="Base58.Encode(byte[], Base58Variant)" /> reproduces known Bitcoin/Flickr Base58
+    /// Verifies that <see cref="Base58.Encode(byte[], Base58Variant)" /> reproduces known Bitcoin Base58
     /// vectors for selected inputs.
     /// </summary>
     /// <param name="hexInput">The input bytes expressed as hex.</param>

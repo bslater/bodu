@@ -236,7 +236,7 @@
     <value>Z85 input length must be a multiple of five characters.</value>
   </data>
   <data name="Format_Invalid_BitcoinFlickrBase58" xml:space="preserve">
-    <value>Input is not valid Bitcoin/Flickr Base58.</value>
+    <value>Input is not valid Bitcoin Base58.</value>
   </data>
   <data name="Format_Invalid_GuidNotSixteenBytes" xml:space="preserve">
     <value>Input does not decode to a 16-byte GUID.</value>

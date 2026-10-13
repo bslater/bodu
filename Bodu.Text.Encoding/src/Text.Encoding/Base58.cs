@@ -7,7 +7,7 @@
 namespace Bodu.Text.Encoding;
 
 /// <summary>
-/// Provides Base58 encoding and decoding of binary data using the Bitcoin/Flickr or Ripple alphabets.
+/// Provides Base58 encoding and decoding of binary data using the Bitcoin, Ripple, or Flickr alphabets.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -16,8 +16,8 @@ namespace Bodu.Text.Encoding;
 /// bit-stream technique used by Base16, Base32, and Base64.
 /// </para>
 /// <para>
-/// Leading zero bytes in the input are encoded as leading alphabet[0] characters (typically <c>1</c> in the
-/// Bitcoin/Flickr alphabet) so that the byte-level and character-level forms preserve a meaningful prefix.
+/// Leading zero bytes in the input are encoded as leading alphabet[0] characters (<c>1</c> in the Bitcoin and Flickr
+/// alphabets, <c>r</c> in Ripple's) so that the byte-level and character-level forms preserve a meaningful prefix.
 /// </para>
 /// <para>
 /// Base58 has no padding character and no standard decorations. The <see cref="BaseFormattingOptions.UpperCase" />,
@@ -30,7 +30,7 @@ namespace Bodu.Text.Encoding;
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
-/// // Bitcoin/Flickr Base58 (default) - leading zero bytes encode as leading '1' characters.
+/// // Bitcoin Base58 (default) - leading zero bytes encode as leading '1' characters.
 /// byte[] data = { 0x00, 0xDE, 0xAD, 0xBE, 0xEF };
 /// string encoded = Base58.Encode(data);
 ///
@@ -44,14 +44,20 @@ namespace Bodu.Text.Encoding;
 /// </example>
 public static partial class Base58
 {
-    /// <summary>The 58-character Bitcoin/Flickr alphabet, which omits the visually ambiguous characters 0, O, I, and l.</summary>
+    /// <summary>The 58-character Bitcoin alphabet, which omits the visually ambiguous characters 0, O, I, and l.</summary>
     private const string BitcoinFlickrAlphabet = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
 
-    /// <summary>The 58-character Ripple alphabet, a permutation of the Bitcoin/Flickr alphabet used by the XRP ledger.</summary>
+    /// <summary>The 58-character Flickr alphabet: the Bitcoin alphabet with the lower-case letters before the upper-case ones.</summary>
+    private const string FlickrAlphabet = "123456789abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ";
+
+    /// <summary>The 58-character Ripple alphabet, a permutation of the Bitcoin alphabet used by the XRP ledger.</summary>
     private const string RippleAlphabet = "rpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65jkm8oFqi1tuvAxyz";
 
-    /// <summary>The reverse lookup table mapping each ASCII character to its value for the Bitcoin/Flickr alphabet.</summary>
+    /// <summary>The reverse lookup table mapping each ASCII character to its value for the Bitcoin alphabet.</summary>
     private static readonly sbyte[] s_bitcoinFlickrLookup = BuildLookup(BitcoinFlickrAlphabet);
+
+    /// <summary>The reverse lookup table mapping each ASCII character to its value for the Flickr alphabet.</summary>
+    private static readonly sbyte[] s_flickrLookup = BuildLookup(FlickrAlphabet);
 
     /// <summary>The reverse lookup table mapping each ASCII character to its value for the Ripple alphabet.</summary>
     private static readonly sbyte[] s_rippleLookup = BuildLookup(RippleAlphabet);
@@ -173,6 +179,7 @@ public static partial class Base58
         {
             Base58Variant.BitcoinFlickr => BitcoinFlickrAlphabet,
             Base58Variant.Ripple => RippleAlphabet,
+            Base58Variant.Flickr => FlickrAlphabet,
             _ => throw new ArgumentOutOfRangeException(nameof(variant), variant, EncodingResourceStrings.Arg_OutOfRange_Base58Variant),
         };
 
@@ -187,6 +194,7 @@ public static partial class Base58
         {
             Base58Variant.BitcoinFlickr => s_bitcoinFlickrLookup,
             Base58Variant.Ripple => s_rippleLookup,
+            Base58Variant.Flickr => s_flickrLookup,
             _ => throw new ArgumentOutOfRangeException(nameof(variant), variant, EncodingResourceStrings.Arg_OutOfRange_Base58Variant),
         };
 }

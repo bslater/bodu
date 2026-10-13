@@ -18,21 +18,21 @@ public static class Base58KnownAnswerVectors
 {
 
     /// <summary>
-    /// Returns malformed Bitcoin/Flickr Base58 inputs that the decoder must reject.
+    /// Returns malformed Bitcoin Base58 inputs that the decoder must reject.
     /// </summary>
     /// <returns>A sequence suitable for <c>[DynamicData]</c>.</returns>
     public static IEnumerable<object[]> BitcoinFlickrNegativeVectors()
     {
-        yield return new object[] { new EncodingNegativeDecodeVector("Visually ambiguous '0' (zero) excluded", "0Ajdvzr", typeof(FormatException), "Bitcoin/Flickr alphabet") };
-        yield return new object[] { new EncodingNegativeDecodeVector("Visually ambiguous 'O' (capital O) excluded", "OAjdvzr", typeof(FormatException), "Bitcoin/Flickr alphabet") };
-        yield return new object[] { new EncodingNegativeDecodeVector("Visually ambiguous 'I' (capital I) excluded", "IAjdvzr", typeof(FormatException), "Bitcoin/Flickr alphabet") };
-        yield return new object[] { new EncodingNegativeDecodeVector("Visually ambiguous 'l' (lower L) excluded", "lAjdvzr", typeof(FormatException), "Bitcoin/Flickr alphabet") };
+        yield return new object[] { new EncodingNegativeDecodeVector("Visually ambiguous '0' (zero) excluded", "0Ajdvzr", typeof(FormatException), "Bitcoin alphabet") };
+        yield return new object[] { new EncodingNegativeDecodeVector("Visually ambiguous 'O' (capital O) excluded", "OAjdvzr", typeof(FormatException), "Bitcoin alphabet") };
+        yield return new object[] { new EncodingNegativeDecodeVector("Visually ambiguous 'I' (capital I) excluded", "IAjdvzr", typeof(FormatException), "Bitcoin alphabet") };
+        yield return new object[] { new EncodingNegativeDecodeVector("Visually ambiguous 'l' (lower L) excluded", "lAjdvzr", typeof(FormatException), "Bitcoin alphabet") };
         yield return new object[] { new EncodingNegativeDecodeVector("Whitespace without IgnoreWhitespace style", "9Aj dvzr", typeof(FormatException), "strict mode") };
-        yield return new object[] { new EncodingNegativeDecodeVector("Special character '!'", "!Ajdvzr", typeof(FormatException), "Bitcoin/Flickr alphabet") };
-        yield return new object[] { new EncodingNegativeDecodeVector("Special character '@'", "@Ajdvzr", typeof(FormatException), "Bitcoin/Flickr alphabet") };
+        yield return new object[] { new EncodingNegativeDecodeVector("Special character '!'", "!Ajdvzr", typeof(FormatException), "Bitcoin alphabet") };
+        yield return new object[] { new EncodingNegativeDecodeVector("Special character '@'", "@Ajdvzr", typeof(FormatException), "Bitcoin alphabet") };
     }
     /// <summary>
-    /// Returns the Bitcoin Core <c>base58_encode_decode.json</c> Bitcoin/Flickr alphabet vectors.
+    /// Returns the Bitcoin Core <c>base58_encode_decode.json</c> Bitcoin alphabet vectors.
     /// </summary>
     /// <returns>A sequence suitable for <c>[DynamicData]</c>.</returns>
     public static IEnumerable<object[]> BitcoinFlickrVectors()

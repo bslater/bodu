@@ -27,7 +27,6 @@ public sealed class BinaryEncodingsTests
     [DataRow("zbase32", "z-base-32")]
     [DataRow("base64url", "base64-urlsafe")]
     [DataRow("base58-bitcoin", "base58")]
-    [DataRow("base58-flickr", "base58")]
     [DataRow("base85", "ascii85")]
     public void Get_WhenAliasProvided_ShouldResolveToCanonicalEncoding(string alias, string canonical)
     {
@@ -101,6 +100,7 @@ public sealed class BinaryEncodingsTests
             BinaryEncodings.Base64Mime,
             BinaryEncodings.Base58,
             BinaryEncodings.Base58Ripple,
+            BinaryEncodings.Base58Flickr,
             BinaryEncodings.Ascii85,
             BinaryEncodings.Z85,
         ];
@@ -127,6 +127,7 @@ public sealed class BinaryEncodingsTests
     [DataRow("base64-mime")]
     [DataRow("base58")]
     [DataRow("base58-ripple")]
+    [DataRow("base58-flickr")]
     [DataRow("ascii85")]
     public void RoundTrip_ForEveryRegisteredEncoding_ShouldRecoverOriginal(string encodingName)
     {
