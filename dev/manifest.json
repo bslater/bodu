@@ -12231,7 +12231,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.IO.Hashing.Checksums.Adler32C",
-      "Summary": "<p sourcefile=\"api/Bodu.IO.Hashing.Checksums.Adler32C.yml\" sourcestartlinenumber=\"1\">Computes a 32-bit Adler-style checksum using the power-of-two modulus 65536 for SIMD-friendly alignment. This class\ncannot be inherited.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.IO.Hashing.Checksums.Adler32C.yml\" sourcestartlinenumber=\"1\">Computes a 32-bit Adler-style checksum using the power-of-two modulus 65536 instead of the prime 65521. This class\ncannot be inherited.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -12483,7 +12483,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions",
-      "Summary": "<p sourcefile=\"api/Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.yml\" sourcestartlinenumber=\"1\">Extends <xref href=\"System.IO.Hashing.NonCryptographicHashAlgorithm\" data-throw-if-not-resolved=\"false\"></xref> with one-shot hashing, streaming and async input, and\nconstant-time hash verification - the high-level surface that <xref href=\"System.IO.Hashing.NonCryptographicHashAlgorithm\" data-throw-if-not-resolved=\"false\"></xref> itself\nomits.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.yml\" sourcestartlinenumber=\"1\">Extends <xref href=\"System.IO.Hashing.NonCryptographicHashAlgorithm\" data-throw-if-not-resolved=\"false\"></xref> with one-shot hashing, streaming and async input, and hash\nverification - the high-level surface that <xref href=\"System.IO.Hashing.NonCryptographicHashAlgorithm\" data-throw-if-not-resolved=\"false\"></xref> itself omits.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -17593,7 +17593,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Text.Encoding.Base58",
-      "Summary": "<p sourcefile=\"api/Bodu.Text.Encoding.Base58.yml\" sourcestartlinenumber=\"1\">Provides Base58 encoding and decoding of binary data using the Bitcoin/Flickr or Ripple alphabets.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Text.Encoding.Base58.yml\" sourcestartlinenumber=\"1\">Provides Base58 encoding and decoding of binary data using the Bitcoin, Ripple, or Flickr alphabets.</p>\n"
     },
     {
       "type": "ManagedReference",

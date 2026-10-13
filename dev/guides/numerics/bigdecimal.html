@@ -96,9 +96,14 @@ precision a value requires. It stores an arbitrary-magnitude
 <em>scale</em>, so the represented number is:</p>
 <pre><code class="lang-text">value = unscaledValue × 10^-scale
 </code></pre>
-<p>For example <code>12.340</code> is <code>(unscaledValue: 12340, scale: 3)</code>. There is
-no <code>MinValue</code> or <code>MaxValue</code>: like <code>BigInteger</code>, the type is unbounded
-and arithmetic never overflows.</p>
+<p>Every value is held in one canonical form, with trailing fractional
+zeros removed: <code>12.340</code> is <code>(unscaledValue: 1234, scale: 2)</code>, the same
+value as <code>12.34</code>. There is no <code>MinValue</code> or <code>MaxValue</code>: the unscaled
+value is unbounded, like <code>BigInteger</code>. The scale is an <code>int</code>, so an
+operation whose scale would leave that range (a <code>Multiply</code> or <code>Pow</code> of
+values with extreme scales) throws <code>OverflowException</code>, and the
+<code>(BigInteger, int)</code> constructor rejects a scale below -1,000,000 with
+<code>ArgumentOutOfRangeException</code>.</p>
 <p><code>BigDecimal</code> implements the full <code>INumber&lt;BigDecimal&gt;</code> /
 <code>ISignedNumber&lt;BigDecimal&gt;</code> generic-math surface, so it composes with
 <code>INumber&lt;T&gt;</code>-constrained algorithms without a bespoke wrapper.</p>
@@ -120,20 +125,22 @@ and arithmetic never overflows.</p>
 <td><code>System.Decimal</code></td>
 </tr>
 <tr>
-<td>Decimal values that exceed <code>decimal</code>'s precision or exponent range, or that must preserve trailing-zero <em>scale</em></td>
+<td>Decimal values that exceed <code>decimal</code>'s precision or exponent range</td>
 <td><code>BigDecimal</code></td>
 </tr>
 </tbody>
 </table>
-<p><code>BigDecimal</code> preserves scale: <code>1.0</code>, <code>1.00</code>, and <code>1</code> are <strong>equal in
-value</strong> (they compare and hash equal) but retain their own scale for
-formatting until you normalize or rescale.</p>
+<p><code>BigDecimal</code> holds one canonical form: trailing zeros are removed, so
+<code>1.0</code>, <code>1.00</code>, and <code>1</code> share one representation (scale 0) and compare
+and hash equal. It cannot record a value's written scale; to show a
+fixed number of places, format with <code>F&lt;n&gt;</code> (<code>ToString(&quot;F2&quot;)</code>), and use
+<code>decimal</code> if the written scale must survive.</p>
 <h2 id="creating-values">Creating values</h2>
 <pre><code class="lang-csharp">using System.Numerics;
 using Bodu.Numerics;
 
 // From an unscaled value and scale directly.
-BigDecimal a = new BigDecimal(new BigInteger(12340), 3);  // 12.340
+BigDecimal a = new BigDecimal(new BigInteger(12340), 3);  // 12.34 - canonical (1234, scale 2)
 
 // Implicit lifts from the exact integer and decimal types.
 BigDecimal fromInt     = 42;
@@ -154,15 +161,15 @@ BigDecimal ten  = BigDecimal.Ten;
 <p><code>double</code> does <strong>not</strong> lift implicitly, because the nearest <code>double</code>
 to a written decimal is rarely that decimal. Convert deliberately:</p>
 <!-- compile -->
-<pre><code class="lang-csharp">BigDecimal exactBinary = (BigDecimal)0.1;              // the exact IEEE-754 value of 0.1d
+<pre><code class="lang-csharp">BigDecimal fromDouble  = (BigDecimal)0.1;              // 0.1 - the shortest round-trip text of 0.1d, not its binary expansion
 BigDecimal shortest    = BigDecimal.FromDouble(0.1);   // same value; explicit intent
 </code></pre>
 <h2 id="inspecting-a-value">Inspecting a value</h2>
-<pre><code class="lang-csharp">BigDecimal v = BigDecimal.Parse(&quot;12.340&quot;, CultureInfo.InvariantCulture);
+<pre><code class="lang-csharp">BigDecimal v = BigDecimal.Parse(&quot;12.340&quot;, CultureInfo.InvariantCulture);   // 12.34 - the trailing zero is dropped
 
-BigInteger unscaled = v.UnscaledValue;   // 12340
-int scale           = v.Scale;           // 3
-int precision       = v.Precision;       // 5  - total significant digits
+BigInteger unscaled = v.UnscaledValue;   // 1234
+int scale           = v.Scale;           // 2
+int precision       = v.Precision;       // 4  - total significant digits
 int sign            = v.Sign;            // 1  (-1, 0, or 1)
 
 bool isZero     = v.IsZero;
@@ -217,8 +224,9 @@ BigDecimal ceiling  = BigDecimal.Ceiling(v);     // 3
 BigDecimal truncate = BigDecimal.Truncate(v);    // 2  (toward zero)
 </code></pre>
 <h2 id="comparison-and-equality">Comparison and equality</h2>
-<p>Equality and ordering are by <strong>numeric value</strong>, so differing scales do
-not matter:</p>
+<p>Equality and ordering are by <strong>numeric value</strong>, and every value is
+canonical, so text written with different trailing zeros parses to
+equal values:</p>
 <pre><code class="lang-csharp">BigDecimal a = BigDecimal.Parse(&quot;1.0&quot;, CultureInfo.InvariantCulture);
 BigDecimal b = BigDecimal.Parse(&quot;1.00&quot;, CultureInfo.InvariantCulture);
 
@@ -239,7 +247,7 @@ separator and sign glyphs; the digit sequence is culture-invariant.</p>
 string general = v.ToString();                               // &quot;1234.5&quot;
 string fixed2  = v.ToString(&quot;F2&quot;, CultureInfo.InvariantCulture); // &quot;1234.50&quot;
 
-// Span and UTF-8 surfaces avoid intermediate string allocation.
+// The span and UTF-8 surfaces currently format through an intermediate string.
 Span&lt;char&gt; buffer = stackalloc char[32];
 v.TryFormat(buffer, out int written, &quot;G&quot;, CultureInfo.InvariantCulture);
 </code></pre>
@@ -317,10 +325,10 @@ Register the converters with a single call and pick a wire shape:</p>
 var options = new JsonSerializerOptions()
     .AddNumericsJsonConverters(NumericsJsonPolicy.Strict);
 
-// Strict - canonical object form:
-//   { &quot;unscaledValue&quot;: 12340, &quot;scale&quot;: 3 }
+// Strict - canonical object form (the trailing zero is dropped):
+//   {&quot;unscaledValue&quot;:1234,&quot;scale&quot;:2}
 // Compact - the plain decimal string:
-//   &quot;12.340&quot;
+//   &quot;12.34&quot;
 string json = JsonSerializer.Serialize(
     BigDecimal.Parse(&quot;12.340&quot;, CultureInfo.InvariantCulture), options);
 </code></pre>
@@ -356,7 +364,7 @@ number of decimal places.</li>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: ca28f88 · Built: 2026-10-13 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 8f76146 · Built: 2026-10-13 (UTC)</span>
         </div>
       </div>
     </footer>

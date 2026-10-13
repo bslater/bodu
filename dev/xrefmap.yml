@@ -141721,6 +141721,12 @@ references:
   commentId: F:Bodu.Text.Encoding.Base58Variant.BitcoinFlickr
   fullName: Bodu.Text.Encoding.Base58Variant.BitcoinFlickr
   nameWithType: Base58Variant.BitcoinFlickr
+- uid: Bodu.Text.Encoding.Base58Variant.Flickr
+  name: Flickr
+  href: api/Bodu.Text.Encoding.Base58Variant.html#Bodu_Text_Encoding_Base58Variant_Flickr
+  commentId: F:Bodu.Text.Encoding.Base58Variant.Flickr
+  fullName: Bodu.Text.Encoding.Base58Variant.Flickr
+  nameWithType: Base58Variant.Flickr
 - uid: Bodu.Text.Encoding.Base58Variant.Ripple
   name: Ripple
   href: api/Bodu.Text.Encoding.Base58Variant.html#Bodu_Text_Encoding_Base58Variant_Ripple
@@ -143704,6 +143710,18 @@ references:
   commentId: Overload:Bodu.Text.Encoding.BinaryEncodings.Base58
   fullName: Bodu.Text.Encoding.BinaryEncodings.Base58
   nameWithType: BinaryEncodings.Base58
+- uid: Bodu.Text.Encoding.BinaryEncodings.Base58Flickr
+  name: Base58Flickr
+  href: api/Bodu.Text.Encoding.BinaryEncodings.html#Bodu_Text_Encoding_BinaryEncodings_Base58Flickr
+  commentId: P:Bodu.Text.Encoding.BinaryEncodings.Base58Flickr
+  fullName: Bodu.Text.Encoding.BinaryEncodings.Base58Flickr
+  nameWithType: BinaryEncodings.Base58Flickr
+- uid: Bodu.Text.Encoding.BinaryEncodings.Base58Flickr*
+  name: Base58Flickr
+  href: api/Bodu.Text.Encoding.BinaryEncodings.html#Bodu_Text_Encoding_BinaryEncodings_Base58Flickr_
+  commentId: Overload:Bodu.Text.Encoding.BinaryEncodings.Base58Flickr
+  fullName: Bodu.Text.Encoding.BinaryEncodings.Base58Flickr
+  nameWithType: BinaryEncodings.Base58Flickr
 - uid: Bodu.Text.Encoding.BinaryEncodings.Base58Ripple
   name: Base58Ripple
   href: api/Bodu.Text.Encoding.BinaryEncodings.html#Bodu_Text_Encoding_BinaryEncodings_Base58Ripple

@@ -102,7 +102,7 @@
   <div class="markdown level0 conceptual">
 <p><img src="../images/hero-io.svg" alt="Bodu.IO.Hashing"></p>
 <h2 id="purpose">Purpose</h2>
-<p><strong>Bodu.IO.Hashing</strong> is a focused library of <strong>non-cryptographic</strong> hashes, checksums, and check digits built on the BCL <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.hashing.noncryptographichashalgorithm">NonCryptographicHashAlgorithm</a> contract. It covers three subfamilies: <strong>fingerprints</strong> (FNV, CityHash, MurmurHash3, Pearson, classic string hashes), <strong>checksums</strong> (the full CRC RevEng catalogue at widths 1-64 bits, Fletcher 16/32/64, Adler 32/32C/64), and <strong>check digits</strong> (Luhn, Damm, Verhoeff, EAN/GTIN/UPC, ISIN, ABA routing, plus the alphanumeric and multi-character identifier schemes such as ISBN, IBAN, LEI, SEDOL, and CUSIP).</p>
+<p><strong>Bodu.IO.Hashing</strong> is a focused library of <strong>non-cryptographic</strong> hashes, checksums, and check digits built on the BCL <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.hashing.noncryptographichashalgorithm">NonCryptographicHashAlgorithm</a> contract. It covers three subfamilies: <strong>fingerprints</strong> (FNV, CityHash, MurmurHash3, Pearson, classic string hashes), <strong>checksums</strong> (the CRC RevEng catalogue from CRC-3 to CRC-64, plus custom CRCs of any width from 1 to 64 bits, Fletcher 16/32/64, Adler 32/32C/64), and <strong>check digits</strong> (Luhn, Damm, Verhoeff, EAN/GTIN/UPC, ISIN, ABA routing, plus the alphanumeric and multi-character identifier schemes such as ISBN, IBAN, LEI, SEDOL, and CUSIP).</p>
 <p>Reach for this library when you need a fast, deterministic checksum for error detection, file integrity, framing, fingerprinting, or human-typed identifier validation - and when you want the result to drop straight into any API that accepts <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.hashing.noncryptographichashalgorithm">NonCryptographicHashAlgorithm</a>. If you need cryptographic integrity (against an active attacker, not just noise on the wire), see <a class="xref" href="Bodu.Security.Cryptography.html">Bodu.Security.Cryptography</a> instead.</p>
 <blockquote>
 <p><strong>BCL note.</strong> <code>XxHash32</code>, <code>XxHash64</code>, <code>XxHash3</code>, and <code>XxHash128</code> already ship in <code>System.IO.Hashing</code> from .NET 6 onwards - Bodu does not duplicate them. Use the BCL types directly when you want xxHash.</p>
@@ -118,9 +118,9 @@
 <p><strong>Fingerprints - <code>Bodu.IO.Hashing</code></strong></p>
 <ul>
 <li><a class="xref" href="Bodu.IO.Hashing.Fnv1a32.html">Fnv1a32</a> / <a class="xref" href="Bodu.IO.Hashing.Fnv1a64.html">Fnv1a64</a>, <a class="xref" href="Bodu.IO.Hashing.Fnv132.html">Fnv132</a> / <a class="xref" href="Bodu.IO.Hashing.Fnv164.html">Fnv164</a> - constant-memory streaming FNV; prefer <code>Fnv1a*</code> for better avalanche.</li>
-<li><a class="xref" href="Bodu.IO.Hashing.CityHash32.html">CityHash32</a> / <a class="xref" href="Bodu.IO.Hashing.CityHash64.html">CityHash64</a> / <a class="xref" href="Bodu.IO.Hashing.CityHash128.html">CityHash128</a> - SIMD-friendly hashes optimized for long inputs.</li>
+<li><a class="xref" href="Bodu.IO.Hashing.CityHash32.html">CityHash32</a> / <a class="xref" href="Bodu.IO.Hashing.CityHash64.html">CityHash64</a> / <a class="xref" href="Bodu.IO.Hashing.CityHash128.html">CityHash128</a> - block-oriented hashes for in-memory data; each instance buffers its whole input until the digest is read.</li>
 <li><a class="xref" href="Bodu.IO.Hashing.MurmurHash3_32.html">MurmurHash3_32</a> / <a class="xref" href="Bodu.IO.Hashing.MurmurHash3_128.html">MurmurHash3_128</a> - seeded high-avalanche fingerprints.</li>
-<li><a class="xref" href="Bodu.IO.Hashing.Pearson.html">Pearson</a> - table-driven hash with output widths from 8 to 2048 bits in 8-bit steps; five built-in permutation tables via <a class="xref" href="Bodu.IO.Hashing.Pearson.PearsonTableType.html">Pearson.PearsonTableType</a>.</li>
+<li><a class="xref" href="Bodu.IO.Hashing.Pearson.html">Pearson</a> - table-driven hash with output widths from 8 to 2048 bits in 8-bit steps; four built-in permutation tables, or a caller-supplied one (<code>UserDefined</code>), via <a class="xref" href="Bodu.IO.Hashing.Pearson.PearsonTableType.html">Pearson.PearsonTableType</a>.</li>
 <li><a class="xref" href="Bodu.IO.Hashing.Bernstein.html">Bernstein</a>, <a class="xref" href="Bodu.IO.Hashing.BKDR.html">BKDR</a>, <a class="xref" href="Bodu.IO.Hashing.SDBM.html">SDBM</a>, <a class="xref" href="Bodu.IO.Hashing.JSHash.html">JSHash</a>, <a class="xref" href="Bodu.IO.Hashing.Elf64.html">Elf64</a>, <a class="xref" href="Bodu.IO.Hashing.ApHash.html">ApHash</a>, <a class="xref" href="Bodu.IO.Hashing.Pjw32.html">Pjw32</a>, <a class="xref" href="Bodu.IO.Hashing.SuperFastHash.html">SuperFastHash</a> - classic string hashes from compilers and early web tooling.</li>
 <li><a class="xref" href="Bodu.IO.Hashing.BlockNonCryptographicHashAlgorithm.html">BlockNonCryptographicHashAlgorithm</a> - abstract base for buffered block-oriented algorithms.</li>
 <li><a class="xref" href="Bodu.IO.Hashing.IResumableHashAlgorithm.html">IResumableHashAlgorithm</a> - optional contract that reverse-finalizes a stored digest and continues appending; implemented by <a class="xref" href="Bodu.IO.Hashing.Checksums.Crc.html">Crc</a>, the <a class="xref" href="Bodu.IO.Hashing.Fnv.html">Fnv</a> family, the <a class="xref" href="Bodu.IO.Hashing.Checksums.Fletcher.html">Fletcher</a> family, and the Adler family (<a class="xref" href="Bodu.IO.Hashing.Checksums.Adler32Base.html">Adler32Base</a> / <a class="xref" href="Bodu.IO.Hashing.Checksums.Adler64Base.html">Adler64Base</a>).</li>
@@ -128,12 +128,12 @@
 <p><strong>Checksums - <code>Bodu.IO.Hashing.Checksums</code></strong></p>
 <ul>
 <li><a class="xref" href="Bodu.IO.Hashing.Checksums.Crc.html">Crc</a> - the single CRC engine. Configured with a <a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html">CrcStandard</a>, it handles widths from 1 to 64 bits, honors polynomial, initial value, input / output reflection, and final XOR, and ships with a shared lookup-table cache.</li>
-<li><a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html">CrcStandard</a> - an immutable parameter set: name, width, polynomial, initial value, reflect-in, reflect-out, XOR-out. Exposes common standards as named properties (<code>CRC32_ISOHDLC</code>, <code>CRC32_ISCSI</code>, <code>CRC16_MODBUS</code>, <code>CRC64_XZ</code>, …) and provides <code>FromName</code> / <code>TryFromName</code> over canonical names and published aliases.</li>
+<li><a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandard.html">CrcStandard</a> - an immutable parameter set: name, width, polynomial, initial value, reflect-in, reflect-out, XOR-out. Exposes common standards as named properties (<code>CRC32_ISOHDLC</code>, <code>CRC32_ISCSI</code>, <code>CRC16_MODBUS</code>, <code>CRC64_XZ</code>, …) and provides <code>FromName</code> / <code>TryFromName</code> over the canonical RevEng names (published aliases such as <code>CRC-32</code> are not resolved).</li>
 <li><a class="xref" href="Bodu.IO.Hashing.Checksums.CrcStandards.html">CrcStandards</a> - an enum covering every canonical CRC RevEng entry (112 standards as of the last catalogue fetch).</li>
 <li><a class="xref" href="Bodu.IO.Hashing.Checksums.CrcLookupTableCache.html">CrcLookupTableCache</a> - thread-safe cache of 256-entry lookup tables, keyed by (width, polynomial, reflect-in), shared process-wide through <a class="xref" href="Bodu.IO.Hashing.Checksums.Crc.html#Bodu_IO_Hashing_Checksums_Crc_GlobalCache">GlobalCache</a>.</li>
 <li><a class="xref" href="Bodu.IO.Hashing.Checksums.CrcLookupTableBuilder.html">CrcLookupTableBuilder</a> - builds a lookup table from parameters; used by the cache on first miss.</li>
 <li><a class="xref" href="Bodu.IO.Hashing.Checksums.Fletcher16.html">Fletcher16</a> / <a class="xref" href="Bodu.IO.Hashing.Checksums.Fletcher32.html">Fletcher32</a> / <a class="xref" href="Bodu.IO.Hashing.Checksums.Fletcher64.html">Fletcher64</a> - twin-accumulator position-dependent checksums.</li>
-<li><a class="xref" href="Bodu.IO.Hashing.Checksums.Adler32.html">Adler32</a> / <a class="xref" href="Bodu.IO.Hashing.Checksums.Adler32C.html">Adler32C</a> / <a class="xref" href="Bodu.IO.Hashing.Checksums.Adler64.html">Adler64</a> - Adler-32 (canonical zlib), Adler-32C (SIMD), Adler-64; over the shared <a class="xref" href="Bodu.IO.Hashing.Checksums.Adler32Base.html">Adler32Base</a> / <a class="xref" href="Bodu.IO.Hashing.Checksums.Adler64Base.html">Adler64Base</a> abstract bases.</li>
+<li><a class="xref" href="Bodu.IO.Hashing.Checksums.Adler32.html">Adler32</a> / <a class="xref" href="Bodu.IO.Hashing.Checksums.Adler32C.html">Adler32C</a> / <a class="xref" href="Bodu.IO.Hashing.Checksums.Adler64.html">Adler64</a> - Adler-32 (canonical zlib), Adler-32C (power-of-two modulus), Adler-64; over the shared <a class="xref" href="Bodu.IO.Hashing.Checksums.Adler32Base.html">Adler32Base</a> / <a class="xref" href="Bodu.IO.Hashing.Checksums.Adler64Base.html">Adler64Base</a> abstract bases.</li>
 </ul>
 <p><strong>Check digits - <code>Bodu.IO.Hashing.CheckDigits</code></strong></p>
 <ul>
@@ -155,12 +155,12 @@ using Bodu.IO.Hashing.Checksums;
 byte[] data = Encoding.UTF8.GetBytes(&quot;the quick brown fox&quot;);
 
 // CRC-32/ISO-HDLC - the canonical zlib / PNG / Ethernet CRC.
-using var crc = new Crc(CrcStandard.CRC32_ISOHDLC);
+var crc = new Crc(CrcStandard.CRC32_ISOHDLC);
 crc.Append(data);
 string crc32 = Convert.ToHexString(crc.GetCurrentHash());
 
 // Fletcher-32 - position-dependent, drops into anything that takes a NonCryptographicHashAlgorithm.
-using var fletcher = new Fletcher32();
+var fletcher = new Fletcher32();
 fletcher.Append(data);
 string fl32 = Convert.ToHexString(fletcher.GetCurrentHash());
 
@@ -370,7 +370,7 @@ algorithm.</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: ca28f88 · Built: 2026-10-13 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 8f76146 · Built: 2026-10-13 (UTC)</span>
         </div>
       </div>
     </footer>

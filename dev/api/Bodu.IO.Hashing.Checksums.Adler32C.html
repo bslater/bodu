@@ -8,7 +8,7 @@
       <meta name="title" content="Adler32C Class
  | BODU ">
       
-      <meta name="description" content="Computes a 32-bit Adler-style checksum using the power-of-two modulus 65536 for SIMD-friendly alignment. This class cannot be inherited.">
+      <meta name="description" content="Computes a 32-bit Adler-style checksum using the power-of-two modulus 65536 instead of the prime 65521. This class cannot be inherited.">
       <link rel="icon" href="../images/favicon.svg">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_IO_Hashing_Checksums_Adler32C" data-uid="Bodu.IO.Hashing.Checksums.Adler32C" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 Adler32C Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/ca28f887e1e30a5c0cb0ea46ec725fc37c3aef61/Bodu.IO.Hashing/src/IO.Hashing.Checksums/Adler.Adler32C.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8f76146c8d427d9610be8857fc00f9d7b3c5a124/Bodu.IO.Hashing/src/IO.Hashing.Checksums/Adler.Adler32C.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -104,10 +104,10 @@ Adler32C Class
   <dl><dt>Assembly</dt><dd>Bodu.IO.Hashing.dll</dd></dl>
   <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.IO.Hashing">Bodu.IO.Hashing</a> <span class="bodu-package-version">1.3.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/ca28f887e1e30a5c0cb0ea46ec725fc37c3aef61/Bodu.IO.Hashing/src/IO.Hashing.Checksums/Adler.Adler32C.cs">Adler.Adler32C.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/8f76146c8d427d9610be8857fc00f9d7b3c5a124/Bodu.IO.Hashing/src/IO.Hashing.Checksums/Adler.Adler32C.cs">Adler.Adler32C.cs</a></dd></dl>
   </div>
 
-  <div class="markdown summary"><p>Computes a 32-bit Adler-style checksum using the power-of-two modulus 65536 for SIMD-friendly alignment. This class
+  <div class="markdown summary"><p>Computes a 32-bit Adler-style checksum using the power-of-two modulus 65536 instead of the prime 65521. This class
 cannot be inherited.</p>
 </div>
 
@@ -325,18 +325,19 @@ cannot be inherited.</p>
   <h2 id="Bodu_IO_Hashing_Checksums_Adler32C_remarks">Remarks</h2>
   <div class="markdown level0 remarks"><p>
 This variant maintains two running sums (A and B) and combines them as <code>(B &lt;&lt; 16) | A</code>, but uses a
-modulus of 65536 rather than the standard 65521 to enable cheaper modular reductions in vectorized code paths.
-Outputs differ from standard <a class="xref" href="Bodu.IO.Hashing.Checksums.Adler32.html">Adler32</a> and are not interchangeable.
+modulus of 65536 rather than the standard 65521. It runs the same scalar loop as <a class="xref" href="Bodu.IO.Hashing.Checksums.Adler32.html">Adler32</a>, so the
+power-of-two modulus brings no speed advantage here, and it detects fewer errors than the prime modulus. Outputs
+differ from standard <a class="xref" href="Bodu.IO.Hashing.Checksums.Adler32.html">Adler32</a> and are not interchangeable.
 </p>
 <p>
 <strong>Parameters at a glance.</strong>
 </p>
-<ul><li>Output size: 32 bits (4 bytes).</li><li>Modulus: <code>65536</code> (power of two; SIMD-friendly).</li><li>Compatibility: <strong>not</strong> interchangeable with <a class="xref" href="Bodu.IO.Hashing.Checksums.Adler32.html">Adler32</a> outputs.</li></ul>
+<ul><li>Output size: 32 bits (4 bytes).</li><li>Modulus: <code>65536</code> (power of two).</li><li>Compatibility: <strong>not</strong> interchangeable with <a class="xref" href="Bodu.IO.Hashing.Checksums.Adler32.html">Adler32</a> outputs.</li></ul>
 <p>
-<strong>When to choose Adler32C.</strong> Pick <a class="xref" href="Bodu.IO.Hashing.Checksums.Adler32C.html">Adler32C</a> when both endpoints are under your control
-and SIMD throughput on the modular-reduction step is the bottleneck - large in-memory streams, internal block-level
-integrity checks, content-defined chunking. For any boundary that interoperates with zlib, deflate, gzip, PNG, or
-other external systems, use <a class="xref" href="Bodu.IO.Hashing.Checksums.Adler32.html">Adler32</a> instead - its output is the only one those systems will accept.
+<strong>When to choose Adler32C.</strong> Pick <a class="xref" href="Bodu.IO.Hashing.Checksums.Adler32C.html">Adler32C</a> only to match an existing system that
+computes Adler sums modulo 65536. For new internal checksums <a class="xref" href="Bodu.IO.Hashing.Checksums.Adler32.html">Adler32</a> costs the same and detects more
+errors, and for any boundary that interoperates with zlib, deflate, gzip, PNG, or other external systems use
+<a class="xref" href="Bodu.IO.Hashing.Checksums.Adler32.html">Adler32</a> - its output is the only one those systems will accept.
 </p>
 <div class="IMPORTANT"><h5>important</h5><p>This algorithm is <b>not</b> cryptographically secure and should <b>not</b> be used for
 password hashing, digital signatures, or integrity validation in security-sensitive applications.</p></div>
@@ -344,7 +345,7 @@ password hashing, digital signatures, or integrity validation in security-sensit
 <pre><code class="lang-csharp">using Bodu.IO.Hashing.Checksums;
 using Bodu.IO.Hashing.Extensions;
 
-// SIMD-friendly Adler variant for high-throughput internal pipelines.
+// Adler sum modulo 65536, for a system that uses this variant.
 var adler = new Adler32C();
 byte[] checksum = adler.ComputeHash(largeBlock);</code></pre>
 </example>
@@ -360,11 +361,11 @@ byte[] checksum = adler.ComputeHash(largeBlock);</code></pre>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_IO_Hashing_Checksums_Adler32C__ctor" data-uid="Bodu.IO.Hashing.Checksums.Adler32C.#ctor">
   Adler32C()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/ca28f887e1e30a5c0cb0ea46ec725fc37c3aef61/Bodu.IO.Hashing/src/IO.Hashing.Checksums/Adler.Adler32C.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8f76146c8d427d9610be8857fc00f9d7b3c5a124/Bodu.IO.Hashing/src/IO.Hashing.Checksums/Adler.Adler32C.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
-  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.IO.Hashing.Checksums.Adler32C.html">Adler32C</a> class using the SIMD-friendly modulus (65536).</p>
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.IO.Hashing.Checksums.Adler32C.html">Adler32C</a> class using the power-of-two modulus (65536).</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -419,7 +420,7 @@ byte[] checksum = adler.ComputeHash(largeBlock);</code></pre>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: ca28f88 · Built: 2026-10-13 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 8f76146 · Built: 2026-10-13 (UTC)</span>
         </div>
       </div>
     </footer>

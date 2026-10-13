@@ -114,7 +114,7 @@
 </tr>
 </tbody>
 </table>
-<p>Both derive from <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.hashing.noncryptographichashalgorithm">NonCryptographicHashAlgorithm</a> via a shared <code>MurmurHash3</code> base. Both buffer their input internally, consistent with MurmurHash3's one-shot design.</p>
+<p>Both derive from <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.hashing.noncryptographichashalgorithm">NonCryptographicHashAlgorithm</a> via a shared <code>MurmurHash3</code> base. Both stream in constant memory: input is mixed one block at a time, and only a partial trailing block is held between <code>Append</code> calls.</p>
 <blockquote>
 <p><strong>Not cryptographic.</strong> MurmurHash3 must not be used for password hashing, digital signatures, or any application that requires adversarial collision resistance. An attacker who can choose inputs can construct collisions. For adversary-facing use, reach for <a class="xref" href="../../api/Bodu.Security.Cryptography.SipHash64.html">SipHash64</a>.</p>
 </blockquote>
@@ -156,7 +156,7 @@ uint slot2 = BitConverter.ToUInt32(h2.GetCurrentHash()) % (uint)buckets;
 </code></pre>
 <p>The seed is not a cryptographic key - it does not provide adversarial resistance.</p>
 <h2 id="pattern-4---append--getcurrenthash--reset-lifecycle">Pattern 4 - <code>Append</code> / <code>GetCurrentHash</code> / <code>Reset</code> lifecycle</h2>
-<p>MurmurHash3 is a one-shot algorithm internally. The <code>Append</code> calls accumulate bytes in an internal buffer; <code>GetCurrentHash</code> applies the full mixing pass once all data is available. The call is non-destructive - the buffer is preserved so you can continue appending after a snapshot.</p>
+<p>MurmurHash3 is block-streamable. Each <code>Append</code> mixes whole blocks into the running accumulators and keeps only a partial trailing block; <code>GetCurrentHash</code> applies the tail and finalization mix to a copy of the accumulators. The call is non-destructive, so you can continue appending after a snapshot.</p>
 <pre><code class="lang-csharp">using Bodu.IO.Hashing;
 
 using var murmur = new MurmurHash3_32();
@@ -167,11 +167,11 @@ byte[] partial = murmur.GetCurrentHash();   // snapshot - mixes all bytes append
 murmur.Append(trailer);
 byte[] full = murmur.GetCurrentHash();
 
-murmur.Reset();                             // discards the buffer and resets to seed
+murmur.Reset();                             // discards the trailing block and resets to seed
 </code></pre>
 <div class="NOTE">
 <h5>Note</h5>
-<p>The internal buffer grows with each <code>Append</code>. For very large inputs (hundreds of MB) where you do not want to hold the entire payload in memory, prefer a constant-memory streaming algorithm such as <a class="xref" href="../../api/Bodu.IO.Hashing.Fnv1a64.html">Fnv1a64</a>, <a class="xref" href="../../api/Bodu.IO.Hashing.Checksums.Crc.html">Crc</a>, or <a class="xref" href="../../api/Bodu.IO.Hashing.Checksums.Fletcher32.html">Fletcher32</a>.</p>
+<p>Memory use does not grow with the input: a 32-bit instance holds at most 3 pending bytes and a 128-bit instance at most 15, so MurmurHash3 suits very large inputs as well as short keys.</p>
 </div>
 <h2 id="pattern-5---bloom-filter-with-two-hash-functions">Pattern 5 - Bloom filter with two hash functions</h2>
 <pre><code class="lang-csharp">using System.Text;
@@ -242,10 +242,10 @@ bool MightContain(string item)
 </tr>
 <tr>
 <td>Streaming (constant memory)</td>
-<td>No - buffers input</td>
+<td>Yes</td>
 <td>Yes</td>
 <td>No - buffers input</td>
-<td>No - buffers input</td>
+<td>Yes</td>
 </tr>
 <tr>
 <td>Relative throughput (large inputs)</td>
@@ -263,7 +263,7 @@ bool MightContain(string item)
 </tr>
 </tbody>
 </table>
-<p>Reach for <strong>MurmurHash3</strong> when you need a seeded 32- or 128-bit fingerprint with high-quality avalanche - for Bloom filters, consistent hashing, and bucketing. For the fastest throughput on large buffers, prefer <strong>CityHash</strong> (in Bodu) or <code>System.IO.Hashing.XxHash64</code> (in the BCL). For constant-memory streaming, prefer <strong>FNV-1a</strong> or <strong>CRC</strong>.</p>
+<p>Reach for <strong>MurmurHash3</strong> when you need a seeded 32- or 128-bit fingerprint with high-quality avalanche - for Bloom filters, consistent hashing, and bucketing. For the fastest throughput on large buffers, prefer <strong>CityHash</strong> (in Bodu) or <code>System.IO.Hashing.XxHash64</code> (in the BCL). CityHash buffers its whole input, so for large streams prefer MurmurHash3, <strong>FNV-1a</strong>, xxHash, or <strong>CRC</strong>, which all run in constant memory.</p>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
 <li><a href="cityhash.html">Using CityHash</a> - fastest throughput on large inputs.</li>
@@ -291,7 +291,7 @@ bool MightContain(string item)
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: ca28f88 · Built: 2026-10-13 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 8f76146 · Built: 2026-10-13 (UTC)</span>
         </div>
       </div>
     </footer>

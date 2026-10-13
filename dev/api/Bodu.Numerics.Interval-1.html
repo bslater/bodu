@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Numerics_Interval_1" data-uid="Bodu.Numerics.Interval`1" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 Interval&lt;T&gt; Struct
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/ca28f887e1e30a5c0cb0ea46ec725fc37c3aef61/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Factories.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8f76146c8d427d9610be8857fc00f9d7b3c5a124/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Factories.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -104,7 +104,7 @@ Interval&lt;T&gt; Struct
   <dl><dt>Assembly</dt><dd>Bodu.Numerics.dll</dd></dl>
   <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Numerics">Bodu.Numerics</a> <span class="bodu-package-version">1.3.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/ca28f887e1e30a5c0cb0ea46ec725fc37c3aef61/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Factories.cs">Interval{T}.Factories.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/8f76146c8d427d9610be8857fc00f9d7b3c5a124/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Factories.cs">Interval{T}.Factories.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Represents an immutable, bounded interval over any <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.numerics.inumber-1">INumber&lt;TSelf&gt;</a> type, with independent open or
@@ -280,7 +280,7 @@ empty interval) via <a class="xref" href="Bodu.Numerics.Interval-1.html#Bodu_Num
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_Interval_1__ctor__0__0_System_Boolean_System_Boolean_" data-uid="Bodu.Numerics.Interval`1.#ctor(`0,`0,System.Boolean,System.Boolean)">
   Interval(T, T, bool, bool)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/ca28f887e1e30a5c0cb0ea46ec725fc37c3aef61/Bodu.Numerics/src/Numerics/Interval%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8f76146c8d427d9610be8857fc00f9d7b3c5a124/Bodu.Numerics/src/Numerics/Interval%7BT%7D.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -320,14 +320,20 @@ inclusion flags for each side.</p>
 
   <h4 class="section" id="Bodu_Numerics_Interval_1__ctor__0__0_System_Boolean_System_Boolean__remarks">Remarks</h4>
   <div class="markdown level1 remarks"><p>
-The constructor accepts any combination of endpoints, including <code class="paramref">lower</code> equal to or greater
-than <code class="paramref">upper</code>. When the supplied bounds do not admit any value, the resulting instance is empty
-and compares equal to <a class="xref" href="Bodu.Numerics.Interval-1.html#Bodu_Numerics_Interval_1_Empty">Empty</a>. The original bounds remain readable via <a class="xref" href="Bodu.Numerics.Interval-1.html#Bodu_Numerics_Interval_1_Lower">Lower</a> and
-<a class="xref" href="Bodu.Numerics.Interval-1.html#Bodu_Numerics_Interval_1_Upper">Upper</a> for diagnostic inspection, but participate only as the representation of
-<a class="xref" href="Bodu.Numerics.Interval-1.html#Bodu_Numerics_Interval_1_Empty">Empty</a> in set operations.
+The constructor accepts any ordering of the endpoints, including <code class="paramref">lower</code> equal to or greater
+than <code class="paramref">upper</code>; only a NaN endpoint is rejected. When the supplied bounds do not admit any
+value, the resulting instance is empty and compares equal to <a class="xref" href="Bodu.Numerics.Interval-1.html#Bodu_Numerics_Interval_1_Empty">Empty</a>. The original bounds remain
+readable via <a class="xref" href="Bodu.Numerics.Interval-1.html#Bodu_Numerics_Interval_1_Lower">Lower</a> and <a class="xref" href="Bodu.Numerics.Interval-1.html#Bodu_Numerics_Interval_1_Upper">Upper</a> for diagnostic inspection, but participate only as
+the representation of <a class="xref" href="Bodu.Numerics.Interval-1.html#Bodu_Numerics_Interval_1_Empty">Empty</a> in set operations.
 </p>
 </div>
 
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p><code class="paramref">lower</code> or <code class="paramref">upper</code> is NaN.</p>
+</dd>
+  </dl>
 
 
   </section>
@@ -342,7 +348,7 @@ and compares equal to <a class="xref" href="Bodu.Numerics.Interval-1.html#Bodu_N
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_Interval_1_All" data-uid="Bodu.Numerics.Interval`1.All">
   All
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/ca28f887e1e30a5c0cb0ea46ec725fc37c3aef61/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Factories.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8f76146c8d427d9610be8857fc00f9d7b3c5a124/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Factories.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -386,7 +392,7 @@ all.ToString();                  // "(-∞, +∞)"</code></pre>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_Interval_1_Empty" data-uid="Bodu.Numerics.Interval`1.Empty">
   Empty
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/ca28f887e1e30a5c0cb0ea46ec725fc37c3aef61/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Factories.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8f76146c8d427d9610be8857fc00f9d7b3c5a124/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Factories.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -427,10 +433,10 @@ none == collapsed;               // True</code></pre>
 
   <h4 class="section" id="Bodu_Numerics_Interval_1_Empty_remarks">Remarks</h4>
   <div class="markdown level1 remarks"><p>
-Use <a class="xref" href="Bodu.Numerics.Interval-1.html#Bodu_Numerics_Interval_1_Empty">Empty</a> as the neutral element of the interval set algebra: <a class="xref" href="Bodu.Numerics.Interval-1.html#Bodu_Numerics_Interval_1_Intersect_Bodu_Numerics_Interval__0__">Intersect(Interval&lt;T&gt;)</a> returns it
-when two operands share no values, and <a class="xref" href="Bodu.Numerics.Interval-1.html#Bodu_Numerics_Interval_1_TryUnion_Bodu_Numerics_Interval__0__Bodu_Numerics_Interval__0___">TryUnion(Interval&lt;T&gt;, out Interval&lt;T&gt;)</a> treats it as the identity. The
-default-constructed <code>Interval&lt;T&gt;</code> compares equal to <a class="xref" href="Bodu.Numerics.Interval-1.html#Bodu_Numerics_Interval_1_Empty">Empty</a>, so a field or local that
-was never assigned reads as the empty interval rather than as a malformed value.
+<a class="xref" href="Bodu.Numerics.Interval-1.html#Bodu_Numerics_Interval_1_Empty">Empty</a> is the identity for union and absorbing for intersection: <a class="xref" href="Bodu.Numerics.Interval-1.html#Bodu_Numerics_Interval_1_TryUnion_Bodu_Numerics_Interval__0__Bodu_Numerics_Interval__0___">TryUnion(Interval&lt;T&gt;, out Interval&lt;T&gt;)</a> treats it
+as the identity, and <a class="xref" href="Bodu.Numerics.Interval-1.html#Bodu_Numerics_Interval_1_Intersect_Bodu_Numerics_Interval__0__">Intersect(Interval&lt;T&gt;)</a> returns it when either operand is empty or the two share no
+values. The default-constructed <code>Interval&lt;T&gt;</code> compares equal to <a class="xref" href="Bodu.Numerics.Interval-1.html#Bodu_Numerics_Interval_1_Empty">Empty</a>, so a field or
+local that was never assigned reads as the empty interval rather than as a malformed value.
 </p>
 </div>
 
@@ -444,7 +450,7 @@ was never assigned reads as the empty interval rather than as a malformed value.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_Interval_1_IsBounded" data-uid="Bodu.Numerics.Interval`1.IsBounded">
   IsBounded
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/ca28f887e1e30a5c0cb0ea46ec725fc37c3aef61/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Properties.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8f76146c8d427d9610be8857fc00f9d7b3c5a124/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Properties.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -481,7 +487,7 @@ was never assigned reads as the empty interval rather than as a malformed value.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_Interval_1_IsDegenerate" data-uid="Bodu.Numerics.Interval`1.IsDegenerate">
   IsDegenerate
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/ca28f887e1e30a5c0cb0ea46ec725fc37c3aef61/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Properties.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8f76146c8d427d9610be8857fc00f9d7b3c5a124/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Properties.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -521,7 +527,7 @@ and upper endpoints are equal.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_Interval_1_IsEmpty" data-uid="Bodu.Numerics.Interval`1.IsEmpty">
   IsEmpty
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/ca28f887e1e30a5c0cb0ea46ec725fc37c3aef61/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Properties.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8f76146c8d427d9610be8857fc00f9d7b3c5a124/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Properties.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -577,7 +583,7 @@ endpoint constraints. <code>[5, 5]</code> is non-empty and represents the single
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_Interval_1_Length" data-uid="Bodu.Numerics.Interval`1.Length">
   Length
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/ca28f887e1e30a5c0cb0ea46ec725fc37c3aef61/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Properties.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8f76146c8d427d9610be8857fc00f9d7b3c5a124/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Properties.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -637,7 +643,7 @@ infinite and not representable in <code class="typeparamref">T</code>, so this p
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_Interval_1_Lower" data-uid="Bodu.Numerics.Interval`1.Lower">
   Lower
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/ca28f887e1e30a5c0cb0ea46ec725fc37c3aef61/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Properties.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8f76146c8d427d9610be8857fc00f9d7b3c5a124/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Properties.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -674,7 +680,7 @@ infinite and not representable in <code class="typeparamref">T</code>, so this p
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_Interval_1_LowerInclusive" data-uid="Bodu.Numerics.Interval`1.LowerInclusive">
   LowerInclusive
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/ca28f887e1e30a5c0cb0ea46ec725fc37c3aef61/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Properties.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8f76146c8d427d9610be8857fc00f9d7b3c5a124/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Properties.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -712,7 +718,7 @@ infinite and not representable in <code class="typeparamref">T</code>, so this p
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_Interval_1_LowerUnbounded" data-uid="Bodu.Numerics.Interval`1.LowerUnbounded">
   LowerUnbounded
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/ca28f887e1e30a5c0cb0ea46ec725fc37c3aef61/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Properties.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8f76146c8d427d9610be8857fc00f9d7b3c5a124/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Properties.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -751,7 +757,7 @@ finite lower limit.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_Interval_1_Upper" data-uid="Bodu.Numerics.Interval`1.Upper">
   Upper
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/ca28f887e1e30a5c0cb0ea46ec725fc37c3aef61/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Properties.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8f76146c8d427d9610be8857fc00f9d7b3c5a124/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Properties.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -788,7 +794,7 @@ finite lower limit.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_Interval_1_UpperInclusive" data-uid="Bodu.Numerics.Interval`1.UpperInclusive">
   UpperInclusive
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/ca28f887e1e30a5c0cb0ea46ec725fc37c3aef61/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Properties.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8f76146c8d427d9610be8857fc00f9d7b3c5a124/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Properties.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -826,7 +832,7 @@ finite lower limit.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_Interval_1_UpperUnbounded" data-uid="Bodu.Numerics.Interval`1.UpperUnbounded">
   UpperUnbounded
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/ca28f887e1e30a5c0cb0ea46ec725fc37c3aef61/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Properties.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8f76146c8d427d9610be8857fc00f9d7b3c5a124/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Properties.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -869,7 +875,7 @@ finite upper limit.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_Interval_1_AtLeast__0_" data-uid="Bodu.Numerics.Interval`1.AtLeast(`0)">
   AtLeast(T)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/ca28f887e1e30a5c0cb0ea46ec725fc37c3aef61/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Factories.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8f76146c8d427d9610be8857fc00f9d7b3c5a124/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Factories.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -908,6 +914,12 @@ nonNegative.ToString();                            // "[0, +∞)"</code></pre>
 
 
 
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p><code class="paramref">lower</code> is NaN.</p>
+</dd>
+  </dl>
 
 
   </section>
@@ -918,7 +930,7 @@ nonNegative.ToString();                            // "[0, +∞)"</code></pre>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_Interval_1_AtMost__0_" data-uid="Bodu.Numerics.Interval`1.AtMost(`0)">
   AtMost(T)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/ca28f887e1e30a5c0cb0ea46ec725fc37c3aef61/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Factories.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8f76146c8d427d9610be8857fc00f9d7b3c5a124/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Factories.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -957,6 +969,12 @@ capped.ToString();                           // "(-∞, 5]"</code></pre>
 
 
 
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p><code class="paramref">upper</code> is NaN.</p>
+</dd>
+  </dl>
 
 
   </section>
@@ -967,7 +985,7 @@ capped.ToString();                           // "(-∞, 5]"</code></pre>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_Interval_1_Closed__0__0_" data-uid="Bodu.Numerics.Interval`1.Closed(`0,`0)">
   Closed(T, T)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/ca28f887e1e30a5c0cb0ea46ec725fc37c3aef61/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Factories.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8f76146c8d427d9610be8857fc00f9d7b3c5a124/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Factories.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1025,6 +1043,12 @@ the two endpoints are equal, the returned interval is a degenerate single-point 
 </p>
 </div>
 
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p><code class="paramref">lower</code> or <code class="paramref">upper</code> is NaN.</p>
+</dd>
+  </dl>
 
 
   </section>
@@ -1035,7 +1059,7 @@ the two endpoints are equal, the returned interval is a degenerate single-point 
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_Interval_1_ClosedOpen__0__0_" data-uid="Bodu.Numerics.Interval`1.ClosedOpen(`0,`0)">
   ClosedOpen(T, T)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/ca28f887e1e30a5c0cb0ea46ec725fc37c3aef61/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Factories.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8f76146c8d427d9610be8857fc00f9d7b3c5a124/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Factories.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1092,6 +1116,12 @@ shape is the default choice for scheduling windows, bucket boundaries, and time 
 </p>
 </div>
 
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p><code class="paramref">lower</code> or <code class="paramref">upper</code> is NaN.</p>
+</dd>
+  </dl>
 
 
   </section>
@@ -1102,7 +1132,7 @@ shape is the default choice for scheduling windows, bucket boundaries, and time 
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_Interval_1_Contains_Bodu_Numerics_Interval__0__" data-uid="Bodu.Numerics.Interval`1.Contains(Bodu.Numerics.Interval{`0})">
   Contains(Interval&lt;T&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/ca28f887e1e30a5c0cb0ea46ec725fc37c3aef61/Bodu.Numerics/src/Numerics/Interval%7BT%7D.SetOperations.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8f76146c8d427d9610be8857fc00f9d7b3c5a124/Bodu.Numerics/src/Numerics/Interval%7BT%7D.SetOperations.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1126,8 +1156,8 @@ shape is the default choice for scheduling windows, bucket boundaries, and time 
   <dl class="parameters">
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
     <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when this interval is a superset of <code class="paramref">other</code>; otherwise
-<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>. The empty interval is a subset of every interval, so any interval contains the empty
-interval; only the empty interval contains the empty interval as a non-empty member.</p>
+<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>. The empty interval is a subset of every interval, so any interval, including the empty
+one, contains the empty interval.</p>
 </dd>
   </dl>
 
@@ -1162,7 +1192,7 @@ open.Contains(closed);                             // False - closed includes 0 
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_Interval_1_Contains__0_" data-uid="Bodu.Numerics.Interval`1.Contains(`0)">
   Contains(T)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/ca28f887e1e30a5c0cb0ea46ec725fc37c3aef61/Bodu.Numerics/src/Numerics/Interval%7BT%7D.SetOperations.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8f76146c8d427d9610be8857fc00f9d7b3c5a124/Bodu.Numerics/src/Numerics/Interval%7BT%7D.SetOperations.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1186,8 +1216,7 @@ endpoint.</p>
   <dl class="parameters">
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
     <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when the interval is non-empty and <code class="paramref">value</code> falls between the endpoints
-under the configured inclusivity rules; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>. An empty interval contains no value,
-including itself.</p>
+under the configured inclusivity rules; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>. An empty interval contains no value.</p>
 </dd>
   </dl>
 
@@ -1217,7 +1246,7 @@ Interval&lt;int&gt;.Empty.Contains(0);               // False - the empty interv
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_Interval_1_Difference_Bodu_Numerics_Interval__0__" data-uid="Bodu.Numerics.Interval`1.Difference(Bodu.Numerics.Interval{`0})">
   Difference(Interval&lt;T&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/ca28f887e1e30a5c0cb0ea46ec725fc37c3aef61/Bodu.Numerics/src/Numerics/Interval%7BT%7D.SetOperations.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8f76146c8d427d9610be8857fc00f9d7b3c5a124/Bodu.Numerics/src/Numerics/Interval%7BT%7D.SetOperations.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1273,7 +1302,7 @@ finite interval yields the two half-lines around it.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_Interval_1_Equals_Bodu_Numerics_Interval__0__" data-uid="Bodu.Numerics.Interval`1.Equals(Bodu.Numerics.Interval{`0})">
   Equals(Interval&lt;T&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/ca28f887e1e30a5c0cb0ea46ec725fc37c3aef61/Bodu.Numerics/src/Numerics/Interval%7BT%7D.IEquatable.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8f76146c8d427d9610be8857fc00f9d7b3c5a124/Bodu.Numerics/src/Numerics/Interval%7BT%7D.IEquatable.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1319,7 +1348,7 @@ to construct them.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_Interval_1_Equals_System_Object_" data-uid="Bodu.Numerics.Interval`1.Equals(System.Object)">
   Equals(object?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/ca28f887e1e30a5c0cb0ea46ec725fc37c3aef61/Bodu.Numerics/src/Numerics/Interval%7BT%7D.IEquatable.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8f76146c8d427d9610be8857fc00f9d7b3c5a124/Bodu.Numerics/src/Numerics/Interval%7BT%7D.IEquatable.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1363,7 +1392,7 @@ otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_Interval_1_GetHashCode" data-uid="Bodu.Numerics.Interval`1.GetHashCode">
   GetHashCode()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/ca28f887e1e30a5c0cb0ea46ec725fc37c3aef61/Bodu.Numerics/src/Numerics/Interval%7BT%7D.IEquatable.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8f76146c8d427d9610be8857fc00f9d7b3c5a124/Bodu.Numerics/src/Numerics/Interval%7BT%7D.IEquatable.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1401,7 +1430,7 @@ non-empty intervals hash on their endpoints and inclusivity flags.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_Interval_1_GreaterThan__0_" data-uid="Bodu.Numerics.Interval`1.GreaterThan(`0)">
   GreaterThan(T)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/ca28f887e1e30a5c0cb0ea46ec725fc37c3aef61/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Factories.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8f76146c8d427d9610be8857fc00f9d7b3c5a124/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Factories.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1440,6 +1469,12 @@ positive.ToString();                                // "(0, +∞)"</code></pre>
 
 
 
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p><code class="paramref">lower</code> is NaN.</p>
+</dd>
+  </dl>
 
 
   </section>
@@ -1450,7 +1485,7 @@ positive.ToString();                                // "(0, +∞)"</code></pre>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_Interval_1_Intersect_Bodu_Numerics_Interval__0__" data-uid="Bodu.Numerics.Interval`1.Intersect(Bodu.Numerics.Interval{`0})">
   Intersect(Interval&lt;T&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/ca28f887e1e30a5c0cb0ea46ec725fc37c3aef61/Bodu.Numerics/src/Numerics/Interval%7BT%7D.SetOperations.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8f76146c8d427d9610be8857fc00f9d7b3c5a124/Bodu.Numerics/src/Numerics/Interval%7BT%7D.SetOperations.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1509,7 +1544,7 @@ operands. For example, <code>[1, 5]</code> intersected with <code>(1, 5)</code> 
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_Interval_1_LessThan__0_" data-uid="Bodu.Numerics.Interval`1.LessThan(`0)">
   LessThan(T)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/ca28f887e1e30a5c0cb0ea46ec725fc37c3aef61/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Factories.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8f76146c8d427d9610be8857fc00f9d7b3c5a124/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Factories.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1548,6 +1583,12 @@ belowFive.ToString();                             // "(-∞, 5)"</code></pre>
 
 
 
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p><code class="paramref">upper</code> is NaN.</p>
+</dd>
+  </dl>
 
 
   </section>
@@ -1558,7 +1599,7 @@ belowFive.ToString();                             // "(-∞, 5)"</code></pre>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_Interval_1_Open__0__0_" data-uid="Bodu.Numerics.Interval`1.Open(`0,`0)">
   Open(T, T)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/ca28f887e1e30a5c0cb0ea46ec725fc37c3aef61/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Factories.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8f76146c8d427d9610be8857fc00f9d7b3c5a124/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Factories.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1612,6 +1653,12 @@ empty - there is no value strictly between two equal or inverted bounds.
 </p>
 </div>
 
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p><code class="paramref">lower</code> or <code class="paramref">upper</code> is NaN.</p>
+</dd>
+  </dl>
 
 
   </section>
@@ -1622,7 +1669,7 @@ empty - there is no value strictly between two equal or inverted bounds.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_Interval_1_OpenClosed__0__0_" data-uid="Bodu.Numerics.Interval`1.OpenClosed(`0,`0)">
   OpenClosed(T, T)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/ca28f887e1e30a5c0cb0ea46ec725fc37c3aef61/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Factories.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8f76146c8d427d9610be8857fc00f9d7b3c5a124/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Factories.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1673,6 +1720,12 @@ bin that owns its upper edge, or a tax bracket that exits at one boundary and en
 </p>
 </div>
 
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p><code class="paramref">lower</code> or <code class="paramref">upper</code> is NaN.</p>
+</dd>
+  </dl>
 
 
   </section>
@@ -1683,7 +1736,7 @@ bin that owns its upper edge, or a tax bracket that exits at one boundary and en
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_Interval_1_Overlaps_Bodu_Numerics_Interval__0__" data-uid="Bodu.Numerics.Interval`1.Overlaps(Bodu.Numerics.Interval{`0})">
   Overlaps(Interval&lt;T&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/ca28f887e1e30a5c0cb0ea46ec725fc37c3aef61/Bodu.Numerics/src/Numerics/Interval%7BT%7D.SetOperations.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8f76146c8d427d9610be8857fc00f9d7b3c5a124/Bodu.Numerics/src/Numerics/Interval%7BT%7D.SetOperations.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1743,7 +1796,7 @@ endpoints directly.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_Interval_1_Parse_System_String_" data-uid="Bodu.Numerics.Interval`1.Parse(System.String)">
   Parse(string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/ca28f887e1e30a5c0cb0ea46ec725fc37c3aef61/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Parse.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8f76146c8d427d9610be8857fc00f9d7b3c5a124/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Parse.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1795,7 +1848,7 @@ endpoints directly.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_Interval_1_Singleton__0_" data-uid="Bodu.Numerics.Interval`1.Singleton(`0)">
   Singleton(T)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/ca28f887e1e30a5c0cb0ea46ec725fc37c3aef61/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Factories.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8f76146c8d427d9610be8857fc00f9d7b3c5a124/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Factories.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1844,6 +1897,12 @@ that composes uniformly with multi-value filters, or as the seed of a union that
 </p>
 </div>
 
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
+    <dd><p><code class="paramref">value</code> is NaN.</p>
+</dd>
+  </dl>
 
 
   </section>
@@ -1854,7 +1913,7 @@ that composes uniformly with multi-value filters, or as the seed of a union that
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_Interval_1_SymmetricDifference_Bodu_Numerics_Interval__0__" data-uid="Bodu.Numerics.Interval`1.SymmetricDifference(Bodu.Numerics.Interval{`0})">
   SymmetricDifference(Interval&lt;T&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/ca28f887e1e30a5c0cb0ea46ec725fc37c3aef61/Bodu.Numerics/src/Numerics/Interval%7BT%7D.SetOperations.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8f76146c8d427d9610be8857fc00f9d7b3c5a124/Bodu.Numerics/src/Numerics/Interval%7BT%7D.SetOperations.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1902,7 +1961,7 @@ Interval&lt;int&gt;.Closed(0, 5).SymmetricDifference(Interval&lt;int&gt;.Closed(
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_Interval_1_ToString" data-uid="Bodu.Numerics.Interval`1.ToString">
   ToString()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/ca28f887e1e30a5c0cb0ea46ec725fc37c3aef61/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Formatting.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8f76146c8d427d9610be8857fc00f9d7b3c5a124/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Formatting.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1950,7 +2009,7 @@ Interval&lt;double&gt;.Closed(1, 5).ToString("F2"); // "[1.00, 5.00]"</code></pr
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_Interval_1_ToString_System_String_" data-uid="Bodu.Numerics.Interval`1.ToString(System.String)">
   ToString(string?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/ca28f887e1e30a5c0cb0ea46ec725fc37c3aef61/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Formatting.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8f76146c8d427d9610be8857fc00f9d7b3c5a124/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Formatting.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1994,7 +2053,7 @@ applied to <a class="xref" href="Bodu.Numerics.Interval-1.html#Bodu_Numerics_Int
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_Interval_1_ToString_System_String_System_IFormatProvider_" data-uid="Bodu.Numerics.Interval`1.ToString(System.String,System.IFormatProvider)">
   ToString(string?, IFormatProvider?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/ca28f887e1e30a5c0cb0ea46ec725fc37c3aef61/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Formatting.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8f76146c8d427d9610be8857fc00f9d7b3c5a124/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Formatting.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -2041,7 +2100,7 @@ applied to <a class="xref" href="Bodu.Numerics.Interval-1.html#Bodu_Numerics_Int
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_Interval_1_TryFormat_System_Span_System_Byte__System_Int32__System_ReadOnlySpan_System_Char__System_IFormatProvider_" data-uid="Bodu.Numerics.Interval`1.TryFormat(System.Span{System.Byte},System.Int32@,System.ReadOnlySpan{System.Char},System.IFormatProvider)">
   TryFormat(Span&lt;byte&gt;, out int, ReadOnlySpan&lt;char&gt;, IFormatProvider?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/ca28f887e1e30a5c0cb0ea46ec725fc37c3aef61/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Formatting.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8f76146c8d427d9610be8857fc00f9d7b3c5a124/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Formatting.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -2094,7 +2153,7 @@ applied to <a class="xref" href="Bodu.Numerics.Interval-1.html#Bodu_Numerics_Int
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_Interval_1_TryFormat_System_Span_System_Char__System_Int32__System_ReadOnlySpan_System_Char__System_IFormatProvider_" data-uid="Bodu.Numerics.Interval`1.TryFormat(System.Span{System.Char},System.Int32@,System.ReadOnlySpan{System.Char},System.IFormatProvider)">
   TryFormat(Span&lt;char&gt;, out int, ReadOnlySpan&lt;char&gt;, IFormatProvider?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/ca28f887e1e30a5c0cb0ea46ec725fc37c3aef61/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Formatting.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8f76146c8d427d9610be8857fc00f9d7b3c5a124/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Formatting.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -2147,7 +2206,7 @@ applied to <a class="xref" href="Bodu.Numerics.Interval-1.html#Bodu_Numerics_Int
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_Interval_1_TryParse_System_String_Bodu_Numerics_Interval__0___" data-uid="Bodu.Numerics.Interval`1.TryParse(System.String,Bodu.Numerics.Interval{`0}@)">
   TryParse(string?, out Interval&lt;T&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/ca28f887e1e30a5c0cb0ea46ec725fc37c3aef61/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Parse.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8f76146c8d427d9610be8857fc00f9d7b3c5a124/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Parse.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -2194,7 +2253,7 @@ culture.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_Interval_1_TryUnion_Bodu_Numerics_Interval__0__Bodu_Numerics_Interval__0___" data-uid="Bodu.Numerics.Interval`1.TryUnion(Bodu.Numerics.Interval{`0},Bodu.Numerics.Interval{`0}@)">
   TryUnion(Interval&lt;T&gt;, out Interval&lt;T&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/ca28f887e1e30a5c0cb0ea46ec725fc37c3aef61/Bodu.Numerics/src/Numerics/Interval%7BT%7D.SetOperations.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8f76146c8d427d9610be8857fc00f9d7b3c5a124/Bodu.Numerics/src/Numerics/Interval%7BT%7D.SetOperations.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -2282,7 +2341,7 @@ intervals.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_Interval_1_op_BitwiseAnd_Bodu_Numerics_Interval__0__Bodu_Numerics_Interval__0__" data-uid="Bodu.Numerics.Interval`1.op_BitwiseAnd(Bodu.Numerics.Interval{`0},Bodu.Numerics.Interval{`0})">
   operator &amp;(Interval&lt;T&gt;, Interval&lt;T&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/ca28f887e1e30a5c0cb0ea46ec725fc37c3aef61/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Operators.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8f76146c8d427d9610be8857fc00f9d7b3c5a124/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Operators.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -2332,7 +2391,7 @@ intervals.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_Interval_1_op_BitwiseOr_Bodu_Numerics_Interval__0__Bodu_Numerics_Interval__0__" data-uid="Bodu.Numerics.Interval`1.op_BitwiseOr(Bodu.Numerics.Interval{`0},Bodu.Numerics.Interval{`0})">
   operator |(Interval&lt;T&gt;, Interval&lt;T&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/ca28f887e1e30a5c0cb0ea46ec725fc37c3aef61/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Operators.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8f76146c8d427d9610be8857fc00f9d7b3c5a124/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Operators.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -2389,7 +2448,7 @@ intervals.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_Interval_1_op_Equality_Bodu_Numerics_Interval__0__Bodu_Numerics_Interval__0__" data-uid="Bodu.Numerics.Interval`1.op_Equality(Bodu.Numerics.Interval{`0},Bodu.Numerics.Interval{`0})">
   operator ==(Interval&lt;T&gt;, Interval&lt;T&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/ca28f887e1e30a5c0cb0ea46ec725fc37c3aef61/Bodu.Numerics/src/Numerics/Interval%7BT%7D.IEquatable.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8f76146c8d427d9610be8857fc00f9d7b3c5a124/Bodu.Numerics/src/Numerics/Interval%7BT%7D.IEquatable.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -2435,7 +2494,7 @@ intervals.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_Interval_1_op_Inequality_Bodu_Numerics_Interval__0__Bodu_Numerics_Interval__0__" data-uid="Bodu.Numerics.Interval`1.op_Inequality(Bodu.Numerics.Interval{`0},Bodu.Numerics.Interval{`0})">
   operator !=(Interval&lt;T&gt;, Interval&lt;T&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/ca28f887e1e30a5c0cb0ea46ec725fc37c3aef61/Bodu.Numerics/src/Numerics/Interval%7BT%7D.IEquatable.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8f76146c8d427d9610be8857fc00f9d7b3c5a124/Bodu.Numerics/src/Numerics/Interval%7BT%7D.IEquatable.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -2485,7 +2544,7 @@ intervals.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_Interval_1_Parse_System_ReadOnlySpan_System_Byte__System_IFormatProvider_" data-uid="Bodu.Numerics.Interval`1.Parse(System.ReadOnlySpan{System.Byte},System.IFormatProvider)">
   Parse(ReadOnlySpan&lt;byte&gt;, IFormatProvider?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/ca28f887e1e30a5c0cb0ea46ec725fc37c3aef61/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Utf8.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8f76146c8d427d9610be8857fc00f9d7b3c5a124/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Utf8.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -2537,7 +2596,7 @@ intervals.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_Interval_1_Parse_System_ReadOnlySpan_System_Char__System_IFormatProvider_" data-uid="Bodu.Numerics.Interval`1.Parse(System.ReadOnlySpan{System.Char},System.IFormatProvider)">
   Parse(ReadOnlySpan&lt;char&gt;, IFormatProvider?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/ca28f887e1e30a5c0cb0ea46ec725fc37c3aef61/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Parse.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8f76146c8d427d9610be8857fc00f9d7b3c5a124/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Parse.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -2589,7 +2648,7 @@ intervals.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_Interval_1_Parse_System_String_System_IFormatProvider_" data-uid="Bodu.Numerics.Interval`1.Parse(System.String,System.IFormatProvider)">
   Parse(string, IFormatProvider?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/ca28f887e1e30a5c0cb0ea46ec725fc37c3aef61/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Parse.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8f76146c8d427d9610be8857fc00f9d7b3c5a124/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Parse.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -2638,6 +2697,21 @@ if (!Interval&lt;int&gt;.TryParse("1..5", null, out var parsed))
 }</code></pre>
 
 
+  <h4 class="section" id="Bodu_Numerics_Interval_1_Parse_System_String_System_IFormatProvider__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+The endpoints are separated by a comma, or by a semicolon when the decimal separator of
+<code class="paramref">provider</code> is a comma, as <a class="xref" href="Bodu.Numerics.Interval-1.html#Bodu_Numerics_Interval_1_ToString_System_String_System_IFormatProvider_">ToString(string?, IFormatProvider?)</a> writes them.
+</p>
+<p>
+An infinity token beside an open bracket denotes an unbounded side: <code>-∞</code>, <code>-Infinity</code> or <code>-inf</code>
+for the lower side, and <code>+∞</code>, <code>∞</code>, <code>+Infinity</code>, <code>Infinity</code>, <code>+inf</code> or <code>inf</code> for
+the upper side, the words in any case. Beside a closed bracket the same text is parsed as an endpoint value of
+<code class="typeparamref">T</code> under <code class="paramref">provider</code>, because an unbounded side is never closed. A
+bounded interval with an infinite endpoint on a closed side, such as <code>[0, Infinity]</code> over
+<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a>, therefore reads back as itself, while an infinite endpoint on an open side reads back as
+an unbounded side, which holds the same finite values but is not equal to the bounded interval.
+</p>
+</div>
 
   <h4 class="section">Exceptions</h4>
   <dl class="parameters">
@@ -2658,7 +2732,7 @@ if (!Interval&lt;int&gt;.TryParse("1..5", null, out var parsed))
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_Interval_1_TryParse_System_ReadOnlySpan_System_Byte__System_IFormatProvider_Bodu_Numerics_Interval__0___" data-uid="Bodu.Numerics.Interval`1.TryParse(System.ReadOnlySpan{System.Byte},System.IFormatProvider,Bodu.Numerics.Interval{`0}@)">
   TryParse(ReadOnlySpan&lt;byte&gt;, IFormatProvider?, out Interval&lt;T&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/ca28f887e1e30a5c0cb0ea46ec725fc37c3aef61/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Utf8.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8f76146c8d427d9610be8857fc00f9d7b3c5a124/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Utf8.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -2707,7 +2781,7 @@ if (!Interval&lt;int&gt;.TryParse("1..5", null, out var parsed))
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_Interval_1_TryParse_System_ReadOnlySpan_System_Char__System_IFormatProvider_Bodu_Numerics_Interval__0___" data-uid="Bodu.Numerics.Interval`1.TryParse(System.ReadOnlySpan{System.Char},System.IFormatProvider,Bodu.Numerics.Interval{`0}@)">
   TryParse(ReadOnlySpan&lt;char&gt;, IFormatProvider?, out Interval&lt;T&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/ca28f887e1e30a5c0cb0ea46ec725fc37c3aef61/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Parse.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8f76146c8d427d9610be8857fc00f9d7b3c5a124/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Parse.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -2756,7 +2830,7 @@ if (!Interval&lt;int&gt;.TryParse("1..5", null, out var parsed))
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Numerics_Interval_1_TryParse_System_String_System_IFormatProvider_Bodu_Numerics_Interval__0___" data-uid="Bodu.Numerics.Interval`1.TryParse(System.String,System.IFormatProvider,Bodu.Numerics.Interval{`0}@)">
   TryParse(string?, IFormatProvider?, out Interval&lt;T&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/ca28f887e1e30a5c0cb0ea46ec725fc37c3aef61/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Parse.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8f76146c8d427d9610be8857fc00f9d7b3c5a124/Bodu.Numerics/src/Numerics/Interval%7BT%7D.Parse.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -2827,7 +2901,7 @@ if (!Interval&lt;int&gt;.TryParse("1..5", null, out var parsed))
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: ca28f88 · Built: 2026-10-13 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 8f76146 · Built: 2026-10-13 (UTC)</span>
         </div>
       </div>
     </footer>

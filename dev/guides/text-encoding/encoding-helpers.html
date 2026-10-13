@@ -87,7 +87,7 @@
         <article data-uid="">
 <h1 id="encoding-helpers-and-bom-detection">Encoding helpers and BOM detection</h1>
 
-<p>Separate from the binary radix encodings (Base16-Base85, in <code>Bodu.Text.Encoding</code>), the <strong><code>Bodu.Text</code></strong> library ships a set of helpers for working with the BCL <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.encoding">Encoding</a> itself: zero-ceremony <code>string</code>↔<code>byte[]</code> conversion, allocation-conscious (pooled / owned-memory) surfaces, byte-order-mark (BOM / preamble) handling, UTF classification, fallback configuration, and chunked transcoding. These are the everyday utilities that make <code>System.Text.Encoding</code> pleasant to use without hand-rolling preamble logic or <code>ArrayPool&lt;byte&gt;</code> plumbing.</p>
+<p>Separate from the binary radix encodings (Base16-Base85, in <code>Bodu.Text.Encoding</code>), the <strong>Bodu.Core</strong> package ships, in the <code>Bodu.Text</code> namespace, a set of helpers for working with the BCL <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.encoding">Encoding</a> itself: zero-ceremony <code>string</code>↔<code>byte[]</code> conversion, allocation-conscious (pooled / owned-memory) surfaces, byte-order-mark (BOM / preamble) handling, UTF classification, fallback configuration, and chunked transcoding. These are the everyday utilities that make <code>System.Text.Encoding</code> pleasant to use without hand-rolling preamble logic or <code>ArrayPool&lt;byte&gt;</code> plumbing.</p>
 <p>Three types make up the surface:</p>
 <ul>
 <li><a class="xref" href="../../api/Bodu.Text.StringEncodingExtensions.html">StringEncodingExtensions</a> - extension methods on <code>string</code>.</li>
@@ -96,7 +96,7 @@
 </ul>
 <h2 id="converting-strings-to-bytes">Converting strings to bytes</h2>
 <p><code>StringEncodingExtensions</code> removes the <code>encoding.GetBytes(...)</code> boilerplate and adds UTF-8 fast paths and preamble-aware variants:</p>
-<pre><code class="lang-csharp">using Bodu.Text.Encoding;
+<pre><code class="lang-csharp">using Bodu.Text;
 
 byte[] utf8        = &quot;héllo&quot;.ToUtf8Bytes();                       // UTF-8, no BOM
 byte[] utf16       = &quot;héllo&quot;.ToBytes(System.Text.Encoding.Unicode);
@@ -112,7 +112,7 @@ if (&quot;héllo&quot;.TryEncodeUtf8To(destination, out int n)) { /* … */ }
 
 &quot;héllo&quot;.WriteUtf8To(bufferWriter);                    // append to a pipeline
 
-using PooledBufferBuilder&lt;byte&gt; pooled = &quot;héllo&quot;.GetUtf8BytesPooled();   // ArrayPool-backed
+using PooledBufferBuilder&lt;byte&gt; pooled = &quot;héllo&quot;.GetUtf8BytesPooled();   // ArrayPool-backed (Bodu.Buffers)
 </code></pre>
 <h2 id="byte-order-marks-preambles">Byte-order marks (preambles)</h2>
 <p><code>EncodingExtensions</code> centralizes BOM handling so you never slice preamble bytes by hand:</p>
@@ -146,11 +146,12 @@ System.Text.Encoding lenient = System.Text.Encoding.UTF8.WithReplacementFallback
 <pre><code class="lang-csharp">using IMemoryOwner&lt;byte&gt; owner = enc.GetBytesOwner(chars);    // caller disposes
 using PooledBufferBuilder&lt;char&gt; chars = enc.GetCharsPooled(bytes);
 
-// Incremental transcoding with explicit backpressure.
-OperationStatus status = enc.EncodeChunk(charSpan, byteDestination, isFinal: true,
-                                         out int charsRead, out int bytesWritten);
+// Incremental transcoding with explicit backpressure: EncodeChunk extends the stateful Encoder.
+System.Text.Encoder encoder = enc.GetEncoder();
+OperationStatus status = encoder.EncodeChunk(charSpan, byteDestination, flush: true,
+                                             out int charsRead, out int bytesWritten);
 </code></pre>
-<p><code>EncodeChunk</code> / <code>DecodeChunk</code> return an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.buffers.operationstatus">OperationStatus</a> (<code>Done</code>, <code>DestinationTooSmall</code>, <code>NeedMoreData</code>, <code>InvalidData</code>) so a caller can drive a pull-based loop and grow the destination as needed.</p>
+<p><code>EncodeChunk</code> (on <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.encoder">Encoder</a>) and <code>DecodeChunk</code> (on <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.decoder">Decoder</a>) return an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.buffers.operationstatus">OperationStatus</a>: <code>Done</code> when the whole chunk was converted, or <code>DestinationTooSmall</code> when output remains, so a caller can drive a pull-based loop and grow the destination as needed. Invalid data is never reported as a status: the encoder's or decoder's fallback handles it, throwing under the exception fallback.</p>
 <h2 id="api-summary">API summary</h2>
 <table>
 <thead>
@@ -199,7 +200,7 @@ OperationStatus status = enc.EncodeChunk(charSpan, byteDestination, isFinal: tru
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: ca28f88 · Built: 2026-10-13 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 8f76146 · Built: 2026-10-13 (UTC)</span>
         </div>
       </div>
     </footer>

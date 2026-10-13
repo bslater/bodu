@@ -87,7 +87,7 @@
         <article data-uid="">
 <h1 id="streaming-async-and-resumable-hashing">Streaming, async, and resumable hashing</h1>
 
-<p>Every algorithm in <code>Bodu.IO.Hashing</code> derives from <code>System.IO.Hashing.NonCryptographicHashAlgorithm</code>, whose core is <code>Append</code> / <code>GetCurrentHash</code> / <code>Reset</code>. Three things build on that core for data that does not fit in one span: <a class="xref" href="../../api/Bodu.IO.Hashing.HashingStream.html">HashingStream</a> computes a digest as a side effect of ordinary stream I/O; <a class="xref" href="../../api/Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.html">NonCryptographicHashAlgorithmExtensions</a> adds the <code>Stream</code>, <code>async</code>, and verify overloads; and <a class="xref" href="../../api/Bodu.IO.Hashing.IResumableHashAlgorithm.html">IResumableHashAlgorithm</a> lets a stored digest be extended with new bytes without re-reading the original input. This page walks through all three and ends with the digest byte-order table you need when comparing results across tools.</p>
+<p>Every checksum and fingerprint in <code>Bodu.IO.Hashing</code> derives from <code>System.IO.Hashing.NonCryptographicHashAlgorithm</code> (the check digits are a separate family over text), whose core is <code>Append</code> / <code>GetCurrentHash</code> / <code>Reset</code>. Three things build on that core for data that does not fit in one span: <a class="xref" href="../../api/Bodu.IO.Hashing.HashingStream.html">HashingStream</a> computes a digest as a side effect of ordinary stream I/O; <a class="xref" href="../../api/Bodu.IO.Hashing.Extensions.NonCryptographicHashAlgorithmExtensions.html">NonCryptographicHashAlgorithmExtensions</a> adds the <code>Stream</code>, <code>async</code>, and verify overloads; and <a class="xref" href="../../api/Bodu.IO.Hashing.IResumableHashAlgorithm.html">IResumableHashAlgorithm</a> lets a stored digest be extended with new bytes without re-reading the original input. This page walks through all three and ends with the digest byte-order table you need when comparing results across tools.</p>
 <h2 id="pattern-1---hashingstream-while-copying">Pattern 1 - <code>HashingStream</code> while copying</h2>
 <p><code>HashingStream(Stream innerStream, NonCryptographicHashAlgorithm algorithm, bool leaveOpen = false)</code> is a pass-through stream. Bytes are fed to the algorithm whichever way they flow - reads append what the inner stream actually returned, writes append after the inner stream accepted them - so one pass over the data both moves it and checksums it. <code>CanSeek</code> is always <code>false</code> (seeking would let bytes bypass or re-enter the digest; <code>Seek</code> and <code>SetLength</code> throw <code>NotSupportedException</code>), and the algorithm is yours: the stream never disposes it.</p>
 <!-- compile -->
@@ -157,16 +157,17 @@ byte[] second = hashing.GetCurrentHash();         // Fletcher-32 of &quot;abcdef
 <td><code>VerifyHash(Stream, byte[] \| string hex)</code> / <code>VerifyHashAsync(Stream, byte[] \| string \| ReadOnlyMemory&lt;byte&gt;, CancellationToken)</code></td>
 <td>via <code>ComputeHash*</code></td>
 <td>Yes</td>
-<td>constant-time compare; throws on <code>null</code></td>
+<td>ordinary compare, not constant-time; throws on <code>null</code></td>
 </tr>
 <tr>
 <td><code>TryVerifyHash(…)</code> / <code>TryVerifyHashAsync(…)</code></td>
 <td>as above</td>
 <td>Yes</td>
-<td><code>false</code> for <code>null</code> arguments, malformed hex, cancellation, or any exception</td>
+<td><code>false</code> for malformed hex, cancellation, or any exception while hashing; some <code>null</code> arguments still throw (below)</td>
 </tr>
 </tbody>
 </table>
+<p>The <code>Try</code> forms throw <code>ArgumentNullException</code> for a <code>null</code> algorithm, and for a <code>null</code> expected digest except in the <code>Stream</code> + <code>byte[]</code> overloads and the overload with an <code>out bool</code> result, which return <code>false</code>. A <code>null</code> input stream returns <code>false</code>, as does a <code>null</code> input array in the synchronous overloads; the asynchronous <code>byte[]</code> overloads and the <code>string</code> + <code>Encoding</code> overloads throw for a <code>null</code> input.</p>
 <p>Read buffers are rented from <code>ArrayPool&lt;byte&gt;.Shared</code> and returned on every exit path; <code>bufferSize</code> must be positive (<code>ArgumentOutOfRangeException</code>). An already-cancelled token surfaces from <code>ComputeHashAsync</code> as <code>TaskCanceledException</code> (an <code>OperationCanceledException</code>).</p>
 <!-- compile -->
 <pre><code class="lang-csharp">using Bodu.IO.Hashing.Checksums;
@@ -329,7 +330,7 @@ uint crcWord = BitConverter.ToUInt32(crc32);                                    
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: ca28f88 · Built: 2026-10-13 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 8f76146 · Built: 2026-10-13 (UTC)</span>
         </div>
       </div>
     </footer>

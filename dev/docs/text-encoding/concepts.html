@@ -120,7 +120,7 @@ different padding, line-wrap, or shortcut rules:</p>
 </tr>
 <tr>
 <td>Base58</td>
-<td><code>BitcoinFlickr</code> (default), <code>Ripple</code></td>
+<td><code>BitcoinFlickr</code> (default; the Bitcoin alphabet), <code>Ripple</code>, <code>Flickr</code></td>
 </tr>
 <tr>
 <td>Base85</td>
@@ -150,7 +150,8 @@ Base32 Crockford:      &quot;0123456789ABCDEFGHJKMNPQRSTVWXYZ&quot;   (no I L O 
 Base32 Z-Base-32:      &quot;ybndrfg8ejkmcpqxot1uwisza345h769&quot;
 Base64 Standard:       &quot;A..Za..z0..9+/&quot;             (RFC 4648 §4)
 Base64 URL-safe:       &quot;A..Za..z0..9-_&quot;             (RFC 4648 §5)
-Base58 Bitcoin/Flickr: &quot;123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz&quot;  (no 0 O I l)
+Base58 Bitcoin:        &quot;123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz&quot;  (no 0 O I l)
+Base58 Flickr:         &quot;123456789abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ&quot;  (lower case first)
 Base85 Ascii85:        '!' (33) through 'u' (117)   (Adobe alphabet)
 Base85 Z85:            &quot;0..9a..zA..Z.-:+=^!/*?&amp;&lt;&gt;()[]{}@%$#&quot;  (shell-safe)
 Base45:                &quot;0..9A..Z&quot; + &quot; $%*+-./:&quot;      (45 chars, RFC 9285)
@@ -279,7 +280,7 @@ length aligns to the group size. For a <em>3-byte</em> Base64 input, no padding 
 </tr>
 <tr>
 <td>Base64 UrlSafe</td>
-<td>No (JWT / OAuth convention; can be added with omission of <code>OmitPadding</code>)</td>
+<td>No (JWT / OAuth convention); the encoder never pads URL-safe output, whatever the options</td>
 </tr>
 <tr>
 <td>Base58</td>
@@ -332,13 +333,19 @@ container framing, and tolerated at decode time when explicitly allowed:</p>
 <td>Base16</td>
 </tr>
 <tr>
+<td><code>&lt;~</code> / <code>~&gt;</code> delimiters</td>
+<td><code>BaseFormattingOptions.IncludePrefix</code></td>
+<td><code>BaseFormatStyles.AllowPrefix</code></td>
+<td>Base85 Ascii85</td>
+</tr>
+<tr>
 <td>Byte spacing (e.g. <code>DE AD BE EF</code>)</td>
 <td><code>BaseFormattingOptions.InsertSpacing</code></td>
 <td>(combine with <code>IgnoreWhitespace</code>)</td>
 <td>Base16</td>
 </tr>
 <tr>
-<td>Line breaks every N chars (64 for Base16, 76 for Base64 Mime)</td>
+<td>Line breaks every N chars (64 for Base16 and Base32, 76 for Base64)</td>
 <td><code>BaseFormattingOptions.InsertLineBreaks</code></td>
 <td>(combine with <code>IgnoreWhitespace</code>)</td>
 <td>Base16, Base32, Base64</td>
@@ -347,7 +354,7 @@ container framing, and tolerated at decode time when explicitly allowed:</p>
 <td>Case folding (lower / upper)</td>
 <td><code>BaseFormattingOptions.UpperCase</code></td>
 <td>implicit (decoders are case-insensitive)</td>
-<td>Base16, Base32</td>
+<td>Base16</td>
 </tr>
 </tbody>
 </table>
@@ -370,8 +377,8 @@ stricter mode (a flag that tightens, not relaxes)
                              trailing bits are non-zero
 </code></pre>
 <p>The <code>Decode</code> overloads throw <code>FormatException</code> on validation failure. The <code>TryDecode</code> overloads return
-<code>false</code> instead. The <code>IsValid</code> predicate returns <code>true</code> only for inputs that the strict decoder would accept
-(when no leniency flags are passed).</p>
+<code>false</code> instead. The <code>IsValid</code> predicate returns <code>true</code> exactly when <code>Decode</code> with the same variant and styles
+would succeed, and <code>TryGetDecodedLength</code> / <code>GetDecodedLength</code> report the length that <code>Decode</code> returns.</p>
 <h3 id="canonical-form-enforcement">Canonical-form enforcement</h3>
 <p><code>BaseFormatStyles.AllowPrefix</code>, <code>IgnoreWhitespace</code>, and <code>AllowMissingPadding</code> all <em>relax</em> the decoder.
 <a class="xref" href="../../api/Bodu.Text.Encoding.BaseFormatStyles.html">BaseFormatStyles</a> carries one flag that goes the other way -
@@ -390,18 +397,20 @@ and <a class="xref" href="../../api/Bodu.Text.Encoding.Base85.html">Base85</a> (
 where a single canonical representation is a security or comparison requirement - content-addressed identifiers,
 deduplication keys, signature inputs.</p>
 <h2 id="utf-8-path">UTF-8 path</h2>
-<p>Every encoding family exposes a UTF-8 byte path alongside the character path:</p>
+<p>The five core families (Base16, Base32, Base58, Base64, Base85) expose a UTF-8 byte path alongside the character
+path:</p>
 <pre><code>encode:  EncodeToUtf8(ReadOnlySpan&lt;byte&gt;) → byte[]
          TryEncodeToUtf8(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, out int, …)
 
 decode:  FromBase{N}String(ReadOnlySpan&lt;byte&gt; utf8Source, Span&lt;byte&gt; dst, out int consumed, out int written)
                                                                       → OperationStatus
-         DecodeFromUtf8(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, out int, out int, …, isFinalBlock)
+         DecodeFromUtf8(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, out int, out int, …[, isFinalBlock])
                                                                       → OperationStatus
 </code></pre>
-<p>Because every encoding alphabet is ASCII, the UTF-8 byte form is bit-identical to the character form. This path is
-the natural choice when bytes come from a network / file pipeline and you want to avoid allocating a <code>string</code> or
-<code>char[]</code> between stages.</p>
+<p>Base16 names its aliases <code>FromHexString</code> / <code>ToHexString</code>, and only Base16, Base32, and Base64 take <code>isFinalBlock</code>.</p>
+<p>Because every encoding alphabet is ASCII, the UTF-8 byte form is bit-identical to the character form (including
+the MIME variant's line breaks). This path is the natural choice when bytes come from a network / file pipeline and
+you want to avoid allocating a <code>string</code> or <code>char[]</code> between stages.</p>
 <h2 id="guid-convenience-surface">GUID convenience surface</h2>
 <p>Each of the five core families ships an overload pair that encodes a <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.guid">Guid</a> directly, so you never have
 to materialise the 16-byte buffer yourself:</p>
@@ -447,8 +456,8 @@ stream data through chunk by chunk - the decoder will report <code>NeedMoreData<
 that could complete with another chunk.</p>
 <blockquote>
 <p>Base58 and Base85 are not streamable: each requires the entire input to be available before decode (Base58 because
-of big-integer arithmetic, Base85 because of fixed-size block packing). The <code>isFinalBlock</code> parameter on those
-variants is accepted for API consistency but has no behavioural effect.</p>
+of big-integer arithmetic, Base85 because of fixed-size block packing). Their <code>DecodeFromUtf8</code> overloads have no
+<code>isFinalBlock</code> parameter and always treat the input as complete.</p>
 <p>The special-purpose encodings - Base45, Base62, and Bech32 - are likewise single-shot and expose no
 <code>OperationStatus</code> path at all (Base45 packs in fixed groups, Base62 uses big-integer arithmetic, and Bech32 must
 read the whole string to verify its checksum). They throw <code>FormatException</code> on invalid input and offer <code>Try*</code>
@@ -489,7 +498,7 @@ needs those should keep using the static classes directly.</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: ca28f88 · Built: 2026-10-13 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 8f76146 · Built: 2026-10-13 (UTC)</span>
         </div>
       </div>
     </footer>

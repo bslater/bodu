@@ -185,7 +185,7 @@
 </tr>
 </tbody>
 </table>
-<p>This streaming shape means one instance can hash arbitrarily large inputs in chunks without buffering the whole payload, and the snapshot semantics make rolling integrity tags trivial. The check-digit base classes (<a class="xref" href="../../api/Bodu.IO.Hashing.CheckDigits.CheckValueAlgorithm.html">CheckValueAlgorithm</a> and its three derivatives <a class="xref" href="../../api/Bodu.IO.Hashing.CheckDigits.CheckDigitAlgorithm.html">CheckDigitAlgorithm</a>, <a class="xref" href="../../api/Bodu.IO.Hashing.CheckDigits.AlphanumericCheckDigitAlgorithm.html">AlphanumericCheckDigitAlgorithm</a>, and <a class="xref" href="../../api/Bodu.IO.Hashing.CheckDigits.MultiCharCheckDigitAlgorithm.html">MultiCharCheckDigitAlgorithm</a>) mirror the same shape over characters rather than bytes - <code>Append</code> / <code>GetCurrentCheckValue</code> (with the typed <code>GetCurrentCheckDigit</code> / <code>GetCurrentCheckDigits</code> on the derivatives) / <code>Reset</code>.</p>
+<p>For most algorithms this streaming shape means one instance can hash arbitrarily large inputs in chunks without buffering the whole payload, and the snapshot semantics make rolling integrity tags trivial. CityHash and SuperFastHash are the exceptions: their reference algorithms are one-shot, so they buffer the whole input until the digest is read. The check-digit base classes (<a class="xref" href="../../api/Bodu.IO.Hashing.CheckDigits.CheckValueAlgorithm.html">CheckValueAlgorithm</a> and its three derivatives <a class="xref" href="../../api/Bodu.IO.Hashing.CheckDigits.CheckDigitAlgorithm.html">CheckDigitAlgorithm</a>, <a class="xref" href="../../api/Bodu.IO.Hashing.CheckDigits.AlphanumericCheckDigitAlgorithm.html">AlphanumericCheckDigitAlgorithm</a>, and <a class="xref" href="../../api/Bodu.IO.Hashing.CheckDigits.MultiCharCheckDigitAlgorithm.html">MultiCharCheckDigitAlgorithm</a>) mirror the same shape over characters rather than bytes - <code>Append</code> / <code>GetCurrentCheckValue</code> (with the typed <code>GetCurrentCheckDigit</code> / <code>GetCurrentCheckDigits</code> on the derivatives) / <code>Reset</code>.</p>
 <h2 id="avalanche">Avalanche</h2>
 <p><strong>Avalanche</strong> is the property that flipping a single bit of input flips approximately half the bits of the output, and that each output bit is statistically independent of every other. A hash with good avalanche distributes keys evenly across hash-table buckets and resists trivial collisions on near-identical inputs (<code>&quot;foo1&quot;</code> vs <code>&quot;foo2&quot;</code>).</p>
 <p>Avalanche is what distinguishes a <em>fingerprint</em> (FNV-1a, MurmurHash3, CityHash, Pearson) from a <em>checksum</em> (CRC, Fletcher, Adler). Checksums are tuned for the error patterns of a channel - they can leave entire output regions sparsely populated for typical inputs. That is fine when you only want to detect a bit-flip; it is disastrous when you want a hash-table key.</p>
@@ -318,7 +318,7 @@
 <tr>
 <td><a class="xref" href="../../api/Bodu.IO.Hashing.Checksums.Adler32C.html">Adler32C</a></td>
 <td><code>2^16</code></td>
-<td>The &quot;C&quot; variant trades error coverage for a power-of-two modulus that branchlessly compiles to a bitmask.</td>
+<td>The &quot;C&quot; variant swaps the prime for a power of two, which detects fewer errors; it runs the same scalar loop as Adler-32, so it is no faster.</td>
 </tr>
 <tr>
 <td><a class="xref" href="../../api/Bodu.IO.Hashing.Checksums.Adler64.html">Adler64</a></td>
@@ -329,7 +329,7 @@
 </table>
 <p>Adler-32 is the canonical zlib trailer checksum.</p>
 <h2 id="twin-accumulator-error-coverage">Twin-accumulator error coverage</h2>
-<p>Both Fletcher and Adler catch every single-bit error and every adjacent transposition, and at far lower per-byte cost than a CRC. What they do <strong>not</strong> match is the CRC's burst guarantee or its uniform behaviour across the whole digest space - and both carry documented blind spots a CRC does not:</p>
+<p>Both Fletcher and Adler catch every single-bit error and every adjacent byte transposition (except, in Fletcher-16, a swap of <code>0x00</code> and <code>0xFF</code>, which are congruent modulo 255), and at far lower per-byte cost than a CRC. What they do <strong>not</strong> match is the CRC's burst guarantee or its uniform behaviour across the whole digest space - and both carry documented blind spots a CRC does not:</p>
 <ul>
 <li><strong>Fletcher's <code>2^k − 1</code> modulus</strong> means the value <code>0</code> and the value <code>2^k − 1</code> (here, <code>M</code>) are congruent, so a byte that should push an accumulator to <code>M</code> instead leaves it at <code>0</code>. A run of bytes that sums to a multiple of <code>M</code> can therefore go undetected, and a block of all-<code>0x00</code> bytes followed by an all-<code>0xFF</code> block of the right length can collide.</li>
 <li><strong>Adler's weakness on short inputs.</strong> Each byte first lands in accumulator <code>A</code>; <code>B</code> only accumulates the <em>running</em> <code>A</code>. For a short message <code>A</code> stays small, so <code>B</code> grows slowly and the high bits of the digest barely move - the effective digest space is much narrower than 32 bits until the message is a few hundred bytes long. This is the well-known reason Adler-32 is a poor checksum for very short payloads, and why CRC-32 is preferred there.</li>
@@ -348,7 +348,7 @@
 </ul>
 <p>The classic example is the Luhn check digit on the last digit of a credit-card number - if you transpose two adjacent digits, the Luhn sum changes and the card number is rejected before the network call.</p>
 <h2 id="single-character-vs-multi-character-check-digit">Single-character vs. multi-character check digit</h2>
-<p>Most check-digit schemes emit <strong>one character</strong>. Over a decimal payload - Luhn, Damm, Verhoeff, EAN-8, EAN-13, GTIN-14, UPC-A, ISBN-13, and the ABA routing-number check - the check is a decimal digit drawn from <code>0</code>-<code>9</code>, and the algorithms share the <a class="xref" href="../../api/Bodu.IO.Hashing.CheckDigits.CheckDigitAlgorithm.html">CheckDigitAlgorithm</a> abstract base. Over an alphanumeric payload - ISIN, ISBN-10, SEDOL, CUSIP, ISO 7064 Mod 11-2, Code 39, Crockford base-32 - the single check character may come from a wider alphabet (ISBN-10's <code>X</code>, for example), and the algorithms share the <a class="xref" href="../../api/Bodu.IO.Hashing.CheckDigits.AlphanumericCheckDigitAlgorithm.html">AlphanumericCheckDigitAlgorithm</a> abstract base. Both bases, like the multi-character base below, derive from the root <a class="xref" href="../../api/Bodu.IO.Hashing.CheckDigits.CheckValueAlgorithm.html">CheckValueAlgorithm</a>; everything lives in <code>Bodu.IO.Hashing.CheckDigits</code>.</p>
+<p>Most check-digit schemes emit <strong>one character</strong>. Over a decimal payload - Luhn, Damm, Verhoeff, Gumm, EAN-8, EAN-13, GTIN-14, UPC-A, ISBN-13, and the ABA routing-number check - the check is a decimal digit drawn from <code>0</code>-<code>9</code>, and the algorithms share the <a class="xref" href="../../api/Bodu.IO.Hashing.CheckDigits.CheckDigitAlgorithm.html">CheckDigitAlgorithm</a> abstract base. Over an alphanumeric payload - ISIN, ISBN-10, SEDOL, CUSIP, ISO 7064 Mod 11-2, Code 39, Crockford base-32 - the single check character may come from a wider alphabet (ISBN-10's <code>X</code>, for example), and the algorithms share the <a class="xref" href="../../api/Bodu.IO.Hashing.CheckDigits.AlphanumericCheckDigitAlgorithm.html">AlphanumericCheckDigitAlgorithm</a> abstract base. Both bases, like the multi-character base below, derive from the root <a class="xref" href="../../api/Bodu.IO.Hashing.CheckDigits.CheckValueAlgorithm.html">CheckValueAlgorithm</a>; everything lives in <code>Bodu.IO.Hashing.CheckDigits</code>.</p>
 <p>A few high-stakes identifiers use <strong>multi-character</strong> checks - two or more characters, often drawn from a larger alphabet:</p>
 <table>
 <thead>
@@ -457,7 +457,7 @@ bool   ok    = Iban.IsValid(ibanWithCheck);           // full IBAN including the
 <td><a class="xref" href="../../api/Bodu.IO.Hashing.CheckDigits.Luhn.html">Luhn</a> (mod 10)</td>
 <td>All</td>
 <td>All <strong>except</strong> <code>09 ↔ 90</code></td>
-<td>No</td>
+<td>Most (misses <code>22 ↔ 55</code>, <code>33 ↔ 66</code>, <code>44 ↔ 77</code>)</td>
 <td>The <code>09 ↔ 90</code> swap preserves the Luhn sum and slips through.</td>
 </tr>
 <tr>
@@ -471,13 +471,27 @@ bool   ok    = Iban.IsValid(ibanWithCheck);           // full IBAN including the
 <td><a class="xref" href="../../api/Bodu.IO.Hashing.CheckDigits.Verhoeff.html">Verhoeff</a> (dihedral D₅)</td>
 <td>All</td>
 <td>All</td>
-<td>All</td>
+<td>Most</td>
 <td>The widest coverage of any single decimal check digit.</td>
 </tr>
 <tr>
-<td>Mod 11 - <a class="xref" href="../../api/Bodu.IO.Hashing.CheckDigits.Isbn10.html">Isbn10</a>, <a class="xref" href="../../api/Bodu.IO.Hashing.CheckDigits.Sedol.html">Sedol</a>, <a class="xref" href="../../api/Bodu.IO.Hashing.CheckDigits.Cusip.html">Cusip</a></td>
+<td><a class="xref" href="../../api/Bodu.IO.Hashing.CheckDigits.Gumm.html">Gumm</a> (dihedral D₅, alternating)</td>
+<td>All</td>
+<td>All</td>
+<td>Some (more than four in ten pass)</td>
+<td>Simpler than Verhoeff, with much weaker twin coverage.</td>
+</tr>
+<tr>
+<td>Weighted mod 10 - <a class="xref" href="../../api/Bodu.IO.Hashing.CheckDigits.Sedol.html">Sedol</a>, <a class="xref" href="../../api/Bodu.IO.Hashing.CheckDigits.Cusip.html">Cusip</a></td>
 <td>All</td>
 <td>Most</td>
+<td>Some</td>
+<td>CUSIP doubles every second digit as Luhn does and misses the same <code>09 ↔ 90</code> swap; SEDOL misses swaps of digits that differ by 5.</td>
+</tr>
+<tr>
+<td>Mod 11 - <a class="xref" href="../../api/Bodu.IO.Hashing.CheckDigits.Isbn10.html">Isbn10</a></td>
+<td>All</td>
+<td>All</td>
 <td>Some</td>
 <td>A check value of 10 needs an extra symbol (ISBN-10 uses <code>X</code>).</td>
 </tr>
@@ -507,9 +521,19 @@ bool   ok    = Iban.IsValid(ibanWithCheck);           // full IBAN including the
 </thead>
 <tbody>
 <tr>
-<td>Fingerprints - FNV, CityHash, MurmurHash3, Pearson, the classic string hashes</td>
+<td>Fingerprints - FNV, <a class="xref" href="../../api/Bodu.IO.Hashing.BKDR.html">BKDR</a>, <a class="xref" href="../../api/Bodu.IO.Hashing.Bernstein.html">Bernstein</a>, <a class="xref" href="../../api/Bodu.IO.Hashing.Elf64.html">Elf64</a>, <a class="xref" href="../../api/Bodu.IO.Hashing.Pjw32.html">Pjw32</a>, <a class="xref" href="../../api/Bodu.IO.Hashing.SDBM.html">SDBM</a></td>
+<td><strong>Big-endian</strong></td>
+<td><code>BinaryPrimitives.ReadUInt32BigEndian</code> / <code>ReadUInt64BigEndian</code>.</td>
+</tr>
+<tr>
+<td>Fingerprints - CityHash, MurmurHash3, <a class="xref" href="../../api/Bodu.IO.Hashing.ApHash.html">ApHash</a>, <a class="xref" href="../../api/Bodu.IO.Hashing.JSHash.html">JSHash</a>, <a class="xref" href="../../api/Bodu.IO.Hashing.SuperFastHash.html">SuperFastHash</a></td>
 <td><strong>Little-endian</strong></td>
 <td><code>BitConverter.ToUInt32</code> / <code>ToUInt64</code> on a little-endian platform.</td>
+</tr>
+<tr>
+<td><a class="xref" href="../../api/Bodu.IO.Hashing.Pearson.html">Pearson</a></td>
+<td>One byte per permutation pass, in pass order</td>
+<td>no multi-byte word; compare byte by byte.</td>
 </tr>
 <tr>
 <td><a class="xref" href="../../api/Bodu.IO.Hashing.Checksums.Crc.html">Crc</a></td>
@@ -555,7 +579,7 @@ bool   ok    = Iban.IsValid(ibanWithCheck);           // full IBAN including the
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: ca28f88 · Built: 2026-10-13 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 8f76146 · Built: 2026-10-13 (UTC)</span>
         </div>
       </div>
     </footer>

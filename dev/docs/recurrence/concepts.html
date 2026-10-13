@@ -142,7 +142,7 @@
 <p>Text carrying both parts is rejected - <code>TryParse</code> reports <em>The COUNT and UNTIL rule parts cannot both appear in the same rule.</em> - and on <a class="xref" href="../../api/Bodu.Globalization.Recurrence.RecurrenceRuleBuilder.html">RecurrenceRuleBuilder</a> calling <code>WithCount</code> clears any <code>WithUntil</code> and vice versa. An unbounded rule enumerates to the end of the representable calendar (year 9999); bound it with <code>Take</code>, the windowed overload, or a next-occurrence loop.</p>
 <h2 id="wkst-and-week-numbering"><code>WKST</code> and week numbering</h2>
 <p><code>WKST</code> names the day the week starts on and governs two calculations: which week a date belongs to for <code>INTERVAL</code> arithmetic on a <code>WEEKLY</code> rule, and ISO-style week numbering for <code>BYWEEKNO</code>. RFC 5545 defaults it to Monday, and so does the library - <code>RecurrenceRule.WeekStart</code> is <code>DayOfWeek.Monday</code> when the part is absent, and a <code>WKST=MO</code> part is omitted from the canonical text.</p>
-<p>The effect is visible only on rules with <code>INTERVAL &gt; 1</code>: the classic RFC example <code>FREQ=WEEKLY;INTERVAL=2;COUNT=4;BYDAY=TU,SU;WKST=MO</code> and the same rule with <code>WKST=SU</code> group the Tuesdays and Sundays into different fortnights and therefore produce different dates. Set it with <code>WithWeekStart(DayOfWeek)</code> on the builder.</p>
+<p>On a <code>WEEKLY</code> rule the effect is visible only with <code>INTERVAL &gt; 1</code>, while on a <code>YEARLY</code> rule with <code>BYWEEKNO</code> it changes the selected dates at any interval: the classic RFC example <code>FREQ=WEEKLY;INTERVAL=2;COUNT=4;BYDAY=TU,SU;WKST=MO</code> and the same rule with <code>WKST=SU</code> group the Tuesdays and Sundays into different fortnights and therefore produce different dates. Set it with <code>WithWeekStart(DayOfWeek)</code> on the builder.</p>
 <h2 id="the-by-parts-and-bysetpos">The <code>BY*</code> parts and <code>BYSETPOS</code></h2>
 <p>The <code>BY*</code> rule parts refine the set of instants a frequency period produces. Each is exposed as an <code>IReadOnlyList&lt;T&gt;</code> on the rule (empty when absent) and has a matching <code>By…(params …)</code> setter on the builder:</p>
 <table>
@@ -200,7 +200,7 @@
 <p><strong>Macros.</strong> <code>@yearly</code> / <code>@annually</code> (<code>0 0 1 1 *</code>), <code>@monthly</code> (<code>0 0 1 * *</code>), <code>@weekly</code> (<code>0 0 * * 0</code>), <code>@daily</code> / <code>@midnight</code> (<code>0 0 * * *</code>), and <code>@hourly</code> (<code>0 * * * *</code>) expand to the five-field layout; requesting <code>CronFormat.WithSeconds</code> for a macro is a parse failure. <code>@reboot</code> and <code>@every</code> are not cron schedules and are not recognized.</p>
 <p><strong>Quartz day tokens.</strong> The day-of-month field also accepts <code>L</code> (the last day of the month), <code>L-n</code> (n days before it), <code>nW</code> (the weekday nearest day n, without leaving the month), and <code>LW</code> / <code>L-nW</code>; the day-of-week field accepts <code>dL</code> (the month's last weekday d) and <code>d#k</code> (its k-th, <code>MON#1</code> being the first Monday); and either accepts <code>?</code> for <code>*</code>. A token stands for the whole field and counts as a restriction for the union rule, and weekday numbers stay Vixie's (0 or 7 for Sunday) rather than Quartz's (1 for Sunday), so <code>FRI#3</code> is the safest spelling of the third Friday.</p>
 <p><strong>Layout.</strong> <code>Parse(string)</code> infers <code>Standard</code> or <code>WithSeconds</code> from the field count; <code>Parse(string, CronFormat)</code> insists on one. A seven-field Quartz expression with a trailing year fails on its field count.</p>
-<p><strong>Canonical text.</strong> <code>ToString()</code> renders each field as <code>*</code> or an ascending comma-separated numeric list - <code>0 2 * * MON-FRI</code> becomes <code>0 2 * * 1,2,3,4,5</code> and <code>@daily</code> becomes <code>0 0 * * *</code> - or as the canonical form of its Quartz token (<code>FRIL</code> becomes <code>5L</code>), and two expressions that select the same field sets are equal regardless of how they were spelled.</p>
+<p><strong>Canonical text.</strong> <code>ToString()</code> renders each field as <code>*</code> or an ascending comma-separated numeric list - <code>0 2 * * MON-FRI</code> becomes <code>0 2 * * 1,2,3,4,5</code> and <code>@daily</code> becomes <code>0 0 * * *</code> - or as the canonical form of its Quartz token (<code>FRIL</code> becomes <code>5L</code>), and two expressions that select the same field sets are equal regardless of how they were spelled. The two day fields are the exception: where the plain rendering would flip the union rule, a day field keeps a spelling that preserves it (<code>*/2</code> stays <code>*/2</code>), and equality also compares whether the day fields combine by union, so <code>0 0 */2 * MON</code> and <code>0 0 1-31/2 * MON</code> select the same field sets but are not equal.</p>
 <h2 id="the-400-year-search">The 400-year search</h2>
 <p>A cron search walks forward (or backward) field by field and stops after <strong>400 years</strong>, one whole cycle of the Gregorian calendar, which repeats exactly every 400 years. An expression without a match in the cycle (<code>0 0 30 2 *</code>, February 30th) never matches, so <code>null</code> means &quot;never&quot; rather than &quot;not soon&quot;: occurrences of a <em>satisfiable</em> expression can be decades apart, as 29 February on a chosen weekday recurs at gaps of up to forty years. A search near either end of the calendar answers <code>null</code> rather than step past 0001-01-01 or 9999-12-31.</p>
 <p>A rule search is bounded differently: an unbounded <code>RecurrenceRule</code> enumerates to the end of the representable calendar, so <code>GetNextOccurrence</code> on a rule that can never match (30 February yearly) also answers <code>null</code> rather than looping, just later.</p>
@@ -236,13 +236,40 @@
 </tr>
 </tbody>
 </table>
-<p>The <code>P</code> designator is mandatory, <code>T</code> separates date from time components, components appear in <code>W</code> / <code>D</code> / <code>H</code> / <code>M</code> / <code>S</code> order without repetition, and <code>W</code> cannot be combined with other components. The interval must be a positive whole number of seconds: the grammar carries no sign and no sub-second precision, so a negative, zero, or fractional-second <code>TimeSpan</code> is rejected by the constructor and by <code>TryParse</code> (the failure message names which rule was broken). Normalization means the canonical text is unique - <code>PT1440M</code>, <code>PT24H</code>, and <code>P1D</code> all render as <code>P1D</code> and compare equal.</p>
+<p>The <code>P</code> designator is mandatory, <code>T</code> separates date from time components, components appear in <code>W</code> / <code>D</code> / <code>H</code> / <code>M</code> / <code>S</code> order without repetition, and <code>W</code> cannot be combined with other components. The interval must be a positive whole number of seconds. A leading <code>+</code> is accepted as the positive form, but a negative (<code>-</code>) or zero duration is rejected, and so is a <code>TimeSpan</code> with sub-second ticks, which the grammar cannot write: the constructor and <code>TryParse</code> reject each, and the failure message names which rule was broken. Normalization means the canonical text is unique - <code>PT1440M</code>, <code>PT24H</code>, and <code>P1D</code> all render as <code>P1D</code> and compare equal.</p>
 <h2 id="offsets-and-daylight-saving">Offsets and daylight saving</h2>
-<p>Each form answers over both <code>DateTime</code> and <code>DateTimeOffset</code>, and the offset model is the same throughout:</p>
+<p>Each form answers over both <code>DateTime</code> and <code>DateTimeOffset</code>. The <code>DateTime</code> overloads behave alike; the <code>DateTimeOffset</code> overloads differ by form in how they read their arguments and which offset the answer carries:</p>
 <ul>
 <li><strong><code>DateTime</code></strong> overloads preserve the argument's <code>Kind</code> (<code>Utc</code>, <code>Local</code>, or <code>Unspecified</code>) in the answer and never interpret it. For an anchored interval, instants are compared by tick value, so the caller is responsible for supplying commensurable arguments (do not mix a UTC anchor with a local <code>after</code>).</li>
-<li><strong><code>DateTimeOffset</code></strong> overloads expand on the argument's <strong>wall-clock time</strong> and reattach the argument's <strong>fixed offset</strong> to each answer. A rule anchored at <code>2026-01-05T09:00-05:00</code> produces occurrences at 09:00 <code>-05:00</code>; a cron query at <code>+10:00</code> answers at <code>+10:00</code>.</li>
+<li><strong><code>DateTimeOffset</code></strong> overloads work in a <strong>fixed offset</strong>, chosen per form:</li>
 </ul>
+<table>
+<thead>
+<tr>
+<th>Form</th>
+<th>How the query is read</th>
+<th>Offset of the answer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>RecurrenceRule</code></td>
+<td>Occurrences are expanded on the start's wall-clock time; <code>after</code>, <code>before</code> and the window bounds are compared with them as absolute instants.</td>
+<td>The start's.</td>
+</tr>
+<tr>
+<td><code>RecurrenceSet</code>, <code>CronExpression</code></td>
+<td>The set's start and dates, or the cron fields, are wall-clock values read in the query's offset.</td>
+<td>The query's (<code>after</code> or <code>before</code>).</td>
+</tr>
+<tr>
+<td><code>AnchoredInterval</code></td>
+<td>The anchor and the query are compared as absolute instants.</td>
+<td>The query's for <code>GetNextOccurrence</code> / <code>GetPreviousOccurrence</code>; the anchor's for <code>GetOccurrences</code>.</td>
+</tr>
+</tbody>
+</table>
+<p>A rule started at <code>2026-01-05T09:00-05:00</code> produces occurrences at 09:00 <code>-05:00</code> whatever offset the query carries; a cron query at <code>+10:00</code> answers at <code>+10:00</code>. The same instant queried in two offsets therefore gets the same absolute answer from a rule or an anchored interval, but a set or a cron expression answers at the same wall-clock time in each offset, which is a different instant.</p>
 <p>No form carries a time zone, so a daylight-saving transition is not modeled: a <code>-05:00</code> series stays at <code>-05:00</code> when the zone moves to <code>-04:00</code>. A host that wants a <em>local-time</em> schedule across transitions re-derives the offset from its <code>TimeZoneInfo</code> on each evaluation and passes that offset in; the library stays pure and the policy stays in the host. The <a href="../../guides/recurrence/index.html#offsets-purity-and-daylight-saving">guide</a> shows the pattern.</p>
 <h2 id="value-equality-and-canonical-text">Value equality and canonical text</h2>
 <p>Every form implements <code>IEquatable&lt;T&gt;</code> over its <strong>components</strong>, not its source text: two rules are equal when frequency, interval, bound, week start, and every <code>BY*</code> list match; two cron expressions when every field set matches; two intervals when the normalized <code>TimeSpan</code> matches; two sets when start, rules (in order), dates, and exception dates match. <code>ToString()</code> renders the canonical text - RFC 5545 part order for a rule, numeric lists for cron, normalized duration for an interval, a CRLF-separated <code>DTSTART</code> / <code>RRULE</code> / <code>RDATE</code> / <code>EXDATE</code> block for a set - and the canonical text re-parses to an equal value.</p>
@@ -272,7 +299,7 @@
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: ca28f88 · Built: 2026-10-13 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 8f76146 · Built: 2026-10-13 (UTC)</span>
         </div>
       </div>
     </footer>

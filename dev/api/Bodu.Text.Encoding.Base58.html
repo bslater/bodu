@@ -8,7 +8,7 @@
       <meta name="title" content="Base58 Class
  | BODU ">
       
-      <meta name="description" content="Provides Base58 encoding and decoding of binary data using the Bitcoin/Flickr or Ripple alphabets.">
+      <meta name="description" content="Provides Base58 encoding and decoding of binary data using the Bitcoin, Ripple, or Flickr alphabets.">
       <link rel="icon" href="../images/favicon.svg">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Text_Encoding_Base58" data-uid="Bodu.Text.Encoding.Base58" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 Base58 Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/ca28f887e1e30a5c0cb0ea46ec725fc37c3aef61/Bodu.Text.Encoding/src/Text.Encoding/Base58.BclAliases.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8f76146c8d427d9610be8857fc00f9d7b3c5a124/Bodu.Text.Encoding/src/Text.Encoding/Base58.BclAliases.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -104,10 +104,10 @@ Base58 Class
   <dl><dt>Assembly</dt><dd>Bodu.Text.Encoding.dll</dd></dl>
   <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Text.Encoding">Bodu.Text.Encoding</a> <span class="bodu-package-version">1.3.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/ca28f887e1e30a5c0cb0ea46ec725fc37c3aef61/Bodu.Text.Encoding/src/Text.Encoding/Base58.BclAliases.cs">Base58.BclAliases.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/8f76146c8d427d9610be8857fc00f9d7b3c5a124/Bodu.Text.Encoding/src/Text.Encoding/Base58.BclAliases.cs">Base58.BclAliases.cs</a></dd></dl>
   </div>
 
-  <div class="markdown summary"><p>Provides Base58 encoding and decoding of binary data using the Bitcoin/Flickr or Ripple alphabets.</p>
+  <div class="markdown summary"><p>Provides Base58 encoding and decoding of binary data using the Bitcoin, Ripple, or Flickr alphabets.</p>
 </div>
 
   <div class="codewrapper">
@@ -160,7 +160,7 @@ Base58 Class
 
 
   <h2 id="Bodu_Text_Encoding_Base58_examples">Examples</h2>
-  <pre><code class="lang-csharp">// Bitcoin/Flickr Base58 (default) - leading zero bytes encode as leading '1' characters.
+  <pre><code class="lang-csharp">// Bitcoin Base58 (default) - leading zero bytes encode as leading '1' characters.
 byte[] data = { 0x00, 0xDE, 0xAD, 0xBE, 0xEF };
 string encoded = Base58.Encode(data);
 
@@ -178,8 +178,8 @@ Because the radix is not a power of two, encoding is performed using big-integer
 bit-stream technique used by Base16, Base32, and Base64.
 </p>
 <p>
-Leading zero bytes in the input are encoded as leading alphabet[0] characters (typically <code>1</code> in the
-Bitcoin/Flickr alphabet) so that the byte-level and character-level forms preserve a meaningful prefix.
+Leading zero bytes in the input are encoded as leading alphabet[0] characters (<code>1</code> in the Bitcoin and Flickr
+alphabets, <code>r</code> in Ripple's) so that the byte-level and character-level forms preserve a meaningful prefix.
 </p>
 <p>
 Base58 has no padding character and no standard decorations. The <a class="xref" href="Bodu.Text.Encoding.BaseFormattingOptions.html#Bodu_Text_Encoding_BaseFormattingOptions_UpperCase">UpperCase</a>,
@@ -200,7 +200,7 @@ flags are likewise ignored; only <a class="xref" href="Bodu.Text.Encoding.BaseFo
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Encoding_Base58_Decode_System_Char___System_Int32_System_Int32_Bodu_Text_Encoding_Base58Variant_Bodu_Text_Encoding_BaseFormatStyles_" data-uid="Bodu.Text.Encoding.Base58.Decode(System.Char[],System.Int32,System.Int32,Bodu.Text.Encoding.Base58Variant,Bodu.Text.Encoding.BaseFormatStyles)">
   Decode(char[], int, int, Base58Variant, BaseFormatStyles)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/ca28f887e1e30a5c0cb0ea46ec725fc37c3aef61/Bodu.Text.Encoding/src/Text.Encoding/Base58.Decode.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8f76146c8d427d9610be8857fc00f9d7b3c5a124/Bodu.Text.Encoding/src/Text.Encoding/Base58.Decode.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -259,7 +259,7 @@ range.</p>
 available range of <code class="paramref">chars</code>.</p>
 </dd>
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.formatexception">FormatException</a></dt>
-    <dd><p>Thrown when the input is not valid Base58.</p>
+    <dd><p>Thrown when the input is not valid Base58, or is longer than 65536 characters.</p>
 </dd>
   </dl>
 
@@ -272,7 +272,7 @@ available range of <code class="paramref">chars</code>.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Encoding_Base58_Decode_System_ReadOnlySpan_System_Char__Bodu_Text_Encoding_Base58Variant_Bodu_Text_Encoding_BaseFormatStyles_" data-uid="Bodu.Text.Encoding.Base58.Decode(System.ReadOnlySpan{System.Char},Bodu.Text.Encoding.Base58Variant,Bodu.Text.Encoding.BaseFormatStyles)">
   Decode(ReadOnlySpan&lt;char&gt;, Base58Variant, BaseFormatStyles)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/ca28f887e1e30a5c0cb0ea46ec725fc37c3aef61/Bodu.Text.Encoding/src/Text.Encoding/Base58.Decode.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8f76146c8d427d9610be8857fc00f9d7b3c5a124/Bodu.Text.Encoding/src/Text.Encoding/Base58.Decode.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -317,7 +317,7 @@ available range of <code class="paramref">chars</code>.</p>
     <dd><p>Thrown when <code class="paramref">variant</code> is undefined.</p>
 </dd>
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.formatexception">FormatException</a></dt>
-    <dd><p>Thrown when the input is not valid Base58.</p>
+    <dd><p>Thrown when the input is not valid Base58, or is longer than 65536 characters.</p>
 </dd>
   </dl>
 
@@ -330,7 +330,7 @@ available range of <code class="paramref">chars</code>.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Encoding_Base58_Decode_System_String_Bodu_Text_Encoding_Base58Variant_Bodu_Text_Encoding_BaseFormatStyles_" data-uid="Bodu.Text.Encoding.Base58.Decode(System.String,Bodu.Text.Encoding.Base58Variant,Bodu.Text.Encoding.BaseFormatStyles)">
   Decode(string, Base58Variant, BaseFormatStyles)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/ca28f887e1e30a5c0cb0ea46ec725fc37c3aef61/Bodu.Text.Encoding/src/Text.Encoding/Base58.Decode.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8f76146c8d427d9610be8857fc00f9d7b3c5a124/Bodu.Text.Encoding/src/Text.Encoding/Base58.Decode.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -378,7 +378,8 @@ available range of <code class="paramref">chars</code>.</p>
     <dd><p>Thrown when <code class="paramref">variant</code> is undefined.</p>
 </dd>
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.formatexception">FormatException</a></dt>
-    <dd><p>Thrown when the input contains characters outside the variant alphabet.</p>
+    <dd><p>Thrown when the input contains characters outside the variant alphabet, or is longer than 65536 characters (a
+bound on the decoder's quadratic cost).</p>
 </dd>
   </dl>
 
@@ -391,7 +392,7 @@ available range of <code class="paramref">chars</code>.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Encoding_Base58_DecodeFromUtf8_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Int32__System_Int32__Bodu_Text_Encoding_Base58Variant_Bodu_Text_Encoding_BaseFormatStyles_" data-uid="Bodu.Text.Encoding.Base58.DecodeFromUtf8(System.ReadOnlySpan{System.Byte},System.Span{System.Byte},System.Int32@,System.Int32@,Bodu.Text.Encoding.Base58Variant,Bodu.Text.Encoding.BaseFormatStyles)">
   DecodeFromUtf8(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, out int, out int, Base58Variant, BaseFormatStyles)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/ca28f887e1e30a5c0cb0ea46ec725fc37c3aef61/Bodu.Text.Encoding/src/Text.Encoding/Base58.Utf8.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8f76146c8d427d9610be8857fc00f9d7b3c5a124/Bodu.Text.Encoding/src/Text.Encoding/Base58.Utf8.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -453,7 +454,7 @@ available range of <code class="paramref">chars</code>.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Encoding_Base58_DecodeGuid_System_ReadOnlySpan_System_Char__Bodu_Text_Encoding_Base58Variant_Bodu_Text_Encoding_BaseFormatStyles_" data-uid="Bodu.Text.Encoding.Base58.DecodeGuid(System.ReadOnlySpan{System.Char},Bodu.Text.Encoding.Base58Variant,Bodu.Text.Encoding.BaseFormatStyles)">
   DecodeGuid(ReadOnlySpan&lt;char&gt;, Base58Variant, BaseFormatStyles)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/ca28f887e1e30a5c0cb0ea46ec725fc37c3aef61/Bodu.Text.Encoding/src/Text.Encoding/Base58.Guid.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8f76146c8d427d9610be8857fc00f9d7b3c5a124/Bodu.Text.Encoding/src/Text.Encoding/Base58.Guid.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -508,7 +509,7 @@ available range of <code class="paramref">chars</code>.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Encoding_Base58_Encode_System_Byte___Bodu_Text_Encoding_Base58Variant_" data-uid="Bodu.Text.Encoding.Base58.Encode(System.Byte[],Bodu.Text.Encoding.Base58Variant)">
   Encode(byte[], Base58Variant)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/ca28f887e1e30a5c0cb0ea46ec725fc37c3aef61/Bodu.Text.Encoding/src/Text.Encoding/Base58.Encode.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8f76146c8d427d9610be8857fc00f9d7b3c5a124/Bodu.Text.Encoding/src/Text.Encoding/Base58.Encode.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -563,7 +564,7 @@ available range of <code class="paramref">chars</code>.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Encoding_Base58_Encode_System_Byte___System_Int32_System_Int32_Bodu_Text_Encoding_Base58Variant_" data-uid="Bodu.Text.Encoding.Base58.Encode(System.Byte[],System.Int32,System.Int32,Bodu.Text.Encoding.Base58Variant)">
   Encode(byte[], int, int, Base58Variant)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/ca28f887e1e30a5c0cb0ea46ec725fc37c3aef61/Bodu.Text.Encoding/src/Text.Encoding/Base58.Encode.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8f76146c8d427d9610be8857fc00f9d7b3c5a124/Bodu.Text.Encoding/src/Text.Encoding/Base58.Encode.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -629,7 +630,7 @@ available range of <code class="paramref">bytes</code>.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Encoding_Base58_Encode_System_Guid_Bodu_Text_Encoding_Base58Variant_" data-uid="Bodu.Text.Encoding.Base58.Encode(System.Guid,Bodu.Text.Encoding.Base58Variant)">
   Encode(Guid, Base58Variant)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/ca28f887e1e30a5c0cb0ea46ec725fc37c3aef61/Bodu.Text.Encoding/src/Text.Encoding/Base58.Guid.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8f76146c8d427d9610be8857fc00f9d7b3c5a124/Bodu.Text.Encoding/src/Text.Encoding/Base58.Guid.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -676,7 +677,7 @@ available range of <code class="paramref">bytes</code>.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Encoding_Base58_Encode_System_ReadOnlySpan_System_Byte__Bodu_Text_Encoding_Base58Variant_" data-uid="Bodu.Text.Encoding.Base58.Encode(System.ReadOnlySpan{System.Byte},Bodu.Text.Encoding.Base58Variant)">
   Encode(ReadOnlySpan&lt;byte&gt;, Base58Variant)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/ca28f887e1e30a5c0cb0ea46ec725fc37c3aef61/Bodu.Text.Encoding/src/Text.Encoding/Base58.Encode.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8f76146c8d427d9610be8857fc00f9d7b3c5a124/Bodu.Text.Encoding/src/Text.Encoding/Base58.Encode.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -728,7 +729,7 @@ available range of <code class="paramref">bytes</code>.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Encoding_Base58_Encode_System_ReadOnlySpan_System_Byte__System_Buffers_IBufferWriter_System_Char__Bodu_Text_Encoding_Base58Variant_" data-uid="Bodu.Text.Encoding.Base58.Encode(System.ReadOnlySpan{System.Byte},System.Buffers.IBufferWriter{System.Char},Bodu.Text.Encoding.Base58Variant)">
   Encode(ReadOnlySpan&lt;byte&gt;, IBufferWriter&lt;char&gt;, Base58Variant)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/ca28f887e1e30a5c0cb0ea46ec725fc37c3aef61/Bodu.Text.Encoding/src/Text.Encoding/Base58.BufferWriter.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8f76146c8d427d9610be8857fc00f9d7b3c5a124/Bodu.Text.Encoding/src/Text.Encoding/Base58.BufferWriter.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -787,7 +788,7 @@ pipelines and other <a class="xref" href="https://learn.microsoft.com/dotnet/api
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Encoding_Base58_Encode_System_ReadOnlySpan_System_Byte__System_Span_System_Char__Bodu_Text_Encoding_Base58Variant_" data-uid="Bodu.Text.Encoding.Base58.Encode(System.ReadOnlySpan{System.Byte},System.Span{System.Char},Bodu.Text.Encoding.Base58Variant)">
   Encode(ReadOnlySpan&lt;byte&gt;, Span&lt;char&gt;, Base58Variant)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/ca28f887e1e30a5c0cb0ea46ec725fc37c3aef61/Bodu.Text.Encoding/src/Text.Encoding/Base58.Encode.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8f76146c8d427d9610be8857fc00f9d7b3c5a124/Bodu.Text.Encoding/src/Text.Encoding/Base58.Encode.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -846,7 +847,7 @@ sizing.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Encoding_Base58_EncodeToUtf8_System_ReadOnlySpan_System_Byte__Bodu_Text_Encoding_Base58Variant_" data-uid="Bodu.Text.Encoding.Base58.EncodeToUtf8(System.ReadOnlySpan{System.Byte},Bodu.Text.Encoding.Base58Variant)">
   EncodeToUtf8(ReadOnlySpan&lt;byte&gt;, Base58Variant)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/ca28f887e1e30a5c0cb0ea46ec725fc37c3aef61/Bodu.Text.Encoding/src/Text.Encoding/Base58.Utf8.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8f76146c8d427d9610be8857fc00f9d7b3c5a124/Bodu.Text.Encoding/src/Text.Encoding/Base58.Utf8.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -898,7 +899,7 @@ sizing.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Encoding_Base58_EncodeToUtf8_System_ReadOnlySpan_System_Byte__System_Buffers_IBufferWriter_System_Byte__Bodu_Text_Encoding_Base58Variant_" data-uid="Bodu.Text.Encoding.Base58.EncodeToUtf8(System.ReadOnlySpan{System.Byte},System.Buffers.IBufferWriter{System.Byte},Bodu.Text.Encoding.Base58Variant)">
   EncodeToUtf8(ReadOnlySpan&lt;byte&gt;, IBufferWriter&lt;byte&gt;, Base58Variant)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/ca28f887e1e30a5c0cb0ea46ec725fc37c3aef61/Bodu.Text.Encoding/src/Text.Encoding/Base58.BufferWriter.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8f76146c8d427d9610be8857fc00f9d7b3c5a124/Bodu.Text.Encoding/src/Text.Encoding/Base58.BufferWriter.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -957,11 +958,11 @@ pipelines and other <a class="xref" href="https://learn.microsoft.com/dotnet/api
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Encoding_Base58_FromBase58String_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Text.Encoding.Base58.FromBase58String(System.ReadOnlySpan{System.Byte})">
   FromBase58String(ReadOnlySpan&lt;byte&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/ca28f887e1e30a5c0cb0ea46ec725fc37c3aef61/Bodu.Text.Encoding/src/Text.Encoding/Base58.BclAliases.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8f76146c8d427d9610be8857fc00f9d7b3c5a124/Bodu.Text.Encoding/src/Text.Encoding/Base58.BclAliases.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
-  <div class="markdown level1 summary"><p>Decodes UTF-8 Base58 bytes into a byte array using the Bitcoin/Flickr alphabet.</p>
+  <div class="markdown level1 summary"><p>Decodes UTF-8 Base58 bytes into a byte array using the Bitcoin alphabet.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -993,7 +994,7 @@ pipelines and other <a class="xref" href="https://learn.microsoft.com/dotnet/api
   <h4 class="section">Exceptions</h4>
   <dl class="parameters">
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.formatexception">FormatException</a></dt>
-    <dd><p>Thrown when the input is not valid Bitcoin/Flickr Base58.</p>
+    <dd><p>Thrown when the input is not valid Bitcoin Base58.</p>
 </dd>
   </dl>
 
@@ -1006,12 +1007,11 @@ pipelines and other <a class="xref" href="https://learn.microsoft.com/dotnet/api
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Encoding_Base58_FromBase58String_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Int32__System_Int32__" data-uid="Bodu.Text.Encoding.Base58.FromBase58String(System.ReadOnlySpan{System.Byte},System.Span{System.Byte},System.Int32@,System.Int32@)">
   FromBase58String(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, out int, out int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/ca28f887e1e30a5c0cb0ea46ec725fc37c3aef61/Bodu.Text.Encoding/src/Text.Encoding/Base58.BclAliases.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8f76146c8d427d9610be8857fc00f9d7b3c5a124/Bodu.Text.Encoding/src/Text.Encoding/Base58.BclAliases.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
-  <div class="markdown level1 summary"><p>Strict Bitcoin/Flickr Base58 decode from a UTF-8 byte span using the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.buffers.operationstatus">OperationStatus</a> return
-convention.</p>
+  <div class="markdown level1 summary"><p>Strict Bitcoin Base58 decode from a UTF-8 byte span using the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.buffers.operationstatus">OperationStatus</a> return convention.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -1059,11 +1059,11 @@ convention.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Encoding_Base58_FromBase58String_System_ReadOnlySpan_System_Char__" data-uid="Bodu.Text.Encoding.Base58.FromBase58String(System.ReadOnlySpan{System.Char})">
   FromBase58String(ReadOnlySpan&lt;char&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/ca28f887e1e30a5c0cb0ea46ec725fc37c3aef61/Bodu.Text.Encoding/src/Text.Encoding/Base58.BclAliases.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8f76146c8d427d9610be8857fc00f9d7b3c5a124/Bodu.Text.Encoding/src/Text.Encoding/Base58.BclAliases.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
-  <div class="markdown level1 summary"><p>Decodes a Base58 character span using the Bitcoin/Flickr alphabet.</p>
+  <div class="markdown level1 summary"><p>Decodes a Base58 character span using the Bitcoin alphabet.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -1095,7 +1095,7 @@ convention.</p>
   <h4 class="section">Exceptions</h4>
   <dl class="parameters">
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.formatexception">FormatException</a></dt>
-    <dd><p>Thrown when the input is not valid Bitcoin/Flickr Base58.</p>
+    <dd><p>Thrown when the input is not valid Bitcoin Base58.</p>
 </dd>
   </dl>
 
@@ -1108,12 +1108,11 @@ convention.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Encoding_Base58_FromBase58String_System_ReadOnlySpan_System_Char__System_Span_System_Byte__System_Int32__System_Int32__" data-uid="Bodu.Text.Encoding.Base58.FromBase58String(System.ReadOnlySpan{System.Char},System.Span{System.Byte},System.Int32@,System.Int32@)">
   FromBase58String(ReadOnlySpan&lt;char&gt;, Span&lt;byte&gt;, out int, out int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/ca28f887e1e30a5c0cb0ea46ec725fc37c3aef61/Bodu.Text.Encoding/src/Text.Encoding/Base58.BclAliases.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8f76146c8d427d9610be8857fc00f9d7b3c5a124/Bodu.Text.Encoding/src/Text.Encoding/Base58.BclAliases.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
-  <div class="markdown level1 summary"><p>Strict Bitcoin/Flickr Base58 decode from a character span using the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.buffers.operationstatus">OperationStatus</a> return
-convention.</p>
+  <div class="markdown level1 summary"><p>Strict Bitcoin Base58 decode from a character span using the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.buffers.operationstatus">OperationStatus</a> return convention.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -1165,11 +1164,11 @@ always treats the input as complete and never returns <a class="xref" href="http
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Encoding_Base58_FromBase58String_System_String_" data-uid="Bodu.Text.Encoding.Base58.FromBase58String(System.String)">
   FromBase58String(string)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/ca28f887e1e30a5c0cb0ea46ec725fc37c3aef61/Bodu.Text.Encoding/src/Text.Encoding/Base58.BclAliases.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8f76146c8d427d9610be8857fc00f9d7b3c5a124/Bodu.Text.Encoding/src/Text.Encoding/Base58.BclAliases.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
-  <div class="markdown level1 summary"><p>Decodes <code class="paramref">s</code> as Bitcoin/Flickr Base58 into a byte array.</p>
+  <div class="markdown level1 summary"><p>Decodes <code class="paramref">s</code> as Bitcoin Base58 into a byte array.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -1204,7 +1203,7 @@ always treats the input as complete and never returns <a class="xref" href="http
     <dd><p>Thrown when <code class="paramref">s</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
 </dd>
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.formatexception">FormatException</a></dt>
-    <dd><p>Thrown when the input is not valid Bitcoin/Flickr Base58.</p>
+    <dd><p>Thrown when the input is not valid Bitcoin Base58.</p>
 </dd>
   </dl>
 
@@ -1217,7 +1216,7 @@ always treats the input as complete and never returns <a class="xref" href="http
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Encoding_Base58_GetMaxDecodedLength_System_Int32_" data-uid="Bodu.Text.Encoding.Base58.GetMaxDecodedLength(System.Int32)">
   GetMaxDecodedLength(int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/ca28f887e1e30a5c0cb0ea46ec725fc37c3aef61/Bodu.Text.Encoding/src/Text.Encoding/Base58.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8f76146c8d427d9610be8857fc00f9d7b3c5a124/Bodu.Text.Encoding/src/Text.Encoding/Base58.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1267,7 +1266,7 @@ produce.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Encoding_Base58_GetMaxEncodedLength_System_Int32_" data-uid="Bodu.Text.Encoding.Base58.GetMaxEncodedLength(System.Int32)">
   GetMaxEncodedLength(int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/ca28f887e1e30a5c0cb0ea46ec725fc37c3aef61/Bodu.Text.Encoding/src/Text.Encoding/Base58.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8f76146c8d427d9610be8857fc00f9d7b3c5a124/Bodu.Text.Encoding/src/Text.Encoding/Base58.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1321,7 +1320,7 @@ is the result of <a class="xref" href="Bodu.Text.Encoding.Base58.html#Bodu_Text_
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Encoding_Base58_IsBase58Digit_System_Char_Bodu_Text_Encoding_Base58Variant_" data-uid="Bodu.Text.Encoding.Base58.IsBase58Digit(System.Char,Bodu.Text.Encoding.Base58Variant)">
   IsBase58Digit(char, Base58Variant)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/ca28f887e1e30a5c0cb0ea46ec725fc37c3aef61/Bodu.Text.Encoding/src/Text.Encoding/Base58.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8f76146c8d427d9610be8857fc00f9d7b3c5a124/Bodu.Text.Encoding/src/Text.Encoding/Base58.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1373,7 +1372,7 @@ is the result of <a class="xref" href="Bodu.Text.Encoding.Base58.html#Bodu_Text_
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Encoding_Base58_IsValid_System_ReadOnlySpan_System_Char__Bodu_Text_Encoding_Base58Variant_Bodu_Text_Encoding_BaseFormatStyles_" data-uid="Bodu.Text.Encoding.Base58.IsValid(System.ReadOnlySpan{System.Char},Bodu.Text.Encoding.Base58Variant,Bodu.Text.Encoding.BaseFormatStyles)">
   IsValid(ReadOnlySpan&lt;char&gt;, Base58Variant, BaseFormatStyles)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/ca28f887e1e30a5c0cb0ea46ec725fc37c3aef61/Bodu.Text.Encoding/src/Text.Encoding/Base58.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8f76146c8d427d9610be8857fc00f9d7b3c5a124/Bodu.Text.Encoding/src/Text.Encoding/Base58.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1401,8 +1400,8 @@ is the result of <a class="xref" href="Bodu.Text.Encoding.Base58.html#Bodu_Text_
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
-    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when the input is no longer than <span class="xref">Bodu.Text.Encoding.Base58.MaxDecodeInputLength</span> and every retained
-character is in the variant alphabet; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when the input is no longer than 65536 characters and every retained character is in the
+variant alphabet; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
 </dd>
   </dl>
 
@@ -1429,11 +1428,11 @@ character is in the variant alphabet; otherwise <a href="https://learn.microsoft
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Encoding_Base58_ToBase58String_System_Byte___" data-uid="Bodu.Text.Encoding.Base58.ToBase58String(System.Byte[])">
   ToBase58String(byte[])
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/ca28f887e1e30a5c0cb0ea46ec725fc37c3aef61/Bodu.Text.Encoding/src/Text.Encoding/Base58.BclAliases.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8f76146c8d427d9610be8857fc00f9d7b3c5a124/Bodu.Text.Encoding/src/Text.Encoding/Base58.BclAliases.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
-  <div class="markdown level1 summary"><p>Encodes <code class="paramref">inArray</code> into a Base58 string using the Bitcoin/Flickr alphabet.</p>
+  <div class="markdown level1 summary"><p>Encodes <code class="paramref">inArray</code> into a Base58 string using the Bitcoin alphabet.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -1451,7 +1450,7 @@ character is in the variant alphabet; otherwise <a href="https://learn.microsoft
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
-    <dd><p>A Base58 (Bitcoin/Flickr) string.</p>
+    <dd><p>A Base58 (Bitcoin) string.</p>
 </dd>
   </dl>
 
@@ -1478,11 +1477,11 @@ character is in the variant alphabet; otherwise <a href="https://learn.microsoft
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Encoding_Base58_ToBase58String_System_Byte___System_Int32_System_Int32_" data-uid="Bodu.Text.Encoding.Base58.ToBase58String(System.Byte[],System.Int32,System.Int32)">
   ToBase58String(byte[], int, int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/ca28f887e1e30a5c0cb0ea46ec725fc37c3aef61/Bodu.Text.Encoding/src/Text.Encoding/Base58.BclAliases.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8f76146c8d427d9610be8857fc00f9d7b3c5a124/Bodu.Text.Encoding/src/Text.Encoding/Base58.BclAliases.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
-  <div class="markdown level1 summary"><p>Encodes a portion of <code class="paramref">inArray</code> into a Base58 string using the Bitcoin/Flickr alphabet.</p>
+  <div class="markdown level1 summary"><p>Encodes a portion of <code class="paramref">inArray</code> into a Base58 string using the Bitcoin alphabet.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -1540,11 +1539,11 @@ available range of <code class="paramref">inArray</code>.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Encoding_Base58_ToBase58String_System_ReadOnlySpan_System_Byte__" data-uid="Bodu.Text.Encoding.Base58.ToBase58String(System.ReadOnlySpan{System.Byte})">
   ToBase58String(ReadOnlySpan&lt;byte&gt;)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/ca28f887e1e30a5c0cb0ea46ec725fc37c3aef61/Bodu.Text.Encoding/src/Text.Encoding/Base58.BclAliases.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8f76146c8d427d9610be8857fc00f9d7b3c5a124/Bodu.Text.Encoding/src/Text.Encoding/Base58.BclAliases.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
-  <div class="markdown level1 summary"><p>Encodes <code class="paramref">bytes</code> into a Base58 string using the Bitcoin/Flickr alphabet.</p>
+  <div class="markdown level1 summary"><p>Encodes <code class="paramref">bytes</code> into a Base58 string using the Bitcoin alphabet.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -1583,7 +1582,7 @@ available range of <code class="paramref">inArray</code>.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Encoding_Base58_TryDecode_System_ReadOnlySpan_System_Char__System_Span_System_Byte__System_Int32__Bodu_Text_Encoding_Base58Variant_Bodu_Text_Encoding_BaseFormatStyles_" data-uid="Bodu.Text.Encoding.Base58.TryDecode(System.ReadOnlySpan{System.Char},System.Span{System.Byte},System.Int32@,Bodu.Text.Encoding.Base58Variant,Bodu.Text.Encoding.BaseFormatStyles)">
   TryDecode(ReadOnlySpan&lt;char&gt;, Span&lt;byte&gt;, out int, Base58Variant, BaseFormatStyles)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/ca28f887e1e30a5c0cb0ea46ec725fc37c3aef61/Bodu.Text.Encoding/src/Text.Encoding/Base58.Decode.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8f76146c8d427d9610be8857fc00f9d7b3c5a124/Bodu.Text.Encoding/src/Text.Encoding/Base58.Decode.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1617,8 +1616,8 @@ available range of <code class="paramref">inArray</code>.</p>
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
-    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> on success; <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> when the input is malformed or the destination is
-too small.</p>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> on success; <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> when the input is malformed or longer than 65536
+characters, or the destination is too small.</p>
 </dd>
   </dl>
 
@@ -1645,7 +1644,7 @@ too small.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Encoding_Base58_TryDecodeGuid_System_ReadOnlySpan_System_Char__System_Guid__Bodu_Text_Encoding_Base58Variant_Bodu_Text_Encoding_BaseFormatStyles_" data-uid="Bodu.Text.Encoding.Base58.TryDecodeGuid(System.ReadOnlySpan{System.Char},System.Guid@,Bodu.Text.Encoding.Base58Variant,Bodu.Text.Encoding.BaseFormatStyles)">
   TryDecodeGuid(ReadOnlySpan&lt;char&gt;, out Guid, Base58Variant, BaseFormatStyles)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/ca28f887e1e30a5c0cb0ea46ec725fc37c3aef61/Bodu.Text.Encoding/src/Text.Encoding/Base58.Guid.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8f76146c8d427d9610be8857fc00f9d7b3c5a124/Bodu.Text.Encoding/src/Text.Encoding/Base58.Guid.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1697,7 +1696,7 @@ too small.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Encoding_Base58_TryEncode_System_ReadOnlySpan_System_Byte__System_Span_System_Char__System_Int32__Bodu_Text_Encoding_Base58Variant_" data-uid="Bodu.Text.Encoding.Base58.TryEncode(System.ReadOnlySpan{System.Byte},System.Span{System.Char},System.Int32@,Bodu.Text.Encoding.Base58Variant)">
   TryEncode(ReadOnlySpan&lt;byte&gt;, Span&lt;char&gt;, out int, Base58Variant)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/ca28f887e1e30a5c0cb0ea46ec725fc37c3aef61/Bodu.Text.Encoding/src/Text.Encoding/Base58.Encode.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8f76146c8d427d9610be8857fc00f9d7b3c5a124/Bodu.Text.Encoding/src/Text.Encoding/Base58.Encode.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1755,7 +1754,7 @@ too small.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Encoding_Base58_TryEncodeToUtf8_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Int32__Bodu_Text_Encoding_Base58Variant_" data-uid="Bodu.Text.Encoding.Base58.TryEncodeToUtf8(System.ReadOnlySpan{System.Byte},System.Span{System.Byte},System.Int32@,Bodu.Text.Encoding.Base58Variant)">
   TryEncodeToUtf8(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, out int, Base58Variant)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/ca28f887e1e30a5c0cb0ea46ec725fc37c3aef61/Bodu.Text.Encoding/src/Text.Encoding/Base58.Utf8.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8f76146c8d427d9610be8857fc00f9d7b3c5a124/Bodu.Text.Encoding/src/Text.Encoding/Base58.Utf8.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1813,11 +1812,11 @@ too small.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Encoding_Base58_TryToBase58String_System_ReadOnlySpan_System_Byte__System_Span_System_Byte__System_Int32__" data-uid="Bodu.Text.Encoding.Base58.TryToBase58String(System.ReadOnlySpan{System.Byte},System.Span{System.Byte},System.Int32@)">
   TryToBase58String(ReadOnlySpan&lt;byte&gt;, Span&lt;byte&gt;, out int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/ca28f887e1e30a5c0cb0ea46ec725fc37c3aef61/Bodu.Text.Encoding/src/Text.Encoding/Base58.BclAliases.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8f76146c8d427d9610be8857fc00f9d7b3c5a124/Bodu.Text.Encoding/src/Text.Encoding/Base58.BclAliases.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
-  <div class="markdown level1 summary"><p>Attempts to encode <code class="paramref">source</code> as a Bitcoin/Flickr Base58 UTF-8 byte span.</p>
+  <div class="markdown level1 summary"><p>Attempts to encode <code class="paramref">source</code> as a Bitcoin Base58 UTF-8 byte span.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -1862,11 +1861,11 @@ too small.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Encoding_Base58_TryToBase58String_System_ReadOnlySpan_System_Byte__System_Span_System_Char__System_Int32__" data-uid="Bodu.Text.Encoding.Base58.TryToBase58String(System.ReadOnlySpan{System.Byte},System.Span{System.Char},System.Int32@)">
   TryToBase58String(ReadOnlySpan&lt;byte&gt;, Span&lt;char&gt;, out int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/ca28f887e1e30a5c0cb0ea46ec725fc37c3aef61/Bodu.Text.Encoding/src/Text.Encoding/Base58.BclAliases.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/8f76146c8d427d9610be8857fc00f9d7b3c5a124/Bodu.Text.Encoding/src/Text.Encoding/Base58.BclAliases.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
-  <div class="markdown level1 summary"><p>Attempts to encode <code class="paramref">source</code> as a Bitcoin/Flickr Base58 character span.</p>
+  <div class="markdown level1 summary"><p>Attempts to encode <code class="paramref">source</code> as a Bitcoin Base58 character span.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -1933,7 +1932,7 @@ too small.</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: ca28f88 · Built: 2026-10-13 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 8f76146 · Built: 2026-10-13 (UTC)</span>
         </div>
       </div>
     </footer>

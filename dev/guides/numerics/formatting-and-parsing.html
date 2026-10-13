@@ -130,9 +130,9 @@ Fraction&lt;int&gt;.Create(-7, 4).ToString();   // &quot;-7/4&quot;  - sign ride
 Fraction&lt;int&gt;.Create(6, 2).ToString();    // &quot;3&quot;     - canonical denominator is one
 Fraction&lt;int&gt;.Zero.ToString();            // &quot;0&quot;
 </code></pre>
-<p>The general form is the round-trip wire shape: <code>JsonSerializer.Serialize</code> (see below) and <code>&lt;xref:Bodu.Numerics.Fraction</code>1&gt;.Parse<code>both treat</code>&quot;n/d&quot;` as the lossless text form.</p>
+<p>The general form is the lossless text form: <code>Fraction&lt;T&gt;.Parse</code> (<a class="xref" href="../../api/Bodu.Numerics.Fraction-1.html">Fraction&lt;T&gt;</a>) and the <code>Compact</code> JSON policy (see below) treat <code>&quot;n/d&quot;</code> as the round-trip shape.</p>
 <h2 id="mixed-number-form">Mixed-number form</h2>
-<p><code>ToString(&quot;M&quot;)</code> separates the whole part from the proper remainder with a single space. The whole part carries the sign; the fractional part is always written with a non-negative numerator. Whole-number and proper-fraction values short-circuit to their bare forms:</p>
+<p><code>ToString(&quot;M&quot;)</code> separates the whole part from the proper remainder with a single space. The whole part carries the sign, and the fractional part is written with a non-negative numerator when a whole part is present; a negative proper fraction has no whole part and is written <code>-3/4</code>. Whole-number and proper-fraction values short-circuit to their bare forms:</p>
 <!-- compile -->
 <pre><code class="lang-csharp">Fraction&lt;int&gt;.Create(7, 4).ToString(&quot;M&quot;);    // &quot;1 3/4&quot;
 Fraction&lt;int&gt;.Create(-7, 4).ToString(&quot;M&quot;);   // &quot;-1 3/4&quot;  - sign on the whole part
@@ -230,7 +230,7 @@ Fraction&lt;int&gt;.Create(7, 3).ToString(&quot;P&quot;);    // &quot;700/3%&quo
 Fraction&lt;int&gt;.Create(1, 3).ToString(&quot;P&quot;);    // &quot;100/3%&quot;
 Fraction&lt;int&gt;.Zero.ToString(&quot;P&quot;);            // &quot;0%&quot;
 </code></pre>
-<p>The convenience method <a class="xref" href="../../api/Bodu.Numerics.Fraction-1.html">Fraction&lt;T&gt;</a>.<code>ToPercentString(provider)</code> is an alias for <code>ToString(&quot;P&quot;, provider)</code>. The parser accepts the same form on input - a trailing <code>%</code> divides the parsed denominator by 100 - so <code>&quot;75%&quot;</code> round-trips to <code>3/4</code> and <code>&quot;100/3%&quot;</code> to <code>1/3</code>.</p>
+<p>The convenience method <a class="xref" href="../../api/Bodu.Numerics.Fraction-1.html">Fraction&lt;T&gt;</a>.<code>ToPercentString(provider)</code> is an alias for <code>ToString(&quot;P&quot;, provider)</code>. The parser accepts the same form on input - a trailing <code>%</code> divides the value by 100 (it multiplies the parsed denominator by 100) - so <code>&quot;75%&quot;</code> round-trips to <code>3/4</code> and <code>&quot;100/3%&quot;</code> to <code>1/3</code>.</p>
 <h2 id="parsing">Parsing</h2>
 <p><code>Fraction&lt;T&gt;.Parse</code> and <code>TryParse</code> accept every output form the type produces, plus a few additional ergonomic shapes. The grammar, in order of recognition:</p>
 <table>
@@ -274,7 +274,7 @@ Fraction&lt;int&gt;.Zero.ToString(&quot;P&quot;);            // &quot;0%&quot;
 </tr>
 </tbody>
 </table>
-<p>Parsing is lenient about whitespace - leading and trailing whitespace is trimmed, and the whole / fractional parts of a mixed number are trimmed individually. A <code>+</code> or <code>-</code> sign at the start applies to the entire result; for mixed numbers the sign therefore rides on the whole + fraction sum, not the whole part alone. The trailing <code>%</code> divides the parsed denominator by 100 in lowest terms.</p>
+<p>Parsing is lenient about whitespace - leading and trailing whitespace is trimmed, and the whole / fractional parts of a mixed number are trimmed individually. A <code>+</code> or <code>-</code> sign at the start applies to the entire result; for mixed numbers the sign therefore rides on the whole + fraction sum, not the whole part alone. The trailing <code>%</code> divides the value by 100: the parsed denominator is multiplied by 100 and the result reduced to lowest terms.</p>
 <!-- compile -->
 <pre><code class="lang-csharp">Fraction&lt;int&gt;.Parse(&quot;3/4&quot;);          // 3/4
 Fraction&lt;int&gt;.Parse(&quot;  2 1/3  &quot;);    // 7/3       - whitespace trimmed
@@ -287,7 +287,7 @@ Fraction&lt;int&gt;.TryParse(&quot;nope&quot;, out var _);   // false
 <p>The numeric components are read with <code>NumberStyles.None</code>, so scientific notation and group separators are rejected; the parser is intentionally strict about the shape so the wire format remains unambiguous. A <code>0</code> denominator is rejected (<code>TryParse</code> returns <code>false</code>; <code>Parse</code> throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.formatexception">FormatException</a>), as is any input whose canonical form does not fit in the backing type <code>T</code> - overflow is reported through <code>false</code> from <code>TryParse</code> and through <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.formatexception">FormatException</a> from <code>Parse</code>.</p>
 <p><code>Fraction&lt;T&gt;</code> implements <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.iparsable-1">IParsable&lt;TSelf&gt;</a> and <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.ispanparsable-1">ISpanParsable&lt;TSelf&gt;</a>, so the same call sites work for <code>string</code> and <code>ReadOnlySpan&lt;char&gt;</code> inputs.</p>
 <h2 id="culture-handling">Culture handling</h2>
-<p><code>Fraction&lt;T&gt;</code> text is digit-slash-digit by construction, so most cultures behave identically - there is no decimal separator, group separator, or percent sign placement to vary. The <code>IFormatProvider</code> argument is forwarded to <code>BigInteger.ToString(provider)</code> and <code>BigInteger.TryParse(text, NumberStyles.None, provider, ...)</code> for the numeric components, so culture-specific digit shapes are respected (e.g. Arabic-Indic digits when the culture's <code>NumberFormatInfo</code> calls for them), but the structural characters - <code>/</code>, the mixed-number space, glyph codepoints, and the trailing <code>%</code> - are invariant.</p>
+<p><code>Fraction&lt;T&gt;</code> text is digit-slash-digit by construction, so most cultures behave identically - there is no decimal separator, group separator, or percent sign placement to vary. The <code>IFormatProvider</code> argument is forwarded to <code>BigInteger.ToString(provider)</code> and <code>BigInteger.TryParse(text, NumberStyles.None, provider, ...)</code> for the numeric components, but .NET writes and reads those digits as ASCII <code>0</code>-<code>9</code> in every culture (a culture's native digits are informational only), so Arabic-Indic or other native digits are neither emitted nor accepted; formatting does take the negative sign of a negative value from the provider. The structural characters - <code>/</code>, the mixed-number space, glyph codepoints, and the trailing <code>%</code> - are invariant.</p>
 <p>The JSON converter passes <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.globalization.cultureinfo">CultureInfo</a>.<code>InvariantCulture</code> to both <code>ToString</code> and <code>Parse</code> so the wire form remains stable regardless of the ambient culture. For application-level formatting where you want the structural form to be the same on every machine, prefer passing <code>CultureInfo.InvariantCulture</code> explicitly:</p>
 <pre><code class="lang-csharp">var text = value.ToString(&quot;M&quot;, CultureInfo.InvariantCulture);
 var back = Fraction&lt;int&gt;.Parse(text, CultureInfo.InvariantCulture);
@@ -349,7 +349,7 @@ Fraction&lt;int&gt; roundTrip = JsonSerializer.Deserialize&lt;Fraction&lt;int&gt
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: ca28f88 · Built: 2026-10-13 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 8f76146 · Built: 2026-10-13 (UTC)</span>
         </div>
       </div>
     </footer>
