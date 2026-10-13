@@ -90,6 +90,49 @@ public partial class RecurrenceRuleTests
     }
 
     /// <summary>
+    /// Verifies that <see cref="RecurrenceRule.Parse(string)" /> throws <see cref="FormatException" /> whose message is
+    /// the defect message the defect-reporting <c>TryParse</c> overload reports for the same text.
+    /// </summary>
+    /// <param name="kat">The malformed rule row under test.</param>
+    [TestMethod]
+    [DynamicData(
+        nameof(TryParseDefectKats),
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
+    public void Parse_WhenInvalid_ShouldThrowFormatExceptionNamingTheDefect(InvalidKat<string> kat)
+    {
+        _ = RecurrenceRule.TryParse(kat.Input, out _, out string? failureMessage);
+
+        var ex = Assert.ThrowsExactly<FormatException>(() =>
+        {
+            _ = RecurrenceRule.Parse(kat.Input);
+        });
+
+        Assert.AreEqual(failureMessage, ex.Message);
+        Assert.IsTrue(
+            ex.Message.Contains(kat.MessageContains!, StringComparison.Ordinal),
+            $"Expected message to contain '{kat.MessageContains}' but was '{ex.Message}'.");
+    }
+
+    /// <summary>
+    /// Verifies that the character-span <see cref="RecurrenceRule.Parse(ReadOnlySpan{char}, IFormatProvider?)" />
+    /// overload throws <see cref="FormatException" /> whose message is the defect message <c>TryParse</c> reports.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenInvalidSpan_ShouldThrowFormatExceptionNamingTheDefect()
+    {
+        const string text = "FREQ=DAILY;BYHOUR=24";
+        _ = RecurrenceRule.TryParse(text, out _, out string? failureMessage);
+
+        var ex = Assert.ThrowsExactly<FormatException>(() =>
+        {
+            _ = RecurrenceRule.Parse(text.AsSpan(), null);
+        });
+
+        Assert.AreEqual(failureMessage, ex.Message);
+    }
+
+    /// <summary>
     /// Verifies that a signed part or weekday ordinal at the minimum integer throws <see cref="FormatException" /> like
     /// any other out-of-range value, rather than overflowing the range check.
     /// </summary>
