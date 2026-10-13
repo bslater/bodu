@@ -162,6 +162,24 @@ public sealed partial class RateCachingExtensionsTests
     }
 
     /// <summary>
+    /// Verifies that the <see cref="OptionsValidationException" /> raised for invalid options carries the
+    /// package's resource-backed validation message.
+    /// </summary>
+    [TestMethod]
+    public void AddCachedRateProvider_WhenOptionsInvalid_ShouldThrowWithResourceMessage()
+    {
+        ServiceProvider provider = BuildProvider(builder =>
+            builder.AddCachedRateProvider<StubRbaProvider>("RBA", configure: o => o.DefaultExpiry = TimeSpan.Zero));
+
+        OptionsValidationException ex = Assert.ThrowsExactly<OptionsValidationException>(() =>
+        {
+            _ = provider.GetRequiredService<IDatedRateProvider>();
+        });
+
+        Assert.AreEqual(CachingResourceStrings.ResourceManager.GetString("Op_Invalid_CachingOptions"), ex.Message);
+    }
+
+    /// <summary>
     /// Verifies that valid cache options pass <c>ValidateOnStart</c> and resolve the cached provider.
     /// </summary>
     [TestMethod]

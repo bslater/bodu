@@ -278,6 +278,23 @@ public sealed class SqliteRateCacheExtensionsTests
     }
 
     /// <summary>
+    /// Verifies that the <see cref="OptionsValidationException" /> raised for invalid options carries the
+    /// package's resource-backed validation message.
+    /// </summary>
+    [TestMethod]
+    public void AddSqliteRateCache_WhenOptionsInvalid_ShouldThrowWithResourceMessage()
+    {
+        ServiceProvider provider = BuildProvider(builder => builder.AddSqliteRateCache("RBA"));
+
+        OptionsValidationException ex = Assert.ThrowsExactly<OptionsValidationException>(() =>
+        {
+            _ = provider.GetRequiredService<IRateCache>();
+        });
+
+        Assert.AreEqual(CachingSqliteResourceStrings.ResourceManager.GetString("Op_Invalid_SqliteCacheOptions"), ex.Message);
+    }
+
+    /// <summary>
     /// Verifies that valid options pass <c>ValidateOnStart</c> and resolve the cache.
     /// </summary>
     [TestMethod]

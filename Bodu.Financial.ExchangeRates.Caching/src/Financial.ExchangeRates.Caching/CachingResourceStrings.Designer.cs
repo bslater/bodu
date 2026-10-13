@@ -266,5 +266,23 @@ namespace Bodu.Financial.ExchangeRates.Caching {
                 return ResourceManager.GetString("Op_Invalid_PartitionedNoSingleFile", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Caching exchange-rate options are invalid..
+        /// </summary>
+        internal static string Op_Invalid_CachingOptions {
+            get {
+                return ResourceManager.GetString("Op_Invalid_CachingOptions", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Rate cache warm-up options are invalid..
+        /// </summary>
+        internal static string Op_Invalid_WarmupOptions {
+            get {
+                return ResourceManager.GetString("Op_Invalid_WarmupOptions", resourceCulture);
+            }
+        }
     }
 }

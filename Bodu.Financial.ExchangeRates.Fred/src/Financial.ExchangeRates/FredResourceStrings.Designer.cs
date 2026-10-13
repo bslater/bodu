@@ -104,5 +104,14 @@ namespace Bodu.Financial.ExchangeRates {
                 return ResourceManager.GetString("IO_KeyNotFound_FredRate", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to FRED exchange-rate options are invalid..
+        /// </summary>
+        internal static string Op_Invalid_FredOptions {
+            get {
+                return ResourceManager.GetString("Op_Invalid_FredOptions", resourceCulture);
+            }
+        }
     }
 }

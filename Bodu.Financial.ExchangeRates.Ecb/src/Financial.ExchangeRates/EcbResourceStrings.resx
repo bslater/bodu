@@ -100,4 +100,7 @@
   <data name="Arg_Invalid_EcbOptionsLogLevel" xml:space="preserve">
     <value>The ECB options must specify a defined log level for every logging concern.</value>
   </data>
+  <data name="Op_Invalid_EcbOptions" xml:space="preserve">
+    <value>ECB exchange-rate options are invalid.</value>
+  </data>
 </root>

@@ -73,4 +73,7 @@
   <data name="IO_KeyNotFound_FredRate" xml:space="preserve">
     <value>No FRED exchange rate is available for {0}/{1} on {2}.</value>
   </data>
+  <data name="Op_Invalid_FredOptions" xml:space="preserve">
+    <value>FRED exchange-rate options are invalid.</value>
+  </data>
 </root>

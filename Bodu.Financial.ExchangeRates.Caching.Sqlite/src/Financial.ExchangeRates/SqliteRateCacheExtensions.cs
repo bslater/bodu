@@ -94,7 +94,7 @@ public static class SqliteRateCacheExtensions
             configure?.Invoke(options);
         });
         optionsBuilder
-            .Validate(static options => options.TryValidate(out _), "SQLite exchange-rate cache options are invalid.")
+            .Validate(static options => options.TryValidate(out _), CachingSqliteResourceStrings.Op_Invalid_SqliteCacheOptions)
             .ValidateOnStart();
 
         // Probe the database at host start when ValidateStorageOnStart is set, so a misconfigured or unwritable database

@@ -52,7 +52,7 @@ public static class AmbientResolution
             Console.WriteLine($"  Parse \"USD 10.00\" (restricted scope) : {Money.Parse("USD 10.00", CultureInfo.InvariantCulture)}");
 
             if (!Money.TryParse("THB 25.00", CultureInfo.InvariantCulture, out _))
-                Console.WriteLine("Parse \"THB 25.00\" (restricted scope) : rejected - not an allowed currency");
+                Console.WriteLine("  Parse \"THB 25.00\" (restricted scope) : rejected - not an allowed currency");
         }
 
         // Disposing the scope restores the previous lookup.

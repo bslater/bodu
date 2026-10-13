@@ -74,6 +74,25 @@ public sealed class RateCacheWarmupExtensionsTests
     }
 
     /// <summary>
+    /// Verifies that the <see cref="OptionsValidationException" /> raised for invalid options carries the
+    /// package's resource-backed validation message.
+    /// </summary>
+    [TestMethod]
+    public void AddRateCacheWarmup_WhenOptionsInvalid_ShouldThrowWithResourceMessage()
+    {
+        var services = new ServiceCollection();
+        services.AddFinancialService().AddRateCacheWarmup();
+        using ServiceProvider provider = services.BuildServiceProvider();
+
+        OptionsValidationException ex = Assert.ThrowsExactly<OptionsValidationException>(() =>
+        {
+            _ = provider.GetRequiredService<IHostedService>();
+        });
+
+        Assert.AreEqual(CachingResourceStrings.ResourceManager.GetString("Op_Invalid_WarmupOptions"), ex.Message);
+    }
+
+    /// <summary>
     /// Verifies that a <see langword="null" /> builder is rejected.
     /// </summary>
     [TestMethod]

@@ -84,7 +84,7 @@ public static class EcbFinancialServiceBuilderExtensions
             configuration,
             sectionName,
             static opts => opts.TryValidate(out _),
-            "ECB exchange-rate options are invalid.",
+            EcbResourceStrings.Op_Invalid_EcbOptions,
             static opts => opts.Endpoint.UserAgent,
             static opts => opts.Endpoint.HttpTimeout,
             configure,

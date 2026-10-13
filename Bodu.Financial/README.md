@@ -92,7 +92,7 @@ Scalar `*` and `/` on `Money` use banker's rounding (`MidpointRounding.ToEven`);
 
 ## `CurrencyInfo` and `CurrencyCode`
 
-`CurrencyInfo` is the canonical runtime metadata record: ISO 4217 alphabetic and numeric codes, minor-unit precision, cash-rounding increment, historicity flag, demonetization date, English name. Looked up via `CurrencyRegistry.Get("AUD")` / `TryGet(...)`. The catalogue is closed: there is no registration API. To substitute or restrict the metadata used for the shipped currencies, install an `ICurrencyLookup` through `CurrencyResolution`; for a unit outside the catalogue, declare a custom `ICurrency` tag and use `Money<TCurrency>`.
+`CurrencyInfo` is the canonical runtime metadata record: ISO 4217 alphabetic and numeric codes, minor-unit precision, cash-rounding increment, historicity flag, demonetization date, English name. Its minor-unit precision is 0 to 28, and its cash-rounding increment is zero or a positive whole number of those minor units; constructing one, or deriving one with `with`, that breaks either rule throws `ArgumentOutOfRangeException`. Looked up via `CurrencyRegistry.Get("AUD")` / `TryGet(...)`. The catalogue is closed: there is no registration API. To substitute or restrict the metadata used for the shipped currencies, install an `ICurrencyLookup` through `CurrencyResolution`; for a unit outside the catalogue, declare a custom `ICurrency` tag and use `Money<TCurrency>`.
 
 `CurrencyCode` is a source-generated enum over every shipped currency, active and historic - discoverable via IntelliSense, type-safe at compile time. Each member is the three-letter ISO code; each value is the ISO 4217 numeric code; each carries its `CurrencyStatus`.
 

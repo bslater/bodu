@@ -113,5 +113,14 @@ namespace Bodu.Financial.ExchangeRates {
                 return ResourceManager.GetString("IO_KeyNotFound_FixerRate", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Fixer exchange-rate options are invalid..
+        /// </summary>
+        internal static string Op_Invalid_FixerOptions {
+            get {
+                return ResourceManager.GetString("Op_Invalid_FixerOptions", resourceCulture);
+            }
+        }
     }
 }

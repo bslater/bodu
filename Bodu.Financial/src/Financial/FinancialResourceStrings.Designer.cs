@@ -289,11 +289,38 @@ namespace Bodu.Financial {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to CashRoundingIncrement {0} must not be negative..
+        /// </summary>
+        internal static string Arg_OutOfRange_CashRoundingIncrementNegative {
+            get {
+                return ResourceManager.GetString("Arg_OutOfRange_CashRoundingIncrementNegative", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to CashRoundingIncrement {0} is not a whole number of minor units at {1} minor units..
+        /// </summary>
+        internal static string Arg_OutOfRange_CashRoundingIncrementTooFine {
+            get {
+                return ResourceManager.GetString("Arg_OutOfRange_CashRoundingIncrementTooFine", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to CustomScale {0} is outside the supported range 0 to 28..
         /// </summary>
         internal static string Arg_OutOfRange_CustomScale {
             get {
                 return ResourceManager.GetString("Arg_OutOfRange_CustomScale", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to MinorUnitsOverride {0} is outside the supported range 0 to 28..
+        /// </summary>
+        internal static string Arg_OutOfRange_MinorUnitsOverride {
+            get {
+                return ResourceManager.GetString("Arg_OutOfRange_MinorUnitsOverride", resourceCulture);
             }
         }
 

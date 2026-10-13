@@ -80,7 +80,7 @@ public static class ExchangeRateHostFinancialServiceBuilderExtensions
             HttpClientName,
             configuration,
             sectionName,
-            "exchangerate.host exchange-rate options are invalid.",
+            ExchangeRateHostResourceStrings.Op_Invalid_ExchangeRateHostOptions,
             configure,
             configureResilience,
             static (client, opts, loggerFactory, timeProvider) =>

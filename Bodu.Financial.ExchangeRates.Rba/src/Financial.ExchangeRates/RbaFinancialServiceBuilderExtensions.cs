@@ -83,7 +83,7 @@ public static class RbaFinancialServiceBuilderExtensions
             configuration,
             sectionName,
             static opts => opts.TryValidate(out _),
-            "RBA exchange-rate options are invalid.",
+            RbaResourceStrings.Op_Invalid_RbaOptions,
             static opts => opts.UserAgent,
             static opts => opts.HttpTimeout,
             configure,

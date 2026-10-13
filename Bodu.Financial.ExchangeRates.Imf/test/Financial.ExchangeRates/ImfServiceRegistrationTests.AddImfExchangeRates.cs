@@ -119,6 +119,25 @@ public partial class ImfServiceRegistrationTests
     }
 
     /// <summary>
+    /// Verifies that the <see cref="OptionsValidationException" /> raised for invalid options carries the
+    /// package's resource-backed validation message.
+    /// </summary>
+    [TestMethod]
+    public void AddImfExchangeRates_WhenOptionsInvalid_ShouldThrowWithResourceMessage()
+    {
+        ServiceCollection services = new();
+        services.AddFinancialService().AddImfExchangeRates(configure: o => o.ReportPath = "");
+        using ServiceProvider provider = services.BuildServiceProvider();
+
+        OptionsValidationException ex = Assert.ThrowsExactly<OptionsValidationException>(() =>
+        {
+            _ = provider.GetRequiredService<ImfRateProvider>();
+        });
+
+        Assert.AreEqual(ImfResourceStrings.ResourceManager.GetString("Op_Invalid_ImfOptions"), ex.Message);
+    }
+
+    /// <summary>
     /// Verifies that the default (keyless) options pass <c>ValidateOnStart</c> and resolve the provider.
     /// </summary>
     [TestMethod]

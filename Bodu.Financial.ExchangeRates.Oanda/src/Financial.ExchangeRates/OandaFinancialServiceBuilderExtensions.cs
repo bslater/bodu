@@ -82,7 +82,7 @@ public static class OandaFinancialServiceBuilderExtensions
             HttpClientName,
             configuration,
             sectionName,
-            "OANDA exchange-rate options are invalid.",
+            OandaResourceStrings.Op_Invalid_OandaOptions,
             configure,
             configureResilience,
             static (client, opts, loggerFactory, timeProvider) =>

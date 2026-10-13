@@ -91,4 +91,7 @@
   <data name="Arg_Invalid_RbaOptionsLogLevel" xml:space="preserve">
     <value>The RBA options must specify a defined log level for every logging concern.</value>
   </data>
+  <data name="Op_Invalid_RbaOptions" xml:space="preserve">
+    <value>RBA exchange-rate options are invalid.</value>
+  </data>
 </root>

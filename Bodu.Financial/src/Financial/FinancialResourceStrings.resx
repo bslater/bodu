@@ -138,8 +138,17 @@
   <data name="Arg_OutOfRange_CurrencyDisplayUndefined" xml:space="preserve">
     <value>CurrencyDisplay '{0}' is not a defined value.</value>
   </data>
+  <data name="Arg_OutOfRange_CashRoundingIncrementNegative" xml:space="preserve">
+    <value>CashRoundingIncrement {0} must not be negative.</value>
+  </data>
+  <data name="Arg_OutOfRange_CashRoundingIncrementTooFine" xml:space="preserve">
+    <value>CashRoundingIncrement {0} is not a whole number of minor units at {1} minor units.</value>
+  </data>
   <data name="Arg_OutOfRange_CustomScale" xml:space="preserve">
     <value>CustomScale {0} is outside the supported range 0 to 28.</value>
+  </data>
+  <data name="Arg_OutOfRange_MinorUnitsOverride" xml:space="preserve">
+    <value>MinorUnitsOverride {0} is outside the supported range 0 to 28.</value>
   </data>
   <data name="Arg_OutOfRange_RateNotPositive" xml:space="preserve">
     <value>Rate must be greater than zero.</value>

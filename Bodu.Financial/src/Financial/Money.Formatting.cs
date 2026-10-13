@@ -254,7 +254,7 @@ public readonly partial struct Money
     }
 
     /// <summary>The maximum explicit display precision accepted by the format parser.</summary>
-    private const int MaxDisplayPrecision = 28;
+    internal const int MaxDisplayPrecision = 28;
 
     /// <summary>
     /// Formats this amount using the supplied string specifier.

@@ -93,7 +93,7 @@ JsonSerializer.Serialize(wallet, options);   // → {"balances":{"EUR":50,"USD":
 JsonSerializer.Serialize(wallet, compact);   // → {"EUR":50,"USD":100}
 ```
 
-Balances are written in lexicographic ISO order, each amount as the bag stores it (so `100m` writes `100` and `100.00m` writes `100.00`), and read as numbers or numeric strings. Under `Strict` and `Lenient` a repeated `balances` property, or a map that names a currency twice, is rejected; `Lenient` trims and upper-cases each ISO code key first. Zero balances are pruned on every bag operation, so the deserialized bag matches the canonical form, not the verbatim wire shape.
+Balances are written in lexicographic ISO order, each amount as the bag stores it (so `100m` writes `100` and `100.00m` writes `100.00`), and read as numbers or numeric strings. A map that names a currency twice is rejected under every policy, and under `Strict` and `Lenient` so is a repeated `balances` property; `Lenient` trims and upper-cases each ISO code key first. Zero balances are pruned on every bag operation, so the deserialized bag matches the canonical form, not the verbatim wire shape.
 
 ### `ExchangeRate`
 
@@ -202,7 +202,8 @@ Malformed payloads surface as `JsonException` on read; the converters never sile
 | `"rate"` not a number, `"date"` not `yyyy-MM-dd`, `"isInverted"` not a boolean | `Strict`, `Lenient` | `JsonException` naming the property. |
 | Compact string `TryParse` rejects (e.g. `"USD/"`, `"USD/JPY/EUR"`, or a bare `"19.99"` for `Money` and `CalculatedMoney`; `Money<TCurrency>` accepts a bare amount) | `Compact` | `JsonException` carrying the offending text. |
 | `"balances"` not an object; a balance neither a number nor a numeric string | `Strict`, `Lenient` | `JsonException`. |
-| A repeated `"balances"` property, or a balances map naming a currency twice | `Strict`, `Lenient` | `JsonException` - duplicates are rejected. |
+| A balances map naming a currency twice | all | `JsonException` - duplicates are rejected, never summed. |
+| A repeated `"balances"` property | `Strict`, `Lenient` | `JsonException` - duplicates are rejected. |
 | Truncated document | all | `JsonException` - unexpected end. |
 
 Unknown properties are *ignored* (skipped), matching the BCL convention for forward compatibility.

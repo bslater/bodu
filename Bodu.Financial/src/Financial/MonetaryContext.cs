@@ -112,21 +112,25 @@ public sealed record MonetaryContext
     /// The number of fractional digits to round to, or <c>-1</c> when <see cref="ScalePolicy.Unrounded" /> defers
     /// rounding entirely.
     /// </returns>
-    /// <exception cref="ArgumentOutOfRangeException"><see cref="ScalePolicy" /> is not a defined value.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="currencyMinorUnits" /> is outside the range 0 to 28, whatever the scale policy;
+    /// <see cref="ScalePolicy" /> is not a defined value; or <see cref="ScalePolicy" /> is
+    /// <see cref="ScalePolicy.Custom" /> and <see cref="CustomScale" /> is outside the range 0 to 28.
+    /// </exception>
     /// <exception cref="ArgumentException">
     /// <see cref="ScalePolicy" /> is <see cref="ScalePolicy.Custom" /> but <see cref="CustomScale" /> is
     /// <see langword="null" />.
     /// </exception>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "CA2208:Instantiate argument exceptions correctly", Justification = "The invalid value is this context's CustomScale property, not the method argument; the parameter name identifies that property, as Validate reports it.")]
     public int ResolveScale(int currencyMinorUnits)
     {
+        ThrowHelper.ThrowIfOutOfRange(currencyMinorUnits, 0, 28);
         ThrowHelper.ThrowIfEnumValueIsUndefined(ScalePolicy);
 
         return ScalePolicy switch
         {
             ScalePolicy.CurrencyMinorUnits => currencyMinorUnits,
             ScalePolicy.Unrounded => -1,
-            _ => CustomScale ?? throw new ArgumentException(FinancialResourceStrings.Arg_Invalid_CustomScaleRequiresValue, nameof(CustomScale)),
+            _ => GetValidatedCustomScale(),
         };
     }
 
@@ -141,7 +145,9 @@ public sealed record MonetaryContext
     /// effect.
     /// </returns>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// <see cref="ScalePolicy" /> is not a defined value, or the resolved scale is greater than 28.
+    /// <paramref name="currencyMinorUnits" /> is outside the range 0 to 28, whatever the scale policy;
+    /// <see cref="ScalePolicy" /> is not a defined value; or <see cref="ScalePolicy" /> is
+    /// <see cref="ScalePolicy.Custom" /> and <see cref="CustomScale" /> is outside the range 0 to 28.
     /// </exception>
     /// <exception cref="ArgumentException">
     /// <see cref="ScalePolicy" /> is <see cref="ScalePolicy.Custom" /> but <see cref="CustomScale" /> is
@@ -173,17 +179,30 @@ public sealed record MonetaryContext
         ThrowHelper.ThrowIfEnumValueIsUndefined(ConversionRounding);
 
         if (ScalePolicy == ScalePolicy.Custom)
-        {
-            if (CustomScale is null)
-                throw new ArgumentException(FinancialResourceStrings.Arg_Invalid_CustomScaleRequiresValue, nameof(CustomScale));
+            _ = GetValidatedCustomScale();
+    }
 
-            if ((uint)CustomScale.Value > 28u)
-            {
-                throw new ArgumentOutOfRangeException(
-                    nameof(CustomScale),
-                    CustomScale.Value,
-                    string.Format(CultureInfo.CurrentCulture, FinancialResourceStrings.Arg_OutOfRange_CustomScale, CustomScale.Value));
-            }
+    /// <summary>
+    /// Returns <see cref="CustomScale" /> after checking that it is supplied and within the range 0 to 28.
+    /// </summary>
+    /// <returns>The custom scale.</returns>
+    /// <exception cref="ArgumentException"><see cref="CustomScale" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <see cref="CustomScale" /> is outside the range 0 to 28.
+    /// </exception>
+    private int GetValidatedCustomScale()
+    {
+        if (CustomScale is not int scale)
+            throw new ArgumentException(FinancialResourceStrings.Arg_Invalid_CustomScaleRequiresValue, nameof(CustomScale));
+
+        if ((uint)scale > 28u)
+        {
+            throw new ArgumentOutOfRangeException(
+                nameof(CustomScale),
+                scale,
+                string.Format(CultureInfo.CurrentCulture, FinancialResourceStrings.Arg_OutOfRange_CustomScale, scale));
         }
+
+        return scale;
     }
 }

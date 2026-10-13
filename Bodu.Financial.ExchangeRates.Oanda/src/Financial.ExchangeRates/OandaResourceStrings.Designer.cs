@@ -113,5 +113,14 @@ namespace Bodu.Financial.ExchangeRates {
                 return ResourceManager.GetString("Arg_Invalid_OandaOptionsPeriod", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to OANDA exchange-rate options are invalid..
+        /// </summary>
+        internal static string Op_Invalid_OandaOptions {
+            get {
+                return ResourceManager.GetString("Op_Invalid_OandaOptions", resourceCulture);
+            }
+        }
     }
 }

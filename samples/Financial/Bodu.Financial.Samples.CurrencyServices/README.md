@@ -67,7 +67,7 @@ inside the scope USD parses but THB is rejected; after disposing the scope THB p
   AUD: Australian Dollar, 2 minor units, cash increment 0.05
   Parse "THB 25.00" (default lookup)   : THB 25.00
   Parse "USD 10.00" (restricted scope) : USD 10.00
-Parse "THB 25.00" (restricted scope) : rejected - not an allowed currency
+  Parse "THB 25.00" (restricted scope) : rejected - not an allowed currency
   Parse "THB 25.00" (scope disposed)   : THB 25.00
 ```
 

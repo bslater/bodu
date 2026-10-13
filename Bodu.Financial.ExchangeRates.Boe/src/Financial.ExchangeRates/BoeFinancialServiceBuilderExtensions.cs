@@ -79,7 +79,7 @@ public static class BoeFinancialServiceBuilderExtensions
             configuration,
             sectionName,
             static opts => opts.TryValidate(out _),
-            "Bank of England exchange-rate options are invalid.",
+            BoeResourceStrings.Op_Invalid_BoeOptions,
             static opts => opts.Endpoint.UserAgent,
             static opts => opts.Endpoint.HttpTimeout,
             configure,

@@ -79,7 +79,7 @@ public static class FredFinancialServiceBuilderExtensions
             HttpClientName,
             configuration,
             sectionName,
-            "FRED exchange-rate options are invalid.",
+            FredResourceStrings.Op_Invalid_FredOptions,
             configure,
             configureResilience,
             static (client, opts, loggerFactory, timeProvider) =>

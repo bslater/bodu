@@ -122,5 +122,14 @@ namespace Bodu.Financial.ExchangeRates {
                 return ResourceManager.GetString("IO_KeyNotFound_ImfRate", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to IMF exchange-rate options are invalid..
+        /// </summary>
+        internal static string Op_Invalid_ImfOptions {
+            get {
+                return ResourceManager.GetString("Op_Invalid_ImfOptions", resourceCulture);
+            }
+        }
     }
 }

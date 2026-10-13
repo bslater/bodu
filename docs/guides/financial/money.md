@@ -520,7 +520,10 @@ mode (`IsoCode`, `Symbol`, `EnglishName`, `None`); `WithCulture`,
 remaining knobs. For ad-hoc construction, set the same fields directly
 on a <xref:Bodu.Financial.MoneyFormatOptions> and pass it to the
 `MoneyFormatter` constructor; `MoneyFormatOptions.Default` is the
-process-wide fallback.
+process-wide fallback. A precision override outside 0 to 28 throws
+`ArgumentOutOfRangeException` as it is configured - from `WithMinorUnits`,
+or from the constructor when it arrives as `MinorUnitsOverride` - rather
+than when a value is formatted.
 
 ### Compact formatting
 

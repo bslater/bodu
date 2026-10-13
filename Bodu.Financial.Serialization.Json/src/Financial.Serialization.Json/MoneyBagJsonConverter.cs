@@ -22,10 +22,11 @@ namespace Bodu.Financial.Serialization.Json;
 /// shape when the consumer already knows the payload is a bag.
 /// </para>
 /// <para>
-/// When reading, <see cref="FinancialJsonPolicy.Strict" /> and <see cref="FinancialJsonPolicy.Lenient" /> reject a
-/// repeated <c>"balances"</c> property, and a balances map that names the same currency twice, with a
-/// <see cref="JsonException" />. <see cref="FinancialJsonPolicy.Lenient" /> also trims each ISO code key and converts
-/// it to uppercase before resolving the currency.
+/// When reading, every policy rejects a balances map that names the same currency twice with a
+/// <see cref="JsonException" />, rather than summing the repeated balances; <see cref="FinancialJsonPolicy.Strict" />
+/// and <see cref="FinancialJsonPolicy.Lenient" /> also reject a repeated <c>"balances"</c> property.
+/// <see cref="FinancialJsonPolicy.Lenient" /> trims each ISO code key and converts it to uppercase before resolving the
+/// currency, so keys that differ only in case or surrounding white space name the same currency.
 /// </para>
 /// </remarks>
 public sealed class MoneyBagJsonConverter
@@ -143,6 +144,9 @@ public sealed class MoneyBagJsonConverter
     /// </summary>
     /// <param name="reader">The reader positioned at the value to convert.</param>
     /// <returns>The deserialized bag.</returns>
+    /// <exception cref="JsonException">
+    /// The map is malformed, names an unknown currency, or names the same currency twice.
+    /// </exception>
     private MoneyBag ReadCompactBalances(ref Utf8JsonReader reader)
     {
         List<Money> entries = new();
@@ -157,13 +161,12 @@ public sealed class MoneyBagJsonConverter
     /// <param name="reader">The reader positioned at the map's <c>StartObject</c>.</param>
     /// <param name="entries">The list that receives the per-currency balances.</param>
     /// <exception cref="JsonException">
-    /// The map is malformed, names an unknown currency, or, under <see cref="FinancialJsonPolicy.Strict" /> or
-    /// <see cref="FinancialJsonPolicy.Lenient" />, names the same currency twice.
+    /// The map is malformed, names an unknown currency, or names the same currency twice.
     /// </exception>
     private void ReadBalanceMap(ref Utf8JsonReader reader, List<Money> entries)
     {
-        // The wrapped policies reject a repeated currency, as they reject every other duplicate property.
-        HashSet<CurrencyCode>? seen = _policy == FinancialJsonPolicy.Compact ? null : new();
+        // Every policy rejects a repeated currency: summing the repeated balances would misreport the bag.
+        HashSet<CurrencyCode> seen = new();
 
         while (reader.Read())
         {
@@ -206,7 +209,7 @@ public sealed class MoneyBagJsonConverter
                     string.Format(CultureInfo.CurrentCulture, FinancialJsonResourceStrings.Arg_Invalid_UnknownCurrencyRejected, iso));
             }
 
-            if (seen is not null && !seen.Add(code))
+            if (!seen.Add(code))
             {
                 throw new JsonException(
                     string.Format(CultureInfo.CurrentCulture, FinancialJsonResourceStrings.Json_Invalid_DuplicateProperty, iso));

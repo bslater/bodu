@@ -119,6 +119,25 @@ public partial class FixerServiceRegistrationTests
     }
 
     /// <summary>
+    /// Verifies that the <see cref="OptionsValidationException" /> raised for invalid options carries the
+    /// package's resource-backed validation message.
+    /// </summary>
+    [TestMethod]
+    public void AddFixerExchangeRates_WhenApiKeyMissing_ShouldThrowWithResourceMessage()
+    {
+        ServiceCollection services = new();
+        services.AddFinancialService().AddFixerExchangeRates();
+        using ServiceProvider provider = services.BuildServiceProvider();
+
+        OptionsValidationException ex = Assert.ThrowsExactly<OptionsValidationException>(() =>
+        {
+            _ = provider.GetRequiredService<FixerRateProvider>();
+        });
+
+        Assert.AreEqual(FixerResourceStrings.ResourceManager.GetString("Op_Invalid_FixerOptions"), ex.Message);
+    }
+
+    /// <summary>
     /// Verifies that valid options pass <c>ValidateOnStart</c> and resolve the provider.
     /// </summary>
     [TestMethod]

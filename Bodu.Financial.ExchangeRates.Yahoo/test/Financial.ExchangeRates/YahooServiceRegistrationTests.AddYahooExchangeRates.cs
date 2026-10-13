@@ -133,6 +133,25 @@ public partial class YahooServiceRegistrationTests
     }
 
     /// <summary>
+    /// Verifies that the <see cref="OptionsValidationException" /> raised for invalid options carries the
+    /// package's resource-backed validation message.
+    /// </summary>
+    [TestMethod]
+    public void AddYahooExchangeRates_WhenOptionsInvalid_ShouldThrowWithResourceMessage()
+    {
+        ServiceCollection services = new();
+        services.AddFinancialService().AddYahooExchangeRates(configure: o => o.ChartPath = "no-placeholder");
+        using ServiceProvider provider = services.BuildServiceProvider();
+
+        OptionsValidationException ex = Assert.ThrowsExactly<OptionsValidationException>(() =>
+        {
+            _ = provider.GetRequiredService<YahooRateProvider>();
+        });
+
+        Assert.AreEqual(YahooResourceStrings.ResourceManager.GetString("Op_Invalid_YahooOptions"), ex.Message);
+    }
+
+    /// <summary>
     /// Verifies that valid options pass <c>ValidateOnStart</c> and resolve the provider.
     /// </summary>
     [TestMethod]

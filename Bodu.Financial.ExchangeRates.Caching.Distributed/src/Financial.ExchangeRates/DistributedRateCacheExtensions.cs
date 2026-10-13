@@ -96,7 +96,7 @@ public static class DistributedRateCacheExtensions
             configure?.Invoke(options);
         });
         optionsBuilder
-            .Validate(static options => options.TryValidate(out _), "Distributed exchange-rate cache options are invalid.")
+            .Validate(static options => options.TryValidate(out _), CachingDistributedResourceStrings.Op_Invalid_DistributedCacheOptions)
             .ValidateOnStart();
 
         // Probe the backing store at host start when ValidateStorageOnStart is set, so an unreachable distributed cache

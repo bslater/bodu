@@ -43,6 +43,10 @@ public sealed record MoneyFormatOptions
     /// to use the currency's minor units.
     /// </summary>
     /// <value>The override precision, or <see langword="null" />.</value>
+    /// <remarks>
+    /// The supported range is 0 to 28: the <see cref="MoneyFormatter" /> constructor rejects options carrying any other
+    /// value with <see cref="ArgumentOutOfRangeException" />.
+    /// </remarks>
     public int? MinorUnitsOverride { get; init; }
 
     /// <summary>

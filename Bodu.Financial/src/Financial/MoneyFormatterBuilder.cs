@@ -103,12 +103,13 @@ public sealed class MoneyFormatterBuilder
     /// </summary>
     /// <param name="minorUnits">The explicit precision to render.</param>
     /// <returns>This builder.</returns>
-    /// <remarks>
-    /// The value is not checked here: a value below 0 or above 28 makes the built formatter's <c>Format</c> methods
-    /// throw <see cref="FormatException" />.
-    /// </remarks>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="minorUnits" /> is less than 0 or greater than 28.
+    /// </exception>
     public MoneyFormatterBuilder WithMinorUnits(int minorUnits)
     {
+        ThrowHelper.ThrowIfOutOfRange(minorUnits, 0, Money.MaxDisplayPrecision);
+
         _options = _options with { MinorUnitsOverride = minorUnits };
         return this;
     }

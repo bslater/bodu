@@ -77,4 +77,7 @@
   <data name="Arg_Invalid_OfxOptionsReportingInterval" xml:space="preserve">
     <value>The OFX options reporting interval must be specified.</value>
   </data>
+  <data name="Op_Invalid_OfxOptions" xml:space="preserve">
+    <value>OFX exchange-rate options are invalid.</value>
+  </data>
 </root>

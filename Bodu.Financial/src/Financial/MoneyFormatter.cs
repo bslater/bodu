@@ -28,15 +28,19 @@ public sealed class MoneyFormatter
     /// <param name="options">The formatting options.</param>
     /// <exception cref="ArgumentNullException"><paramref name="options" /> is <see langword="null" />.</exception>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="options" />.<see cref="MoneyFormatOptions.CurrencyDisplay" /> is not a defined value.
+    /// <paramref name="options" />.<see cref="MoneyFormatOptions.CurrencyDisplay" /> is not a defined value, or
+    /// <paramref name="options" />.<see cref="MoneyFormatOptions.MinorUnitsOverride" /> is outside the range 0 to 28.
     /// </exception>
-    /// <remarks>
-    /// <see cref="MoneyFormatOptions.MinorUnitsOverride" /> is not checked here: a value below 0 or above 28 is
-    /// accepted, and makes every <c>Format</c> call throw <see cref="FormatException" />.
-    /// </remarks>
     public MoneyFormatter(MoneyFormatOptions options)
     {
         ThrowHelper.ThrowIfNull(options);
+        if (options.MinorUnitsOverride is int minorUnits && (uint)minorUnits > Money.MaxDisplayPrecision)
+        {
+            throw new ArgumentOutOfRangeException(
+                nameof(options),
+                minorUnits,
+                string.Format(CultureInfo.CurrentCulture, FinancialResourceStrings.Arg_OutOfRange_MinorUnitsOverride, minorUnits));
+        }
 
         _options = options;
         _format = BuildFormat(options);
@@ -47,9 +51,6 @@ public sealed class MoneyFormatter
     /// </summary>
     /// <param name="money">The value to format.</param>
     /// <returns>The formatted string.</returns>
-    /// <exception cref="FormatException">
-    /// The options' <see cref="MoneyFormatOptions.MinorUnitsOverride" /> is below 0 or above 28.
-    /// </exception>
     public string Format(Money money) =>
         money.ToString(_format, _options.FormatProvider ?? CultureInfo.CurrentCulture);
 
@@ -59,9 +60,6 @@ public sealed class MoneyFormatter
     /// <typeparam name="TCurrency">The currency type.</typeparam>
     /// <param name="money">The value to format.</param>
     /// <returns>The formatted string.</returns>
-    /// <exception cref="FormatException">
-    /// The options' <see cref="MoneyFormatOptions.MinorUnitsOverride" /> is below 0 or above 28.
-    /// </exception>
     public string Format<TCurrency>(Money<TCurrency> money)
         where TCurrency : ICurrency =>
         money.ToString(_format, _options.FormatProvider ?? CultureInfo.CurrentCulture);

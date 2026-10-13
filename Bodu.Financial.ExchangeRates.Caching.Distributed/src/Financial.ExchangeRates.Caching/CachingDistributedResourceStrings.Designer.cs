@@ -77,5 +77,14 @@ namespace Bodu.Financial.ExchangeRates.Caching {
                 return ResourceManager.GetString("Arg_Invalid_KeyPrefixWhiteSpace", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Distributed exchange-rate cache options are invalid..
+        /// </summary>
+        internal static string Op_Invalid_DistributedCacheOptions {
+            get {
+                return ResourceManager.GetString("Op_Invalid_DistributedCacheOptions", resourceCulture);
+            }
+        }
     }
 }
