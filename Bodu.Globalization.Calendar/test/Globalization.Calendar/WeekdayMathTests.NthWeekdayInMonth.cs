@@ -53,4 +53,22 @@ public partial class WeekdayMathTests
 
         Assert.IsNull(result);
     }
+
+    /// <summary>
+    /// Verifies that a fifth occurrence December 9999 does not have yields no date, rather than throwing from the date
+    /// arithmetic: December 9999 begins on a Wednesday, so a fifth Saturday, Sunday, Monday or Tuesday would fall in
+    /// year 10000.
+    /// </summary>
+    /// <param name="dayOfWeek">The weekday with only four occurrences in December 9999.</param>
+    [TestMethod]
+    [DataRow(DayOfWeek.Saturday)]
+    [DataRow(DayOfWeek.Sunday)]
+    [DataRow(DayOfWeek.Monday)]
+    [DataRow(DayOfWeek.Tuesday)]
+    public void NthWeekdayInMonth_WhenAMissingFifthWouldFallAfterDecember9999_ShouldReturnNull(DayOfWeek dayOfWeek)
+    {
+        DateOnly? result = WeekdayMath.NthWeekdayInMonth(9999, 12, dayOfWeek, WeekOrdinal.Fifth);
+
+        Assert.IsNull(result);
+    }
 }
