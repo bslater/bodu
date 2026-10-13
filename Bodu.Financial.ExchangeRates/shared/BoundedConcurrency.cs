@@ -39,6 +39,68 @@ internal static class BoundedConcurrency
     /// </remarks>
     internal static Task ForEachAsync<T>(IEnumerable<T> items, int limit, Func<T, Task> body)
     {
-        throw new NotImplementedException();
+        ThrowHelper.ThrowIfNull(items);
+        ThrowHelper.ThrowIfLessThan(limit, 1);
+        ThrowHelper.ThrowIfNull(body);
+
+        return RunAsync(items, limit, body);
+    }
+
+    /// <summary>
+    /// Runs the operations once the arguments have been validated.
+    /// </summary>
+    /// <typeparam name="T">The type of the items.</typeparam>
+    /// <param name="items">The items to run the operation for, started in order.</param>
+    /// <param name="limit">The largest number of operations in flight at once.</param>
+    /// <param name="body">The operation to run for each item.</param>
+    /// <returns>A task that completes when every started operation has completed.</returns>
+    private static async Task RunAsync<T>(IEnumerable<T> items, int limit, Func<T, Task> body)
+    {
+        List<Task> inFlight = new(limit);
+        Task? failed = null;
+
+        foreach (T item in items)
+        {
+            if (inFlight.Count == limit)
+            {
+                Task completed = await Task.WhenAny(inFlight).ConfigureAwait(false);
+                inFlight.Remove(completed);
+                if (!completed.IsCompletedSuccessfully)
+                {
+                    failed = completed;
+                    break;
+                }
+            }
+
+            Task started;
+            try
+            {
+                started = body(item);
+            }
+            catch (Exception ex)
+            {
+                started = Task.FromException(ex);
+            }
+
+            if (started.IsFaulted || started.IsCanceled)
+            {
+                failed = started;
+                break;
+            }
+
+            inFlight.Add(started);
+        }
+
+        // Let every started operation finish before reporting, so no download is left running unobserved.
+        while (inFlight.Count > 0)
+        {
+            Task completed = await Task.WhenAny(inFlight).ConfigureAwait(false);
+            inFlight.Remove(completed);
+            if (failed is null && !completed.IsCompletedSuccessfully)
+                failed = completed;
+        }
+
+        if (failed is not null)
+            await failed.ConfigureAwait(false);
     }
 }

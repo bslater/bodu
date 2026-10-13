@@ -38,7 +38,8 @@ foreach (RbaSeriesInfo info in provider.GetAvailablePairs())
 
 - **AUD-based.** RBA quotes the Australian dollar against each currency. Direct
   (`AUD→X`) and inverse (`X→AUD`) lookups are supported; cross pairs are not.
-- **Loading.** Call `PreloadAsync` / `LoadRangeAsync` to warm the in-memory store. A
+- **Loading.** Call `PreloadAsync` / `LoadRangeAsync` to warm the in-memory store. Up to
+  four eras download at once, and each is published only after the eras before it. A
   synchronous lookup that misses an unloaded era will block to download it only when
   `AllowSynchronousNetworkAccess` is enabled (it is `false` by default, so the provider
   serves a snapshot of already-loaded data and a synchronous miss does not reach the

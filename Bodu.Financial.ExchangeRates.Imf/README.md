@@ -42,7 +42,8 @@ foreach (ImfSeriesInfo info in provider.GetAvailablePairs())
 - **Bulk, month-based loading.** One download covers every reported currency for every
   business day of a month, so a request for any date in a month loads the whole month at
   once. `LoadRangeAsync`, `LoadMonthAsync`, and `PreloadAsync` (current month) warm the
-  store; a range spanning several months downloads each covering month.
+  store; a range spanning several months downloads each covering month, up to four at once,
+  publishing each only after the months before it.
 - **Direction auto-normalized.** The report quotes most currencies as units per US dollar,
   but marks a few (labelled `(1)`, for example `Euro(1)`, `U.K. pound(1)`) as US dollars
   per unit. Both are normalized on ingest, so the stored rate is always units of the quote
