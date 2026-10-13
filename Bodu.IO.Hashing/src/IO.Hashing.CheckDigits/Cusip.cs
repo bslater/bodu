@@ -23,6 +23,11 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// being added to the running total. The check digit is chosen so that the total is a multiple of ten.
 /// </para>
 /// <para>
+/// <see cref="IsValid(ReadOnlySpan{char})" /> checks the length (nine characters), the character set, and the check
+/// digit. <see cref="Compute(ReadOnlySpan{char})" /> does not check the body length: it returns a digit for a body of
+/// any length, so pass the eight-character body alone.
+/// </para>
+/// <para>
 /// <b>Worked example.</b> For the body <c>"03783310"</c> - Apple Inc. - the computed check digit is <c>'0'</c>, and the
 /// resulting CUSIP <c>"037833100"</c> is therefore valid.
 /// </para>

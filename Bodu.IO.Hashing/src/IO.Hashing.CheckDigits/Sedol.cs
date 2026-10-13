@@ -22,6 +22,11 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// position weight. The check digit is chosen so the weighted sum is a multiple of ten.
 /// </para>
 /// <para>
+/// <see cref="IsValid(ReadOnlySpan{char})" /> checks the length (seven characters), the character set, and the check
+/// digit. <see cref="Compute(ReadOnlySpan{char})" /> does not check the body length: it returns a digit for a body of
+/// any length, weighting positions past the sixth by <c>1</c>, so pass the six-character body alone.
+/// </para>
+/// <para>
 /// <b>Worked example.</b> For the body <c>"B0WNLY"</c>, the computed check digit is <c>'7'</c>, and the resulting SEDOL
 /// <c>"B0WNLY7"</c> is therefore valid.
 /// </para>

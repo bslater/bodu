@@ -26,6 +26,13 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// textual IBANs (for example, by removing spaces) before passing them in.
 /// </para>
 /// <para>
+/// <see cref="IsValid(ReadOnlySpan{char})" /> checks the check digits and the character set only: the IBAN must be at
+/// least four characters, all uppercase ASCII letters or digits, with digits in the two check positions, and its
+/// rearranged expansion must leave remainder <c>1</c> modulo 97. It does not check that the country code is letters or
+/// a known ISO 3166 code, nor the country-specific length and BBAN format, so a <see langword="true" /> result is not a
+/// complete IBAN validation.
+/// </para>
+/// <para>
 /// <b>Worked example.</b> For the body <c>"GBWEST12345698765432"</c>, the computed check is <c>"82"</c>, and the
 /// resulting IBAN <c>"GB82WEST12345698765432"</c> is therefore valid.
 /// </para>
