@@ -98,7 +98,7 @@ bound.
 ```csharp
 Fraction<int> phi = Fraction<int>.Create(610, 377);
 int[] coeffs = phi.ToContinuedFraction();
-// [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1] - golden-ratio convergent
+// [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2] - golden-ratio convergent
 
 Fraction<int> reconstructed = Fraction<int>.FromContinuedFraction(coeffs);
 ```
@@ -200,7 +200,7 @@ a + b;     // 5/6
 a - b;     // -1/6
 a * b;     // 1/6
 a / b;     // 2/3
-a % b;     // 1/3   - remainder of the floored quotient
+a % b;     // 1/3   - remainder of the truncated quotient
 -a;        // -1/3
 ++a;       // 4/3
 ```
@@ -223,7 +223,7 @@ a.Remainder(b);                // alias for a % b
 - `Pow(0)` returns `One` for every value, **including** `Fraction<T>.Zero` (the conventional `0⁰ = 1`).
 - A negative exponent raises the *reciprocal* to the corresponding magnitude, so `Fraction<int>.Create(2, 3).Pow(-2)` is `9/4`. Applying a negative exponent to zero throws <xref:System.DivideByZeroException>, and an exponent magnitude exceeding `int.MaxValue` throws <xref:System.OverflowException>.
 
-The `%` operator (and its `Remainder` alias) returns the remainder of the *floored-quotient* division and carries the **sign of the dividend** - so `Fraction<int>.Create(7, 2) % Fraction<int>.Create(1, 1)` is `1/2`. Dividing by zero throws <xref:System.DivideByZeroException>.
+The `%` operator (and its `Remainder` alias) returns the remainder of the *truncated* (toward-zero) quotient and carries the **sign of the dividend** - so `Fraction<int>.Create(7, 2) % Fraction<int>.Create(1, 1)` is `1/2` and `Fraction<int>.Create(-7, 2) % Fraction<int>.Create(1, 1)` is `-1/2`. Dividing by zero throws <xref:System.DivideByZeroException>.
 
 ### Overflow handling
 
@@ -252,8 +252,7 @@ var doubledBI = hugeBI + hugeBI;   // 4294967294/1 - no overflow
 …) but negative values cannot be represented. Any operation that
 would produce a negative numerator on an unsigned backing type throws
 `OverflowException` at runtime - including `MinusOne`, unary `-`,
-`Negate()`, the reciprocal of a value larger than one, and certain
-subtraction patterns.
+`Negate()`, and certain subtraction patterns.
 
 ## Comparison and equality
 
@@ -267,7 +266,7 @@ Fraction<int>.Compare(a, b);                // -1 - static cross-multiply
 
 Fraction<int>.Min(a, b);                    // 1/3
 Fraction<int>.Max(a, b);                    // 2/5
-Fraction<int>.Clamp(value, lo: a, hi: b);   // clamps to [1/3, 2/5]
+Fraction<int>.Clamp(Fraction<int>.Create(1, 2), min: a, max: b);   // 2/5
 ```
 
 Equality compares canonical components, not raw structural fields -
@@ -309,7 +308,7 @@ The conversion surface divides cleanly into *exact* and *approximate* directions
 | `FromDouble` / `(Fraction<T>)double` | in | exact in the IEEE-754 sense (mantissa × 2ᵉˣᵖ) | `ArgumentException` on non-finite input; `OverflowException` on narrowing |
 | `ToDecimal` / `(decimal)` | out | rounded to `decimal` precision | `OverflowException` outside `decimal` range |
 | `ToDouble` / `ToSingle` | out | rounded to `double` / `float` | never throws - saturates to `±Infinity` outside the finite range; `TryToDouble` / `TryToSingle` return `false` in that case |
-| `ToInteger` / `ToBigInteger` / `GetWholePart` | out | truncated **toward zero** | `ToInteger` / `GetWholePart` may overflow `T` for an out-of-range integer part |
+| `ToInteger` / `ToBigInteger` / `GetWholePart` | out | truncated **toward zero** | never throws - the integer part of a canonical value is always representable in `T` |
 | `As<TOther>` | re-backing | exact (same canonical value) | `OverflowException` if a component does not fit `TOther` |
 
 Truncation toward zero is the rule for the integer-extraction members: `Fraction<int>.Create(-7, 3).ToInteger()` is `-2`, not `-3`. Use `Floor()` / `Ceiling()` / `Round()` (below) when you need a different rounding direction.
@@ -324,7 +323,8 @@ x.Floor();        // 2/1
 x.Ceiling();      // 3/1
 x.Truncate();     // 2/1
 x.Round();        // 2/1 - banker's rounding (to-even)
-x.Round(MidpointRounding.AwayFromZero);  // 3/1
+x.Round(MidpointRounding.AwayFromZero);  // 2/1 - 7/3 is not a midpoint, so the mode does not apply
+Fraction<int>.Create(5, 2).Round(MidpointRounding.AwayFromZero);  // 3/1 - 5/2 is, and rounds away from zero
 
 x.GetWholePart();      // 2 (T)
 x.GetFractionalPart(); // 1/3
@@ -431,7 +431,7 @@ The backing type is constrained as `where T : IBinaryInteger<T>`.
 | `"2 1/3"` | Mixed numbers: 7/3 - sign applies to whole result |
 | `"½"`, `"⅖"` | Unicode vulgar fractions (18 glyphs - see [Formatting and parsing](formatting-and-parsing.md)) |
 | `"2⅜"` | Whole + vulgar fraction: 19/8 |
-| `"50%"`, `"3/4%"` | Percentage form - trailing `%` divides denominator by 100 |
+| `"50%"`, `"3/4%"` | Percentage form - a trailing `%` divides the value by 100 (multiplies the denominator by 100) |
 
 Leading / trailing whitespace is trimmed. Numeric components parse
 with `NumberStyles.None`, so scientific notation and group separators

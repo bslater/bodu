@@ -63,7 +63,7 @@ When you want the *intended* rational rather than the bit-exact one, reach for `
 
 ```csharp
 Fraction<int> piApprox = Fraction<int>.Approximate(Math.PI, maxDenominator: 1000);
-// 355/113 - the Zǔ Chōngzhī approximation, accurate to ~6×10⁻⁷
+// 355/113 - the Zǔ Chōngzhī approximation, error ≈ 2.7×10⁻⁷
 ```
 
 `Approximate` uses convergents of the continued-fraction expansion to find the best rational below a denominator bound.

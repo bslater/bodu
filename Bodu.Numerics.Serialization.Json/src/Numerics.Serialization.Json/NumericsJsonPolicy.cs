@@ -45,9 +45,10 @@ public enum NumericsJsonPolicy
 
     /// <summary>
     /// Compact JSON shape: <see cref="Fraction{T}" /> serializes as a single JSON string of the form
-    /// <c>"&lt;numerator&gt;/&lt;denominator&gt;"</c> (for example <c>"3/4"</c>); <see cref="Interval{T}" /> serializes
-    /// as a JSON string in ISO 31-11 bracket notation (for example <c>"[1, 5)"</c>) or as the empty-set glyph
-    /// <c>"∅"</c>. Reads delegate to the type's <c>Parse</c> / <c>TryParse</c> path.
+    /// <c>"&lt;numerator&gt;/&lt;denominator&gt;"</c> (for example <c>"3/4"</c>), or <c>"&lt;numerator&gt;"</c> when
+    /// the denominator is one (for example <c>"3"</c>); <see cref="Interval{T}" /> serializes as a JSON string in ISO
+    /// 31-11 bracket notation (for example <c>"[1, 5)"</c>) or as the empty-set glyph <c>"∅"</c>. Reads delegate to the
+    /// type's <c>Parse</c> / <c>TryParse</c> path.
     /// </summary>
     Compact = 2,
 }

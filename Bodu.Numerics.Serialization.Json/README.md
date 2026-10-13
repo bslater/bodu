@@ -5,7 +5,7 @@
 `System.Text.Json` integration for **[Bodu.Numerics](https://www.nuget.org/packages/Bodu.Numerics)**. The core library is deliberately serialization-agnostic - its value types carry no `[JsonConverter]` attribute and take no `System.Text.Json` dependency - so JSON support is opt-in through this companion package (the NodaTime companion-package pattern):
 
 - **`AddNumericsJsonConverters(options, policy)`** - one call registers a coherent converter set for every serializable `Bodu.Numerics` type.
-- Converters (+ factories for the generic types) for **`Fraction<T>`**, **`Interval<T>`**, **`DiscreteInterval<T>`**, **`IntervalSet<T>`**, and **`BigDecimal`**.
+- Converters (+ factories for the generic types) for **`Fraction<T>`**, **`Interval<T>`**, **`DiscreteInterval<T>`**, **`IntervalSet<T>`**, **`BigDecimal`**, and **`Complex<T>`**.
 - **`NumericsJsonPolicy`** - `Strict` (canonical object shapes, the default), `Lenient` (Strict plus read tolerance for external feeds), `Compact` (single strings such as `"3/4"` and `"[1, 5)"`).
 - The transient result types `IntervalPair<T>` / `DiscreteIntervalPair<T>` are deliberately **not** serializable - call `ToIntervalSet()` and persist the set instead.
 
