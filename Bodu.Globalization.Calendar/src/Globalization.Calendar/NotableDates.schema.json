@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "urn:bodu:globalization:calendar:v1",
   "title": "Bodu Notable Date Document",
-  "description": "Companion JSON schema for the JSON form of the Bodu calendar document, which NotableDateResourceLoader.LoadJson reads. It mirrors NotableDates.xsd: each attribute and child element is a property in the case and the JSON type given here, a list of child elements an array, and the handler parameters a map. LoadJson also reads a few forms this schema does not describe: it matches property names and enumeration names ignoring case, reads an integer or a Boolean written as a string, reads the literal null as an absent value, and ignores a property it does not read, where this schema rejects any property it does not declare. NotableDateDocumentBuilder.ToJson writes a subset of this form.",
+  "description": "Companion JSON schema for the JSON form of the Bodu calendar document, which NotableDateResourceLoader.LoadJson reads. It mirrors NotableDates.xsd: each attribute and child element is a property in the case and the JSON type given here, a list of child elements an array, and the handler parameters a map. LoadJson also reads a few forms this schema does not describe: it matches property names and enumeration names ignoring case, reads an integer or a Boolean written as a string, reads the literal null as an absent value, and ignores a property it does not read, where this schema rejects any property it does not declare. In the other direction, this schema accepts two forms LoadJson rejects, which draft 2020-12 cannot tell from valid values: an integer written with a fraction (1.0), which it counts as an integer, and, unless the validator asserts format, a date written as yyyy-MM-dd that names no day (2024-02-30). NotableDateDocumentBuilder.ToJson writes a subset of this form.",
   "type": "object",
   "required": [ "schemaVersion", "resourceId" ],
   "additionalProperties": false,
@@ -379,7 +379,7 @@
       "required": [ "anchorDate" ],
       "additionalProperties": false,
       "properties": {
-        "anchorDate": { "type": "string", "format": "date" },
+        "anchorDate": { "$ref": "#/$defs/date" },
         "intervalDays": { "$ref": "#/$defs/positiveInt32" }
       }
     },
@@ -390,7 +390,7 @@
       "properties": {
         "days": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/dayOfWeek" } },
         "intervalWeeks": { "$ref": "#/$defs/positiveInt32" },
-        "anchorDate": { "type": "string", "format": "date" }
+        "anchorDate": { "$ref": "#/$defs/date" }
       }
     },
     "monthlyDayRecurrence": {
@@ -400,7 +400,7 @@
       "properties": {
         "dayOfMonth": { "$ref": "#/$defs/dayValue" },
         "intervalMonths": { "$ref": "#/$defs/positiveInt32" },
-        "anchorDate": { "type": "string", "format": "date" },
+        "anchorDate": { "$ref": "#/$defs/date" },
         "invalidDayBehavior": { "$ref": "#/$defs/invalidDayOfMonthBehavior" }
       }
     },
@@ -412,7 +412,7 @@
         "dayOfWeek": { "$ref": "#/$defs/dayOfWeek" },
         "weekOrdinal": { "$ref": "#/$defs/weekOrdinal" },
         "intervalMonths": { "$ref": "#/$defs/positiveInt32" },
-        "anchorDate": { "type": "string", "format": "date" }
+        "anchorDate": { "$ref": "#/$defs/date" }
       }
     },
     "duration": {
@@ -439,6 +439,7 @@
     "unsignedShort": { "type": "integer", "minimum": 0, "maximum": 65535 },
     "dayValue": { "type": "integer", "minimum": 1, "maximum": 31 },
     "isoWeekValue": { "type": "integer", "minimum": 1, "maximum": 53 },
+    "date": { "type": "string", "format": "date", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" },
     "dateBoundary": { "enum": [ "Inclusive", "Exclusive" ] },
     "endDateSelection": { "enum": [ "FirstOnOrAfterStart", "FirstAfterStart" ] },
     "invalidDayOfMonthBehavior": { "enum": [ "Skip", "UseLastDayOfMonth" ] },
