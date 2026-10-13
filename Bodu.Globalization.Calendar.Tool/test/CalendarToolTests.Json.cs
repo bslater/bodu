@@ -20,6 +20,7 @@ public sealed partial class CalendarToolTests
     /// <summary>A minimal valid document in the JSON subset, equivalent to <see cref="ValidXml" />.</summary>
     private const string ValidJson = """
         {
+          "schemaVersion": "1.0",
           "resourceId": "tool.valid.json",
           "notableDates": [
             {
@@ -35,6 +36,7 @@ public sealed partial class CalendarToolTests
     /// <summary>A JSON document referencing an unknown algorithm key, failing validation.</summary>
     private const string InvalidJson = """
         {
+          "schemaVersion": "1.0",
           "resourceId": "tool.invalid.json",
           "notableDates": [
             {

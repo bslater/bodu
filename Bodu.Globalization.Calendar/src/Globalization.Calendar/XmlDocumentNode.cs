@@ -62,11 +62,11 @@ internal sealed class XmlDocumentNode
     }
 
     /// <inheritdoc />
-    public IReadOnlyList<string> ScalarList(string? xmlWrapper, string xmlItem, string xmlAttribute, string jsonProperty) =>
+    public IReadOnlyList<string> ScalarList(string? xmlWrapper, string xmlItem, string xmlAttribute, string jsonProperty, string field, ICollection<NotableDateValidationDiagnostic> diagnostics) =>
         ReadScalarList(xmlWrapper, xmlItem, xmlAttribute) ?? [];
 
     /// <inheritdoc />
-    public IReadOnlyList<string>? OptionalScalarList(string? xmlWrapper, string xmlItem, string xmlAttribute, string jsonProperty) =>
+    public IReadOnlyList<string>? OptionalScalarList(string? xmlWrapper, string xmlItem, string xmlAttribute, string jsonProperty, string field, ICollection<NotableDateValidationDiagnostic> diagnostics) =>
         ReadScalarList(xmlWrapper, xmlItem, xmlAttribute);
 
     /// <inheritdoc />
@@ -95,7 +95,7 @@ internal sealed class XmlDocumentNode
     }
 
     /// <inheritdoc />
-    public IReadOnlyList<(string? Qualifier, string Name)> QualifiedReferenceList(string? xmlWrapper, string xmlItem, string qualifierName, string name, string jsonProperty, string field, ICollection<NotableDateValidationDiagnostic> diagnostics)
+    public IReadOnlyList<(string? Qualifier, string Name)> QualifiedReferenceList(string? xmlWrapper, string xmlItem, string qualifierName, string name, string jsonProperty, NotableDateSchemaType itemType, string field, ICollection<NotableDateValidationDiagnostic> diagnostics)
     {
         XElement? container = xmlWrapper is null ? _element : _element.Element(_ns + xmlWrapper);
         if (container is null)
@@ -106,6 +106,24 @@ internal sealed class XmlDocumentNode
             references.Add(((string?)item.Attribute(qualifierName), (string?)item.Attribute(name) ?? string.Empty));
 
         return references;
+    }
+
+    /// <inheritdoc />
+    public void CheckPattern(string? value, NotableDateSchemaPattern pattern, string field, ICollection<NotableDateValidationDiagnostic> diagnostics)
+    {
+        // The schema validation that precedes reading has already reported a value that breaks its pattern.
+    }
+
+    /// <inheritdoc />
+    public void CheckRequired(NotableDateSchemaType type, ICollection<NotableDateValidationDiagnostic> diagnostics)
+    {
+        // The schema validation that precedes reading has already reported a missing required attribute or element.
+    }
+
+    /// <inheritdoc />
+    public void CheckRange(int? value, NotableDateSchemaRange range, string field, ICollection<NotableDateValidationDiagnostic> diagnostics)
+    {
+        // The schema validation that precedes reading has already reported a value outside the range.
     }
 
     /// <inheritdoc />

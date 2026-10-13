@@ -127,13 +127,40 @@
     <value>The {0} value '{1}' is not a month; expected a full English month name or an integer between 1 and 12.</value>
   </data>
   <data name="Validation_InvalidTextItem" xml:space="preserve">
-    <value>The {0} item '{1}' is not a string.</value>
+    <value>The {0} list holds a JSON {1} item, which is not a string.</value>
   </data>
   <data name="Validation_InvalidReferenceItem" xml:space="preserve">
-    <value>The {0} item '{1}' is neither a rule identifier nor a reference object.</value>
+    <value>The {0} list holds a JSON {1} item, which is neither a rule identifier nor a reference object.</value>
   </data>
   <data name="Validation_InvalidScalarValue" xml:space="preserve">
-    <value>The '{0}' property holds {1}, which is not a string, number or Boolean.</value>
+    <value>The '{0}' property holds a JSON {1}, which is not a string, number or Boolean.</value>
+  </data>
+  <data name="Validation_InvalidScalarItem" xml:space="preserve">
+    <value>The {0} list holds a JSON {1} item, which is not a string, number or Boolean.</value>
+  </data>
+  <data name="Validation_InvalidObjectValue" xml:space="preserve">
+    <value>The '{0}' property holds a JSON {1}, which is not an object.</value>
+  </data>
+  <data name="Validation_InvalidListValue" xml:space="preserve">
+    <value>The '{0}' property holds a JSON {1}, which is not an array.</value>
+  </data>
+  <data name="Validation_InvalidObjectItem" xml:space="preserve">
+    <value>The '{0}' property holds a JSON {1} item, which is not an object.</value>
+  </data>
+  <data name="Validation_SchemaPatternMismatch" xml:space="preserve">
+    <value>The '{0}' value '{1}' does not match the pattern '{2}' the schema requires.</value>
+  </data>
+  <data name="Validation_SchemaRequiredPropertyMissing" xml:space="preserve">
+    <value>The '{0}' object has no '{1}' property, which the schema requires.</value>
+  </data>
+  <data name="Validation_SchemaRequiredListEmpty" xml:space="preserve">
+    <value>The '{0}' object's '{1}' property holds an empty list, which the schema does not allow.</value>
+  </data>
+  <data name="Validation_SchemaValueBelowMinimum" xml:space="preserve">
+    <value>The '{0}' value '{1}' is less than {2}, the minimum the schema allows.</value>
+  </data>
+  <data name="Validation_SchemaValueAboveMaximum" xml:space="preserve">
+    <value>The '{0}' value '{1}' is greater than {2}, the maximum the schema allows.</value>
   </data>
   <data name="Validation_OverrideNotableDateNotFound" xml:space="preserve">
     <value>Override operation targets notable date '{0}', which does not exist in the resolved resource.</value>

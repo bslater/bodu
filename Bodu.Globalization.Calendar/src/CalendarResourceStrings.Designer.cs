@@ -250,7 +250,7 @@ namespace Bodu {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to The {0} item &apos;{1}&apos; is not a string..
+        ///   Looks up a localized string similar to The {0} list holds a JSON {1} item, which is not a string..
         /// </summary>
         internal static string Validation_InvalidTextItem {
             get {
@@ -259,7 +259,7 @@ namespace Bodu {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to The {0} item &apos;{1}&apos; is neither a rule identifier nor a reference object..
+        ///   Looks up a localized string similar to The {0} list holds a JSON {1} item, which is neither a rule identifier nor a reference object..
         /// </summary>
         internal static string Validation_InvalidReferenceItem {
             get {
@@ -268,11 +268,92 @@ namespace Bodu {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to The &apos;{0}&apos; property holds {1}, which is not a string, number or Boolean..
+        ///   Looks up a localized string similar to The &apos;{0}&apos; property holds a JSON {1}, which is not a string, number or Boolean..
         /// </summary>
         internal static string Validation_InvalidScalarValue {
             get {
                 return ResourceManager.GetString("Validation_InvalidScalarValue", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The {0} list holds a JSON {1} item, which is not a string, number or Boolean..
+        /// </summary>
+        internal static string Validation_InvalidScalarItem {
+            get {
+                return ResourceManager.GetString("Validation_InvalidScalarItem", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The &apos;{0}&apos; property holds a JSON {1}, which is not an object..
+        /// </summary>
+        internal static string Validation_InvalidObjectValue {
+            get {
+                return ResourceManager.GetString("Validation_InvalidObjectValue", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The &apos;{0}&apos; property holds a JSON {1}, which is not an array..
+        /// </summary>
+        internal static string Validation_InvalidListValue {
+            get {
+                return ResourceManager.GetString("Validation_InvalidListValue", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The &apos;{0}&apos; property holds a JSON {1} item, which is not an object..
+        /// </summary>
+        internal static string Validation_InvalidObjectItem {
+            get {
+                return ResourceManager.GetString("Validation_InvalidObjectItem", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The &apos;{0}&apos; value &apos;{1}&apos; does not match the pattern &apos;{2}&apos; the schema requires..
+        /// </summary>
+        internal static string Validation_SchemaPatternMismatch {
+            get {
+                return ResourceManager.GetString("Validation_SchemaPatternMismatch", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The &apos;{0}&apos; object has no &apos;{1}&apos; property, which the schema requires..
+        /// </summary>
+        internal static string Validation_SchemaRequiredPropertyMissing {
+            get {
+                return ResourceManager.GetString("Validation_SchemaRequiredPropertyMissing", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The &apos;{0}&apos; object&apos;s &apos;{1}&apos; property holds an empty list, which the schema does not allow..
+        /// </summary>
+        internal static string Validation_SchemaRequiredListEmpty {
+            get {
+                return ResourceManager.GetString("Validation_SchemaRequiredListEmpty", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The &apos;{0}&apos; value &apos;{1}&apos; is less than {2}, the minimum the schema allows..
+        /// </summary>
+        internal static string Validation_SchemaValueBelowMinimum {
+            get {
+                return ResourceManager.GetString("Validation_SchemaValueBelowMinimum", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The &apos;{0}&apos; value &apos;{1}&apos; is greater than {2}, the maximum the schema allows..
+        /// </summary>
+        internal static string Validation_SchemaValueAboveMaximum {
+            get {
+                return ResourceManager.GetString("Validation_SchemaValueAboveMaximum", resourceCulture);
             }
         }
 

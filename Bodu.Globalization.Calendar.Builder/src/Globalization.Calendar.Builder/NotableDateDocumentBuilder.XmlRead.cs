@@ -507,6 +507,68 @@ public sealed partial class NotableDateDocumentBuilder
     }
 
     /// <summary>
+    /// Parses an optional date with the loader's rules: a present value must be a date in the form <c>yyyy-MM-dd</c>.
+    /// </summary>
+    /// <param name="value">The string form, or <see langword="null" /> when absent.</param>
+    /// <param name="field">The name of the field the value belongs to, used in the exception message.</param>
+    /// <returns>The date, or <see langword="null" /> when the value is absent.</returns>
+    /// <exception cref="FormatException">
+    /// <paramref name="value" /> is not a date in the form <c>yyyy-MM-dd</c>.
+    /// </exception>
+    private static DateOnly? ParseNullableDate(string? value, string field)
+    {
+        List<NotableDateValidationDiagnostic> diagnostics = new();
+        DateOnly? result = NotableDateDocumentParseHelpers.ParseNullableDate(value, field, diagnostics);
+        ThrowIfMalformed(diagnostics);
+
+        return result;
+    }
+
+    /// <summary>
+    /// Parses a strategy's month with the loader's rules: a full English month name, ignoring case, or an integer
+    /// between 1 and 12.
+    /// </summary>
+    /// <param name="value">The string form.</param>
+    /// <param name="notableDateId">
+    /// The identifier of the concept the rule belongs to, used in the exception message.
+    /// </param>
+    /// <param name="ruleId">The identifier of the rule, used in the exception message.</param>
+    /// <returns>The one-based month.</returns>
+    /// <exception cref="FormatException"><paramref name="value" /> is not a month.</exception>
+    private static int ParseMonth(string value, string notableDateId, string ruleId)
+    {
+        List<NotableDateValidationDiagnostic> diagnostics = new();
+        int result = NotableDateDocumentParseHelpers.ParseMonth(value, notableDateId, ruleId, diagnostics);
+        ThrowIfMalformed(diagnostics);
+
+        return result;
+    }
+
+    /// <summary>
+    /// Parses a fixed strategy's month with the loader's rules for the rule's calendar: a Gregorian month as
+    /// <see cref="ParseMonth(string, string, string)" /> reads it, and a month in another calendar as an integer
+    /// between 1 and 13 or a month name the loader recognizes.
+    /// </summary>
+    /// <param name="value">The string form.</param>
+    /// <param name="calendar">The calendar the month is expressed in.</param>
+    /// <param name="notableDateId">
+    /// The identifier of the concept the rule belongs to, used in the exception message.
+    /// </param>
+    /// <param name="ruleId">The identifier of the rule, used in the exception message.</param>
+    /// <returns>
+    /// The one-based month, or <c>0</c> when a month alias supplies it, and the alias, or <see langword="null" />.
+    /// </returns>
+    /// <exception cref="FormatException"><paramref name="value" /> is not a month of the calendar.</exception>
+    private static (int Month, string? Alias) ParseFixedMonth(string value, CalendarSystem calendar, string notableDateId, string ruleId)
+    {
+        List<NotableDateValidationDiagnostic> diagnostics = new();
+        (int Month, string? Alias) result = NotableDateDocumentParseHelpers.ParseFixedMonth(value, calendar, notableDateId, ruleId, diagnostics);
+        ThrowIfMalformed(diagnostics);
+
+        return result;
+    }
+
+    /// <summary>
     /// Parses an optional adjustment trigger month with the loader's rules: a present value must be a full English
     /// month name, ignoring case, or an integer between 1 and 12.
     /// </summary>

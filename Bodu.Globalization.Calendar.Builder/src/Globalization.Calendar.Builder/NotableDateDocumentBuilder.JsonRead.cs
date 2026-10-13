@@ -8,6 +8,7 @@ using System.Globalization;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Xml.Linq;
+using Bodu.Globalization.Calendar.Algorithms;
 using Bodu.Globalization.Calendar.RangeResolution;
 
 namespace Bodu.Globalization.Calendar.Builder;
@@ -18,32 +19,35 @@ namespace Bodu.Globalization.Calendar.Builder;
 /// </summary>
 public sealed partial class NotableDateDocumentBuilder
 {
-    /// <summary>Maps each JSON strategy property name, matched ignoring case as the loader matches it, to the corresponding XML strategy element local name.</summary>
-    private static readonly Dictionary<string, string> s_jsonStrategyElementNames = new(StringComparer.OrdinalIgnoreCase)
+    /// <summary>Maps each JSON strategy kind, matched ignoring case as the loader matches it, to the local name of its XML element, its schema type, and the names of the attributes the loader reads from its body, which are the element's schema attribute names.</summary>
+    private static readonly Dictionary<string, (string Element, NotableDateSchemaType Type, string[] Attributes)> s_jsonStrategyKinds = new(StringComparer.OrdinalIgnoreCase)
     {
-        ["fixed"] = "Fixed",
-        ["dayOfWeekInMonth"] = "DayOfWeekInMonth",
-        ["weekdayNearDate"] = "WeekdayNearDate",
-        ["relativeWeekdayInMonth"] = "RelativeWeekdayInMonth",
-        ["offsetFromRule"] = "OffsetFromRule",
-        ["algorithm"] = "Algorithm",
-        ["weekdayNearRule"] = "WeekdayNearRule",
-        ["nthWeekdayFromRule"] = "NthWeekdayFromRule",
-        ["workingDayOffsetFromRule"] = "WorkingDayOffsetFromRule",
-        ["workingDayInMonth"] = "WorkingDayInMonth",
-        ["ordinalDayOfMonth"] = "OrdinalDayOfMonth",
-        ["isoWeekDate"] = "IsoWeekDate",
-        ["dayOfYear"] = "DayOfYear",
+        ["fixed"] = ("Fixed", NotableDateSchemaType.FixedStrategy, ["month", "day", "skipLeapMonth", "sweepCalendarYears"]),
+        ["dayOfWeekInMonth"] = ("DayOfWeekInMonth", NotableDateSchemaType.DayOfWeekInMonthStrategy, ["month", "dayOfWeek", "weekOrdinal"]),
+        ["weekdayNearDate"] = ("WeekdayNearDate", NotableDateSchemaType.WeekdayNearDateStrategy, ["month", "day", "dayOfWeek", "direction"]),
+        ["relativeWeekdayInMonth"] = ("RelativeWeekdayInMonth", NotableDateSchemaType.RelativeWeekdayInMonthStrategy, ["month", "dayOfWeek", "weekOrdinal", "relativeDayOfWeek", "direction"]),
+        ["offsetFromRule"] = ("OffsetFromRule", NotableDateSchemaType.OffsetFromRuleStrategy, ["notableDateRef", "ruleRef", "offsetDays"]),
+        ["algorithm"] = ("Algorithm", NotableDateSchemaType.AlgorithmStrategy, ["key"]),
+        ["weekdayNearRule"] = ("WeekdayNearRule", NotableDateSchemaType.WeekdayNearRuleStrategy, ["notableDateRef", "ruleRef", "dayOfWeek", "direction", "referenceYearOffset"]),
+        ["nthWeekdayFromRule"] = ("NthWeekdayFromRule", NotableDateSchemaType.NthWeekdayFromRuleStrategy, ["notableDateRef", "ruleRef", "dayOfWeek", "ordinal", "referenceYearOffset"]),
+        ["workingDayOffsetFromRule"] = ("WorkingDayOffsetFromRule", NotableDateSchemaType.WorkingDayOffsetFromRuleStrategy, ["notableDateRef", "ruleRef", "offsetWorkingDays", "referenceYearOffset"]),
+        ["workingDayInMonth"] = ("WorkingDayInMonth", NotableDateSchemaType.WorkingDayInMonthStrategy, ["month", "ordinal"]),
+        ["ordinalDayOfMonth"] = ("OrdinalDayOfMonth", NotableDateSchemaType.OrdinalDayOfMonthStrategy, ["month", "ordinal"]),
+        ["isoWeekDate"] = ("IsoWeekDate", NotableDateSchemaType.IsoWeekDateStrategy, ["week", "dayOfWeek"]),
+        ["dayOfYear"] = ("DayOfYear", NotableDateSchemaType.DayOfYearStrategy, ["ordinal"]),
     };
 
-    /// <summary>Maps each JSON recurrence property name, matched ignoring case as the loader matches it, to the corresponding XML recurrence element local name.</summary>
-    private static readonly Dictionary<string, string> s_jsonRecurrenceElementNames = new(StringComparer.OrdinalIgnoreCase)
+    /// <summary>Maps each JSON recurrence kind, matched ignoring case as the loader matches it, to the local name of its XML element, its schema type, and the names of the attributes the loader reads from its body, which are the element's schema attribute names; a weekly recurrence's <c>days</c> list, which becomes child elements, is read apart from them.</summary>
+    private static readonly Dictionary<string, (string Element, NotableDateSchemaType Type, string[] Attributes)> s_jsonRecurrenceKinds = new(StringComparer.OrdinalIgnoreCase)
     {
-        ["dailyInterval"] = "DailyInterval",
-        ["weekly"] = "Weekly",
-        ["monthlyDay"] = "MonthlyDay",
-        ["monthlyWeekday"] = "MonthlyWeekday",
+        ["dailyInterval"] = ("DailyInterval", NotableDateSchemaType.DailyIntervalRecurrence, ["anchorDate", "intervalDays"]),
+        ["weekly"] = ("Weekly", NotableDateSchemaType.WeeklyRecurrence, ["intervalWeeks", "anchorDate"]),
+        ["monthlyDay"] = ("MonthlyDay", NotableDateSchemaType.MonthlyDayRecurrence, ["dayOfMonth", "intervalMonths", "anchorDate", "invalidDayBehavior"]),
+        ["monthlyWeekday"] = ("MonthlyWeekday", NotableDateSchemaType.MonthlyWeekdayRecurrence, ["dayOfWeek", "weekOrdinal", "intervalMonths", "anchorDate"]),
     };
+
+    /// <summary>The white-space characters the schema collapses around an integer before matching its pattern.</summary>
+    private static readonly char[] s_xmlWhiteSpace = [' ', '\t', '\r', '\n'];
 
     /// <summary>
     /// Reads the JSON <c>metadata</c> object into the builder.
@@ -54,10 +58,10 @@ public sealed partial class NotableDateDocumentBuilder
         if (metadata is null)
             return;
 
-        _metadataName = UnreadText(metadata["name"], "a metadata name that is an object or an array");
-        _metadataDescription = UnreadText(metadata["description"], "a metadata description that is an object or an array");
+        _metadataName = UnreadText(metadata, "name", "a metadata name that is an object or an array");
+        _metadataDescription = UnreadText(metadata, "description", "a metadata description that is an object or an array");
         _sources.Clear();
-        _sources.AddRange(ReadUnreadTextArray(metadata["sources"] as JsonArray, "a metadata source that is an object or an array"));
+        _sources.AddRange(ReadUnreadTextArray(Property(metadata, "sources") as JsonArray, "a metadata source that is an object or an array"));
     }
 
     /// <summary>
@@ -69,19 +73,19 @@ public sealed partial class NotableDateDocumentBuilder
         if (policyJson is null)
             return;
 
-        DayOfWeekSet? workingWeek = ParseWorkingWeek(ScalarText(policyJson["workingDays"]));
+        DayOfWeekSet? workingWeek = ParseWorkingWeek(ScalarText(policyJson, "workingDays"));
 
-        IReadOnlyList<NotableDateCategory>? categoryPrecedence = policyJson["categoryPrecedence"] is not JsonArray array
+        IReadOnlyList<NotableDateCategory>? categoryPrecedence = ArrayProperty(policyJson, "categoryPrecedence") is not JsonArray array
             ? null
-            : [.. ReadNameArray(array).Select(item => ParseEnum<NotableDateCategory>(item, "categoryPrecedence"))];
+            : [.. ReadNameArray(array, "categoryPrecedence").Select(item => ParseEnum<NotableDateCategory>(item, "categoryPrecedence"))];
 
         ResolutionPolicyBuilder policy = new();
         policy.SetParsedValues(
-            ParseNullableEnum<DuplicatePolicy>(ScalarText(policyJson["duplicatePolicy"]), "duplicatePolicy"),
-            ParseNullableEnum<CollisionPolicy>(ScalarText(policyJson["sameDayCollisionPolicy"]), "sameDayCollisionPolicy"),
-            ParseNullableEnum<CollisionPolicy>(ScalarText(policyJson["spanCollisionPolicy"]), "spanCollisionPolicy"),
-            ParseNullableEnum<PriorityDirection>(ScalarText(policyJson["priorityDirection"]), "priorityDirection"),
-            ParseNullableEnum<ObservedDateRangePolicy>(ScalarText(policyJson["observedDateRangePolicy"]), "observedDateRangePolicy"),
+            ParseNullableEnum<DuplicatePolicy>(ScalarText(policyJson, "duplicatePolicy"), "duplicatePolicy"),
+            ParseNullableEnum<CollisionPolicy>(ScalarText(policyJson, "sameDayCollisionPolicy"), "sameDayCollisionPolicy"),
+            ParseNullableEnum<CollisionPolicy>(ScalarText(policyJson, "spanCollisionPolicy"), "spanCollisionPolicy"),
+            ParseNullableEnum<PriorityDirection>(ScalarText(policyJson, "priorityDirection"), "priorityDirection"),
+            ParseNullableEnum<ObservedDateRangePolicy>(ScalarText(policyJson, "observedDateRangePolicy"), "observedDateRangePolicy"),
             workingWeek,
             categoryPrecedence);
 
@@ -92,16 +96,11 @@ public sealed partial class NotableDateDocumentBuilder
     /// Reads the JSON <c>adjustmentPolicies</c> array into the builder.
     /// </summary>
     /// <param name="array">The adjustment-policies array, or <see langword="null" /> when absent.</param>
+    /// <exception cref="FormatException">An item is not an object.</exception>
     private void ReadAdjustmentPoliciesJson(JsonArray? array)
     {
-        if (array is null)
-            return;
-
-        foreach (JsonNode? node in array)
-        {
-            if (node is JsonObject policyJson)
-                _adjustmentPolicies.Add(ReadAdjustmentPolicyJson(policyJson));
-        }
+        foreach (JsonObject policyJson in ObjectItems(array, "adjustmentPolicies"))
+            _adjustmentPolicies.Add(ReadAdjustmentPolicyJson(policyJson));
     }
 
     /// <summary>
@@ -111,46 +110,50 @@ public sealed partial class NotableDateDocumentBuilder
     /// <returns>The reconstructed <see cref="AdjustmentPolicyBuilder" />.</returns>
     private static AdjustmentPolicyBuilder ReadAdjustmentPolicyJson(JsonObject policyJson)
     {
-        AdjustmentPolicyBuilder policy = new(ScalarText(policyJson["id"]) ?? string.Empty);
+        ThrowIfRequiredMissing(policyJson, NotableDateSchemaType.AdjustmentPolicy);
+        AdjustmentPolicyBuilder policy = new(ScalarText(policyJson, "id") ?? string.Empty);
         policy.SetParsedHeader(
-            JsonInt(policyJson["priority"], "adjustment policy priority"),
-            UnreadText(policyJson["description"], "an adjustment policy description that is an object or an array"),
-            ReadScopeJson(policyJson["scope"] as JsonObject));
+            JsonInt(policyJson, "priority", "adjustment policy priority"),
+            UnreadText(policyJson, "description", "an adjustment policy description that is an object or an array"),
+            ReadScopeJson(ObjectProperty(policyJson, "scope")));
 
-        if (policyJson["trigger"] is JsonObject trigger)
+        if (ObjectProperty(policyJson, "trigger") is JsonObject trigger)
         {
+            ThrowIfRequiredMissing(trigger, NotableDateSchemaType.AdjustmentTrigger);
             policy.SetParsedTrigger(
-                ParseNullableEnum<AdjustmentTrigger>(ScalarText(trigger["type"]), "trigger type"),
-                ReadNameArray(trigger["weekdays"] as JsonArray).Select(day => ParseEnum<DayOfWeek>(day, "trigger weekdays")),
-                ParseTriggerMonth(ScalarText(trigger["month"]), "trigger month"),
-                JsonInt(trigger["day"], "trigger day"),
-                ParseNullableEnum<WeekOrdinal>(ScalarText(trigger["weekOrdinal"]), "trigger weekOrdinal"),
-                ScalarText(trigger["handlerKey"]));
+                ParseNullableEnum<AdjustmentTrigger>(ScalarText(trigger, "type"), "trigger type"),
+                ReadNameArray(ArrayProperty(trigger, "weekdays"), "trigger weekdays").Select(day => ParseEnum<DayOfWeek>(day, "trigger weekdays")),
+                ParseTriggerMonth(ScalarText(trigger, "month"), "trigger month"),
+                JsonInt(trigger, "day", "trigger day", NotableDateSchemaRange.DayValue),
+                ParseNullableEnum<WeekOrdinal>(ScalarText(trigger, "weekOrdinal"), "trigger weekOrdinal"),
+                ScalarText(trigger, "handlerKey"));
         }
 
-        if (policyJson["action"] is JsonObject action)
+        if (ObjectProperty(policyJson, "action") is JsonObject action)
         {
+            ThrowIfRequiredMissing(action, NotableDateSchemaType.AdjustmentAction);
             policy.SetParsedAction(
-                ParseNullableEnum<AdjustmentAction>(ScalarText(action["type"]), "action type"),
-                JsonInt(action["days"], "action days"),
-                ParseNullableEnum<DayOfWeek>(ScalarText(action["dayOfWeek"]), "action dayOfWeek"),
-                JsonInt(action["maxSearchDays"], "action maxSearchDays"),
-                JsonBool(action["skipWeekends"], "action skipWeekends"),
-                JsonBool(action["skipNonWorkingDates"], "action skipNonWorkingDates"),
-                ScalarText(action["notableDateRef"]),
-                ScalarText(action["ruleRef"]),
-                ScalarText(action["handlerKey"]));
+                ParseNullableEnum<AdjustmentAction>(ScalarText(action, "type"), "action type"),
+                JsonInt(action, "days", "action days"),
+                ParseNullableEnum<DayOfWeek>(ScalarText(action, "dayOfWeek"), "action dayOfWeek"),
+                JsonInt(action, "maxSearchDays", "action maxSearchDays", NotableDateSchemaRange.PositiveInteger),
+                JsonBool(action, "skipWeekends", "action skipWeekends"),
+                JsonBool(action, "skipNonWorkingDates", "action skipNonWorkingDates"),
+                ScalarText(action, "notableDateRef"),
+                ScalarText(action, "ruleRef"),
+                ScalarText(action, "handlerKey"));
         }
 
-        if (policyJson["emission"] is JsonObject emission)
+        if (ObjectProperty(policyJson, "emission") is JsonObject emission)
         {
+            ThrowIfRequiredMissing(emission, NotableDateSchemaType.AdjustmentEmission);
             policy.SetParsedEmission(
-                ParseNullableEnum<EmissionMode>(ScalarText(emission["mode"]), "emission mode"),
-                ScalarText(emission["reason"]),
-                JsonBool(emission["nonWorking"], "emission nonWorking"));
+                ParseNullableEnum<EmissionMode>(ScalarText(emission, "mode"), "emission mode"),
+                ScalarText(emission, "reason"),
+                JsonBool(emission, "nonWorking", "emission nonWorking"));
         }
 
-        if (policyJson["parameters"] is JsonObject parameters)
+        if (ObjectProperty(policyJson, "parameters") is JsonObject parameters)
             policy.SetParsedParameters(ReadParametersJson(parameters));
 
         return policy;
@@ -198,27 +201,33 @@ public sealed partial class NotableDateDocumentBuilder
 
         AdjustmentScopeBuilder scope = new();
         scope.SetParsedValues(
-            ReadTextArray(scopeJson["territories"] as JsonArray, "scope territories"),
-            ReadNameArray(scopeJson["calendars"] as JsonArray).Select(calendar => ParseEnum<CalendarSystem>(calendar, "scope calendars")),
-            ReadNameArray(scopeJson["categories"] as JsonArray).Select(category => ParseEnum<NotableDateCategory>(category, "scope categories")),
-            ReadTextArray(scopeJson["notableDateRefs"] as JsonArray, "scope notableDateRefs"),
-            ReadScopeRuleRefsJson(scopeJson["ruleRefs"] as JsonArray),
-            ReadIntArray(scopeJson["onlyYears"] as JsonArray, "scope onlyYears"),
-            ReadIntArray(scopeJson["exceptYears"] as JsonArray, "scope exceptYears"),
-            JsonInt(scopeJson["fromYear"], "scope fromYear"),
-            JsonInt(scopeJson["toYear"], "scope toYear"));
+            ReadTextArray(ArrayProperty(scopeJson, "territories"), "scope territories"),
+            ReadNameArray(ArrayProperty(scopeJson, "calendars"), "scope calendars").Select(calendar => ParseEnum<CalendarSystem>(calendar, "scope calendars")),
+            ReadNameArray(ArrayProperty(scopeJson, "categories"), "scope categories").Select(category => ParseEnum<NotableDateCategory>(category, "scope categories")),
+            ReadTextArray(ArrayProperty(scopeJson, "notableDateRefs"), "scope notableDateRefs"),
+            ReadScopeRuleRefsJson(ArrayProperty(scopeJson, "ruleRefs")),
+            ReadIntArray(ArrayProperty(scopeJson, "onlyYears"), "scope onlyYears", NotableDateSchemaRange.UnsignedShort, "onlyYears"),
+            ReadIntArray(ArrayProperty(scopeJson, "exceptYears"), "scope exceptYears", NotableDateSchemaRange.UnsignedShort, "exceptYears"),
+            JsonInt(scopeJson, "fromYear", "scope fromYear", NotableDateSchemaRange.UnsignedShort),
+            JsonInt(scopeJson, "toYear", "scope toYear", NotableDateSchemaRange.UnsignedShort));
 
         return scope;
     }
 
     /// <summary>
-    /// Reads a JSON adjustment scope's rule references, each of which must name its concept, since the document's XML
-    /// form has no unqualified rule reference.
+    /// Reads a JSON adjustment scope's rule references, each of which must be an object naming its concept and its
+    /// rule, as the schema's <c>RuleRef</c> type requires, since the document's XML form has no unqualified rule
+    /// reference.
     /// </summary>
     /// <param name="array">The <c>ruleRefs</c> array, or <see langword="null" /> when absent.</param>
     /// <returns>The qualified rule references; empty when the array is absent.</returns>
-    /// <exception cref="NotSupportedException">A reference does not name its concept.</exception>
-    /// <exception cref="FormatException">An item is neither a rule identifier nor a reference object.</exception>
+    /// <exception cref="NotSupportedException">
+    /// A reference is a bare rule identifier, which names no concept.
+    /// </exception>
+    /// <exception cref="FormatException">
+    /// A reference object lacks its <c>notableDateRef</c> or <c>ruleRef</c>, which the loader reports with
+    /// <c>BODU-CAL-SCHEMA</c>, or an item is neither a rule identifier nor a reference object.
+    /// </exception>
     private static List<(string NotableDateRef, string RuleRef)> ReadScopeRuleRefsJson(JsonArray? array)
     {
         List<(string NotableDateRef, string RuleRef)> references = new();
@@ -227,12 +236,19 @@ public sealed partial class NotableDateDocumentBuilder
 
         foreach (JsonNode? node in array)
         {
-            if (node is JsonObject reference && ScalarText(reference["notableDateRef"]) is string notableDateRef)
-                references.Add((notableDateRef, ScalarText(reference["ruleRef"]) ?? string.Empty));
-            else if (node is JsonObject || (node is JsonValue name && name.GetValueKind() == JsonValueKind.String))
-                throw UnrepresentableJsonField("a scope rule reference that does not name its notableDateRef");
-            else
-                throw new FormatException(string.Format(CultureInfo.CurrentCulture, CalendarResourceStrings.Validation_InvalidReferenceItem, "scope ruleRefs", node?.ToJsonString() ?? "null"));
+            switch (node)
+            {
+                case JsonObject reference:
+                    ThrowIfRequiredMissing(reference, NotableDateSchemaType.RuleRef);
+                    references.Add((ScalarText(reference, "notableDateRef") ?? string.Empty, ScalarText(reference, "ruleRef") ?? string.Empty));
+                    break;
+
+                case JsonValue name when name.GetValueKind() == JsonValueKind.String:
+                    throw UnrepresentableJsonField("a scope rule reference that does not name its notableDateRef");
+
+                default:
+                    throw ItemOfWrongKind(CalendarResourceStrings.Validation_InvalidReferenceItem, "scope ruleRefs", node);
+            }
         }
 
         return references;
@@ -242,16 +258,11 @@ public sealed partial class NotableDateDocumentBuilder
     /// Reads the JSON <c>notableDates</c> array into the builder.
     /// </summary>
     /// <param name="array">The notable-dates array, or <see langword="null" /> when absent.</param>
+    /// <exception cref="FormatException">An item of the array, or of a concept's rules, is not an object.</exception>
     private void ReadNotableDatesJson(JsonArray? array)
     {
-        if (array is null)
-            return;
-
-        foreach (JsonNode? node in array)
-        {
-            if (node is JsonObject definitionJson)
-                _definitions.Add(ReadNotableDateJson(definitionJson));
-        }
+        foreach (JsonObject definitionJson in ObjectItems(array, "notableDates"))
+            _definitions.Add(ReadNotableDateJson(definitionJson));
     }
 
     /// <summary>
@@ -261,24 +272,19 @@ public sealed partial class NotableDateDocumentBuilder
     /// <returns>The reconstructed concept builder.</returns>
     private static NotableDateDefinitionBuilder ReadNotableDateJson(JsonObject definitionJson)
     {
+        ThrowIfRequiredMissing(definitionJson, NotableDateSchemaType.NotableDate);
         NotableDateDefinitionBuilder definition = new(
-            ScalarText(definitionJson["id"]) ?? string.Empty,
-            ScalarText(definitionJson["displayName"]) ?? string.Empty,
-            ParseEnum<NotableDateCategory>(ScalarText(definitionJson["category"]), "category"));
+            ScalarText(definitionJson, "id") ?? string.Empty,
+            ScalarText(definitionJson, "displayName") ?? string.Empty,
+            ParseEnum<NotableDateCategory>(ScalarText(definitionJson, "category"), "category"));
 
         definition.SetParsedValues(
-            JsonInt(definitionJson["defaultDurationDays"], "defaultDurationDays"),
-            JsonBool(definitionJson["defaultNonWorkingDay"], "defaultNonWorkingDay"),
-            ReadTextArray(definitionJson["tags"] as JsonArray, "tags"));
+            JsonInt(definitionJson, "defaultDurationDays", "defaultDurationDays", NotableDateSchemaRange.PositiveInteger),
+            JsonBool(definitionJson, "defaultNonWorkingDay", "defaultNonWorkingDay"),
+            ReadTextArray(ArrayProperty(definitionJson, "tags"), "tags"));
 
-        if (definitionJson["rules"] is JsonArray rules)
-        {
-            foreach (JsonNode? node in rules)
-            {
-                if (node is JsonObject ruleJson)
-                    definition.AddRule(ReadRuleJson(ruleJson));
-            }
-        }
+        foreach (JsonObject ruleJson in ObjectItems(ArrayProperty(definitionJson, "rules"), "rules"))
+            definition.AddRule(ReadRuleJson(ruleJson, definition.Id));
 
         return definition;
     }
@@ -287,78 +293,157 @@ public sealed partial class NotableDateDocumentBuilder
     /// Reads a single JSON rule object into a rule builder.
     /// </summary>
     /// <param name="ruleJson">The rule object.</param>
+    /// <param name="notableDateId">
+    /// The identifier of the concept the rule belongs to, used in exception messages.
+    /// </param>
     /// <returns>The reconstructed rule builder.</returns>
-    private static NotableDateRuleBuilder ReadRuleJson(JsonObject ruleJson)
+    /// <exception cref="FormatException">
+    /// The rule's <c>strategy</c> and <c>recurrence</c> name no recognized kind or more than one between them, its
+    /// <c>untilDate</c> declares no end strategy or one that names no recognized kind or more than one, or a strategy
+    /// or recurrence attribute value does not parse.
+    /// </exception>
+    private static NotableDateRuleBuilder ReadRuleJson(JsonObject ruleJson, string notableDateId)
     {
-        NotableDateRuleBuilder rule = new(ScalarText(ruleJson["id"]) ?? string.Empty);
-        var applicability = ruleJson["applicability"] as JsonObject;
+        ThrowIfRequiredMissing(ruleJson, NotableDateSchemaType.Rule);
+        NotableDateRuleBuilder rule = new(ScalarText(ruleJson, "id") ?? string.Empty);
+        JsonObject? strategyJson = ObjectProperty(ruleJson, "strategy");
+        JsonObject? recurrenceJson = ObjectProperty(ruleJson, "recurrence");
+        ThrowIfOccurrenceSourceInvalid(strategyJson, recurrenceJson, notableDateId, rule.Id, patch: false);
+
+        JsonObject? applicability = ObjectProperty(ruleJson, "applicability");
+        CalendarSystem? calendar = applicability is null ? null : ParseNullableEnum<CalendarSystem>(ScalarText(applicability, "calendar"), "calendar");
 
         rule.SetParsedScalars(
-            JsonInt(ruleJson["priority"], "rule priority"),
-            ParseNullableEnum<NotableDateCategory>(ScalarText(ruleJson["category"]), "category"),
-            JsonBool(ruleJson["nonWorking"], "rule nonWorking"),
-            JsonInt(ruleJson["durationDays"], "durationDays"),
-            UnreadText(ruleJson["comment"], "a rule comment that is an object or an array"),
-            applicability is null ? null : ParseNullableEnum<CalendarSystem>(ScalarText(applicability["calendar"]), "calendar"),
-            applicability is null ? null : JsonInt(applicability["fromYear"], "applicability fromYear"),
-            applicability is null ? null : JsonInt(applicability["toYear"], "applicability toYear"),
-            applicability is null ? null : JsonInt(applicability["everyYears"], "applicability everyYears"),
-            applicability is null ? null : JsonInt(applicability["anchorYear"], "applicability anchorYear"));
+            JsonInt(ruleJson, "priority", "rule priority"),
+            ParseNullableEnum<NotableDateCategory>(ScalarText(ruleJson, "category"), "category"),
+            JsonBool(ruleJson, "nonWorking", "rule nonWorking"),
+            JsonInt(ruleJson, "durationDays", "durationDays", NotableDateSchemaRange.PositiveInteger),
+            UnreadText(ruleJson, "comment", "a rule comment that is an object or an array"),
+            calendar,
+            applicability is null ? null : JsonInt(applicability, "fromYear", "applicability fromYear", NotableDateSchemaRange.UnsignedShort),
+            applicability is null ? null : JsonInt(applicability, "toYear", "applicability toYear", NotableDateSchemaRange.UnsignedShort),
+            applicability is null ? null : JsonInt(applicability, "everyYears", "applicability everyYears", NotableDateSchemaRange.PositiveInteger),
+            applicability is null ? null : JsonInt(applicability, "anchorYear", "applicability anchorYear", NotableDateSchemaRange.UnsignedShort));
 
         rule.SetParsedCollections(
-            applicability is null ? Array.Empty<string>() : ReadTextArray(applicability["territories"] as JsonArray, "applicability territories"),
-            applicability is null ? Array.Empty<int>() : ReadIntArray(applicability["onlyYears"] as JsonArray, "applicability onlyYears"),
-            applicability is null ? Array.Empty<int>() : ReadIntArray(applicability["exceptYears"] as JsonArray, "applicability exceptYears"),
-            ReadTextArray(ruleJson["tags"] as JsonArray, "rule tags"),
-            ReadTextArray(ruleJson["adjustments"] as JsonArray, "rule adjustments"));
+            applicability is null ? Array.Empty<string>() : ReadTextArray(ArrayProperty(applicability, "territories"), "applicability territories"),
+            applicability is null ? Array.Empty<int>() : ReadIntArray(ArrayProperty(applicability, "onlyYears"), "applicability onlyYears", NotableDateSchemaRange.UnsignedShort, "onlyYears"),
+            applicability is null ? Array.Empty<int>() : ReadIntArray(ArrayProperty(applicability, "exceptYears"), "applicability exceptYears", NotableDateSchemaRange.UnsignedShort, "exceptYears"),
+            ReadTextArray(ArrayProperty(ruleJson, "tags"), "rule tags"),
+            ReadTextArray(ArrayProperty(ruleJson, "adjustments"), "rule adjustments"));
 
-        rule.SetParsedStrategy(BuildStrategyElement(ruleJson["strategy"] as JsonObject));
+        // The loader reads a fixed month in the calendar the applicability names, Gregorian when it names none.
+        CalendarSystem strategyCalendar = calendar ?? CalendarSystem.Gregorian;
+        rule.SetParsedStrategy(BuildStrategyElement(strategyJson, strategyCalendar, notableDateId, rule.Id));
 
-        if (BuildRecurrenceElement(ruleJson["recurrence"] as JsonObject) is XElement recurrence)
+        if (BuildRecurrenceElement(recurrenceJson, notableDateId, rule.Id) is XElement recurrence)
             rule.SetParsedRecurrence(recurrence);
 
-        if ((ruleJson["duration"] as JsonObject)?["untilDate"] is JsonObject untilDate)
-        {
-            rule.SetParsedDuration(
-                BuildStrategyElement(untilDate["strategy"] as JsonObject),
-                ParseNullableEnum<DateBoundary>(ScalarText(untilDate["startBoundary"]), "untilDate startBoundary") ?? DateBoundary.Inclusive,
-                ParseNullableEnum<DateBoundary>(ScalarText(untilDate["endBoundary"]), "untilDate endBoundary") ?? DateBoundary.Inclusive,
-                ParseNullableEnum<EndDateSelection>(ScalarText(untilDate["selection"]), "untilDate selection") ?? EndDateSelection.FirstOnOrAfterStart);
-        }
+        ReadUntilDateJson(ruleJson, rule, strategyCalendar, notableDateId);
 
         return rule;
     }
 
     /// <summary>
-    /// Reconstructs a <c>Recurrence</c> element from a JSON recurrence object.
+    /// Reads the calculated end-date duration of a JSON rule or <c>PatchRule</c> override, when it declares one, into a
+    /// rule builder.
+    /// </summary>
+    /// <param name="owner">The rule or override object.</param>
+    /// <param name="rule">The rule builder that receives the duration.</param>
+    /// <param name="calendar">The calendar the rule's fixed months are read in.</param>
+    /// <param name="notableDateId">
+    /// The identifier of the concept the rule belongs to, used in exception messages.
+    /// </param>
+    /// <exception cref="FormatException">
+    /// The <c>duration</c> has no <c>untilDate</c>, which the loader reports with <c>BODU-CAL-SCHEMA</c>, the
+    /// <c>untilDate</c> declares no end strategy, or one that names no recognized kind or more than one, or an end
+    /// strategy attribute value does not parse.
+    /// </exception>
+    private static void ReadUntilDateJson(JsonObject owner, NotableDateRuleBuilder rule, CalendarSystem calendar, string notableDateId)
+    {
+        if (ObjectProperty(owner, "duration") is not JsonObject duration)
+            return;
+
+        ThrowIfRequiredMissing(duration, NotableDateSchemaType.Duration);
+        if (ObjectProperty(duration, "untilDate") is not JsonObject untilDate)
+            return;
+
+        rule.SetParsedDuration(
+            BuildEndStrategyElement(untilDate, calendar, notableDateId, rule.Id),
+            ParseNullableEnum<DateBoundary>(ScalarText(untilDate, "startBoundary"), "untilDate startBoundary") ?? DateBoundary.Inclusive,
+            ParseNullableEnum<DateBoundary>(ScalarText(untilDate, "endBoundary"), "untilDate endBoundary") ?? DateBoundary.Inclusive,
+            ParseNullableEnum<EndDateSelection>(ScalarText(untilDate, "selection"), "untilDate selection") ?? EndDateSelection.FirstOnOrAfterStart);
+    }
+
+    /// <summary>
+    /// Builds the end strategy element of a JSON <c>untilDate</c>, which must name exactly one recognized kind, as the
+    /// loader requires.
+    /// </summary>
+    /// <param name="untilDate">The <c>untilDate</c> object.</param>
+    /// <param name="calendar">The calendar the rule's fixed months are read in.</param>
+    /// <param name="notableDateId">
+    /// The identifier of the concept the rule belongs to, used in exception messages.
+    /// </param>
+    /// <param name="ruleId">The identifier of the rule, used in exception messages.</param>
+    /// <returns>The end strategy element.</returns>
+    /// <exception cref="FormatException">
+    /// The <c>untilDate</c> declares no end strategy, which the loader reports with <c>BODU-CAL-DURATION-NOEND</c>, or
+    /// one that names no recognized kind, reported the same way, or more than one, which the loader reports with
+    /// <c>BODU-CAL-DURATION-CONFLICT</c>, or an attribute value of the end strategy does not parse.
+    /// </exception>
+    private static XElement BuildEndStrategyElement(JsonObject untilDate, CalendarSystem calendar, string notableDateId, string ruleId)
+    {
+        JsonObject? strategyJson = ObjectProperty(untilDate, "strategy");
+        int kinds = CountKinds(strategyJson, s_jsonStrategyKinds.Keys);
+        if (kinds == 1 && BuildStrategyElement(strategyJson, calendar, notableDateId, ruleId) is XElement element)
+            return element;
+
+        string format = strategyJson is null
+            ? CalendarResourceStrings.Validation_DurationEndStrategyMissing
+            : kinds == 0
+                ? CalendarResourceStrings.Validation_DurationEndStrategyKindMissing
+                : CalendarResourceStrings.Validation_DurationEndStrategyConflict;
+
+        throw new FormatException(string.Format(CultureInfo.CurrentCulture, format, notableDateId, ruleId));
+    }
+
+    /// <summary>
+    /// Reconstructs a <c>Recurrence</c> element from a JSON recurrence object, from its first recognized kind.
     /// </summary>
     /// <param name="recurrenceJson">The recurrence object, or <see langword="null" /> when absent.</param>
-    /// <returns>The reconstructed recurrence element, or <see langword="null" /> when absent or empty.</returns>
-    private static XElement? BuildRecurrenceElement(JsonObject? recurrenceJson)
+    /// <param name="notableDateId">
+    /// The identifier of the concept the rule belongs to, used in exception messages.
+    /// </param>
+    /// <param name="ruleId">The identifier of the rule, used in exception messages.</param>
+    /// <returns>
+    /// The reconstructed recurrence element, or <see langword="null" /> when the object is absent or names no
+    /// recognized kind.
+    /// </returns>
+    /// <exception cref="FormatException">An attribute value of the recurrence does not parse.</exception>
+    /// <remarks>
+    /// Each attribute is read as the loader reads it, its name matched ignoring case and its value parsed with the
+    /// loader's rules, and is written under its schema name in the form the schema accepts; a property the loader does
+    /// not read is ignored, as the loader ignores it.
+    /// </remarks>
+    private static XElement? BuildRecurrenceElement(JsonObject? recurrenceJson, string notableDateId, string ruleId)
     {
         if (recurrenceJson is null)
             return null;
 
-        foreach (KeyValuePair<string, JsonNode?> property in recurrenceJson)
+        foreach ((string kind, (string elementName, NotableDateSchemaType type, string[] attributes)) in s_jsonRecurrenceKinds)
         {
-            if (property.Value is not JsonObject body || !s_jsonRecurrenceElementNames.TryGetValue(property.Key, out string? elementName))
+            if (ObjectProperty(recurrenceJson, kind) is not JsonObject body)
                 continue;
 
-            XElement kind = new(BuilderXml.Namespace + elementName);
-            foreach (KeyValuePair<string, JsonNode?> attribute in body)
+            // A recurrence reads no month, so the calendar it is read in does not matter.
+            XElement element = BuildKindElement(kind, elementName, type, attributes, body, CalendarSystem.Gregorian, notableDateId, ruleId);
+            if (string.Equals(kind, "weekly", StringComparison.Ordinal) && ArrayProperty(body, "days") is JsonArray days)
             {
-                if (string.Equals(attribute.Key, "days", StringComparison.Ordinal) && attribute.Value is JsonArray days)
-                {
-                    foreach (JsonNode? day in days)
-                        kind.Add(new XElement(BuilderXml.Namespace + "Day", new XAttribute("dayOfWeek", ParseEnum<DayOfWeek>(ItemText(day), "weekly days").ToString())));
-                }
-                else
-                {
-                    kind.SetAttributeValue(attribute.Key, ConvertStrategyAttribute(attribute.Key, attribute.Value));
-                }
+                foreach (JsonNode? day in days)
+                    element.Add(new XElement(BuilderXml.Namespace + "Day", new XAttribute("dayOfWeek", ParseEnum<DayOfWeek>(ItemText(day, "weekly days"), "weekly days").ToString())));
             }
 
-            return new XElement(BuilderXml.Namespace + "Recurrence", kind);
+            return new XElement(BuilderXml.Namespace + "Recurrence", element);
         }
 
         return null;
@@ -368,17 +453,15 @@ public sealed partial class NotableDateDocumentBuilder
     /// Reads the JSON <c>overrides</c> array into the builder.
     /// </summary>
     /// <param name="array">The overrides array, or <see langword="null" /> when absent.</param>
+    /// <exception cref="FormatException">An item is not an object.</exception>
     private void ReadOverridesJson(JsonArray? array)
     {
         if (array is null)
             return;
 
         OverrideBuilder overrides = new();
-        foreach (JsonNode? node in array)
-        {
-            if (node is JsonObject overrideJson)
-                overrides.AddEntry(ReadOverrideJson(overrideJson));
-        }
+        foreach (JsonObject overrideJson in ObjectItems(array, "overrides"))
+            overrides.AddEntry(ReadOverrideJson(overrideJson));
 
         _overrides = overrides;
     }
@@ -388,23 +471,32 @@ public sealed partial class NotableDateDocumentBuilder
     /// </summary>
     /// <param name="overrideJson">The override object.</param>
     /// <returns>The reconstructed override entry.</returns>
+    /// <exception cref="FormatException">
+    /// The override's <c>operation</c> is absent or names no operation, which the loader reports with
+    /// <c>BODU-CAL-ENUM</c>, or the override lacks a property its operation requires, such as an <c>AddRule</c>
+    /// override's <c>rule</c>, which the loader reports with <c>BODU-CAL-SCHEMA</c>.
+    /// </exception>
     private static OverrideEntry ReadOverrideJson(JsonObject overrideJson)
     {
-        string notableDateRef = ScalarText(overrideJson["notableDateRef"]) ?? string.Empty;
-        string operation = ScalarText(overrideJson["operation"]) ?? string.Empty;
+        string notableDateRef = ScalarText(overrideJson, "notableDateRef") ?? string.Empty;
+
+        // The loader reads an absent operation as the empty name, which names no operation.
+        List<NotableDateValidationDiagnostic> diagnostics = new();
+        string? operation = NotableDateDocumentParseHelpers.ParseOverrideOperation(ScalarText(overrideJson, "operation") ?? string.Empty, diagnostics);
+        ThrowIfMalformed(diagnostics);
 
         switch (operation)
         {
             case "AddRule":
-                NotableDateRuleBuilder addRule = overrideJson["rule"] is JsonObject ruleJson
-                    ? ReadRuleJson(ruleJson)
-                    : new NotableDateRuleBuilder(string.Empty);
-                return new OverrideEntry(OverrideOperation.AddRule, notableDateRef, null, addRule);
+                ThrowIfRequiredMissing(overrideJson, NotableDateSchemaType.AddRule);
+                return new OverrideEntry(OverrideOperation.AddRule, notableDateRef, null, ReadRuleJson(ObjectProperty(overrideJson, "rule")!, notableDateRef));
 
             case "RemoveRule":
-                return new OverrideEntry(OverrideOperation.RemoveRule, notableDateRef, ScalarText(overrideJson["ruleRef"]) ?? string.Empty, null);
+                ThrowIfRequiredMissing(overrideJson, NotableDateSchemaType.RuleRef);
+                return new OverrideEntry(OverrideOperation.RemoveRule, notableDateRef, ScalarText(overrideJson, "ruleRef") ?? string.Empty, null);
 
             default:
+                ThrowIfRequiredMissing(overrideJson, NotableDateSchemaType.PatchRule);
                 return ReadPatchOverrideJson(overrideJson, notableDateRef);
         }
     }
@@ -417,82 +509,89 @@ public sealed partial class NotableDateDocumentBuilder
     /// <returns>The reconstructed patch override entry.</returns>
     /// <exception cref="FormatException">
     /// The override carries a <c>strategy</c> or a <c>recurrence</c>, and the two name no recognized kind or more than
-    /// one.
+    /// one, its <c>untilDate</c> declares no end strategy or one that names no recognized kind or more than one, or a
+    /// strategy or recurrence attribute value does not parse.
     /// </exception>
     private static OverrideEntry ReadPatchOverrideJson(JsonObject overrideJson, string notableDateRef)
     {
-        string ruleRef = ScalarText(overrideJson["ruleRef"]) ?? string.Empty;
-        var strategyJson = overrideJson["strategy"] as JsonObject;
-        var recurrenceJson = overrideJson["recurrence"] as JsonObject;
-        ThrowIfPatchOccurrenceSourceInvalid(strategyJson, recurrenceJson, notableDateRef, ruleRef);
+        string ruleRef = ScalarText(overrideJson, "ruleRef") ?? string.Empty;
+        JsonObject? strategyJson = ObjectProperty(overrideJson, "strategy");
+        JsonObject? recurrenceJson = ObjectProperty(overrideJson, "recurrence");
+        ThrowIfOccurrenceSourceInvalid(strategyJson, recurrenceJson, notableDateRef, ruleRef, patch: true);
 
         NotableDateRuleBuilder rule = new(ruleRef);
-        var applicability = overrideJson["applicability"] as JsonObject;
+        JsonObject? applicability = ObjectProperty(overrideJson, "applicability");
 
         // A patch that carries an applicability replaces the rule's whole applicability, an empty one included, so a
         // present applicability always declares its calendar: the default, Gregorian, when the patch names none.
+        CalendarSystem? calendar = applicability is null ? null : ParseNullableEnum<CalendarSystem>(ScalarText(applicability, "calendar"), "calendar") ?? CalendarSystem.Gregorian;
         rule.SetParsedScalars(
-            JsonInt(overrideJson["priority"], "patch priority"),
-            ParseNullableEnum<NotableDateCategory>(ScalarText(overrideJson["category"]), "category"),
-            JsonBool(overrideJson["nonWorking"], "patch nonWorking"),
-            JsonInt(overrideJson["durationDays"], "durationDays"),
+            JsonInt(overrideJson, "priority", "patch priority"),
+            ParseNullableEnum<NotableDateCategory>(ScalarText(overrideJson, "category"), "category"),
+            JsonBool(overrideJson, "nonWorking", "patch nonWorking"),
+            JsonInt(overrideJson, "durationDays", "durationDays", NotableDateSchemaRange.PositiveInteger),
             null,
-            applicability is null ? null : ParseNullableEnum<CalendarSystem>(ScalarText(applicability["calendar"]), "calendar") ?? CalendarSystem.Gregorian,
-            applicability is null ? null : JsonInt(applicability["fromYear"], "applicability fromYear"),
-            applicability is null ? null : JsonInt(applicability["toYear"], "applicability toYear"),
-            applicability is null ? null : JsonInt(applicability["everyYears"], "applicability everyYears"),
-            applicability is null ? null : JsonInt(applicability["anchorYear"], "applicability anchorYear"));
+            calendar,
+            applicability is null ? null : JsonInt(applicability, "fromYear", "applicability fromYear", NotableDateSchemaRange.UnsignedShort),
+            applicability is null ? null : JsonInt(applicability, "toYear", "applicability toYear", NotableDateSchemaRange.UnsignedShort),
+            applicability is null ? null : JsonInt(applicability, "everyYears", "applicability everyYears", NotableDateSchemaRange.PositiveInteger),
+            applicability is null ? null : JsonInt(applicability, "anchorYear", "applicability anchorYear", NotableDateSchemaRange.UnsignedShort));
 
         rule.SetParsedCollections(
-            applicability is null ? Array.Empty<string>() : ReadTextArray(applicability["territories"] as JsonArray, "applicability territories"),
-            applicability is null ? Array.Empty<int>() : ReadIntArray(applicability["onlyYears"] as JsonArray, "applicability onlyYears"),
-            applicability is null ? Array.Empty<int>() : ReadIntArray(applicability["exceptYears"] as JsonArray, "applicability exceptYears"),
-            ReadPatchListJson(overrideJson["tags"] as JsonArray, "patch tags", "an empty tags list on a PatchRule override"),
-            ReadPatchListJson(overrideJson["adjustments"] as JsonArray, "patch adjustments", "an empty adjustments list on a PatchRule override"));
+            applicability is null ? Array.Empty<string>() : ReadTextArray(ArrayProperty(applicability, "territories"), "applicability territories"),
+            applicability is null ? Array.Empty<int>() : ReadIntArray(ArrayProperty(applicability, "onlyYears"), "applicability onlyYears", NotableDateSchemaRange.UnsignedShort, "onlyYears"),
+            applicability is null ? Array.Empty<int>() : ReadIntArray(ArrayProperty(applicability, "exceptYears"), "applicability exceptYears", NotableDateSchemaRange.UnsignedShort, "exceptYears"),
+            ReadPatchListJson(ArrayProperty(overrideJson, "tags"), "patch tags", "an empty tags list on a PatchRule override"),
+            ReadPatchListJson(ArrayProperty(overrideJson, "adjustments"), "patch adjustments", "an empty adjustments list on a PatchRule override"));
 
-        rule.SetParsedStrategy(BuildStrategyElement(strategyJson));
+        // The loader reads the patch's fixed months in the calendar of the applicability it carries, Gregorian when it
+        // carries none.
+        CalendarSystem strategyCalendar = calendar ?? CalendarSystem.Gregorian;
+        rule.SetParsedStrategy(BuildStrategyElement(strategyJson, strategyCalendar, notableDateRef, ruleRef));
 
-        if (BuildRecurrenceElement(recurrenceJson) is XElement recurrence)
+        if (BuildRecurrenceElement(recurrenceJson, notableDateRef, ruleRef) is XElement recurrence)
             rule.SetParsedRecurrence(recurrence);
 
-        if ((overrideJson["duration"] as JsonObject)?["untilDate"] is JsonObject untilDate)
-        {
-            rule.SetParsedDuration(
-                BuildStrategyElement(untilDate["strategy"] as JsonObject),
-                ParseNullableEnum<DateBoundary>(ScalarText(untilDate["startBoundary"]), "untilDate startBoundary") ?? DateBoundary.Inclusive,
-                ParseNullableEnum<DateBoundary>(ScalarText(untilDate["endBoundary"]), "untilDate endBoundary") ?? DateBoundary.Inclusive,
-                ParseNullableEnum<EndDateSelection>(ScalarText(untilDate["selection"]), "untilDate selection") ?? EndDateSelection.FirstOnOrAfterStart);
-        }
+        ReadUntilDateJson(overrideJson, rule, strategyCalendar, notableDateRef);
 
         return new OverrideEntry(OverrideOperation.PatchRule, notableDateRef, ruleRef, rule);
     }
 
     /// <summary>
-    /// Rejects a <c>PatchRule</c> override that replaces the rule's occurrence source without naming exactly one, as
-    /// the loader rejects it: a present <c>strategy</c> or <c>recurrence</c> must name one recognized kind between
-    /// them.
+    /// Rejects a rule that does not name exactly one occurrence source, or a <c>PatchRule</c> override that replaces
+    /// the rule's occurrence source without naming exactly one, as the loader rejects them: a rule's <c>strategy</c>
+    /// and <c>recurrence</c>, and a patch's when either is present, must name one recognized kind between them.
     /// </summary>
-    /// <param name="strategyJson">The override's strategy object, or <see langword="null" /> when absent.</param>
-    /// <param name="recurrenceJson">The override's recurrence object, or <see langword="null" /> when absent.</param>
-    /// <param name="notableDateRef">The identifier of the targeted concept, used in the exception message.</param>
-    /// <param name="ruleRef">The identifier of the targeted rule, used in the exception message.</param>
+    /// <param name="strategyJson">The strategy object, or <see langword="null" /> when absent.</param>
+    /// <param name="recurrenceJson">The recurrence object, or <see langword="null" /> when absent.</param>
+    /// <param name="notableDateId">The identifier of the concept, used in the exception message.</param>
+    /// <param name="ruleId">The identifier of the rule, used in the exception message.</param>
+    /// <param name="patch">
+    /// <see langword="true" /> when the objects belong to a <c>PatchRule</c> override rather than a rule, which leaves
+    /// the occurrence source unchanged when it carries neither and selects the override's wording.
+    /// </param>
     /// <exception cref="FormatException">
-    /// A strategy or a recurrence is present, and the two name no recognized kind or more than one.
+    /// The rule's strategy and recurrence, or the patch's when either is present, name no recognized kind or more than
+    /// one between them.
     /// </exception>
-    private static void ThrowIfPatchOccurrenceSourceInvalid(JsonObject? strategyJson, JsonObject? recurrenceJson, string notableDateRef, string ruleRef)
+    private static void ThrowIfOccurrenceSourceInvalid(JsonObject? strategyJson, JsonObject? recurrenceJson, string notableDateId, string ruleId, bool patch)
     {
-        if (strategyJson is null && recurrenceJson is null)
+        if (patch && strategyJson is null && recurrenceJson is null)
             return;
 
-        int sources = CountKinds(strategyJson, s_jsonStrategyElementNames.Keys) + CountKinds(recurrenceJson, s_jsonRecurrenceElementNames.Keys);
+        int sources = CountKinds(strategyJson, s_jsonStrategyKinds.Keys) + CountKinds(recurrenceJson, s_jsonRecurrenceKinds.Keys);
         if (sources == 1)
             return;
 
-        string format = sources == 0
-            ? CalendarResourceStrings.Validation_PatchOccurrenceSourceMissing
-            : CalendarResourceStrings.Validation_PatchOccurrenceSourceConflict;
+        string format = (sources == 0, patch) switch
+        {
+            (true, false) => CalendarResourceStrings.Validation_OccurrenceSourceMissing,
+            (false, false) => CalendarResourceStrings.Validation_OccurrenceSourceConflict,
+            (true, true) => CalendarResourceStrings.Validation_PatchOccurrenceSourceMissing,
+            (false, true) => CalendarResourceStrings.Validation_PatchOccurrenceSourceConflict,
+        };
 
-        throw new FormatException(string.Format(CultureInfo.CurrentCulture, format, notableDateRef, ruleRef));
+        throw new FormatException(string.Format(CultureInfo.CurrentCulture, format, notableDateId, ruleId));
     }
 
     /// <summary>
@@ -502,26 +601,7 @@ public sealed partial class NotableDateDocumentBuilder
     /// <param name="kinds">The recognized kind names.</param>
     /// <returns>The number of recognized kinds present; zero when <paramref name="source" /> is absent.</returns>
     private static int CountKinds(JsonObject? source, IEnumerable<string> kinds) =>
-        source is null ? 0 : kinds.Count(kind => FindKind(source, kind) is not null);
-
-    /// <summary>
-    /// Finds the body of a kind in a JSON strategy or recurrence object as the loader finds it: the first property that
-    /// bears the kind's name, ignoring case, and is not the JSON literal <c>null</c>, when that property holds an
-    /// object.
-    /// </summary>
-    /// <param name="source">The strategy or recurrence object.</param>
-    /// <param name="kind">The kind name.</param>
-    /// <returns>The kind's body, or <see langword="null" /> when the object does not name the kind.</returns>
-    private static JsonObject? FindKind(JsonObject source, string kind)
-    {
-        foreach (KeyValuePair<string, JsonNode?> property in source)
-        {
-            if (property.Value is not null && string.Equals(property.Key, kind, StringComparison.OrdinalIgnoreCase))
-                return property.Value as JsonObject;
-        }
-
-        return null;
-    }
+        source is null ? 0 : kinds.Count(kind => ObjectProperty(source, kind) is not null);
 
     /// <summary>
     /// Reads a list that replaces a patched rule's or an imported concept's list, which the builder can hold only when
@@ -551,26 +631,16 @@ public sealed partial class NotableDateDocumentBuilder
     /// Reads the JSON <c>imports</c> array into the builder.
     /// </summary>
     /// <param name="array">The imports array, or <see langword="null" /> when absent.</param>
+    /// <exception cref="FormatException">An item of the array, or of an import's uses, is not an object.</exception>
     /// <exception cref="NotSupportedException">A use declares an empty <c>adjustments</c> list.</exception>
     private void ReadImportsJson(JsonArray? array)
     {
-        if (array is null)
-            return;
-
-        foreach (JsonNode? node in array)
+        foreach (JsonObject importJson in ObjectItems(array, "imports"))
         {
-            if (node is not JsonObject importJson)
-                continue;
-
-            ImportBuilder import = new(ScalarText(importJson["resource"]) ?? string.Empty);
-            if (importJson["uses"] is JsonArray uses)
-            {
-                foreach (JsonNode? useNode in uses)
-                {
-                    if (useNode is JsonObject useJson)
-                        import.AddUse(ReadImportUseJson(useJson));
-                }
-            }
+            ThrowIfRequiredMissing(importJson, NotableDateSchemaType.Import);
+            ImportBuilder import = new(ScalarText(importJson, "resource") ?? string.Empty);
+            foreach (JsonObject useJson in ObjectItems(ArrayProperty(importJson, "uses"), "uses"))
+                import.AddUse(ReadImportUseJson(useJson));
 
             _imports.Add(import);
         }
@@ -584,67 +654,160 @@ public sealed partial class NotableDateDocumentBuilder
     /// <exception cref="NotSupportedException">The use declares an empty <c>adjustments</c> list.</exception>
     private static ImportUseBuilder ReadImportUseJson(JsonObject useJson)
     {
-        ImportUseBuilder use = new(ScalarText(useJson["notableDateRef"]) ?? string.Empty);
+        ThrowIfRequiredMissing(useJson, NotableDateSchemaType.ImportUse);
+        ImportUseBuilder use = new(ScalarText(useJson, "notableDateRef") ?? string.Empty);
         use.SetParsedValues(
-            ScalarText(useJson["as"]),
-            ScalarText(useJson["territory"]),
-            ParseNullableEnum<NotableDateCategory>(ScalarText(useJson["category"]), "import use category"),
-            JsonBool(useJson["nonWorking"], "import use nonWorking"),
-            ReadPatchListJson(useJson["adjustments"] as JsonArray, "import use adjustments", "an empty adjustments list on an import use"));
+            ScalarText(useJson, "as"),
+            ScalarText(useJson, "territory"),
+            ParseNullableEnum<NotableDateCategory>(ScalarText(useJson, "category"), "import use category"),
+            JsonBool(useJson, "nonWorking", "import use nonWorking"),
+            ReadPatchListJson(ArrayProperty(useJson, "adjustments"), "import use adjustments", "an empty adjustments list on an import use"));
 
         return use;
     }
 
     /// <summary>
-    /// Builds an XML strategy element from a JSON strategy object, mapping the single populated strategy property to
-    /// its element name and attributes.
+    /// Builds an XML strategy element from a JSON strategy object, from its first recognized kind.
     /// </summary>
     /// <param name="strategyJson">The strategy object, or <see langword="null" /> when absent.</param>
+    /// <param name="calendar">The calendar the rule's fixed months are read in.</param>
+    /// <param name="notableDateId">
+    /// The identifier of the concept the rule belongs to, used in exception messages.
+    /// </param>
+    /// <param name="ruleId">The identifier of the rule, used in exception messages.</param>
     /// <returns>
-    /// The reconstructed strategy element, or <see langword="null" /> when the object is absent or empty.
+    /// The reconstructed strategy element, or <see langword="null" /> when the object is absent or names no recognized
+    /// kind.
     /// </returns>
-    private static XElement? BuildStrategyElement(JsonObject? strategyJson)
+    /// <exception cref="FormatException">An attribute value of the strategy does not parse.</exception>
+    /// <remarks>
+    /// Each attribute is read as the loader reads it, its name matched ignoring case and its value parsed with the
+    /// loader's rules, and is written under its schema name in the form the schema accepts; a property the loader does
+    /// not read is ignored, as the loader ignores it.
+    /// </remarks>
+    private static XElement? BuildStrategyElement(JsonObject? strategyJson, CalendarSystem calendar, string notableDateId, string ruleId)
     {
         if (strategyJson is null)
             return null;
 
-        foreach (KeyValuePair<string, JsonNode?> property in strategyJson)
+        foreach ((string kind, (string elementName, NotableDateSchemaType type, string[] attributes)) in s_jsonStrategyKinds)
         {
-            if (property.Value is not JsonObject body || !s_jsonStrategyElementNames.TryGetValue(property.Key, out string? elementName))
-                continue;
-
-            XElement element = new(BuilderXml.Namespace + elementName);
-            foreach (KeyValuePair<string, JsonNode?> attribute in body)
-                element.SetAttributeValue(attribute.Key, ConvertStrategyAttribute(attribute.Key, attribute.Value));
-
-            return element;
+            if (ObjectProperty(strategyJson, kind) is JsonObject body)
+                return BuildKindElement(kind, elementName, type, attributes, body, calendar, notableDateId, ruleId);
         }
 
         return null;
     }
 
     /// <summary>
-    /// Converts a JSON strategy attribute value into the string form expected by the XML schema, normalizing months and
-    /// Boolean literals.
+    /// Builds the XML element of a strategy or recurrence kind from its JSON body, writing each attribute the loader
+    /// reads under its schema name, in the order the body holds them.
     /// </summary>
-    /// <param name="name">The attribute name.</param>
-    /// <param name="value">The attribute value, or <see langword="null" />.</param>
-    /// <returns>The string form of the attribute value.</returns>
-    private static string ConvertStrategyAttribute(string name, JsonNode? value)
+    /// <param name="kind">The kind's JSON name, which the loader's messages name the attribute after.</param>
+    /// <param name="elementName">The local name of the kind's XML element.</param>
+    /// <param name="type">The kind's schema type, whose required properties the body must hold.</param>
+    /// <param name="attributes">The schema names of the attributes the loader reads from the kind's body.</param>
+    /// <param name="body">The kind's JSON body.</param>
+    /// <param name="calendar">The calendar a fixed month is read in.</param>
+    /// <param name="notableDateId">
+    /// The identifier of the concept the rule belongs to, used in exception messages.
+    /// </param>
+    /// <param name="ruleId">The identifier of the rule, used in exception messages.</param>
+    /// <returns>The kind's XML element.</returns>
+    /// <exception cref="FormatException">
+    /// The body lacks a property its schema type requires, or an attribute value does not parse or lies outside the
+    /// range the schema allows.
+    /// </exception>
+    /// <remarks>
+    /// An attribute takes its value from the first property that bears its name, ignoring case, and is not the JSON
+    /// literal <c>null</c>, as the loader reads it; any other property is ignored, as the loader ignores it.
+    /// </remarks>
+    private static XElement BuildKindElement(string kind, string elementName, NotableDateSchemaType type, string[] attributes, JsonObject body, CalendarSystem calendar, string notableDateId, string ruleId)
     {
-        if (value is null)
-            return string.Empty;
+        ThrowIfRequiredMissing(body, type);
 
-        if (string.Equals(name, "month", StringComparison.Ordinal) && value.GetValueKind() == JsonValueKind.Number)
-            return BuilderXml.GetMonthName((int)value);
-
-        return value.GetValueKind() switch
+        XElement element = new(BuilderXml.Namespace + elementName);
+        foreach (KeyValuePair<string, JsonNode?> property in body)
         {
-            JsonValueKind.True => "true",
-            JsonValueKind.False => "false",
-            JsonValueKind.Number => ((int)value).ToString(CultureInfo.InvariantCulture),
-            _ => ScalarText(value) ?? string.Empty,
-        };
+            string? attribute = Array.Find(attributes, name => string.Equals(name, property.Key, StringComparison.OrdinalIgnoreCase));
+            if (property.Value is not null && attribute is not null && element.Attribute(attribute) is null)
+                element.SetAttributeValue(attribute, ReadKindAttribute(kind, attribute, ReadScalar(property.Value, attribute)!, calendar, notableDateId, ruleId));
+        }
+
+        return element;
+    }
+
+    /// <summary>
+    /// Reads a strategy or recurrence attribute value with the loader's rules and returns the form the XML schema
+    /// accepts, which the loader reads back as the same value.
+    /// </summary>
+    /// <param name="kind">The kind's JSON name, which the loader's messages name the attribute after.</param>
+    /// <param name="attribute">The attribute's schema name.</param>
+    /// <param name="value">The attribute's text, as the loader reads it.</param>
+    /// <param name="calendar">The calendar a fixed month is read in.</param>
+    /// <param name="notableDateId">
+    /// The identifier of the concept the rule belongs to, used in exception messages.
+    /// </param>
+    /// <param name="ruleId">The identifier of the rule, used in exception messages.</param>
+    /// <returns>
+    /// The value's schema form: an enumeration's member name, an integer's invariant digits, a Boolean's lowercase
+    /// literal, a date as <c>yyyy-MM-dd</c>, a month as its English name, or, for a fixed month in a calendar other
+    /// than the Gregorian, as its number or its month alias; a reference or a key as given.
+    /// </returns>
+    /// <exception cref="FormatException">
+    /// <paramref name="value" /> does not parse, which the loader reports with <c>BODU-CAL-VALUE</c>,
+    /// <c>BODU-CAL-ENUM</c> or <c>BODU-CAL-MONTH</c>, or lies outside the range the schema allows, which it reports
+    /// with <c>BODU-CAL-SCHEMA</c>.
+    /// </exception>
+    private static string ReadKindAttribute(string kind, string attribute, string value, CalendarSystem calendar, string notableDateId, string ruleId)
+    {
+        string field = kind + " " + attribute;
+
+        switch (attribute)
+        {
+            case "month" when string.Equals(kind, "fixed", StringComparison.Ordinal):
+                (int month, string? alias) = ParseFixedMonth(value, calendar, notableDateId, ruleId);
+                return calendar == CalendarSystem.Gregorian ? BuilderXml.GetMonthName(month) : alias ?? BuilderXml.Int(month);
+
+            case "month":
+                return BuilderXml.GetMonthName(ParseMonth(value, notableDateId, ruleId));
+
+            case "dayOfWeek" or "relativeDayOfWeek":
+                return ParseEnum<DayOfWeek>(value, field).ToString();
+
+            case "weekOrdinal":
+                return ParseEnum<WeekOrdinal>(value, field).ToString();
+
+            case "direction":
+                return ParseEnum<WeekdayProximity>(value, field).ToString();
+
+            case "invalidDayBehavior":
+                return ParseEnum<InvalidDayOfMonthBehavior>(value, field).ToString();
+
+            case "skipLeapMonth" or "sweepCalendarYears":
+                return BuilderXml.Bool(ParseNullableBool(value, field) ?? false);
+
+            case "anchorDate":
+                return (ParseNullableDate(value, field) ?? default).ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
+
+            case "day" or "dayOfMonth":
+                return BuilderXml.Int(ReadBoundedInt(value, field, attribute, NotableDateSchemaRange.DayValue));
+
+            case "ordinal":
+                return BuilderXml.Int(ReadBoundedInt(value, field, attribute, NotableDateSchemaRange.NonZeroOrdinal));
+
+            case "week":
+                return BuilderXml.Int(ReadBoundedInt(value, field, attribute, NotableDateSchemaRange.IsoWeekValue));
+
+            case "intervalDays" or "intervalWeeks" or "intervalMonths":
+                return BuilderXml.Int(ReadBoundedInt(value, field, attribute, NotableDateSchemaRange.PositiveInteger));
+
+            case "offsetDays" or "referenceYearOffset" or "offsetWorkingDays":
+                return BuilderXml.Int(ParseNullableInt(value, field) ?? 0);
+
+            default:
+                return value;
+        }
     }
 
     /// <summary>
@@ -665,26 +828,46 @@ public sealed partial class NotableDateDocumentBuilder
             if (node is JsonValue value && value.GetValueKind() == JsonValueKind.String)
                 values.Add(value.GetValue<string>());
             else
-                throw new FormatException(string.Format(CultureInfo.CurrentCulture, CalendarResourceStrings.Validation_InvalidTextItem, field, node?.ToJsonString() ?? "null"));
+                throw ItemOfWrongKind(CalendarResourceStrings.Validation_InvalidTextItem, field, node);
         }
 
         return values;
     }
 
     /// <summary>
-    /// Reads a JSON list of enumeration names as the loader reads it: a string item by its value, and any other item by
-    /// its JSON text, so the name parse that follows rejects it rather than the list losing it.
+    /// Enumerates the items of a JSON list of objects as the loader reads them, each of which must be an object.
     /// </summary>
     /// <param name="array">The array, or <see langword="null" /> when absent.</param>
+    /// <param name="name">The array property's name, used in the exception message.</param>
+    /// <returns>The objects, in order; empty when the array is absent.</returns>
+    /// <exception cref="FormatException">
+    /// An item is not an object, which the loader reports with <c>BODU-CAL-VALUE</c>.
+    /// </exception>
+    private static IEnumerable<JsonObject> ObjectItems(JsonArray? array, string name)
+    {
+        if (array is null)
+            yield break;
+
+        foreach (JsonNode? node in array)
+            yield return node as JsonObject ?? throw ItemOfWrongKind(CalendarResourceStrings.Validation_InvalidObjectItem, name, node);
+    }
+
+    /// <summary>
+    /// Reads a JSON list of enumeration names as the loader reads it: a string item by its value, and any other scalar
+    /// by its JSON text, so the name parse that follows rejects it rather than the list losing it.
+    /// </summary>
+    /// <param name="array">The array, or <see langword="null" /> when absent.</param>
+    /// <param name="field">The name of the field the array belongs to, used in the exception message.</param>
     /// <returns>The item texts; empty when the array is absent.</returns>
-    private static List<string> ReadNameArray(JsonArray? array)
+    /// <exception cref="FormatException">An item is an object or an array.</exception>
+    private static List<string> ReadNameArray(JsonArray? array, string field)
     {
         List<string> values = new();
         if (array is null)
             return values;
 
         foreach (JsonNode? node in array)
-            values.Add(ItemText(node));
+            values.Add(ItemText(node, field));
 
         return values;
     }
@@ -706,7 +889,7 @@ public sealed partial class NotableDateDocumentBuilder
 
         foreach (JsonNode? node in array)
         {
-            if (UnreadText(node, feature) is string text)
+            if (UnreadValueText(node, feature) is string text)
                 values.Add(text);
         }
 
@@ -714,15 +897,23 @@ public sealed partial class NotableDateDocumentBuilder
     }
 
     /// <summary>
-    /// Returns the text of a JSON list item as the loader reads a name: a string by its value, and any other item, a
-    /// <c>null</c> among them, by its JSON text.
+    /// Returns the text of an item of a JSON list of scalars as the loader reads it: a string by its value, and any
+    /// other scalar, a <c>null</c> among them, by its JSON text.
     /// </summary>
     /// <param name="node">The item, or <see langword="null" /> for a JSON <c>null</c>.</param>
+    /// <param name="field">The name of the field the list belongs to, used in the exception message.</param>
     /// <returns>The item's text.</returns>
-    private static string ItemText(JsonNode? node) =>
-        node is JsonValue value && value.GetValueKind() == JsonValueKind.String
-            ? value.GetValue<string>()
-            : node?.ToJsonString() ?? "null";
+    /// <exception cref="FormatException">
+    /// The item is an object or an array, which the loader reports with <c>BODU-CAL-VALUE</c>.
+    /// </exception>
+    private static string ItemText(JsonNode? node, string field) =>
+        node switch
+        {
+            null => "null",
+            JsonValue value when value.GetValueKind() == JsonValueKind.String => value.GetValue<string>(),
+            JsonValue value => value.ToJsonString(),
+            _ => throw ItemOfWrongKind(CalendarResourceStrings.Validation_InvalidScalarItem, field, node),
+        };
 
     /// <summary>
     /// Reads a JSON array of integers with the loader's rules: each item is read as an integer property is, so a number
@@ -730,9 +921,15 @@ public sealed partial class NotableDateDocumentBuilder
     /// </summary>
     /// <param name="array">The array, or <see langword="null" /> when absent.</param>
     /// <param name="field">The name of the field the array belongs to, used in the exception message.</param>
+    /// <param name="range">The range the schema holds each item to.</param>
+    /// <param name="name">
+    /// The array property's name, used in the exception message for an item outside the range.
+    /// </param>
     /// <returns>The integer values; empty when the array is absent.</returns>
-    /// <exception cref="FormatException">An item is not a 32-bit integer.</exception>
-    private static List<int> ReadIntArray(JsonArray? array, string field)
+    /// <exception cref="FormatException">
+    /// An item is not a 32-bit integer, is an object or an array, or lies outside the range.
+    /// </exception>
+    private static List<int> ReadIntArray(JsonArray? array, string field, NotableDateSchemaRange range, string name)
     {
         List<int> values = new();
         if (array is null)
@@ -740,8 +937,8 @@ public sealed partial class NotableDateDocumentBuilder
 
         foreach (JsonNode? node in array)
         {
-            // The loader reads an item that is not a string by its JSON text, a null among them.
-            if (ParseNullableInt(ItemText(node), field) is int parsed)
+            // The loader reads a scalar item that is not a string by its JSON text, a null among them.
+            if (CheckRange(ParseNullableInt(ItemText(node, field), field), range, name) is int parsed)
                 values.Add(parsed);
         }
 
@@ -752,44 +949,147 @@ public sealed partial class NotableDateDocumentBuilder
     /// Reads an optional JSON integer property with the loader's rules: a number, or a number in quotes, that is a
     /// 32-bit integer.
     /// </summary>
-    /// <param name="node">The property value, or <see langword="null" /> when absent.</param>
+    /// <param name="owner">The object holding the property.</param>
+    /// <param name="name">The property's name, matched ignoring case.</param>
     /// <param name="field">The name of the field the value belongs to, used in the exception message.</param>
-    /// <returns>The integer, or <see langword="null" /> when the property is absent or not a scalar.</returns>
-    /// <exception cref="FormatException">The value is not a 32-bit integer.</exception>
-    private static int? JsonInt(JsonNode? node, string field) =>
-        ParseNullableInt(ScalarText(node), field);
+    /// <returns>The integer, or <see langword="null" /> when the property is absent.</returns>
+    /// <exception cref="FormatException">The value is not a 32-bit integer, or is an object or an array.</exception>
+    private static int? JsonInt(JsonObject owner, string name, string field) =>
+        ParseNullableInt(ScalarText(owner, name), field);
+
+    /// <summary>
+    /// Reads an optional JSON integer property that the schema holds to a range, with the loader's rules.
+    /// </summary>
+    /// <param name="owner">The object holding the property.</param>
+    /// <param name="name">The property's name, matched ignoring case.</param>
+    /// <param name="field">The name of the field the value belongs to, used in the exception message.</param>
+    /// <param name="range">The range the schema holds the value to.</param>
+    /// <returns>The integer, or <see langword="null" /> when the property is absent.</returns>
+    /// <exception cref="FormatException">
+    /// The value is not a 32-bit integer, is an object or an array, or lies outside the range, which the loader reports
+    /// with <c>BODU-CAL-SCHEMA</c>.
+    /// </exception>
+    private static int? JsonInt(JsonObject owner, string name, string field, NotableDateSchemaRange range) =>
+        CheckRange(ParseNullableInt(ScalarText(owner, name), field), range, name);
+
+    /// <summary>
+    /// Reads a strategy or recurrence integer that the schema holds to a range, with the loader's rules, holding an
+    /// ordinal's text to the pattern the schema also holds it to.
+    /// </summary>
+    /// <param name="value">The value's text, as the loader reads it.</param>
+    /// <param name="field">The name of the field the value belongs to, used in the exception message.</param>
+    /// <param name="name">
+    /// The attribute's schema name, used in the exception message for a value outside the range.
+    /// </param>
+    /// <param name="range">The range the schema holds the value to.</param>
+    /// <returns>The integer.</returns>
+    /// <exception cref="FormatException">
+    /// The value is not a 32-bit integer, lies outside the range, or, for an ordinal, does not match the schema's
+    /// pattern.
+    /// </exception>
+    private static int ReadBoundedInt(string value, string field, string name, NotableDateSchemaRange range)
+    {
+        int result = CheckRange(ParseNullableInt(value, field), range, name) ?? 0;
+
+        // The schema matches an integer's pattern on its text with the surrounding white space collapsed.
+        if (range == NotableDateSchemaRange.NonZeroOrdinal && NotableDateSchemaPatterns.Check(value.Trim(s_xmlWhiteSpace), NotableDateSchemaPattern.NonZeroOrdinal, name) is NotableDateValidationDiagnostic mismatch)
+            throw new FormatException(mismatch.Message);
+
+        return result;
+    }
+
+    /// <summary>
+    /// Rejects an integer outside a range the schema holds it to, with the message of the loader's
+    /// <c>BODU-CAL-SCHEMA</c> diagnostic.
+    /// </summary>
+    /// <param name="value">The integer, or <see langword="null" /> when absent.</param>
+    /// <param name="range">The range the schema holds the value to.</param>
+    /// <param name="name">The property's name, used in the exception message.</param>
+    /// <returns><paramref name="value" />, unchanged.</returns>
+    /// <exception cref="FormatException"><paramref name="value" /> lies outside the range.</exception>
+    private static int? CheckRange(int? value, NotableDateSchemaRange range, string name) =>
+        value is int number && NotableDateSchemaRanges.Check(number, range, name) is NotableDateValidationDiagnostic diagnostic
+            ? throw new FormatException(diagnostic.Message)
+            : value;
+
+    /// <summary>
+    /// Rejects a JSON object that lacks a property its schema type requires, or whose required list holds no item, as
+    /// the loader rejects it, with the message of the loader's <c>BODU-CAL-SCHEMA</c> diagnostic.
+    /// </summary>
+    /// <param name="owner">The object.</param>
+    /// <param name="type">The object's schema type.</param>
+    /// <exception cref="FormatException">
+    /// A property the type requires is absent or the JSON literal <c>null</c>, or a required list holds no item.
+    /// </exception>
+    private static void ThrowIfRequiredMissing(JsonObject owner, NotableDateSchemaType type)
+    {
+        foreach (string property in NotableDateSchemaRequirements.GetRequiredProperties(type))
+        {
+            switch (Property(owner, property))
+            {
+                case null:
+                    throw new FormatException(NotableDateSchemaRequirements.MissingProperty(type, property).Message);
+
+                case JsonArray { Count: 0 } when NotableDateSchemaRequirements.RequiresItems(type, property):
+                    throw new FormatException(NotableDateSchemaRequirements.EmptyList(type, property).Message);
+
+                default:
+                    break;
+            }
+        }
+    }
 
     /// <summary>
     /// Reads an optional JSON Boolean property with the loader's rules: a Boolean, or an XML-schema Boolean literal as
     /// text or a number (<c>true</c>, <c>false</c>, <c>1</c> or <c>0</c>).
     /// </summary>
-    /// <param name="node">The property value, or <see langword="null" /> when absent.</param>
+    /// <param name="owner">The object holding the property.</param>
+    /// <param name="name">The property's name, matched ignoring case.</param>
     /// <param name="field">The name of the field the value belongs to, used in the exception message.</param>
-    /// <returns>The Boolean, or <see langword="null" /> when the property is absent or not a scalar.</returns>
-    /// <exception cref="FormatException">The value is not a Boolean.</exception>
-    private static bool? JsonBool(JsonNode? node, string field) =>
-        ParseNullableBool(ScalarText(node), field);
+    /// <returns>The Boolean, or <see langword="null" /> when the property is absent.</returns>
+    /// <exception cref="FormatException">The value is not a Boolean, or is an object or an array.</exception>
+    private static bool? JsonBool(JsonObject owner, string name, string field) =>
+        ParseNullableBool(ScalarText(owner, name), field);
 
     /// <summary>
     /// Reads a JSON scalar property as the loader does: a string verbatim, a number by its invariant digits, and a
     /// Boolean as <c>true</c> or <c>false</c>.
     /// </summary>
-    /// <param name="node">
-    /// The property's value, or <see langword="null" /> when absent or the JSON literal <c>null</c>.
-    /// </param>
+    /// <param name="owner">The object holding the property.</param>
+    /// <param name="name">The property's name, matched ignoring case.</param>
+    /// <returns>The scalar's text, or <see langword="null" /> when the property is absent.</returns>
+    /// <exception cref="FormatException">
+    /// The value is an object or an array, which the loader reports with <c>BODU-CAL-VALUE</c>.
+    /// </exception>
+    private static string? ScalarText(JsonObject owner, string name) =>
+        ReadScalar(Property(owner, name), name);
+
+    /// <summary>
+    /// Reads the value of a JSON scalar property as the loader does: a string verbatim, a number by its invariant
+    /// digits, and a Boolean as <c>true</c> or <c>false</c>.
+    /// </summary>
+    /// <param name="value">The property's value, or <see langword="null" /> when the property is absent.</param>
+    /// <param name="name">The property's name, used in the exception message.</param>
     /// <returns>The scalar's text, or <see langword="null" /> when the value is absent.</returns>
     /// <exception cref="FormatException">
     /// The value is an object or an array, which the loader reports with <c>BODU-CAL-VALUE</c>.
     /// </exception>
-    private static string? ScalarText(JsonNode? node)
-    {
-        if (node is null)
-            return null;
+    private static string? ReadScalar(JsonNode? value, string name) =>
+        value switch
+        {
+            null => null,
+            JsonValue scalar => ScalarValueText(scalar),
+            _ => throw WrongKind(CalendarResourceStrings.Validation_InvalidScalarValue, name, value),
+        };
 
-        if (node is not JsonValue value)
-            throw new FormatException(string.Format(CultureInfo.CurrentCulture, CalendarResourceStrings.Validation_InvalidScalarValue, node.GetPropertyName(), node.ToJsonString()));
-
-        return value.GetValueKind() switch
+    /// <summary>
+    /// Returns the text of a JSON scalar as the loader reads it: a string verbatim, a number by its invariant digits,
+    /// and a Boolean as <c>true</c> or <c>false</c>.
+    /// </summary>
+    /// <param name="value">The scalar.</param>
+    /// <returns>The scalar's text.</returns>
+    private static string? ScalarValueText(JsonValue value) =>
+        value.GetValueKind() switch
         {
             JsonValueKind.String => value.GetValue<string>(),
             JsonValueKind.Number => value.TryGetValue(out int number) ? number.ToString(CultureInfo.InvariantCulture) : value.ToJsonString(),
@@ -797,13 +1097,27 @@ public sealed partial class NotableDateDocumentBuilder
             JsonValueKind.False => "false",
             _ => null,
         };
-    }
 
     /// <summary>
-    /// Reads a text field the loader does not read, accepting the scalars a text field accepts: a string verbatim, a
+    /// Reads a text property the loader does not read, accepting the scalars a text field accepts: a string verbatim, a
     /// number by its invariant digits, and a Boolean as <c>true</c> or <c>false</c>.
     /// </summary>
-    /// <param name="node">The value, or <see langword="null" /> when absent.</param>
+    /// <param name="owner">The object holding the property.</param>
+    /// <param name="name">The property's name, matched ignoring case.</param>
+    /// <param name="feature">
+    /// A description of the property holding an object or an array, used in the exception message.
+    /// </param>
+    /// <returns>The scalar's text, or <see langword="null" /> when the property is absent.</returns>
+    /// <exception cref="NotSupportedException">
+    /// The value is an object or an array, which the builder's document model, holding the field as text, cannot hold.
+    /// </exception>
+    private static string? UnreadText(JsonObject owner, string name, string feature) =>
+        UnreadValueText(Property(owner, name), feature);
+
+    /// <summary>
+    /// Reads a text value the loader does not read, accepting the scalars a text field accepts.
+    /// </summary>
+    /// <param name="value">The value, or <see langword="null" /> when absent.</param>
     /// <param name="feature">
     /// A description of the field holding an object or an array, used in the exception message.
     /// </param>
@@ -811,6 +1125,85 @@ public sealed partial class NotableDateDocumentBuilder
     /// <exception cref="NotSupportedException">
     /// The value is an object or an array, which the builder's document model, holding the field as text, cannot hold.
     /// </exception>
-    private static string? UnreadText(JsonNode? node, string feature) =>
-        node is null or JsonValue ? ScalarText(node) : throw UnrepresentableJsonField(feature);
+    private static string? UnreadValueText(JsonNode? value, string feature) =>
+        value switch
+        {
+            null => null,
+            JsonValue scalar => ScalarValueText(scalar),
+            _ => throw UnrepresentableJsonField(feature),
+        };
+
+    /// <summary>
+    /// Finds a property of a JSON object as the loader finds it: the first property whose name matches ignoring case
+    /// and whose value is not the JSON literal <c>null</c>.
+    /// </summary>
+    /// <param name="owner">The object holding the property.</param>
+    /// <param name="name">The property's name.</param>
+    /// <returns>The property's value, or <see langword="null" /> when the property is absent.</returns>
+    private static JsonNode? Property(JsonObject owner, string name)
+    {
+        foreach (KeyValuePair<string, JsonNode?> property in owner)
+        {
+            if (property.Value is not null && string.Equals(property.Key, name, StringComparison.OrdinalIgnoreCase))
+                return property.Value;
+        }
+
+        return null;
+    }
+
+    /// <summary>
+    /// Finds a property of a JSON object that must hold an object, as the loader finds it.
+    /// </summary>
+    /// <param name="owner">The object holding the property.</param>
+    /// <param name="name">The property's name, matched ignoring case.</param>
+    /// <returns>The property's object, or <see langword="null" /> when the property is absent.</returns>
+    /// <exception cref="FormatException">
+    /// The property holds a value that is not an object, which the loader reports with <c>BODU-CAL-VALUE</c>.
+    /// </exception>
+    private static JsonObject? ObjectProperty(JsonObject owner, string name) =>
+        Property(owner, name) switch
+        {
+            null => null,
+            JsonObject value => value,
+            JsonNode value => throw WrongKind(CalendarResourceStrings.Validation_InvalidObjectValue, name, value),
+        };
+
+    /// <summary>
+    /// Finds a property of a JSON object that must hold an array, as the loader finds it.
+    /// </summary>
+    /// <param name="owner">The object holding the property.</param>
+    /// <param name="name">The property's name, matched ignoring case.</param>
+    /// <returns>The property's array, or <see langword="null" /> when the property is absent.</returns>
+    /// <exception cref="FormatException">
+    /// The property holds a value that is not an array, which the loader reports with <c>BODU-CAL-VALUE</c>.
+    /// </exception>
+    private static JsonArray? ArrayProperty(JsonObject owner, string name) =>
+        Property(owner, name) switch
+        {
+            null => null,
+            JsonArray value => value,
+            JsonNode value => throw WrongKind(CalendarResourceStrings.Validation_InvalidListValue, name, value),
+        };
+
+    /// <summary>
+    /// Creates the <see cref="FormatException" /> for a property holding a value of the wrong kind, carrying the
+    /// message of the <c>BODU-CAL-VALUE</c> diagnostic the loader reports for it.
+    /// </summary>
+    /// <param name="format">The resource format string, taking the property's name and the kind of its value.</param>
+    /// <param name="name">The property's name.</param>
+    /// <param name="value">The property's value.</param>
+    /// <returns>The exception to throw.</returns>
+    private static FormatException WrongKind(string format, string name, JsonNode value) =>
+        new(string.Format(CultureInfo.CurrentCulture, format, name, JsonDocumentNode.KindName(value.GetValueKind())));
+
+    /// <summary>
+    /// Creates the <see cref="FormatException" /> for a list item of a kind the list does not read, carrying the
+    /// message of the <c>BODU-CAL-VALUE</c> diagnostic the loader reports for it, which names the item's JSON kind.
+    /// </summary>
+    /// <param name="format">The resource format string, taking the list's name and the kind of the item.</param>
+    /// <param name="field">The name of the field the list belongs to.</param>
+    /// <param name="item">The item, or <see langword="null" /> for a JSON <c>null</c>.</param>
+    /// <returns>The exception to throw.</returns>
+    private static FormatException ItemOfWrongKind(string format, string field, JsonNode? item) =>
+        new(string.Format(CultureInfo.CurrentCulture, format, field, JsonDocumentNode.KindName(item?.GetValueKind() ?? JsonValueKind.Null)));
 }

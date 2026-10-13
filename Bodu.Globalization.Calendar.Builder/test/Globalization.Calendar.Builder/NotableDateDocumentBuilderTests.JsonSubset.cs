@@ -216,7 +216,7 @@ public partial class NotableDateDocumentBuilderTests
     [TestMethod]
     public void FromJson_WhenOptionalSectionsAbsent_ShouldRetainResourceId()
     {
-        var builder = NotableDateDocumentBuilder.FromJson("""{ "resourceId": "demo.min" }""");
+        var builder = NotableDateDocumentBuilder.FromJson("""{ "schemaVersion": "1.0", "resourceId": "demo.min" }""");
 
         Assert.Contains("demo.min", builder.ToJson());
     }
@@ -229,6 +229,7 @@ public partial class NotableDateDocumentBuilderTests
     private static string JsonWithRule(string ruleJson) =>
         $$"""
         {
+          "schemaVersion": "1.0",
           "resourceId": "demo.rule",
           "notableDates": [
             { "id": "nd", "displayName": "ND", "category": "Observance", "rules": [ {{ruleJson}} ] }
@@ -238,14 +239,14 @@ public partial class NotableDateDocumentBuilderTests
 
     /// <summary>
     /// Verifies that a JSON strategy attribute is normalized into the XML form: a numeric month becomes its English
-    /// month name, a Boolean flag becomes its lowercase literal, and a JSON <c>null</c> becomes an empty attribute.
+    /// month name, a Boolean flag becomes its lowercase literal, and a name in another case becomes the schema name.
     /// </summary>
     /// <param name="strategyJson">The strategy object JSON.</param>
     /// <param name="expectedFragment">The XML fragment expected after normalization.</param>
     [TestMethod]
     [DataRow("""{ "fixed": { "month": 1, "day": 1 } }""", "month=\"January\"", DisplayName = "numeric month")]
     [DataRow("""{ "fixed": { "month": "January", "day": 1, "skipLeapMonth": false } }""", "skipLeapMonth=\"false\"", DisplayName = "boolean false")]
-    [DataRow("""{ "fixed": { "month": "January", "day": 1, "skipLeapMonth": null } }""", "skipLeapMonth=\"\"", DisplayName = "null attribute")]
+    [DataRow("""{ "fixed": { "month": "January", "day": 1, "SkipLeapMonth": true } }""", "skipLeapMonth=\"true\"", DisplayName = "name in another case")]
     public void FromJson_WhenStrategyAttributeVaries_ShouldNormalizeInXml(string strategyJson, string expectedFragment)
     {
         string xml = NotableDateDocumentBuilder.FromJson(JsonWithRule($$"""{ "id": "r", "strategy": {{strategyJson}} }""")).ToXml();
@@ -254,18 +255,34 @@ public partial class NotableDateDocumentBuilderTests
     }
 
     /// <summary>
-    /// Verifies that a rule whose strategy property is absent, empty, or unrecognized parses into a strategy-less rule -
-    /// observable because such a rule cannot be re-serialized.
+    /// Verifies that a JSON strategy attribute holding the literal <c>null</c>, which the loader reads as absent, is
+    /// left out of the XML form rather than written as an empty attribute the schema rejects.
+    /// </summary>
+    [TestMethod]
+    public void FromJson_WhenStrategyAttributeIsNull_ShouldOmitItFromXml()
+    {
+        string xml = NotableDateDocumentBuilder.FromJson(JsonWithRule("""{ "id": "r", "strategy": { "fixed": { "month": "January", "day": 1, "skipLeapMonth": null } } }""")).ToXml();
+
+        Assert.DoesNotContain("skipLeapMonth", xml);
+    }
+
+    /// <summary>
+    /// Verifies that a rule whose strategy property is absent, empty, or unrecognized, which the loader rejects with
+    /// <c>BODU-CAL-RULE-SOURCE</c>, is rejected by <see cref="NotableDateDocumentBuilder.FromJson(string)" /> with a
+    /// <see cref="FormatException" /> rather than parsed into a strategy-less rule.
     /// </summary>
     /// <param name="ruleJson">The rule object JSON.</param>
     [TestMethod]
     [DataRow("""{ "id": "r" }""", DisplayName = "no strategy property")]
     [DataRow("""{ "id": "r", "strategy": { } }""", DisplayName = "empty strategy")]
     [DataRow("""{ "id": "r", "strategy": { "unknownKey": 5 } }""", DisplayName = "unrecognized strategy")]
-    public void FromJson_WhenRuleHasNoUsableStrategy_ShouldProduceStrategylessRule(string ruleJson)
+    public void FromJson_WhenRuleHasNoUsableStrategy_ShouldThrowFormatException(string ruleJson)
     {
-        var builder = NotableDateDocumentBuilder.FromJson(JsonWithRule(ruleJson));
+        string json = JsonWithRule(ruleJson);
 
-        _ = Assert.ThrowsExactly<InvalidOperationException>(builder.ToXml);
+        _ = Assert.ThrowsExactly<FormatException>(() =>
+        {
+            _ = NotableDateDocumentBuilder.FromJson(json);
+        });
     }
 }
