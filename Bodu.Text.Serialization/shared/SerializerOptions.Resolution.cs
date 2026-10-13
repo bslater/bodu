@@ -53,6 +53,14 @@ public sealed partial class YamlSerializerOptions
     /// Thrown when <paramref name="typeToConvert" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="NotSupportedException">Thrown when no converter handles the type.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when a type-level converter attribute names a type that is not a converter or that has no public
+    /// parameterless constructor, or when the converter a factory creates cannot convert the type.
+    /// </exception>
+    /// <remarks>
+    /// The first call makes the options read-only, as <see cref="MakeReadOnly" /> does, so their settings and converter
+    /// list can no longer change. The resolved converter is cached per type.
+    /// </remarks>
 #if BENCODE
     [RequiresUnreferencedCode(BencodeTrimming.RequiresUnreferencedCodeMessage)]
     [RequiresDynamicCode(BencodeTrimming.RequiresDynamicCodeMessage)]

@@ -30,8 +30,9 @@ internal enum DictionaryKeyKind
     Integer,
 
     /// <summary>
-    /// The key is an enumeration; it is written as its member name (or decimal fallback for undefined values) and
-    /// parsed back case-insensitively.
+    /// The key is an enumeration; it is read and written through an <see cref="IEnumKeyConverter{T}" /> - the options'
+    /// by-name converter for the enumeration, or else an <see cref="EnumKeyConverter{T}" /> - so it follows that
+    /// converter's wire names, naming policy, and rule for integer values.
     /// </summary>
     Enum,
 
