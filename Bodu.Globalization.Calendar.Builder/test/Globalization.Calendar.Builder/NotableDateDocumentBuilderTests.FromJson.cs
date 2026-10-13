@@ -1098,4 +1098,176 @@ public partial class NotableDateDocumentBuilderTests
 
         CollectionAssert.AreEqual(PackBytes(loaded), PackBytes(built), scenario);
     }
+
+    /// <summary>
+    /// Verifies that a rule whose strategy and recurrence name no recognized kind between them, which the loader rejects
+    /// with <c>BODU-CAL-RULE-SOURCE</c>, is rejected with a <see cref="FormatException" /> carrying the loader's message,
+    /// rather than built without an occurrence source.
+    /// </summary>
+    /// <param name="rule">The rule, as a JSON object.</param>
+    [TestMethod]
+    [DataRow("""{ "id": "r" }""")]
+    [DataRow("""{ "id": "r", "strategy": { } }""")]
+    [DataRow("""{ "id": "r", "strategy": { "fixd": { "month": 3, "day": 1 } } }""")]
+    [DataRow("""{ "id": "r", "recurrence": { } }""")]
+    public void FromJson_WhenRuleOccurrenceSourceNamesNoKind_ShouldThrowFormatException(string rule)
+    {
+        string json = RuleJson(rule);
+        string expected = LoaderDiagnosticMessage(json, "BODU-CAL-RULE-SOURCE");
+
+        FormatException ex = Assert.ThrowsExactly<FormatException>(() =>
+        {
+            _ = NotableDateDocumentBuilder.FromJson(json);
+        });
+
+        Assert.AreEqual(expected, ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that a rule whose strategy and recurrence name more than one kind between them, which the loader rejects
+    /// with <c>BODU-CAL-RULE-SOURCE</c>, is rejected with a <see cref="FormatException" /> carrying the loader's message,
+    /// rather than built with the first kind alone.
+    /// </summary>
+    /// <param name="rule">The rule, as a JSON object.</param>
+    [TestMethod]
+    [DataRow("""{ "id": "r", "strategy": { "fixed": { "month": 3, "day": 1 }, "algorithm": { "key": "western-easter" } } }""")]
+    [DataRow("""{ "id": "r", "strategy": { "fixed": { "month": 3, "day": 1 } }, "recurrence": { "weekly": { "days": [ "Monday" ] } } }""")]
+    [DataRow("""{ "id": "r", "recurrence": { "weekly": { "days": [ "Monday" ] }, "monthlyDay": { "dayOfMonth": 1 } } }""")]
+    public void FromJson_WhenRuleOccurrenceSourceNamesTwoKinds_ShouldThrowFormatException(string rule)
+    {
+        string json = RuleJson(rule);
+        string expected = LoaderDiagnosticMessage(json, "BODU-CAL-RULE-SOURCE");
+
+        FormatException ex = Assert.ThrowsExactly<FormatException>(() =>
+        {
+            _ = NotableDateDocumentBuilder.FromJson(json);
+        });
+
+        Assert.AreEqual(expected, ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that an <c>AddRule</c> override whose rule names two strategy kinds, which the loader rejects with
+    /// <c>BODU-CAL-RULE-SOURCE</c>, is rejected with a <see cref="FormatException" /> carrying the loader's message.
+    /// </summary>
+    [TestMethod]
+    public void FromJson_WhenAddedRuleNamesTwoKinds_ShouldThrowFormatException()
+    {
+        string json = """
+            { "schemaVersion": "1.0", "resourceId": "test.add-rule-source",
+              "notableDates": [ { "id": "x", "displayName": "X", "category": "Observance",
+                "rules": [ { "id": "r", "strategy": { "fixed": { "month": 3, "day": 1 } } } ] } ],
+              "overrides": [ { "operation": "AddRule", "notableDateRef": "x",
+                "rule": { "id": "added", "strategy": { "fixed": { "month": 4, "day": 1 }, "dayOfYear": { "ordinal": 100 } } } } ] }
+            """;
+        string expected = LoaderDiagnosticMessage(json, "BODU-CAL-RULE-SOURCE");
+
+        FormatException ex = Assert.ThrowsExactly<FormatException>(() =>
+        {
+            _ = NotableDateDocumentBuilder.FromJson(json);
+        });
+
+        Assert.AreEqual(expected, ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that an <c>untilDate</c> whose end strategy is absent or names no recognized kind, which the loader
+    /// rejects with <c>BODU-CAL-DURATION-NOEND</c>, is rejected with a <see cref="FormatException" /> carrying the
+    /// loader's message.
+    /// </summary>
+    /// <param name="untilDate">The <c>untilDate</c>, as a JSON object.</param>
+    [TestMethod]
+    [DataRow("""{ "endBoundary": "Exclusive" }""")]
+    [DataRow("""{ "strategy": { } }""")]
+    [DataRow("""{ "strategy": { "fixd": { "month": 3, "day": 5 } } }""")]
+    public void FromJson_WhenUntilDateStrategyNamesNoKind_ShouldThrowFormatException(string untilDate)
+    {
+        string json = UntilDateJson(untilDate);
+        string expected = LoaderDiagnosticMessage(json, "BODU-CAL-DURATION-NOEND");
+
+        FormatException ex = Assert.ThrowsExactly<FormatException>(() =>
+        {
+            _ = NotableDateDocumentBuilder.FromJson(json);
+        });
+
+        Assert.AreEqual(expected, ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that an <c>untilDate</c> whose end strategy names two kinds, which the loader rejects with
+    /// <c>BODU-CAL-DURATION-CONFLICT</c>, is rejected with a <see cref="FormatException" /> carrying the loader's message,
+    /// rather than built with the first kind alone.
+    /// </summary>
+    [TestMethod]
+    public void FromJson_WhenUntilDateStrategyNamesTwoKinds_ShouldThrowFormatException()
+    {
+        string json = UntilDateJson("""{ "strategy": { "fixed": { "month": 3, "day": 5 }, "dayOfYear": { "ordinal": 100 } } }""");
+        string expected = LoaderDiagnosticMessage(json, "BODU-CAL-DURATION-CONFLICT");
+
+        FormatException ex = Assert.ThrowsExactly<FormatException>(() =>
+        {
+            _ = NotableDateDocumentBuilder.FromJson(json);
+        });
+
+        Assert.AreEqual(expected, ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that a <c>PatchRule</c> override whose <c>untilDate</c> end strategy is absent, names no recognized kind
+    /// or names two, which the loader rejects with the diagnostic named, is rejected with a
+    /// <see cref="FormatException" /> carrying the loader's message.
+    /// </summary>
+    /// <param name="patch">The extra <c>PatchRule</c> properties.</param>
+    /// <param name="code">The code of the diagnostic the loader reports.</param>
+    [TestMethod]
+    [DataRow(""", "duration": { "untilDate": { "endBoundary": "Exclusive" } }""", "BODU-CAL-DURATION-NOEND")]
+    [DataRow(""", "duration": { "untilDate": { "strategy": { "fixd": { "month": 4, "day": 5 } } } }""", "BODU-CAL-DURATION-NOEND")]
+    [DataRow(""", "duration": { "untilDate": { "strategy": { "fixed": { "month": 4, "day": 5 }, "dayOfYear": { "ordinal": 100 } } } }""", "BODU-CAL-DURATION-CONFLICT")]
+    public void FromJson_WhenPatchUntilDateStrategyIsNotOneKind_ShouldThrowFormatException(string patch, string code)
+    {
+        string json = PatchSourceJson(patch);
+        string expected = LoaderDiagnosticMessage(json, code);
+
+        FormatException ex = Assert.ThrowsExactly<FormatException>(() =>
+        {
+            _ = NotableDateDocumentBuilder.FromJson(json);
+        });
+
+        Assert.AreEqual(expected, ex.Message);
+    }
+
+    /// <summary>
+    /// Returns the message of the one diagnostic with the supplied code that the loader reports for a JSON document.
+    /// </summary>
+    /// <param name="json">The JSON document.</param>
+    /// <param name="code">The diagnostic code.</param>
+    /// <returns>The diagnostic's message.</returns>
+    private static string LoaderDiagnosticMessage(string json, string code)
+    {
+        NotableDateValidationException ex = Assert.ThrowsExactly<NotableDateValidationException>(() =>
+        {
+            _ = NotableDateResourceLoader.LoadJson(json);
+        });
+
+        return ex.Diagnostics.Single(d => d.Code == code).Message;
+    }
+
+    /// <summary>
+    /// Builds a JSON document whose one concept, <c>x</c>, holds the supplied rule.
+    /// </summary>
+    /// <param name="rule">The rule, as a JSON object.</param>
+    /// <returns>The JSON document.</returns>
+    private static string RuleJson(string rule) =>
+        """
+        { "schemaVersion": "1.0", "resourceId": "test.rule-source",
+          "notableDates": [ { "id": "x", "displayName": "X", "category": "Observance", "rules": [ @rule@ ] } ] }
+        """.Replace("@rule@", rule, StringComparison.Ordinal);
+
+    /// <summary>
+    /// Builds a JSON document whose one rule, a fixed 1 March, lasts until the supplied <c>untilDate</c>.
+    /// </summary>
+    /// <param name="untilDate">The <c>untilDate</c>, as a JSON object.</param>
+    /// <returns>The JSON document.</returns>
+    private static string UntilDateJson(string untilDate) =>
+        RuleJson("""{ "id": "r", "strategy": { "fixed": { "month": 3, "day": 1 } }, "duration": { "untilDate": @until@ } }""".Replace("@until@", untilDate, StringComparison.Ordinal));
 }
