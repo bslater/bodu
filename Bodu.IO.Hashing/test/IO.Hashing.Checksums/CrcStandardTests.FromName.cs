@@ -4,12 +4,14 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Globalization;
 using Bodu.Test.Kat;
 
 namespace Bodu.IO.Hashing.Checksums;
 
 /// <summary>
-/// Verifies <see cref="CrcStandard.FromName(string)" /> over the aliases the CRC RevEng catalogue publishes.
+/// Verifies <see cref="CrcStandard.FromName(string)" /> over the aliases the CRC RevEng catalogue publishes, and the
+/// exception it reports for an unknown name.
 /// </summary>
 public partial class CrcStandardTests
 {
@@ -97,5 +99,24 @@ public partial class CrcStandardTests
         {
             _ = CrcStandard.FromName(" PKZIP ");
         });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="CrcStandard.FromName(string)" /> reports an unknown name with a
+    /// <see cref="KeyNotFoundException" /> whose message is the project's resource text formatted with the name.
+    /// </summary>
+    [TestMethod]
+    public void FromName_WhenNameIsUnknown_ShouldThrowWithTheResourceMessage()
+    {
+        const string name = "no such crc";
+        string? format = HashingResourceStrings.ResourceManager.GetString("IO_KeyNotFound_CrcStandardName", HashingResourceStrings.Culture);
+
+        var ex = Assert.ThrowsExactly<KeyNotFoundException>(() =>
+        {
+            _ = CrcStandard.FromName(name);
+        });
+
+        Assert.IsNotNull(format, "The resource that holds the message.");
+        Assert.AreEqual(string.Format(CultureInfo.CurrentCulture, format, name), ex.Message);
     }
 }
