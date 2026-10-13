@@ -37,6 +37,27 @@ public partial class CompoundStorageTests
     }
 
     /// <summary>
+    /// Verifies that the <see cref="IOException" /> <see cref="FileMode.CreateNew" /> raises over an existing staged
+    /// stream names that stream, rather than reporting the supported mode and access combination as unsupported.
+    /// </summary>
+    /// <param name="access">The access passed to the call.</param>
+    [TestMethod]
+    [DataRow(FileAccess.Write)]
+    [DataRow(FileAccess.ReadWrite)]
+    public void OpenStream_WhenCreateNewAndStreamExists_ShouldThrowIOExceptionNamingTheStream(FileAccess access)
+    {
+        using CompoundFile file = CreateWritableWithStream(1, 2, 3);
+
+        IOException ex = Assert.ThrowsExactly<IOException>(() =>
+        {
+            using CompoundStream _ = file.RootStorage.OpenStream("Stream 1", FileMode.CreateNew, access);
+        });
+
+        Assert.Contains("'Stream 1'", ex.Message);
+        Assert.DoesNotContain($"CreateNew/{access}", ex.Message);
+    }
+
+    /// <summary>
     /// Verifies that opening an absent staged stream throws <see cref="CompoundStreamNotFoundException" /> naming the
     /// stream, so the caller can report which entry was missing.
     /// </summary>
