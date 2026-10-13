@@ -24,6 +24,77 @@ public partial class DequeTests
     }
 
     /// <summary>
+    /// Verifies that the capacity constructor rejects a capacity one above <see cref="Array.MaxLength" /> with
+    /// <see cref="ArgumentOutOfRangeException" /> naming <c>capacity</c>.
+    /// </summary>
+    [TestMethod]
+    public void Ctor_WhenCapacityExceedsArrayMaxLength_ShouldThrowArgumentOutOfRangeException()
+    {
+        var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = new Deque<int>(Array.MaxLength + 1);
+        });
+
+        Assert.AreEqual("capacity", ex.ParamName);
+    }
+
+    /// <summary>
+    /// Verifies that the (capacity, allowGrow) constructor rejects a capacity one above <see cref="Array.MaxLength" />
+    /// with <see cref="ArgumentOutOfRangeException" /> naming <c>capacity</c>, whether or not growth is allowed.
+    /// </summary>
+    /// <param name="allowGrow">The growth policy passed to the constructor.</param>
+    [TestMethod]
+    [DataRow(true)]
+    [DataRow(false)]
+    public void Ctor_WhenGrowthPolicyProvidedAndCapacityExceedsArrayMaxLength_ShouldThrowArgumentOutOfRangeException(bool allowGrow)
+    {
+        var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = new Deque<int>(Array.MaxLength + 1, allowGrow);
+        });
+
+        Assert.AreEqual("capacity", ex.ParamName);
+    }
+
+    /// <summary>
+    /// Verifies that the (collection, capacity) constructor rejects a capacity one above <see cref="Array.MaxLength" />
+    /// with <see cref="ArgumentOutOfRangeException" /> naming <c>capacity</c>.
+    /// </summary>
+    [TestMethod]
+    public void Ctor_WhenCollectionProvidedAndCapacityExceedsArrayMaxLength_ShouldThrowArgumentOutOfRangeException()
+    {
+        int[] source = [1, 2];
+
+        var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = new Deque<int>(source, Array.MaxLength + 1);
+        });
+
+        Assert.AreEqual("capacity", ex.ParamName);
+    }
+
+    /// <summary>
+    /// Verifies that the (collection, capacity, allowGrow) constructor rejects a capacity one above
+    /// <see cref="Array.MaxLength" /> with <see cref="ArgumentOutOfRangeException" /> naming <c>capacity</c>, whether or
+    /// not growth is allowed.
+    /// </summary>
+    /// <param name="allowGrow">The growth policy passed to the constructor.</param>
+    [TestMethod]
+    [DataRow(true)]
+    [DataRow(false)]
+    public void Ctor_WhenCollectionAndGrowthPolicyProvidedAndCapacityExceedsArrayMaxLength_ShouldThrowArgumentOutOfRangeException(bool allowGrow)
+    {
+        int[] source = [1];
+
+        var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = new Deque<int>(source, Array.MaxLength + 1, allowGrow);
+        });
+
+        Assert.AreEqual("capacity", ex.ParamName);
+    }
+
+    /// <summary>
     /// Verifies that the capacity-only constructor sets the requested initial capacity.
     /// </summary>
     [TestMethod]

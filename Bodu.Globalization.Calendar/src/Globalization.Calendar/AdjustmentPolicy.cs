@@ -341,15 +341,18 @@ public sealed class AdjustmentPolicy
     /// </summary>
     /// <param name="date">The calculated occurrence date.</param>
     /// <returns><see langword="true" /> when the occurrence matches the configured ordinal and weekday.</returns>
+    /// <remarks>
+    /// The test is <see cref="DateOnlyExtensions.IsNthDateOfWeekInMonth(DateOnly, DayOfWeek, WeekOrdinal)" />'s. That
+    /// predicate throws for a week ordinal <see cref="WeekOrdinal" /> does not define, which a policy built in code can
+    /// carry; such a policy never fires, so the ordinal is range-checked first.
+    /// </remarks>
     private bool IsNthOccurrenceInMonth(DateOnly date)
     {
         if (TriggerWeekdays.Count == 0 || TriggerWeekOrdinal is not WeekOrdinal ordinal || date.DayOfWeek != TriggerWeekdays[0])
             return false;
 
-        if (ordinal == WeekOrdinal.Last)
-            return date.Day + 7 > DateTime.DaysInMonth(date.Year, date.Month);
-
-        return ((date.Day - 1) / 7) + 1 == (int)ordinal;
+        return ordinal is >= WeekOrdinal.First and <= WeekOrdinal.Last
+            && date.IsNthDateOfWeekInMonth(date.DayOfWeek, ordinal);
     }
 
     /// <summary>

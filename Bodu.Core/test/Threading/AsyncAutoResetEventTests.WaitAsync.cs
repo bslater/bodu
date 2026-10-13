@@ -107,4 +107,39 @@ public sealed partial class AsyncAutoResetEventTests
         sut.Set();
         await unsignaled;
     }
+
+    /// <summary>
+    /// Verifies that a wait that must queue, with a token that cannot be canceled, allocates no more than its queued
+    /// waiter: no cancellation registration and no asynchronous state machine.
+    /// </summary>
+    [TestMethod]
+    public async Task WaitAsync_WhenQueuedWithoutCancellationToken_ShouldAllocateOnlyTheWaiter()
+    {
+        var sut = new AsyncAutoResetEvent();
+
+        (long bytes, Task[] pending) = ContendedWaitAllocation.BytesPerQueuedCall(() => sut.WaitAsync().AsTask());
+
+        for (int i = 0; i < pending.Length; i++)
+            sut.Set();
+
+        await Task.WhenAll(pending).WaitAsync(TimeSpan.FromSeconds(30));
+        Assert.IsLessThanOrEqualTo(ContendedWaitAllocation.QueuedWaiterBytes, bytes, $"A queued wait allocated {bytes} bytes.");
+    }
+
+    /// <summary>
+    /// Verifies that a wait that must queue with a cancellable token allocates its waiter, its registration and the
+    /// queue's one asynchronous state machine, without a second state machine wrapped around it.
+    /// </summary>
+    [TestMethod]
+    public async Task WaitAsync_WhenQueuedWithCancellationToken_ShouldNotAllocateAWrapperStateMachine()
+    {
+        var sut = new AsyncAutoResetEvent();
+        using var cts = new CancellationTokenSource();
+
+        (long bytes, Task[] pending) = ContendedWaitAllocation.BytesPerQueuedCall(() => sut.WaitAsync(cts.Token).AsTask());
+
+        await cts.CancelAsync();
+        await Assert.ThrowsExactlyAsync<TaskCanceledException>(async () => await Task.WhenAll(pending).WaitAsync(TimeSpan.FromSeconds(30)));
+        Assert.IsLessThanOrEqualTo(ContendedWaitAllocation.CancellableQueuedWaiterBytes, bytes, $"A queued wait allocated {bytes} bytes.");
+    }
 }

@@ -38,4 +38,22 @@ public sealed partial class AsyncLockTests
         {
         }
     }
+
+    /// <summary>
+    /// Verifies that disposing the releaser while a waiter is queued hands the lock over without allocating.
+    /// </summary>
+    [TestMethod]
+    public async Task Releaser_WhenHandingTheLockToAQueuedWaiter_ShouldNotAllocate()
+    {
+        var sut = new AsyncLock();
+        AsyncLock.Releaser holder = await sut.LockAsync();
+
+        long bytes = ContendedWaitAllocation.BytesPerHandOff(
+            () => sut.LockAsync().AsTask(),
+            () => holder.Dispose(),
+            granted => holder = granted);
+
+        holder.Dispose();
+        Assert.IsLessThanOrEqualTo(ContendedWaitAllocation.HandOffBytes, bytes, $"A hand-off allocated {bytes} bytes.");
+    }
 }

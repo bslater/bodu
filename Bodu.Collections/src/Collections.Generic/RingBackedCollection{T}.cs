@@ -127,7 +127,9 @@ public abstract partial class RingBackedCollection<T>
     /// specified capacity.
     /// </summary>
     /// <param name="capacity">The initial backing-array capacity. Must be greater than zero.</param>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="capacity" /> is less than 1.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="capacity" /> is less than 1 or greater than <see cref="Array.MaxLength" />.
+    /// </exception>
     protected RingBackedCollection(int capacity)
     {
         ThrowHelper.ThrowIfOutOfRange(capacity, 1, Array.MaxLength);
@@ -149,7 +151,9 @@ public abstract partial class RingBackedCollection<T>
     /// </param>
     /// <param name="capacity">The backing-array capacity. Must be greater than zero.</param>
     /// <exception cref="ArgumentNullException"><paramref name="collection" /> is <see langword="null" />.</exception>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="capacity" /> is less than 1.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="capacity" /> is less than 1 or greater than <see cref="Array.MaxLength" />.
+    /// </exception>
     protected RingBackedCollection(IEnumerable<T> collection, int capacity)
     {
         ThrowHelper.ThrowIfNull(collection);

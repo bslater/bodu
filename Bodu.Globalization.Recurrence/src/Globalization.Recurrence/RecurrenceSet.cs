@@ -332,7 +332,7 @@ public sealed partial class RecurrenceSet : IEquatable<RecurrenceSet>
     /// </param>
     /// <returns>
     /// The next occurrence carrying the offset of <paramref name="after" />, or <see langword="null" /> when the set
-    /// produces none.
+    /// produces none whose instant a <see cref="DateTimeOffset" /> can represent at that offset.
     /// </returns>
     /// <remarks>
     /// The set's start and dates are wall-clock values; the query interprets them in the offset of
@@ -340,8 +340,10 @@ public sealed partial class RecurrenceSet : IEquatable<RecurrenceSet>
     /// </remarks>
     public DateTimeOffset? GetNextOccurrence(DateTimeOffset after, bool inclusive = false)
     {
-        DateTime? next = GetNextOccurrence(DateTime.SpecifyKind(after.DateTime, DateTimeKind.Unspecified), inclusive);
-        return next is null ? null : new DateTimeOffset(next.Value, after.Offset);
+        DateTime? next = GetNextOccurrence(after.DateTime, inclusive);
+        return next is { } wallClock && wallClock.TryToDateTimeOffset(after.Offset, out DateTimeOffset occurrence)
+            ? occurrence
+            : null;
     }
 
     /// <summary>
@@ -354,7 +356,7 @@ public sealed partial class RecurrenceSet : IEquatable<RecurrenceSet>
     /// </param>
     /// <returns>
     /// The previous occurrence carrying the offset of <paramref name="before" />, or <see langword="null" /> when none
-    /// precedes it.
+    /// whose instant a <see cref="DateTimeOffset" /> can represent at that offset precedes it.
     /// </returns>
     /// <remarks>
     /// The set's start and dates are wall-clock values; the query interprets them in the offset of
@@ -362,8 +364,10 @@ public sealed partial class RecurrenceSet : IEquatable<RecurrenceSet>
     /// </remarks>
     public DateTimeOffset? GetPreviousOccurrence(DateTimeOffset before, bool inclusive = false)
     {
-        DateTime? previous = GetPreviousOccurrence(DateTime.SpecifyKind(before.DateTime, DateTimeKind.Unspecified), inclusive);
-        return previous is null ? null : new DateTimeOffset(previous.Value, before.Offset);
+        DateTime? previous = GetPreviousOccurrence(before.DateTime, inclusive);
+        return previous is { } wallClock && wallClock.TryToDateTimeOffset(before.Offset, out DateTimeOffset occurrence)
+            ? occurrence
+            : null;
     }
 
     /// <summary>

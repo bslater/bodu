@@ -62,10 +62,11 @@ public partial class DateTimeExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that when the past and future occurrences are equidistant (3 days each), the earlier date is returned.
+    /// Verifies that when the previous occurrence is three days back and the next four days ahead, the previous date is
+    /// returned.
     /// </summary>
     [TestMethod]
-    public void NearestDateOfWeek_WhenTiedBetweenPastAndFuture_ShouldReturnEarlierDate()
+    public void NearestDateOfWeek_WhenPreviousOccurrenceIsCloser_ShouldReturnPreviousDate()
     {
         var dateTime = new DateTime(2024, 4, 17);
         DateTime actual = dateTime.NearestDateOfWeek(DayOfWeek.Sunday);

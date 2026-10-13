@@ -67,4 +67,31 @@ public partial class DateOnlyExtensionsTests
         Assert.IsTrue(actual >= DateOnly.MinValue);
     }
 
+    /// <summary>
+    /// Verifies that <see cref="DateOnlyExtensions.NextDateOfWeek(DateOnly, DayOfWeek)" /> throws
+    /// <see cref="ArgumentOutOfRangeException" /> naming the <c>date</c> argument when the occurrence follows the last
+    /// date a <see cref="DateOnly" /> can represent.
+    /// </summary>
+    [TestMethod]
+    public void NextDateOfWeek_WhenOccurrenceIsOutsideDateOnlyRange_ShouldThrowArgumentOutOfRangeExceptionForDate()
+    {
+        var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = DateOnly.MaxValue.NextDateOfWeek(DayOfWeek.Monday);
+        });
+
+        Assert.AreEqual("date", ex.ParamName);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="DateOnlyExtensions.NextDateOfWeek(DateOnly, DayOfWeek)" /> still returns an occurrence that falls on the
+    /// last date a <see cref="DateOnly" /> can represent.
+    /// </summary>
+    [TestMethod]
+    public void NextDateOfWeek_WhenOccurrenceIsTheLastRepresentableDateOnly_ShouldReturnIt()
+    {
+        var actual = DateOnly.MaxValue.AddDays(-7).NextDateOfWeek(DayOfWeek.Friday);
+
+        Assert.AreEqual(DateOnly.MaxValue, actual);
+    }
 }

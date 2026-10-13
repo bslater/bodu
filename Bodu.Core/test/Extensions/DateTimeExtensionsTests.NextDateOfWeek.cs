@@ -105,4 +105,31 @@ public partial class DateTimeExtensionsTests
         Assert.IsTrue(actual >= DateTime.MinValue);
     }
 
+    /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.NextDateOfWeek(DateTime, DayOfWeek)" /> throws
+    /// <see cref="ArgumentOutOfRangeException" /> naming the <c>dateTime</c> argument when the occurrence follows the
+    /// last date a <see cref="DateTime" /> can represent.
+    /// </summary>
+    [TestMethod]
+    public void NextDateOfWeek_WhenOccurrenceIsOutsideDateTimeRange_ShouldThrowArgumentOutOfRangeExceptionForDate()
+    {
+        var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = DateTime.MaxValue.NextDateOfWeek(DayOfWeek.Monday);
+        });
+
+        Assert.AreEqual("dateTime", ex.ParamName);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.NextDateOfWeek(DateTime, DayOfWeek)" /> still returns an occurrence that falls on the
+    /// last date a <see cref="DateTime" /> can represent.
+    /// </summary>
+    [TestMethod]
+    public void NextDateOfWeek_WhenOccurrenceIsTheLastRepresentableDateTime_ShouldReturnIt()
+    {
+        var actual = DateTime.MaxValue.AddDays(-7).NextDateOfWeek(DayOfWeek.Friday);
+
+        Assert.AreEqual(DateTime.MaxValue, actual);
+    }
 }

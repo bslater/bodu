@@ -154,7 +154,7 @@ public sealed partial class AsyncLock
         lock (_gate)
         {
             // Transfer ownership to the longest-waiting caller, skipping any whose task was already canceled.
-            if (_waiters.Count > 0 && _waiters.TryGrant(() => new Releaser(this)))
+            if (_waiters.Count > 0 && _waiters.TryGrant(new Releaser(this)))
                 return;
 
             _held = false;

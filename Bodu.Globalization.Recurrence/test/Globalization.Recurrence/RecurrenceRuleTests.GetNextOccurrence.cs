@@ -252,4 +252,33 @@ public partial class RecurrenceRuleTests
         Assert.AreEqual(new DateTimeOffset(2026, 10, 5, 9, 30, 0, TimeSpan.FromHours(10)), next);
         Assert.AreEqual(TimeSpan.FromHours(10), next?.Offset);
     }
+
+    /// <summary>
+    /// Verifies that the <see cref="DateTimeOffset" /> overload returns <see langword="null" /> rather than throwing
+    /// when the next occurrence's wall-clock time exists but its UTC instant would follow the last instant a
+    /// <see cref="DateTimeOffset" /> can hold.
+    /// </summary>
+    [TestMethod]
+    public void GetNextOccurrence_ForDateTimeOffset_WhenTheOccurrenceFollowsTheLastUtcInstant_ShouldReturnNull()
+    {
+        var rule = RecurrenceRule.Parse("FREQ=DAILY");
+        var offset = TimeSpan.FromHours(-5);
+        var start = new DateTimeOffset(9999, 12, 1, 20, 0, 0, offset);
+
+        Assert.IsNull(rule.GetNextOccurrence(start, new DateTimeOffset(9999, 12, 31, 10, 0, 0, offset)));
+    }
+
+    /// <summary>
+    /// Verifies that the <see cref="DateTimeOffset" /> overload returns <see langword="null" /> for
+    /// <see cref="DateTimeOffset.MaxValue" /> when the start's offset puts every later wall-clock occurrence past the
+    /// last UTC instant.
+    /// </summary>
+    [TestMethod]
+    public void GetNextOccurrence_ForDateTimeOffset_WhenAfterIsTheLastOffsetInstant_ShouldReturnNull()
+    {
+        var rule = RecurrenceRule.Parse("FREQ=HOURLY");
+        var start = new DateTimeOffset(9999, 12, 31, 0, 0, 0, TimeSpan.FromHours(-5));
+
+        Assert.IsNull(rule.GetNextOccurrence(start, DateTimeOffset.MaxValue));
+    }
 }

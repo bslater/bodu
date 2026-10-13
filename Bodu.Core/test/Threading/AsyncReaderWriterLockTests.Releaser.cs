@@ -126,4 +126,23 @@ public sealed partial class AsyncReaderWriterLockTests
 
         (await writer3).Dispose();
     }
+
+    /// <summary>
+    /// Verifies that releasing write access while a writer is queued hands it over allocating only the new
+    /// releaser's idempotency guard, with no delegate built to produce the releaser.
+    /// </summary>
+    [TestMethod]
+    public async Task Releaser_WhenHandingWriteAccessToAQueuedWriter_ShouldAllocateOnlyTheReleaseGuard()
+    {
+        var sut = new AsyncReaderWriterLock();
+        AsyncReaderWriterLock.Releaser holder = await sut.WriterAsync();
+
+        long bytes = ContendedWaitAllocation.BytesPerHandOff(
+            () => sut.WriterAsync().AsTask(),
+            () => holder.Dispose(),
+            granted => holder = granted);
+
+        holder.Dispose();
+        Assert.IsLessThanOrEqualTo(ContendedWaitAllocation.ReleaseGuardHandOffBytes, bytes, $"A hand-off allocated {bytes} bytes.");
+    }
 }

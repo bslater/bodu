@@ -305,7 +305,7 @@ public sealed partial class CronExpression : IEquatable<CronExpression>
     /// </returns>
     public DateTimeOffset? GetNextOccurrence(DateTimeOffset after, bool inclusive = false)
     {
-        DateTime? next = GetNextOccurrence(DateTime.SpecifyKind(after.DateTime, DateTimeKind.Unspecified), inclusive);
+        DateTime? next = GetNextOccurrence(after.DateTime, inclusive);
         return next is { } wallClock && wallClock.TryToDateTimeOffset(after.Offset, out DateTimeOffset occurrence)
             ? occurrence
             : null;
@@ -325,7 +325,7 @@ public sealed partial class CronExpression : IEquatable<CronExpression>
     /// </returns>
     public DateTimeOffset? GetPreviousOccurrence(DateTimeOffset before, bool inclusive = false)
     {
-        DateTime? previous = GetPreviousOccurrence(DateTime.SpecifyKind(before.DateTime, DateTimeKind.Unspecified), inclusive);
+        DateTime? previous = GetPreviousOccurrence(before.DateTime, inclusive);
         return previous is { } wallClock && wallClock.TryToDateTimeOffset(before.Offset, out DateTimeOffset occurrence)
             ? occurrence
             : null;

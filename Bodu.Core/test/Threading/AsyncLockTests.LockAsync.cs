@@ -260,4 +260,23 @@ public sealed partial class AsyncLockTests
         (await last).Dispose();
         Assert.AreEqual(0, sut.WaiterCount);
     }
+
+    /// <summary>
+    /// Verifies that an acquisition that must queue, with a token that cannot be canceled, allocates no more than its
+    /// queued waiter: no cancellation registration and no asynchronous state machine.
+    /// </summary>
+    [TestMethod]
+    public async Task LockAsync_WhenQueuedWithoutCancellationToken_ShouldAllocateOnlyTheWaiter()
+    {
+        var sut = new AsyncLock();
+        AsyncLock.Releaser holder = await sut.LockAsync();
+
+        (long bytes, Task<AsyncLock.Releaser>[] pending) = ContendedWaitAllocation.BytesPerQueuedCall(() => sut.LockAsync().AsTask());
+
+        holder.Dispose();
+        foreach (Task<AsyncLock.Releaser> waiter in pending)
+            (await waiter.WaitAsync(TimeSpan.FromSeconds(30))).Dispose();
+
+        Assert.IsLessThanOrEqualTo(ContendedWaitAllocation.QueuedWaiterBytes, bytes, $"A queued acquisition allocated {bytes} bytes.");
+    }
 }

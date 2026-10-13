@@ -185,4 +185,21 @@ public partial class RecurrenceRuleTests
         Assert.AreEqual(new DateTimeOffset(2026, 10, 4, 9, 30, 0, TimeSpan.FromHours(10)), previous);
         Assert.AreEqual(TimeSpan.FromHours(10), previous?.Offset);
     }
+
+    /// <summary>
+    /// Verifies that the <see cref="DateTimeOffset" /> overload skips a later occurrence in the same period whose UTC
+    /// instant would follow the last instant a <see cref="DateTimeOffset" /> can hold, rather than throwing, and
+    /// returns the representable occurrence before the bound.
+    /// </summary>
+    [TestMethod]
+    public void GetPreviousOccurrence_ForDateTimeOffset_WhenALaterOccurrenceFollowsTheLastUtcInstant_ShouldReturnTheEarlierOne()
+    {
+        var rule = RecurrenceRule.Parse("FREQ=DAILY;BYHOUR=10,20;BYMINUTE=0;BYSECOND=0");
+        var offset = TimeSpan.FromHours(-5);
+        var start = new DateTimeOffset(9999, 12, 1, 10, 0, 0, offset);
+
+        DateTimeOffset? previous = rule.GetPreviousOccurrence(start, DateTimeOffset.MaxValue);
+
+        Assert.AreEqual(new DateTimeOffset(9999, 12, 31, 10, 0, 0, offset), previous);
+    }
 }

@@ -162,11 +162,11 @@ public sealed partial class AsyncReaderWriterLockTests
     }
 
     /// <summary>
-    /// Verifies that a reader queued behind a writer is admitted when that writer cancels while other readers are
-    /// still active and the last active reader then releases, rather than being stranded until a future writer cycle.
+    /// Verifies that a reader queued behind a writer is admitted, alongside the reader still active, when that writer
+    /// cancels, rather than being stranded until the active reader releases or a future writer cycle.
     /// </summary>
     [TestMethod]
-    public async Task WriterAsync_WhenCanceledWhileReadersActive_ShouldAdmitQueuedReadersOnLastRelease()
+    public async Task WriterAsync_WhenCanceledWhileReadersActive_ShouldAdmitQueuedReadersAlongsideActiveReaders()
     {
         var sut = new AsyncReaderWriterLock();
         AsyncReaderWriterLock.Releaser activeReader = await sut.ReaderAsync();
@@ -180,12 +180,143 @@ public sealed partial class AsyncReaderWriterLockTests
         cts.Cancel();
         await Assert.ThrowsExactlyAsync<TaskCanceledException>(async () => await canceledWriter);
 
-        // The reader queue cannot drain yet: a reader is still active, so the cancellation path defers the grant.
-        Assert.IsFalse(deferringReader.IsCompleted);
+        // With no writer left, the queued reader shares the lock with the active one; a stranded queue would hang here.
+        (await deferringReader.AsTask().WaitAsync(TimeSpan.FromSeconds(10))).Dispose();
 
         activeReader.Dispose();
+    }
 
-        // Releasing the last active reader must admit the queued reader; a stranded queue would hang here.
-        (await deferringReader.AsTask().WaitAsync(TimeSpan.FromSeconds(10))).Dispose();
+    /// <summary>
+    /// Verifies that when the only queued writer cancels while a reader is active, the reader queued behind it is
+    /// admitted at once, so readers that arrive later never overtake it.
+    /// </summary>
+    [TestMethod]
+    public async Task WriterAsync_WhenCanceledWhileReadersActive_ShouldAdmitQueuedReadersBeforeLaterReaders()
+    {
+        var sut = new AsyncReaderWriterLock();
+        AsyncReaderWriterLock.Releaser activeReader = await sut.ReaderAsync();
+        using var cts = new CancellationTokenSource();
+
+        ValueTask<AsyncReaderWriterLock.Releaser> canceledWriter = sut.WriterAsync(cts.Token);
+        ValueTask<AsyncReaderWriterLock.Releaser> queuedReader = sut.ReaderAsync();
+        Assert.IsFalse(queuedReader.IsCompleted);
+
+        cts.Cancel();
+        await Assert.ThrowsExactlyAsync<TaskCanceledException>(async () => await canceledWriter);
+
+        // Two later readers, overlapping, are admitted immediately because no writer is active or queued.
+        AsyncReaderWriterLock.Releaser laterReader1 = await sut.ReaderAsync();
+        AsyncReaderWriterLock.Releaser laterReader2 = await sut.ReaderAsync();
+
+        // The reader that queued first must not still be waiting behind them.
+        Assert.AreEqual(0, sut.WaitingReaderCount);
+        (await queuedReader.AsTask().WaitAsync(TimeSpan.FromSeconds(10))).Dispose();
+
+        laterReader2.Dispose();
+        laterReader1.Dispose();
+        activeReader.Dispose();
+    }
+
+    /// <summary>
+    /// Verifies that cancelling one token shared by many readers queued behind a writer cancels every one of them,
+    /// empties the reader queue, and leaves the lock usable.
+    /// </summary>
+    [TestMethod]
+    public async Task ReaderAsync_WhenQueuedReadersShareACanceledToken_ShouldCancelThemAll()
+    {
+        var sut = new AsyncReaderWriterLock();
+        AsyncReaderWriterLock.Releaser writer = await sut.WriterAsync();
+        using var cts = new CancellationTokenSource();
+
+        var readers = new Task<AsyncReaderWriterLock.Releaser>[50];
+        for (int i = 0; i < readers.Length; i++)
+            readers[i] = sut.ReaderAsync(cts.Token).AsTask();
+
+        Assert.AreEqual(readers.Length, sut.WaitingReaderCount);
+
+        cts.Cancel();
+
+        foreach (Task<AsyncReaderWriterLock.Releaser> reader in readers)
+            await Assert.ThrowsExactlyAsync<TaskCanceledException>(async () => await reader);
+
+        Assert.AreEqual(0, sut.WaitingReaderCount);
+
+        writer.Dispose();
+        ValueTask<AsyncReaderWriterLock.Releaser> next = sut.ReaderAsync();
+        Assert.IsTrue(next.IsCompletedSuccessfully);
+        (await next).Dispose();
+    }
+
+    /// <summary>
+    /// Verifies that when one of several readers queued behind a writer cancels, the others stay queued, in order, and
+    /// are all admitted together when the writer releases.
+    /// </summary>
+    [TestMethod]
+    public async Task ReaderAsync_WhenOneOfSeveralQueuedReadersCancels_ShouldAdmitTheOthersWhenTheWriterReleases()
+    {
+        var sut = new AsyncReaderWriterLock();
+        AsyncReaderWriterLock.Releaser writer = await sut.WriterAsync();
+        using var cts = new CancellationTokenSource();
+
+        ValueTask<AsyncReaderWriterLock.Releaser> first = sut.ReaderAsync();
+        ValueTask<AsyncReaderWriterLock.Releaser> canceled = sut.ReaderAsync(cts.Token);
+        ValueTask<AsyncReaderWriterLock.Releaser> last = sut.ReaderAsync();
+
+        cts.Cancel();
+        await Assert.ThrowsExactlyAsync<TaskCanceledException>(async () => await canceled);
+        Assert.AreEqual(2, sut.WaitingReaderCount);
+
+        writer.Dispose();
+
+        AsyncReaderWriterLock.Releaser firstReader = await first.AsTask().WaitAsync(TimeSpan.FromSeconds(10));
+        AsyncReaderWriterLock.Releaser lastReader = await last.AsTask().WaitAsync(TimeSpan.FromSeconds(10));
+        Assert.AreEqual(0, sut.WaitingReaderCount);
+
+        // Both readers hold the lock together, so a writer must wait for both.
+        ValueTask<AsyncReaderWriterLock.Releaser> nextWriter = sut.WriterAsync();
+        firstReader.Dispose();
+        Assert.IsFalse(nextWriter.IsCompleted);
+        lastReader.Dispose();
+        (await nextWriter.AsTask().WaitAsync(TimeSpan.FromSeconds(10))).Dispose();
+    }
+
+    /// <summary>
+    /// Verifies that a reader granted the lock before its token is canceled keeps it, and that a writer acquires the
+    /// lock once the reader releases it.
+    /// </summary>
+    [TestMethod]
+    public async Task ReaderAsync_WhenGrantPrecedesCancellation_ShouldReturnReader()
+    {
+        var sut = new AsyncReaderWriterLock();
+        using var cts = new CancellationTokenSource();
+        AsyncReaderWriterLock.Releaser writer = await sut.WriterAsync();
+        ValueTask<AsyncReaderWriterLock.Releaser> waiting = sut.ReaderAsync(cts.Token);
+
+        writer.Dispose();
+        cts.Cancel();
+
+        (await waiting).Dispose();
+        Assert.AreEqual(0, sut.WaitingReaderCount);
+        using (await sut.WriterAsync())
+        {
+        }
+    }
+
+    /// <summary>
+    /// Verifies that a reader queued with a non-cancellable token behind a writer is admitted when the writer releases.
+    /// </summary>
+    [TestMethod]
+    public async Task ReaderAsync_WhenQueuedWithoutCancellationToken_ShouldBeAdmittedWhenTheWriterReleases()
+    {
+        var sut = new AsyncReaderWriterLock();
+        AsyncReaderWriterLock.Releaser writer = await sut.WriterAsync();
+
+        ValueTask<AsyncReaderWriterLock.Releaser> reader = sut.ReaderAsync(CancellationToken.None);
+        Assert.AreEqual(1, sut.WaitingReaderCount);
+
+        writer.Dispose();
+
+        (await reader.AsTask().WaitAsync(TimeSpan.FromSeconds(10))).Dispose();
+        Assert.AreEqual(0, sut.WaitingReaderCount);
     }
 }

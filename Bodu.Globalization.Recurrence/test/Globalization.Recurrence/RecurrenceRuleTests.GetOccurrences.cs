@@ -270,4 +270,53 @@ public partial class RecurrenceRuleTests
                 $"offset {offset}");
         }
     }
+
+    /// <summary>
+    /// Verifies that the <see cref="DateTimeOffset" /> occurrence stream ends at the last occurrence whose UTC instant a
+    /// <see cref="DateTimeOffset" /> can hold, rather than throwing on the first one past it.
+    /// </summary>
+    [TestMethod]
+    public void GetOccurrences_ForDateTimeOffset_WhenOccurrencesPassTheLastUtcInstant_ShouldEndAtTheLastRepresentable()
+    {
+        var rule = RecurrenceRule.Parse("FREQ=HOURLY");
+        var offset = TimeSpan.FromHours(-5);
+        var start = new DateTimeOffset(9999, 12, 31, 15, 0, 0, offset);
+
+        DateTimeOffset[] actual = rule.GetOccurrences(start).ToArray();
+
+        CollectionAssert.AreEqual(
+            new[]
+            {
+                new DateTimeOffset(9999, 12, 31, 15, 0, 0, offset),
+                new DateTimeOffset(9999, 12, 31, 16, 0, 0, offset),
+                new DateTimeOffset(9999, 12, 31, 17, 0, 0, offset),
+                new DateTimeOffset(9999, 12, 31, 18, 0, 0, offset),
+            },
+            actual);
+    }
+
+    /// <summary>
+    /// Verifies that the windowed <see cref="DateTimeOffset" /> overload, closed at
+    /// <see cref="DateTimeOffset.MaxValue" />, ends at the last occurrence whose UTC instant a
+    /// <see cref="DateTimeOffset" /> can hold, rather than throwing on the first one past it.
+    /// </summary>
+    [TestMethod]
+    public void GetOccurrences_ForDateTimeOffset_WhenWindowedToTheLastOffsetInstant_ShouldEndAtTheLastRepresentable()
+    {
+        var rule = RecurrenceRule.Parse("FREQ=HOURLY");
+        var offset = TimeSpan.FromHours(-5);
+        var start = new DateTimeOffset(9999, 12, 31, 15, 0, 0, offset);
+
+        DateTimeOffset[] actual = rule
+            .GetOccurrences(start, new DateTimeOffset(9999, 12, 31, 17, 0, 0, offset), DateTimeOffset.MaxValue)
+            .ToArray();
+
+        CollectionAssert.AreEqual(
+            new[]
+            {
+                new DateTimeOffset(9999, 12, 31, 17, 0, 0, offset),
+                new DateTimeOffset(9999, 12, 31, 18, 0, 0, offset),
+            },
+            actual);
+    }
 }

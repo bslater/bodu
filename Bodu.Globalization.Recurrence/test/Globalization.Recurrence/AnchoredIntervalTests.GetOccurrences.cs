@@ -212,4 +212,52 @@ public partial class AnchoredIntervalTests
             },
             await enumeration);
     }
+
+    /// <summary>
+    /// Verifies that the <see cref="DateTimeOffset" /> occurrence stream ends at the last occurrence whose UTC instant a
+    /// <see cref="DateTimeOffset" /> can hold, as documented, rather than throwing on the first one past it.
+    /// </summary>
+    [TestMethod]
+    public void GetOccurrences_WhenAnchorHasOffset_AndOccurrencesPassTheLastUtcInstant_ShouldEndAtTheLastRepresentable()
+    {
+        var interval = new AnchoredInterval(TimeSpan.FromHours(1));
+        var offset = TimeSpan.FromHours(-5);
+        var anchor = new DateTimeOffset(9999, 12, 31, 15, 0, 0, offset);
+
+        DateTimeOffset[] actual = interval.GetOccurrences(anchor).ToArray();
+
+        CollectionAssert.AreEqual(
+            new[]
+            {
+                new DateTimeOffset(9999, 12, 31, 16, 0, 0, offset),
+                new DateTimeOffset(9999, 12, 31, 17, 0, 0, offset),
+                new DateTimeOffset(9999, 12, 31, 18, 0, 0, offset),
+            },
+            actual);
+    }
+
+    /// <summary>
+    /// Verifies that the windowed <see cref="DateTimeOffset" /> overload, closed at
+    /// <see cref="DateTimeOffset.MaxValue" />, ends at the last occurrence whose UTC instant a
+    /// <see cref="DateTimeOffset" /> can hold, rather than throwing on the first one past it.
+    /// </summary>
+    [TestMethod]
+    public void GetOccurrences_WhenAnchorHasOffset_AndWindowedToTheLastOffsetInstant_ShouldEndAtTheLastRepresentable()
+    {
+        var interval = new AnchoredInterval(TimeSpan.FromHours(1));
+        var offset = TimeSpan.FromHours(-5);
+        var anchor = new DateTimeOffset(9999, 12, 31, 15, 0, 0, offset);
+
+        DateTimeOffset[] actual = interval
+            .GetOccurrences(anchor, new DateTimeOffset(9999, 12, 31, 17, 0, 0, offset), DateTimeOffset.MaxValue)
+            .ToArray();
+
+        CollectionAssert.AreEqual(
+            new[]
+            {
+                new DateTimeOffset(9999, 12, 31, 17, 0, 0, offset),
+                new DateTimeOffset(9999, 12, 31, 18, 0, 0, offset),
+            },
+            actual);
+    }
 }

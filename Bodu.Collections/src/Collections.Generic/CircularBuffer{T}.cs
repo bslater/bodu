@@ -113,7 +113,8 @@ public sealed class CircularBuffer<T>
     /// </summary>
     /// <param name="capacity">The maximum number of elements the buffer can contain. Must be greater than zero.</param>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="capacity" /> is less than or equal to zero.
+    /// Thrown when <paramref name="capacity" /> is less than or equal to zero or greater than
+    /// <see cref="Array.MaxLength" />.
     /// </exception>
     public CircularBuffer(int capacity)
         : this(capacity, allowOverwrite: true) { }
@@ -129,7 +130,8 @@ public sealed class CircularBuffer<T>
     /// an exception to be thrown during insertion.
     /// </param>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="capacity" /> is less than or equal to zero.
+    /// Thrown when <paramref name="capacity" /> is less than or equal to zero or greater than
+    /// <see cref="Array.MaxLength" />.
     /// </exception>
     public CircularBuffer(int capacity, bool allowOverwrite)
         : base(capacity)
@@ -162,7 +164,8 @@ public sealed class CircularBuffer<T>
     /// Thrown when <paramref name="collection" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="capacity" /> is less than or equal to zero.
+    /// Thrown when <paramref name="capacity" /> is less than or equal to zero or greater than
+    /// <see cref="Array.MaxLength" />.
     /// </exception>
     public CircularBuffer(IEnumerable<T> collection, int capacity)
         : this(collection, capacity, allowOverwrite: true) { }
@@ -184,7 +187,8 @@ public sealed class CircularBuffer<T>
     /// Thrown when <paramref name="collection" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="capacity" /> is less than or equal to zero.
+    /// Thrown when <paramref name="capacity" /> is less than or equal to zero or greater than
+    /// <see cref="Array.MaxLength" />.
     /// </exception>
     /// <exception cref="InvalidOperationException">
     /// Thrown when <paramref name="allowOverwrite" /> is <see langword="false" /> and the collection contains more

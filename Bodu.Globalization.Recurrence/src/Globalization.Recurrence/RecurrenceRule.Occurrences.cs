@@ -124,7 +124,8 @@ public sealed partial class RecurrenceRule
     /// </summary>
     /// <param name="start">The series start (<c>DTSTART</c>) the rule is anchored to.</param>
     /// <returns>
-    /// The occurrences in ascending chronological order, each carrying the offset of <paramref name="start" />.
+    /// The occurrences in ascending chronological order, each carrying the offset of <paramref name="start" />. The
+    /// sequence ends at the last occurrence whose instant a <see cref="DateTimeOffset" /> can represent.
     /// </returns>
     /// <remarks>
     /// Expansion is performed on the wall-clock time of <paramref name="start" /> and the fixed offset is reattached to
@@ -135,7 +136,14 @@ public sealed partial class RecurrenceRule
         TimeSpan offset = start.Offset;
         foreach (DateTime occurrence in Enumerate(ToWallClock(start)))
         {
-            yield return new DateTimeOffset(occurrence, offset);
+            // At a fixed offset the instants ascend with the wall-clock times, so the first one past the last
+            // representable instant ends the sequence.
+            if (!occurrence.TryToDateTimeOffset(offset, out DateTimeOffset instant))
+            {
+                yield break;
+            }
+
+            yield return instant;
         }
     }
 
@@ -155,8 +163,8 @@ public sealed partial class RecurrenceRule
         TimeSpan offset = start.Offset;
         foreach (DateTime occurrence in EnumerateFrom(ToWallClock(start), ToWallClock(from, offset)))
         {
-            var instant = new DateTimeOffset(occurrence, offset);
-            if (instant > to)
+            // An occurrence past the last representable instant follows every bound the window can have.
+            if (!occurrence.TryToDateTimeOffset(offset, out DateTimeOffset instant) || instant > to)
             {
                 yield break;
             }
@@ -177,7 +185,10 @@ public sealed partial class RecurrenceRule
     /// <see langword="true" /> to allow an occurrence exactly equal to <paramref name="after" />; otherwise the
     /// occurrence must be strictly later.
     /// </param>
-    /// <returns>The next occurrence, or <see langword="null" /> when the rule produces none.</returns>
+    /// <returns>
+    /// The next occurrence, or <see langword="null" /> when the rule produces none whose instant a
+    /// <see cref="DateTimeOffset" /> can represent.
+    /// </returns>
     /// <remarks>
     /// Unless the rule declares <see cref="Count" />, the search begins at the frequency period that holds
     /// <paramref name="after" />, so its cost does not grow with the time elapsed since <paramref name="start" />.
@@ -187,7 +198,12 @@ public sealed partial class RecurrenceRule
         TimeSpan offset = start.Offset;
         foreach (DateTime occurrence in EnumerateFrom(ToWallClock(start), ToWallClock(after, offset)))
         {
-            var instant = new DateTimeOffset(occurrence, offset);
+            // At a fixed offset the instants ascend with the wall-clock times, so none after this one is representable.
+            if (!occurrence.TryToDateTimeOffset(offset, out DateTimeOffset instant))
+            {
+                return null;
+            }
+
             if (instant > after || (inclusive && instant == after))
             {
                 return instant;
@@ -217,17 +233,18 @@ public sealed partial class RecurrenceRule
     public DateTimeOffset? GetPreviousOccurrence(DateTimeOffset start, DateTimeOffset before, bool inclusive = false)
     {
         TimeSpan offset = start.Offset;
+
+        // Every occurrence follows the representable start, so one that cannot be represented lies past the last
+        // representable instant, and so after the bound.
         DateTime? previous = FindPreviousOccurrence(
             ToWallClock(start),
             ToWallClock(before, offset),
-            occurrence =>
-            {
-                var instant = new DateTimeOffset(occurrence, offset);
-                return instant > before || (!inclusive && instant == before);
-            },
+            occurrence => !occurrence.TryToDateTimeOffset(offset, out DateTimeOffset instant)
+                || instant > before
+                || (!inclusive && instant == before),
             isExcluded: null);
 
-        return previous is DateTime value ? new DateTimeOffset(value, offset) : null;
+        return previous is DateTime value && value.TryToDateTimeOffset(offset, out DateTimeOffset result) ? result : null;
     }
 
     /// <summary>
@@ -537,9 +554,12 @@ public sealed partial class RecurrenceRule
     /// Returns the wall-clock time of a start instant, on which the rule is expanded.
     /// </summary>
     /// <param name="start">The series start.</param>
-    /// <returns>The wall-clock time of <paramref name="start" /> with an unspecified kind.</returns>
+    /// <returns>
+    /// The wall-clock time of <paramref name="start" />, whose kind <see cref="DateTimeOffset.DateTime" /> always
+    /// leaves unspecified.
+    /// </returns>
     private static DateTime ToWallClock(DateTimeOffset start) =>
-        DateTime.SpecifyKind(start.DateTime, DateTimeKind.Unspecified);
+        start.DateTime;
 
     /// <summary>
     /// Returns the wall-clock time an instant has at a UTC offset, clamped to the representable range.

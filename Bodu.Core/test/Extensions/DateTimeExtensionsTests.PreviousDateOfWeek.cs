@@ -93,4 +93,31 @@ public partial class DateTimeExtensionsTests
         Assert.IsTrue(actual >= DateTime.MinValue);
     }
 
+    /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.PreviousDateOfWeek(DateTime, DayOfWeek)" /> throws
+    /// <see cref="ArgumentOutOfRangeException" /> naming the <c>dateTime</c> argument when the occurrence precedes the
+    /// first date a <see cref="DateTime" /> can represent.
+    /// </summary>
+    [TestMethod]
+    public void PreviousDateOfWeek_WhenOccurrenceIsOutsideDateTimeRange_ShouldThrowArgumentOutOfRangeExceptionForDate()
+    {
+        var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = DateTime.MinValue.PreviousDateOfWeek(DayOfWeek.Sunday);
+        });
+
+        Assert.AreEqual("dateTime", ex.ParamName);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.PreviousDateOfWeek(DateTime, DayOfWeek)" /> still returns an occurrence that falls on the
+    /// first date a <see cref="DateTime" /> can represent.
+    /// </summary>
+    [TestMethod]
+    public void PreviousDateOfWeek_WhenOccurrenceIsTheFirstRepresentableDateTime_ShouldReturnIt()
+    {
+        var actual = DateTime.MinValue.AddDays(7).PreviousDateOfWeek(DayOfWeek.Monday);
+
+        Assert.AreEqual(DateTime.MinValue, actual);
+    }
 }

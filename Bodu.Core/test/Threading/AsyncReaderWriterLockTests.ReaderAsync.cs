@@ -92,4 +92,23 @@ public sealed partial class AsyncReaderWriterLockTests
             _ = sut.ReaderAsync().AsTask();
         });
     }
+
+    /// <summary>
+    /// Verifies that a read acquisition that must queue, with a token that cannot be canceled, allocates no more than
+    /// its queued waiter: no cancellation registration and no asynchronous state machine.
+    /// </summary>
+    [TestMethod]
+    public async Task ReaderAsync_WhenQueuedWithoutCancellationToken_ShouldAllocateOnlyTheWaiter()
+    {
+        var sut = new AsyncReaderWriterLock();
+        AsyncReaderWriterLock.Releaser writer = await sut.WriterAsync();
+
+        (long bytes, Task<AsyncReaderWriterLock.Releaser>[] pending) = ContendedWaitAllocation.BytesPerQueuedCall(() => sut.ReaderAsync().AsTask());
+
+        writer.Dispose();
+        foreach (Task<AsyncReaderWriterLock.Releaser> reader in pending)
+            (await reader.WaitAsync(TimeSpan.FromSeconds(30))).Dispose();
+
+        Assert.IsLessThanOrEqualTo(ContendedWaitAllocation.QueuedWaiterBytes, bytes, $"A queued read acquisition allocated {bytes} bytes.");
+    }
 }
