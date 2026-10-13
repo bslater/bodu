@@ -20,8 +20,8 @@
   <ItemGroup>
     <!-- The reflection binders' scalar classification, compiled in so that a parity test holds the generator's scalar
          set to it. -->
-    <Compile Include="..\..\Bodu.Text.Serialization\shared\Flat\InvariantScalarCodec.cs" Link="Shared\InvariantScalarCodec.cs" />
-    <Compile Include="..\..\Bodu.Text.Serialization\shared\Flat\FlatScalarKind.cs" Link="Shared\FlatScalarKind.cs" />
+    <Compile Include="..\..\Bodu.Text.Serialization\flat\src\InvariantScalarCodec.cs" Link="Shared\InvariantScalarCodec.cs" />
+    <Compile Include="..\..\Bodu.Text.Serialization\flat\src\FlatScalarKind.cs" Link="Shared\FlatScalarKind.cs" />
   </ItemGroup>
 
   <ItemGroup>

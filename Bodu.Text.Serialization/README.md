@@ -42,6 +42,8 @@ public sealed class Profile
 
 Beyond the compiled assembly, the package's repository folder also hosts the `shared/**` engine source - the metadata resolver (`MetadataResolver` / `TypeMetadata` / `PropertyMetadata`), the structural converter factories (nullable / dictionary / collection / object), and the converter pipeline - which the per-format packages compile into themselves under their format symbol (`BENCODE`, `TOML`, `YAML`, …). That source is a repository-level implementation detail: it ships inside each format assembly, not in this package, so this package stays a small attribute/contract library whose only dependency is `Bodu.Core`.
 
+The line formats ([Delimited](https://www.nuget.org/packages/Bodu.Text.Delimited), [DotEnv](https://www.nuget.org/packages/Bodu.Text.DotEnv), [INI](https://www.nuget.org/packages/Bodu.Text.Ini)) wire every value as a string, so they share a smaller body of source instead, kept apart from `shared/**` in `flat/src/`: the member discovery and descriptors, the scalar classification and invariant scalar text (`InvariantScalarCodec`), and the UTF-8 line cursor. Each line format compiles every file in it; the tests for it live once in `flat/test/`, compiled into each line format's test project.
+
 ## Testing
 
 The package has no test project of its own: every public type is exercised end to end by the consumer test suites (`Bodu.Text.Bencode.Test`, `Bodu.Text.Toml.Test`, `Bodu.Text.Yaml.Test`, `Bodu.Text.Delimited.Test`, `Bodu.Text.DotEnv.Test`, `Bodu.Text.Ini.Test`), which validate the attribute family, callbacks, and naming policies against each format's wire form.

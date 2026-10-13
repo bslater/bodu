@@ -156,7 +156,7 @@ first use, `DotEnvSerializerDefaults`) reuses the shared attribute /
 **As built:** there are no format-local or `ISpanParsable<T>` converters.
 Scalars convert through the shared `InvariantScalarCodec` under its
 `Configuration` policy
-(`Bodu.Text.Serialization/shared/Flat/InvariantScalarCodec.cs`, compiled into
+(`Bodu.Text.Serialization/flat/src/InvariantScalarCodec.cs`, compiled into
 the package and called by `ValueToString` and `ConvertFromString` in
 `Bodu.Text.DotEnv/src/Text.DotEnv/DotEnvSerializer.Binder.cs`), which
 handles `string`, `bool`, enums, `Guid`, `DateTime`, `DateTimeOffset`,

@@ -120,7 +120,7 @@ read-only on first use, `IniSerializerDefaults`) reuses the shared attribute /
 **As built:** `IniSerializerOptions` is a `sealed` class, not `partial`, and
 there are no format-local converters: scalars convert through the shared
 `InvariantScalarCodec` under its `Configuration` policy
-(`Bodu.Text.Serialization/shared/Flat/InvariantScalarCodec.cs`, compiled into
+(`Bodu.Text.Serialization/flat/src/InvariantScalarCodec.cs`, compiled into
 the package and called by `ValueToString` and `ConvertFromString` in
 `Bodu.Text.Ini/src/Text.Ini/IniSerializer.Binder.cs`).
 
