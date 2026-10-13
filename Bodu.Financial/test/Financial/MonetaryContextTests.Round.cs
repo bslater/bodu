@@ -44,4 +44,35 @@ public partial class MonetaryContextTests
 
         Assert.AreEqual(nameof(MonetaryContext.CustomScale), ex.ParamName);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="MonetaryContext.Round(decimal, int)" /> rejects a currency minor-unit count outside 0 to
+    /// 28 with <see cref="ArgumentOutOfRangeException" /> naming the argument, whatever the scale policy, rather than
+    /// returning the value unrounded or failing in the rounding strategy.
+    /// </summary>
+    /// <param name="policy">The scale policy in effect.</param>
+    /// <param name="currencyMinorUnits">The out-of-range minor-unit count.</param>
+    [TestMethod]
+    [DataRow(ScalePolicy.CurrencyMinorUnits, -1)]
+    [DataRow(ScalePolicy.CurrencyMinorUnits, int.MinValue)]
+    [DataRow(ScalePolicy.CurrencyMinorUnits, 29)]
+    [DataRow(ScalePolicy.Unrounded, -1)]
+    [DataRow(ScalePolicy.Unrounded, int.MinValue)]
+    [DataRow(ScalePolicy.Unrounded, 29)]
+    [DataRow(ScalePolicy.Custom, -1)]
+    [DataRow(ScalePolicy.Custom, int.MinValue)]
+    [DataRow(ScalePolicy.Custom, 29)]
+    public void Round_WhenCurrencyMinorUnitsOutOfRange_ShouldThrowArgumentOutOfRangeException(
+        ScalePolicy policy,
+        int currencyMinorUnits)
+    {
+        MonetaryContext context = MonetaryContext.Default with { ScalePolicy = policy, CustomScale = 2 };
+
+        ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = context.Round(1.234m, currencyMinorUnits);
+        });
+
+        Assert.AreEqual(nameof(currencyMinorUnits), ex.ParamName);
+    }
 }
