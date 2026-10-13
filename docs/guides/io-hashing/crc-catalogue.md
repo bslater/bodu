@@ -15,7 +15,6 @@ The CRC parameter sets in this catalogue are sourced from **Greg Cook's CRC RevE
 The catalogue is distributed as part of the CRC RevEng project at <https://reveng.sourceforge.io/>. Please consult the upstream page for the authoritative parameter definitions, alias history, and license terms that apply to the underlying data.
 
 - **Catalogue last fetched (UTC):** 2026-06-09T06:48:50Z
-- **This page regenerated (UTC):** 2026-10-13T02:14:16Z
 - **Entries in source:** 113
 
 ## Accessing standards
@@ -204,7 +203,6 @@ pwsh ./tools/Generate-CrcCatalog.ps1        # regenerates CrcStandards.cs and Cr
 pwsh ./tools/Generate-CrcCatalogTests.ps1   # regenerates CrcTests.Catalog.cs
 pwsh ./tools/Generate-CrcDocs.ps1           # regenerates this page
 ```
-
 
 ## See also
 

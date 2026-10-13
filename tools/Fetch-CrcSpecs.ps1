@@ -5,8 +5,11 @@
 .DESCRIPTION
     Downloads the public CRC catalogue page (reveng.sourceforge.io/crc-catalogue/all.htm by
     default), parses every '<dfn>width=... name="..."</dfn>' parameter block, and writes the
-    result as an ordered JSON array. Hand-curated metadata (class, aliases, codewords, created,
-    updated) is preserved from the existing JSON when the live page cannot supply it.
+    result as an ordered JSON array. Each entry's metadata (Class:, Alias:, Codeword:, Created:,
+    Updated:) is read from the entry's text with its markup removed, so that a value wrapped in a
+    link or a code span is not read as empty, and an Alias: line may list several comma-separated
+    names. Hand-curated metadata is preserved from the existing JSON when the live page cannot
+    supply it.
 
     Also writes a sidecar file `crc-specs.meta.json` containing the source URL and a UTC
     timestamp of this fetch, which downstream generators reuse when they emit attribution in
@@ -72,13 +75,24 @@ if ($matches.Count -eq 0) {
 function Get-EntryBlock {
     param(
         [string]$Html,
-        [int]$StartIndex
+        [int]$StartIndex,
+        [int]$LimitIndex
     )
-    # Find the end of this entry by looking for the next <h3 ... id="crc.cat..."> heading.
+    # Find the end of this entry by looking for the next <h3 ... id="crc.cat..."> heading, and never
+    # read past the next entry's parameter block, so one entry cannot collect the next one's labels.
     $endRegex = [regex]'<h3[^>]*id="crc\.cat[^"]*"'
     $nextHeading = $endRegex.Match($Html, $StartIndex + 1)
-    $endIndex = if ($nextHeading.Success) { $nextHeading.Index } else { $Html.Length }
+    $endIndex = if ($nextHeading.Success -and $nextHeading.Index -lt $LimitIndex) { $nextHeading.Index } else { $LimitIndex }
     return $Html.Substring($StartIndex, $endIndex - $StartIndex)
+}
+
+function ConvertTo-PlainText {
+    param([string]$Html)
+    # Block-level tags become line breaks so that each label keeps its own line, every other tag
+    # is dropped so that a marked-up value reads as plain text, and character references are decoded.
+    $text = $Html -replace '(?i)<\s*/?\s*(?:p|br|li|ul|ol|dl|dt|dd|div|tr|td|th|table|h[1-6])\b[^>]*>', "`n"
+    $text = $text -replace '<[^>]*>', ''
+    return [System.Net.WebUtility]::HtmlDecode($text)
 }
 
 function Get-LabelledValue {
@@ -114,15 +128,17 @@ function Format-Hex {
     return ('0X' + ($Value -replace '^0[xX]', '')).ToUpperInvariant()
 }
 
-$entries = foreach ($m in $matches) {
+$entries = for ($i = 0; $i -lt $matches.Count; $i++) {
+    $m = $matches[$i]
     $name = $m.Groups['name'].Value
     $prior = if ($existing.ContainsKey($name)) { $existing[$name] } else { $null }
 
-    $block = Get-EntryBlock -Html $html -StartIndex $m.Index
+    $limit = if ($i + 1 -lt $matches.Count) { $matches[$i + 1].Index } else { $html.Length }
+    $block = ConvertTo-PlainText (Get-EntryBlock -Html $html -StartIndex $m.Index -LimitIndex $limit)
     $class = Get-LabelledValue -Block $block -Label 'Class'
     $created = Get-LabelledValue -Block $block -Label 'Created'
     $updated = Get-LabelledValue -Block $block -Label 'Updated'
-    $aliases = Get-LabelledList -Block $block -Label 'Alias'
+    $aliases = [string[]]@(Get-LabelledList -Block $block -Label 'Alias' | ForEach-Object { $_ -split '\s*,\s*' } | Where-Object { $_ })
     $codewords = Get-LabelledList -Block $block -Label 'Codeword'
 
     if (-not $class   -and $prior -and $prior.PSObject.Properties['class'])   { $class   = [string]$prior.class }

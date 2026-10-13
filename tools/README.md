@@ -9,10 +9,10 @@ scripts are Python. All scripts are intended to be run from the repository root.
 
 | Script | Purpose |
 | --- | --- |
-| `Fetch-CrcSpecs.ps1` | Downloads the CRC RevEng catalogue from `https://reveng.sourceforge.io/crc-catalogue/all.htm` and rebuilds `Bodu.Security.Cryptography/src/crc-specs.json`. Also writes `crc-specs.meta.json` with the source URL and fetch timestamp. Class, Created, Updated, Alias, and Codeword metadata is parsed from the page where possible, and otherwise carried over from the existing JSON so hand-curated fields survive a refresh. |
-| `Generate-CrcCatalog.ps1` | Regenerates **two** C# files from the JSON: `CrcStandards.cs` (public `enum CrcStandards` with one entry per canonical standard) and `CrcStandard.Catalog.cs` (the packed `CatalogEntry[]` data table plus `Get(CrcStandards)`, `FromName(string)`, `TryFromName`, and lazy `All`). Entries are materialised on first access and memoized. |
-| `Generate-CrcCatalogTests.ps1` | Regenerates `Bodu.Security.Cryptography/test/Security.Cryptography/CrcTests.Catalog.cs`, a data-driven `[DataTestMethod]` that asserts every catalogue entry's CRC of ASCII `"123456789"` matches the RevEng-published `check` value. Test data rows carry the `CrcStandards` enum value; the test materialises via `CrcStandard.Get(standardId)`. |
-| `Generate-CrcDocs.ps1` | Regenerates `docs/guides/cryptography/crc-catalogue.md`, the public-facing attribution and catalogue page. |
+| `Fetch-CrcSpecs.ps1` | Downloads the CRC RevEng catalogue from `https://reveng.sourceforge.io/crc-catalogue/all.htm` and rebuilds `Bodu.IO.Hashing/src/crc-specs.json`. Also writes `crc-specs.meta.json` beside it with the source URL and fetch timestamp. Class, Created, Updated, Alias, and Codeword metadata is parsed from each entry's text (with its markup removed) where possible, and otherwise carried over from the existing JSON so hand-curated fields survive a refresh. |
+| `Generate-CrcCatalog.ps1` | Regenerates **two** C# files in `Bodu.IO.Hashing/src/IO.Hashing.Checksums/` from the JSON: `CrcStandards.cs` (public `enum CrcStandards` with one entry per canonical standard) and `CrcStandard.Catalog.cs` (the packed `CatalogEntry[]` data table plus `Get(CrcStandards)`, `FromName(string)`, `TryFromName`, and lazy `All`; the name map holds each canonical name and every alias the JSON records). Entries are materialized on first access and memoized. |
+| `Generate-CrcCatalogTests.ps1` | Regenerates `Bodu.IO.Hashing/test/IO.Hashing.Checksums/CrcTests.Catalog.cs`, a data-driven `[DataTestMethod]` that asserts every catalogue entry's CRC of ASCII `"123456789"` matches the RevEng-published `check` value. Test data rows carry the `CrcStandards` enum value; the test materializes via `CrcStandard.Get(standardId)`. |
+| `Generate-CrcDocs.ps1` | Regenerates `docs/guides/io-hashing/crc-catalogue.md`, the public-facing attribution and catalogue page. The output depends only on `crc-specs.json` and `crc-specs.meta.json`, so regenerating without a new fetch leaves the page unchanged. |
 
 ## Standard workflow
 
@@ -23,11 +23,11 @@ pwsh ./tools/Fetch-CrcSpecs.ps1
 # 2. Rebuild the generated C# files and documentation
 pwsh ./tools/Generate-CrcCatalog.ps1         # CrcStandards.cs + CrcStandard.Catalog.cs
 pwsh ./tools/Generate-CrcCatalogTests.ps1    # CrcTests.Catalog.cs
-pwsh ./tools/Generate-CrcDocs.ps1            # docs/guides/cryptography/crc-catalogue.md
+pwsh ./tools/Generate-CrcDocs.ps1            # docs/guides/io-hashing/crc-catalogue.md
 
 # 3. Build and run tests
-dotnet build Bodu.sln
-dotnet test Bodu.Security.Cryptography/test/Bodu.Security.Cryptography.Test.csproj --settings test.runsettings
+dotnet build Bodu.IO.Hashing/test/Bodu.IO.Hashing.Test.csproj
+dotnet test Bodu.IO.Hashing/test/Bodu.IO.Hashing.Test.csproj --settings test.runsettings
 ```
 
 ## Filtering rule
