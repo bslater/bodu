@@ -464,6 +464,19 @@ public partial class IniSerializerTests
     }
 
     /// <summary>
+    /// A root model with a global scalar member and a member declared as <see cref="object" />, which maps to neither a
+    /// key nor a section.
+    /// </summary>
+    private sealed class ObjectMemberConfig
+    {
+        /// <summary>Gets or sets the application name (a global key).</summary>
+        public string? Name { get; set; }
+
+        /// <summary>Gets or sets a value of any type.</summary>
+        public object? O { get; set; }
+    }
+
+    /// <summary>
     /// A dictionary keyed by <see cref="int" /> that implements the generic <see cref="IDictionary{TKey, TValue}" />
     /// interface but not the non-generic <see cref="IDictionary" />, so that it is neither a string-keyed dictionary nor
     /// one the serializer recognizes as a dictionary through the non-generic interface.

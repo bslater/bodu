@@ -561,4 +561,58 @@ public partial class IniSerializerTests
 
         Assert.AreEqual("day=Monday\nnone=\n[db]\nuri=https://example.com/\ncount=2\n", text);
     }
+
+    /// <summary>
+    /// Verifies that a root member declared as <see cref="object" /> throws <see cref="IniSerializationException" />
+    /// naming the member, rather than writing its value as a section that reads back as a bare <see cref="object" />.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenARootMemberIsDeclaredAsObject_ShouldThrowIniSerializationException()
+    {
+        var config = new ObjectMemberConfig { Name = "app", O = new Dictionary<string, string> { ["k"] = "v" } };
+
+        var ex = Assert.ThrowsExactly<IniSerializationException>(() =>
+        {
+            _ = IniSerializer.Serialize(config);
+        });
+
+        Assert.IsTrue(ex.Message.Contains("'O'", StringComparison.Ordinal), ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that a root member declared as <see cref="object" /> is rejected by its declared type, so that a
+    /// <see langword="null" /> value, which the default ignore condition would leave out, still throws
+    /// <see cref="IniSerializationException" /> naming the member.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenARootMemberDeclaredAsObjectIsNull_ShouldThrowIniSerializationException()
+    {
+        var config = new ObjectMemberConfig { Name = "app" };
+
+        var ex = Assert.ThrowsExactly<IniSerializationException>(() =>
+        {
+            _ = IniSerializer.Serialize(config);
+        });
+
+        Assert.IsTrue(ex.Message.Contains("'O'", StringComparison.Ordinal), ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that the reserved global-section member, when it is declared as <see cref="object" />, throws
+    /// <see cref="IniSerializationException" /> naming the member, rather than writing its value's entries as global
+    /// keys.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenTheGlobalSectionMemberIsDeclaredAsObject_ShouldThrowIniSerializationException()
+    {
+        var config = new ObjectMemberConfig { Name = "app", O = new Dictionary<string, string> { ["k"] = "v" } };
+        var options = new IniSerializerOptions { GlobalSectionName = "O" };
+
+        var ex = Assert.ThrowsExactly<IniSerializationException>(() =>
+        {
+            _ = IniSerializer.Serialize(config, options);
+        });
+
+        Assert.IsTrue(ex.Message.Contains("'O'", StringComparison.Ordinal), ex.Message);
+    }
 }
