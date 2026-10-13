@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Text_Bencode_Nodes_BencodeArray" data-uid="Bodu.Text.Bencode.Nodes.BencodeArray" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 BencodeArray Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/16501dca344f667bcc9de7c56b9cf06020682392/Bodu.Text.Bencode/src/Text.Bencode.Nodes/BencodeArray.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/1865780260ea5dccf522ea3c93b538620ef6a792/Bodu.Text.Bencode/src/Text.Bencode.Nodes/BencodeArray.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -104,7 +104,7 @@ BencodeArray Class
   <dl><dt>Assembly</dt><dd>Bodu.Text.Bencode.dll</dd></dl>
   <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Text.Bencode">Bodu.Text.Bencode</a> <span class="bodu-package-version">1.3.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/16501dca344f667bcc9de7c56b9cf06020682392/Bodu.Text.Bencode/src/Text.Bencode.Nodes/BencodeArray.cs">BencodeArray.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/1865780260ea5dccf522ea3c93b538620ef6a792/Bodu.Text.Bencode/src/Text.Bencode.Nodes/BencodeArray.cs">BencodeArray.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Represents a mutable Bencode (BEP 3) list as an ordered, index-addressable collection of child nodes.</p>
@@ -229,9 +229,10 @@ BencodeArray Class
   <h2 id="Bodu_Text_Bencode_Nodes_BencodeArray_remarks">Remarks</h2>
   <div class="markdown level0 remarks"><p>Elements are kept in insertion order, which is also the order in which they are serialized. An element may be
 <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> in memory, but a list containing a <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> element cannot be written because
-Bencode has no null token. Adding a node that already belongs to another container throws an
-<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a>; removing or replacing an element detaches it, clearing its
-<a class="xref" href="Bodu.Text.Bencode.Nodes.BencodeNode.html#Bodu_Text_Bencode_Nodes_BencodeNode_Parent">Parent</a> so it can be added to another container.</p>
+Bencode has no null token. Adding a node that already belongs to a container, this one included, or adding the list
+to itself or to one of its own descendants, throws an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a>; removing or
+replacing an element detaches it, clearing its <a class="xref" href="Bodu.Text.Bencode.Nodes.BencodeNode.html#Bodu_Text_Bencode_Nodes_BencodeNode_Parent">Parent</a> so it can be added to another
+container.</p>
 <example>
 <pre><code class="lang-csharp">var files = new BencodeArray(
     BencodeValue.Create("a.txt"),
@@ -253,7 +254,7 @@ byte[] encoded = root.ToUtf8Bytes();   // d5:filesl5:a.txt5:b.txt5:c.txtee</code
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Bencode_Nodes_BencodeArray__ctor" data-uid="Bodu.Text.Bencode.Nodes.BencodeArray.#ctor">
   BencodeArray()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/16501dca344f667bcc9de7c56b9cf06020682392/Bodu.Text.Bencode/src/Text.Bencode.Nodes/BencodeArray.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/1865780260ea5dccf522ea3c93b538620ef6a792/Bodu.Text.Bencode/src/Text.Bencode.Nodes/BencodeArray.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -284,7 +285,7 @@ byte[] encoded = root.ToUtf8Bytes();   // d5:filesl5:a.txt5:b.txt5:c.txtee</code
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Bencode_Nodes_BencodeArray__ctor_Bodu_Text_Bencode_Nodes_BencodeNode___" data-uid="Bodu.Text.Bencode.Nodes.BencodeArray.#ctor(Bodu.Text.Bencode.Nodes.BencodeNode[])">
   BencodeArray(params BencodeNode?[])
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/16501dca344f667bcc9de7c56b9cf06020682392/Bodu.Text.Bencode/src/Text.Bencode.Nodes/BencodeArray.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/1865780260ea5dccf522ea3c93b538620ef6a792/Bodu.Text.Bencode/src/Text.Bencode.Nodes/BencodeArray.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -321,7 +322,7 @@ can be added elsewhere.</p>
     <dd><p>Thrown when <code class="paramref">items</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
 </dd>
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
-    <dd><p>Thrown when an element already belongs to another container.</p>
+    <dd><p>Thrown when an element already belongs to a container, or appears in <code class="paramref">items</code> more than once.</p>
 </dd>
   </dl>
 
@@ -338,7 +339,7 @@ can be added elsewhere.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Bencode_Nodes_BencodeArray_Count" data-uid="Bodu.Text.Bencode.Nodes.BencodeArray.Count">
   Count
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/16501dca344f667bcc9de7c56b9cf06020682392/Bodu.Text.Bencode/src/Text.Bencode.Nodes/BencodeArray.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/1865780260ea5dccf522ea3c93b538620ef6a792/Bodu.Text.Bencode/src/Text.Bencode.Nodes/BencodeArray.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -375,7 +376,7 @@ can be added elsewhere.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Bencode_Nodes_BencodeArray_IsReadOnly" data-uid="Bodu.Text.Bencode.Nodes.BencodeArray.IsReadOnly">
   IsReadOnly
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/16501dca344f667bcc9de7c56b9cf06020682392/Bodu.Text.Bencode/src/Text.Bencode.Nodes/BencodeArray.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/1865780260ea5dccf522ea3c93b538620ef6a792/Bodu.Text.Bencode/src/Text.Bencode.Nodes/BencodeArray.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -412,7 +413,7 @@ can be added elsewhere.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Bencode_Nodes_BencodeArray_Item_System_Int32_" data-uid="Bodu.Text.Bencode.Nodes.BencodeArray.Item(System.Int32)">
   this[int]
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/16501dca344f667bcc9de7c56b9cf06020682392/Bodu.Text.Bencode/src/Text.Bencode.Nodes/BencodeArray.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/1865780260ea5dccf522ea3c93b538620ef6a792/Bodu.Text.Bencode/src/Text.Bencode.Nodes/BencodeArray.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -445,7 +446,8 @@ can be added elsewhere.</p>
 
 
   <h4 class="section" id="Bodu_Text_Bencode_Nodes_BencodeArray_Item_System_Int32__remarks">Remarks</h4>
-  <div class="markdown level1 remarks"><p>Assigning over an existing element detaches the replaced node, clearing its <a class="xref" href="Bodu.Text.Bencode.Nodes.BencodeNode.html#Bodu_Text_Bencode_Nodes_BencodeNode_Parent">Parent</a>.</p>
+  <div class="markdown level1 remarks"><p>Assigning over an existing element detaches the replaced node, clearing its <a class="xref" href="Bodu.Text.Bencode.Nodes.BencodeNode.html#Bodu_Text_Bencode_Nodes_BencodeNode_Parent">Parent</a>.
+Assigning an element over itself leaves the list unchanged.</p>
 </div>
 
   <h4 class="section">Exceptions</h4>
@@ -454,7 +456,8 @@ can be added elsewhere.</p>
     <dd><p>Thrown when <code class="paramref">index</code> is outside the bounds of the list.</p>
 </dd>
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.invalidoperationexception">InvalidOperationException</a></dt>
-    <dd><p>Thrown when the assigned node already belongs to another container.</p>
+    <dd><p>Thrown when the assigned node already belongs to a container, this list included, and is not the element at
+<code class="paramref">index</code>; or when the assigned node is this list or one of its ancestors.</p>
 </dd>
   </dl>
 
@@ -471,7 +474,7 @@ can be added elsewhere.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Bencode_Nodes_BencodeArray_Add_Bodu_Text_Bencode_Nodes_BencodeNode_" data-uid="Bodu.Text.Bencode.Nodes.BencodeArray.Add(Bodu.Text.Bencode.Nodes.BencodeNode)">
   Add(BencodeNode?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/16501dca344f667bcc9de7c56b9cf06020682392/Bodu.Text.Bencode/src/Text.Bencode.Nodes/BencodeArray.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/1865780260ea5dccf522ea3c93b538620ef6a792/Bodu.Text.Bencode/src/Text.Bencode.Nodes/BencodeArray.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -514,7 +517,7 @@ can be added elsewhere.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Bencode_Nodes_BencodeArray_Clear" data-uid="Bodu.Text.Bencode.Nodes.BencodeArray.Clear">
   Clear()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/16501dca344f667bcc9de7c56b9cf06020682392/Bodu.Text.Bencode/src/Text.Bencode.Nodes/BencodeArray.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/1865780260ea5dccf522ea3c93b538620ef6a792/Bodu.Text.Bencode/src/Text.Bencode.Nodes/BencodeArray.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -551,7 +554,7 @@ can be added elsewhere.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Bencode_Nodes_BencodeArray_Contains_Bodu_Text_Bencode_Nodes_BencodeNode_" data-uid="Bodu.Text.Bencode.Nodes.BencodeArray.Contains(Bodu.Text.Bencode.Nodes.BencodeNode)">
   Contains(BencodeNode?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/16501dca344f667bcc9de7c56b9cf06020682392/Bodu.Text.Bencode/src/Text.Bencode.Nodes/BencodeArray.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/1865780260ea5dccf522ea3c93b538620ef6a792/Bodu.Text.Bencode/src/Text.Bencode.Nodes/BencodeArray.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -594,7 +597,7 @@ can be added elsewhere.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Bencode_Nodes_BencodeArray_CopyTo_Bodu_Text_Bencode_Nodes_BencodeNode___System_Int32_" data-uid="Bodu.Text.Bencode.Nodes.BencodeArray.CopyTo(Bodu.Text.Bencode.Nodes.BencodeNode[],System.Int32)">
   CopyTo(BencodeNode?[], int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/16501dca344f667bcc9de7c56b9cf06020682392/Bodu.Text.Bencode/src/Text.Bencode.Nodes/BencodeArray.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/1865780260ea5dccf522ea3c93b538620ef6a792/Bodu.Text.Bencode/src/Text.Bencode.Nodes/BencodeArray.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -646,7 +649,7 @@ can be added elsewhere.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Bencode_Nodes_BencodeArray_DeepClone" data-uid="Bodu.Text.Bencode.Nodes.BencodeArray.DeepClone">
   DeepClone()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/16501dca344f667bcc9de7c56b9cf06020682392/Bodu.Text.Bencode/src/Text.Bencode.Nodes/BencodeArray.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/1865780260ea5dccf522ea3c93b538620ef6a792/Bodu.Text.Bencode/src/Text.Bencode.Nodes/BencodeArray.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -683,7 +686,7 @@ can be added elsewhere.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Bencode_Nodes_BencodeArray_GetEnumerator" data-uid="Bodu.Text.Bencode.Nodes.BencodeArray.GetEnumerator">
   GetEnumerator()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/16501dca344f667bcc9de7c56b9cf06020682392/Bodu.Text.Bencode/src/Text.Bencode.Nodes/BencodeArray.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/1865780260ea5dccf522ea3c93b538620ef6a792/Bodu.Text.Bencode/src/Text.Bencode.Nodes/BencodeArray.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -720,7 +723,7 @@ can be added elsewhere.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Bencode_Nodes_BencodeArray_GetValueKind" data-uid="Bodu.Text.Bencode.Nodes.BencodeArray.GetValueKind">
   GetValueKind()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/16501dca344f667bcc9de7c56b9cf06020682392/Bodu.Text.Bencode/src/Text.Bencode.Nodes/BencodeArray.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/1865780260ea5dccf522ea3c93b538620ef6a792/Bodu.Text.Bencode/src/Text.Bencode.Nodes/BencodeArray.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -757,7 +760,7 @@ can be added elsewhere.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Bencode_Nodes_BencodeArray_IndexOf_Bodu_Text_Bencode_Nodes_BencodeNode_" data-uid="Bodu.Text.Bencode.Nodes.BencodeArray.IndexOf(Bodu.Text.Bencode.Nodes.BencodeNode)">
   IndexOf(BencodeNode?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/16501dca344f667bcc9de7c56b9cf06020682392/Bodu.Text.Bencode/src/Text.Bencode.Nodes/BencodeArray.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/1865780260ea5dccf522ea3c93b538620ef6a792/Bodu.Text.Bencode/src/Text.Bencode.Nodes/BencodeArray.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -800,7 +803,7 @@ can be added elsewhere.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Bencode_Nodes_BencodeArray_Insert_System_Int32_Bodu_Text_Bencode_Nodes_BencodeNode_" data-uid="Bodu.Text.Bencode.Nodes.BencodeArray.Insert(System.Int32,Bodu.Text.Bencode.Nodes.BencodeNode)">
   Insert(int, BencodeNode?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/16501dca344f667bcc9de7c56b9cf06020682392/Bodu.Text.Bencode/src/Text.Bencode.Nodes/BencodeArray.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/1865780260ea5dccf522ea3c93b538620ef6a792/Bodu.Text.Bencode/src/Text.Bencode.Nodes/BencodeArray.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -853,7 +856,7 @@ array leaves the item with the parent it had.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Bencode_Nodes_BencodeArray_Remove_Bodu_Text_Bencode_Nodes_BencodeNode_" data-uid="Bodu.Text.Bencode.Nodes.BencodeArray.Remove(Bodu.Text.Bencode.Nodes.BencodeNode)">
   Remove(BencodeNode?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/16501dca344f667bcc9de7c56b9cf06020682392/Bodu.Text.Bencode/src/Text.Bencode.Nodes/BencodeArray.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/1865780260ea5dccf522ea3c93b538620ef6a792/Bodu.Text.Bencode/src/Text.Bencode.Nodes/BencodeArray.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -902,7 +905,7 @@ array leaves the item with the parent it had.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Bencode_Nodes_BencodeArray_RemoveAt_System_Int32_" data-uid="Bodu.Text.Bencode.Nodes.BencodeArray.RemoveAt(System.Int32)">
   RemoveAt(int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/16501dca344f667bcc9de7c56b9cf06020682392/Bodu.Text.Bencode/src/Text.Bencode.Nodes/BencodeArray.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/1865780260ea5dccf522ea3c93b538620ef6a792/Bodu.Text.Bencode/src/Text.Bencode.Nodes/BencodeArray.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -948,7 +951,7 @@ array leaves the item with the parent it had.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Bencode_Nodes_BencodeArray_ToString" data-uid="Bodu.Text.Bencode.Nodes.BencodeArray.ToString">
   ToString()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/16501dca344f667bcc9de7c56b9cf06020682392/Bodu.Text.Bencode/src/Text.Bencode.Nodes/BencodeArray.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/1865780260ea5dccf522ea3c93b538620ef6a792/Bodu.Text.Bencode/src/Text.Bencode.Nodes/BencodeArray.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -985,7 +988,7 @@ array leaves the item with the parent it had.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Bencode_Nodes_BencodeArray_WriteTo_Bodu_Text_Bencode_Writer_Utf8BencodeWriter_" data-uid="Bodu.Text.Bencode.Nodes.BencodeArray.WriteTo(Bodu.Text.Bencode.Writer.Utf8BencodeWriter)">
   WriteTo(Utf8BencodeWriter)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/16501dca344f667bcc9de7c56b9cf06020682392/Bodu.Text.Bencode/src/Text.Bencode.Nodes/BencodeArray.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/1865780260ea5dccf522ea3c93b538620ef6a792/Bodu.Text.Bencode/src/Text.Bencode.Nodes/BencodeArray.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1033,7 +1036,7 @@ representation.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Text_Bencode_Nodes_BencodeArray_System_Collections_IEnumerable_GetEnumerator" data-uid="Bodu.Text.Bencode.Nodes.BencodeArray.System#Collections#IEnumerable#GetEnumerator">
   IEnumerable.GetEnumerator()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/16501dca344f667bcc9de7c56b9cf06020682392/Bodu.Text.Bencode/src/Text.Bencode.Nodes/BencodeArray.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/1865780260ea5dccf522ea3c93b538620ef6a792/Bodu.Text.Bencode/src/Text.Bencode.Nodes/BencodeArray.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -1092,7 +1095,7 @@ representation.</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 16501dc · Built: 2026-10-13 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 1865780 · Built: 2026-10-13 (UTC)</span>
         </div>
       </div>
     </footer>
