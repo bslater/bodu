@@ -176,6 +176,22 @@ public partial class IniSerializerTests
     }
 
     /// <summary>
+    /// A root model whose global keys are the native-sized integers <see cref="nint" /> and <see cref="nuint" />, one
+    /// also in nullable form.
+    /// </summary>
+    private sealed class NativeIntegerRecord
+    {
+        /// <summary>Gets or sets the native-sized signed integer (a global key).</summary>
+        public nint Handle { get; set; }
+
+        /// <summary>Gets or sets the native-sized unsigned integer (a global key).</summary>
+        public nuint Size { get; set; }
+
+        /// <summary>Gets or sets the optional native-sized signed integer (a global key).</summary>
+        public nint? MaybeHandle { get; set; }
+    }
+
+    /// <summary>
     /// A root model whose global key and section member are declared with the C# <see langword="required" /> keyword
     /// rather than <see cref="RequiredAttribute" />.
     /// </summary>

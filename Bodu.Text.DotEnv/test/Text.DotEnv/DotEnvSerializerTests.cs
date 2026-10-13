@@ -132,6 +132,25 @@ public partial class DotEnvSerializerTests
     }
 
     /// <summary>
+    /// A POCO whose members are the native-sized integers <see cref="nint" /> and <see cref="nuint" />, one also in
+    /// nullable form.
+    /// </summary>
+    public sealed class NativeIntegerRecord
+    {
+        /// <summary>Gets or sets the native-sized signed integer.</summary>
+        /// <value>The native-sized signed integer.</value>
+        public nint Handle { get; set; }
+
+        /// <summary>Gets or sets the native-sized unsigned integer.</summary>
+        /// <value>The native-sized unsigned integer.</value>
+        public nuint Size { get; set; }
+
+        /// <summary>Gets or sets the optional native-sized signed integer.</summary>
+        /// <value>The native-sized signed integer, or <see langword="null" />.</value>
+        public nint? MaybeHandle { get; set; }
+    }
+
+    /// <summary>
     /// A POCO with a key <c>HOST</c> and no public parameterless constructor, which deserialization cannot create.
     /// </summary>
     public sealed class ConstructedConfig

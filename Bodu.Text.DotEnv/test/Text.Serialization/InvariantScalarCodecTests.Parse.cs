@@ -73,4 +73,23 @@ public sealed partial class InvariantScalarCodecTests
             Assert.AreEqual(value, parsed, text);
         }
     }
+
+    /// <summary>
+    /// Verifies that the text written for a <see cref="nint" /> and a <see cref="nuint" /> at their extremes reads back
+    /// as the value written.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenTheTextIsANativeSizedIntegerAsWritten_ForConfigurationPolicy_ShouldReturnTheValue()
+    {
+        object[] values = [nint.MinValue, nint.MaxValue, nuint.MinValue, nuint.MaxValue];
+
+        foreach (object value in values)
+        {
+            string text = InvariantScalarCodec.Format(value, InvariantScalarCodec.Policy.Configuration);
+
+            object? parsed = InvariantScalarCodec.Parse(text, value.GetType(), InvariantScalarCodec.Policy.Configuration);
+
+            Assert.AreEqual(value, parsed, text);
+        }
+    }
 }

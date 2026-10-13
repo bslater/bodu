@@ -107,4 +107,28 @@ public partial class IniSerializerTests
 
         Assert.AreEqual(5, restored.Port);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="nint" /> and <see cref="nuint" /> members, and a nullable <see cref="nint" /> member
+    /// with and without a value, read back as the values written.
+    /// </summary>
+    [TestMethod]
+    [DataRow(true, DisplayName = "with a value")]
+    [DataRow(false, DisplayName = "without a value")]
+    public void SerializeDeserialize_WhenMembersAreNativeSizedIntegers_ShouldRoundTripThem(bool hasValue)
+    {
+        var original = new NativeIntegerRecord
+        {
+            Handle = -42,
+            Size = nuint.MaxValue,
+            MaybeHandle = hasValue ? nint.MinValue : null,
+        };
+
+        string text = IniSerializer.Serialize(original);
+        NativeIntegerRecord restored = IniSerializer.Deserialize<NativeIntegerRecord>(text);
+
+        Assert.AreEqual(original.Handle, restored.Handle, text);
+        Assert.AreEqual(original.Size, restored.Size, text);
+        Assert.AreEqual(original.MaybeHandle, restored.MaybeHandle, text);
+    }
 }

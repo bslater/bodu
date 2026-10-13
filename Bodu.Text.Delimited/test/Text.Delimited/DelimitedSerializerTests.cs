@@ -400,6 +400,25 @@ public partial class DelimitedSerializerTests
     }
 
     /// <summary>
+    /// A record POCO whose members are the native-sized integers <see cref="nint" /> and <see cref="nuint" />, one also in
+    /// nullable form.
+    /// </summary>
+    public sealed class NativeIntegerRecord
+    {
+        /// <summary>Gets or sets the native-sized signed integer.</summary>
+        /// <value>The native-sized signed integer.</value>
+        public nint Handle { get; set; }
+
+        /// <summary>Gets or sets the native-sized unsigned integer.</summary>
+        /// <value>The native-sized unsigned integer.</value>
+        public nuint Size { get; set; }
+
+        /// <summary>Gets or sets the optional native-sized signed integer.</summary>
+        /// <value>The native-sized signed integer, or <see langword="null" />.</value>
+        public nint? MaybeHandle { get; set; }
+    }
+
+    /// <summary>
     /// A record POCO whose two properties are both mapped to the column <c>X</c>.
     /// </summary>
     public sealed class DuplicateColumnRecord
