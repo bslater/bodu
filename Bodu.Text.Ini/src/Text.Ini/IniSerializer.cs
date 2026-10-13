@@ -31,10 +31,13 @@ namespace Bodu.Text.Ini;
 /// value must be <see langword="null" /> or a scalar, whatever the dictionary's value type: any other value, such as a
 /// list or a class with members of its own, is rejected with <see cref="IniSerializationException" /> naming the
 /// section and the key, rather than written as its <see cref="object.ToString" /> text, which does not read back. A
-/// root member declared as <see cref="object" />, which could be a key or a section, is rejected with
-/// <see cref="IniSerializationException" /> naming the member, when written and when read, whatever its value. A member
-/// nested beyond the second level is rejected. Property names honor
-/// <see cref="IniSerializerOptions.PropertyNamingPolicy" /> and the
+/// <see langword="null" /> entry of a dictionary root, which the ignore condition writes only when it is
+/// <see cref="Bodu.Text.Serialization.IgnoreCondition.Never" />, has no value to decide by, so the dictionary's value
+/// type decides: a string-keyed dictionary type writes it as an empty section, a scalar or <see cref="object" /> as an
+/// empty key, and any other type, which no empty key reads back as, is rejected. A root member declared as
+/// <see cref="object" />, which could be a key or a section, is rejected with <see cref="IniSerializationException" />
+/// naming the member, when written and when read, whatever its value. A member nested beyond the second level is
+/// rejected. Property names honor <see cref="IniSerializerOptions.PropertyNamingPolicy" /> and the
 /// <see cref="Bodu.Text.Serialization.PropertyNameAttribute" /> family; the callback interfaces (<see cref="Bodu.Text.Serialization.IOnSerializing" />
 /// and its siblings) fire around the mapping. Each member name maps to one key or section, its most derived
 /// declaration: a property or field hidden with the <see langword="new" /> modifier is neither written nor read. A type

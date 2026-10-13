@@ -43,8 +43,8 @@ public static partial class IniSerializer
 
         (value as IOnSerializing)?.OnSerializing();
 
-        if (FlatBinding.TryGetDictionary(value, out IDictionary? dictionary))
-            WriteRootDictionary(ref writer, dictionary, options);
+        if (FlatBinding.TryGetDictionary(value, out IDictionary? dictionary, out Type? valueType))
+            WriteRootDictionary(ref writer, dictionary, valueType, options);
         else if (IsScalarOrEnumerable(value.GetType()))
             throw new IniSerializationException(string.Format(CultureInfo.CurrentCulture, IniResourceStrings.Op_Invalid_IniRootNotObject, value.GetType()));
         else
@@ -59,16 +59,27 @@ public static partial class IniSerializer
     /// </summary>
     /// <param name="writer">The writer.</param>
     /// <param name="dictionary">The root dictionary.</param>
+    /// <param name="valueType">The root dictionary's value type.</param>
     /// <param name="options">The serializer options.</param>
     /// <exception cref="IniSerializationException">
     /// Thrown when a section nests beyond INI's two levels, when an entry's value is a dictionary whose keys are not
-    /// strings, which cannot be a section, when a global entry's value is not a scalar, or when a key, section name or
-    /// value cannot be written so that it reads back unchanged.
+    /// strings, which cannot be a section, when a global entry's value is not a scalar, when a <see langword="null" />
+    /// entry that is written has a value type that is neither a scalar, <see cref="object" /> nor a section type, or
+    /// when a key, section name or value cannot be written so that it reads back unchanged.
     /// </exception>
+    /// <remarks>
+    /// An entry is a section or a key by its value. A <see langword="null" /> entry has no value to decide by, so, when
+    /// the ignore condition writes it, <paramref name="valueType" /> decides: a string-keyed dictionary type makes it
+    /// an empty section, as a POCO root's <see langword="null" /> section member is written, a scalar or
+    /// <see cref="object" /> makes it an empty key, and any other type, which no empty key reads back as, is rejected.
+    /// </remarks>
     [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
     [RequiresDynamicCode(RequiresDynamicCodeMessage)]
-    private static void WriteRootDictionary(ref Utf8IniWriter writer, IDictionary dictionary, IniSerializerOptions options)
+    private static void WriteRootDictionary(ref Utf8IniWriter writer, IDictionary dictionary, Type valueType, IniSerializerOptions options)
     {
+        bool nullIsSection = FlatBinding.TryGetStringKeyedDictionary(valueType, out _);
+        Type? nullUnmappedType = nullIsSection ? null : InvariantScalarCodec.GetUnmappedType(null, valueType, InvariantScalarCodec.Classify(valueType));
+
         foreach (DictionaryEntry entry in dictionary)
         {
             string key = KeyToString(entry.Key);
@@ -87,6 +98,16 @@ public static partial class IniSerializer
             if (FlatBinding.ShouldSkipDictionaryValue(entry.Value, options.DefaultIgnoreCondition))
                 continue;
 
+            if (entry.Value is null)
+            {
+                // A null section is written as an empty section, after the global keys.
+                if (nullIsSection)
+                    continue;
+
+                if (nullUnmappedType is not null)
+                    throw new IniSerializationException(string.Format(CultureInfo.CurrentCulture, IniResourceStrings.Op_Invalid_IniValueNotScalar, string.Empty, key, nullUnmappedType));
+            }
+
             ThrowIfNotScalar(entry.Value, string.Empty, key);
             WriteEntry(ref writer, string.Empty, key, ValueToString(entry.Value));
         }
@@ -94,10 +115,17 @@ public static partial class IniSerializer
         foreach (DictionaryEntry entry in dictionary)
         {
             string key = KeyToString(entry.Key);
-            if (!IsGlobalName(key, options) && FlatBinding.TryGetDictionary(entry.Value, out IDictionary? nested))
+            if (IsGlobalName(key, options))
+                continue;
+
+            if (FlatBinding.TryGetDictionary(entry.Value, out IDictionary? nested))
             {
                 WriteHeader(ref writer, key);
                 WriteDictionaryEntries(ref writer, key, nested, options);
+            }
+            else if (entry.Value is null && nullIsSection && !FlatBinding.ShouldSkipDictionaryValue(null, options.DefaultIgnoreCondition))
+            {
+                WriteHeader(ref writer, key);
             }
         }
     }
