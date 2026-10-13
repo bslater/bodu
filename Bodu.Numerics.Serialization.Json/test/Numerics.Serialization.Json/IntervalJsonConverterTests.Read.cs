@@ -41,6 +41,40 @@ public partial class IntervalJsonConverterTests
     }
 
     /// <summary>
+    /// Verifies that a NaN endpoint is still rejected with a <see cref="JsonException" /> when the interval is read from
+    /// its compact string, under the Compact policy or through the Lenient policy's string fallback.
+    /// </summary>
+    /// <param name="policy">The policy under test.</param>
+    /// <param name="json">The JSON string whose endpoint is NaN.</param>
+    [TestMethod]
+    [DataRow(NumericsJsonPolicy.Compact, "\"[NaN, 1]\"", DisplayName = "Compact, bounded, lower NaN")]
+    [DataRow(NumericsJsonPolicy.Compact, "\"(-\u221E, NaN)\"", DisplayName = "Compact, lower unbounded, upper NaN")]
+    [DataRow(NumericsJsonPolicy.Lenient, "\"[0, NaN]\"", DisplayName = "Lenient string, bounded, upper NaN")]
+    public void Read_WhenCompactEndpointIsNaN_ShouldThrowJsonException(NumericsJsonPolicy policy, string json)
+    {
+        JsonSerializerOptions options = new JsonSerializerOptions().AddNumericsJsonConverters(policy);
+
+        _ = Assert.ThrowsExactly<JsonException>(() =>
+        {
+            _ = JsonSerializer.Deserialize<Interval<double>>(json, options);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that a NaN endpoint value beside an unbounded marker is ignored, as any endpoint value accompanying an
+    /// unbounded side is, so the interval reads back as the unbounded shape.
+    /// </summary>
+    [TestMethod]
+    public void Read_WhenNaNAccompaniesUnboundedMarker_ShouldIgnoreIt()
+    {
+        const string Json = "{\"lower\":\"NaN\",\"lowerUnbounded\":true,\"upper\":1,\"upperInclusive\":true}";
+
+        Interval<double> result = JsonSerializer.Deserialize<Interval<double>>(Json, Options());
+
+        Assert.AreEqual(Interval<double>.AtMost(1.0), result);
+    }
+
+    /// <summary>
     /// Verifies that reading the object form rejects a NaN endpoint of an <see cref="Interval{T}" /> over
     /// <see cref="float" /> with a <see cref="JsonException" />.
     /// </summary>

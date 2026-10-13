@@ -31,8 +31,9 @@ namespace Bodu.Numerics.Serialization.Json;
 /// example <c>{ "lower": 1, "upperUnbounded": true, "lowerInclusive": true }</c> for <c>[1, +&#x221E;)</c>, or
 /// <c>{ "lowerUnbounded": true, "upperUnbounded": true }</c> for the whole line). An endpoint value is a JSON number,
 /// except that an infinite endpoint of a bounded side is written as the string <c>"Infinity"</c> or <c>"-Infinity"</c>;
-/// an endpoint may be read from either a number or a numeric string. Duplicate properties are rejected, and an
-/// <c>"empty": true</c> marker rejects any sibling endpoint or unbounded property.
+/// an endpoint may be read from either a number or a numeric string. Duplicate properties are rejected, an
+/// <c>"empty": true</c> marker rejects any sibling endpoint or unbounded property, and a NaN endpoint on a bounded
+/// side, such as <c>"lower": "NaN"</c>, is rejected because NaN has no place in the order of the endpoints.
 /// </description>
 /// </item>
 /// <item>
@@ -54,6 +55,10 @@ namespace Bodu.Numerics.Serialization.Json;
 /// </description>
 /// </item>
 /// </list>
+/// <para>
+/// Under every policy, a payload that cannot form an interval, a NaN endpoint included, is reported as
+/// <see cref="JsonException" />.
+/// </para>
 /// </remarks>
 public sealed class IntervalJsonConverter<T>
     : JsonConverter<Interval<T>>
@@ -186,8 +191,8 @@ public sealed class IntervalJsonConverter<T>
     /// <returns>The deserialized interval.</returns>
     /// <exception cref="JsonException">
     /// Thrown when the JSON is not an object, declares a duplicate property, mixes an <c>"empty": true</c> marker with
-    /// endpoint properties, is missing a required property, or carries a value that cannot be parsed as
-    /// <typeparamref name="T" />.
+    /// endpoint properties, is missing a required property, carries a value that cannot be parsed as
+    /// <typeparamref name="T" />, or gives a bounded side a NaN endpoint.
     /// </exception>
     private Interval<T> ReadObject(ref Utf8JsonReader reader)
     {
@@ -294,6 +299,14 @@ public sealed class IntervalJsonConverter<T>
         if (!upperIsUnbounded && !upperSeen)
             throw new JsonException(NumericsJsonResourceStrings.Json_Invalid_MissingUpper);
 
+        // NaN parses as a value of a floating-point T but is unordered, so Interval<T> rejects it as an endpoint with
+        // ArgumentException; report it here as malformed JSON instead. A value beside an unbounded marker is ignored.
+        if (!lowerIsUnbounded && T.IsNaN(lower!))
+            throw new JsonException(FormatEndpointNaNMessage("lower"));
+
+        if (!upperIsUnbounded && T.IsNaN(upper!))
+            throw new JsonException(FormatEndpointNaNMessage("upper"));
+
         bool resolvedLowerInclusive = false;
         bool resolvedUpperInclusive = false;
 
@@ -336,6 +349,14 @@ public sealed class IntervalJsonConverter<T>
 
         return new Interval<T>(lower!, upper!, resolvedLowerInclusive, resolvedUpperInclusive);
     }
+
+    /// <summary>
+    /// Formats the message reported when the endpoint read from <paramref name="propertyName" /> is NaN.
+    /// </summary>
+    /// <param name="propertyName">The canonical name of the endpoint property.</param>
+    /// <returns>The formatted message.</returns>
+    private static string FormatEndpointNaNMessage(string propertyName) =>
+        string.Format(CultureInfo.CurrentCulture, NumericsJsonResourceStrings.Json_Invalid_IntervalEndpointNaN, propertyName);
 
     /// <summary>
     /// Determines whether <paramref name="propertyName" /> matches the lower-endpoint property name, accepting the

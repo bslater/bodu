@@ -174,6 +174,7 @@ Malformed payloads surface as `JsonException` on read; the converters never sile
 | Missing `"lowerInclusive"` / `"upperInclusive"` on a bounded side | `Strict` | `JsonException`; `Lenient` defaults the missing flags to closed. |
 | `{ "empty": true }` carrying extra endpoint or unbounded properties | `Strict`, `Lenient` | `JsonException` - the empty form must stand alone. |
 | Component value that is neither a number nor a parseable numeric string | all | `JsonException` reporting the type mismatch. |
+| A NaN endpoint on a bounded side of an interval (e.g. `"lower": "NaN"`, or `"[NaN, 1]"` in compact form) | all | `JsonException` - NaN is unordered, so no interval can be formed around it. |
 | Compact token that is not a string, or a string `TryParse` rejects (e.g. `"3/"`, `"[1, )"`) | `Compact` | `JsonException` carrying the offending text. |
 | Non-array token for an `IntervalSet<T>` | all | `JsonException` - an interval set is a JSON array of pieces. |
 
