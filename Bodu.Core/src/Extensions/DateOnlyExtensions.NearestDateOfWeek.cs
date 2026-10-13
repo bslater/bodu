@@ -16,8 +16,8 @@ public static partial class DateOnlyExtensions
     /// <param name="dayOfWeek">The target <see cref="DayOfWeek" /> to locate.</param>
     /// <returns>
     /// A <see cref="DateOnly" /> value set to the closest date (either before or after) to <paramref name="date" />
-    /// that falls on the specified <paramref name="dayOfWeek" />. If two dates are equally close, the earlier one is
-    /// returned.
+    /// that falls on the specified <paramref name="dayOfWeek" />. The previous and next occurrences are seven days
+    /// apart, so they are never equally close: the nearest is the one at most three days away.
     /// </returns>
     /// <remarks>
     /// <para>
@@ -61,8 +61,8 @@ public static partial class DateOnlyExtensions
     /// <param name="dayOfWeek">The target <see cref="DayOfWeek" /> to locate.</param>
     /// <returns>
     /// A <see cref="DateOnly" /> value set to the closest date (either before or after) to the specified reference date
-    /// that falls on the given <paramref name="dayOfWeek" />. If two dates are equally close, the earlier one is
-    /// returned.
+    /// that falls on the given <paramref name="dayOfWeek" />. The previous and next occurrences are seven days apart,
+    /// so they are never equally close: the nearest is the one at most three days away.
     /// </returns>
     /// <remarks>
     /// <para>

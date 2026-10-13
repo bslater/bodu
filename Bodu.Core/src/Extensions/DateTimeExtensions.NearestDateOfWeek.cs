@@ -17,7 +17,8 @@ public static partial class DateTimeExtensions
     /// <returns>
     /// An object whose value is set to the closest date (either before or after) to <paramref name="dateTime" /> that
     /// falls on the specified <paramref name="dayOfWeek" />, with the original time-of-day and
-    /// <see cref="DateTime.Kind" /> preserved. If two dates are equally close, the earlier one is returned.
+    /// <see cref="DateTime.Kind" /> preserved. The previous and next occurrences are seven days apart, so they are
+    /// never equally close: the nearest is the one at most three days away.
     /// </returns>
     /// <remarks>
     /// <para>
@@ -61,7 +62,8 @@ public static partial class DateTimeExtensions
     /// <returns>
     /// An object whose value is set to midnight (00:00:00) on the closest date (either before or after) to the
     /// specified reference date that falls on the given <paramref name="dayOfWeek" />, using
-    /// <see cref="DateTimeKind.Unspecified" />. If two dates are equally close, the earlier one is returned.
+    /// <see cref="DateTimeKind.Unspecified" />. The previous and next occurrences are seven days apart, so they are
+    /// never equally close: the nearest is the one at most three days away.
     /// </returns>
     /// <remarks>
     /// <para>

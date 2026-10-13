@@ -56,10 +56,11 @@ public partial class DateOnlyExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that when the past and future occurrences are equidistant (3 days each), the earlier date is returned.
+    /// Verifies that when the previous occurrence is three days back and the next four days ahead, the previous date is
+    /// returned.
     /// </summary>
     [TestMethod]
-    public void NearestDateOfWeek_WhenTiedBetweenPastAndFuture_ShouldReturnEarlierDate()
+    public void NearestDateOfWeek_WhenPreviousOccurrenceIsCloser_ShouldReturnPreviousDate()
     {
         // Wednesday 17 April 2024, target Sunday: Sun 14 (3 days back) vs Sun 21 (4 days fwd) - back wins.
         var date = new DateOnly(2024, 4, 17);
