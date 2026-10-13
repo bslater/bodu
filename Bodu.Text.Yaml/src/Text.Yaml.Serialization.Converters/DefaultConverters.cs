@@ -28,7 +28,8 @@ namespace Bodu.Text.Yaml.Serialization.Converters;
 /// <see cref="double" />, <see cref="float" />, <see cref="bool" />, and enumerations directly. Types YAML has no
 /// native form for map to a defined representation instead: <see cref="decimal" /> writes as its exact invariant text
 /// so it round-trips without precision loss, <see cref="System.DateTime" /> and <see cref="System.DateTimeOffset" />
-/// use the ISO 8601 round-trip format, and <see cref="System.TimeSpan" /> uses the invariant constant format.
+/// use the ISO 8601 round-trip format, <see cref="System.TimeSpan" /> uses the invariant constant format, and
+/// <see cref="Uri" /> writes its original string and reads an absolute or a relative URI.
 /// </para>
 /// </remarks>
 internal static class DefaultConverters
@@ -43,6 +44,7 @@ internal static class DefaultConverters
         new BooleanConverter(),
         new CharConverter(),
         new GuidConverter(),
+        new UriConverter(),
         new TimeSpanConverter(),
         new DoubleConverter(),
         new SingleConverter(),
