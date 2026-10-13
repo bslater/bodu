@@ -168,6 +168,16 @@ internal interface IDocumentNode
     IReadOnlyList<(string Key, string Value)> KeyValueList(string xmlWrapper, string xmlItem, string xmlKeyAttribute, string xmlValueAttribute, string jsonProperty);
 
     /// <summary>
+    /// Checks a text value read from this node against a pattern the XML schema enforces, recording an error diagnostic
+    /// when a JSON value does not match it; an XML value is left to the schema, which has checked it.
+    /// </summary>
+    /// <param name="value">The value, or <see langword="null" /> when absent.</param>
+    /// <param name="pattern">The pattern the schema enforces on the value.</param>
+    /// <param name="field">The name of the JSON property the value was read from, used in the diagnostic.</param>
+    /// <param name="diagnostics">The collection that receives the diagnostic.</param>
+    void CheckPattern(string? value, NotableDateSchemaPattern pattern, string field, ICollection<NotableDateValidationDiagnostic> diagnostics);
+
+    /// <summary>
     /// Reads a list of references that may be qualified: XML item elements carrying a qualifier attribute and a name
     /// attribute, or a JSON array whose items are objects carrying the same two properties, or strings carrying the
     /// name alone.

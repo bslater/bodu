@@ -65,4 +65,39 @@ public class JsonDocumentNodeTests
         Assert.IsEmpty(node.KeyValueList("Parameters", "Parameter", "name", "value", "params"));
         Assert.IsEmpty(node.KeyValueList("Parameters", "Parameter", "name", "value", "absent"));
     }
+
+    /// <summary>
+    /// Verifies that a value that breaks the pattern the schema enforces records one <c>BODU-CAL-SCHEMA</c> error
+    /// naming the field, the value and the pattern.
+    /// </summary>
+    [TestMethod]
+    public void CheckPattern_WhenValueBreaksPattern_ShouldRecordSchemaDiagnostic()
+    {
+        List<NotableDateValidationDiagnostic> diagnostics = new();
+
+        Node("{}").CheckPattern("New-Year", NotableDateSchemaPattern.Identifier, "id", diagnostics);
+
+        NotableDateValidationDiagnostic diagnostic = Assert.ContainsSingle(diagnostics);
+        Assert.AreEqual("BODU-CAL-SCHEMA", diagnostic.Code);
+        Assert.AreEqual(NotableDateValidationSeverity.Error, diagnostic.Severity);
+        Assert.Contains("'id'", diagnostic.Message);
+        Assert.Contains("'New-Year'", diagnostic.Message);
+        Assert.Contains(NotableDateSchemaPatterns.Identifier, diagnostic.Message);
+    }
+
+    /// <summary>
+    /// Verifies that a value that matches the pattern, or an absent value, records no diagnostic.
+    /// </summary>
+    /// <param name="value">The value, or <see langword="null" /> for an absent value.</param>
+    [TestMethod]
+    [DataRow("new-year")]
+    [DataRow(null)]
+    public void CheckPattern_WhenValueMatchesOrIsAbsent_ShouldRecordNothing(string? value)
+    {
+        List<NotableDateValidationDiagnostic> diagnostics = new();
+
+        Node("{}").CheckPattern(value, NotableDateSchemaPattern.Identifier, "id", diagnostics);
+
+        Assert.IsEmpty(diagnostics);
+    }
 }

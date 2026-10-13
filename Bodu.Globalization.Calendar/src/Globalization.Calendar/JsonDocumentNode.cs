@@ -178,6 +178,22 @@ internal sealed class JsonDocumentNode
         return pairs;
     }
 
+    /// <inheritdoc />
+    /// <remarks>
+    /// A value that does not match the pattern records a <c>BODU-CAL-SCHEMA</c> error naming the property, the value
+    /// and the pattern, as the schema reports the same value in an XML document.
+    /// </remarks>
+    public void CheckPattern(string? value, NotableDateSchemaPattern pattern, string field, ICollection<NotableDateValidationDiagnostic> diagnostics)
+    {
+        if (value is null || NotableDateSchemaPatterns.IsMatch(value, pattern))
+            return;
+
+        diagnostics.Add(new NotableDateValidationDiagnostic(
+            NotableDateValidationSeverity.Error,
+            "BODU-CAL-SCHEMA",
+            string.Format(CultureInfo.CurrentCulture, CalendarResourceStrings.Validation_SchemaPatternMismatch, field, value, NotableDateSchemaPatterns.GetPattern(pattern))));
+    }
+
     /// <summary>
     /// Reads the items of an array property as text, returning <see langword="null" /> when the property is absent: a
     /// string by its value, and any other item by its JSON text, so a name parse reports it rather than the list losing

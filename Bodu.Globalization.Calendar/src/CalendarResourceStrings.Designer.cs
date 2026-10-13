@@ -295,6 +295,15 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The &apos;{0}&apos; value &apos;{1}&apos; does not match the pattern &apos;{2}&apos; the schema requires..
+        /// </summary>
+        internal static string Validation_SchemaPatternMismatch {
+            get {
+                return ResourceManager.GetString("Validation_SchemaPatternMismatch", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Override operation targets notable date '{0}', which does not exist in the resolved resource..
         /// </summary>
         internal static string Validation_OverrideNotableDateNotFound {

@@ -50,7 +50,7 @@ Codes are stable identifiers: they are safe to match on, suppress by, or documen
 | Code | Severity | Condition |
 |---|---|---|
 | `BODU-CAL-SYNTAX` | Error | The input is not well-formed XML/JSON, or the JSON content is empty; or an imported resource's content is not well-formed. For the loaded document's own text it is produced by the `Try` overloads, and the throwing overloads raise `FormatException` for the same input; for an imported resource every overload reports it as a diagnostic naming the import. |
-| `BODU-CAL-SCHEMA` | Error or Warning | The XML document violates the embedded notable-date XSD; the severity mirrors the schema validator's. |
+| `BODU-CAL-SCHEMA` | Error or Warning | The XML document violates the embedded notable-date XSD; the severity mirrors the schema validator's. In JSON, which no schema validates, an identifier, reference or territory code that breaks the pattern the XSD requires of it (`"id": "New-Year"`, a territory `"au"`) is reported under the same code as an error naming the property, the value and the pattern. |
 
 ### Document structure
 

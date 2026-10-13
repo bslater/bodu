@@ -109,6 +109,12 @@ internal sealed class XmlDocumentNode
     }
 
     /// <inheritdoc />
+    public void CheckPattern(string? value, NotableDateSchemaPattern pattern, string field, ICollection<NotableDateValidationDiagnostic> diagnostics)
+    {
+        // The schema validation that precedes reading has already reported a value that breaks its pattern.
+    }
+
+    /// <inheritdoc />
     public IReadOnlyList<(string Key, string Value)> KeyValueList(string xmlWrapper, string xmlItem, string xmlKeyAttribute, string xmlValueAttribute, string jsonProperty)
     {
         XElement? container = _element.Element(_ns + xmlWrapper);

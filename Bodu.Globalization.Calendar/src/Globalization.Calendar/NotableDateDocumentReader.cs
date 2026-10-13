@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Diagnostics.CodeAnalysis;
 using static Bodu.Globalization.Calendar.NotableDateDocumentParseHelpers;
 
 namespace Bodu.Globalization.Calendar;
@@ -35,7 +36,7 @@ internal static class NotableDateDocumentReader
     public static ParsedNotableDateDocument Read(IDocumentNode root, ICollection<NotableDateValidationDiagnostic> diagnostics)
     {
         return new ParsedNotableDateDocument(
-            root.Scalar("resourceId") ?? string.Empty,
+            ReadPatterned(root, "resourceId", NotableDateSchemaPattern.ResourceIdentifier, diagnostics) ?? string.Empty,
             root.Scalar("schemaVersion") ?? string.Empty,
             ReadResolutionPolicy(root.Child("resolutionPolicy"), diagnostics),
             ReadAdjustmentPolicies(root, diagnostics),
@@ -88,7 +89,7 @@ internal static class NotableDateDocumentReader
                 : ParseEnumList(trigger.ScalarList(null, "Weekday", "value", "weekdays"), DayOfWeek.Monday, "trigger weekdays", diagnostics);
 
             policies.Add(new AdjustmentPolicy(
-                policy.Scalar("id") ?? string.Empty,
+                ReadPatterned(policy, "id", NotableDateSchemaPattern.Identifier, diagnostics) ?? string.Empty,
                 ParseInt(policy.Scalar("priority"), 0, "adjustment policy priority", diagnostics),
                 ReadScope(policy.Child("scope"), diagnostics),
                 ParseEnum(trigger?.Scalar("type"), AdjustmentTrigger.Always, "trigger type", diagnostics),
@@ -105,8 +106,8 @@ internal static class NotableDateDocumentReader
                 ParseTriggerMonth(trigger?.Scalar("month"), "trigger month", diagnostics),
                 ParseNullableInt(trigger?.Scalar("day"), "trigger day", diagnostics),
                 ParseNullableEnum<WeekOrdinal>(trigger?.Scalar("weekOrdinal"), "trigger weekOrdinal", diagnostics),
-                action?.Scalar("notableDateRef"),
-                action?.Scalar("ruleRef"),
+                ReadPatterned(action, "notableDateRef", NotableDateSchemaPattern.Identifier, diagnostics),
+                ReadPatterned(action, "ruleRef", NotableDateSchemaPattern.Identifier, diagnostics),
                 action?.Scalar("handlerKey"),
                 trigger?.Scalar("handlerKey"),
                 ReadHandlerParameters(policy)));
@@ -143,13 +144,19 @@ internal static class NotableDateDocumentReader
         if (node is null)
             return AdjustmentScope.Global;
 
+        IReadOnlyList<(string? Qualifier, string Name)> ruleRefs = node.QualifiedReferenceList(null, "Rule", "notableDateRef", "ruleRef", "ruleRefs", "scope ruleRefs", diagnostics);
+        foreach ((string? qualifier, string name) in ruleRefs)
+        {
+            node.CheckPattern(qualifier, NotableDateSchemaPattern.Identifier, "ruleRefs", diagnostics);
+            node.CheckPattern(name, NotableDateSchemaPattern.Identifier, "ruleRefs", diagnostics);
+        }
+
         return new AdjustmentScope(
-            node.TextList(null, "Territory", "code", "territories", "scope territories", diagnostics),
+            CheckPatterns(node, node.TextList(null, "Territory", "code", "territories", "scope territories", diagnostics), NotableDateSchemaPattern.TerritoryCode, "territories", diagnostics),
             ParseEnumList(node.ScalarList(null, "Calendar", "name", "calendars"), CalendarSystem.Gregorian, "scope calendars", diagnostics),
             ParseEnumList(node.ScalarList(null, "Category", "value", "categories"), NotableDateCategory.None, "scope categories", diagnostics),
-            node.TextList(null, "NotableDate", "ref", "notableDateRefs", "scope notableDateRefs", diagnostics),
-            node.QualifiedReferenceList(null, "Rule", "notableDateRef", "ruleRef", "ruleRefs", "scope ruleRefs", diagnostics)
-                .Select(reference => AdjustmentScope.QualifyRuleRef(reference.Qualifier, reference.Name)),
+            CheckPatterns(node, node.TextList(null, "NotableDate", "ref", "notableDateRefs", "scope notableDateRefs", diagnostics), NotableDateSchemaPattern.Identifier, "notableDateRefs", diagnostics),
+            ruleRefs.Select(reference => AdjustmentScope.QualifyRuleRef(reference.Qualifier, reference.Name)),
             ParseNullableInt(node.Scalar("fromYear"), "scope fromYear", diagnostics),
             ParseNullableInt(node.Scalar("toYear"), "scope toYear", diagnostics),
             node.IntList(null, "OnlyYear", "value", "onlyYears", "scope onlyYears", diagnostics),
@@ -168,7 +175,7 @@ internal static class NotableDateDocumentReader
 
         foreach (IDocumentNode notableDate in root.List("NotableDates", "NotableDate", "notableDates"))
         {
-            string id = notableDate.Scalar("id") ?? string.Empty;
+            string id = ReadPatterned(notableDate, "id", NotableDateSchemaPattern.Identifier, diagnostics) ?? string.Empty;
 
             definitions.Add(new NotableDateDefinition(
                 id,
@@ -209,7 +216,7 @@ internal static class NotableDateDocumentReader
     /// <returns>The parsed <see cref="NotableDateRule" />.</returns>
     private static NotableDateRule ReadRule(IDocumentNode node, string notableDateId, ICollection<NotableDateValidationDiagnostic> diagnostics)
     {
-        string id = node.Scalar("id") ?? string.Empty;
+        string id = ReadPatterned(node, "id", NotableDateSchemaPattern.Identifier, diagnostics) ?? string.Empty;
         IDocumentNode? strategyNode = node.Child("strategy");
         IDocumentNode? recurrenceNode = node.Child("recurrence");
         ValidateOccurrenceSource(strategyNode, recurrenceNode, notableDateId, id, diagnostics);
@@ -218,7 +225,7 @@ internal static class NotableDateDocumentReader
         NotableDateDurationDefinition? duration = ReadDuration(node, applicability.Calendar, notableDateId, id, diagnostics);
         IDateRecurrenceStrategy? recurrence = ReadRecurrence(recurrenceNode, notableDateId, id, diagnostics);
 
-        IReadOnlyList<string> adjustments = node.TextList("Adjustments", "Adjustment", "policyRef", "adjustments", "rule adjustments", diagnostics);
+        IReadOnlyList<string> adjustments = CheckPatterns(node, node.TextList("Adjustments", "Adjustment", "policyRef", "adjustments", "rule adjustments", diagnostics), NotableDateSchemaPattern.Identifier, "adjustments", diagnostics);
         IReadOnlyList<string> tags = node.TextList("Tags", "Tag", "value", "tags", "rule tags", diagnostics);
 
         return recurrence is not null
@@ -306,7 +313,7 @@ internal static class NotableDateDocumentReader
             ParseEnum(node.Scalar("calendar"), CalendarSystem.Gregorian, "calendar", diagnostics),
             ParseNullableInt(node.Scalar("fromYear"), "applicability fromYear", diagnostics),
             ParseNullableInt(node.Scalar("toYear"), "applicability toYear", diagnostics),
-            node.TextList(null, "Territory", "code", "territories", "applicability territories", diagnostics),
+            CheckPatterns(node, node.TextList(null, "Territory", "code", "territories", "applicability territories", diagnostics), NotableDateSchemaPattern.TerritoryCode, "territories", diagnostics),
             node.IntList(null, "OnlyYear", "value", "onlyYears", "applicability onlyYears", diagnostics),
             node.IntList(null, "ExceptYear", "value", "exceptYears", "applicability exceptYears", diagnostics),
             ParseNullableInt(node.Scalar("everyYears"), "applicability everyYears", diagnostics),
@@ -409,9 +416,9 @@ internal static class NotableDateDocumentReader
 
         if (node.Child("offsetFromRule") is IDocumentNode offsetFromRule)
         {
-            string? ruleRef = offsetFromRule.Scalar("ruleRef");
+            string? ruleRef = ReadPatterned(offsetFromRule, "ruleRef", NotableDateSchemaPattern.Identifier, diagnostics);
             return new OffsetFromRuleStrategy(
-                offsetFromRule.Scalar("notableDateRef") ?? string.Empty,
+                ReadPatterned(offsetFromRule, "notableDateRef", NotableDateSchemaPattern.Identifier, diagnostics) ?? string.Empty,
                 string.IsNullOrEmpty(ruleRef) ? null : ruleRef,
                 ParseInt(offsetFromRule.Scalar("offsetDays"), 0, "offsetFromRule offsetDays", diagnostics));
         }
@@ -421,9 +428,9 @@ internal static class NotableDateDocumentReader
 
         if (node.Child("weekdayNearRule") is IDocumentNode weekdayNearRule)
         {
-            string? ruleRef = weekdayNearRule.Scalar("ruleRef");
+            string? ruleRef = ReadPatterned(weekdayNearRule, "ruleRef", NotableDateSchemaPattern.Identifier, diagnostics);
             return new WeekdayNearRuleStrategy(
-                weekdayNearRule.Scalar("notableDateRef") ?? string.Empty,
+                ReadPatterned(weekdayNearRule, "notableDateRef", NotableDateSchemaPattern.Identifier, diagnostics) ?? string.Empty,
                 string.IsNullOrEmpty(ruleRef) ? null : ruleRef,
                 ParseEnum(weekdayNearRule.Scalar("dayOfWeek"), DayOfWeek.Monday, "weekdayNearRule dayOfWeek", diagnostics),
                 ParseEnum(weekdayNearRule.Scalar("direction"), WeekdayProximity.OnOrAfter, "weekdayNearRule direction", diagnostics),
@@ -432,9 +439,9 @@ internal static class NotableDateDocumentReader
 
         if (node.Child("nthWeekdayFromRule") is IDocumentNode nthWeekdayFromRule)
         {
-            string? ruleRef = nthWeekdayFromRule.Scalar("ruleRef");
+            string? ruleRef = ReadPatterned(nthWeekdayFromRule, "ruleRef", NotableDateSchemaPattern.Identifier, diagnostics);
             return new NthWeekdayFromRuleStrategy(
-                nthWeekdayFromRule.Scalar("notableDateRef") ?? string.Empty,
+                ReadPatterned(nthWeekdayFromRule, "notableDateRef", NotableDateSchemaPattern.Identifier, diagnostics) ?? string.Empty,
                 string.IsNullOrEmpty(ruleRef) ? null : ruleRef,
                 ParseEnum(nthWeekdayFromRule.Scalar("dayOfWeek"), DayOfWeek.Monday, "nthWeekdayFromRule dayOfWeek", diagnostics),
                 ParseInt(nthWeekdayFromRule.Scalar("ordinal"), 1, "nthWeekdayFromRule ordinal", diagnostics),
@@ -443,9 +450,9 @@ internal static class NotableDateDocumentReader
 
         if (node.Child("workingDayOffsetFromRule") is IDocumentNode workingDayOffsetFromRule)
         {
-            string? ruleRef = workingDayOffsetFromRule.Scalar("ruleRef");
+            string? ruleRef = ReadPatterned(workingDayOffsetFromRule, "ruleRef", NotableDateSchemaPattern.Identifier, diagnostics);
             return new WorkingDayOffsetFromRuleStrategy(
-                workingDayOffsetFromRule.Scalar("notableDateRef") ?? string.Empty,
+                ReadPatterned(workingDayOffsetFromRule, "notableDateRef", NotableDateSchemaPattern.Identifier, diagnostics) ?? string.Empty,
                 string.IsNullOrEmpty(ruleRef) ? null : ruleRef,
                 ParseInt(workingDayOffsetFromRule.Scalar("offsetWorkingDays"), 0, "workingDayOffsetFromRule offsetWorkingDays", diagnostics),
                 ParseInt(workingDayOffsetFromRule.Scalar("referenceYearOffset"), 0, "workingDayOffsetFromRule referenceYearOffset", diagnostics));
@@ -618,12 +625,12 @@ internal static class NotableDateDocumentReader
 
         foreach (IDocumentNode operation in root.List("Overrides", null, "overrides"))
         {
-            string notableDateRef = operation.Scalar("notableDateRef") ?? string.Empty;
+            string notableDateRef = ReadPatterned(operation, "notableDateRef", NotableDateSchemaPattern.Identifier, diagnostics) ?? string.Empty;
 
             switch (operation.Discriminator("operation"))
             {
                 case "RemoveRule":
-                    overrides.Add(new RemoveRuleOverride(notableDateRef, operation.Scalar("ruleRef") ?? string.Empty));
+                    overrides.Add(new RemoveRuleOverride(notableDateRef, ReadPatterned(operation, "ruleRef", NotableDateSchemaPattern.Identifier, diagnostics) ?? string.Empty));
                     break;
 
                 case "PatchRule":
@@ -651,7 +658,7 @@ internal static class NotableDateDocumentReader
     /// <returns>The parsed <see cref="PatchRuleOverride" />.</returns>
     private static PatchRuleOverride ReadPatchRule(IDocumentNode operation, string notableDateRef, ICollection<NotableDateValidationDiagnostic> diagnostics)
     {
-        string ruleRef = operation.Scalar("ruleRef") ?? string.Empty;
+        string ruleRef = ReadPatterned(operation, "ruleRef", NotableDateSchemaPattern.Identifier, diagnostics) ?? string.Empty;
 
         IDocumentNode? applicabilityNode = operation.Child("applicability");
         IDocumentNode? strategyNode = operation.Child("strategy");
@@ -665,7 +672,7 @@ internal static class NotableDateDocumentReader
         RuleApplicability? applicability = applicabilityNode is null ? null : ReadApplicability(applicabilityNode, diagnostics);
         CalendarSystem calendar = applicability?.Calendar ?? CalendarSystem.Gregorian;
 
-        IReadOnlyList<string>? adjustments = operation.OptionalTextList("Adjustments", "Adjustment", "policyRef", "adjustments", "patch adjustments", diagnostics);
+        IReadOnlyList<string>? adjustments = CheckPatterns(operation, operation.OptionalTextList("Adjustments", "Adjustment", "policyRef", "adjustments", "patch adjustments", diagnostics), NotableDateSchemaPattern.Identifier, "adjustments", diagnostics);
         IReadOnlyList<string>? tags = operation.OptionalTextList("Tags", "Tag", "value", "tags", "patch tags", diagnostics);
 
         // A patch that carries neither a durationDays attribute nor a Duration element leaves the duration unchanged.
@@ -704,17 +711,61 @@ internal static class NotableDateDocumentReader
             foreach (IDocumentNode use in import.List(null, "Use", "uses"))
             {
                 uses.Add(new NotableDateImportUse(
-                    use.Scalar("notableDateRef") ?? string.Empty,
-                    use.Scalar("as"),
-                    use.Scalar("territory"),
+                    ReadPatterned(use, "notableDateRef", NotableDateSchemaPattern.Identifier, diagnostics) ?? string.Empty,
+                    ReadPatterned(use, "as", NotableDateSchemaPattern.Identifier, diagnostics),
+                    ReadPatterned(use, "territory", NotableDateSchemaPattern.TerritoryCode, diagnostics),
                     ParseNullableEnum<NotableDateCategory>(use.Scalar("category"), "import use category", diagnostics),
                     ParseNullableBool(use.Scalar("nonWorking"), "import use nonWorking", diagnostics),
-                    use.OptionalTextList("Adjustments", "Adjustment", "policyRef", "adjustments", "import use adjustments", diagnostics)));
+                    CheckPatterns(use, use.OptionalTextList("Adjustments", "Adjustment", "policyRef", "adjustments", "import use adjustments", diagnostics), NotableDateSchemaPattern.Identifier, "adjustments", diagnostics)));
             }
 
             imports.Add(new NotableDateImport(import.Scalar("resource") ?? string.Empty, uses));
         }
 
         return imports;
+    }
+
+    /// <summary>
+    /// Reads a scalar that the schema holds to a pattern, checking a JSON value against it.
+    /// </summary>
+    /// <param name="node">The node holding the scalar, or <see langword="null" /> when absent.</param>
+    /// <param name="name">The attribute or property name.</param>
+    /// <param name="pattern">The pattern the schema enforces on the value.</param>
+    /// <param name="diagnostics">
+    /// The collection that receives the <c>BODU-CAL-SCHEMA</c> error for a JSON value that does not match the pattern.
+    /// </param>
+    /// <returns>The scalar value, or <see langword="null" /> when the node or the value is absent.</returns>
+    private static string? ReadPatterned(IDocumentNode? node, string name, NotableDateSchemaPattern pattern, ICollection<NotableDateValidationDiagnostic> diagnostics)
+    {
+        if (node is null)
+            return null;
+
+        string? value = node.Scalar(name);
+        node.CheckPattern(value, pattern, name, diagnostics);
+        return value;
+    }
+
+    /// <summary>
+    /// Checks each value of a list that the schema holds to a pattern, checking a JSON value against it.
+    /// </summary>
+    /// <param name="node">The node holding the list.</param>
+    /// <param name="values">The list's values, or <see langword="null" /> when the list is absent.</param>
+    /// <param name="pattern">The pattern the schema enforces on each value.</param>
+    /// <param name="field">The name of the JSON property holding the list, used in the diagnostics.</param>
+    /// <param name="diagnostics">
+    /// The collection that receives the <c>BODU-CAL-SCHEMA</c> error for each JSON value that does not match the
+    /// pattern.
+    /// </param>
+    /// <returns><paramref name="values" />, unchanged.</returns>
+    [return: NotNullIfNotNull(nameof(values))]
+    private static IReadOnlyList<string>? CheckPatterns(IDocumentNode node, IReadOnlyList<string>? values, NotableDateSchemaPattern pattern, string field, ICollection<NotableDateValidationDiagnostic> diagnostics)
+    {
+        if (values is not null)
+        {
+            foreach (string value in values)
+                node.CheckPattern(value, pattern, field, diagnostics);
+        }
+
+        return values;
     }
 }
