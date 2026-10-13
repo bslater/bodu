@@ -122,4 +122,30 @@ public partial class DequeTests
         Assert.IsGreaterThanOrEqualTo(DefaultCapacity, deque.Capacity);
     }
 
+    /// <summary>
+    /// Verifies that constructing from a collection larger than the requested capacity creates the deque with a capacity
+    /// equal to the number of elements and keeps every element, as the constructor documents.
+    /// </summary>
+    [TestMethod]
+    public void Ctor_WhenCollectionExceedsRequestedCapacity_ShouldUseTheElementCount()
+    {
+        var deque = new Deque<int>(Enumerable.Range(0, 10), 4);
+
+        Assert.AreEqual(10, deque.Capacity);
+        CollectionAssert.AreEqual(Enumerable.Range(0, 10).ToArray(), deque.ToArray());
+    }
+
+    /// <summary>
+    /// Verifies that constructing a growable deque from a collection larger than the requested capacity creates it with
+    /// a capacity equal to the number of elements and keeps every element, as the constructor documents.
+    /// </summary>
+    [TestMethod]
+    public void Ctor_WhenCollectionExceedsRequestedCapacity_ForGrowthAllowed_ShouldUseTheElementCount()
+    {
+        var deque = new Deque<int>(Enumerable.Range(0, 10), 4, allowGrow: true);
+
+        Assert.AreEqual(10, deque.Capacity);
+        CollectionAssert.AreEqual(Enumerable.Range(0, 10).ToArray(), deque.ToArray());
+    }
+
 }

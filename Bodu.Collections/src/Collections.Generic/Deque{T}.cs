@@ -180,10 +180,13 @@ public sealed class Deque<T>
     /// <param name="collection">
     /// The collection from which elements are copied. Must not be <see langword="null" />.
     /// </param>
-    /// <param name="capacity">
-    /// The initial backing-array capacity. Must be greater than zero, and at least <c>collection.Count</c> when
-    /// auto-grow is disabled.
-    /// </param>
+    /// <param name="capacity">The requested initial backing-array capacity. Must be greater than zero.</param>
+    /// <remarks>
+    /// When <paramref name="collection" /> holds more elements than <paramref name="capacity" />, the deque is created
+    /// with a capacity equal to the number of elements instead, so every element is kept; otherwise its capacity is
+    /// <paramref name="capacity" />. For example, <c>new Deque&lt;int&gt;(Enumerable.Range(0, 10), 4).Capacity</c> is
+    /// 10.
+    /// </remarks>
     /// <exception cref="ArgumentNullException"><paramref name="collection" /> is <see langword="null" />.</exception>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="capacity" /> is less than 1.</exception>
     public Deque(IEnumerable<T> collection, int capacity)
@@ -204,6 +207,11 @@ public sealed class Deque<T>
     /// <see langword="true" /> to allow the deque to expand its backing array when full; <see langword="false" /> for
     /// fixed-capacity behavior.
     /// </param>
+    /// <remarks>
+    /// When <paramref name="allowGrow" /> is <see langword="true" /> and <paramref name="collection" /> holds more
+    /// elements than <paramref name="capacity" />, the deque is created with a capacity equal to the number of elements
+    /// instead, so every element is kept; otherwise its capacity is <paramref name="capacity" />.
+    /// </remarks>
     /// <exception cref="ArgumentNullException"><paramref name="collection" /> is <see langword="null" />.</exception>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="capacity" /> is less than 1.</exception>
     /// <exception cref="InvalidOperationException">
