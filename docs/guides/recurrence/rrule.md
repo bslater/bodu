@@ -171,7 +171,7 @@ DateTime? never   = RecurrenceRule.Parse("FREQ=YEARLY;BYMONTH=2;BYMONTHDAY=30")
 
 Both searches are bounded by the end of the representable calendar (year 9999), so a rule that can never match answers `null` rather than scanning forever.
 
-The `DateTimeOffset` overloads expand the rule on the **wall-clock time of the start** and reattach the start's offset to every result; the library performs no offset conversion and never consults the machine time zone. A start of `2026-01-05 09:00 +10:00` with `FREQ=DAILY` answers `2026-01-06 09:00 +10:00` for any `after` on 5 January, whatever offset `after` carries:
+The `DateTimeOffset` overloads expand the rule on the **wall-clock time of the start** and attach the start's offset to every result. `after`, `before` and the window bounds are compared as absolute instants, so the offset they are written in never changes the offset of the answer, and the machine time zone is never consulted. A start of `2026-01-05 09:00 +10:00` with `FREQ=DAILY` answers `2026-01-06 09:00 +10:00` for any `after` from 09:00 on 5 January up to, but not including, 09:00 on 6 January (+10:00), whichever offset `after` is written in:
 
 <!-- compile -->
 ```csharp

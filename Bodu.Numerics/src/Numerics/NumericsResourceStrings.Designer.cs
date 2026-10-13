@@ -374,5 +374,14 @@ namespace Bodu.Numerics {
                 return ResourceManager.GetString("Overflow_SampleOutsideDoubleRange", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The value is outside the range representable by a Decimal..
+        /// </summary>
+        internal static string Overflow_FractionOutsideDecimalRange {
+            get {
+                return ResourceManager.GetString("Overflow_FractionOutsideDecimalRange", resourceCulture);
+            }
+        }
     }
 }

@@ -189,21 +189,27 @@ public sealed partial class AnchoredInterval
     /// <returns>The occurrences within <c>[from, to]</c> in ascending chronological order.</returns>
     /// <remarks>
     /// The window bounds are compared as absolute instants, so they may be supplied in offsets that differ from the
-    /// anchor's; each returned occurrence carries the anchor's offset.
+    /// anchor's; each returned occurrence carries the anchor's offset. The first occurrence in the window is computed
+    /// directly, so the cost of starting the window does not depend on its distance from the anchor.
     /// </remarks>
     public IEnumerable<DateTimeOffset> GetOccurrences(DateTimeOffset anchor, DateTimeOffset from, DateTimeOffset to)
     {
-        foreach (DateTimeOffset occurrence in GetOccurrences(anchor))
+        // Occurrence k is the instant anchor.UtcTicks + k * interval, so the first index in the window follows from the
+        // UTC distance to its lower bound; each occurrence is built as the unbounded overload builds it, on the
+        // anchor's wall-clock ticks with the anchor's offset.
+        DateTime wallClock = DateTime.SpecifyKind(anchor.DateTime, DateTimeKind.Unspecified);
+        long interval = Interval.Ticks;
+        long last = (DateTime.MaxValue.Ticks - wallClock.Ticks) / interval;
+
+        for (long k = NextIndex(from.UtcTicks - anchor.UtcTicks, inclusive: true); k <= last; k++)
         {
+            var occurrence = new DateTimeOffset(wallClock.AddTicks(k * interval), anchor.Offset);
             if (occurrence > to)
             {
                 yield break;
             }
 
-            if (occurrence >= from)
-            {
-                yield return occurrence;
-            }
+            yield return occurrence;
         }
     }
 

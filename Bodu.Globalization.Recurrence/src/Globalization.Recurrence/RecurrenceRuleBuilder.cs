@@ -21,6 +21,12 @@ namespace Bodu.Globalization.Recurrence;
 /// <see cref="WithCount(int)" /> and <see cref="WithUntil(DateTime)" /> are mutually exclusive; supplying one clears
 /// the other, matching the RFC 5545 rule that <c>COUNT</c> and <c>UNTIL</c> cannot both appear.
 /// </para>
+/// <para>
+/// The exceptions a <c>By…</c> setter throws for the values it is given name the rule part rather than the method's
+/// parameter: their <see cref="ArgumentException.ParamName" /> is the matching <see cref="RecurrenceRule" /> property,
+/// such as <c>BySecond</c>. The one exception is a <see langword="null" /> array passed to a <c>ByDay</c> overload,
+/// which is reported as <c>days</c>.
+/// </para>
 /// </remarks>
 public sealed class RecurrenceRuleBuilder
 {
@@ -139,6 +145,9 @@ public sealed class RecurrenceRuleBuilder
     /// </summary>
     /// <param name="seconds">The seconds to select (0-60).</param>
     /// <returns>The same builder instance so calls can be chained.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="seconds" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when a value is outside the range 0 to 60.</exception>
     public RecurrenceRuleBuilder BySecond(params int[] seconds)
     {
@@ -169,6 +178,9 @@ public sealed class RecurrenceRuleBuilder
     /// </summary>
     /// <param name="minutes">The minutes to select (0-59).</param>
     /// <returns>The same builder instance so calls can be chained.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="minutes" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when a value is outside the range 0 to 59.</exception>
     public RecurrenceRuleBuilder ByMinute(params int[] minutes)
     {
@@ -195,6 +207,9 @@ public sealed class RecurrenceRuleBuilder
     /// </summary>
     /// <param name="hours">The hours to select (0-23).</param>
     /// <returns>The same builder instance so calls can be chained.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="hours" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when a value is outside the range 0 to 23.</exception>
     public RecurrenceRuleBuilder ByHour(params int[] hours)
     {
@@ -293,6 +308,9 @@ public sealed class RecurrenceRuleBuilder
     /// </summary>
     /// <param name="monthDays">The month days to select (1-31 or -31 to -1).</param>
     /// <returns>The same builder instance so calls can be chained.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="monthDays" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when a value is zero or outside ±31.</exception>
     public RecurrenceRuleBuilder ByMonthDay(params int[] monthDays)
     {
@@ -323,6 +341,9 @@ public sealed class RecurrenceRuleBuilder
     /// </summary>
     /// <param name="yearDays">The year days to select (1-366 or -366 to -1).</param>
     /// <returns>The same builder instance so calls can be chained.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="yearDays" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when a value is zero or outside ±366.</exception>
     public RecurrenceRuleBuilder ByYearDay(params int[] yearDays)
     {
@@ -335,6 +356,9 @@ public sealed class RecurrenceRuleBuilder
     /// </summary>
     /// <param name="weekNumbers">The week numbers to select (1-53 or -53 to -1).</param>
     /// <returns>The same builder instance so calls can be chained.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="weekNumbers" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when a value is zero or outside ±53.</exception>
     public RecurrenceRuleBuilder ByWeekNo(params int[] weekNumbers)
     {
@@ -347,6 +371,9 @@ public sealed class RecurrenceRuleBuilder
     /// </summary>
     /// <param name="months">The months to select (1-12).</param>
     /// <returns>The same builder instance so calls can be chained.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="months" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when a value is outside the range 1 to 12.</exception>
     public RecurrenceRuleBuilder ByMonth(params int[] months)
     {
@@ -373,6 +400,9 @@ public sealed class RecurrenceRuleBuilder
     /// </summary>
     /// <param name="setPositions">The set positions to select (1-366 or -366 to -1).</param>
     /// <returns>The same builder instance so calls can be chained.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="setPositions" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when a value is zero or outside ±366.</exception>
     public RecurrenceRuleBuilder BySetPos(params int[] setPositions)
     {

@@ -178,11 +178,15 @@ public readonly partial struct Fraction<T>
     /// </summary>
     /// <value>The rational value <c>T.MinValue/1</c>.</value>
     /// <exception cref="NotSupportedException">
-    /// Thrown if <typeparamref name="T" /> is an unbounded integer type, such as <see cref="BigInteger" />.
+    /// Thrown if <typeparamref name="T" /> is not one of the built-in fixed-width integer types, for example
+    /// <see cref="BigInteger" />.
     /// </exception>
     /// <remarks>
-    /// A bound exists only when <typeparamref name="T" /> implements <see cref="IMinMaxValue{TSelf}" />. Unbounded
-    /// backing types model the full set of rationals and therefore have no minimum value.
+    /// A bound exists only for the built-in fixed-width integer backing types: <see cref="byte" />,
+    /// <see cref="sbyte" />, <see cref="short" />, <see cref="ushort" />, <see cref="char" />, <see cref="int" />,
+    /// <see cref="uint" />, <see cref="long" />, <see cref="ulong" />, <c>nint</c>, <c>nuint</c>, <see cref="Int128" />
+    /// and <see cref="UInt128" />. Any other backing type, including a custom type that implements
+    /// <see cref="IMinMaxValue{TSelf}" />, is treated as unbounded and has no minimum value.
     /// </remarks>
     public static Fraction<T> MinValue =>
         s_isBounded
@@ -195,11 +199,15 @@ public readonly partial struct Fraction<T>
     /// </summary>
     /// <value>The rational value <c>T.MaxValue/1</c>.</value>
     /// <exception cref="NotSupportedException">
-    /// Thrown if <typeparamref name="T" /> is an unbounded integer type, such as <see cref="BigInteger" />.
+    /// Thrown if <typeparamref name="T" /> is not one of the built-in fixed-width integer types, for example
+    /// <see cref="BigInteger" />.
     /// </exception>
     /// <remarks>
-    /// A bound exists only when <typeparamref name="T" /> implements <see cref="IMinMaxValue{TSelf}" />. Unbounded
-    /// backing types model the full set of rationals and therefore have no maximum value.
+    /// A bound exists only for the built-in fixed-width integer backing types: <see cref="byte" />,
+    /// <see cref="sbyte" />, <see cref="short" />, <see cref="ushort" />, <see cref="char" />, <see cref="int" />,
+    /// <see cref="uint" />, <see cref="long" />, <see cref="ulong" />, <c>nint</c>, <c>nuint</c>, <see cref="Int128" />
+    /// and <see cref="UInt128" />. Any other backing type, including a custom type that implements
+    /// <see cref="IMinMaxValue{TSelf}" />, is treated as unbounded and has no maximum value.
     /// </remarks>
     public static Fraction<T> MaxValue =>
         s_isBounded

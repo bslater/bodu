@@ -31,11 +31,11 @@ Fraction<int>.Create(6, 2).ToString();    // "3"     - canonical denominator is 
 Fraction<int>.Zero.ToString();            // "0"
 ```
 
-The general form is the round-trip wire shape: `JsonSerializer.Serialize` (see below) and `<xref:Bodu.Numerics.Fraction`1>.Parse` both treat `"n/d"` as the lossless text form.
+The general form is the lossless text form: `Fraction<T>.Parse` (<xref:Bodu.Numerics.Fraction`1>) and the `Compact` JSON policy (see below) treat `"n/d"` as the round-trip shape.
 
 ## Mixed-number form
 
-`ToString("M")` separates the whole part from the proper remainder with a single space. The whole part carries the sign; the fractional part is always written with a non-negative numerator. Whole-number and proper-fraction values short-circuit to their bare forms:
+`ToString("M")` separates the whole part from the proper remainder with a single space. The whole part carries the sign, and the fractional part is written with a non-negative numerator when a whole part is present; a negative proper fraction has no whole part and is written `-3/4`. Whole-number and proper-fraction values short-circuit to their bare forms:
 
 <!-- compile -->
 ```csharp
@@ -93,7 +93,7 @@ Fraction<int>.Create(1, 3).ToString("P");    // "100/3%"
 Fraction<int>.Zero.ToString("P");            // "0%"
 ```
 
-The convenience method <xref:Bodu.Numerics.Fraction`1>.`ToPercentString(provider)` is an alias for `ToString("P", provider)`. The parser accepts the same form on input - a trailing `%` divides the parsed denominator by 100 - so `"75%"` round-trips to `3/4` and `"100/3%"` to `1/3`.
+The convenience method <xref:Bodu.Numerics.Fraction`1>.`ToPercentString(provider)` is an alias for `ToString("P", provider)`. The parser accepts the same form on input - a trailing `%` divides the value by 100 (it multiplies the parsed denominator by 100) - so `"75%"` round-trips to `3/4` and `"100/3%"` to `1/3`.
 
 ## Parsing
 
@@ -108,7 +108,7 @@ The convenience method <xref:Bodu.Numerics.Fraction`1>.`ToPercentString(provider
 | Whole + glyph | `"2⅜"`, `"-1¾"` | `19/8`, `-7/4` |
 | Percentage | `"75%"`, `"100/3%"` | `3/4`, `1/3` |
 
-Parsing is lenient about whitespace - leading and trailing whitespace is trimmed, and the whole / fractional parts of a mixed number are trimmed individually. A `+` or `-` sign at the start applies to the entire result; for mixed numbers the sign therefore rides on the whole + fraction sum, not the whole part alone. The trailing `%` divides the parsed denominator by 100 in lowest terms.
+Parsing is lenient about whitespace - leading and trailing whitespace is trimmed, and the whole / fractional parts of a mixed number are trimmed individually. A `+` or `-` sign at the start applies to the entire result; for mixed numbers the sign therefore rides on the whole + fraction sum, not the whole part alone. The trailing `%` divides the value by 100: the parsed denominator is multiplied by 100 and the result reduced to lowest terms.
 
 <!-- compile -->
 ```csharp
@@ -127,7 +127,7 @@ The numeric components are read with `NumberStyles.None`, so scientific notation
 
 ## Culture handling
 
-`Fraction<T>` text is digit-slash-digit by construction, so most cultures behave identically - there is no decimal separator, group separator, or percent sign placement to vary. The `IFormatProvider` argument is forwarded to `BigInteger.ToString(provider)` and `BigInteger.TryParse(text, NumberStyles.None, provider, ...)` for the numeric components, so culture-specific digit shapes are respected (e.g. Arabic-Indic digits when the culture's `NumberFormatInfo` calls for them), but the structural characters - `/`, the mixed-number space, glyph codepoints, and the trailing `%` - are invariant.
+`Fraction<T>` text is digit-slash-digit by construction, so most cultures behave identically - there is no decimal separator, group separator, or percent sign placement to vary. The `IFormatProvider` argument is forwarded to `BigInteger.ToString(provider)` and `BigInteger.TryParse(text, NumberStyles.None, provider, ...)` for the numeric components, but .NET writes and reads those digits as ASCII `0`-`9` in every culture (a culture's native digits are informational only), so Arabic-Indic or other native digits are neither emitted nor accepted; formatting does take the negative sign of a negative value from the provider. The structural characters - `/`, the mixed-number space, glyph codepoints, and the trailing `%` - are invariant.
 
 The JSON converter passes <xref:System.Globalization.CultureInfo>.`InvariantCulture` to both `ToString` and `Parse` so the wire form remains stable regardless of the ambient culture. For application-level formatting where you want the structural form to be the same on every machine, prefer passing `CultureInfo.InvariantCulture` explicitly:
 

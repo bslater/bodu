@@ -48,7 +48,7 @@ Each converter and factory has a parameterless constructor (defaulting to `Stric
 | <xref:Bodu.Numerics.Serialization.Json.IntervalJsonConverterFactory> → <xref:Bodu.Numerics.Serialization.Json.IntervalJsonConverter`1> | <xref:Bodu.Numerics.Interval`1> | `{ "lower", "upper", "lowerInclusive", "upperInclusive" }`; `{ "empty": true }`; `lowerUnbounded` / `upperUnbounded` markers for infinite sides | ISO 31-11 bracket string `"[1, 5)"`, `"∅"` when empty |
 | <xref:Bodu.Numerics.Serialization.Json.DiscreteIntervalJsonConverterFactory> → <xref:Bodu.Numerics.Serialization.Json.DiscreteIntervalJsonConverter`1> | <xref:Bodu.Numerics.DiscreteInterval`1> | the `Interval<T>` shape over the canonical closed integer bounds | `"[1, 5]"` |
 | <xref:Bodu.Numerics.Serialization.Json.IntervalSetJsonConverterFactory> → <xref:Bodu.Numerics.Serialization.Json.IntervalSetJsonConverter`1> | <xref:Bodu.Numerics.IntervalSet`1> | a JSON **array** of `Interval<T>` pieces (`[]` when empty) | an array of bracket strings |
-| <xref:Bodu.Numerics.Serialization.Json.BigDecimalJsonConverter> | <xref:Bodu.Numerics.BigDecimal> | `{ "unscaledValue": 12340, "scale": 3 }` | decimal string `"12.340"` |
+| <xref:Bodu.Numerics.Serialization.Json.BigDecimalJsonConverter> | <xref:Bodu.Numerics.BigDecimal> | `{ "unscaledValue": 1234, "scale": 2 }` | decimal string `"12.34"` |
 | <xref:Bodu.Numerics.Serialization.Json.ComplexJsonConverterFactory> → <xref:Bodu.Numerics.Serialization.Json.ComplexJsonConverter`1> | <xref:Bodu.Numerics.Complex`1> | `{ "real": 3, "imaginary": 4 }` - non-finite components as `"NaN"` / `"Infinity"` / `"-Infinity"` | `"<3; 4>"` |
 
 ## Choosing a policy

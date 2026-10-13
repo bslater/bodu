@@ -16,10 +16,10 @@ public readonly partial struct Interval<T>
     /// <value>An <see cref="Interval{T}" /> whose <see cref="IsEmpty" /> property is <see langword="true" />.</value>
     /// <remarks>
     /// <para>
-    /// Use <see cref="Empty" /> as the neutral element of the interval set algebra: <see cref="Intersect" /> returns it
-    /// when two operands share no values, and <see cref="TryUnion" /> treats it as the identity. The
-    /// default-constructed <c>Interval&lt;T&gt;</c> compares equal to <see cref="Empty" />, so a field or local that
-    /// was never assigned reads as the empty interval rather than as a malformed value.
+    /// <see cref="Empty" /> is the identity for union and absorbing for intersection: <see cref="TryUnion" /> treats it
+    /// as the identity, and <see cref="Intersect" /> returns it when either operand is empty or the two share no
+    /// values. The default-constructed <c>Interval&lt;T&gt;</c> compares equal to <see cref="Empty" />, so a field or
+    /// local that was never assigned reads as the empty interval rather than as a malformed value.
     /// </para>
     /// </remarks>
     /// <example>
@@ -46,6 +46,7 @@ public readonly partial struct Interval<T>
     /// <param name="lower">The lower endpoint.</param>
     /// <param name="upper">The upper endpoint.</param>
     /// <returns>A closed-closed interval over the supplied bounds.</returns>
+    /// <exception cref="ArgumentException"><paramref name="lower" /> or <paramref name="upper" /> is NaN.</exception>
     /// <remarks>
     /// <para>
     /// The closed-closed shape - also called <i>inclusive</i> - is the natural choice for ranges where both boundary
@@ -81,6 +82,7 @@ public readonly partial struct Interval<T>
     /// <param name="lower">The lower endpoint.</param>
     /// <param name="upper">The upper endpoint.</param>
     /// <returns>An open-open interval over the supplied bounds.</returns>
+    /// <exception cref="ArgumentException"><paramref name="lower" /> or <paramref name="upper" /> is NaN.</exception>
     /// <remarks>
     /// <para>
     /// The open-open shape - also called <i>exclusive</i> - is the natural choice for strict inequalities such as
@@ -113,6 +115,7 @@ public readonly partial struct Interval<T>
     /// <param name="lower">The lower endpoint (included).</param>
     /// <param name="upper">The upper endpoint (excluded).</param>
     /// <returns>A closed-open interval over the supplied bounds.</returns>
+    /// <exception cref="ArgumentException"><paramref name="lower" /> or <paramref name="upper" /> is NaN.</exception>
     /// <remarks>
     /// <para>
     /// The closed-open shape is the most common in programming contexts: a range starting at an inclusive lower bound
@@ -147,6 +150,7 @@ public readonly partial struct Interval<T>
     /// <param name="lower">The lower endpoint (excluded).</param>
     /// <param name="upper">The upper endpoint (included).</param>
     /// <returns>An open-closed interval over the supplied bounds.</returns>
+    /// <exception cref="ArgumentException"><paramref name="lower" /> or <paramref name="upper" /> is NaN.</exception>
     /// <remarks>
     /// <para>
     /// The open-closed shape is the mirror image of <see cref="ClosedOpen(T, T)" /> and the natural choice for ranges
@@ -176,6 +180,7 @@ public readonly partial struct Interval<T>
     /// <returns>
     /// A closed-closed interval whose lower and upper endpoints both equal <paramref name="value" />.
     /// </returns>
+    /// <exception cref="ArgumentException"><paramref name="value" /> is NaN.</exception>
     /// <remarks>
     /// <para>
     /// A degenerate interval has algebraic <see cref="Length" /> of zero but is not empty: it contains exactly the one
@@ -224,6 +229,7 @@ public readonly partial struct Interval<T>
     /// </summary>
     /// <param name="lower">The inclusive lower endpoint.</param>
     /// <returns>A closed-below, upper-unbounded interval.</returns>
+    /// <exception cref="ArgumentException"><paramref name="lower" /> is NaN.</exception>
     /// <example>
     /// <code language="csharp">
     ///<![CDATA[
@@ -233,8 +239,12 @@ public readonly partial struct Interval<T>
     ///]]>
     /// </code>
     /// </example>
-    public static Interval<T> AtLeast(T lower) =>
-        new(lower, T.Zero, (byte)(LowerInclusiveFlag | UpperUnboundedFlag));
+    public static Interval<T> AtLeast(T lower)
+    {
+        ThrowIfNaNEndpoint(lower);
+
+        return new(lower, T.Zero, (byte)(LowerInclusiveFlag | UpperUnboundedFlag));
+    }
 
     /// <summary>
     /// Creates the lower-bounded interval <c>(lower, +&#x221E;)</c> - every value strictly greater than
@@ -242,6 +252,7 @@ public readonly partial struct Interval<T>
     /// </summary>
     /// <param name="lower">The exclusive lower endpoint.</param>
     /// <returns>An open-below, upper-unbounded interval.</returns>
+    /// <exception cref="ArgumentException"><paramref name="lower" /> is NaN.</exception>
     /// <example>
     /// <code language="csharp">
     ///<![CDATA[
@@ -251,8 +262,12 @@ public readonly partial struct Interval<T>
     ///]]>
     /// </code>
     /// </example>
-    public static Interval<T> GreaterThan(T lower) =>
-        new(lower, T.Zero, UpperUnboundedFlag);
+    public static Interval<T> GreaterThan(T lower)
+    {
+        ThrowIfNaNEndpoint(lower);
+
+        return new(lower, T.Zero, UpperUnboundedFlag);
+    }
 
     /// <summary>
     /// Creates the upper-bounded interval <c>(-&#x221E;, upper]</c> - every value less than or equal to
@@ -260,6 +275,7 @@ public readonly partial struct Interval<T>
     /// </summary>
     /// <param name="upper">The inclusive upper endpoint.</param>
     /// <returns>A lower-unbounded, closed-above interval.</returns>
+    /// <exception cref="ArgumentException"><paramref name="upper" /> is NaN.</exception>
     /// <example>
     /// <code language="csharp">
     ///<![CDATA[
@@ -269,8 +285,12 @@ public readonly partial struct Interval<T>
     ///]]>
     /// </code>
     /// </example>
-    public static Interval<T> AtMost(T upper) =>
-        new(T.Zero, upper, (byte)(LowerUnboundedFlag | UpperInclusiveFlag));
+    public static Interval<T> AtMost(T upper)
+    {
+        ThrowIfNaNEndpoint(upper);
+
+        return new(T.Zero, upper, (byte)(LowerUnboundedFlag | UpperInclusiveFlag));
+    }
 
     /// <summary>
     /// Creates the upper-bounded interval <c>(-&#x221E;, upper)</c> - every value strictly less than
@@ -278,6 +298,7 @@ public readonly partial struct Interval<T>
     /// </summary>
     /// <param name="upper">The exclusive upper endpoint.</param>
     /// <returns>A lower-unbounded, open-above interval.</returns>
+    /// <exception cref="ArgumentException"><paramref name="upper" /> is NaN.</exception>
     /// <example>
     /// <code language="csharp">
     ///<![CDATA[
@@ -287,6 +308,10 @@ public readonly partial struct Interval<T>
     ///]]>
     /// </code>
     /// </example>
-    public static Interval<T> LessThan(T upper) =>
-        new(T.Zero, upper, LowerUnboundedFlag);
+    public static Interval<T> LessThan(T upper)
+    {
+        ThrowIfNaNEndpoint(upper);
+
+        return new(T.Zero, upper, LowerUnboundedFlag);
+    }
 }

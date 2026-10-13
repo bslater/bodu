@@ -59,7 +59,7 @@ Text carrying both parts is rejected - `TryParse` reports *The COUNT and UNTIL r
 
 `WKST` names the day the week starts on and governs two calculations: which week a date belongs to for `INTERVAL` arithmetic on a `WEEKLY` rule, and ISO-style week numbering for `BYWEEKNO`. RFC 5545 defaults it to Monday, and so does the library - `RecurrenceRule.WeekStart` is `DayOfWeek.Monday` when the part is absent, and a `WKST=MO` part is omitted from the canonical text.
 
-The effect is visible only on rules with `INTERVAL > 1`: the classic RFC example `FREQ=WEEKLY;INTERVAL=2;COUNT=4;BYDAY=TU,SU;WKST=MO` and the same rule with `WKST=SU` group the Tuesdays and Sundays into different fortnights and therefore produce different dates. Set it with `WithWeekStart(DayOfWeek)` on the builder.
+On a `WEEKLY` rule the effect is visible only with `INTERVAL > 1`, while on a `YEARLY` rule with `BYWEEKNO` it changes the selected dates at any interval: the classic RFC example `FREQ=WEEKLY;INTERVAL=2;COUNT=4;BYDAY=TU,SU;WKST=MO` and the same rule with `WKST=SU` group the Tuesdays and Sundays into different fortnights and therefore produce different dates. Set it with `WithWeekStart(DayOfWeek)` on the builder.
 
 ## The `BY*` parts and `BYSETPOS`
 
@@ -93,7 +93,7 @@ A <xref:Bodu.Globalization.Recurrence.CronExpression> matches an instant when ea
 
 **Layout.** `Parse(string)` infers `Standard` or `WithSeconds` from the field count; `Parse(string, CronFormat)` insists on one. A seven-field Quartz expression with a trailing year fails on its field count.
 
-**Canonical text.** `ToString()` renders each field as `*` or an ascending comma-separated numeric list - `0 2 * * MON-FRI` becomes `0 2 * * 1,2,3,4,5` and `@daily` becomes `0 0 * * *` - or as the canonical form of its Quartz token (`FRIL` becomes `5L`), and two expressions that select the same field sets are equal regardless of how they were spelled.
+**Canonical text.** `ToString()` renders each field as `*` or an ascending comma-separated numeric list - `0 2 * * MON-FRI` becomes `0 2 * * 1,2,3,4,5` and `@daily` becomes `0 0 * * *` - or as the canonical form of its Quartz token (`FRIL` becomes `5L`), and two expressions that select the same field sets are equal regardless of how they were spelled. The two day fields are the exception: where the plain rendering would flip the union rule, a day field keeps a spelling that preserves it (`*/2` stays `*/2`), and equality also compares whether the day fields combine by union, so `0 0 */2 * MON` and `0 0 1-31/2 * MON` select the same field sets but are not equal.
 
 ## The 400-year search
 
@@ -113,14 +113,22 @@ An <xref:Bodu.Globalization.Recurrence.AnchoredInterval> is constructed from a `
 | `P1DT2H30M` | 1 day 2 hours 30 minutes |
 | `P2W` | 14 days - the weeks form is used whenever the interval is an exact multiple of seven days |
 
-The `P` designator is mandatory, `T` separates date from time components, components appear in `W` / `D` / `H` / `M` / `S` order without repetition, and `W` cannot be combined with other components. The interval must be a positive whole number of seconds: the grammar carries no sign and no sub-second precision, so a negative, zero, or fractional-second `TimeSpan` is rejected by the constructor and by `TryParse` (the failure message names which rule was broken). Normalization means the canonical text is unique - `PT1440M`, `PT24H`, and `P1D` all render as `P1D` and compare equal.
+The `P` designator is mandatory, `T` separates date from time components, components appear in `W` / `D` / `H` / `M` / `S` order without repetition, and `W` cannot be combined with other components. The interval must be a positive whole number of seconds. A leading `+` is accepted as the positive form, but a negative (`-`) or zero duration is rejected, and so is a `TimeSpan` with sub-second ticks, which the grammar cannot write: the constructor and `TryParse` reject each, and the failure message names which rule was broken. Normalization means the canonical text is unique - `PT1440M`, `PT24H`, and `P1D` all render as `P1D` and compare equal.
 
 ## Offsets and daylight saving
 
-Each form answers over both `DateTime` and `DateTimeOffset`, and the offset model is the same throughout:
+Each form answers over both `DateTime` and `DateTimeOffset`. The `DateTime` overloads behave alike; the `DateTimeOffset` overloads differ by form in how they read their arguments and which offset the answer carries:
 
 - **`DateTime`** overloads preserve the argument's `Kind` (`Utc`, `Local`, or `Unspecified`) in the answer and never interpret it. For an anchored interval, instants are compared by tick value, so the caller is responsible for supplying commensurable arguments (do not mix a UTC anchor with a local `after`).
-- **`DateTimeOffset`** overloads expand on the argument's **wall-clock time** and reattach the argument's **fixed offset** to each answer. A rule anchored at `2026-01-05T09:00-05:00` produces occurrences at 09:00 `-05:00`; a cron query at `+10:00` answers at `+10:00`.
+- **`DateTimeOffset`** overloads work in a **fixed offset**, chosen per form:
+
+| Form | How the query is read | Offset of the answer |
+|---|---|---|
+| `RecurrenceRule` | Occurrences are expanded on the start's wall-clock time; `after`, `before` and the window bounds are compared with them as absolute instants. | The start's. |
+| `RecurrenceSet`, `CronExpression` | The set's start and dates, or the cron fields, are wall-clock values read in the query's offset. | The query's (`after` or `before`). |
+| `AnchoredInterval` | The anchor and the query are compared as absolute instants. | The query's for `GetNextOccurrence` / `GetPreviousOccurrence`; the anchor's for `GetOccurrences`. |
+
+A rule started at `2026-01-05T09:00-05:00` produces occurrences at 09:00 `-05:00` whatever offset the query carries; a cron query at `+10:00` answers at `+10:00`. The same instant queried in two offsets therefore gets the same absolute answer from a rule or an anchored interval, but a set or a cron expression answers at the same wall-clock time in each offset, which is a different instant.
 
 No form carries a time zone, so a daylight-saving transition is not modeled: a `-05:00` series stays at `-05:00` when the zone moves to `-04:00`. A host that wants a *local-time* schedule across transitions re-derives the offset from its `TimeZoneInfo` on each evaluation and passes that offset in; the library stays pure and the policy stays in the host. The [guide](../../guides/recurrence/index.md#offsets-purity-and-daylight-saving) shows the pattern.
 

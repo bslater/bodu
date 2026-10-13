@@ -29,8 +29,10 @@ namespace Bodu.Numerics.Serialization.Json;
 /// single-property object <c>{ "empty": true }</c>. A bounded side requires its endpoint value and inclusion flag; an
 /// unbounded side emits the marker <c>"lowerUnbounded": true</c> / <c>"upperUnbounded": true</c> in place of both (for
 /// example <c>{ "lower": 1, "upperUnbounded": true, "lowerInclusive": true }</c> for <c>[1, +&#x221E;)</c>, or
-/// <c>{ "lowerUnbounded": true, "upperUnbounded": true }</c> for the whole line). Duplicate properties are rejected,
-/// and an <c>"empty": true</c> marker rejects any sibling endpoint or unbounded property.
+/// <c>{ "lowerUnbounded": true, "upperUnbounded": true }</c> for the whole line). An endpoint value is a JSON number,
+/// except that an infinite endpoint of a bounded side is written as the string <c>"Infinity"</c> or <c>"-Infinity"</c>;
+/// an endpoint may be read from either a number or a numeric string. Duplicate properties are rejected, and an
+/// <c>"empty": true</c> marker rejects any sibling endpoint or unbounded property.
 /// </description>
 /// </item>
 /// <item>
@@ -47,7 +49,8 @@ namespace Bodu.Numerics.Serialization.Json;
 /// <see cref="NumericsJsonPolicy.Compact" /> - string form in ISO 31-11 bracket notation (for example <c>"[1, 5)"</c>)
 /// or the empty-set glyph <c>"∅"</c>. Reads delegate to
 /// <see cref="Interval{T}.TryParse(string?, IFormatProvider?, out Interval{T})" /> and writes call
-/// <see cref="Interval{T}.ToString(string?, IFormatProvider?)" /> with the invariant culture.
+/// <see cref="Interval{T}.ToString(string?, IFormatProvider?)" /> with the invariant culture, so an infinite endpoint
+/// on an open side reads back as an unbounded side, as the text form does.
 /// </description>
 /// </item>
 /// </list>
@@ -416,13 +419,19 @@ public sealed class IntervalJsonConverter<T>
 
     /// <summary>
     /// Writes a <typeparamref name="T" />-typed endpoint value as a raw JSON number using the invariant culture, so
-    /// wide-magnitude or high-precision values are not truncated by the writer's primitive overloads.
+    /// wide-magnitude or high-precision values are not truncated by the writer's primitive overloads. An infinite
+    /// value, which JSON has no number for, is written as a string (<c>"Infinity"</c> or <c>"-Infinity"</c>), as
+    /// <c>System.Text.Json</c> writes its named floating-point literals; the readers accept it back.
     /// </summary>
     /// <param name="writer">The writer that receives the value.</param>
     /// <param name="value">The endpoint value to write.</param>
     private static void WriteEndpointValue(Utf8JsonWriter writer, T value)
     {
         string text = ((IFormattable)value).ToString(null, CultureInfo.InvariantCulture);
-        writer.WriteRawValue(text);
+
+        if (T.IsFinite(value))
+            writer.WriteRawValue(text);
+        else
+            writer.WriteStringValue(text);
     }
 }

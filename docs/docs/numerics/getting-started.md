@@ -63,7 +63,7 @@ When you want the *intended* rational rather than the bit-exact one, reach for `
 
 ```csharp
 Fraction<int> piApprox = Fraction<int>.Approximate(Math.PI, maxDenominator: 1000);
-// 355/113 - the Zǔ Chōngzhī approximation, accurate to ~6×10⁻⁷
+// 355/113 - the Zǔ Chōngzhī approximation, error ≈ 2.7×10⁻⁷
 ```
 
 `Approximate` uses convergents of the continued-fraction expansion to find the best rational below a denominator bound.
@@ -205,7 +205,7 @@ Interval<int> parsed = Interval<int>.Parse("(0, 100]", CultureInfo.InvariantCult
 Interval<int>.TryParse("∅", CultureInfo.InvariantCulture, out var none);  // none = Empty
 ```
 
-`Interval<T>` implements `ISpanFormattable` and `IUtf8SpanFormattable`, plus `ISpanParsable<Interval<T>>` and `IUtf8SpanParsable<Interval<T>>`, so the same text round-trips through character and UTF-8 byte buffers without allocation in both directions.
+`Interval<T>` implements `ISpanFormattable` and `IUtf8SpanFormattable`, plus `ISpanParsable<Interval<T>>` and `IUtf8SpanParsable<Interval<T>>`, so the same text round-trips through character and UTF-8 byte buffers (formatting, and parsing from UTF-8, currently go through an intermediate `string`). An infinite endpoint on an open side, as in `Interval<double>.Open(0, double.PositiveInfinity)`, reads back as an unbounded side; on a closed side it reads back unchanged.
 
 #### JSON
 

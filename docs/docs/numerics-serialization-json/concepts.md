@@ -46,17 +46,17 @@ Both components are written as **raw** JSON numbers - not through the writer's `
 "[1, 5)"   "[1, +∞)"   "∅"
 ```
 
-A bounded side carries its endpoint and inclusivity flag; an unbounded side is a `lowerUnbounded` / `upperUnbounded` marker with no endpoint; the empty interval is the single-property object `{ "empty": true }` and must stand alone. Under `Strict` a bounded side's inclusivity flag is required; `Lenient` defaults a missing flag to closed and accepts `"min"` / `"max"` as endpoint aliases. The compact form is the same ISO 31-11 bracket notation `Interval<T>.ToString()` / `TryParse` use, with `"∅"` for empty (non-ASCII characters are escaped per the options' encoder).
+A bounded side carries its endpoint and inclusivity flag, the endpoint a JSON number or, for an infinite floating-point endpoint, the string `"Infinity"` or `"-Infinity"`; an unbounded side is a `lowerUnbounded` / `upperUnbounded` marker with no endpoint; the empty interval is the single-property object `{ "empty": true }` and must stand alone. Under `Strict` a bounded side's inclusivity flag is required; `Lenient` defaults a missing flag to closed and accepts `"min"` / `"max"` as endpoint aliases. The compact form is the same ISO 31-11 bracket notation `Interval<T>.ToString()` / `TryParse` use, with `"∅"` for empty (non-ASCII characters are escaped per the options' encoder), so an infinite endpoint on an open side, as in `"(0, Infinity)"`, reads back as an unbounded side.
 
 ## Discrete interval and interval set
 
-<xref:Bodu.Numerics.DiscreteInterval`1> serializes **through the `Interval<T>` shape** over its canonical closed integer bounds - the integer domain has no open sides to express - so its compact form is always `"[1, 5]"`. <xref:Bodu.Numerics.IntervalSet`1> serializes as a JSON **array** of its `Interval<T>` pieces (`[]` when empty), each piece in the selected policy's shape; a non-array token is rejected.
+<xref:Bodu.Numerics.DiscreteInterval`1> serializes **through the `Interval<T>` shape** over its canonical closed integer bounds - the integer domain has no open sides to express - so its finite sides are always closed (`"[1, 5]"`; `DiscreteInterval<int>.Open(1, 5)` is written `"[2, 4]"`), and an unbounded side is written as in `Interval<T>` (`"[1, +∞)"`). <xref:Bodu.Numerics.IntervalSet`1> serializes as a JSON **array** of its `Interval<T>` pieces (`[]` when empty), each piece in the selected policy's shape; a non-array token is rejected.
 
 ## `BigDecimal` shape
 
 ```json
-{ "unscaledValue": 12340, "scale": 3 }
-"12.340"
+{ "unscaledValue": 1234, "scale": 2 }
+"12.34"
 ```
 
 `Strict` writes the exact pair - an arbitrary-magnitude unscaled mantissa as a raw JSON number plus the decimal scale - and `Compact` writes the plain decimal string. `Lenient` reads either. The string form is used for `Compact`, rather than a bare JSON number, because many consumers narrow long numbers to IEEE-754 `double`.

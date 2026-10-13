@@ -16,9 +16,14 @@ precision a value requires. It stores an arbitrary-magnitude
 value = unscaledValue × 10^-scale
 ```
 
-For example `12.340` is `(unscaledValue: 12340, scale: 3)`. There is
-no `MinValue` or `MaxValue`: like `BigInteger`, the type is unbounded
-and arithmetic never overflows.
+Every value is held in one canonical form, with trailing fractional
+zeros removed: `12.340` is `(unscaledValue: 1234, scale: 2)`, the same
+value as `12.34`. There is no `MinValue` or `MaxValue`: the unscaled
+value is unbounded, like `BigInteger`. The scale is an `int`, so an
+operation whose scale would leave that range (a `Multiply` or `Pow` of
+values with extreme scales) throws `OverflowException`, and the
+`(BigInteger, int)` constructor rejects a scale below -1,000,000 with
+`ArgumentOutOfRangeException`.
 
 `BigDecimal` implements the full `INumber<BigDecimal>` /
 `ISignedNumber<BigDecimal>` generic-math surface, so it composes with
@@ -30,11 +35,13 @@ and arithmetic never overflows.
 |---|---|
 | Exact fractions such as `1/3`, continued fractions, rational approximation | `Fraction<T>` |
 | Fixed-scale money within the `decimal` range (≤ 28 digits) | `System.Decimal` |
-| Decimal values that exceed `decimal`'s precision or exponent range, or that must preserve trailing-zero *scale* | `BigDecimal` |
+| Decimal values that exceed `decimal`'s precision or exponent range | `BigDecimal` |
 
-`BigDecimal` preserves scale: `1.0`, `1.00`, and `1` are **equal in
-value** (they compare and hash equal) but retain their own scale for
-formatting until you normalize or rescale.
+`BigDecimal` holds one canonical form: trailing zeros are removed, so
+`1.0`, `1.00`, and `1` share one representation (scale 0) and compare
+and hash equal. It cannot record a value's written scale; to show a
+fixed number of places, format with `F<n>` (`ToString("F2")`), and use
+`decimal` if the written scale must survive.
 
 ## Creating values
 
@@ -43,7 +50,7 @@ using System.Numerics;
 using Bodu.Numerics;
 
 // From an unscaled value and scale directly.
-BigDecimal a = new BigDecimal(new BigInteger(12340), 3);  // 12.340
+BigDecimal a = new BigDecimal(new BigInteger(12340), 3);  // 12.34 - canonical (1234, scale 2)
 
 // Implicit lifts from the exact integer and decimal types.
 BigDecimal fromInt     = 42;
@@ -67,18 +74,18 @@ to a written decimal is rarely that decimal. Convert deliberately:
 
 <!-- compile -->
 ```csharp
-BigDecimal exactBinary = (BigDecimal)0.1;              // the exact IEEE-754 value of 0.1d
+BigDecimal fromDouble  = (BigDecimal)0.1;              // 0.1 - the shortest round-trip text of 0.1d, not its binary expansion
 BigDecimal shortest    = BigDecimal.FromDouble(0.1);   // same value; explicit intent
 ```
 
 ## Inspecting a value
 
 ```csharp
-BigDecimal v = BigDecimal.Parse("12.340", CultureInfo.InvariantCulture);
+BigDecimal v = BigDecimal.Parse("12.340", CultureInfo.InvariantCulture);   // 12.34 - the trailing zero is dropped
 
-BigInteger unscaled = v.UnscaledValue;   // 12340
-int scale           = v.Scale;           // 3
-int precision       = v.Precision;       // 5  - total significant digits
+BigInteger unscaled = v.UnscaledValue;   // 1234
+int scale           = v.Scale;           // 2
+int precision       = v.Precision;       // 4  - total significant digits
 int sign            = v.Sign;            // 1  (-1, 0, or 1)
 
 bool isZero     = v.IsZero;
@@ -145,8 +152,9 @@ BigDecimal truncate = BigDecimal.Truncate(v);    // 2  (toward zero)
 
 ## Comparison and equality
 
-Equality and ordering are by **numeric value**, so differing scales do
-not matter:
+Equality and ordering are by **numeric value**, and every value is
+canonical, so text written with different trailing zeros parses to
+equal values:
 
 ```csharp
 BigDecimal a = BigDecimal.Parse("1.0", CultureInfo.InvariantCulture);
@@ -173,7 +181,7 @@ BigDecimal v = BigDecimal.Parse("1234.5", CultureInfo.InvariantCulture);
 string general = v.ToString();                               // "1234.5"
 string fixed2  = v.ToString("F2", CultureInfo.InvariantCulture); // "1234.50"
 
-// Span and UTF-8 surfaces avoid intermediate string allocation.
+// The span and UTF-8 surfaces currently format through an intermediate string.
 Span<char> buffer = stackalloc char[32];
 v.TryFormat(buffer, out int written, "G", CultureInfo.InvariantCulture);
 ```
@@ -233,10 +241,10 @@ using Bodu.Numerics.Serialization.Json;
 var options = new JsonSerializerOptions()
     .AddNumericsJsonConverters(NumericsJsonPolicy.Strict);
 
-// Strict - canonical object form:
-//   { "unscaledValue": 12340, "scale": 3 }
+// Strict - canonical object form (the trailing zero is dropped):
+//   {"unscaledValue":1234,"scale":2}
 // Compact - the plain decimal string:
-//   "12.340"
+//   "12.34"
 string json = JsonSerializer.Serialize(
     BigDecimal.Parse("12.340", CultureInfo.InvariantCulture), options);
 ```

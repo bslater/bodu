@@ -168,4 +168,7 @@
   <data name="Overflow_SampleOutsideDoubleRange" xml:space="preserve">
     <value>The sample is outside the range representable by a Double.</value>
   </data>
+  <data name="Overflow_FractionOutsideDecimalRange" xml:space="preserve">
+    <value>The value is outside the range representable by a Decimal.</value>
+  </data>
 </root>

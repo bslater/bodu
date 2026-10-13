@@ -10,6 +10,7 @@ Numeric value primitives for .NET. The public model is exact rational numbers pl
 - **`IntervalSet<T>`** - a normalized set of disconnected `Interval<T>` pieces, with N-ary union / intersection / difference / complement.
 - **`IntervalPair<T>`** / **`DiscreteIntervalPair<T>`** - allocation-conscious results of a binary difference / symmetric-difference (zero, one, or two disjoint pieces), each convertible to an `IntervalSet<T>`.
 - **`BigDecimal`** - an immutable arbitrary-precision decimal (a `BigInteger` unscaled value plus an `int` scale), for exact decimal values beyond `System.Decimal`'s precision or exponent range.
+- **`Complex<T>`** - an immutable complex number over any `IFloatingPointIeee754<T>` component type (`float`, `double`, `Half`), the generic counterpart of the `double`-only `System.Numerics.Complex`.
 - **`RunningStatistics<T>`** / **`RunningQuantile<T>`** - single-pass, constant-space accumulators over a sample stream: Welford count/min/max/mean/variance with a parallel `Combine` merge, and a P² streaming quantile estimator.
 - **`MovingSum<T>`** / **`MovingMinMax<T>`** - rolling-window companions that report the sum/mean and min/max of the most recent N samples in amortized O(1).
 
@@ -41,11 +42,11 @@ decimal asDecimal = (decimal)sum;            // 0.5m
 Highlights:
 
 - Arithmetic and comparison operators, named methods (`Add`, `Negate`, `Abs`, `Reciprocal`, `Pow`, `Remainder`), and `GreatestCommonDivisor` / `LeastCommonMultiple`.
-- Exact conversions to/from `decimal` and `double` (`FromDecimal` / `FromDouble`), plus `As<TOther>()` to retype the backing component.
+- Exact conversions from `decimal` and `double` (`FromDecimal` / `FromDouble`) and nearest-value conversions to them (`ToDecimal` / `ToDouble`), plus `As<TOther>()` to retype the backing component.
 - Continued-fraction expansion (`ToContinuedFraction` / `FromContinuedFraction`) and bounded best-rational approximation (`LimitDenominator`).
 - Parsing of integer, ratio, mixed-number, Unicode vulgar-fraction, and percent forms across `string`, `ReadOnlySpan<char>`, and UTF-8 (`IParsable`, `ISpanParsable`, `IUtf8SpanParsable`); formatting with general, mixed (`M`), Unicode (`U`), and percent (`P`) specifiers.
 - The full generic-math surface - `INumber<Fraction<T>>`, `INumberBase<Fraction<T>>`, `ISignedNumber<Fraction<T>>` - so `Fraction<T>` composes with `INumber<T>`-constrained code.
-- XML serialization (`IXmlSerializable`) and `System.Text.Json` support.
+- `ToXml()` / `FromXml(string)` helpers; `System.Text.Json` converters ship in the companion `Bodu.Numerics.Serialization.Json` package.
 
 ## `Interval<T>`
 
@@ -82,7 +83,7 @@ DiscreteInterval<int>.Open(1, 2).IsEmpty;  // True  - no integer lies strictly b
 
 ## `BigDecimal`
 
-`BigDecimal` is an unbounded decimal: a `BigInteger` unscaled value paired with a non-negative `int` scale, so the value is `unscaledValue × 10^-scale`. It grows to whatever precision a value needs - there is no `MinValue`/`MaxValue` and arithmetic never overflows. Add, subtract, and multiply are exact; division computes to a default 50-digit working precision (half-to-even) unless you pass an explicit scale and rounding mode.
+`BigDecimal` is an unbounded decimal: a `BigInteger` unscaled value paired with a non-negative `int` scale, so the value is `unscaledValue × 10^-scale`. It grows to whatever precision a value needs - there is no `MinValue`/`MaxValue`, and only an operation whose `int` scale would overflow throws (`OverflowException`). Add, subtract, and multiply are exact; division computes to a default 50-digit working precision (half-to-even) unless you pass an explicit scale and rounding mode.
 
 ```csharp
 using Bodu.Numerics;
@@ -96,7 +97,7 @@ BigDecimal big = BigDecimal.Parse("123456789012345678901234567890.123456789",
 Highlights:
 
 - Exact `Add` / `Subtract` / `Multiply` / `Negate` / `Abs` / `Pow`; `Divide` with a default precision or an explicit scale and `MidpointRounding`; `Remainder`.
-- Value-based equality and ordering (`1.0` equals `1.00`), scale-preserving formatting until you `Round` / `Floor` / `Ceiling` / `Truncate`.
+- One canonical form with trailing zeros removed, so `1.0` and `1.00` are the same value and compare and hash equal; format with `F<n>` to show a fixed number of places.
 - Implicit lifts from `int`, `long`, `BigInteger`, and `decimal`; explicit conversions to/from `double` and to `BigInteger` / `decimal`.
 - Parsing of plain and scientific decimal text across `string`, `ReadOnlySpan<char>`, and UTF-8; `G` and `F` formatting through `IFormattable` / `ISpanFormattable` / `IUtf8SpanFormattable`.
 - The full generic-math surface - `INumber<BigDecimal>`, `ISignedNumber<BigDecimal>` (`Radix` 10) - so it composes with `INumber<T>`-constrained code.

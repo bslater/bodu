@@ -12,8 +12,8 @@ namespace Bodu.Numerics.Samples.StreamingStatistics.Scenarios;
 
 /// <summary>
 /// Demonstrates <see cref="BigDecimal" />: an arbitrary-precision decimal built from an unscaled
-/// <see cref="BigInteger" /> and a base-10 scale. Arithmetic is exact and preserves scale; division
-/// and rounding are explicit about the scale and midpoint mode they use.
+/// <see cref="BigInteger" /> and a base-10 scale. Arithmetic is exact and every result is held in canonical form,
+/// trailing zeros removed; division and rounding are explicit about the scale and midpoint mode they use.
 /// </summary>
 public static class BigDecimalArithmetic
 {
@@ -36,7 +36,7 @@ public static class BigDecimalArithmetic
                     "scale 3 rather than being trimmed. The same 2.5 rounds to 2 under ToEven and 3 under " +
                     "AwayFromZero - one value, two defensible answers, which is why the mode is explicit.");
 
-        // Parse preserves the written scale: "0.10" keeps two fractional digits.
+        // Parse canonicalizes: "0.10" drops its trailing zero and becomes 0.1, at scale 1.
         var a = BigDecimal.Parse("0.10", CultureInfo.InvariantCulture);
         var b = BigDecimal.Parse("0.20", CultureInfo.InvariantCulture);
 

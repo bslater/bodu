@@ -4,7 +4,9 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Globalization;
 using System.Numerics;
+using System.Text;
 
 namespace Bodu.Numerics;
 
@@ -101,6 +103,68 @@ public partial class FractionTests
 
         Assert.AreEqual(0.75, value.ToDouble());
         Assert.AreEqual(0.75m, value.ToDecimal());
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Fraction{T}.ToDecimal" /> returns the decimal nearest the value when a canonical
+    /// component lies outside the range of <see cref="decimal" /> but the value lies inside it, as computed with
+    /// <see cref="BigInteger" /> arithmetic.
+    /// </summary>
+    /// <param name="numeratorText">The numerator, in invariant integer text.</param>
+    /// <param name="denominatorText">The denominator, in invariant integer text.</param>
+    [TestMethod]
+    [DataRow("1000000000000000000000000000001", "100000000000000000000000000000", DisplayName = "just above ten")]
+    [DataRow("170141183460469231731687303715884105727", "170141183460469231731687303715884105726", DisplayName = "just above one, Int128-sized components")]
+    [DataRow("-314159265358979323846264338327950288419716939937510", "100000000000000000000000000000000000000000000000000", DisplayName = "negative pi to fifty places")]
+    [DataRow("12345678901234567890123456789012345", "1000000000000000000000000000000000000000000000", DisplayName = "small value, wide components")]
+    [DataRow("1", "1000000000000000000000000000000", DisplayName = "below the smallest decimal step")]
+    [DataRow("237684487542793012780631851006", "3", DisplayName = "just above the largest decimal, rounding down to it")]
+    public void ToDecimal_WhenComponentExceedsDecimalButValueFits_ShouldReturnNearestDecimal(string numeratorText, string denominatorText)
+    {
+        var numerator = BigInteger.Parse(numeratorText, CultureInfo.InvariantCulture);
+        var denominator = BigInteger.Parse(denominatorText, CultureInfo.InvariantCulture);
+        var value = new Fraction<BigInteger>(numerator, denominator);
+
+        decimal actual = value.ToDecimal();
+
+        Assert.AreEqual(NearestDecimal(value.Numerator, value.Denominator), actual);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Fraction{T}.ToDecimal" /> converts a fixed-width fraction whose components exceed the
+    /// range of <see cref="decimal" /> when its value lies inside that range.
+    /// </summary>
+    [TestMethod]
+    public void ToDecimal_WhenInt128ComponentsExceedDecimal_ShouldReturnNearestDecimal()
+    {
+        var value = new Fraction<Int128>(Int128.MaxValue, Int128.MaxValue - 1);
+
+        Assert.AreEqual(1m, value.ToDecimal());
+        Assert.IsTrue(value.TryToDecimal(out decimal converted));
+        Assert.AreEqual(1m, converted);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Fraction{T}.ToDecimal" /> throws <see cref="OverflowException" /> when the value itself
+    /// lies outside the range of <see cref="decimal" />.
+    /// </summary>
+    /// <param name="numeratorText">The numerator, in invariant integer text.</param>
+    /// <param name="denominatorText">The denominator, in invariant integer text.</param>
+    [TestMethod]
+    [DataRow("10000000000000000000000000000000000000000", "3", DisplayName = "far above the range")]
+    [DataRow("-10000000000000000000000000000000000000000", "3", DisplayName = "far below the range")]
+    [DataRow("237684487542793012780631851007", "3", DisplayName = "just above the largest decimal, rounding past it")]
+    [DataRow("79228162514264337593543950336", "1", DisplayName = "one above the largest decimal")]
+    public void ToDecimal_WhenValueOutsideDecimalRange_ShouldThrowOverflowException(string numeratorText, string denominatorText)
+    {
+        var value = new Fraction<BigInteger>(
+            BigInteger.Parse(numeratorText, CultureInfo.InvariantCulture),
+            BigInteger.Parse(denominatorText, CultureInfo.InvariantCulture));
+
+        _ = Assert.ThrowsExactly<OverflowException>(() =>
+        {
+            _ = value.ToDecimal();
+        });
     }
 
     /// <summary>
@@ -349,5 +413,34 @@ public partial class FractionTests
 
         Assert.IsTrue(new Fraction<BigInteger>(BigInteger.Pow(10, 400), BigInteger.Pow(10, 400)).TryToDouble(out double one));
         Assert.AreEqual(1.0, one);
+    }
+
+    /// <summary>
+    /// Computes the <see cref="decimal" /> nearest <paramref name="numerator" /> / <paramref name="denominator" /> as an
+    /// oracle: the exact quotient's digits are produced by <see cref="BigInteger" /> long division to sixty places, with
+    /// a sticky final digit for any remainder, and decimal parsing rounds them to the nearest decimal, ties to even.
+    /// </summary>
+    /// <param name="numerator">The signed numerator.</param>
+    /// <param name="denominator">The positive denominator.</param>
+    /// <returns>The nearest <see cref="decimal" />.</returns>
+    private static decimal NearestDecimal(BigInteger numerator, BigInteger denominator)
+    {
+        var text = new StringBuilder();
+        if (numerator.Sign < 0)
+            text.Append('-');
+
+        BigInteger whole = BigInteger.DivRem(BigInteger.Abs(numerator), denominator, out BigInteger remainder);
+        text.Append(whole.ToString(CultureInfo.InvariantCulture)).Append('.');
+
+        for (int place = 0; place < 60; place++)
+        {
+            BigInteger digit = BigInteger.DivRem(remainder * 10, denominator, out remainder);
+            text.Append((char)('0' + (int)digit));
+        }
+
+        if (!remainder.IsZero)
+            text.Append('1');
+
+        return decimal.Parse(text.ToString(), NumberStyles.Number, CultureInfo.InvariantCulture);
     }
 }

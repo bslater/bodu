@@ -24,7 +24,7 @@ Reach for this library when you need rational or decimal arithmetic that does no
 
 **Arbitrary-precision decimals**
 
-- <xref:Bodu.Numerics.BigDecimal> - immutable `BigInteger` unscaled value paired with an `int` scale. Unbounded (no overflow), exact add / subtract / multiply, precision-controlled division, value-based equality across scales, and the full `INumber<BigDecimal>` / `ISignedNumber<BigDecimal>` surface.
+- <xref:Bodu.Numerics.BigDecimal> - immutable `BigInteger` unscaled value paired with an `int` scale, held in one canonical form with trailing zeros removed. Unbounded significand (only an `int` scale overflow throws), exact add / subtract / multiply, precision-controlled division, value-based equality, and the full `INumber<BigDecimal>` / `ISignedNumber<BigDecimal>` surface.
 
 **Complex numbers**
 

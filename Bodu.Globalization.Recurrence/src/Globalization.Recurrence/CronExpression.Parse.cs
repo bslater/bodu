@@ -20,7 +20,9 @@ public sealed partial class CronExpression : IParsable<CronExpression>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="s" /> is <see langword="null" />.
     /// </exception>
-    /// <exception cref="FormatException">Thrown when <paramref name="s" /> is not a valid cron expression.</exception>
+    /// <exception cref="FormatException">
+    /// Thrown when <paramref name="s" /> is not a valid cron expression; the message names the defect.
+    /// </exception>
     public static CronExpression Parse(string s) =>
         Parse(s, null);
 
@@ -33,17 +35,20 @@ public sealed partial class CronExpression : IParsable<CronExpression>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="s" /> is <see langword="null" />.
     /// </exception>
-    /// <exception cref="FormatException">Thrown when <paramref name="s" /> is not a valid cron expression.</exception>
+    /// <exception cref="FormatException">
+    /// Thrown when <paramref name="s" /> is not a valid cron expression; the message names the defect.
+    /// </exception>
     public static CronExpression Parse(string s, IFormatProvider? provider)
     {
         ThrowHelper.ThrowIfNull(s);
 
-        if (TryParseCore(s, null, out CronExpression? result, out _))
+        if (TryParseCore(s, null, out CronExpression? result, out string? failureMessage))
         {
             return result;
         }
 
-        throw new FormatException(string.Format(CultureInfo.CurrentCulture, RecurrenceResourceStrings.Format_Invalid_CronText, s));
+        throw new FormatException(
+            failureMessage ?? string.Format(CultureInfo.CurrentCulture, RecurrenceResourceStrings.Format_Invalid_CronText, s));
     }
 
     /// <summary>
@@ -55,17 +60,20 @@ public sealed partial class CronExpression : IParsable<CronExpression>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="s" /> is <see langword="null" />.
     /// </exception>
-    /// <exception cref="FormatException">Thrown when <paramref name="s" /> does not match the layout.</exception>
+    /// <exception cref="FormatException">
+    /// Thrown when <paramref name="s" /> is not a valid cron expression in the layout; the message names the defect.
+    /// </exception>
     public static CronExpression Parse(string s, CronFormat format)
     {
         ThrowHelper.ThrowIfNull(s);
 
-        if (TryParseCore(s, format, out CronExpression? result, out _))
+        if (TryParseCore(s, format, out CronExpression? result, out string? failureMessage))
         {
             return result;
         }
 
-        throw new FormatException(string.Format(CultureInfo.CurrentCulture, RecurrenceResourceStrings.Format_Invalid_CronText, s));
+        throw new FormatException(
+            failureMessage ?? string.Format(CultureInfo.CurrentCulture, RecurrenceResourceStrings.Format_Invalid_CronText, s));
     }
 
     /// <summary>

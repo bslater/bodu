@@ -350,7 +350,7 @@ set.Count;                 // 2 - [1, 5] and [8, 9]
 set.Contains(4);           // True
 
 // N-ary algebra a single interval cannot express as one value:
-set.Except(Interval<int>.Closed(4, 4));   // [1, 3] ∪ (4, 5] ∪ [8, 9]  (three pieces)
+set.Except(Interval<int>.Closed(4, 4));   // [1, 4) ∪ (4, 5] ∪ [8, 9]  (three pieces)
 set.Complement();                          // (-∞, 1) ∪ (5, 8) ∪ (9, +∞)
 ```
 

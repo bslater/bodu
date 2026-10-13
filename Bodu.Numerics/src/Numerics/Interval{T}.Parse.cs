@@ -24,6 +24,21 @@ public readonly partial struct Interval<T> :
     /// <exception cref="FormatException">
     /// Thrown when <paramref name="s" /> is not a valid interval representation.
     /// </exception>
+    /// <remarks>
+    /// <para>
+    /// The endpoints are separated by a comma, or by a semicolon when the decimal separator of
+    /// <paramref name="provider" /> is a comma, as <see cref="ToString(string?, IFormatProvider?)" /> writes them.
+    /// </para>
+    /// <para>
+    /// An infinity token beside an open bracket denotes an unbounded side: <c>-∞</c>, <c>-Infinity</c> or <c>-inf</c>
+    /// for the lower side, and <c>+∞</c>, <c>∞</c>, <c>+Infinity</c>, <c>Infinity</c>, <c>+inf</c> or <c>inf</c> for
+    /// the upper side, the words in any case. Beside a closed bracket the same text is parsed as an endpoint value of
+    /// <typeparamref name="T" /> under <paramref name="provider" />, because an unbounded side is never closed. A
+    /// bounded interval with an infinite endpoint on a closed side, such as <c>[0, Infinity]</c> over
+    /// <see cref="double" />, therefore reads back as itself, while an infinite endpoint on an open side reads back as
+    /// an unbounded side, which holds the same finite values but is not equal to the bounded interval.
+    /// </para>
+    /// </remarks>
     /// <example>
     /// <code language="csharp">
     ///<![CDATA[
@@ -192,15 +207,11 @@ public readonly partial struct Interval<T> :
         T lower = T.Zero;
         T upper = T.Zero;
 
-        // An unbounded side is written with an infinity token and must carry the open bracket ('(' / ')').
-        if (IsNegativeInfinityToken(lowerText))
+        // An infinity token beside an open bracket is an unbounded side. An unbounded side is never closed, so beside a
+        // closed bracket the token can only be an infinite endpoint value, which T parses if it has one: that is how a
+        // bounded interval such as [0, Infinity] over double reads back as itself.
+        if (!lowerInclusive && IsNegativeInfinityToken(lowerText))
         {
-            if (lowerInclusive)
-            {
-                result = default;
-                return false;
-            }
-
             flags |= LowerUnboundedFlag;
         }
         else
@@ -218,14 +229,8 @@ public readonly partial struct Interval<T> :
                 flags |= LowerInclusiveFlag;
         }
 
-        if (IsPositiveInfinityToken(upperText))
+        if (!upperInclusive && IsPositiveInfinityToken(upperText))
         {
-            if (upperInclusive)
-            {
-                result = default;
-                return false;
-            }
-
             flags |= UpperUnboundedFlag;
         }
         else

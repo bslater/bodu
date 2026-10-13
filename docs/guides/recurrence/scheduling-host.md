@@ -242,7 +242,7 @@ public static class ZonedSchedule
         DateTime wall = DateTime.SpecifyKind(localNext.Value, DateTimeKind.Unspecified);
 
         // 2. Decide the transition cases explicitly. Policy here: a skipped time runs at the shifted
-        //    equivalent; an ambiguous time takes the first (standard-time) instant.
+        //    equivalent; an ambiguous time takes the first (daylight-time) instant.
         if (zone.IsInvalidTime(wall))
             wall = wall.Add(zone.GetAdjustmentRules().Length > 0 ? TimeSpan.FromHours(1) : TimeSpan.Zero);
 

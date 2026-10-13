@@ -12,8 +12,8 @@ namespace Bodu.Globalization.Recurrence;
 public sealed partial class RecurrenceSet : IParsable<RecurrenceSet>
 {
     /// <summary>
-    /// Parses an iCalendar property block containing a <c>DTSTART</c> line, one or more <c>RRULE</c> lines, and
-    /// optional <c>RDATE</c> / <c>EXDATE</c> lines.
+    /// Parses an iCalendar property block containing a <c>DTSTART</c> line, at least one <c>RRULE</c> or <c>RDATE</c>
+    /// line, and optional <c>EXDATE</c> lines.
     /// </summary>
     /// <param name="s">
     /// The property-block text. Lines other than the recognized recurrence properties are ignored.
@@ -22,7 +22,9 @@ public sealed partial class RecurrenceSet : IParsable<RecurrenceSet>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="s" /> is <see langword="null" />.
     /// </exception>
-    /// <exception cref="FormatException">Thrown when the text is not a valid recurrence-set property block.</exception>
+    /// <exception cref="FormatException">
+    /// Thrown when the text is not a valid recurrence-set property block; the message names the defect.
+    /// </exception>
     public static RecurrenceSet Parse(string s) =>
         Parse(s, null);
 
@@ -37,14 +39,16 @@ public sealed partial class RecurrenceSet : IParsable<RecurrenceSet>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="s" /> is <see langword="null" />.
     /// </exception>
-    /// <exception cref="FormatException">Thrown when the text is not a valid recurrence-set property block.</exception>
+    /// <exception cref="FormatException">
+    /// Thrown when the text is not a valid recurrence-set property block; the message names the defect.
+    /// </exception>
     public static RecurrenceSet Parse(string s, IFormatProvider? provider)
     {
         ThrowHelper.ThrowIfNull(s);
 
-        return TryParseCore(s, out RecurrenceSet? result, out _)
+        return TryParseCore(s, out RecurrenceSet? result, out string? failureMessage)
             ? result
-            : throw new FormatException(RecurrenceResourceStrings.Format_Invalid_RecurrenceSetText);
+            : throw new FormatException(failureMessage ?? RecurrenceResourceStrings.Format_Invalid_RecurrenceSetText);
     }
 
     /// <summary>

@@ -17,8 +17,7 @@ public readonly partial struct Interval<T>
     /// <param name="value">The value to test for membership.</param>
     /// <returns>
     /// <see langword="true" /> when the interval is non-empty and <paramref name="value" /> falls between the endpoints
-    /// under the configured inclusivity rules; otherwise <see langword="false" />. An empty interval contains no value,
-    /// including itself.
+    /// under the configured inclusivity rules; otherwise <see langword="false" />. An empty interval contains no value.
     /// </returns>
     /// <example>
     /// <code language="csharp">
@@ -50,8 +49,8 @@ public readonly partial struct Interval<T>
     /// <param name="other">The interval to test for containment.</param>
     /// <returns>
     /// <see langword="true" /> when this interval is a superset of <paramref name="other" />; otherwise
-    /// <see langword="false" />. The empty interval is a subset of every interval, so any interval contains the empty
-    /// interval; only the empty interval contains the empty interval as a non-empty member.
+    /// <see langword="false" />. The empty interval is a subset of every interval, so any interval, including the empty
+    /// one, contains the empty interval.
     /// </returns>
     /// <example>
     /// <code language="csharp">
