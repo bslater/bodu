@@ -43,7 +43,9 @@ foreach (ImfSeriesInfo info in provider.GetAvailablePairs())
   business day of a month, so a request for any date in a month loads the whole month at
   once. `LoadRangeAsync`, `LoadMonthAsync`, and `PreloadAsync` (current month) warm the
   store; a range spanning several months downloads each covering month, up to four at once,
-  publishing each only after the months before it.
+  publishing each only after the months before it. An on-demand lookup loads every month its
+  `DefaultLookback` window (seven days by default) reaches, so a date in the first days of a
+  month also loads the month before it.
 - **Direction auto-normalized.** The report quotes most currencies as units per US dollar,
   but marks a few (labelled `(1)`, for example `Euro(1)`, `U.K. pound(1)`) as US dollars
   per unit. Both are normalized on ingest, so the stored rate is always units of the quote
@@ -78,6 +80,7 @@ foreach (ImfSeriesInfo info in provider.GetAvailablePairs())
 | `CurrencyNames` | seeded | Maps IMF currency labels to ISO 4217 codes; extend to add labels. |
 | `HttpTimeout` | 30 s | Applied to the `HttpClient` the provider creates, or by the DI registration. |
 | `AllowSynchronousNetworkAccess` | `false` | Opt in to blocking on-demand fetches from synchronous lookups. |
+| `DefaultLookback` | 7 days | The window, ending on the requested date, whose months an on-demand lookup loads. |
 
 ## HTTP client and lifetime
 

@@ -30,7 +30,7 @@ The synchronous getters (`GetRate`, `TryGetRate`, `GetRates`) resolve against th
 
 ## `DefaultLookback`
 
-When a single-date asynchronous lookup must fetch on demand, the provider fetches the window ending on the requested date and spanning `DefaultLookback` (7 days by default on <xref:Bodu.Financial.ExchangeRates.WebRateProviderOptions>), so a `PreviousWithin` resolution has observations to fall back to. The BoE, ECB and RBA providers take it from their options too: BoE downloads that range (10 days by default), ECB loads the narrowest feed that covers it, and RBA every era it reaches, so a date early in an era also loads the era before it. The IMF provider loads only the month that holds the requested date.
+When a single-date asynchronous lookup must fetch on demand, the provider fetches the window ending on the requested date and spanning `DefaultLookback` (7 days by default on <xref:Bodu.Financial.ExchangeRates.WebRateProviderOptions>), so a `PreviousWithin` resolution has observations to fall back to. The BoE, ECB, RBA and IMF providers take it from their options too: BoE downloads that range (10 days by default), ECB loads the narrowest feed that covers it, RBA every era it reaches, and IMF every monthly report it reaches, so a date early in an era or a month also loads the one before it.
 
 ## Days the source has not yet published
 
