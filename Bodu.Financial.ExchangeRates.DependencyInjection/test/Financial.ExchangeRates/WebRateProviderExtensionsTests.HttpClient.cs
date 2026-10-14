@@ -70,6 +70,40 @@ public partial class WebRateProviderExtensionsTests
     }
 
     /// <summary>
+    /// Verifies that the configured <see cref="WebRateProviderOptions.MaxResponseContentBufferSize" /> is applied to the
+    /// named client, as it is to a provider-owned client.
+    /// </summary>
+    [TestMethod]
+    public void AddWebRateProvider_WhenMaxResponseContentBufferSizeConfigured_ShouldApplyItToTheNamedClient()
+    {
+        const long expected = 1024;
+        using ServiceProvider provider = CreateServices(configure: o =>
+        {
+            DefaultConfigure(o);
+            o.MaxResponseContentBufferSize = expected;
+        }).BuildServiceProvider();
+
+        using HttpClient client = provider.GetRequiredService<IHttpClientFactory>().CreateClient(TestHttpClientName);
+
+        Assert.AreEqual(expected, client.MaxResponseContentBufferSize);
+    }
+
+    /// <summary>
+    /// Verifies that the named client is capped at
+    /// <see cref="RateProviderHttpClientFactory.DefaultMaxResponseContentBufferSize" /> when the options leave the cap at
+    /// its default.
+    /// </summary>
+    [TestMethod]
+    public void AddWebRateProvider_WhenMaxResponseContentBufferSizeNotConfigured_ShouldApplyTheDefaultCap()
+    {
+        using ServiceProvider provider = CreateServices().BuildServiceProvider();
+
+        using HttpClient client = provider.GetRequiredService<IHttpClientFactory>().CreateClient(TestHttpClientName);
+
+        Assert.AreEqual(RateProviderHttpClientFactory.DefaultMaxResponseContentBufferSize, client.MaxResponseContentBufferSize);
+    }
+
+    /// <summary>
     /// Verifies that the client's own timeout is disabled, because the per-attempt and total-request timeouts are
     /// owned by the resilience pipeline; a competing <see cref="HttpClient.Timeout" /> would cancel a request the
     /// pipeline still intended to retry.
