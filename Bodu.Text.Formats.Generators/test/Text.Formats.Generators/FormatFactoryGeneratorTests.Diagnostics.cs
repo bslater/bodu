@@ -215,7 +215,7 @@ public partial class FormatFactoryGeneratorTests
 
     /// <summary>
     /// Verifies that a member of a scalar type the reflection binders convert, alone or in nullable form, is mapped
-    /// rather than skipped with <c>BTFG002</c>, and that the factory generated for it compiles.
+    /// rather than refused with <c>BTFG002</c>, and that the factory generated for it compiles.
     /// </summary>
     /// <param name="attribute">The marker attribute that requests the factory.</param>
     /// <param name="memberType">The member's type, as written in source.</param>
@@ -295,7 +295,7 @@ public partial class FormatFactoryGeneratorTests
 
     /// <summary>
     /// Verifies that every scalar type the reflection binders' codec lists, and an enumeration, alone and in nullable
-    /// form, is mapped by the generator for both formats rather than skipped with <c>BTFG002</c>, so that the
+    /// form, is mapped by the generator for both formats rather than refused with <c>BTFG002</c>, so that the
     /// generator's scalar set cannot drift from the binders' again.
     /// </summary>
     /// <param name="attribute">The marker attribute that requests the factory.</param>

@@ -24,7 +24,10 @@ namespace Bodu.Text.Formats.Generators;
 /// <param name="IsPartial">Whether the annotated type (and every containing type) is declared partial.</param>
 /// <param name="IsGeneric">Whether the annotated type or a containing type declares type parameters.</param>
 /// <param name="Members">The mapped members in declaration order.</param>
-/// <param name="SkippedMembers">The names and type displays of members skipped as unsupported.</param>
+/// <param name="UnsupportedMembers">
+/// The names and type displays of the mapped members whose types are not supported scalars; when there are any, no
+/// factory is emitted.
+/// </param>
 internal sealed record FactoryModel(
     FactoryKind Kind,
     string Namespace,
@@ -35,4 +38,4 @@ internal sealed record FactoryModel(
     bool IsPartial,
     bool IsGeneric,
     EquatableArray<MemberModel> Members,
-    EquatableArray<string> SkippedMembers);
+    EquatableArray<string> UnsupportedMembers);
