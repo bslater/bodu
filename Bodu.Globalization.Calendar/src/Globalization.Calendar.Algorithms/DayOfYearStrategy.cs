@@ -39,7 +39,7 @@ public sealed class DayOfYearStrategy
     /// </exception>
     public DayOfYearStrategy(int ordinal)
     {
-        ThrowHelper.ThrowIfOutOfRange(ordinal, -366, 366);
+        ThrowHelper.ThrowIfOutOfRange(ordinal, NotableDateSchemaRanges.MinimumOrdinal, NotableDateSchemaRanges.MaximumOrdinal);
         if (ordinal == 0)
             throw new ArgumentOutOfRangeException(nameof(ordinal), CalendarResourceStrings.Arg_OutOfRange_OrdinalZero);
 
