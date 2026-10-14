@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Collections.Concurrent;
+
 using Bodu.Text.Serialization;
 
 namespace Bodu.Text.Ini;
@@ -200,6 +202,24 @@ public sealed class IniSerializerOptions
     /// shaped a type's descriptors cannot change.
     /// </value>
     internal FlatMemberCache MemberCache { get; } = new();
+
+    /// <summary>
+    /// Gets the POCO root types whose shape has been checked with these options and found to be one INI represents.
+    /// </summary>
+    /// <value>
+    /// The checked root types, consulted only once the options are read-only, so that a type is checked once per
+    /// options instance rather than on every call.
+    /// </value>
+    internal ConcurrentDictionary<Type, bool> CheckedRootTypes { get; } = new();
+
+    /// <summary>
+    /// Gets the section types whose shape has been checked with these options and found to be one INI represents.
+    /// </summary>
+    /// <value>
+    /// The checked section types, consulted only once the options are read-only, so that a type is checked once per
+    /// options instance rather than on every call.
+    /// </value>
+    internal ConcurrentDictionary<Type, bool> CheckedSectionTypes { get; } = new();
 
     /// <summary>
     /// Creates the document-model options carrying this instance's duplicate policies.

@@ -32,7 +32,8 @@ public static partial class IniSerializer
     /// <param name="declaredType">The declared type of the value.</param>
     /// <param name="options">The serializer options.</param>
     /// <exception cref="IniSerializationException">
-    /// Thrown when the value cannot be mapped to an INI document.
+    /// Thrown when the value cannot be mapped to an INI document, including when the type of a value that is not a
+    /// dictionary has a member INI cannot represent, which is reported before anything is written.
     /// </exception>
     [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
     [RequiresDynamicCode(RequiresDynamicCodeMessage)]
@@ -44,11 +45,15 @@ public static partial class IniSerializer
         (value as IOnSerializing)?.OnSerializing();
 
         if (FlatBinding.TryGetDictionary(value, out IDictionary? dictionary, out Type? valueType))
+        {
             WriteRootDictionary(ref writer, dictionary, valueType, options);
-        else if (IsScalarOrEnumerable(value.GetType()))
-            throw new IniSerializationException(string.Format(CultureInfo.CurrentCulture, IniResourceStrings.Op_Invalid_IniRootNotObject, value.GetType()));
+        }
         else
+        {
+            // The type is checked whole, whatever the instance holds, before anything is written, as reading checks it.
+            ThrowIfRootNotSupported(value.GetType(), options);
             WriteRootPoco(ref writer, value, options);
+        }
 
         (value as IOnSerialized)?.OnSerialized();
     }
@@ -138,9 +143,13 @@ public static partial class IniSerializer
     /// <param name="value">The root object.</param>
     /// <param name="options">The serializer options.</param>
     /// <exception cref="IniSerializationException">
-    /// Thrown when a member cannot be represented within INI's two levels, when a member is declared as
-    /// <see cref="object" />, or when a key, section name or value cannot be written so that it reads back unchanged.
+    /// Thrown when a section value's type, derived from the member's declared type, has a member that is not a scalar,
+    /// or when a key, section name or value cannot be written so that it reads back unchanged.
     /// </exception>
+    /// <remarks>
+    /// <see cref="ThrowIfRootNotSupported" /> has checked the root type, and the declared type of every section, before
+    /// this method is called.
+    /// </remarks>
     [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
     [RequiresDynamicCode(RequiresDynamicCodeMessage)]
     private static void WriteRootPoco(ref Utf8IniWriter writer, object value, IniSerializerOptions options)
@@ -162,8 +171,6 @@ public static partial class IniSerializer
             }
             else if (IsGlobalName(member.Name, options))
             {
-                ThrowIfNotSection(member);
-
                 object? memberValue = member.GetValue(value);
                 if (memberValue is not null)
                     WriteSectionBody(ref writer, member.Name, memberValue, options);
@@ -174,8 +181,6 @@ public static partial class IniSerializer
         {
             if (!member.CanRead || member.IsScalar || IsGlobalName(member.Name, options))
                 continue;
-
-            ThrowIfNotSection(member);
 
             object? memberValue = member.GetValue(value);
             if (FlatBinding.ShouldSkipOnWrite(memberValue, member.IgnoreCondition, options.DefaultIgnoreCondition))
@@ -199,6 +204,10 @@ public static partial class IniSerializer
     /// Thrown when the value nests beyond INI's two levels, or when a key or value cannot be written so that it reads
     /// back unchanged.
     /// </exception>
+    /// <remarks>
+    /// The section's declared type has been checked with the root type; a value of a type derived from it is checked by
+    /// its own type here, before any of its members is written.
+    /// </remarks>
     [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
     [RequiresDynamicCode(RequiresDynamicCodeMessage)]
     private static void WriteSectionBody(ref Utf8IniWriter writer, string sectionName, object body, IniSerializerOptions options)
@@ -214,15 +223,14 @@ public static partial class IniSerializer
         if (IsScalarOrEnumerable(body.GetType()))
             throw new IniSerializationException(string.Format(CultureInfo.CurrentCulture, IniResourceStrings.Op_Invalid_IniDepthExceeded, sectionName));
 
+        ThrowIfSectionNotSupported(body.GetType(), options);
+
         (body as IOnSerializing)?.OnSerializing();
 
         foreach (FlatMemberDescriptor member in GetMembers(body.GetType(), options))
         {
             if (!member.CanRead)
                 continue;
-
-            if (!member.IsScalar)
-                throw new IniSerializationException(string.Format(CultureInfo.CurrentCulture, IniResourceStrings.Op_Invalid_IniDepthExceeded, member.Name));
 
             object? memberValue = member.GetValue(body);
             if (FlatBinding.ShouldSkipOnWrite(memberValue, member.IgnoreCondition, options.DefaultIgnoreCondition))
@@ -370,18 +378,15 @@ public static partial class IniSerializer
     /// <exception cref="IniSerializationException">
     /// Thrown when the document cannot be mapped to the target type.
     /// </exception>
+    /// <remarks>
+    /// <see cref="ThrowIfRootNotSupported" /> has checked the target type before the document was parsed.
+    /// </remarks>
     [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
     [RequiresDynamicCode(RequiresDynamicCodeMessage)]
-    private static object ReadValue(IniNormalizedDocument document, Type targetType, IniSerializerOptions options)
-    {
-        if (FlatBinding.TryGetStringKeyedDictionary(targetType, out Type? valueType))
-            return ReadRootDictionary(document, targetType, valueType, options);
-
-        if (IsScalarOrEnumerable(targetType))
-            throw new IniSerializationException(string.Format(CultureInfo.CurrentCulture, IniResourceStrings.Op_Invalid_IniRootNotObject, targetType));
-
-        return ReadRootPoco(document, targetType, options);
-    }
+    private static object ReadValue(IniNormalizedDocument document, Type targetType, IniSerializerOptions options) =>
+        FlatBinding.TryGetStringKeyedDictionary(targetType, out Type? valueType)
+            ? ReadRootDictionary(document, targetType, valueType, options)
+            : ReadRootPoco(document, targetType, options);
 
     /// <summary>
     /// Reads the document into a string-keyed dictionary root: a nested-dictionary value type maps sections (and, with
@@ -437,8 +442,7 @@ public static partial class IniSerializer
     /// <param name="options">The serializer options.</param>
     /// <returns>The populated instance.</returns>
     /// <exception cref="IniSerializationException">
-    /// Thrown when the type or a section type cannot be created, a required member has no matching key or section, a
-    /// member nests beyond INI's two levels, or a member is declared as <see cref="object" />.
+    /// Thrown when the type or a section type cannot be created, or a required member has no matching key or section.
     /// </exception>
     [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
     [RequiresDynamicCode(RequiresDynamicCodeMessage)]
@@ -464,8 +468,6 @@ public static partial class IniSerializer
 
                 continue;
             }
-
-            ThrowIfNotSection(member);
 
             if (IsGlobalName(member.Name, options))
             {
@@ -689,8 +691,89 @@ public static partial class IniSerializer
     }
 
     /// <summary>
-    /// Throws when a root member that is not a scalar cannot be a section, whether it is written or read and whatever
-    /// its value.
+    /// Checks, before anything is read or written, that a root type is one INI can represent: a string-keyed
+    /// dictionary, or an object whose every mapped member is a scalar or a section of scalars.
+    /// </summary>
+    /// <param name="rootType">The type of the document root, the value's own type when it is written.</param>
+    /// <param name="options">The read-only serializer options.</param>
+    /// <exception cref="IniSerializationException">
+    /// Thrown when <paramref name="rootType" /> is a scalar or a collection other than a string-keyed dictionary, when
+    /// two of its members, or two members of a section type, map to one name, when a member is declared as
+    /// <see cref="object" /> or is such a collection, or when a member of a section type is not a scalar.
+    /// </exception>
+    /// <remarks>
+    /// <para>
+    /// Every mapped member is checked, whether it can be read, set or both, and so is the declared type of every
+    /// section, whether or not the instance holds one, so that a type is rejected in both directions or in neither,
+    /// whatever the instance or the document holds, as Delimited and DotEnv reject a type. A member left out with
+    /// <see cref="IgnoreAttribute" /> and <see cref="IgnoreCondition.Always" /> is not checked.
+    /// </para>
+    /// <para>
+    /// A string-keyed dictionary, as the root or as a section, is not checked here: each entry is checked by its value,
+    /// or for a <see langword="null" /> entry by the dictionary's value type, as it is written. A type that passes is
+    /// remembered by the options, so it is checked once per options instance.
+    /// </para>
+    /// </remarks>
+    [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
+    private static void ThrowIfRootNotSupported(Type rootType, IniSerializerOptions options)
+    {
+        if (FlatBinding.TryGetStringKeyedDictionary(rootType, out _))
+            return;
+
+        if (IsScalarOrEnumerable(rootType))
+            throw new IniSerializationException(string.Format(CultureInfo.CurrentCulture, IniResourceStrings.Op_Invalid_IniRootNotObject, rootType));
+
+        if (options.CheckedRootTypes.ContainsKey(rootType))
+            return;
+
+        foreach (FlatMemberDescriptor member in GetMembers(rootType, options))
+        {
+            if (member.IsScalar)
+                continue;
+
+            ThrowIfNotSection(member);
+            ThrowIfSectionNotSupported(member.MemberType, options);
+        }
+
+        options.CheckedRootTypes.TryAdd(rootType, true);
+    }
+
+    /// <summary>
+    /// Checks that a section type is one INI can represent: a string-keyed dictionary, or an object whose every mapped
+    /// member is a scalar.
+    /// </summary>
+    /// <param name="sectionType">The section type, declared or, as a section is written, the value's own type.</param>
+    /// <param name="options">The read-only serializer options.</param>
+    /// <exception cref="IniSerializationException">
+    /// Thrown when two members of <paramref name="sectionType" /> map to one name, or a member, whether it can be read,
+    /// set or both, is not a scalar, which would nest beyond INI's two levels.
+    /// </exception>
+    /// <remarks>
+    /// For a <see cref="Nullable{T}" /> of a structure, the structure's members are checked. A type that passes is
+    /// remembered by the options, so it is checked once per options instance.
+    /// </remarks>
+    [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
+    private static void ThrowIfSectionNotSupported(Type sectionType, IniSerializerOptions options)
+    {
+        if (FlatBinding.TryGetStringKeyedDictionary(sectionType, out _))
+            return;
+
+        Type type = Nullable.GetUnderlyingType(sectionType) ?? sectionType;
+        if (options.CheckedSectionTypes.ContainsKey(type))
+            return;
+
+        foreach (FlatMemberDescriptor member in GetMembers(type, options))
+        {
+            if (!member.IsScalar)
+                throw new IniSerializationException(string.Format(CultureInfo.CurrentCulture, IniResourceStrings.Op_Invalid_IniDepthExceeded, member.Name));
+        }
+
+        options.CheckedSectionTypes.TryAdd(type, true);
+    }
+
+    /// <summary>
+    /// Throws when a root member that is not a scalar cannot be a section, whatever its accessors and whatever its
+    /// value.
     /// </summary>
     /// <param name="member">The root member, which is not a scalar.</param>
     /// <exception cref="IniSerializationException">
@@ -699,7 +782,7 @@ public static partial class IniSerializer
     /// </exception>
     /// <remarks>
     /// A member declared as <see cref="object" /> would otherwise be written as a section of whatever its value holds
-    /// and read back as a bare <see cref="object" />, with the section's keys dropped; a section body rejects such a
+    /// and read back as a bare <see cref="object" />, with the section's keys dropped; a section type rejects such a
     /// member in the same way, as one that is not a scalar.
     /// </remarks>
     private static void ThrowIfNotSection(FlatMemberDescriptor member)
