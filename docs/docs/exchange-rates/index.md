@@ -86,17 +86,17 @@ Each per-source package ships its provider, its options type, and its own `Add<S
 
 | Package | Feed | Coverage | API key | Base class | Status | DI registration |
 |---|---|---|---|---|---|---|
-| `Bodu.Financial.ExchangeRates.Rba` | Reserve Bank of Australia `.xls` workbooks | AUD base, historical eras | No | `WebRateProvider` (bulk) | Preview | `AddRbaExchangeRates` |
-| `Bodu.Financial.ExchangeRates.Ecb` | European Central Bank `eurofxref` XML | EUR base, since 1999 | No | `WebRateProvider` (bulk) | Preview | `AddEcbExchangeRates` |
-| `Bodu.Financial.ExchangeRates.Boe` | Bank of England IADB CSV | GBP base, daily spot | No | `WebRateProvider` (bulk) | Preview | `AddBoeExchangeRates` |
+| `Bodu.Financial.ExchangeRates.Rba` | Reserve Bank of Australia `.xls` workbooks | AUD base, historical eras | No | `WebRateProvider` (bulk) | Stable | `AddRbaExchangeRates` |
+| `Bodu.Financial.ExchangeRates.Ecb` | European Central Bank `eurofxref` XML | EUR base, since 1999 | No | `WebRateProvider` (bulk) | Stable | `AddEcbExchangeRates` |
+| `Bodu.Financial.ExchangeRates.Boe` | Bank of England IADB CSV | GBP base, daily spot | No | `WebRateProvider` (bulk) | Stable | `AddBoeExchangeRates` |
 | `Bodu.Financial.ExchangeRates.Imf` | IMF Representative Exchange Rates TSV | USD base, daily, monthly report | No | `WebRateProvider` (bulk) | Preview | `AddImfExchangeRates` |
 | `Bodu.Financial.ExchangeRates.Yahoo` | Yahoo Finance v8 chart JSON | Any pair | No | `PairWebRateProvider<TSeries>` | Preview | `AddYahooExchangeRates` |
 | `Bodu.Financial.ExchangeRates.Ofx` | OFX spot-rate-history JSON | Any pair | No | `PairWebRateProvider<TSeries>` | Preview | `AddOfxExchangeRates` |
 | `Bodu.Financial.ExchangeRates.Xe` | XE.com charting-rates JSON | Any pair | No (token scraped) | `PairWebRateProvider<TSeries>` | Experimental (not on nuget.org) | `AddXeExchangeRates` |
 | `Bodu.Financial.ExchangeRates.Oanda` | OANDA Historical Currency Converter JSON | Any pair, rolling ~180 days | No | `PairWebRateProvider<TSeries>` | Preview (not on nuget.org) | `AddOandaExchangeRates` |
-| `Bodu.Financial.ExchangeRates.Fixer` | fixer.io time-series / single-date JSON | Any pair the plan allows | `access_key` | `PairWebRateProvider<TSeries>` | Preview | `AddFixerExchangeRates` |
-| `Bodu.Financial.ExchangeRates.ExchangeRateHost` | exchangerate.host time-frame / single-date JSON | Any pair the plan allows | `access_key` | `PairWebRateProvider<TSeries>` | Preview | `AddExchangeRateHostExchangeRates` |
-| `Bodu.Financial.ExchangeRates.Fred` | St. Louis Fed FRED `series/observations` JSON | Mapped pairs via `SeriesMap` | `api_key` | `PairWebRateProvider<TSeries>` | Preview | `AddFredExchangeRates` |
+| `Bodu.Financial.ExchangeRates.Fixer` | fixer.io time-series / single-date JSON | Any pair the plan allows | `access_key` | `PairWebRateProvider<TSeries>` | Stable | `AddFixerExchangeRates` |
+| `Bodu.Financial.ExchangeRates.ExchangeRateHost` | exchangerate.host time-frame / single-date JSON | Any pair the plan allows | `access_key` | `PairWebRateProvider<TSeries>` | Stable | `AddExchangeRateHostExchangeRates` |
+| `Bodu.Financial.ExchangeRates.Fred` | St. Louis Fed FRED `series/observations` JSON | Mapped pairs via `SeriesMap` | `api_key` | `PairWebRateProvider<TSeries>` | Stable | `AddFredExchangeRates` |
 
 > [!NOTE]
 > The keyed sources serve what their terms and plans allow. Fixer's free plan is locked to a EUR base and to single-date requests. exchangerate.host's free plan supports a USD source currency and single-date requests; switching the source currency needs its Basic plan, and multi-day (`timeframe`) queries its Professional Plus plan. FRED's [API terms of use](https://fred.stlouisfed.org/docs/api/terms_of_use.html) require an application that uses the FRED API to place this notice prominently on the application: "This product uses the FRED&reg; API but is not endorsed or certified by the Federal Reserve Bank of St. Louis." The [providers guide](../../guides/financial/exchange-rate-providers.md) gives each source's details.
