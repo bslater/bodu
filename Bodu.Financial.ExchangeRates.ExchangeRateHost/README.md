@@ -33,6 +33,16 @@ RateLookupResult usd = provider.GetRate("EUR", "USD", new DateOnly(2023, 1, 3));
 - **Endpoint selection.** A one-day request uses the single-date endpoint (the date is
   carried in the `date` query parameter); a multi-day range uses the `timeframe` endpoint
   (the bounds are carried in `start_date` and `end_date`).
+- **Plan limits.** The free plan supports a USD source currency and single-date requests;
+  changing the source currency and the `timeframe` (multi-day) endpoint require a paid plan
+  (source-currency switching from the Basic plan, time-frame queries from the Professional
+  Plus plan). A request the account's plan does not permit surfaces as a fetch failure, not a
+  pre-empted request. On a plan without time-frame queries, warm one day at a time
+  (`LoadPairAsync` with equal start and end dates): the on-demand and latest-rate lookups
+  fetch the `DefaultLookback` window, a multi-day request. On the free plan, request pairs
+  whose source currency is USD; a request for the reverse pair sends that pair's own source
+  currency, so to read `EUR/USD` warm `USD/EUR` first, and its reverse then resolves by
+  inversion from the loaded series.
 - **API key required.** Set `ApiKey`; it is presented as the `access_key` query parameter.
 - **No provider-local disk cache.** For durable caching, compose with
   `AddCachedRateProvider<…>` from the
