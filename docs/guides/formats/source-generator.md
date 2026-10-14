@@ -200,7 +200,7 @@ public sealed class Trade { … }          // BTFG001: … is not declared parti
 
 A nested type must have *every* containing type marked `partial` too.
 
-**`BTFG002` (error) - a member type is not a supported scalar.** No factory is generated for the type, so `Order.DelimitedFactory` fails to resolve too. The reflection binder rejects such a type whole, when it writes it and when it reads it, so the build fails where the reflection path would throw at run time, rather than emitting a factory that leaves the member out. A member declared as `object` is refused as well, although `DelimitedSerializer` accepts one that holds a scalar. Either move the value to a supported scalar (for example, join a list into a delimited `string`), or leave the member out deliberately with `[Ignore]`, which the factory and the reflection binder both honor.
+**`BTFG002` (error) - a member type is not a supported scalar.** No factory is generated for the type, so `Order.DelimitedFactory` fails to resolve too. The reflection binder rejects such a type whole, when it writes it and when it reads it, so the build fails where the reflection path would throw at run time, rather than emitting a factory that leaves the member out. The check covers every public instance property the reflection binder maps, so an inherited, get-only or `init`-only property of such a type fails the build too, although the factory does not map it. A member declared as `object` is refused as well, although `DelimitedSerializer` accepts one that holds a scalar. Either move the value to a supported scalar (for example, join a list into a delimited `string`), or leave the member out deliberately with `[Ignore]`, which the factory and the reflection binder both honor.
 
 ```csharp
 [DelimitedRecord]

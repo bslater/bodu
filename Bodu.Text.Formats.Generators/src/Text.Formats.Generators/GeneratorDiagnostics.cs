@@ -25,7 +25,7 @@ internal static class GeneratorDiagnostics
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true);
 
-    /// <summary>BTFG002: a mapped property's type is not a supported scalar, which the reflection binders reject, so no factory is generated for the type.</summary>
+    /// <summary>BTFG002: a public instance property's type, declared or inherited, is not a supported scalar, which the reflection binders reject, so no factory is generated for the type.</summary>
     public static readonly DiagnosticDescriptor MemberTypeUnsupported = new(
         id: "BTFG002",
         title: "Member type is not a supported scalar",

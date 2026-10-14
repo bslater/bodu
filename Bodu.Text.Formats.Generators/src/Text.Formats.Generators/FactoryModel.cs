@@ -25,8 +25,8 @@ namespace Bodu.Text.Formats.Generators;
 /// <param name="IsGeneric">Whether the annotated type or a containing type declares type parameters.</param>
 /// <param name="Members">The mapped members in declaration order.</param>
 /// <param name="UnsupportedMembers">
-/// The names and type displays of the mapped members whose types are not supported scalars; when there are any, no
-/// factory is emitted.
+/// The names and type displays of the public instance properties, declared or inherited and whatever their accessors,
+/// whose types are not supported scalars; when there are any, no factory is emitted.
 /// </param>
 internal sealed record FactoryModel(
     FactoryKind Kind,
