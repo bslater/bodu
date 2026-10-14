@@ -19,6 +19,133 @@ public sealed partial class NotableDateBinaryResourceTests
         SHA256.HashData(pack.AsSpan(NotableDateBinaryFormat.HeaderLength), pack.AsSpan(8, SHA256.HashSizeInBytes));
 
     /// <summary>
+    /// Verifies that a pack whose fixed strategy carries a Hebrew month alias in a calendar other than the Hebrew, which
+    /// the loader never reads, is rejected with <see cref="NotableDateBinaryFormatException" /> carrying the strategy's
+    /// <see cref="ArgumentException" />, rather than read as a rule that resolves the name in another calendar.
+    /// </summary>
+    [TestMethod]
+    public void Read_WhenFixedStrategyCarriesMonthAliasOutsideHebrew_ShouldThrowBinaryFormatException()
+    {
+        byte[] pack = WritePack(FixedRuleResource("Hebrew", "Nisan", 15));
+
+        // The fixed strategy's encoding: discriminator, month 0 and day 15 as zigzag integers, then the calendar byte.
+        PatchStrategy(pack, [NotableDateBinaryFormat.StrategyFixedDate, 0x00, 0x1E, (byte)CalendarSystem.Hebrew], 3, (byte)CalendarSystem.Hijri);
+
+        var ex = Assert.ThrowsExactly<NotableDateBinaryFormatException>(() =>
+        {
+            _ = ReadPack(pack);
+        });
+
+        Assert.IsInstanceOfType<ArgumentException>(ex.InnerException);
+    }
+
+    /// <summary>
+    /// Verifies that a pack whose fixed strategy names a month beyond the months its calendar has, which the loader
+    /// rejects, is rejected with <see cref="NotableDateBinaryFormatException" /> carrying the strategy's
+    /// <see cref="ArgumentOutOfRangeException" />, rather than read as a rule that never occurs.
+    /// </summary>
+    [TestMethod]
+    public void Read_WhenFixedStrategyMonthIsBeyondTheCalendarsMonths_ShouldThrowBinaryFormatException()
+    {
+        byte[] pack = WritePack(FixedRuleResource("Persian", "12", 29));
+
+        // Month 12 is the zigzag byte 0x18 and day 29 the byte 0x3A; month 13 is 0x1A.
+        PatchStrategy(pack, [NotableDateBinaryFormat.StrategyFixedDate, 0x18, 0x3A, (byte)CalendarSystem.Persian], 1, 0x1A);
+
+        var ex = Assert.ThrowsExactly<NotableDateBinaryFormatException>(() =>
+        {
+            _ = ReadPack(pack);
+        });
+
+        Assert.IsInstanceOfType<ArgumentOutOfRangeException>(ex.InnerException);
+    }
+
+    /// <summary>
+    /// Verifies that a pack whose strategy carries a weekday value <see cref="DayOfWeek" /> does not define, which the
+    /// loader rejects with <c>BODU-CAL-ENUM</c> and the strategy's constructor accepts, is rejected with
+    /// <see cref="NotableDateBinaryFormatException" /> by the reader's own enumeration check.
+    /// </summary>
+    /// <param name="strategy">The strategy element, its weekday Monday.</param>
+    /// <param name="discriminator">The strategy's discriminator byte.</param>
+    /// <param name="encodedMonth">The strategy's month as its zigzag byte.</param>
+    /// <param name="weekdayOffset">The offset of the weekday byte from the discriminator.</param>
+    [TestMethod]
+    [DataRow("<DayOfWeekInMonth month=\"5\" dayOfWeek=\"Monday\" weekOrdinal=\"First\" />", NotableDateBinaryFormat.StrategyDayOfWeekInMonth, (byte)0x0A, 2)]
+    [DataRow("<WeekdayNearDate month=\"5\" day=\"24\" dayOfWeek=\"Monday\" direction=\"After\" />", NotableDateBinaryFormat.StrategyWeekdayNearDate, (byte)0x0A, 3)]
+    [DataRow("<RelativeWeekdayInMonth month=\"5\" dayOfWeek=\"Monday\" weekOrdinal=\"First\" relativeDayOfWeek=\"Friday\" direction=\"After\" />", NotableDateBinaryFormat.StrategyRelativeWeekdayInMonth, (byte)0x0A, 2)]
+    public void Read_WhenStrategyWeekdayIsUndefined_ShouldThrowBinaryFormatException(string strategy, byte discriminator, byte encodedMonth, int weekdayOffset)
+    {
+        byte[] pack = WritePack(StrategyRuleResource(strategy));
+        byte[] encoding = weekdayOffset == 2
+            ? [discriminator, encodedMonth, (byte)DayOfWeek.Monday]
+            : [discriminator, encodedMonth, 0x30, (byte)DayOfWeek.Monday];
+
+        PatchStrategy(pack, encoding, weekdayOffset, 7);
+
+        var ex = Assert.ThrowsExactly<NotableDateBinaryFormatException>(() =>
+        {
+            _ = ReadPack(pack);
+        });
+
+        Assert.Contains("DayOfWeek value 7", ex.Message);
+    }
+
+    /// <summary>
+    /// Builds a one-rule resource whose rule holds the supplied strategy element.
+    /// </summary>
+    /// <param name="strategy">The strategy element, in the document namespace by default.</param>
+    /// <returns>The loaded resource.</returns>
+    private static NotableDateResource StrategyRuleResource(string strategy) =>
+        NotableDateResourceLoader.Load(
+            $"""
+            <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="test.strategy">
+              <NotableDates>
+                <NotableDate id="x" displayName="X" category="Observance">
+                  <Rules><Rule id="r"><Strategy>{strategy}</Strategy></Rule></Rules>
+                </NotableDate>
+              </NotableDates>
+            </NotableDateResource>
+            """);
+
+    /// <summary>
+    /// Builds a one-rule resource whose rule is a fixed strategy in the supplied calendar.
+    /// </summary>
+    /// <param name="calendar">The rule's calendar.</param>
+    /// <param name="month">The month token.</param>
+    /// <param name="day">The day.</param>
+    /// <returns>The loaded resource.</returns>
+    private static NotableDateResource FixedRuleResource(string calendar, string month, int day) =>
+        NotableDateResourceLoader.Load(
+            $"""
+            <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="test.fixed">
+              <NotableDates>
+                <NotableDate id="x" displayName="X" category="Religious">
+                  <Rules><Rule id="r"><Applicability calendar="{calendar}" /><Strategy><Fixed month="{month}" day="{day}" sweepCalendarYears="true" /></Strategy></Rule></Rules>
+                </NotableDate>
+              </NotableDates>
+            </NotableDateResource>
+            """);
+
+    /// <summary>
+    /// Replaces one byte of the single strategy a pack's payload holds, then rehashes the payload.
+    /// </summary>
+    /// <param name="pack">The pack, changed in place.</param>
+    /// <param name="encoding">The leading bytes of the strategy's encoding, which occur once in the payload.</param>
+    /// <param name="offset">The offset within <paramref name="encoding" /> of the byte to replace.</param>
+    /// <param name="value">The byte written in its place.</param>
+    private static void PatchStrategy(byte[] pack, byte[] encoding, int offset, byte value)
+    {
+        Span<byte> payload = pack.AsSpan(NotableDateBinaryFormat.HeaderLength);
+        int index = payload.IndexOf(encoding);
+
+        Assert.IsGreaterThanOrEqualTo(0, index, "The pack holds no such strategy.");
+        Assert.AreEqual(-1, payload[(index + 1)..].IndexOf(encoding), "The pack holds the strategy twice.");
+
+        payload[index + offset] = value;
+        RehashPayload(pack);
+    }
+
+    /// <summary>
     /// Verifies that input without the BCAL signature is rejected.
     /// </summary>
     [TestMethod]

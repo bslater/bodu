@@ -154,6 +154,41 @@ internal static class CalendarSystems
     }
 
     /// <summary>
+    /// Returns the number of months a fixed month and day can name in a calendar: the most months the calendar's year
+    /// can have.
+    /// </summary>
+    /// <param name="calendar">The calendar system the month is expressed in.</param>
+    /// <param name="skipLeapMonth">A value indicating whether the month skips a Chinese leap month.</param>
+    /// <returns>
+    /// 13 for the Hebrew calendar, and for the Chinese lunisolar calendar when the month counts its leap month; 12
+    /// otherwise.
+    /// </returns>
+    /// <remarks>
+    /// The loader, the builder and <see cref="Algorithms.FixedDateStrategy" /> hold a fixed month to this count. A
+    /// Chinese lunisolar month that skips the leap month is the conventional month, of which there are twelve; one that
+    /// does not is the position in the year, which in a leap year has thirteen.
+    /// </remarks>
+    public static int GetFixedMonthCount(CalendarSystem calendar, bool skipLeapMonth) =>
+        calendar switch
+        {
+            CalendarSystem.Hebrew => 13,
+            CalendarSystem.ChineseLunisolar when !skipLeapMonth => 13,
+            _ => 12,
+        };
+
+    /// <summary>
+    /// Returns a value indicating whether a value is one of the Hebrew month aliases whose number shifts in a leap
+    /// year, in its canonical spelling.
+    /// </summary>
+    /// <param name="alias">The value to test.</param>
+    /// <returns>
+    /// <see langword="true" /> for <c>AdarII</c>, <c>LastAdar</c>, <c>Nisan</c>, <c>Iyar</c>, <c>Sivan</c>,
+    /// <c>Tammuz</c>, <c>Av</c> and <c>Elul</c>; otherwise, <see langword="false" />.
+    /// </returns>
+    public static bool IsHebrewMonthAlias(string alias) =>
+        ResolveHebrewMonthAlias(alias, isLeapYear: true) > 0;
+
+    /// <summary>
     /// Wraps an optional date as a zero- or one-element read-only list.
     /// </summary>
     /// <param name="date">The date, or <see langword="null" />.</param>

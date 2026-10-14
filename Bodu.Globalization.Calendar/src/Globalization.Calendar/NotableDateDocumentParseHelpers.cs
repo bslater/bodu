@@ -15,6 +15,13 @@ namespace Bodu.Globalization.Calendar;
 /// </summary>
 internal static class NotableDateDocumentParseHelpers
 {
+    /// <summary>The Hebrew month names in their canonical spelling, each with its number, or <c>0</c> for a name whose number shifts in a leap year and is read as a month alias.</summary>
+    private static readonly (string Name, int Month)[] s_hebrewMonthNames =
+    [
+        ("Tishri", 1), ("Heshvan", 2), ("Kislev", 3), ("Tevet", 4), ("Shevat", 5), ("AdarI", 6),
+        ("AdarII", 0), ("LastAdar", 0), ("Nisan", 0), ("Iyar", 0), ("Sivan", 0), ("Tammuz", 0), ("Av", 0), ("Elul", 0),
+    ];
+
     /// <summary>The full English month names, indexed so that January is at index zero.</summary>
     private static readonly string[] s_monthNames =
     [
@@ -150,8 +157,9 @@ internal static class NotableDateDocumentParseHelpers
     /// </returns>
     /// <remarks>
     /// A Gregorian month is a full English month name or an integer from 1 to 12. In another calendar it is an integer
-    /// from 1 to the number <see cref="GetFixedMonthCount" /> gives for the calendar, and, in the Hebrew calendar
-    /// alone, a Hebrew month name. Any other value records <c>BODU-CAL-MONTH</c>, worded for the calendar.
+    /// from 1 to the number <see cref="CalendarSystems.GetFixedMonthCount" /> gives for the calendar, and, in the
+    /// Hebrew calendar alone, a Hebrew month name. A name matches ignoring case. Any other value records
+    /// <c>BODU-CAL-MONTH</c>, worded for the calendar.
     /// </remarks>
     public static (int Month, string? Alias) ParseFixedMonth(
         string? value,
@@ -164,34 +172,21 @@ internal static class NotableDateDocumentParseHelpers
         if (calendar == CalendarSystem.Gregorian)
             return (ParseMonth(value, notableDateId, ruleId, diagnostics), null);
 
-        int months = GetFixedMonthCount(calendar, skipLeapMonth);
+        int months = CalendarSystems.GetFixedMonthCount(calendar, skipLeapMonth);
         if (value is not null)
         {
             if (int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out int numeric) && numeric >= 1 && numeric <= months)
                 return (numeric, null);
 
-            // The month names, and the aliases whose number shifts in a leap year, are the Hebrew calendar's alone.
+            // The month names, and the aliases whose number shifts in a leap year, are the Hebrew calendar's alone. They
+            // match ignoring case, as the English month names and the enumeration values do, and an alias is kept in
+            // its canonical spelling, which the strategy and the writers hold.
             if (calendar == CalendarSystem.Hebrew)
             {
-                switch (value)
+                foreach ((string name, int number) in s_hebrewMonthNames)
                 {
-                    case "Tishri": return (1, null);
-                    case "Heshvan": return (2, null);
-                    case "Kislev": return (3, null);
-                    case "Tevet": return (4, null);
-                    case "Shevat": return (5, null);
-                    case "AdarI": return (6, null);
-                    case "AdarII":
-                    case "LastAdar":
-                    case "Nisan":
-                    case "Iyar":
-                    case "Sivan":
-                    case "Tammuz":
-                    case "Av":
-                    case "Elul":
-                        return (0, value);
-                    default:
-                        break;
+                    if (string.Equals(name, value, StringComparison.OrdinalIgnoreCase))
+                        return number > 0 ? (number, null) : (0, name);
                 }
             }
         }
@@ -203,28 +198,6 @@ internal static class NotableDateDocumentParseHelpers
         diagnostics.Add(new NotableDateValidationDiagnostic(NotableDateValidationSeverity.Error, "BODU-CAL-MONTH", message));
         return (1, null);
     }
-
-    /// <summary>
-    /// Returns the number of months a fixed strategy's numeric month can name in a calendar other than the Gregorian:
-    /// the most months the calendar's year can have.
-    /// </summary>
-    /// <param name="calendar">The calendar system the month is expressed in.</param>
-    /// <param name="skipLeapMonth">A value indicating whether the month skips a Chinese leap month.</param>
-    /// <returns>
-    /// 13 for the Hebrew calendar, and for the Chinese lunisolar calendar when the month counts its leap month; 12
-    /// otherwise.
-    /// </returns>
-    /// <remarks>
-    /// A Chinese lunisolar month that skips the leap month is the conventional month, of which there are twelve; one
-    /// that does not is the position in the year, which in a leap year has thirteen.
-    /// </remarks>
-    public static int GetFixedMonthCount(CalendarSystem calendar, bool skipLeapMonth) =>
-        calendar switch
-        {
-            CalendarSystem.Hebrew => 13,
-            CalendarSystem.ChineseLunisolar when !skipLeapMonth => 13,
-            _ => 12,
-        };
 
     /// <summary>
     /// Parses an enumeration value by member name, ignoring case, falling back to a default when the value is absent

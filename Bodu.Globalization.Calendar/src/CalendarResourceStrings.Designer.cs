@@ -556,6 +556,24 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to A month alias applies only to the Hebrew calendar, not to the {0} calendar..
+        /// </summary>
+        internal static string Arg_Invalid_MonthAliasCalendar {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_MonthAliasCalendar", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to &apos;{0}&apos; is not a Hebrew month alias. Expected AdarII, LastAdar, Nisan, Iyar, Sivan, Tammuz, Av or Elul..
+        /// </summary>
+        internal static string Arg_Invalid_MonthAlias {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_MonthAlias", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to a rule must not declare both durationDays and a calculated end-date duration..
         /// </summary>
         internal static string Validation_DurationConflict {

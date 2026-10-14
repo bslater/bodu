@@ -490,7 +490,7 @@ public sealed class NotableDateRuleBuilder
     public NotableDateRuleBuilder Fixed(int month, int day, bool skipLeapMonth = false, bool sweepCalendarYears = false)
     {
         ThrowHelper.ThrowIfLessThan(month, 1);
-        ThrowHelper.ThrowIfGreaterThan(month, IsGregorian ? 12 : NotableDateDocumentParseHelpers.GetFixedMonthCount(Calendar!.Value, skipLeapMonth));
+        ThrowHelper.ThrowIfGreaterThan(month, IsGregorian ? 12 : CalendarSystems.GetFixedMonthCount(Calendar!.Value, skipLeapMonth));
         ThrowHelper.ThrowIfLessThan(day, 1);
         ThrowHelper.ThrowIfGreaterThan(day, 31);
 
@@ -513,10 +513,11 @@ public sealed class NotableDateRuleBuilder
     /// The month is written as given, and the loader reads it in the rule's calendar: a Gregorian month is a full
     /// English month name, ignoring case, or an integer from 1 to 12; a Hebrew month is an integer from 1 to 13 or a
     /// Hebrew month name (<c>Tishri</c>, <c>Heshvan</c>, <c>Kislev</c>, <c>Tevet</c>, <c>Shevat</c>, <c>AdarI</c>,
-    /// <c>AdarII</c>, <c>LastAdar</c>, <c>Nisan</c>, <c>Iyar</c>, <c>Sivan</c>, <c>Tammuz</c>, <c>Av</c> or <c>Elul</c>);
-    /// a Chinese lunisolar month is an integer from 1 to 13, or from 1 to 12 when <paramref name="skipLeapMonth" /> is
-    /// <see langword="true" />; and a Hijri, Umm al-Qura or Persian month is an integer from 1 to 12. Any other month
-    /// is reported with <c>BODU-CAL-MONTH</c> when the document is validated or built.
+    /// <c>AdarII</c>, <c>LastAdar</c>, <c>Nisan</c>, <c>Iyar</c>, <c>Sivan</c>, <c>Tammuz</c>, <c>Av</c> or <c>Elul</c>,
+    /// ignoring case); a Chinese lunisolar month is an integer from 1 to 13, or from 1 to 12 when
+    /// <paramref name="skipLeapMonth" /> is <see langword="true" />; and a Hijri, Umm al-Qura or Persian month is an
+    /// integer from 1 to 12. Any other month is reported with <c>BODU-CAL-MONTH</c> when the document is validated or
+    /// built.
     /// </remarks>
     /// <exception cref="ArgumentException">
     /// <paramref name="month" /> is <see langword="null" />, empty, or white-space.
