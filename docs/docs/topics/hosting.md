@@ -70,6 +70,9 @@ const string settings = """
     CacheDirectory = "cache/holidays"
     Ttl = "7.00:00:00"
 
+    [Financial.Ecb]
+    MaxResponseContentBufferSize = 16777216
+
     [Financial.RateCache]
     CacheDirectory = "cache/rates"
     DefaultExpiry = "12:00:00"
@@ -86,14 +89,11 @@ var services = new ServiceCollection();
 services.AddNotableDateService(AmericasCalendarData.LoadResource("US"));
 services.AddCachedNotableDateService(configuration);
 
-// Money and exchange rates: the core services, the provider, then the cache in front of it.
+// Money and exchange rates: the core services, the provider, then the cache in front of it. The provider's
+// named HttpClient takes its response cap, 16 MiB here, from the [Financial.Ecb] options.
 services.AddFinancialService(configuration)
     .AddEcbExchangeRates(configuration)
     .AddCachedRateProvider<EcbRateProvider>("ECB", configuration);
-
-// The provider borrows a named client from IHttpClientFactory; bound the size of a response there.
-services.AddHttpClient(EcbFinancialServiceBuilderExtensions.HttpClientName)
-    .ConfigureHttpClient(client => client.MaxResponseContentBufferSize = 16 * 1024 * 1024);
 
 using ServiceProvider provider = services.BuildServiceProvider();
 provider.UseCurrencyResolution();
@@ -108,7 +108,7 @@ The last line prints `CachingNotableDateService, CachingRateProvider`: each cons
 ## Ordering rules
 
 1. **Register a service before the decorator in front of it.** `AddCachedNotableDateService` wraps the `INotableDateService` registered before it, and throws `InvalidOperationException` if there is none. `AddCachedRateProvider<TProvider>` wraps the `TProvider` registered before it; registered first, it would register `TProvider` itself, without the `HttpClient` the provider's own registration supplies.
-2. **Register keyed calendar services after `AddCachedNotableDateService`.** The decorator is meant for the unkeyed service, but it takes the most recent `INotableDateService` registration, keyed or not: a keyed `AddNotableDateService` call made before it is taken as the service to wrap, which removes the keyed service and leaves the unkeyed one failing when it is resolved. Keyed services are not cached.
+2. **Keyed calendar services are not cached.** `AddCachedNotableDateService` decorates the most recent unkeyed `INotableDateService` registration and leaves keyed ones, registered before or after it, in place and undecorated. With only keyed registrations it throws `InvalidOperationException`.
 3. **Register warm-ups after the caches they warm.** `AddNotableDateCacheWarmup` follows `AddCachedNotableDateService`; `AddRateCacheWarmup` warms every provider registered through `AddCachedRateProvider`, and an aggregation child only when its name is listed in the warm-up options.
 4. **Compose a cache backend through the cache factory.** The SQLite and distributed backends register a cache; the decorators use it only when you pass a factory that resolves it: `cacheFactory: sp => sp.GetRequiredService<INotableDateCache>()` for calendars, and `cacheFactory: (sp, name) => sp.GetRequiredKeyedService<IRateCache>(name)` for rates. Without one, each decorator uses a TOML file cache under its `CacheDirectory`.
 5. **Know which registrations win.** Most registrations use `TryAdd`, so when two register the same service the first wins: two calendar services, two rate providers, two cache backends. `AddCachedRateProvider` and `AddAggregatedRateProvider` add their providers unconditionally, so the most recent wins, and `AddCurrencyLookup` replaces the lookup outright.
