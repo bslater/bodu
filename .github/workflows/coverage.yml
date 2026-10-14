@@ -64,7 +64,12 @@ jobs:
           # A change to shared build configuration or to Bodu.Core fans out to effectively every
           # project, so a "diff-scoped" run would be a full run wearing a disguise. Defer to the
           # scheduled baseline instead of pretending to be quick.
-          if echo "$changed" | grep -qE '^(Directory\.Build\.(props|targets)|Directory\.Packages\.props|bld/|coverage\.runsettings|Bodu\.Core/src/)'; then
+          #
+          # A here-string rather than `echo "$changed" | grep -q`: grep -q exits at its first match,
+          # and on a diff longer than a pipe buffer echo is still writing then, dies of SIGPIPE, and
+          # under `pipefail` turns the test false, so a run this should skip went on to collect
+          # every project the diff named (#1337).
+          if grep -qE '^(Directory\.Build\.(props|targets)|Directory\.Packages\.props|bld/|coverage\.runsettings|Bodu\.Core/src/)' <<< "$changed"; then
             echo "Diff touches shared build configuration or Bodu.Core; deferring to the scheduled full run."
             echo "mode=skip" >> "$GITHUB_OUTPUT"
             echo "projects=" >> "$GITHUB_OUTPUT"
