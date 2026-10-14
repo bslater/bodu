@@ -379,14 +379,16 @@ public static partial class IniSerializer
     /// Thrown when the document cannot be mapped to the target type.
     /// </exception>
     /// <remarks>
-    /// <see cref="ThrowIfRootNotSupported" /> has checked the target type before the document was parsed.
+    /// <see cref="ThrowIfRootNotSupported" /> has checked the target type before the document was parsed. A target type
+    /// that is a <see cref="Nullable{T}" /> of a structure is read into the structure, which the caller unboxes into
+    /// the nullable type.
     /// </remarks>
     [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
     [RequiresDynamicCode(RequiresDynamicCodeMessage)]
     private static object ReadValue(IniNormalizedDocument document, Type targetType, IniSerializerOptions options) =>
         FlatBinding.TryGetStringKeyedDictionary(targetType, out Type? valueType)
             ? ReadRootDictionary(document, targetType, valueType, options)
-            : ReadRootPoco(document, targetType, options);
+            : ReadRootPoco(document, Nullable.GetUnderlyingType(targetType) ?? targetType, options);
 
     /// <summary>
     /// Reads the document into a string-keyed dictionary root: a nested-dictionary value type maps sections (and, with
@@ -469,15 +471,18 @@ public static partial class IniSerializer
                 continue;
             }
 
+            // A section of a nullable structure is read into the structure, which is boxed into the member.
+            Type sectionType = Nullable.GetUnderlyingType(member.MemberType) ?? member.MemberType;
+
             if (IsGlobalName(member.Name, options))
             {
-                member.SetValue(instance, ReadSectionBody(document.GlobalEntries, member.MemberType, options));
+                member.SetValue(instance, ReadSectionBody(document.GlobalEntries, sectionType, options));
                 continue;
             }
 
             IniNormalizedSection? section = FindSection(document, member.Name, comparison);
             if (section is not null)
-                member.SetValue(instance, ReadSectionBody(section.Entries, member.MemberType, options));
+                member.SetValue(instance, ReadSectionBody(section.Entries, sectionType, options));
             else if (member.Required)
                 throw new IniSerializationException(string.Format(CultureInfo.CurrentCulture, IniResourceStrings.Op_Invalid_IniMissingRequiredKey, member.Name));
         }
@@ -495,13 +500,13 @@ public static partial class IniSerializer
     /// <param name="options">The serializer options.</param>
     /// <returns>The populated value.</returns>
     /// <exception cref="IniSerializationException">
-    /// Thrown when the type cannot be created, a required member has no matching key, or a member nests beyond INI's
-    /// two levels, whether or not it can be set.
+    /// Thrown when the type cannot be created, or a required member has no matching key.
     /// </exception>
     /// <remarks>
-    /// A member that is not a scalar is rejected before the section is created, whether or not it can be set, as
-    /// <see cref="WriteSectionBody" /> rejects it when it writes the section, so that no section type is read that
-    /// cannot be written back. A get-only scalar member is written and not read.
+    /// <see cref="ThrowIfRootNotSupported" /> has checked <paramref name="targetType" /> with the root type, before the
+    /// document was parsed, so every member of a section object is a scalar; one that cannot be set, such as a get-only
+    /// scalar, is written and not read. A <see cref="Nullable{T}" /> of a structure reaches this method as the
+    /// structure.
     /// </remarks>
     [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
     [RequiresDynamicCode(RequiresDynamicCodeMessage)]
@@ -516,20 +521,12 @@ public static partial class IniSerializer
             return dictionary;
         }
 
-        // Every member's type is tested before the members that cannot be set are skipped.
-        FlatMemberDescriptor[] members = GetMembers(targetType, options);
-        foreach (FlatMemberDescriptor member in members)
-        {
-            if (!member.IsScalar)
-                throw new IniSerializationException(string.Format(CultureInfo.CurrentCulture, IniResourceStrings.Op_Invalid_IniDepthExceeded, member.Name));
-        }
-
         object instance = CreateInstance(targetType);
         (instance as IOnDeserializing)?.OnDeserializing();
 
         StringComparison comparison = options.PropertyNameCaseInsensitive ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
 
-        foreach (FlatMemberDescriptor member in members)
+        foreach (FlatMemberDescriptor member in GetMembers(targetType, options))
         {
             if (!member.CanWrite)
                 continue;
@@ -710,8 +707,9 @@ public static partial class IniSerializer
     /// </para>
     /// <para>
     /// A string-keyed dictionary, as the root or as a section, is not checked here: each entry is checked by its value,
-    /// or for a <see langword="null" /> entry by the dictionary's value type, as it is written. A type that passes is
-    /// remembered by the options, so it is checked once per options instance.
+    /// or for a <see langword="null" /> entry by the dictionary's value type, as it is written. For a
+    /// <see cref="Nullable{T}" /> of a structure, as the root or as a section, the structure's members are checked. A
+    /// type that passes is remembered by the options, so it is checked once per options instance.
     /// </para>
     /// </remarks>
     [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
@@ -723,10 +721,12 @@ public static partial class IniSerializer
         if (IsScalarOrEnumerable(rootType))
             throw new IniSerializationException(string.Format(CultureInfo.CurrentCulture, IniResourceStrings.Op_Invalid_IniRootNotObject, rootType));
 
-        if (options.CheckedRootTypes.ContainsKey(rootType))
+        // A root of a nullable structure is read into the structure, so the structure's members are checked.
+        Type type = Nullable.GetUnderlyingType(rootType) ?? rootType;
+        if (options.CheckedRootTypes.ContainsKey(type))
             return;
 
-        foreach (FlatMemberDescriptor member in GetMembers(rootType, options))
+        foreach (FlatMemberDescriptor member in GetMembers(type, options))
         {
             if (member.IsScalar)
                 continue;
@@ -735,7 +735,7 @@ public static partial class IniSerializer
             ThrowIfSectionNotSupported(member.MemberType, options);
         }
 
-        options.CheckedRootTypes.TryAdd(rootType, true);
+        options.CheckedRootTypes.TryAdd(type, true);
     }
 
     /// <summary>

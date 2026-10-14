@@ -21,7 +21,9 @@ namespace Bodu.Text.Ini;
 /// <para>
 /// INI models a two-level object-of-objects, so the serializer maps a root POCO (or string-keyed dictionary) whose
 /// scalar-convertible members become global keys and whose object-shaped members - section POCOs or
-/// <see cref="IDictionary{TKey, TValue}" /> values keyed by <see cref="string" /> - become sections. A dictionary,
+/// <see cref="IDictionary{TKey, TValue}" /> values keyed by <see cref="string" /> - become sections. A section, or the
+/// root, may be a structure, and a <see cref="Nullable{T}" /> of a structure is read into the structure: a document
+/// without the section leaves such a member <see langword="null" />, as it leaves a section of a class. A dictionary,
 /// whether the root or a section, that implements only that generic interface, and not the non-generic
 /// <see cref="System.Collections.IDictionary" />, is written and read through it, as a
 /// <see cref="Dictionary{TKey, TValue}" /> is. A dictionary whose type is not keyed by <see cref="string" />, such as a
