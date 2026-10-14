@@ -115,7 +115,7 @@ int oldest = buffer.Dequeue(); // 2
 
 ### Bodu.Collections.Concurrent
 
-**Bodu.Collections.Concurrent** ships the thread-safe members of the catalogue (it depends on `Bodu.Collections`) - the lock-free `ConcurrentCircularBuffer<T>` and the lock-free split-ordered `ConcurrentHashSet<T>`, both with snapshot enumeration that never throws on concurrent modification, and the lock-striped `ConcurrentEvictingDictionary<TKey,TValue>` bounded cache with all six eviction policies, optional TTL, and single-flight `GetOrAdd`.
+**Bodu.Collections.Concurrent** ships the thread-safe members of the catalogue (it depends on `Bodu.Collections`) - the lock-free `ConcurrentCircularBuffer<T>`, which enumerates a snapshot, the lock-free split-ordered `ConcurrentHashSet<T>`, which enumerates weakly consistently (neither throws on concurrent modification), the lock-striped `ConcurrentEvictingDictionary<TKey,TValue>` bounded cache with all six eviction policies, optional TTL, and single-flight `GetOrAdd`, and the read-optimized `ConcurrentLruCache<TKey,TValue>`, whose reads take no lock.
 
 ```csharp
 using Bodu.Collections.Generic.Concurrent;
@@ -130,7 +130,7 @@ Parallel.ForEach(correlationIds, id =>
 });
 ```
 
-`Contains` is lock-free - readers never block writers - and disjoint writers proceed in parallel across independently locked bucket regions.
+Every operation on the set is lock-free: `Add`, `Remove`, and `Contains` never take a lock or wait for another thread. Its enumeration is weakly consistent rather than a snapshot - it sees every element present for the whole walk, may or may not see one added or removed during it, and never throws.
 
 → **[Introduction](collections-concurrent/index.md)** · **[Getting started](collections-concurrent/getting-started.md)** · **[Guides](../guides/core/concurrent-collections.md)**
 

@@ -104,7 +104,7 @@ The thread-safe members of the catalogue (depends on `Bodu.Collections`), in the
 
 <div class="bodu-card">
   <h3><a href="core/concurrent-collections.md">Concurrent collections</a></h3>
-  <p><code>ConcurrentCircularBuffer&lt;T&gt;</code> (lock-free Vyukov MPMC), <code>ConcurrentHashSet&lt;T&gt;</code> (lock-free split-ordered), and <code>ConcurrentEvictingDictionary&lt;TKey,TValue&gt;</code> (lock-striped bounded cache).</p>
+  <p><code>ConcurrentCircularBuffer&lt;T&gt;</code> (lock-free Vyukov MPMC), <code>ConcurrentHashSet&lt;T&gt;</code> (lock-free split-ordered), <code>ConcurrentEvictingDictionary&lt;TKey,TValue&gt;</code> (lock-striped bounded cache), and <code>ConcurrentLruCache&lt;TKey,TValue&gt;</code> (read-optimized bounded cache).</p>
 </div>
 
 </div>
