@@ -574,6 +574,15 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The value &apos;{0}&apos; does not match the pattern &apos;{1}&apos; the notable-date schema requires..
+        /// </summary>
+        internal static string Arg_Invalid_SchemaPatternMismatch {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_SchemaPatternMismatch", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to a rule must not declare both durationDays and a calculated end-date duration..
         /// </summary>
         internal static string Validation_DurationConflict {

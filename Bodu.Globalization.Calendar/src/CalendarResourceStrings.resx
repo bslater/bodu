@@ -234,6 +234,9 @@
   <data name="Arg_Invalid_MonthAlias" xml:space="preserve">
     <value>'{0}' is not a Hebrew month alias. Expected AdarII, LastAdar, Nisan, Iyar, Sivan, Tammuz, Av or Elul.</value>
   </data>
+  <data name="Arg_Invalid_SchemaPatternMismatch" xml:space="preserve">
+    <value>The value '{0}' does not match the pattern '{1}' the notable-date schema requires.</value>
+  </data>
   <data name="Validation_DurationConflict" xml:space="preserve">
     <value>Notable date '{0}', rule '{1}': a rule must not declare both durationDays and a calculated end-date duration.</value>
   </data>
