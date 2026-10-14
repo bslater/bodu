@@ -116,6 +116,18 @@ pwsh tools/New-CoverageMatrix.ps1                # -&gt; docs/articles/coverage-
 <p>Pass the settings file, and <strong>do not</strong> also pass a <code>--collect</code> switch: a
 command-line collector is a second, unconfigured instance whose exclusion lists
 are empty, which silently readmits generated sources to the denominator.</p>
+<p><strong>One framework.</strong> Every test project targets each framework in
+<code>$(BoduNetTargets)</code>, and an unrestricted <code>dotnet test</code> runs, and covers, each of
+them. <code>bld/collect-coverage.sh</code> collects one, the same for every project: the
+newest in <code>$(BoduNetTargets)</code> (net10.0 today), or the one <code>--framework</code> names, and
+<code>environment.json</code> records it. Before it did, the script ran every leg and kept
+whichever leg's file was written last, so a package's figure depended on the
+finish order, and a file under a framework conditional, such as
+<code>#if NET10_0_OR_GREATER</code> and its fallback, reported different line sets from
+different projects, which the matrix's stale-numbering check reads as stale
+data. Code compiled only for an older framework, such as a polyfill guarded by
+<code>#if !NET9_0_OR_GREATER</code>, is outside the measured assembly and so outside the
+denominator.</p>
 <p>The current measured figures live in <a href="coverage-baseline.html">Coverage baseline</a>.</p>
 <p><code>tools/Filter-CoverageXml.ps1</code> extracts a single assembly's results from a
 Microsoft Code Coverage XML export for focused review.</p>
@@ -399,8 +411,8 @@ across the hosts (a line counts as covered when any host covers it); and</li>
 <li><strong>subtracts</strong> those files from the <code>Toml</code> / <code>Bencode</code> / <code>Yaml</code> rows, so the
 solution total does not count them once per host.</li>
 </ul>
-<h3 id="there-are-three-such-sets-not-one">There are three such sets, not one</h3>
-<p>The serializer core is the largest, but two more source sets are <code>Compile Include</code>d across projects, and each gets its own synthetic unit. The table lives
+<h3 id="there-are-four-such-sets-not-one">There are four such sets, not one</h3>
+<p>The serializer core is the largest, but three more source sets are <code>Compile Include</code>d across projects, and each gets its own synthetic unit. The table lives
 at <code>$SharedSourceSets</code> in <code>tools/New-CoverageMatrix.ps1</code>; keep it in step with
 the host csproj globs.</p>
 <table>
@@ -420,7 +432,12 @@ the host csproj globs.</p>
 <tr>
 <td><code>Bodu.IO.Hashing/shared/**</code> (<code>CrcCore.cs</code>)</td>
 <td><code>Bodu.IO.Hashing (shared source)</code></td>
-<td><code>IO.Hashing</code>, <code>IO.Pst</code>, <code>Formats.Outlook.Msg</code></td>
+<td><code>IO.Hashing</code>, <code>IO.Pst</code>, <code>Formats.Outlook.Msg</code>, <code>Formats.Outlook.Pst</code></td>
+</tr>
+<tr>
+<td><code>Bodu.Formats.Outlook/shared/**</code> (the MAPI decode layer)</td>
+<td><code>Bodu.Formats.Outlook (shared source)</code></td>
+<td><code>Formats.Outlook.Msg</code>, <code>Formats.Outlook.Pst</code></td>
 </tr>
 <tr>
 <td><code>shared/Caching/**</code></td>
@@ -438,13 +455,22 @@ would have moved a row that does not own it. Splitting the sets out cost
 <code>Outlook.Msg</code> 1.1pp and gained <code>ExchangeRates.Caching</code> 0.3pp, with the solution
 figure unchanged - a correction, not a regression, so the two <code>Outlook.Msg</code>
 ratchet floors were lowered by hand to match. That is the only circumstance in
-which a floor comes down.</p>
-<p>The three sets are not alike in one respect that the stale-numbering check cares
-about. <code>Bodu.Text.Serialization/shared/**</code> selects <strong>whole members</strong> by format
-symbol, so its hosts legitimately instrument different line sets and it is exempt
-from that check. The other two select only a namespace declaration, which carries
-no sequence points - so if their hosts ever disagree about which lines are
-instrumentable, that really is stale data and should be reported.</p>
+which a floor comes down. The Outlook decode layer was the same kind of
+correction when it joined the table: the merge had credited it to
+<code>Outlook.Msg</code>, the first host it emits, while a collection of <code>Outlook.Pst</code>
+alone credited it to that package instead (88.6% line there, against 94.0% for
+the package's own code). Its unit and both readers' floors were reset by hand
+from a net10.0 collection of the two readers' test projects, less the grace
+band: the unit at 96.7 / 94.6, <code>Outlook.Msg</code> at 94.3 / 93.0 and <code>Outlook.Pst</code>
+at 93.5 / 88.0 (line / branch).</p>
+<p>The four sets are not alike in one respect that the stale-numbering check cares
+about. <code>Bodu.Text.Serialization/shared/**</code> and <code>Bodu.Formats.Outlook/shared/**</code>
+select <strong>whole members</strong> by format symbol (the Outlook layer throws each
+reader's own exception type), so their hosts legitimately instrument different
+line sets and they are exempt from that check. The other two select only a
+namespace declaration, which carries no sequence points - so if their hosts ever
+disagree about which lines are instrumentable, that really is stale data and
+should be reported.</p>
 <p>The same keying - by source path and line number rather than by class - also
 collapses the duplicate rows a file containing several classes would otherwise
 contribute.</p>
@@ -486,7 +512,7 @@ happy, edge, and exception cases together.</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: bfd3775 · Built: 2026-10-14 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: efd423e · Built: 2026-10-14 (UTC)</span>
         </div>
       </div>
     </footer>
