@@ -47,8 +47,8 @@ Every file is UTF-8 with LF line endings and no byte order mark, and every chara
 
 | Class | Rows | Meaning |
 |---|---:|---|
-| `applies` | 210 | The row runs, and Bodu must do what the fix established |
-| `dialect` | 41 | The row runs, asserting Bodu's documented behaviour where it deliberately differs from the fix; `reason` names the document (a validation level, a documented limit, the code-page rules) |
+| `applies` | 212 | The row runs, and Bodu must do what the fix established |
+| `dialect` | 42 | The row runs, asserting Bodu's documented behaviour where it deliberately differs from the fix; `reason` names the document (a validation level, a documented limit, the code-page rules) |
 | `n/a` | 308 | The fix concerns something Bodu does not have (a tool's output, a C API, recurrence decoding, S/MIME, the 4 KiB-page OST), memory management, a platform, the build or packaging; `reason` says which |
 | `unknown` | 21 | The notes, commit and issue name no scenario; `reason` links what was read |
 
