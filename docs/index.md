@@ -75,7 +75,7 @@ A family of focused primary libraries organized into **seven topics** - alongsid
 <div class="bodu-card">
   <img src="images/hero-io.svg" alt="Bodu.IO.Hashing" />
   <h3>Bodu.IO.Hashing</h3>
-  <p>Non-cryptographic hashes on <code>System.IO.Hashing.NonCryptographicHashAlgorithm</code> - the full CRC RevEng catalogue (1-64 bits), Fletcher 16 / 32 / 64, Adler-32 / 32C / 64, FNV, CityHash, MurmurHash3, Pearson, classic string hashes - plus single- and multi-character check digits (Luhn, EAN, IBAN, ISBN, …).</p>
+  <p>Non-cryptographic hashes on <code>System.IO.Hashing.NonCryptographicHashAlgorithm</code> - the full RevEng CRC catalogue (112 named standards, CRC-3 to CRC-64), Fletcher 16 / 32 / 64, Adler-32 / 32C / 64, FNV, CityHash, MurmurHash3, Pearson, classic string hashes - plus single- and multi-character check digits (Luhn, EAN, IBAN, ISBN, …).</p>
   <div class="bodu-card-links">
     <a href="docs/io-hashing/index.md">Introduction</a>
     <a href="guides/io-hashing/index.md">Guides</a>
@@ -86,7 +86,7 @@ A family of focused primary libraries organized into **seven topics** - alongsid
 <div class="bodu-card">
   <img src="images/hero-crypto.svg" alt="Bodu.Security.Cryptography" />
   <h3>Bodu.Security.Cryptography</h3>
-  <p>Managed block ciphers (Threefish 256 / 512 / 1024, Serpent 128 / 256 / 512 / 1024, Camellia, Twofish, Blowfish, Skipjack), an AES adapter paired with six AEAD mode transforms (GCM, CCM, OCB, EAX, SIV, GCM-SIV), keyed hashes (SipHash, Poly1305), cryptographic digests (Tiger, CubeHash, Snefru, Whirlpool, BLAKE2/3, Skein, Shake, ASCON), and Merkle-tree hashing.</p>
+  <p>Managed block ciphers (Threefish 256 / 512 / 1024, Serpent 128 / 256 / 512 / 1024, Camellia, Twofish, Blowfish, Skipjack), stream ciphers (ChaCha20, Salsa20 and their extended-nonce forms, Rabbit, HC-128), an AES adapter paired with six AEAD mode transforms (GCM, CCM, OCB, EAX, SIV, GCM-SIV), the Poly1305 stream-cipher AEADs (XChaCha20-Poly1305, XSalsa20-Poly1305), keyed hashes (SipHash, Poly1305), cryptographic digests and XOFs (Tiger, CubeHash, Snefru, Whirlpool, BLAKE2/3, Skein, Shake, ASCON), Merkle trees, public-key schemes (X25519, Ed25519, ML-KEM, ML-DSA, HPKE), key derivation (Argon2, scrypt, HKDF), and one-time passwords (HOTP, TOTP).</p>
   <div class="bodu-card-links">
     <a href="docs/cryptography/index.md">Introduction</a>
     <a href="guides/cryptography/index.md">Guides</a>
@@ -227,7 +227,7 @@ A family of focused primary libraries organized into **seven topics** - alongsid
 <div class="bodu-card">
   <img src="images/hero-numerics.svg" alt="Bodu.Numerics" />
   <h3>Bodu.Numerics</h3>
-  <p>Exact rational arithmetic (<code>Fraction&lt;T&gt;</code>) over any <code>IBinaryInteger&lt;T&gt;</code> backing type with canonical-form auto-reduction, <code>BigInteger</code>-promoted intermediates, the full <code>INumber&lt;T&gt;</code> / <code>ISignedNumber&lt;T&gt;</code> surface, mixed-number and Unicode-vulgar-fraction formatting, continued-fraction expansion, and best rational approximation - plus <code>Interval&lt;T&gt;</code> for closed / open / half-open bounded numeric intervals with intersection, union, and adjacency operations.</p>
+  <p>Exact rational arithmetic (<code>Fraction&lt;T&gt;</code>) over any <code>IBinaryInteger&lt;T&gt;</code> backing type with canonical-form auto-reduction, <code>BigInteger</code>-promoted intermediates, the full <code>INumber&lt;T&gt;</code> / <code>ISignedNumber&lt;T&gt;</code> surface, mixed-number and Unicode-vulgar-fraction formatting, continued-fraction expansion, and best rational approximation; the arbitrary-precision <code>BigDecimal</code> and the generic <code>Complex&lt;T&gt;</code>; the interval algebra - <code>Interval&lt;T&gt;</code>, the integer-domain <code>DiscreteInterval&lt;T&gt;</code>, and the N-ary <code>IntervalSet&lt;T&gt;</code>; and the single-pass statistics aggregates (<code>RunningStatistics&lt;T&gt;</code>, <code>RunningQuantile&lt;T&gt;</code>, <code>MovingSum&lt;T&gt;</code>, <code>MovingMinMax&lt;T&gt;</code>).</p>
   <div class="bodu-card-links">
     <a href="docs/numerics/index.md">Introduction</a>
     <a href="guides/numerics/index.md">Guides</a>

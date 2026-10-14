@@ -34,11 +34,11 @@ Rounding out the package, `Bodu.Extensions` carries the date, numeric, span, and
 
 - **[Hashing & Cryptography](hashing-and-cryptography.md)** - `Bodu.IO.Hashing` and `Bodu.Security.Cryptography` take `ThrowHelper` for argument validation and share the pooled-buffer infrastructure.
 - **[Globalization & Calendars](globalization-and-calendars.md)** - `Bodu.Globalization.Calendar` builds on `DayOfWeekSet` and the calendar-shape enums (`CalendarQuarterDefinition`, `WorkingDaysOfWeek`, `WeekOrdinal`) that live in `Bodu.Core`.
-- **[Text & Serialization](text-and-serialization.md)** - `Bodu.Text.Encoding`, `Bodu.Text.Formats`, `Bodu.Text.Bencode`, and `Bodu.Text.Toml` validate through `ThrowHelper` and sit alongside the `Bodu.Text` character-encoding helpers.
-- **[Configuration](configuration.md)** - `Bodu.Text.Configuration` and its `Microsoft.Extensions.Configuration` bridge sit on the same foundation via `Bodu.Text.Formats`.
+- **[Text & Serialization](text-and-serialization.md)** - `Bodu.Text.Encoding`, `Bodu.Text.Filtering`, the line formats behind `Bodu.Text.Formats`, and the `Bodu.Text.Bencode`, `Bodu.Text.Toml`, and `Bodu.Text.Yaml` serializers validate through `ThrowHelper` and sit alongside the `Bodu.Text` character-encoding helpers.
+- **[Configuration](configuration.md)** - `Bodu.Text.Configuration` builds directly on `Bodu.Core`, with an INI model of its own; its `Microsoft.Extensions.Configuration` bridge, `Bodu.Extensions.Configuration.Text`, adds `Bodu.Text.Toml` and `Bodu.Text.Bencode` for its TOML and Bencode sources.
 - **[Numerics & Financial](numerics-and-financial.md)** - `Bodu.Numerics` and `Bodu.Financial` validate through `ThrowHelper`; `Bodu.Financial` additionally builds on `Bodu.Numerics`.
 
-Because `ThrowHelper` is the sole dependency most packages take on `Bodu.Core`, exception messages, parameter-name capture, and `[StackTraceHidden]` behavior stay consistent across every Bodu library. Adopting `Bodu.Core` in your own code buys the same consistency: one guard catalogue, one set of messages, one stack-trace shape.
+Because every Bodu library validates its arguments through `ThrowHelper`, exception messages and parameter-name capture stay consistent across the suite. Adopting `Bodu.Core` in your own code buys the same consistency: one guard catalogue and one set of messages.
 
 ## Which do I need?
 

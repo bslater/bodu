@@ -11,15 +11,20 @@ This page covers the vocabulary that spans the Core Foundations topic - the conv
 Every Bodu library validates its public parameters through <xref:Bodu.ThrowHelper> rather than hand-rolled checks. The convention is **validate-then-work**: guards form a contiguous block at the top of a member, before any real logic runs, so a method either throws immediately with a precise `ArgumentException`-family error or proceeds knowing its inputs are sound.
 
 ```csharp
-public static double Average(IReadOnlyList<int> values)
+using Bodu;
+
+public static class Statistics
 {
-    ThrowHelper.ThrowIfNull(values);
-    ThrowHelper.ThrowIfZero(values.Count);
-    return values.Average();
+    public static double Average(IReadOnlyList<int> values)
+    {
+        ThrowHelper.ThrowIfNull(values);
+        ThrowHelper.ThrowIfZero(values.Count);
+        return values.Average();
+    }
 }
 ```
 
-Each helper accepts a `[CallerArgumentExpression]`-driven `paramName`, so the call site never repeats the argument name - the compiler captures the expression text (`values`, `values.Count`) and it surfaces as `ParamName` on the thrown exception. The helpers are partitioned by concern (null, numeric, comparison, array, collection, span, type, string), and `[StackTraceHidden]` keeps the helper frame out of stack traces. Centralizing the guards is what keeps exception messages and parameter-name capture identical across every Bodu package.
+Each helper accepts a `[CallerArgumentExpression]`-driven `paramName`, so the call site never repeats the argument name - the compiler captures the expression text (`values`, `values.Count`) and it surfaces as `ParamName` on the thrown exception. The helpers are partitioned by concern (null, numeric, comparison, array, collection, span, type, string). Centralizing the guards is what keeps exception messages and parameter-name capture identical across every Bodu package.
 
 ## Bounded vs. growable
 

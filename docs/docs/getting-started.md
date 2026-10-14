@@ -181,7 +181,7 @@ crc.Append(data);
 string hex = Convert.ToHexString(crc.GetCurrentHash());
 ```
 
-Swap `CRC32_ISOHDLC` for any of the 113 entries in the [CRC catalogue](../guides/io-hashing/crc-catalogue.md), or pick a fingerprint (`Fnv1a64`, `CityHash64`, `MurmurHash3_128`) for hash-table use.
+Swap `CRC32_ISOHDLC` for any of the 112 named standards in the [CRC catalogue](../guides/io-hashing/crc-catalogue.md), or pick a fingerprint (`Fnv1a64`, `CityHash64`, `MurmurHash3_128`) for hash-table use.
 
 → **[Introduction](io-hashing/index.md)** · **[Getting started](io-hashing/getting-started.md)** · **[Guides](../guides/io-hashing/index.md)**
 
@@ -257,7 +257,7 @@ Three different jobs that all sound like "text" - see the **[Text & Serializatio
 
 ### Bodu.Text.Encoding
 
-**Bodu.Text.Encoding** is a library of binary-to-text encoders - Base16, Base32, Base64, Base58, and Base85 - each with span- and UTF-8-friendly overloads, `OperationStatus` streaming, and a unified `IBinaryEncoding` interface for runtime-pluggable selection.
+**Bodu.Text.Encoding** is a library of binary-to-text encoders - Base16, Base32, Base64, Base58, and Base85, plus Base45, Base62, and Bech32 - with span- and UTF-8-friendly overloads, `OperationStatus` streaming, and a unified `IBinaryEncoding` interface for runtime-pluggable selection, alongside the percent-encoding and quoted-printable text escapes.
 
 ```csharp
 using System.Security.Cryptography;
@@ -409,7 +409,7 @@ Exact arithmetic and the monetary primitives built on it - see the **[Numerics &
 
 ### Bodu.Numerics
 
-**Bodu.Numerics** ships two generic-math value types - `Fraction<T>` for exact rational arithmetic and `Interval<T>` for bounded intervals - both built on `INumber<T>` so they compose with any generic-math algorithm.
+**Bodu.Numerics** ships generic-math value types - `Fraction<T>` for exact rational arithmetic, `BigDecimal` for arbitrary-precision decimals, `Complex<T>` for complex numbers over any IEEE 754 type, and `Interval<T>` (with `DiscreteInterval<T>` and `IntervalSet<T>`) for bounded intervals - plus single-pass statistics aggregates such as `RunningStatistics<T>`. The value types implement the generic-math interfaces, so they compose with any generic-math algorithm.
 
 ```csharp
 using Bodu.Numerics;

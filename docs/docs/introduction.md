@@ -28,7 +28,7 @@ Two packages split by a single question - *is there an adversary?* Non-cryptogra
 | Package | What it provides | Target frameworks |
 |---|---|---|
 | **[Bodu.IO.Hashing](io-hashing/index.md)** | Non-cryptographic hashing on the BCL <xref:System.IO.Hashing.NonCryptographicHashAlgorithm?displayProperty=nameWithType> contract - fingerprints (FNV, CityHash, MurmurHash3, Pearson, Bernstein and the classic string hashes), checksums (CRC, Fletcher, Adler), and check digits (Luhn, Damm, Verhoeff, IBAN, ISBN, …). Nothing here is safe against an adversary; everything is fast and portable. | `net8.0`, `net10.0` |
-| **[Bodu.Security.Cryptography](cryptography/index.md)** | Cryptographic primitives on the BCL <xref:System.Security.Cryptography.SymmetricAlgorithm?displayProperty=nameWithType> and <xref:System.Security.Cryptography.HashAlgorithm?displayProperty=nameWithType> contracts - managed block ciphers (Threefish, Serpent, Camellia, Twofish, Blowfish, Skipjack), AES paired with six AEAD mode transforms (GCM, CCM, OCB, EAX, SIV, GCM-SIV), keyed hashes (SipHash, Poly1305), cryptographic digests (Tiger, CubeHash, Snefru, Whirlpool, BLAKE2/3, Skein, Shake), the RFC 6962 Merkle tree with inclusion and consistency proofs, and the full ASCON family. | `net8.0`, `net10.0` |
+| **[Bodu.Security.Cryptography](cryptography/index.md)** | Cryptographic primitives on the BCL <xref:System.Security.Cryptography.SymmetricAlgorithm?displayProperty=nameWithType> and <xref:System.Security.Cryptography.HashAlgorithm?displayProperty=nameWithType> contracts - managed block ciphers (Threefish, Serpent, Camellia, Twofish, Blowfish, Skipjack), stream ciphers (ChaCha20, Salsa20 and their extended-nonce forms, Rabbit, HC-128), AES paired with six AEAD mode transforms (GCM, CCM, OCB, EAX, SIV, GCM-SIV), the Poly1305 stream-cipher AEADs (XChaCha20-Poly1305, XSalsa20-Poly1305), keyed hashes (SipHash, Poly1305), cryptographic digests and XOFs (Tiger, CubeHash, Snefru, Whirlpool, BLAKE2/3, Skein, Shake), the RFC 6962 Merkle tree with inclusion and consistency proofs, the full ASCON family, public-key schemes (X25519, Ed25519, ML-KEM, ML-DSA, HPKE), key derivation (Argon2, scrypt, HKDF), and one-time passwords (HOTP, TOTP). | `net8.0`, `net10.0` |
 
 ### [Globalization & Calendars](topics/globalization-and-calendars.md)
 
@@ -45,7 +45,7 @@ Three different jobs that all sound like "text": binary-to-text codecs, document
 
 | Package | What it provides | Target frameworks |
 |---|---|---|
-| **[Bodu.Text.Encoding](text-encoding/index.md)** | Binary-to-text encoders for Base16, Base32, Base64, Base58, and Base85 with every common variant (RFC 4648 standard / hex-extended / URL-safe / MIME, Crockford, z-base-32, Bitcoin / Ripple / Flickr, Ascii85 / Z85). Each encoding exposes the same modern API shape: span- and UTF-8-friendly overloads, `OperationStatus` streaming, length-prediction helpers, validation predicates, plus a unified `IBinaryEncoding` interface for runtime-pluggable encoding choice. | `net8.0`, `net10.0` |
+| **[Bodu.Text.Encoding](text-encoding/index.md)** | Binary-to-text encoders for Base16, Base32, Base64, Base58, and Base85 with every common variant (RFC 4648 standard / hex-extended / URL-safe / MIME, Crockford, z-base-32, Bitcoin / Ripple / Flickr, Ascii85 / Z85), plus Base45, Base62, and Bech32 / Bech32m, and the percent-encoding and quoted-printable text escapes. Each core encoding exposes the same modern API shape: span- and UTF-8-friendly overloads, `OperationStatus` streaming, length-prediction helpers, validation predicates, plus a unified `IBinaryEncoding` interface for runtime-pluggable encoding choice. | `net8.0`, `net10.0` |
 | **[Bodu.Text.Filtering](text-filtering/index.md)** | A high-performance include/exclude filtering engine for lists of text values. Glob (wildcard, character-class, `{a,b}` alternation) and regex patterns compile once into an immutable `TextFilter` that runs the cheapest matching strategies first; choose Ant / MSBuild-style `AnyMatch` sets or gitignore-style `LastMatchWins` ordered rules, parse raw lines with the gitignore conventions, and observe decisions through built-in statistics and a per-decision observer. | `net8.0`, `net10.0` |
 | **[Bodu.Text.Formats](formats/index.md)** | Self-framing text document formats with strongly-typed value models and span- and stream-friendly codecs. An umbrella over three sibling packages - **Delimited** (CSV / TSV), **DotEnv**, and **Ini** - each shipping a `Utf8…Reader` / `Utf8…Writer` pair, a `…Serializer` POCO mapper, and mutable and read-only DOMs, with strict invariant enforcement. | `net8.0`, `net10.0` |
 | **[Bodu.Text.Bencode](serialization/bencode/index.md)** · **[Bodu.Text.Toml](serialization/toml/index.md)** · **[Bodu.Text.Yaml](serialization/yaml/index.md)** | Three serializers that map your own types to and from a format - a shared architecture over the `Bodu.Text.Serialization` engine and a `System.Text.Json`-aligned shape, each shipping a `…Serializer`, a mutable `…Node` and a read-only `…Document` DOM, and a low-level `Utf8…Reader` / `Utf8…Writer` pair. **Bencode** covers BitTorrent BEP 3; **TOML** covers v1.0.0 / v1.1.0; **YAML** the 1.2 core schema with block / flow collections, anchors, and multi-document streams. See the [shared family introduction](serialization/index.md). | `net8.0`, `net10.0` |
@@ -65,7 +65,7 @@ Exact arithmetic - rational numbers and intervals, and the money, currency, and 
 
 | Package | What it provides | Target frameworks |
 |---|---|---|
-| **[Bodu.Numerics](numerics/index.md)** | Generic-math value primitives - `Fraction<T>` for exact rational arithmetic over any `IBinaryInteger<T>` with canonical-form auto-reduction and `BigInteger`-promoted intermediates, and `Interval<T>` for closed / open / half-open bounded intervals with intersection, union, and adjacency. | `net8.0`, `net10.0` |
+| **[Bodu.Numerics](numerics/index.md)** | Generic-math value primitives - `Fraction<T>` for exact rational arithmetic over any `IBinaryInteger<T>` with canonical-form auto-reduction and `BigInteger`-promoted intermediates; the arbitrary-precision `BigDecimal` and the generic `Complex<T>`; `Interval<T>` for closed / open / half-open bounded intervals with intersection, union, and adjacency, with the integer-domain `DiscreteInterval<T>` and the N-ary `IntervalSet<T>`; and the single-pass statistics aggregates (`RunningStatistics<T>`, `RunningQuantile<T>`, `MovingSum<T>`, `MovingMinMax<T>`). | `net8.0`, `net10.0` |
 | **[Bodu.Financial](financial/index.md)** | Type-safe monetary primitives - `Money<TCurrency>` (currency as type parameter, so cross-currency arithmetic fails the build), `Money` for runtime-tagged scenarios, `MoneyBag` for multi-currency portfolios, the ISO 4217 currency catalogue, exchange-rate providers, allocation, and cash rounding. | `net8.0`, `net10.0` |
 
 ### [Binary Formats & I/O](topics/binary-formats.md)
@@ -196,7 +196,7 @@ Each library has a dedicated introduction page that explains its namespaces, the
 
 <div class="bodu-card">
   <h3><a href="text-encoding/index.md">Bodu.Text.Encoding</a></h3>
-  <p>Binary-to-text encoders for Base16, Base32, Base64, Base58, and Base85 with every common variant. Span-, UTF-8-, and <code>OperationStatus</code>-friendly; unified <code>IBinaryEncoding</code> interface for runtime-pluggable choice.</p>
+  <p>Binary-to-text encoders for Base16, Base32, Base64, Base58, and Base85 with every common variant, plus Base45, Base62, Bech32, and the percent-encoding and quoted-printable escapes. Span-, UTF-8-, and <code>OperationStatus</code>-friendly; unified <code>IBinaryEncoding</code> interface for runtime-pluggable choice.</p>
   <div class="bodu-card-links">
     <a href="text-encoding/index.md">Introduction</a>
     <a href="text-encoding/getting-started.md">Getting started</a>
@@ -272,7 +272,7 @@ Each library has a dedicated introduction page that explains its namespaces, the
 
 <div class="bodu-card">
   <h3><a href="numerics/index.md">Bodu.Numerics</a></h3>
-  <p>Generic-math value primitives - <code>Fraction&lt;T&gt;</code> for exact rational arithmetic and <code>Interval&lt;T&gt;</code> for closed / open / half-open bounded intervals, both over the <code>INumber&lt;T&gt;</code> abstractions.</p>
+  <p>Generic-math value primitives - <code>Fraction&lt;T&gt;</code> for exact rational arithmetic, <code>BigDecimal</code>, <code>Complex&lt;T&gt;</code>, the interval algebra (<code>Interval&lt;T&gt;</code>, <code>DiscreteInterval&lt;T&gt;</code>, <code>IntervalSet&lt;T&gt;</code>), and single-pass statistics aggregates.</p>
   <div class="bodu-card-links">
     <a href="numerics/index.md">Introduction</a>
     <a href="numerics/getting-started.md">Getting started</a>
