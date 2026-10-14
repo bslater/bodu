@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Reading a stream a block at a time | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Reading a stream a block at a time | BODU ">
+      
+      
+      <link rel="icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/master/docs/guides/io-biff/resumable-reading.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="reading-a-stream-a-block-at-a-time">Reading a stream a block at a time</h1>
+
+<p><a class="xref" href="../../api/Bodu.IO.Biff.BiffReader.html">BiffReader</a> reads a span, and the simplest use hands it the whole record stream. A large workbook stream need not be in memory at once: the reader can take one block, report how far it got, and hand its state to a reader over the next block. This guide builds that loop over any <code>Stream</code> - a <code>CompoundStream</code> opened with the <code>Streaming</code> strategy, or a stream that cannot seek at all - including the one structure that needs care, the shared string table.</p>
+<h2 id="the-three-pieces">The three pieces</h2>
+<table>
+<thead>
+<tr>
+<th>Piece</th>
+<th>Role</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>new BiffReader(block, isFinalBlock, state)</code></td>
+<td>A reader over one block, starting at a record header, continuing from the state of the reader before it.</td>
+</tr>
+<tr>
+<td><code>BytesConsumed</code></td>
+<td>How far the reader got: the offset in the block of the first record it has not read. The bytes from there on are the start of the next block.</td>
+</tr>
+<tr>
+<td><code>CurrentState</code></td>
+<td>The <a class="xref" href="../../api/Bodu.IO.Biff.BiffReaderState.html">BiffReaderState</a> the next reader needs: the version from the first <code>BOF</code> record and the code page from the last <code>CODEPAGE</code> record. The reader keeps no other state.</td>
+</tr>
+</tbody>
+</table>
+<p>With <code>isFinalBlock: false</code>, a record cut off at the end of the block makes <code>Read()</code> return <code>false</code> without consuming it, so you can move it to the front, read more bytes after it, and try again. With <code>isFinalBlock: true</code>, the same record is malformed, and <code>Read()</code> throws <a class="xref" href="../../api/Bodu.IO.Biff.BiffFormatException.html">BiffFormatException</a>.</p>
+<h2 id="pattern-1---read-any-stream-in-blocks">Pattern 1 - read any stream in blocks</h2>
+<p>The loop keeps one buffer. It fills the buffer from the stream, lets a reader take every whole record in it, moves the unread tail to the front, and repeats; when the stream ends, the last block is read as the final one.</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.IO.Biff;
+using Bodu.IO.Compound;
+
+using CompoundFile container = CompoundFile.OpenRead(
+    &quot;report.xls&quot;, new CompoundFileOptions { ReadStrategy = CompoundReadStrategy.Streaming });
+using CompoundStream workbook = container.RootStorage.OpenStream(&quot;Workbook&quot;);
+
+var sharedStrings = new List&lt;string&gt;();
+int records = ReadInBlocks(workbook, sharedStrings);
+Console.WriteLine($&quot;{records} records, {sharedStrings.Count} shared strings&quot;);
+
+// Reads a BIFF record stream from any stream a block at a time, carrying only the unread tail of each block into
+// the next.
+static int ReadInBlocks(Stream source, List&lt;string&gt; sharedStrings)
+{
+    byte[] buffer = new byte[64 * 1024];
+    int buffered = 0;
+    bool endOfStream = false;
+    BiffReaderState state = default;
+    int records = 0;
+
+    while (true)
+    {
+        // Top the buffer up; a read that returns nothing means the stream has ended.
+        while (!endOfStream &amp;&amp; buffered &lt; buffer.Length)
+        {
+            int read = source.Read(buffer, buffered, buffer.Length - buffered);
+            if (read == 0)
+                endOfStream = true;
+            else
+                buffered += read;
+        }
+
+        int consumed = ReadBlock(buffer.AsSpan(0, buffered), endOfStream, ref state, sharedStrings, ref records);
+        if (endOfStream)
+            return records;
+
+        // A full buffer that yields nothing holds one record, or one string table, larger than the buffer.
+        if (consumed == 0 &amp;&amp; buffered == buffer.Length)
+            Array.Resize(ref buffer, buffer.Length * 2);
+
+        // The unread tail starts at a record header; it becomes the start of the next block.
+        buffer.AsSpan(consumed, buffered - consumed).CopyTo(buffer);
+        buffered -= consumed;
+    }
+}
+
+// Reads the whole records in one block and returns the number of bytes consumed.
+static int ReadBlock(ReadOnlySpan&lt;byte&gt; block, bool isFinalBlock, ref BiffReaderState state, List&lt;string&gt; sharedStrings, ref int records)
+{
+    var reader = new BiffReader(block, isFinalBlock, state);
+    int consumed = 0;
+
+    while (reader.Read())
+    {
+        if (reader.RecordType == BiffRecordType.Sst)
+        {
+            // Decode the table only once every CONTINUE record it spans is in this block.
+            if (!isFinalBlock &amp;&amp; !HoldsWholeRun(block, reader.RecordStartIndex))
+                break;
+
+            var strings = new BiffSstReader(ref reader);
+            while (strings.Read(ref reader))
+                sharedStrings.Add(strings.GetString());
+        }
+
+        records++;
+        consumed = reader.BytesConsumed;
+        state = reader.CurrentState;
+    }
+
+    return consumed;
+}
+
+// Whether the record at start, and every CONTINUE record after it, lie wholly in the block with the next record's
+// header in view, so that nothing the record continues into is still to arrive.
+static bool HoldsWholeRun(ReadOnlySpan&lt;byte&gt; block, int start)
+{
+    int position = start;
+    while (true)
+    {
+        if (!BiffRecordHeader.TryParse(block.Slice(position), out BiffRecordHeader header))
+            return false;
+
+        if (position != start &amp;&amp; header.Id != (ushort)BiffRecordType.Continue)
+            return true;
+
+        position += BiffLimits.RecordHeaderSize + header.Length;
+        if (position &gt; block.Length)
+            return false;
+    }
+}
+</code></pre>
+<p><code>consumed</code> and <code>state</code> are taken after each record is handled, not when the reader stops, so a record the loop sets aside - here, a string table whose continuation has not arrived - is read again, whole, from the next block.</p>
+<h2 id="why-the-buffer-may-grow">Why the buffer may grow</h2>
+<p>A conformant BIFF8 record is at most 8,228 bytes with its header, but the reader accepts any payload its 16-bit length field can declare, so one record can need 65,539 bytes. A block that holds only part of such a record yields nothing, and the loop doubles the buffer until the record fits. The 64 KiB starting size holds nearly eight of the largest conformant records; growth is for the exceptions.</p>
+<h2 id="the-shared-string-table">The shared string table</h2>
+<p><code>Read()</code> frames one physical record at a time, so a block boundary between two records is never a problem for it. The shared string table is different: <a class="xref" href="../../api/Bodu.IO.Biff.BiffSstReader.html">BiffSstReader</a> pulls the table's <code>CONTINUE</code> records from the parent reader itself, and when the next record is not in the block yet, it has no way to say &quot;wait for more&quot;. It takes the table as ended, or, when a string is cut off, throws <code>BiffFormatException</code>.</p>
+<p><code>HoldsWholeRun</code> closes that gap. It walks the record headers from the <code>SST</code> record on, and reports success only when every <code>CONTINUE</code> record is complete and the header of the record after them is in the block, which proves the table has ended. Until then the loop leaves the table unread, keeps it at the front of the buffer, and reads more after it. A table larger than the buffer makes the buffer grow, so the table, unlike every other record, is held whole: plan for the largest string table you expect, which is the price of decoding it in one pass.</p>
+<p>The same applies to any structure you read with <code>TryReadContinuation</code>: check that its run is whole before you start on it.</p>
+<h2 id="errors-and-offsets">Errors and offsets</h2>
+<p>Everything the reader reports is relative to the block it was created over. <code>RecordStartIndex</code> and <code>BytesConsumed</code> are offsets in the block, and so is <a class="xref" href="../../api/Bodu.IO.Biff.BiffFormatException.html#Bodu_IO_Biff_BiffFormatException_Offset">Offset</a>. To report a position in the stream, keep a running count of the bytes the loop has discarded from the front of the buffer, and add it.</p>
+<p>A stream that ends inside a record is malformed, and the final block reports it: <code>Read()</code> throws <code>BiffFormatException</code> for a trailing fragment shorter than a header, or a payload that runs past the end. A stream that opens with a BIFF2, BIFF3, or BIFF4 <code>BOF</code> record throws <a class="xref" href="../../api/Bodu.IO.Biff.BiffUnsupportedVersionException.html">BiffUnsupportedVersionException</a> from the first block.</p>
+<h2 id="reading-one-sheet">Reading one sheet</h2>
+<p>A sheet substream can be read on its own, from the offset its <code>BOUNDSHEET</code> record gives. It opens with its own <code>BOF</code> record, which establishes the version, but the code page comes from the globals: a reader started at the sheet decodes BIFF5 text in the default code page unless it is given the state the globals established. Carry that state across, as the block loop does:</p>
+<!-- compile -->
+<pre><code class="lang-csharp">using Bodu.IO.Biff;
+using Bodu.IO.Compound;
+
+using CompoundFile container = CompoundFile.OpenRead(&quot;report.xls&quot;);
+using CompoundStream stream = container.RootStorage.OpenStream(&quot;Workbook&quot;);
+byte[] bytes = new byte[stream.Length];
+stream.ReadExactly(bytes);
+
+// Read the globals, noting the last sheet's offset; the reader's state then holds their version and code page.
+var globals = new BiffReader(bytes);
+long sheetOffset = 0;
+while (globals.Read() &amp;&amp; globals.RecordType != BiffRecordType.Eof)
+{
+    if (globals.RecordType == BiffRecordType.BoundSheet)
+        sheetOffset = globals.GetBoundSheet().StreamOffset;
+}
+
+// Read that sheet alone, from its BOF to its EOF, continuing from the globals' state.
+var sheet = new BiffReader(bytes.AsSpan((int)sheetOffset), isFinalBlock: true, globals.CurrentState);
+while (sheet.Read() &amp;&amp; sheet.RecordType != BiffRecordType.Eof)
+    Console.WriteLine($&quot;{sheet.RecordType} ({sheet.RecordLength} bytes)&quot;);
+</code></pre>
+<p>When you know the version and code page some other way, <code>new BiffReaderState(new BiffReaderOptions { Version = ..., CodePage = ... })</code> seeds the same state.</p>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><strong><a href="authoring-records.html">Authoring a workbook stream</a></strong> - the writing side, and the stream this guide reads.</li>
+<li><strong><a href="../../docs/io-biff/getting-started.html">Getting started</a></strong> - reading a whole stream, decoding records, and the shared string table.</li>
+<li><strong><a href="../io-compound/streaming-and-buffering.html">Buffered vs streaming access</a></strong> - how the container reads a stream's sectors on demand.</li>
+<li><strong><a href="../../docs/topics/untrusted-input.html">Reading untrusted input</a></strong> - the limits the readers apply to a crafted file.</li>
+</ul>
+
+</article>
+
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 2df2728 · Built: 2026-10-14 (UTC)</span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Versioning, stability, and support | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Versioning, stability, and support | BODU ">
+      
+      
+      <link rel="icon" href="../images/favicon.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      <meta name="docfx:rel" content="../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/master/docs/docs/versioning-and-support.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="versioning-stability-and-support">Versioning, stability, and support</h1>
+
+<p>Bodu packages install separately, but they do not version separately. Every package ships in one of two lock-step version streams, chosen by its API-stability tier, and one release moves a whole stream at once. This page explains the two streams, what each tier promises about your code, how a package moves between tiers, which frameworks the packages target, and which releases receive fixes. The <a href="package-matrix.html">package matrix</a> lists every package with its tier and its version.</p>
+<h2 id="two-version-streams">Two version streams</h2>
+<table>
+<thead>
+<tr>
+<th>Stream</th>
+<th>Version in the 1.3.0 release</th>
+<th>Packages on it</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Stable stream</strong></td>
+<td>1.3.0</td>
+<td>Every Stable package: 53 packages, all published to nuget.org.</td>
+</tr>
+<tr>
+<td><strong>Preview stream</strong></td>
+<td>0.7.2</td>
+<td>Every Preview and Experimental package: <code>Bodu.Financial.ExchangeRates.Imf</code>, <code>.Yahoo</code>, and <code>.Ofx</code> (Experimental, published), plus four packages that are <a href="#packages-that-are-not-on-nugetorg">not published</a>.</td>
+</tr>
+</tbody>
+</table>
+<p>Within a stream every package carries the same version, and a matched version across <code>Bodu.*</code> packages is a set that was built, tested, and released together. Two rules follow for your project file:</p>
+<ul>
+<li><strong>Keep every Bodu package from the same stream on the same version.</strong> When you move <code>Bodu.Core</code> to 1.3.0, move the other Stable Bodu packages you reference to 1.3.0 in the same change. NuGet resolves a mismatched set, but only the matched one was tested together.</li>
+<li><strong>A Preview-stream package depends on the Stable packages of its own release.</strong> <code>Bodu.Financial.ExchangeRates.Imf</code> 0.7.2 depends on <code>Bodu.Financial.ExchangeRates</code> and <code>Bodu.Core</code> 1.3.0, so referencing it alongside the Stable packages raises nothing below 1.3.0.</li>
+</ul>
+<p>A release is cut from one tag, which publishes every package in the shipping manifest at the version its stream is at. A stream whose version did not move publishes nothing new.</p>
+<h3 id="out-of-band-releases">Out-of-band releases</h3>
+<p>A Stable package can ship on its own, ahead of its stream, when a fix or a feature is worth releasing before the next lock-step release. The 1.0 line had four: <code>Bodu.Security.Cryptography</code> 1.1.0 and 1.2.0, <code>Bodu.Core</code> 1.0.1, and <code>Bodu.Globalization.Calendar</code> 1.0.1. Each is tagged <code>&lt;PackageId&gt;-&lt;version&gt;</code> on GitHub, with its own release notes. The next lock-step release always moves past them: 1.3.0 is above <code>Bodu.Security.Cryptography</code> 1.2.0, the highest out-of-band version, so from 1.3.0 every Stable package is back on one version.</p>
+<h2 id="api-stability-tiers">API-stability tiers</h2>
+<p>Each package's <code>README.md</code>, which is also its nuget.org page, opens with its tier, and the <strong>Status</strong> column of the <a href="package-matrix.html">package matrix</a> repeats it. A tier describes the API contract: what a new version may do to code you have already written. It says nothing about whether the package is on nuget.org.</p>
+<table>
+<thead>
+<tr>
+<th>Tier</th>
+<th>Version range</th>
+<th>What it commits to</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Stable</strong></td>
+<td>1.0 and later</td>
+<td>The public API surface is committed. Breaking changes wait for a major version, except a deliberate break that is recorded in the release notes and in the package's <code>CompatibilitySuppressions.xml</code>. Additive changes ship in minor versions, and fixes in patch versions.</td>
+</tr>
+<tr>
+<td><strong>Preview</strong></td>
+<td>Below 1.0</td>
+<td>Offered for early evaluation. The public API is still taking shape and may change between releases without a major-version bump.</td>
+</tr>
+<tr>
+<td><strong>Experimental</strong></td>
+<td>Below 1.0</td>
+<td>Behavior depends on an external resource with no versioned contract, such as a feed its operator does not publish as an API, so it can stop working without any change in Bodu. Treat it as best-effort and pair it with a Stable alternative.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="the-recorded-break-in-130">The recorded break in 1.3.0</h3>
+<p>1.3.0 carries one recorded break of a Stable API. <code>DayOfWeekSet</code>, one of the calendar value sets, replaces <code>WeekPattern</code>, and every signature that named <code>WeekPattern</code> changes with it:</p>
+<table>
+<thead>
+<tr>
+<th>Package</th>
+<th>What changes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Bodu.Core</code></td>
+<td><code>WeekPattern</code> is removed; APIs that took or returned one take or return a <code>DayOfWeekSet</code>. <code>ToWeekPattern()</code> becomes <code>ToDayOfWeekSet()</code> on <code>WorkingDaysOfWeek</code> and <code>ToWorkingWeek()</code> on <code>IWeekendDefinitionProvider</code>, which returns the working days rather than the weekend.</td>
+</tr>
+<tr>
+<td><code>Bodu.Globalization.Calendar</code></td>
+<td>The <code>workingWeek</code> parameter of the working-day and fiscal extensions, the <code>ResolutionPolicy</code> constructor and its <code>WorkingWeek</code> property, and <code>AdjustmentPolicy.IsTriggered</code> and <code>ApplyAction</code> take a <code>DayOfWeekSet</code>.</td>
+</tr>
+<tr>
+<td><code>Bodu.Globalization.Calendar.Builder</code></td>
+<td><code>ResolutionPolicyBuilder.WithWorkingWeek</code> takes a <code>DayOfWeekSet</code>.</td>
+</tr>
+</tbody>
+</table>
+<p>Stored data is unchanged: calendar documents keep <code>workingDays=&quot;0111110&quot;</code>, and compiled <code>.bcal</code> packs keep their byte layout. The <a href="../guides/core/day-of-week-set.html#migrating-from-weekpattern">migration table</a> maps each <code>WeekPattern</code> member to its <code>DayOfWeekSet</code> replacement.</p>
+<h3 id="how-compatibility-is-checked">How compatibility is checked</h3>
+<p>Every published package is compared, when it is packed, against the last release of its own stream with the .NET SDK's package validation: the Stable packages against 1.0.0, and the Preview-stream packages against 0.7.1. A removed or changed public API fails the pack unless it is recorded, with its reason, in the package's <code>CompatibilitySuppressions.xml</code>; additions pass. The comparison runs on every pull request, so a Stable break cannot reach a release by accident. The baselines move up after each release.</p>
+<h2 id="moving-between-tiers">Moving between tiers</h2>
+<p>A Preview package is <strong>promoted</strong> to Stable once its API has settled. It joins the Stable stream in the release that promotes it, so its version jumps: the ten packages promoted in 1.3.0 go from 0.7.1 to 1.3.0.</p>
+<table>
+<thead>
+<tr>
+<th>Promoted in 1.3.0</th>
+<th>Packages</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Container and mail-store readers</td>
+<td><code>Bodu.IO.Pst</code>, <code>Bodu.Formats.Outlook</code>, <code>Bodu.Formats.Outlook.Msg</code>, <code>Bodu.Formats.Outlook.Pst</code></td>
+</tr>
+<tr>
+<td>Exchange-rate providers over published APIs</td>
+<td><code>Bodu.Financial.ExchangeRates.Boe</code>, <code>.Ecb</code>, <code>.Rba</code>, <code>.Fixer</code>, <code>.ExchangeRateHost</code>, <code>.Fred</code></td>
+</tr>
+</tbody>
+</table>
+<p>A package settles its API while it is still Preview, so the release that promotes it can still change its API: read the release notes when you move one of these packages from 0.7.1 to 1.3.0. From 1.3.0 on, each is held to the Stable promise.</p>
+<p>A package can also move the other way. In 1.3.0 the IMF, Yahoo, and OFX providers were retiered from Preview to Experimental, because each reads a feed its operator does not publish as an API. They stay on the Preview stream, at 0.7.2.</p>
+<h2 id="packages-that-are-not-on-nugetorg">Packages that are not on nuget.org</h2>
+<p>Four packages build and pack with the solution but are deliberately not published, and the <a href="package-matrix.html#not-published-to-nugetorg">package matrix</a> says why: <code>Bodu.Financial.ExchangeRates.Xe</code> and <code>Bodu.Financial.ExchangeRates.Oanda</code> (Experimental), and the calendar toolchain <code>Bodu.Globalization.Calendar.Tool</code> and <code>Bodu.Globalization.Calendar.Build</code> (Preview). They version on the Preview stream when you build them from a clone, but no release publishes them, and the security policy does not cover them. The source generator <code>Bodu.Text.Formats.Generators</code> is not packaged at all.</p>
+<h2 id="target-frameworks">Target frameworks</h2>
+<p>Every runtime package targets <code>net8.0</code> and <code>net10.0</code>. The one build-time package, <code>Bodu.Globalization.Calendar.Build</code>, targets <code>netstandard2.0</code>, so its MSBuild task loads in any MSBuild host.</p>
+<p>Keeping <code>net8.0</code> is deliberate. Adding a target framework is invisible to existing consumers, but removing one strands every application still on that runtime, so <code>net8.0</code> will be dropped only in a major version. Building the packages from source needs the .NET 10 SDK that the repository's <code>global.json</code> pins, because the sources use C# 14.</p>
+<h2 id="which-releases-receive-fixes">Which releases receive fixes</h2>
+<p>A fix ships in a new version of the affected package: in the next release of its stream, or out of band when it cannot wait. The repository's security policy sets which releases receive security fixes, and they are not backported to earlier release lines:</p>
+<table>
+<thead>
+<tr>
+<th>Tier</th>
+<th>Receives security fixes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Stable</strong></td>
+<td>The latest release of the current major version.</td>
+</tr>
+<tr>
+<td><strong>Preview</strong></td>
+<td>The latest release only.</td>
+</tr>
+<tr>
+<td><strong>Experimental</strong></td>
+<td>The latest release only.</td>
+</tr>
+</tbody>
+</table>
+<p>Packages that are not published to nuget.org are not covered. To report a vulnerability privately, follow the repository's <a href="https://github.com/bslater/bodu/blob/master/SECURITY.md">security policy</a>.</p>
+<h2 id="reading-versions-on-this-site">Reading versions on this site</h2>
+<p>Every API page names the package its type ships in and that package's version, under <strong>Package</strong> in the type's definition; a package that is not on nuget.org is marked so. The site has three kinds of version slot:</p>
+<table>
+<thead>
+<tr>
+<th>Address</th>
+<th>Documents</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>The site root</td>
+<td>The latest release.</td>
+</tr>
+<tr>
+<td><code>/&lt;series&gt;/</code>, for example <code>/1.0/</code></td>
+<td>Each release series, archived when it ships.</td>
+</tr>
+<tr>
+<td><code>/dev/</code></td>
+<td>The current <code>master</code> branch, with the versions it would pack.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><strong><a href="package-matrix.html">Package matrix</a></strong> - every package with its tier, version, and dependencies.</li>
+<li><strong><a href="getting-started.html">Getting started</a></strong> - install commands and a first sample from each library.</li>
+<li><strong><a href="../guides/core/day-of-week-set.html">Calendar value sets</a></strong> - <code>DayOfWeekSet</code> and the migration from <code>WeekPattern</code>.</li>
+</ul>
+
+</article>
+
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 2df2728 · Built: 2026-10-14 (UTC)</span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

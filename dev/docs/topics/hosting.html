@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Dependency injection and configuration | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Dependency injection and configuration | BODU ">
+      
+      
+      <link rel="icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/master/docs/docs/topics/hosting.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="dependency-injection-and-configuration">Dependency injection and configuration</h1>
+
+<p>Bodu's <code>Microsoft.Extensions.DependencyInjection</code> registrations come in three families - calendars, money and exchange rates, and configuration sources - and their namespaces do not always match their packages: <code>AddFinancialService</code> is in <code>Bodu.Financial</code>, not in a <code>DependencyInjection</code> namespace, and every exchange-rate provider and cache registers from <code>Bodu.Financial.ExchangeRates</code>. This page lists every registration with its package, namespace and lifetime, wires one host that uses all three families, and states the order the registrations must run in.</p>
+<p>Every registration adds its services as singletons, because each service it registers is safe for concurrent use; see <a href="thread-safety.html">thread safety</a>.</p>
+<h2 id="calendars">Calendars</h2>
+<p>Every calendar registration is declared in the <code>Bodu.Globalization.Calendar</code> namespace, whichever package ships it.</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Package</th>
+<th>Registers</th>
+<th>Lifetime</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>AddNotableDateService</code></td>
+<td><code>Bodu.Globalization.Calendar.DependencyInjection</code></td>
+<td><code>INotableDateService</code> over a resource or a resource factory; the overloads that take a string key register a keyed service instead.</td>
+<td>Singleton; the first registration wins.</td>
+</tr>
+<tr>
+<td><code>AddReloadableNotableDateService</code></td>
+<td><code>Bodu.Globalization.Calendar.DependencyInjection</code></td>
+<td><code>INotableDateService</code>, and the <code>INotableDateResourceProvider</code> whose resource can be swapped at run time. The generic overload rebuilds the resource on every change to its options type.</td>
+<td>Singleton; the first registration wins.</td>
+</tr>
+<tr>
+<td><code>AddCachedNotableDateService</code></td>
+<td><code>Bodu.Globalization.Calendar.Caching</code></td>
+<td>Replaces the registered <code>INotableDateService</code> with a <code>CachingNotableDateService</code> over it, binding <code>Calendar:NotableDateCache</code>.</td>
+<td>Singleton.</td>
+</tr>
+<tr>
+<td><code>AddNotableDateCacheWarmup</code></td>
+<td><code>Bodu.Globalization.Calendar.Caching</code></td>
+<td>A hosted service that fills the cache when the host starts, binding <code>Calendar:NotableDateCacheWarmup</code>.</td>
+<td>Hosted service.</td>
+</tr>
+<tr>
+<td><code>AddSqliteNotableDateCache</code></td>
+<td><code>Bodu.Globalization.Calendar.Caching.Sqlite</code></td>
+<td><code>SqliteNotableDateCache</code>, as <code>INotableDateCache</code>, binding <code>Calendar:NotableDateCache:Sqlite</code>.</td>
+<td>Singleton; the first registration wins.</td>
+</tr>
+<tr>
+<td><code>AddDistributedNotableDateCache</code>, <code>AddRedisNotableDateCache</code></td>
+<td><code>Bodu.Globalization.Calendar.Caching.Distributed</code></td>
+<td><code>DistributedNotableDateCache</code>, as <code>INotableDateCache</code>, over the registered <code>IDistributedCache</code>, binding <code>Calendar:NotableDateCache:Distributed</code>. The Redis overload registers the <code>IDistributedCache</code> first.</td>
+<td>Singleton; the first registration wins.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="money-and-exchange-rates">Money and exchange rates</h2>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Package</th>
+<th>Namespace</th>
+<th>Registers</th>
+<th>Lifetime</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>AddFinancialService</code></td>
+<td><code>Bodu.Financial.DependencyInjection</code></td>
+<td><code>Bodu.Financial</code></td>
+<td><code>ICurrencyLookup</code> and the <code>FinancialOptions</code> binding (<code>Financial</code>), and returns the <code>IFinancialServiceBuilder</code> the rest of this table chains from.</td>
+<td>Singleton; the first registration wins.</td>
+</tr>
+<tr>
+<td><code>AddCurrencyLookup&lt;TLookup&gt;</code></td>
+<td><code>Bodu.Financial.DependencyInjection</code></td>
+<td><code>Bodu.Financial</code></td>
+<td>Your <code>ICurrencyLookup</code>, in place of the default.</td>
+<td>Singleton; replaces the existing one.</td>
+</tr>
+<tr>
+<td><code>AddMonetaryContext</code></td>
+<td><code>Bodu.Financial.DependencyInjection</code></td>
+<td><code>Bodu.Financial</code></td>
+<td>A <code>MonetaryContext</code>, keyed by name.</td>
+<td>Keyed singleton.</td>
+</tr>
+<tr>
+<td><code>AddExchangeRateProvider</code>, <code>AddDatedExchangeRateProvider</code></td>
+<td><code>Bodu.Financial.DependencyInjection</code></td>
+<td><code>Bodu.Financial</code></td>
+<td>Your <code>IRateProvider</code> or <code>IDatedRateProvider</code>, by type or instance.</td>
+<td>Singleton; the first registration wins.</td>
+</tr>
+<tr>
+<td><code>Add&lt;Source&gt;ExchangeRates</code>, such as <code>AddEcbExchangeRates</code></td>
+<td><code>Bodu.Financial.ExchangeRates.&lt;Source&gt;</code></td>
+<td><code>Bodu.Financial.ExchangeRates</code></td>
+<td>The provider, as itself, <code>IDatedRateProvider</code> and <code>IRateProvider</code>, with a named <code>HttpClient</code> fitted with the standard resilience handler, binding <code>Financial:&lt;Source&gt;</code>. The overload on <code>IServiceCollection</code> calls <code>AddFinancialService</code> first.</td>
+<td>Singleton; the first registration wins.</td>
+</tr>
+<tr>
+<td><code>AddWebRateProvider</code></td>
+<td><code>Bodu.Financial.ExchangeRates.DependencyInjection</code></td>
+<td><code>Bodu.Financial.ExchangeRates</code></td>
+<td>The same plumbing, for a provider of your own.</td>
+<td>Singleton; the first registration wins.</td>
+</tr>
+<tr>
+<td><code>AddCachedRateProvider&lt;TProvider&gt;</code></td>
+<td><code>Bodu.Financial.ExchangeRates.Caching</code></td>
+<td><code>Bodu.Financial.ExchangeRates</code></td>
+<td>A <code>CachingRateProvider</code> over the registered <code>TProvider</code>, as <code>IDatedRateProvider</code> and <code>IRateProvider</code>, binding <code>Financial:RateCache</code>.</td>
+<td>Singleton; overrides earlier registrations.</td>
+</tr>
+<tr>
+<td><code>AddAggregatedRateProvider</code></td>
+<td><code>Bodu.Financial.ExchangeRates.Caching</code></td>
+<td><code>Bodu.Financial.ExchangeRates</code></td>
+<td>An <code>AggregatingRateProvider</code> over cached children, as <code>IDatedRateProvider</code> and <code>IRateProvider</code>, with each child also a keyed <code>IDatedRateProvider</code>.</td>
+<td>Singleton; overrides earlier registrations.</td>
+</tr>
+<tr>
+<td><code>AddRateCacheWarmup</code></td>
+<td><code>Bodu.Financial.ExchangeRates.Caching</code></td>
+<td><code>Bodu.Financial.ExchangeRates</code></td>
+<td>A hosted service that fills the rate caches when the host starts, binding <code>Financial:RateCacheWarmup</code>.</td>
+<td>Hosted service.</td>
+</tr>
+<tr>
+<td><code>AddSqliteRateCache</code></td>
+<td><code>Bodu.Financial.ExchangeRates.Caching.Sqlite</code></td>
+<td><code>Bodu.Financial.ExchangeRates</code></td>
+<td><code>SqliteRateCache</code> for one provider, as a keyed <code>IRateCache</code> under the provider's name, binding <code>Financial:RateCache:Sqlite</code>.</td>
+<td>Keyed singleton; the first one registered is also the unkeyed <code>IRateCache</code>.</td>
+</tr>
+<tr>
+<td><code>AddDistributedRateCache</code>, <code>AddRedisRateCache</code></td>
+<td><code>Bodu.Financial.ExchangeRates.Caching.Distributed</code></td>
+<td><code>Bodu.Financial.ExchangeRates</code></td>
+<td><code>DistributedRateCache</code> over the registered <code>IDistributedCache</code>, likewise, binding <code>Financial:RateCache:Distributed</code>. The Redis overload registers the <code>IDistributedCache</code> first.</td>
+<td>Keyed singleton; the first one registered is also the unkeyed <code>IRateCache</code>.</td>
+</tr>
+<tr>
+<td><code>AddFinancialJson</code></td>
+<td><code>Bodu.Financial.Serialization.Json</code></td>
+<td><code>Bodu.Financial.Serialization.Json</code></td>
+<td>A <code>JsonSerializerOptions</code> holding the financial converters, keyed <code>&quot;Financial&quot;</code>.</td>
+<td>Keyed singleton.</td>
+</tr>
+</tbody>
+</table>
+<p>After building the provider, <code>UseCurrencyResolution</code> (in <code>Bodu.Financial</code>) makes the registered <code>ICurrencyLookup</code> the one the static currency resolution uses.</p>
+<h2 id="configuration-sources">Configuration sources</h2>
+<p>The <code>Bodu.Extensions.Configuration.Text</code> package adds configuration sources, all in the <code>Bodu.Extensions.Configuration.Text</code> namespace.</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Extends</th>
+<th>Adds</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>AddTextConfigurationFile</code>, <code>AddTextConfiguration</code></td>
+<td><code>IConfigurationBuilder</code></td>
+<td>A file in the Bodu text configuration format, which can reload when the file changes. <code>AddTextConfiguration</code> looks for <code>.boduconfig</code>, then <code>bodu.config</code>.</td>
+</tr>
+<tr>
+<td><code>AddTextConfigurationStream</code>, <code>AddTextConfigurationDocument</code></td>
+<td><code>IConfigurationBuilder</code></td>
+<td>The same format from a stream or an already parsed document.</td>
+</tr>
+<tr>
+<td><code>AddTomlFile</code>, <code>AddTomlStream</code></td>
+<td><code>IConfigurationBuilder</code></td>
+<td>A TOML file or stream, read once. A table path becomes a colon-delimited section, so <code>[Financial.Ecb]</code> is the <code>Financial:Ecb</code> section.</td>
+</tr>
+<tr>
+<td><code>AddBencodeFile</code>, <code>AddBencodeStream</code></td>
+<td><code>IConfigurationBuilder</code></td>
+<td>A Bencode dictionary, read once.</td>
+</tr>
+<tr>
+<td><code>AddConfigurationOptions&lt;TOptions&gt;</code></td>
+<td><code>IServiceCollection</code></td>
+<td>Binds a section to <code>IOptions&lt;TOptions&gt;</code>.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="one-host">One host</h2>
+<p>This host reads its settings from TOML, registers a calendar service with a cache in front of it, and registers the core financial services with the ECB provider and a cache in front of that. Every registration that takes an <code>IConfiguration</code> reads its default section from it.</p>
+<pre><code class="lang-csharp">using System.Text;
+using Bodu.Extensions.Configuration.Text;
+using Bodu.Financial;
+using Bodu.Financial.ExchangeRates;
+using Bodu.Globalization.Calendar;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+
+const string settings = &quot;&quot;&quot;
+    [Calendar.NotableDateCache]
+    CacheDirectory = &quot;cache/holidays&quot;
+    Ttl = &quot;7.00:00:00&quot;
+
+    [Financial.RateCache]
+    CacheDirectory = &quot;cache/rates&quot;
+    DefaultExpiry = &quot;12:00:00&quot;
+    &quot;&quot;&quot;;
+
+using var source = new MemoryStream(Encoding.UTF8.GetBytes(settings));
+IConfiguration configuration = new ConfigurationBuilder()
+    .AddTomlStream(source)
+    .Build();
+
+var services = new ServiceCollection();
+
+// Calendars: the service first, then the cache in front of it.
+services.AddNotableDateService(AmericasCalendarData.LoadResource(&quot;US&quot;));
+services.AddCachedNotableDateService(configuration);
+
+// Money and exchange rates: the core services, the provider, then the cache in front of it.
+services.AddFinancialService(configuration)
+    .AddEcbExchangeRates(configuration)
+    .AddCachedRateProvider&lt;EcbRateProvider&gt;(&quot;ECB&quot;, configuration);
+
+// The provider borrows a named client from IHttpClientFactory; bound the size of a response there.
+services.AddHttpClient(EcbFinancialServiceBuilderExtensions.HttpClientName)
+    .ConfigureHttpClient(client =&gt; client.MaxResponseContentBufferSize = 16 * 1024 * 1024);
+
+using ServiceProvider provider = services.BuildServiceProvider();
+provider.UseCurrencyResolution();
+
+INotableDateService holidays = provider.GetRequiredService&lt;INotableDateService&gt;();
+IDatedRateProvider rates = provider.GetRequiredService&lt;IDatedRateProvider&gt;();
+Console.WriteLine($&quot;{holidays.GetType().Name}, {rates.GetType().Name}&quot;);
+</code></pre>
+<p>The last line prints <code>CachingNotableDateService, CachingRateProvider</code>: each consumer asks for the contract and gets the cached service. Under the Generic Host the same registrations go on <code>builder.Services</code>, and the options they validate with <code>ValidateOnStart</code> are checked when the host starts; with a plain <code>ServiceProvider</code>, as here, they are checked when the service is first resolved.</p>
+<h2 id="ordering-rules">Ordering rules</h2>
+<ol>
+<li><strong>Register a service before the decorator in front of it.</strong> <code>AddCachedNotableDateService</code> wraps the <code>INotableDateService</code> registered before it, and throws <code>InvalidOperationException</code> if there is none. <code>AddCachedRateProvider&lt;TProvider&gt;</code> wraps the <code>TProvider</code> registered before it; registered first, it would register <code>TProvider</code> itself, without the <code>HttpClient</code> the provider's own registration supplies.</li>
+<li><strong>Register keyed calendar services after <code>AddCachedNotableDateService</code>.</strong> The decorator is meant for the unkeyed service, but it takes the most recent <code>INotableDateService</code> registration, keyed or not: a keyed <code>AddNotableDateService</code> call made before it is taken as the service to wrap, which removes the keyed service and leaves the unkeyed one failing when it is resolved. Keyed services are not cached.</li>
+<li><strong>Register warm-ups after the caches they warm.</strong> <code>AddNotableDateCacheWarmup</code> follows <code>AddCachedNotableDateService</code>; <code>AddRateCacheWarmup</code> warms every provider registered through <code>AddCachedRateProvider</code>, and an aggregation child only when its name is listed in the warm-up options.</li>
+<li><strong>Compose a cache backend through the cache factory.</strong> The SQLite and distributed backends register a cache; the decorators use it only when you pass a factory that resolves it: <code>cacheFactory: sp =&gt; sp.GetRequiredService&lt;INotableDateCache&gt;()</code> for calendars, and <code>cacheFactory: (sp, name) =&gt; sp.GetRequiredKeyedService&lt;IRateCache&gt;(name)</code> for rates. Without one, each decorator uses a TOML file cache under its <code>CacheDirectory</code>.</li>
+<li><strong>Know which registrations win.</strong> Most registrations use <code>TryAdd</code>, so when two register the same service the first wins: two calendar services, two rate providers, two cache backends. <code>AddCachedRateProvider</code> and <code>AddAggregatedRateProvider</code> add their providers unconditionally, so the most recent wins, and <code>AddCurrencyLookup</code> replaces the lookup outright.</li>
+<li><strong>Call <code>UseCurrencyResolution</code> once, after the provider is built.</strong> It sets a process-wide default, so it belongs in the composition root.</li>
+</ol>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><strong><a href="../../guides/calendar/dependency-injection.html">Calendar dependency injection</a></strong> - every calendar registration in depth, with keyed and reloadable services.</li>
+<li><strong><a href="../../guides/financial/dependency-injection.html">Financial dependency injection</a></strong> - the financial builder, monetary contexts, and the Generic Host.</li>
+<li><strong><a href="../../guides/financial/exchange-rate-caching.html">Exchange-rate caching</a></strong> - the rate caches and the aggregating provider.</li>
+<li><strong><a href="../../guides/extensions-configuration-text/configuration-sources.html">Configuration sources</a></strong> - every configuration source, reloading, and layering.</li>
+</ul>
+
+</article>
+
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 2df2728 · Built: 2026-10-14 (UTC)</span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

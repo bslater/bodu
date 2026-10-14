@@ -16,7 +16,7 @@
       <meta name="docfx:rel" content="../../">
       
       
-      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/master/docs/guides/text-encoding/encoding-helpers.md/#L1">
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/master/docs/guides/core/encoding-helpers.md/#L1">
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -105,18 +105,26 @@ byte[] withBom     = &quot;héllo&quot;.ToBytesWithPreamble(System.Text.Encoding
 int byteCount      = &quot;héllo&quot;.GetUtf8ByteCount();                  // size without allocating
 </code></pre>
 <p>For hot paths, encode straight into a caller-supplied span or an <code>IBufferWriter&lt;byte&gt;</code>, or rent the buffer from the pool:</p>
-<pre><code class="lang-csharp">Span&lt;byte&gt; destination = stackalloc byte[64];
+<pre><code class="lang-csharp">using System.Buffers;
+using Bodu.Buffers;
+using Bodu.Text;
+
+Span&lt;byte&gt; destination = stackalloc byte[64];
 int written = &quot;héllo&quot;.EncodeUtf8To(destination);
 
 if (&quot;héllo&quot;.TryEncodeUtf8To(destination, out int n)) { /* … */ }
 
+var bufferWriter = new ArrayBufferWriter&lt;byte&gt;();
 &quot;héllo&quot;.WriteUtf8To(bufferWriter);                    // append to a pipeline
 
 using PooledBufferBuilder&lt;byte&gt; pooled = &quot;héllo&quot;.GetUtf8BytesPooled();   // ArrayPool-backed (Bodu.Buffers)
 </code></pre>
 <h2 id="byte-order-marks-preambles">Byte-order marks (preambles)</h2>
 <p><code>EncodingExtensions</code> centralizes BOM handling so you never slice preamble bytes by hand:</p>
-<pre><code class="lang-csharp">System.Text.Encoding enc = System.Text.Encoding.UTF8;
+<pre><code class="lang-csharp">using Bodu.Text;
+
+System.Text.Encoding enc = System.Text.Encoding.UTF8;
+byte[] bytes = [0xEF, 0xBB, 0xBF, (byte)'h', (byte)'i'];   // a UTF-8 BOM, then &quot;hi&quot;
 
 bool hasBom   = enc.HasPreamble();
 bool startsBom = enc.StartsWithPreamble(bytes);
@@ -124,13 +132,21 @@ ReadOnlySpan&lt;byte&gt; body = enc.StripPreamble(bytes);          // bytes minu
 string text   = enc.GetStringSkippingPreamble(bytes);        // decode, ignoring a leading BOM
 </code></pre>
 <p>To detect the encoding <em>from</em> the bytes, use <a class="xref" href="../../api/Bodu.Text.EncodingDetection.html">EncodingDetection</a>:</p>
-<pre><code class="lang-csharp">System.Text.Encoding chosen =
+<pre><code class="lang-csharp">using Bodu.Text;
+
+byte[] bytes = File.ReadAllBytes(&quot;input.txt&quot;);
+
+System.Text.Encoding chosen =
     EncodingDetection.TryDetectByPreamble(bytes, out System.Text.Encoding? detected)
         ? detected
         : System.Text.Encoding.UTF8;     // sensible default when there is no BOM
 </code></pre>
 <h2 id="classifying-an-encoding">Classifying an encoding</h2>
-<pre><code class="lang-csharp">enc.IsUtf8();                 // true
+<pre><code class="lang-csharp">using Bodu.Text;
+
+System.Text.Encoding enc = System.Text.Encoding.UTF8;
+
+enc.IsUtf8();                 // true
 enc.IsAscii();
 enc.IsAnyUtf();               // UTF-8 / UTF-16 / UTF-32, either endianness
 enc.IsUtf16LittleEndian();
@@ -138,17 +154,27 @@ enc.IsUtf32BigEndian();
 </code></pre>
 <h2 id="fallback-configuration">Fallback configuration</h2>
 <p>Switch an encoding between <em>throwing</em> on invalid data and <em>replacing</em> it, without mutating a shared instance:</p>
-<pre><code class="lang-csharp">System.Text.Encoding strict  = System.Text.Encoding.UTF8.WithExceptionFallbacks();   // throws on malformed input
+<pre><code class="lang-csharp">using Bodu.Text;
+
+System.Text.Encoding strict  = System.Text.Encoding.UTF8.WithExceptionFallbacks();   // throws on malformed input
 System.Text.Encoding lenient = System.Text.Encoding.UTF8.WithReplacementFallbacks(); // substitutes U+FFFD
 </code></pre>
 <h2 id="allocation-conscious-transcoding">Allocation-conscious transcoding</h2>
 <p>For large or streamed payloads, the owned-memory and chunked surfaces avoid intermediate arrays:</p>
-<pre><code class="lang-csharp">using IMemoryOwner&lt;byte&gt; owner = enc.GetBytesOwner(chars);    // caller disposes
-using PooledBufferBuilder&lt;char&gt; chars = enc.GetCharsPooled(bytes);
+<pre><code class="lang-csharp">using System.Buffers;
+using Bodu.Buffers;
+using Bodu.Text;
+
+System.Text.Encoding enc = System.Text.Encoding.UTF8;
+string text = &quot;héllo, wörld&quot;;
+
+using IMemoryOwner&lt;byte&gt; owner = enc.GetBytesOwner(text);           // caller disposes
+using PooledBufferBuilder&lt;char&gt; chars = enc.GetCharsPooled(owner.Memory.Span);
 
 // Incremental transcoding with explicit backpressure: EncodeChunk extends the stateful Encoder.
 System.Text.Encoder encoder = enc.GetEncoder();
-OperationStatus status = encoder.EncodeChunk(charSpan, byteDestination, flush: true,
+Span&lt;byte&gt; byteDestination = stackalloc byte[8];
+OperationStatus status = encoder.EncodeChunk(text, byteDestination, flush: true,
                                              out int charsRead, out int bytesWritten);
 </code></pre>
 <p><code>EncodeChunk</code> (on <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.encoder">Encoder</a>) and <code>DecodeChunk</code> (on <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.decoder">Decoder</a>) return an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.buffers.operationstatus">OperationStatus</a>: <code>Done</code> when the whole chunk was converted, or <code>DestinationTooSmall</code> when output remains, so a caller can drive a pull-based loop and grow the destination as needed. Invalid data is never reported as a status: the encoder's or decoder's fallback handles it, throwing under the exception fallback.</p>
@@ -177,10 +203,10 @@ OperationStatus status = encoder.EncodeChunk(charSpan, byteDestination, flush: t
 </table>
 <h2 id="where-to-go-next">Where to go next</h2>
 <ul>
-<li><a href="binary-encodings-interface.html">The IBinaryEncoding interface</a> - the binary-encoding contract (Base16-Base85).</li>
-<li><a href="index.html">Bodu.Text.Encoding overview</a> - the full namespace map.</li>
-<li><a class="xref" href="../../api/Bodu.Text.Encoding.html">Bodu.Text.Encoding API reference</a> - full namespace overview.</li>
-<li><strong><a href="../topics/text-and-serialization.html">Text &amp; Serialization guides</a></strong> - every guide in this topic, across Bodu.Text.Encoding, Bodu.Text.Formats, and the Bencode / TOML serializers.</li>
+<li><a href="index.html">Bodu.Core guides</a> - the namespace map of the package this namespace ships in.</li>
+<li><a href="../../docs/text/index.html">Bodu.Text introduction</a> - the namespace's surfaces and when to use each.</li>
+<li><a class="xref" href="../../api/Bodu.Text.html">Bodu.Text API reference</a> - full namespace overview.</li>
+<li><a href="../text-encoding/binary-encodings-interface.html">The IBinaryEncoding interface</a> - the binary-to-text contract of the separate <code>Bodu.Text.Encoding</code> package (Base16 to Base85), for bytes to a printable alphabet rather than to characters.</li>
 </ul>
 
 </article>
@@ -200,7 +226,7 @@ OperationStatus status = encoder.EncodeChunk(charSpan, byteDestination, flush: t
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 2770356 · Built: 2026-10-14 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 2df2728 · Built: 2026-10-14 (UTC)</span>
         </div>
       </div>
     </footer>

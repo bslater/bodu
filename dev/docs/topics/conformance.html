@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Conformance and test vectors | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Conformance and test vectors | BODU ">
+      
+      
+      <link rel="icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/master/docs/docs/topics/conformance.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="conformance-and-test-vectors">Conformance and test vectors</h1>
+
+<p>A library that implements a standard is only as trustworthy as the evidence that it follows it. This page lists what each Bodu package is held to: the specifications and published test vectors its tests check against, the conformance corpora it runs, the defects other libraries have fixed in the same formats, and the places where Bodu deliberately or unavoidably differs. Every source named here is committed to the repository or pinned by version and hash, so each check is reproducible from a clone.</p>
+<p>Use it to judge how a behavior was established before you depend on it, and to know which differences from another library are decisions rather than defects.</p>
+<h2 id="kinds-of-evidence">Kinds of evidence</h2>
+<table>
+<thead>
+<tr>
+<th>Kind</th>
+<th>What it is</th>
+<th>Weight</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Specification vectors</strong></td>
+<td>Test vectors published with a standard: the RFC appendices, NIST's ACVP and SP 800-232 vectors, the reference implementations' known-answer files.</td>
+<td>Normative: a mismatch is a Bodu defect.</td>
+</tr>
+<tr>
+<td><strong>Conformance suites</strong></td>
+<td>A format's own published suite, run case by case: toml-test, yaml-test-suite, the CRC catalogue's check values.</td>
+<td>Normative for the cases the package claims to support.</td>
+</tr>
+<tr>
+<td><strong>Official published data</strong></td>
+<td>For calendars, the dates a government or institution publishes: gazettes, official holiday feeds, almanacs.</td>
+<td>Authoritative for the years they cover.</td>
+</tr>
+<tr>
+<td><strong>Third-party comparison</strong></td>
+<td>Another implementation's test suite or output, restated in Bodu's dialect.</td>
+<td>Evidence, not authority: agreement between implementations does not outvote a specification.</td>
+</tr>
+<tr>
+<td><strong>Release-note fix catalogues</strong></td>
+<td>Every defect fix other libraries list in their release notes for the same format, each with its scenario.</td>
+<td>A scenario Bodu must handle, unless Bodu documents a different behavior.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="hashing-and-cryptography">Hashing and cryptography</h2>
+<p><code>Bodu.Security.Cryptography</code> is held to the published vectors of every algorithm it implements. The test suite's known-answer census (<code>Bodu.Security.Cryptography/test/kat-census.txt</code>) records 7,231 vectors across eleven families - digests, AEAD, block ciphers, KDFs, signatures, key agreement, key encapsulation, key generation and validation, stream ciphers, and HPKE - and a second test assembly runs the known-answer suites again with SIMD acceleration switched off, so the scalar paths are held to the same vectors as the accelerated ones.</p>
+<table>
+<thead>
+<tr>
+<th>Area</th>
+<th>Sources</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Public-key</td>
+<td>RFC 7748 and the Wycheproof X25519 set (X25519); RFC 8032 and the Wycheproof EdDSA set (Ed25519); NIST ACVP vectors for ML-KEM (FIPS 203) and ML-DSA (FIPS 204); RFC 9180 (HPKE).</td>
+</tr>
+<tr>
+<td>AEAD</td>
+<td>NIST SP 800-232 and the reference implementation's known-answer files (ASCON); NIST SP 800-38D (GCM); RFC 3610 and the Wycheproof AES-CCM set (CCM); RFC 7253 (OCB); the EAX paper and the Wycheproof AES-EAX set; RFC 5297 and the Wycheproof AES-SIV-CMAC set (SIV); RFC 8452 and the Wycheproof AES-GCM-SIV set (GCM-SIV); the XChaCha20 Internet-Draft vector and libsodium's <code>crypto_secretbox</code> vector (the Poly1305 stream AEADs).</td>
+</tr>
+<tr>
+<td>Stream ciphers and MACs</td>
+<td>RFC 8439 (ChaCha20, Poly1305); RFC 4503 (Rabbit); the eSTREAM vectors (Salsa20, HC-128); the reference SipHash vectors.</td>
+</tr>
+<tr>
+<td>Digests and XOFs</td>
+<td>The official BLAKE2 and BLAKE3 known-answer files; the NESSIE sets (Tiger); the ISO test vectors (Whirlpool); the Skein, CubeHash, and Snefru reference vectors.</td>
+</tr>
+<tr>
+<td>KDFs and OTP</td>
+<td>RFC 9106 and the reference implementation's traces (Argon2); RFC 7914 and an OpenSSL-generated corpus (scrypt); RFC 5869 (HKDF); RFC 4226 and RFC 6238 (HOTP, TOTP).</td>
+</tr>
+</tbody>
+</table>
+<p>The package is <strong>not independently audited</strong>; the <a href="../../guides/cryptography/security-posture.html">security posture guide</a> states which operations are documented as constant-time, what is zeroized, and what the tests can and cannot show.</p>
+<p><code>Bodu.IO.Hashing</code> checks every one of its 112 named CRC standards against the check value the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm">RevEng CRC catalogue</a> publishes for the input <code>123456789</code>, and its fingerprints, checksums, and check digits against their published known answers.</p>
+<h2 id="text-and-serialization">Text and serialization</h2>
+<table>
+<thead>
+<tr>
+<th>Package</th>
+<th>Held to</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Bodu.Text.Encoding</code></td>
+<td>The RFC 4648 vectors (Base16, Base32, Base64), RFC 9285 (Base45), BIP 173 and BIP 350 (Bech32, Bech32m), the Z85 specification, and the published vectors of the other alphabets.</td>
+</tr>
+<tr>
+<td><code>Bodu.Text.Toml</code></td>
+<td>The <a href="https://github.com/toml-lang/toml-test">toml-test</a> corpus, vendored with its MIT license: 266 valid and 505 invalid cases, run under both the TOML 1.0.0 and 1.1.0 profiles.</td>
+</tr>
+<tr>
+<td><code>Bodu.Text.Yaml</code></td>
+<td>The <a href="https://github.com/yaml/yaml-test-suite">yaml-test-suite</a>, pinned as a git submodule: all 402 cases are classified, with none left unexplained. 255 parse and match their JSON, 12 parse without a value comparison, 94 are rejected as the suite expects, and 41 are valid YAML that the package's tree profile rejects by design (complex keys, anchor override, non-core tags, and the like).</td>
+</tr>
+<tr>
+<td><code>Bodu.Text.Delimited</code></td>
+<td>RFC 4180, and a regression corpus derived from csv-spectrum.</td>
+</tr>
+<tr>
+<td><code>Bodu.Text.DotEnv</code></td>
+<td>A conformance corpus derived from python-dotenv and godotenv.</td>
+</tr>
+<tr>
+<td><code>Bodu.Text.Ini</code></td>
+<td>Python's <code>configparser</code>, whose strict mode the <code>Strict</code> options preset matches.</td>
+</tr>
+<tr>
+<td><code>Bodu.Text.Configuration</code></td>
+<td>The EditorConfig specification, version 0.17.2.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="release-note-fix-catalogues">Release-note fix catalogues</h2>
+<p>The structured-format readers are also held to the defects other libraries have fixed. For each format, the release notes of comparable libraries were read in full, and every fix they list became a row: the scenario the fix's regression test or issue describes, restated as input and expected output and run against Bodu. Each row is classed <code>applies</code> (Bodu must do what the fix established), <code>dialect</code> (Bodu documents a different behavior, with the reason), <code>n/a</code> (an API, language, or platform matter Bodu does not share), or <code>unknown</code> (no scenario could be found).</p>
+<table>
+<thead>
+<tr>
+<th>Area</th>
+<th>Runs against</th>
+<th style="text-align: right;">Libraries read</th>
+<th style="text-align: right;">Fixes</th>
+<th style="text-align: right;">Rows</th>
+<th style="text-align: right;"><code>applies</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>bencode</code></td>
+<td><code>Bodu.Text.Bencode</code></td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">77</td>
+<td style="text-align: right;">135</td>
+<td style="text-align: right;">76</td>
+</tr>
+<tr>
+<td><code>toml</code></td>
+<td><code>Bodu.Text.Toml</code></td>
+<td style="text-align: right;">14</td>
+<td style="text-align: right;">797</td>
+<td style="text-align: right;">1,119</td>
+<td style="text-align: right;">714</td>
+</tr>
+<tr>
+<td><code>yaml</code></td>
+<td><code>Bodu.Text.Yaml</code></td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">994</td>
+<td style="text-align: right;">1,505</td>
+<td style="text-align: right;">889</td>
+</tr>
+<tr>
+<td><code>delimited</code></td>
+<td><code>Bodu.Text.Delimited</code></td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">716</td>
+<td style="text-align: right;">789</td>
+<td style="text-align: right;">235</td>
+</tr>
+<tr>
+<td><code>dotenv</code></td>
+<td><code>Bodu.Text.DotEnv</code></td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">314</td>
+<td style="text-align: right;">506</td>
+<td style="text-align: right;">254</td>
+</tr>
+<tr>
+<td><code>ini</code></td>
+<td><code>Bodu.Text.Ini</code></td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">282</td>
+<td style="text-align: right;">323</td>
+<td style="text-align: right;">110</td>
+</tr>
+<tr>
+<td><code>configuration</code></td>
+<td><code>Bodu.Text.Configuration</code></td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">135</td>
+<td style="text-align: right;">195</td>
+<td style="text-align: right;">93</td>
+</tr>
+<tr>
+<td><code>compound</code></td>
+<td><code>Bodu.IO.Compound</code></td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">313</td>
+<td style="text-align: right;">397</td>
+<td style="text-align: right;">276</td>
+</tr>
+<tr>
+<td><code>biff</code></td>
+<td><code>Bodu.IO.Biff</code>, <code>Bodu.Formats.Excel.Binary</code></td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">807</td>
+<td style="text-align: right;">867</td>
+<td style="text-align: right;">369</td>
+</tr>
+<tr>
+<td><code>pst</code></td>
+<td><code>Bodu.IO.Pst</code>, <code>Bodu.Formats.Outlook.Pst</code></td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">521</td>
+<td style="text-align: right;">583</td>
+<td style="text-align: right;">212</td>
+</tr>
+<tr>
+<td><code>msg</code></td>
+<td><code>Bodu.Formats.Outlook.Msg</code></td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">418</td>
+<td style="text-align: right;">447</td>
+<td style="text-align: right;">139</td>
+</tr>
+<tr>
+<td><code>recurrence/cron-fixes</code></td>
+<td><code>Bodu.Globalization.Recurrence</code></td>
+<td style="text-align: right;">21</td>
+<td style="text-align: right;">1,383</td>
+<td style="text-align: right;">2,032</td>
+<td style="text-align: right;">946</td>
+</tr>
+</tbody>
+</table>
+<p>A row that fails is a Bodu defect: it gets an issue, a failing regression test, and then the fix. Each area's README in the repository's <a href="https://github.com/bslater/bodu/tree/master/corpus"><code>corpus/</code></a> directory lists its sources, when each was read, the licenses, and every <code>dialect</code> decision with its reason. No upstream file is committed: a row restates a minimal reproduction, and a library under a copyleft license contributes only inputs written for the row.</p>
+<h2 id="recurrence">Recurrence</h2>
+<p>RFC 5545 publishes its recurrence examples as prose, so they are transcribed: the standard's section 3.8.5.3 examples are held as official data. Everything else is third-party comparison - libical's test corpus, python-dateutil's output for generated sub-daily rules, and the test suites of 21 cron libraries restated in Bodu's dialect: 5,353 rows, of which 4,585 run and 768 are excluded, each under a flag that names the dialect difference. There is no cron standard. The closest is the <code>crontab(5)</code> manual of Vixie cron and its descendant cronie, which the corpus follows where another library disagrees with it, recording the disagreement.</p>
+<h2 id="calendars">Calendars</h2>
+<p>The calendar engine and its data packs are reconciled against published dates, kept under <a href="https://github.com/bslater/bodu/tree/master/corpus"><code>corpus/</code></a> with each file's source class in its header:</p>
+<table>
+<thead>
+<tr>
+<th>Source</th>
+<th>Covers</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GOV.UK bank-holiday feed, 2019-2028, archived verbatim</td>
+<td>The United Kingdom's bank holidays</td>
+</tr>
+<tr>
+<td>Sri Lanka government gazettes, 2023-2027</td>
+<td>Poya days</td>
+</tr>
+<tr>
+<td>Bank of Thailand holiday notices, 2020-2026</td>
+<td>Thai financial-institution holidays</td>
+</tr>
+<tr>
+<td>Government of India DoPT memorandum, 2026</td>
+<td>Indian central-government holidays</td>
+</tr>
+<tr>
+<td>Universal House of Justice table, 172-221 B.E.</td>
+<td>Baha'i holy days</td>
+</tr>
+<tr>
+<td>IMD Rashtriya Panchang principal-festivals tables</td>
+<td>Hindu festivals, 2022-2027</td>
+</tr>
+<tr>
+<td>The calcal implementation of Reingold and Dershowitz</td>
+<td>Hindu calendar reference data, 1990-2039 (implementation evidence, not an authority)</td>
+</tr>
+</tbody>
+</table>
+<p>Each regional data pack's tests pin every floating or computed holiday - Easter offsets, nth-weekday rules, lunar and Hijri festivals, weekend substitutions - to confirmed published dates.</p>
+<h2 id="known-limits">Known limits</h2>
+<ul>
+<li><strong>Moon-sighting festivals.</strong> The engine computes the Hijri calendar by rule, while many countries fix Islamic festivals by local moon sighting, so a computed Eid can differ by one or two days from the date a country announces. The data packs' tests accept up to two days for these festivals, and exact dates everywhere else.</li>
+<li><strong>Umm al-Qura after 1450 AH.</strong> No fixed, versioned month-start publication exists from 1451 AH onward, so those years have nothing published to reconcile against yet.</li>
+<li><strong>Hindu calendar models.</strong> Bodu's Hindu lunar calculator follows a different astronomical model from the Reingold-Dershowitz family, so disagreements with the reference data are expected; each is classified (for example as convention-equivalent or model-induced) rather than silently resolved.</li>
+<li><strong>YAML profile.</strong> <code>Bodu.Text.Yaml</code> implements a tree profile of YAML 1.2, not the full representation graph; the 41 yaml-test-suite cases it rejects by design are the features outside that profile. See <a href="../serialization/yaml/index.html">the YAML introduction</a>.</li>
+<li><strong>Cron dialects.</strong> Cron libraries disagree, chiefly over the two day fields; Bodu's rules are stated in the <a href="../../guides/recurrence/cron.html">cron guide</a>, and the corpus rows a dialect difference excludes are recorded with the reason.</li>
+<li><strong>Cryptography audit.</strong> Passing published vectors shows an implementation computes the right answers; it does not show resistance to side channels. See the <a href="../../guides/cryptography/security-posture.html">security posture guide</a>.</li>
+</ul>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><strong><a href="untrusted-input.html">Reading untrusted input</a></strong> - the limits and validation levels each reader applies to a crafted input.</li>
+<li><strong><a href="errors-and-exceptions.html">Errors and exceptions</a></strong> - what each package throws when an input fails the rules above.</li>
+<li><strong><a href="../versioning-and-support.html">Versioning, stability, and support</a></strong> - which releases receive fixes.</li>
+</ul>
+
+</article>
+
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 2df2728 · Built: 2026-10-14 (UTC)</span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

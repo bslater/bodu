@@ -88,9 +88,9 @@
 <h1 id="samples">Samples</h1>
 
 <p>The repository ships runnable, self-contained sample projects under
-<a href="https://github.com/bslater/bodu/tree/master/samples"><code>samples/</code></a>, organised by domain folder
+<a href="https://github.com/bslater/bodu/tree/master/samples"><code>samples/</code></a>, organized by domain folder
 named after the namespace segment they demonstrate (<code>Core/</code>, <code>Collections/</code>,
-<code>Collections.Concurrent/</code>, <code>Financial/</code>, <code>Formats.Excel/</code>, <code>Globalization.Calendar/</code>,
+<code>Collections.Concurrent/</code>, <code>Financial/</code>, <code>Formats.Excel/</code>, <code>Formats.Outlook/</code>, <code>Globalization.Calendar/</code>,
 <code>Globalization.Recurrence/</code>, <code>IO.Biff/</code>, <code>IO.Compound/</code>, <code>IO.Pst/</code>, <code>IO.Hashing/</code>, <code>Numerics/</code>,
 <code>Security.Cryptography/</code>, <code>Text.Toml/</code>, <code>Text.Yaml/</code>, <code>Text.Bencode/</code>, <code>Text.Formats/</code>, <code>Text.Configuration/</code>, <code>Text.Encoding/</code>, <code>Text.Filtering/</code>).
 This section catalogues them; each domain page walks its samples individually.</p>
@@ -103,7 +103,8 @@ online sample (<code>Bodu.Financial.Samples.LiveRates</code>) is clearly marked 
 execution.</li>
 <li><strong>is deterministic</strong> - running a sample twice prints the same output, so samples double as
 executable documentation and as CI smoke tests. Every sample is a member of <code>bodu.slnx</code>
-(API drift breaks the build) and is executed by the CI samples step.</li>
+(API drift breaks the build), and the CI samples step runs every sample application; the one
+library sample, a calendar plugin, runs inside the host sample that loads it.</li>
 <li><strong>is documented to a fixed README standard</strong> - one section per scenario stating the intent,
 what the code does, the output to expect (with the load-bearing lines explained), and the
 APIs demonstrated.</li>
@@ -130,7 +131,7 @@ APIs demonstrated.</li>
 </tr>
 <tr>
 <td><a href="collections.html">Collections</a></td>
-<td>3 projects</td>
+<td>4 projects</td>
 <td>The specialized collection catalogue (ring/deque/evicting/multi-value/multiset/ordered/indexed/bi/navigable/sequenced/priority), the structural collections (ranges, interval tree, graph algorithms, disjoint set, trees/tries, Aho-Corasick), and the probabilistic sketches (Bloom, count-min, HyperLogLog) with a stable comparer for reproducible error</td>
 </tr>
 <tr>
@@ -140,7 +141,7 @@ APIs demonstrated.</li>
 </tr>
 <tr>
 <td><a href="financial.html">Financial</a></td>
-<td>8 projects + 1 test project</td>
+<td>9 projects + 1 test project</td>
 <td>Money arithmetic and the three-tier rounding model, the offline static-rate-file pattern, read-through caching and tiered stacking, multi-provider aggregation and routing, DI hosting, a consumer-written provider proven by the shipped contract-test base, and the live-provider exception</td>
 </tr>
 <tr>
@@ -149,8 +150,13 @@ APIs demonstrated.</li>
 <td>The read-only BIFF5 and BIFF8 <code>.xls</code> reader over a two-sheet workbook the sample generates: the session/sheet-directory surface, constant-memory forward-only streaming, the materialized worksheet, and format-classified serial-date decoding</td>
 </tr>
 <tr>
+<td><a href="outlook.html">Formats.Outlook</a></td>
+<td>1 project</td>
+<td>The <code>.msg</code> reader over a message the sample authors itself with <code>Bodu.IO.Compound</code>: <code>IsMsgFile</code> sniffing, the subject, sender, and body conveniences, the recipient table, each attachment's metadata and bytes, and the tag-addressed <code>MapiPropertyCollection</code> beneath them</td>
+</tr>
+<tr>
 <td><a href="calendar.html">Globalization.Calendar</a></td>
-<td>5 projects + 1 test project</td>
+<td>11 projects (one a plugin library) + 1 test project</td>
 <td>Holiday queries with ISO 3166-2 subdivision shadowing, working-day and fiscal arithmetic with <code>DayOfWeekSet</code> overrides, fluent calendar authoring with catalogue imports and the XML round trip, DI with live data reload, and custom date algorithms proven by the shared data-pack test base</td>
 </tr>
 <tr>
@@ -180,7 +186,7 @@ APIs demonstrated.</li>
 </tr>
 <tr>
 <td><a href="numerics.html">Numerics</a></td>
-<td>4 projects</td>
+<td>5 projects</td>
 <td><code>Fraction&lt;T&gt;</code> exact rational arithmetic, parse/format, generic math and continued fractions; the <code>Interval</code>/<code>DiscreteInterval</code>/<code>IntervalSet</code> algebra; the single-pass streaming statistics (<code>RunningStatistics</code>, <code>MovingSum</code>/<code>MovingMinMax</code>, <code>RunningQuantile</code>, <code>BigDecimal</code>); and the <code>System.Text.Json</code> converter registration and policy shapes</td>
 </tr>
 <tr>
@@ -253,7 +259,7 @@ implementations pass. All run in CI with the library suites.</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 2770356 · Built: 2026-10-14 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 2df2728 · Built: 2026-10-14 (UTC)</span>
         </div>
       </div>
     </footer>

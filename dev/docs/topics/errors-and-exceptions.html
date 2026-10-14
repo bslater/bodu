@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Errors and exceptions | BODU </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Errors and exceptions | BODU ">
+      
+      
+      <link rel="icon" href="../../images/favicon.svg">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      <meta name="docfx:rel" content="../../">
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/bslater/bodu/blob/master/docs/docs/topics/errors-and-exceptions.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../images/favicon.svg" alt="BODU">
+            BODU
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+              <form class="search" role="search" id="search">
+                <i class="bi bi-search"></i>
+                <input class="form-control" id="search-query" type="search" disabled placeholder="Search" autocomplete="off" aria-label="Search">
+              </form>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="errors-and-exceptions">Errors and exceptions</h1>
+
+<p>Bodu packages report failures the way the .NET class libraries do: a bad argument throws an <code>ArgumentException</code>, malformed input throws a <code>FormatException</code>, and a missing item throws a <code>KeyNotFoundException</code>. Where a package can say more, it throws a derived type that carries the position, the category, or the diagnostics you need to report or recover. This page lists those types across the suite, what each tells you, and which ones to catch.</p>
+<h2 id="three-rules-that-hold-everywhere">Three rules that hold everywhere</h2>
+<ol>
+<li><strong>Invalid arguments throw the standard argument exceptions.</strong> Public members validate their parameters before doing any work, through <code>Bodu.Core</code>'s <code>ThrowHelper</code>, and throw <code>ArgumentNullException</code>, <code>ArgumentOutOfRangeException</code>, or <code>ArgumentException</code> before doing any work. <code>ParamName</code> is the name of the parameter at fault. These are programming errors: fix the call rather than catching them.</li>
+<li><strong>Malformed input throws a <code>FormatException</code>.</strong> Every format exception in the suite derives from <code>FormatException</code>, so <code>catch (FormatException)</code> handles malformed input from any reader. Catch the derived type when you want its position or category.</li>
+<li><strong>Do not parse exception messages.</strong> Messages come from each package's resource file and are formatted with the current culture; their wording can change in any release. Read the typed properties instead - they are part of the API contract.</li>
+</ol>
+<h2 id="text-formats-and-serializers">Text formats and serializers</h2>
+<p>Each format throws one exception for input that is not valid text in the format, and the serializers throw a second for a document that is valid but cannot be mapped onto your type.</p>
+<table>
+<thead>
+<tr>
+<th>Package</th>
+<th>Malformed input</th>
+<th>Position</th>
+<th>Cannot map to your type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Bodu.Text.Toml</code></td>
+<td><code>TomlFormatException</code></td>
+<td><code>LineNumber</code>, <code>ColumnNumber</code>, <code>Offset</code></td>
+<td><code>TomlSerializationException</code> - <code>LineNumber</code>, <code>ColumnNumber</code>, <code>Offset</code>, <code>Path</code></td>
+</tr>
+<tr>
+<td><code>Bodu.Text.Yaml</code></td>
+<td><code>YamlFormatException</code></td>
+<td><code>LineNumber</code>, <code>ColumnNumber</code>, <code>Offset</code></td>
+<td><code>YamlSerializationException</code> - <code>LineNumber</code>, <code>ColumnNumber</code>, <code>Offset</code>, <code>Path</code></td>
+</tr>
+<tr>
+<td><code>Bodu.Text.Bencode</code></td>
+<td><code>BencodeFormatException</code></td>
+<td><code>Offset</code></td>
+<td><code>BencodeSerializationException</code> - <code>BytesOffset</code></td>
+</tr>
+<tr>
+<td><code>Bodu.Text.Delimited</code></td>
+<td><code>DelimitedFormatException</code></td>
+<td><code>LineNumber</code>, <code>Offset</code></td>
+<td><code>DelimitedSerializationException</code></td>
+</tr>
+<tr>
+<td><code>Bodu.Text.DotEnv</code></td>
+<td><code>DotEnvFormatException</code></td>
+<td><code>LineNumber</code>, <code>ColumnNumber</code>, <code>Offset</code></td>
+<td><code>DotEnvSerializationException</code></td>
+</tr>
+<tr>
+<td><code>Bodu.Text.Ini</code></td>
+<td><code>IniFormatException</code></td>
+<td><code>LineNumber</code>, <code>Offset</code></td>
+<td><code>IniSerializationException</code></td>
+</tr>
+</tbody>
+</table>
+<p>The position properties are nullable, and are <code>null</code> when no line, column, or offset is associated with the error. The line formats can also tolerate bad input instead of throwing - a Delimited reader can skip a malformed record, for example - through their reader options; the <a href="../../guides/formats/error-handling.html">error-handling guide</a> shows both families and the dialect policies.</p>
+<p><code>Bodu.Text.Configuration</code> throws <code>ConfigurationParseException</code> (a <code>FormatException</code>) only in its default <code>Throw</code> diagnostic mode. Its <code>Diagnostic</code> property is the error that stopped the parse, with its <code>Location</code>; in <code>Collect</code> mode the parser gathers every diagnostic and returns them instead of throwing. See <a href="../text-configuration/concepts.html#diagnostic-mode">diagnostic mode</a>.</p>
+<h2 id="containers-and-binary-formats">Containers and binary formats</h2>
+<p>The container readers sort their failures into categories, so you can tell a truncated download from a corrupt file without reading the message.</p>
+<table>
+<thead>
+<tr>
+<th>Package</th>
+<th>Base type</th>
+<th>Derived types</th>
+<th>What to read</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Bodu.IO.Compound</code></td>
+<td><code>CompoundFileException</code></td>
+<td><code>CompoundFileFormatException</code>, <code>CompoundStreamNotFoundException</code>, <code>CompoundFileSerializationException</code></td>
+<td><code>CompoundFileFormatException.Category</code>, a <code>CompoundFileError</code> such as <code>TruncatedFile</code>, <code>FatCycle</code>, or <code>InvalidDirectory</code>; <code>CompoundStreamNotFoundException.StreamName</code>.</td>
+</tr>
+<tr>
+<td><code>Bodu.IO.Biff</code></td>
+<td><code>FormatException</code>, <code>NotSupportedException</code></td>
+<td><code>BiffFormatException</code>, <code>BiffUnsupportedVersionException</code></td>
+<td><code>BiffFormatException.Offset</code>, the offset of the record at fault in the buffer the reader was given; <code>BiffUnsupportedVersionException.RawVersion</code>.</td>
+</tr>
+<tr>
+<td><code>Bodu.Formats.Excel.Binary</code></td>
+<td><code>FormatException</code>, <code>NotSupportedException</code>, <code>KeyNotFoundException</code></td>
+<td><code>ExcelBinaryFormatException</code>, <code>ExcelBinaryUnsupportedException</code>, <code>ExcelBinaryEncryptedWorkbookException</code>, <code>ExcelBinaryWorkbookStreamNotFoundException</code></td>
+<td>The type itself. A failure in the BIFF codec is rethrown as the Excel type with the codec's exception as <code>InnerException</code>; a file that is not a valid compound file throws the container's <code>CompoundFileFormatException</code>, unwrapped.</td>
+</tr>
+<tr>
+<td><code>Bodu.IO.Pst</code></td>
+<td><code>PstFileException</code></td>
+<td><code>PstFileFormatException</code>, <code>PstUnsupportedFormatException</code>, <code>PstNodeNotFoundException</code></td>
+<td><code>PstFileException.Error</code>, a <code>PstFileError</code> such as <code>InvalidHeader</code>, <code>InvalidBlock</code>, or <code>LimitExceeded</code>.</td>
+</tr>
+<tr>
+<td><code>Bodu.Formats.Outlook.Msg</code></td>
+<td><code>OutlookFormatException</code></td>
+<td><code>OutlookMsgFormatException</code></td>
+<td>A container fault (<code>CompoundFileException</code>) is wrapped, as <code>InnerException</code>.</td>
+</tr>
+<tr>
+<td><code>Bodu.Formats.Outlook.Pst</code></td>
+<td><code>OutlookFormatException</code></td>
+<td><code>OutlookPstFormatException</code></td>
+<td>Every failure to read the store is wrapped: the underlying <code>PstFileException</code>, with its <code>Error</code>, is the <code>InnerException</code>. Argument, I/O, and disposal exceptions pass through unwrapped.</td>
+</tr>
+</tbody>
+</table>
+<p><code>OutlookFormatException</code> is a <code>FormatException</code>, and <code>catch (OutlookFormatException)</code> handles both Outlook readers. A file that is merely damaged can often still be read in part: see <a href="untrusted-input.html">reading untrusted input</a> for the validation levels and the option that omits an unreadable value instead of failing.</p>
+<h2 id="calendars">Calendars</h2>
+<table>
+<thead>
+<tr>
+<th>Exception</th>
+<th>Thrown when</th>
+<th>What to read</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>NotableDateValidationException</code></td>
+<td>A rule document fails validation while it loads.</td>
+<td><code>Diagnostics</code>: every error, each with a stable <code>BODU-CAL-*</code> code. Load in collect mode to get them without an exception.</td>
+</tr>
+<tr>
+<td><code>NotableDateBinaryFormatException</code> (a <code>FormatException</code>)</td>
+<td>A compiled <code>.bcal</code> pack cannot be read: it is not a pack, declares an unsupported format version, is truncated or corrupted, or carries a value outside the format's tables.</td>
+<td>The type itself.</td>
+</tr>
+<tr>
+<td><code>PluginNotTrustedException</code></td>
+<td>The trust policy rejects a plugin assembly.</td>
+<td><code>AssemblyName</code> and <code>Reason</code>.</td>
+</tr>
+<tr>
+<td><code>PluginMissingAttributeException</code>, <code>PluginActivationException</code></td>
+<td>A candidate assembly declares no <code>NotableDatePluginAttribute</code>, or the plugin type it declares cannot be activated or does not implement <code>INotableDatePlugin</code>.</td>
+<td><code>AssemblyName</code>; <code>PluginType</code>.</td>
+</tr>
+</tbody>
+</table>
+<p>The three plugin exceptions derive from <code>NotableDatePluginException</code>. The <a href="../../guides/calendar/validation-diagnostics.html">validation diagnostics guide</a> lists every <code>BODU-CAL-*</code> code and its condition, and the same codes are what the <code>bodu-calendar</code> tool and the MSBuild integration print.</p>
+<h2 id="exchange-rates">Exchange rates</h2>
+<p>The providers use the standard types: a date the loaded data cannot resolve throws <code>KeyNotFoundException</code> from <code>GetRate</code> (use <code>TryGetRate</code> to avoid it), a pair a single-base feed does not quote throws <code>RateSeriesNotFoundException</code> (a <code>KeyNotFoundException</code>), a downloaded payload that cannot be parsed throws <code>ExchangeRateFormatException</code> (a <code>FormatException</code>), and a transport failure surfaces as <code>HttpRequestException</code> after the resilience pipeline's retries. The <a href="../exchange-rates/concepts.html#failure-modes">failure modes table</a> has every case.</p>
+<h2 id="cryptography">Cryptography</h2>
+<p>The cryptographic types follow the BCL: an AEAD tag or Poly1305 check that fails throws <code>CryptographicException</code>, while signature and one-time-password verification return <code>false</code> instead of throwing. An AEAD transform is single-use, so a second <code>Encrypt</code> or <code>Decrypt</code>, even after a failed one, throws <code>InvalidOperationException</code>. The <a href="../../guides/cryptography/security-posture.html#the-exception-contract">security posture guide</a> has the full exception contract.</p>
+<h2 id="where-to-go-next">Where to go next</h2>
+<ul>
+<li><strong><a href="untrusted-input.html">Reading untrusted input</a></strong> - the limits each reader enforces, and the exception each one throws when a limit trips.</li>
+<li><strong><a href="../../guides/formats/error-handling.html">Text formats error handling</a></strong> - catching and tolerating malformed Delimited, DotEnv, and INI input.</li>
+<li><strong><a href="../../guides/calendar/validation-diagnostics.html">Calendar validation diagnostics</a></strong> - the <code>BODU-CAL-*</code> codes.</li>
+</ul>
+
+</article>
+
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+    <div class="container-xxl search-results" id="search-results"></div>
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 2df2728 · Built: 2026-10-14 (UTC)</span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

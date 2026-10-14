@@ -21286,6 +21286,16 @@
     },
     {
       "type": "Conceptual",
+      "source_relative_path": "docs/topics/conformance.md",
+      "output": {
+        ".html": {
+          "relative_path": "docs/topics/conformance.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
       "source_relative_path": "docs/topics/core-foundations-concepts.md",
       "output": {
         ".html": {
@@ -21300,6 +21310,16 @@
       "output": {
         ".html": {
           "relative_path": "docs/topics/core-foundations.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "docs/topics/errors-and-exceptions.md",
+      "output": {
+        ".html": {
+          "relative_path": "docs/topics/errors-and-exceptions.html"
         }
       },
       "version": ""
@@ -21346,6 +21366,16 @@
     },
     {
       "type": "Conceptual",
+      "source_relative_path": "docs/topics/hosting.md",
+      "output": {
+        ".html": {
+          "relative_path": "docs/topics/hosting.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
       "source_relative_path": "docs/topics/numerics-and-financial-concepts.md",
       "output": {
         ".html": {
@@ -21380,6 +21410,46 @@
       "output": {
         ".html": {
           "relative_path": "docs/topics/text-and-serialization.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "docs/topics/thread-safety.md",
+      "output": {
+        ".html": {
+          "relative_path": "docs/topics/thread-safety.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "docs/topics/trimming-and-native-aot.md",
+      "output": {
+        ".html": {
+          "relative_path": "docs/topics/trimming-and-native-aot.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "docs/topics/untrusted-input.md",
+      "output": {
+        ".html": {
+          "relative_path": "docs/topics/untrusted-input.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "docs/versioning-and-support.md",
+      "output": {
+        ".html": {
+          "relative_path": "docs/versioning-and-support.html"
         }
       },
       "version": ""
@@ -21880,6 +21950,16 @@
       "output": {
         ".html": {
           "relative_path": "guides/core/deque.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "guides/core/encoding-helpers.md",
+      "output": {
+        ".html": {
+          "relative_path": "guides/core/encoding-helpers.html"
         }
       },
       "version": ""
@@ -22936,6 +23016,36 @@
     },
     {
       "type": "Conceptual",
+      "source_relative_path": "guides/io-biff/authoring-records.md",
+      "output": {
+        ".html": {
+          "relative_path": "guides/io-biff/authoring-records.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "guides/io-biff/index.md",
+      "output": {
+        ".html": {
+          "relative_path": "guides/io-biff/index.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "guides/io-biff/resumable-reading.md",
+      "output": {
+        ".html": {
+          "relative_path": "guides/io-biff/resumable-reading.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
       "source_relative_path": "guides/io-compound/authoring-compound-files.md",
       "output": {
         ".html": {
@@ -23760,16 +23870,6 @@
       "output": {
         ".html": {
           "relative_path": "guides/text-encoding/binary-encodings-interface.html"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "Conceptual",
-      "source_relative_path": "guides/text-encoding/encoding-helpers.md",
-      "output": {
-        ".html": {
-          "relative_path": "guides/text-encoding/encoding-helpers.html"
         }
       },
       "version": ""
