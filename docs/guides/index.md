@@ -219,6 +219,15 @@ If you are new to Bodu, start with the [introduction](../docs/introduction.md) f
 </div>
 
 <div class="bodu-card">
+  <h3><a href="io-biff/index.md">Bodu.IO.Biff</a></h3>
+  <p>The BIFF5 and BIFF8 record codec: authoring a complete workbook stream, and reading a stream a block at a time.</p>
+  <div class="bodu-card-links">
+    <a href="io-biff/index.md">Guide index</a>
+    <a href="io-biff/authoring-records.md">Authoring a workbook stream</a>
+  </div>
+</div>
+
+<div class="bodu-card">
   <h3><a href="excel/index.md">Bodu.Formats.Excel.Binary</a></h3>
   <p>The read-only BIFF5 and BIFF8 <code>.xls</code> reader over <code>Bodu.IO.Compound</code> and <code>Bodu.IO.Biff</code>: workbooks, cell values and dates, and streaming versus materialized sheets.</p>
   <div class="bodu-card-links">

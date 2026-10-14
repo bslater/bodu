@@ -499,7 +499,7 @@ while (reader.Read())
 
 `BiffReaderState` resumes framing across buffers, `BiffSstReader` walks the shared string table over its `CONTINUE` records, and `BiffWriter` emits BIFF5 or BIFF8 records. There is no container dependency and no workbook model - that is the next package up.
 
-→ **[Introduction](io-biff/index.md)** · **[Getting started](io-biff/getting-started.md)**
+→ **[Introduction](io-biff/index.md)** · **[Getting started](io-biff/getting-started.md)** · **[Guides](../guides/io-biff/index.md)**
 
 ### Bodu.Formats.Excel.Binary
 

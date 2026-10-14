@@ -10,6 +10,7 @@ SettlementService
 ChaCha20Keystream
 ChaCha20Encrypt
 BuildRfc8439Input
+HoldsWholeRun   # the helper the IO.Biff block-reading guide writes
 
 # Placeholder patterns standing for a family of members.
 GetXxx

@@ -13,8 +13,6 @@
 # calendar-data, the exchange-rate providers on exchange-rates - so the same target may appear on
 # many rows. A '-' records a deliberate absence, reviewed rather than overlooked:
 #
-#   Bodu.IO.Biff                 no guide folder; the codec is documented through its landing page and
-#                                the Excel guides that consume it.
 #   Bodu.Text.Serialization      no samples page; the shared engine has no runnable sample of its own,
 #                                it is exercised by every serializer sample.
 #   (The Outlook packages had no samples page until samples/Formats.Outlook was added; they now
@@ -66,7 +64,7 @@ Bodu.Globalization.Calendar.MiddleEast            calendar-data                 
 Bodu.Globalization.Calendar.Plugins               calendar-plugins               calendar                 calendar
 Bodu.Globalization.Calendar.Tool                  calendar-tooling               calendar                 calendar
 Bodu.Globalization.Recurrence                     recurrence                     recurrence               recurrence
-Bodu.IO.Biff                                      io-biff                        -                        io-biff
+Bodu.IO.Biff                                      io-biff                        io-biff                  io-biff
 Bodu.IO.Compound                                  io-compound                    io-compound              io-compound
 Bodu.IO.Hashing                                   io-hashing                     io-hashing               io-hashing
 Bodu.IO.Pst                                       io-pst                         io-pst                   io-pst

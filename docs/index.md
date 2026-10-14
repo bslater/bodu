@@ -274,6 +274,7 @@ A family of focused primary libraries organized into **seven topics** - alongsid
   <p>A low-level codec for the Excel Binary Interchange File Format (BIFF5 and BIFF8) record streams found inside legacy <code>.xls</code> workbooks - the substrate beneath <code>Bodu.Formats.Excel.Binary</code>, in the same relation <code>Bodu.IO.Pst</code> has to <code>Bodu.Formats.Outlook.Pst</code>. The forward-only, allocation-free <code>BiffReader</code> frames each record, establishes the version from BOF and the code page from CODEPAGE, and exposes typed accessors for cell, sheet, and workbook-globals records; <code>BiffSstReader</code> walks the BIFF8 shared string table across its CONTINUE records; and <code>BiffWriter</code> emits BIFF5 or BIFF8 records. No compound-file dependency, no workbook or cell model, no formula evaluation.</p>
   <div class="bodu-card-links">
     <a href="docs/io-biff/index.md">Introduction</a>
+    <a href="guides/io-biff/index.md">Guides</a>
     <a href="xref:Bodu.IO.Biff">API reference</a>
   </div>
 </div>

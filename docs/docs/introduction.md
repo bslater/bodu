@@ -316,6 +316,7 @@ Each library has a dedicated introduction page that explains its namespaces, the
   <div class="bodu-card-links">
     <a href="io-biff/index.md">Introduction</a>
     <a href="io-biff/getting-started.md">Getting started</a>
+    <a href="../guides/io-biff/index.md">Guides</a>
     <a href="xref:Bodu.IO.Biff">API reference</a>
   </div>
 </div>

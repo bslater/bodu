@@ -41,6 +41,29 @@ The CFB container reader and writer - the storage hierarchy, the stream cursor, 
 
 </div>
 
+## Bodu.IO.Biff guides
+
+The BIFF5 and BIFF8 record codec beneath the `.xls` reader - writing a workbook stream record by record, and reading one in blocks.
+
+<div class="bodu-cards">
+
+<div class="bodu-card">
+  <h3><a href="../io-biff/index.md">Overview</a></h3>
+  <p>The full guide index for <code>Bodu.IO.Biff</code> - how the reader and writer work, the namespace map, and which guide covers each concern.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="../io-biff/authoring-records.md">Authoring a workbook stream</a></h3>
+  <p>Assemble the globals and sheet substreams, patch the <code>BOUNDSHEET</code> offsets, write a shared string table across <code>CONTINUE</code> records, and store the result in a compound file.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="../io-biff/resumable-reading.md">Reading a stream a block at a time</a></h3>
+  <p>Carry <code>BiffReaderState</code> and <code>BytesConsumed</code> from block to block over any stream, keeping the shared string table whole.</p>
+</div>
+
+</div>
+
 ## Bodu.Formats.Excel.Binary guides
 
 The BIFF5 and BIFF8 `.xls` reader built on `Bodu.IO.Compound` and `Bodu.IO.Biff` surfaces raw worksheet cell values - strings, numbers, booleans, and errors - without formula evaluation, styling, or higher-level interpretation.

@@ -613,6 +613,14 @@
           href: io-compound/editing-in-place.md
         - name: Authoring custom property sets
           href: io-compound/custom-property-sets.md
+    - name: Bodu.IO.Biff
+      items:
+        - name: Overview
+          href: io-biff/index.md
+        - name: Authoring a workbook stream
+          href: io-biff/authoring-records.md
+        - name: Reading a stream a block at a time
+          href: io-biff/resumable-reading.md
     - name: Bodu.Formats.Excel.Binary
       items:
         - name: Overview
