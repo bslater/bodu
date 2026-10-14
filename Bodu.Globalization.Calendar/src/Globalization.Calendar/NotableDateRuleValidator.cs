@@ -11,7 +11,7 @@ namespace Bodu.Globalization.Calendar;
 /// <summary>
 /// Performs the pre-resolution semantic validation that the XSD cannot express: duplicate identities, unresolved
 /// adjustment and strategy references, and inverted year bounds; and, for a resource no reader produced, the identifier
-/// patterns and numeric ranges the XSD does express.
+/// patterns, numeric ranges and enumeration members the XSD does express.
 /// </summary>
 internal static class NotableDateRuleValidator
 {
@@ -131,6 +131,101 @@ internal static class NotableDateRuleValidator
                     CheckRange(duration.Days, NotableDateSchemaRange.PositiveInteger, "durationDays", diagnostics);
             }
         }
+    }
+
+    /// <summary>
+    /// Reports each enumeration value of an assembled resource that its type does not define, with the
+    /// <c>BODU-CAL-ENUM</c> error the readers report for a value that names no member.
+    /// </summary>
+    /// <param name="resource">The resource to validate.</param>
+    /// <param name="diagnostics">The collection that receives validation diagnostics.</param>
+    /// <remarks>
+    /// The readers only produce values their types define, so <see cref="Validate" /> does not repeat the check; a
+    /// resource assembled in code, which no reader produced, is held to it before it is written as a binary rule pack,
+    /// whose one-byte encoding would otherwise write a pack that cannot be read back or, for a value beyond a byte, one
+    /// that reads back as another member. The fields are those the resolution policy, the adjustment policies, the
+    /// concepts, the rules' applicability and their calculated durations hold; a strategy's or recurrence's constructor
+    /// already refuses an undefined value. Each diagnostic names the field as the readers name it, and the value by its
+    /// number.
+    /// </remarks>
+    public static void ValidateEnumValues(NotableDateResource resource, ICollection<NotableDateValidationDiagnostic> diagnostics)
+    {
+        ResolutionPolicy resolution = resource.ResolutionPolicy;
+        CheckDefined(resolution.DuplicatePolicy, "duplicatePolicy", diagnostics);
+        CheckDefined(resolution.SameDayCollisionPolicy, "sameDayCollisionPolicy", diagnostics);
+        CheckDefined(resolution.SpanCollisionPolicy, "spanCollisionPolicy", diagnostics);
+        CheckDefined(resolution.PriorityDirection, "priorityDirection", diagnostics);
+        CheckDefined(resolution.ObservedDateRangePolicy, "observedDateRangePolicy", diagnostics);
+        CheckAllDefined(resolution.CategoryPrecedence, "categoryPrecedence", diagnostics);
+
+        foreach (AdjustmentPolicy policy in resource.AdjustmentPolicies)
+        {
+            CheckAllDefined(policy.Scope.Calendars, "scope calendars", diagnostics);
+            CheckAllDefined(policy.Scope.Categories, "scope categories", diagnostics);
+            CheckDefined(policy.Trigger, "trigger type", diagnostics);
+            CheckAllDefined(policy.TriggerWeekdays, "trigger weekdays", diagnostics);
+            CheckDefined(policy.Action, "action type", diagnostics);
+            CheckDefined(policy.Emission, "emission mode", diagnostics);
+
+            if (policy.ActionWeekday is DayOfWeek actionWeekday)
+                CheckDefined(actionWeekday, "action dayOfWeek", diagnostics);
+
+            if (policy.TriggerWeekOrdinal is WeekOrdinal triggerWeekOrdinal)
+                CheckDefined(triggerWeekOrdinal, "trigger weekOrdinal", diagnostics);
+        }
+
+        foreach (NotableDateDefinition definition in resource.NotableDates)
+        {
+            CheckDefined(definition.Category, "category", diagnostics);
+
+            foreach (NotableDateRule rule in definition.Rules)
+            {
+                if (rule.Category is NotableDateCategory category)
+                    CheckDefined(category, "category", diagnostics);
+
+                CheckDefined(rule.Applicability.Calendar, "calendar", diagnostics);
+
+                if (rule.Duration is CalculatedEndDateDurationDefinition untilDate)
+                {
+                    CheckDefined(untilDate.StartBoundary, "untilDate startBoundary", diagnostics);
+                    CheckDefined(untilDate.EndBoundary, "untilDate endBoundary", diagnostics);
+                    CheckDefined(untilDate.EndSelection, "untilDate selection", diagnostics);
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// Records the <c>BODU-CAL-ENUM</c> error for an enumeration value its type does not define.
+    /// </summary>
+    /// <typeparam name="TEnum">The enumeration type.</typeparam>
+    /// <param name="value">The value.</param>
+    /// <param name="field">The name the readers give the field in the diagnostic.</param>
+    /// <param name="diagnostics">The collection that receives the diagnostic.</param>
+    private static void CheckDefined<TEnum>(TEnum value, string field, ICollection<NotableDateValidationDiagnostic> diagnostics)
+        where TEnum : struct, Enum
+    {
+        if (Enum.IsDefined(value))
+            return;
+
+        diagnostics.Add(new NotableDateValidationDiagnostic(
+            NotableDateValidationSeverity.Error,
+            "BODU-CAL-ENUM",
+            string.Format(CultureInfo.CurrentCulture, CalendarResourceStrings.Validation_InvalidEnumValue, field, value, string.Join(", ", Enum.GetNames<TEnum>()))));
+    }
+
+    /// <summary>
+    /// Records the <c>BODU-CAL-ENUM</c> error for each value of a list that its enumeration type does not define.
+    /// </summary>
+    /// <typeparam name="TEnum">The enumeration type.</typeparam>
+    /// <param name="values">The values.</param>
+    /// <param name="field">The name the readers give the list in the diagnostics.</param>
+    /// <param name="diagnostics">The collection that receives the diagnostics.</param>
+    private static void CheckAllDefined<TEnum>(IEnumerable<TEnum> values, string field, ICollection<NotableDateValidationDiagnostic> diagnostics)
+        where TEnum : struct, Enum
+    {
+        foreach (TEnum value in values)
+            CheckDefined(value, field, diagnostics);
     }
 
     /// <summary>
