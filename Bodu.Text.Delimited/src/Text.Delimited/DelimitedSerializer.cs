@@ -41,10 +41,12 @@ namespace Bodu.Text.Delimited;
 /// <para>
 /// A member is written as one field, so its type must be a scalar: a string or character, a number, a
 /// <see cref="bool" />, an enumeration, a date, time or time span, a <see cref="Guid" /> or a <see cref="Uri" />, or
-/// <see cref="object" /> holding one. Writing a record type with a member of any other type, such as a dictionary or a
-/// class with members of its own, throws <see cref="DelimitedSerializationException" />, as does writing an
-/// <see cref="object" /> member that holds such a value, rather than writing the value's <see cref="object.ToString" />
-/// text, which does not read back.
+/// <see cref="object" /> holding one. A record type with a member of any other type, such as a dictionary or a class
+/// with members of its own, whether the member is readable, writable or both, is rejected with
+/// <see cref="DelimitedSerializationException" /> by every <c>Serialize</c>, <c>SerializeAsync</c>, <c>Deserialize</c>
+/// and <c>DeserializeAsyncEnumerableAsync</c> overload, before anything is written or read; writing an
+/// <see cref="object" /> member that holds such a value throws too. No such value is written as its
+/// <see cref="object.ToString" /> text, which does not read back.
 /// </para>
 /// <para>
 /// Temporal values are written in invariant round-trip forms and read back equal: <see cref="DateTime" /> and
@@ -203,8 +205,8 @@ public static partial class DelimitedSerializer
     /// </exception>
     /// <exception cref="DelimitedFormatException">Thrown when the text is not valid delimited data.</exception>
     /// <exception cref="DelimitedSerializationException">
-    /// Thrown when <typeparamref name="TRecord" /> is not a record type or has no public parameterless constructor, or
-    /// when a record cannot be mapped.
+    /// Thrown when <typeparamref name="TRecord" /> is not a record type, has no public parameterless constructor or has
+    /// a member whose type is not a scalar, or when a record cannot be mapped.
     /// </exception>
     /// <exception cref="ArgumentException">
     /// Thrown when the delimiter, quote or comment character of <paramref name="options" /> cannot be used by the
@@ -228,8 +230,8 @@ public static partial class DelimitedSerializer
     /// <returns>The list of deserialized records.</returns>
     /// <exception cref="DelimitedFormatException">Thrown when the bytes are not valid delimited data.</exception>
     /// <exception cref="DelimitedSerializationException">
-    /// Thrown when <typeparamref name="TRecord" /> is not a record type or has no public parameterless constructor, or
-    /// when a record cannot be mapped.
+    /// Thrown when <typeparamref name="TRecord" /> is not a record type, has no public parameterless constructor or has
+    /// a member whose type is not a scalar, or when a record cannot be mapped.
     /// </exception>
     /// <exception cref="ArgumentException">
     /// Thrown when the delimiter, quote or comment character of <paramref name="options" /> cannot be used by the
@@ -275,8 +277,8 @@ public static partial class DelimitedSerializer
     /// </exception>
     /// <exception cref="DelimitedFormatException">Thrown when the content is not valid delimited data.</exception>
     /// <exception cref="DelimitedSerializationException">
-    /// Thrown when <typeparamref name="TRecord" /> is not a record type or has no public parameterless constructor, or
-    /// when a record cannot be mapped.
+    /// Thrown when <typeparamref name="TRecord" /> is not a record type, has no public parameterless constructor or has
+    /// a member whose type is not a scalar, or when a record cannot be mapped.
     /// </exception>
     /// <exception cref="ArgumentException">
     /// Thrown when the delimiter, quote or comment character of <paramref name="options" /> cannot be used by the
@@ -288,10 +290,16 @@ public static partial class DelimitedSerializer
     {
         ThrowHelper.ThrowIfNull(source);
 
+        // The record type is checked before the stream is read, as the span overload checks it before it parses.
+        DelimitedSerializerOptions effective = options ?? DelimitedSerializerOptions.Default;
+        effective.MakeReadOnly();
+        if (typeof(TRecord) != typeof(string[]))
+            _ = GetRecordMembers(typeof(TRecord), effective, reading: true);
+
         using var memory = new MemoryStream();
         source.CopyTo(memory);
 
-        return Deserialize<TRecord>(memory.GetBuffer().AsSpan(0, (int)memory.Length), options);
+        return Deserialize<TRecord>(memory.GetBuffer().AsSpan(0, (int)memory.Length), effective);
     }
 
     /// <summary>

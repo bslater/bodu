@@ -348,9 +348,8 @@ public static partial class DelimitedSerializer
     /// <returns>The ordered member descriptors.</returns>
     /// <exception cref="DelimitedSerializationException">
     /// Thrown when <paramref name="recordType" /> is a scalar or a collection, when <paramref name="reading" /> is
-    /// <see langword="true" /> and the type has no public parameterless constructor, or when
-    /// <paramref name="reading" /> is <see langword="false" /> and a readable member's declared type is neither a
-    /// scalar nor <see cref="object" />.
+    /// <see langword="true" /> and the type has no public parameterless constructor, or when a member's declared type
+    /// is neither a scalar nor <see cref="object" />.
     /// </exception>
     /// <remarks>
     /// <para>
@@ -360,10 +359,11 @@ public static partial class DelimitedSerializer
     /// read or written, so a type that is not a record is rejected whether or not there are records.
     /// </para>
     /// <para>
-    /// Every readable member is written as one field, so a record type with a member that is not a scalar, such as a
-    /// dictionary or a class with members of its own, is rejected for writing in the same way, before the header row;
-    /// its field would be the value's <see cref="object.ToString" /> text, which does not read back. Reading leaves
-    /// such a member alone unless the document has its column.
+    /// Every member is one field, so a record type with a member that is not a scalar, such as a dictionary or a class
+    /// with members of its own, is rejected in the same way, for reading and for writing alike, whether the member is
+    /// readable, writable or both: its field would be the value's <see cref="object.ToString" /> text, which does not
+    /// read back, and no field converts to its type. The check is made before the header row is written or the input
+    /// read, so that a type rejected in one direction is rejected in the other.
     /// </para>
     /// </remarks>
     [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
@@ -384,16 +384,10 @@ public static partial class DelimitedSerializer
                 string.Format(CultureInfo.CurrentCulture, DelimitedResourceStrings.Op_Invalid_DelimitedRecordTypeNotCreatable, recordType));
         }
 
+        // A member declared as object is tested again, on its value, as each record is written.
         FlatMemberDescriptor[] members = GetMembers(recordType, options);
-        if (!reading)
-        {
-            // A member declared as object is tested again, on its value, as each record is written.
-            foreach (FlatMemberDescriptor member in members)
-            {
-                if (member.CanRead)
-                    ThrowIfNotScalar(null, member);
-            }
-        }
+        foreach (FlatMemberDescriptor member in members)
+            ThrowIfNotScalar(null, member);
 
         return members;
     }

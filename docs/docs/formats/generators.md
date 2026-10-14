@@ -60,6 +60,7 @@ A factory and the reflection binder agree for a type whose members are all setta
 - `[PropertyOrder]` is ignored: a factory writes in declaration order, while the reflection binders order their columns and keys by it.
 - A factory's `Bind` falls back to a case-insensitive match of every name; the reflection binders match names case-sensitively unless `PropertyNameCaseInsensitive` is set.
 - An INI factory does not enforce `[Required]`; `IniSerializer`'s reflection binder throws `IniSerializationException` for a missing required key.
+- A member whose type is not a supported scalar is left out of a factory, with `BTFG002`, and the factory reads and writes the rest of the type; the reflection binders reject the whole type instead, when they write it and when they read it, with `DelimitedSerializationException` or `IniSerializationException` naming the member.
 
 ## Diagnostics
 

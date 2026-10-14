@@ -113,8 +113,8 @@ public static partial class DelimitedSerializer
     /// </exception>
     /// <exception cref="DelimitedFormatException">Thrown when the content is not valid delimited data.</exception>
     /// <exception cref="DelimitedSerializationException">
-    /// Thrown when <typeparamref name="TRecord" /> is not a record type or has no public parameterless constructor, or
-    /// when a record cannot be mapped.
+    /// Thrown when <typeparamref name="TRecord" /> is not a record type, has no public parameterless constructor or has
+    /// a member whose type is not a scalar, or when a record cannot be mapped.
     /// </exception>
     /// <exception cref="ArgumentException">
     /// Thrown when the delimiter, quote or comment character of <paramref name="options" /> cannot be used by the
