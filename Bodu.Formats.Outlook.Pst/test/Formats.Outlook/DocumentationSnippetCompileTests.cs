@@ -20,12 +20,20 @@ namespace Bodu.Formats.Outlook;
 /// this test references. Illustrative fragments stay unmarked and are not compiled.
 /// </remarks>
 [TestClass]
-public sealed class DocumentationSnippetCompileTests
+public sealed partial class DocumentationSnippetCompileTests
 {
     /// <summary>
     /// The sentinel that opts a fenced <c>csharp</c> block into compilation.
     /// </summary>
     private const string CompileSentinel = "<!-- compile -->";
+
+    /// <summary>
+    /// The documentation directories, relative to the repository root, whose opted-in snippets this test compiles.
+    /// </summary>
+    private static readonly string[] s_snippetDirectories =
+    [
+        Path.Combine("docs", "docs", "io-pst"),
+    ];
 
     /// <summary>
     /// Verifies that every opted-in PST documentation snippet compiles against the current public API, with at least
@@ -35,10 +43,10 @@ public sealed class DocumentationSnippetCompileTests
     [TestCategory("Regression")]
     public void IoPstDocSnippets_WhenMarkedForCompile_ShouldCompile()
     {
-        string? docsDirectory = FindDocsDirectory();
-        if (docsDirectory is null)
+        IReadOnlyList<string>? files = FindMarkedSnippetFiles();
+        if (files is null)
         {
-            Assert.Inconclusive("The io-pst documentation directory was not found from the test base directory.");
+            Assert.Inconclusive("The repository root was not found from the test base directory.");
             return;
         }
 
@@ -46,7 +54,7 @@ public sealed class DocumentationSnippetCompileTests
         var failures = new StringBuilder();
         int marked = 0;
 
-        foreach (string file in Directory.EnumerateFiles(docsDirectory, "*.md"))
+        foreach (string file in files)
         {
             foreach (string snippet in ExtractMarkedSnippets(File.ReadAllLines(file)))
             {
@@ -61,23 +69,33 @@ public sealed class DocumentationSnippetCompileTests
             }
         }
 
-        Assert.IsGreaterThan(0, marked, $"No '{CompileSentinel}' snippets were found under {docsDirectory}; the compile guard is not wired to any example.");
+        Assert.IsGreaterThan(0, marked, $"No '{CompileSentinel}' snippets were found; the compile guard is not wired to any example.");
         Assert.AreEqual(0, failures.Length, $"Documentation snippets failed to compile:{Environment.NewLine}{failures}");
     }
 
     /// <summary>
     /// Walks up from the test base directory to the repository root (identified by <c>bodu.slnx</c>) and returns the
-    /// io-pst documentation directory beneath it.
+    /// Markdown files of every directory in <see cref="s_snippetDirectories" /> beneath it.
     /// </summary>
-    /// <returns>The documentation directory, or <see langword="null" /> when the repository root cannot be located.</returns>
-    private static string? FindDocsDirectory()
+    /// <returns>
+    /// The full paths of the Markdown files, in directory then name order, or <see langword="null" /> when the repository
+    /// root cannot be located.
+    /// </returns>
+    private static IReadOnlyList<string>? FindMarkedSnippetFiles()
     {
         for (DirectoryInfo? dir = new(AppContext.BaseDirectory); dir is not null; dir = dir.Parent)
         {
             if (File.Exists(Path.Combine(dir.FullName, "bodu.slnx")))
             {
-                string docs = Path.Combine(dir.FullName, "docs", "docs", "io-pst");
-                return Directory.Exists(docs) ? docs : null;
+                string root = dir.FullName;
+
+                return
+                [
+                    .. s_snippetDirectories
+                        .Select(relative => Path.Combine(root, relative))
+                        .Where(Directory.Exists)
+                        .SelectMany(static docs => Directory.EnumerateFiles(docs, "*.md").Order(StringComparer.Ordinal)),
+                ];
             }
         }
 
