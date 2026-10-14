@@ -361,7 +361,7 @@ Each library has a dedicated introduction page that explains its namespaces, the
 - **Analyzer-clean.** StyleCop.Analyzers, Roslynator, the .NET analyzers, AsyncFixer, and the Visual Studio Threading analyzers run at build time. Doc-comment warnings - including `CS1591` - are treated as errors.
 - **Deterministic builds** produce reproducible package outputs.
 - **Documentation-first.** Every public type and member carries XML documentation in US English, and that documentation is the source of truth for this site. The API reference you see here is generated directly from the source.
-- **MIT licensed**, with minimal external runtime dependencies - the core libraries depend only on the BCL; the dependency-injection, caching, JSON, and Outlook packages pull in a few permissively licensed Microsoft packages (see [Licensing](licensing.md)).
+- **MIT licensed**, with minimal external runtime dependencies - most libraries depend only on Bodu packages and the shared framework; `Bodu.IO.Hashing` takes the `System.IO.Hashing` package, the calendar runtime, its plugin loader, and the exchange-rate infrastructure take `Microsoft.Extensions.Logging.Abstractions`, and the dependency-injection, configuration, caching, HTTP, and JSON companions pull in a few permissively licensed Microsoft packages (see [Licensing](licensing.md)).
 
 ## Testing and conventions
 

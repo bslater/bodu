@@ -314,13 +314,13 @@ A family of focused primary libraries organized into **seven topics** - alongsid
 ## Companion packages
 
 <div class="bodu-topic">
-<p class="bodu-topic-lede">The cards above are the headline libraries. Four of them head a family of opt-in companions - serialization bridges, dependency-injection registrations, caching backends, data packs, and tooling - that ship as separate packages so the core library stays dependency-free. The <a href="docs/package-matrix.md">package matrix</a> lists every one of the 60 packages with its dependencies and install command.</p>
+<p class="bodu-topic-lede">The cards above are the headline libraries. Four of them head a family of opt-in companions - serialization bridges, dependency-injection registrations, caching backends, data packs, and tooling - that ship as separate packages so the core library stays dependency-free. The <a href="docs/package-matrix.md">package matrix</a> lists every package with its version, its dependencies, and its install command: the 56 on nuget.org, and the five that are not.</p>
 </div>
 
 | Headline package | Its companions |
 |---|---|
 | `Bodu.Numerics` | [`Bodu.Numerics.Serialization.Json`](docs/numerics-serialization-json/index.md) - the `System.Text.Json` bridge. |
-| `Bodu.Financial` | [`Bodu.Financial.Serialization.Json`](docs/financial-serialization-json/index.md), [`Bodu.Financial.ExchangeRates`](docs/exchange-rates/index.md) with its eleven per-source provider packages and three caching backends, and `Bodu.Financial.DependencyInjection`. |
+| `Bodu.Financial` | [`Bodu.Financial.Serialization.Json`](docs/financial-serialization-json/index.md), [`Bodu.Financial.ExchangeRates`](docs/exchange-rates/index.md) with its nine published per-source provider packages (plus XE and OANDA, [built from source only](docs/package-matrix.md#not-published-to-nugetorg)) and three caching backends, and `Bodu.Financial.DependencyInjection`. |
 | `Bodu.Globalization.Calendar` | [Builder](docs/calendar-builder/index.md), [Caching](docs/calendar-caching/index.md) (with SQLite and distributed backends), [dependency injection](docs/calendar-di/index.md), [Plugins](docs/calendar-plugins/index.md), [five regional data packs](docs/calendar-data/index.md), and the [rule-pack toolchain](docs/calendar-tooling/index.md). |
 | The serializers | [`Bodu.Text.Serialization`](docs/serialization/core/index.md) - the shared engine all six compile against - and [the source generator](docs/formats/generators.md) for reflection-free binding. |
 
@@ -328,12 +328,13 @@ A family of focused primary libraries organized into **seven topics** - alongsid
 
 <div class="bodu-install">
 
-Every package ships on NuGet. The
+56 packages ship on NuGet. The
 [package matrix](docs/package-matrix.md#install-commands) carries the full
-`dotnet add package` list - all 60 packages, grouped by family, including the
-regional calendar data packs, the exchange-rate providers, the caching and
-dependency-injection companions, and the `dotnet tool install` command for the
-rule-pack toolchain.
+`dotnet add package` list, grouped by family, including the regional calendar
+data packs, the exchange-rate providers, and the caching and
+dependency-injection companions. Four packages - the XE and OANDA providers and
+the rule-pack toolchain - are
+[built from source](docs/package-matrix.md#not-published-to-nugetorg) instead.
 
 </div>
 
@@ -343,7 +344,7 @@ rule-pack toolchain.
 - **Analyzer-clean**: StyleCop, Roslynator, .NET analyzers, AsyncFixer, and Threading analyzers run at build time; doc-comment warnings are treated as errors.
 - **Deterministic builds** for reproducible package outputs.
 - **Documentation-first**: every public type and member carries XML documentation in US English, which drives this API reference.
-- **Minimal external runtime dependencies.** Core libraries depend only on the BCL. Extension packages (`Bodu.Extensions.Configuration.Text`, `Bodu.Globalization.Calendar.DependencyInjection`) intentionally bridge to the Microsoft.Extensions ecosystem.
+- **Minimal external runtime dependencies.** Most libraries depend only on Bodu packages and the shared framework. `Bodu.IO.Hashing` takes the `System.IO.Hashing` package, the calendar runtime, its plugin loader, and the exchange-rate infrastructure take `Microsoft.Extensions.Logging.Abstractions`, and the dependency-injection, configuration, caching, and HTTP companions intentionally bridge to the Microsoft.Extensions ecosystem; the [package matrix](docs/package-matrix.md) names each package's dependencies.
 - **MIT licensed.**
 
 ## Where to go next

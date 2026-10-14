@@ -62,7 +62,7 @@ dotnet add package Bodu.IO.Pst
 dotnet add package Bodu.Formats.Outlook.Pst
 ```
 
-`Bodu.Formats.Excel.Binary` depends on `Bodu.IO.Compound` and `Bodu.IO.Biff`, `Bodu.Formats.Outlook.Msg` depends on `Bodu.IO.Compound`, and `Bodu.Formats.Outlook.Pst` depends on `Bodu.IO.Pst`; both Outlook readers share `Bodu.Formats.Outlook`. `Bodu.IO.Compound` depends only on `Bodu.Core`, `Bodu.IO.Biff` on `Bodu.Core` and the `System.Text.Encoding.CodePages` NuGet package (for BIFF5 byte strings), and `Bodu.IO.Pst` on `Bodu.Core` and `Bodu.Collections` - install the topmost package your application consumes.
+`Bodu.Formats.Excel.Binary` depends on `Bodu.IO.Compound` and `Bodu.IO.Biff`, `Bodu.Formats.Outlook.Msg` depends on `Bodu.IO.Compound`, and `Bodu.Formats.Outlook.Pst` depends on `Bodu.IO.Pst`; both Outlook readers share `Bodu.Formats.Outlook`. `Bodu.IO.Compound` depends only on `Bodu.Core`, `Bodu.IO.Biff` on `Bodu.Core` alone (BIFF5 byte strings decode through the shared framework's `CodePagesEncodingProvider`, so no code-pages package is needed), and `Bodu.IO.Pst` on `Bodu.Core` and `Bodu.Collections` - install the topmost package your application consumes.
 
 ## Where to go next
 
