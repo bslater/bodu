@@ -77,9 +77,12 @@ jobs:
             exit 0
           fi
 
-          # Map each changed <Project>/src/** path to that project's test project.
+          # Map each changed <Project>/src/** path to that project's test project. Bodu.CodeStyle is
+          # left out, as the full run (which collects bodu.slnx) leaves it out: it is a separate
+          # solution that codestyle-build-test.yml builds and tests on its own SDK, and its test
+          # projects target net8.0 alone, not the framework collect-coverage.sh builds (#1336).
           projects=""
-          for dir in $(echo "$changed" | grep -E '/src/' | sed -E 's|/src/.*||' | sort -u); do
+          for dir in $(echo "$changed" | grep -E '/src/' | sed -E '/^Bodu\.CodeStyle\//d; s|/src/.*||' | sort -u); do
             for candidate in "$dir"/test/*.Test.csproj; do
               [ -f "$candidate" ] && projects="$projects $candidate"
             done
