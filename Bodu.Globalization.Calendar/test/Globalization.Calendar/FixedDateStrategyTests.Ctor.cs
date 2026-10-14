@@ -136,4 +136,22 @@ public sealed partial class FixedDateStrategyTests
 
         Assert.AreEqual("calendar", ex.ParamName);
     }
+
+    /// <summary>
+    /// Verifies that a day outside 1 to 31, which the loader rejects, throws <see cref="ArgumentOutOfRangeException" />
+    /// naming the <c>day</c> parameter.
+    /// </summary>
+    /// <param name="day">The day.</param>
+    [TestMethod]
+    [DataRow(0)]
+    [DataRow(32)]
+    public void Ctor_WhenDayIsOutsideOneToThirtyOne_ShouldThrowArgumentOutOfRangeException(int day)
+    {
+        var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = new FixedDateStrategy(1, day);
+        });
+
+        Assert.AreEqual("day", ex.ParamName);
+    }
 }
