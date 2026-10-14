@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Globalization;
+using System.Text;
 
 using Bodu.Test.Kat;
 
@@ -606,5 +607,79 @@ public partial class IniSerializerTests
         Assert.AreEqual("b", result.S.Name);
         Assert.AreEqual("computed", result.S.Computed);
         Assert.AreEqual(0, result.S.Values.Count);
+    }
+
+    /// <summary>
+    /// Verifies that a type with a member INI cannot represent, whatever the member's accessors, throws
+    /// <see cref="IniSerializationException" /> naming the member when a document without its section or key is read,
+    /// as writing it does.
+    /// </summary>
+    /// <param name="kat">The root type and the exception it raises.</param>
+    [TestMethod]
+    [DynamicData(
+        nameof(UnrepresentableMemberTypes),
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
+    public void Deserialize_WhenTheTypeHasAMemberIniCannotRepresent_ShouldThrowIniSerializationException(InvalidKat<Type> kat)
+    {
+        var ex = Assert.ThrowsExactly<IniSerializationException>(() =>
+        {
+            _ = DeserializeAs(kat.Input, "Name=a\n");
+        });
+
+        Assert.IsTrue(ex.Message.Contains(kat.MessageContains!, StringComparison.Ordinal), ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that a type with a member INI cannot represent, whatever the member's accessors, throws
+    /// <see cref="IniSerializationException" /> naming the member when a document with its sections is read, including
+    /// a section the type cannot set.
+    /// </summary>
+    /// <param name="kat">The root type and the exception it raises.</param>
+    [TestMethod]
+    [DynamicData(
+        nameof(UnrepresentableMemberTypes),
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
+    public void Deserialize_WhenTheTypeHasAMemberIniCannotRepresent_ForADocumentWithItsSections_ShouldThrowIniSerializationException(InvalidKat<Type> kat)
+    {
+        var ex = Assert.ThrowsExactly<IniSerializationException>(() =>
+        {
+            _ = DeserializeAs(kat.Input, "Name=a\n[S]\nName=b\n[Outer]\n");
+        });
+
+        Assert.IsTrue(ex.Message.Contains(kat.MessageContains!, StringComparison.Ordinal), ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that a type with a member INI cannot represent is rejected before the text is parsed, so that malformed
+    /// text reports the type's <see cref="IniSerializationException" /> rather than <see cref="IniFormatException" />.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenTheTypeHasAMemberIniCannotRepresent_ShouldThrowBeforeParsingTheText()
+    {
+        var ex = Assert.ThrowsExactly<IniSerializationException>(() =>
+        {
+            _ = IniSerializer.Deserialize<GetOnlyRootListConfig>("[S");
+        });
+
+        Assert.IsTrue(ex.Message.Contains("'L'", StringComparison.Ordinal), ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that a type with a member INI cannot represent is rejected before the stream is read, leaving the
+    /// stream at its start.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenTheTypeHasAMemberIniCannotRepresent_ForAStream_ShouldThrowBeforeReadingTheStream()
+    {
+        using var stream = new MemoryStream(Encoding.UTF8.GetBytes("Name=a\n"));
+
+        Assert.ThrowsExactly<IniSerializationException>(() =>
+        {
+            _ = IniSerializer.Deserialize<GetOnlyRootListConfig>(stream);
+        });
+
+        Assert.AreEqual(0, stream.Position);
     }
 }
