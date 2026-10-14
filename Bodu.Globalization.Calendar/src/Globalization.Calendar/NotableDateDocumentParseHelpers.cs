@@ -15,6 +15,13 @@ namespace Bodu.Globalization.Calendar;
 /// </summary>
 internal static class NotableDateDocumentParseHelpers
 {
+    /// <summary>The Hebrew month names in their canonical spelling, each with its number, or <c>0</c> for a name whose number shifts in a leap year and is read as a month alias.</summary>
+    private static readonly (string Name, int Month)[] s_hebrewMonthNames =
+    [
+        ("Tishri", 1), ("Heshvan", 2), ("Kislev", 3), ("Tevet", 4), ("Shevat", 5), ("AdarI", 6),
+        ("AdarII", 0), ("LastAdar", 0), ("Nisan", 0), ("Iyar", 0), ("Sivan", 0), ("Tammuz", 0), ("Av", 0), ("Elul", 0),
+    ];
+
     /// <summary>The full English month names, indexed so that January is at index zero.</summary>
     private static readonly string[] s_monthNames =
     [
@@ -151,8 +158,8 @@ internal static class NotableDateDocumentParseHelpers
     /// <remarks>
     /// A Gregorian month is a full English month name or an integer from 1 to 12. In another calendar it is an integer
     /// from 1 to the number <see cref="CalendarSystems.GetFixedMonthCount" /> gives for the calendar, and, in the
-    /// Hebrew calendar alone, a Hebrew month name. Any other value records <c>BODU-CAL-MONTH</c>, worded for the
-    /// calendar.
+    /// Hebrew calendar alone, a Hebrew month name. A name matches ignoring case. Any other value records
+    /// <c>BODU-CAL-MONTH</c>, worded for the calendar.
     /// </remarks>
     public static (int Month, string? Alias) ParseFixedMonth(
         string? value,
@@ -171,28 +178,15 @@ internal static class NotableDateDocumentParseHelpers
             if (int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out int numeric) && numeric >= 1 && numeric <= months)
                 return (numeric, null);
 
-            // The month names, and the aliases whose number shifts in a leap year, are the Hebrew calendar's alone.
+            // The month names, and the aliases whose number shifts in a leap year, are the Hebrew calendar's alone. They
+            // match ignoring case, as the English month names and the enumeration values do, and an alias is kept in
+            // its canonical spelling, which the strategy and the writers hold.
             if (calendar == CalendarSystem.Hebrew)
             {
-                switch (value)
+                foreach ((string name, int number) in s_hebrewMonthNames)
                 {
-                    case "Tishri": return (1, null);
-                    case "Heshvan": return (2, null);
-                    case "Kislev": return (3, null);
-                    case "Tevet": return (4, null);
-                    case "Shevat": return (5, null);
-                    case "AdarI": return (6, null);
-                    case "AdarII":
-                    case "LastAdar":
-                    case "Nisan":
-                    case "Iyar":
-                    case "Sivan":
-                    case "Tammuz":
-                    case "Av":
-                    case "Elul":
-                        return (0, value);
-                    default:
-                        break;
+                    if (string.Equals(name, value, StringComparison.OrdinalIgnoreCase))
+                        return number > 0 ? (number, null) : (0, name);
                 }
             }
         }
