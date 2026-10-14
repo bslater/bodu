@@ -69,35 +69,81 @@ public partial class FormatFactoryGeneratorTests
     }
 
     /// <summary>
-    /// Verifies that an unsupported member type reports <c>BTFG002</c> while the factory is still generated for the
-    /// remaining members.
+    /// Verifies that a member whose type is not a supported scalar, which the reflection binder would reject, reports
+    /// <c>BTFG002</c> as an error naming the member and the type, and that no factory is emitted for the type, for a
+    /// delimited record and an INI section alike.
     /// </summary>
+    /// <param name="attribute">The marker attribute that requests the factory.</param>
+    /// <param name="memberType">The member's type, as written in source.</param>
     [TestMethod]
-    public void Generator_WhenMemberTypeUnsupported_ShouldReportBtfg002AndSkipMember()
+    [DataRow("DelimitedRecord", "List<int>")]
+    [DataRow("DelimitedRecord", "Dictionary<string, int>")]
+    [DataRow("DelimitedRecord", "object")]
+    [DataRow("IniSection", "List<int>")]
+    [DataRow("IniSection", "Dictionary<string, int>")]
+    [DataRow("IniSection", "object")]
+    public void Generator_WhenMemberTypeUnsupported_ShouldReportBtfg002AsAnErrorAndEmitNoFactory(string attribute, string memberType)
     {
-        const string Source = """
+        string source = $$"""
             using System.Collections.Generic;
             using Bodu.Text.Delimited;
+            using Bodu.Text.Ini;
 
             namespace Sample;
 
-            [DelimitedRecord]
+            [{{attribute}}]
             public sealed partial class HasUnsupported
             {
                 public string Name { get; set; } = string.Empty;
 
+                public {{memberType}} Values { get; set; } = default!;
+            }
+            """;
+
+        GeneratorDriverRunResult result = RunGenerator(source);
+
+        Diagnostic diagnostic = result.Diagnostics.Single(static d => d.Id == "BTFG002");
+        Assert.AreEqual(DiagnosticSeverity.Error, diagnostic.Severity);
+        Assert.IsTrue(diagnostic.GetMessage(CultureInfo.InvariantCulture).Contains("'Values'", StringComparison.Ordinal), diagnostic.GetMessage(CultureInfo.InvariantCulture));
+        Assert.AreEqual(0, result.GeneratedTrees.Length);
+    }
+
+    /// <summary>
+    /// Verifies that a member whose type is not a supported scalar, left out deliberately with <c>[Ignore]</c>, reports
+    /// no diagnostic, and that the factory is emitted for the remaining members and compiles, for a delimited record and
+    /// an INI section alike.
+    /// </summary>
+    /// <param name="attribute">The marker attribute that requests the factory.</param>
+    [TestMethod]
+    [DataRow("DelimitedRecord")]
+    [DataRow("IniSection")]
+    public void Generator_WhenAnUnsupportedMemberIsIgnored_ShouldEmitTheFactoryWithoutADiagnostic(string attribute)
+    {
+        string source = $$"""
+            #nullable enable
+            using System.Collections.Generic;
+            using Bodu.Text.Delimited;
+            using Bodu.Text.Ini;
+            using Bodu.Text.Serialization;
+
+            namespace Sample;
+
+            [{{attribute}}]
+            public sealed partial class HasIgnored
+            {
+                public string Name { get; set; } = string.Empty;
+
+                [Ignore]
                 public List<int> Values { get; set; } = new();
             }
             """;
 
-        GeneratorDriverRunResult result = RunGenerator(Source);
+        (GeneratorDriverRunResult result, IReadOnlyList<Diagnostic> errors) = RunGeneratorAndCompile(source);
 
-        Assert.IsTrue(result.Diagnostics.Any(d => d.Id == "BTFG002"), "expected BTFG002");
+        Assert.AreEqual(0, result.Diagnostics.Length, string.Join(Environment.NewLine, result.Diagnostics));
         Assert.AreEqual(1, result.GeneratedTrees.Length);
-
-        string generated = result.GeneratedTrees[0].ToString();
-        Assert.IsTrue(generated.Contains("\"Name\"", StringComparison.Ordinal));
-        Assert.IsFalse(generated.Contains("Values", StringComparison.Ordinal));
+        Assert.IsFalse(result.GeneratedTrees[0].ToString().Contains("Values", StringComparison.Ordinal));
+        Assert.AreEqual(0, errors.Count, string.Join(Environment.NewLine, errors));
     }
 
     /// <summary>
