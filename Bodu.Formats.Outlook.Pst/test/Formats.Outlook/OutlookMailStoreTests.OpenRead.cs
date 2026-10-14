@@ -44,6 +44,26 @@ public partial class OutlookMailStoreTests
     }
 
     /// <summary>
+    /// Verifies that opening a stream that is not a PST file throws <see cref="OutlookPstFormatException" />, keeping the
+    /// container's <see cref="PstFileFormatException" /> as the inner exception, so one handler for the reader's family
+    /// catches it.
+    /// </summary>
+    [TestMethod]
+    public void OpenRead_WhenStreamIsNotPst_ShouldThrowOutlookPstFormatException()
+    {
+        using var stream = new MemoryStream(new byte[1024]);
+
+        var ex = Assert.ThrowsExactly<OutlookPstFormatException>(() =>
+        {
+            using OutlookMailStore store = OutlookMailStore.OpenRead(stream);
+        });
+
+        Assert.IsNotNull(ex.InnerException);
+        Assert.IsInstanceOfType<PstFileFormatException>(ex.InnerException);
+        Assert.AreEqual(PstFileError.InvalidHeader, ((PstFileFormatException)ex.InnerException).Error);
+    }
+
+    /// <summary>
     /// Verifies that a store embedded in a larger stream opens from the stream's current position, as the guides
     /// document, and renders as the same store read on its own.
     /// </summary>

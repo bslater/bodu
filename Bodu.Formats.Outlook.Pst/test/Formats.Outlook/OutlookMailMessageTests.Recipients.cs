@@ -118,4 +118,48 @@ public partial class OutlookMailMessageTests
         Assert.AreEqual(MapiPropertyIds.EmailAddress, report.PropertyId);
         Assert.AreEqual(OutlookOmittedValueReason.UnresolvableReference, report.Reason);
     }
+
+    /// <summary>
+    /// Verifies that, by default, a recipient cell whose heap reference does not resolve fails the recipient list with
+    /// <see cref="OutlookPstFormatException" />, keeping the container's <see cref="PstFileFormatException" /> as the
+    /// inner exception.
+    /// </summary>
+    [TestMethod]
+    public void Recipients_WhenACellDoesNotResolve_ShouldThrowOutlookPstFormatException()
+    {
+        using OutlookMailStore store = OpenSynthetic(static b => b.DanglingRecipientEmail = true);
+        OutlookMailMessage message = GetFullMessage(store);
+
+        var ex = Assert.ThrowsExactly<OutlookPstFormatException>(() =>
+        {
+            _ = message.Recipients;
+        });
+
+        Assert.IsNotNull(ex.InnerException);
+        Assert.IsInstanceOfType<PstFileFormatException>(ex.InnerException);
+        Assert.AreEqual(PstFileError.InvalidHeap, ((PstFileFormatException)ex.InnerException).Error);
+    }
+
+    /// <summary>
+    /// Verifies that reading the recipients of a message whose recipient table has a corrupt heap throws
+    /// <see cref="OutlookPstFormatException" />, keeping the container's <see cref="PstFileFormatException" /> as the
+    /// inner exception.
+    /// </summary>
+    [TestMethod]
+    public void Recipients_WhenRecipientTableHeapIsCorrupt_ShouldThrowOutlookPstFormatException()
+    {
+        // Subnode 0x692 of the Inbox's first message (0x200024) is its recipient table.
+        byte[] input = OutlookMailStoreTests.GenerateWithCorruptHeap("gen:Mail(rcpt=1~Robin~robin@example.com~SMTP)", 0x200024, 0x692);
+        using OutlookMailStore store = OutlookMailStore.Open(new MemoryStream(input, writable: false), new OutlookMailStoreReaderOptions());
+        OutlookMailMessage message = store.RootFolder.EnumerateSubfolders().Single().EnumerateMessages().Single();
+
+        var ex = Assert.ThrowsExactly<OutlookPstFormatException>(() =>
+        {
+            _ = message.Recipients;
+        });
+
+        Assert.IsNotNull(ex.InnerException);
+        Assert.IsInstanceOfType<PstFileFormatException>(ex.InnerException);
+        Assert.AreEqual(PstFileError.InvalidHeap, ((PstFileFormatException)ex.InnerException).Error);
+    }
 }

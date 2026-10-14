@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using Bodu.Formats.Outlook.Pst;
+using Bodu.IO.Pst;
 
 namespace Bodu.Formats.Outlook;
 
@@ -72,5 +73,30 @@ public partial class OutlookMailAttachmentTests
 
         Assert.IsNotNull(payload);
         Assert.AreEqual(builder.LargeAttachmentLength, payload.Value.Length);
+    }
+
+    /// <summary>
+    /// Verifies that reading the properties of an attachment whose object has a corrupt heap throws
+    /// <see cref="OutlookPstFormatException" />, keeping the container's <see cref="PstFileFormatException" /> as the
+    /// inner exception.
+    /// </summary>
+    [TestMethod]
+    public void Properties_WhenAttachmentObjectHeapIsCorrupt_ShouldThrowOutlookPstFormatException()
+    {
+        // 0x200024 is the Inbox's first message.
+        byte[] file = PstReleaseNoteCorpusTests.GenerateInput("gen:Mail(att=1~a.txt~hello)");
+        uint attachmentId = FindAttachmentObjectId(file, 0x200024);
+        byte[] input = OutlookMailStoreTests.InvertByte(file, OutlookMailStoreTests.ReadNodePayload(file, 0x200024, attachmentId), index: 2);
+        using OutlookMailStore store = OutlookMailStore.Open(new MemoryStream(input, writable: false), new OutlookMailStoreReaderOptions());
+        OutlookMailAttachment attachment = store.RootFolder.EnumerateSubfolders().Single().EnumerateMessages().Single().Attachments.Single();
+
+        var ex = Assert.ThrowsExactly<OutlookPstFormatException>(() =>
+        {
+            _ = attachment.Properties;
+        });
+
+        Assert.IsNotNull(ex.InnerException);
+        Assert.IsInstanceOfType<PstFileFormatException>(ex.InnerException);
+        Assert.AreEqual(PstFileError.InvalidHeap, ((PstFileFormatException)ex.InnerException).Error);
     }
 }

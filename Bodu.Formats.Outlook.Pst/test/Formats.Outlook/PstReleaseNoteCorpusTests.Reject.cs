@@ -80,4 +80,31 @@ public sealed partial class PstReleaseNoteCorpusTests
             },
             fix.ToString());
     }
+
+    /// <summary>
+    /// Verifies that each catalogued file a fix established as a container fault, read on the Store surface, is
+    /// rejected with <see cref="OutlookPstFormatException" />, the mail store's own exception, whose inner exception is
+    /// the container exception the row names.
+    /// </summary>
+    /// <param name="fix">The catalogue row.</param>
+    [TestMethod]
+    [TestCategory("Regression")]
+    [DynamicData(
+        nameof(StoreSurfaceContainerRows),
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
+    public void Reject_WhenFixScenarioIsContainerFaultOnStoreSurface_ShouldThrowOutlookPstFormatException(ReleaseNoteFix fix)
+    {
+        ArgumentNullException.ThrowIfNull(fix);
+
+        OutlookPstFormatException ex = Assert.ThrowsExactly<OutlookPstFormatException>(
+            () =>
+            {
+                _ = RenderRow(fix);
+            },
+            fix.ToString());
+
+        Assert.IsNotNull(ex.InnerException, fix.ToString());
+        Assert.AreEqual(fix.Expected, ex.InnerException.GetType().Name, fix.ToString());
+    }
 }

@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using Bodu.Formats.Outlook.Pst;
+using Bodu.IO.Pst;
 
 namespace Bodu.Formats.Outlook;
 
@@ -32,5 +33,28 @@ public partial class OutlookMailFolderTests
             PstMessagingFixtureBuilder.BodyText,
             message.BodyText,
             "A message without its own code page must decode under the folder's declaration.");
+    }
+
+    /// <summary>
+    /// Verifies that reading the properties of a folder whose node has a corrupt heap throws
+    /// <see cref="OutlookPstFormatException" />, keeping the container's <see cref="PstFileFormatException" /> as the
+    /// inner exception.
+    /// </summary>
+    [TestMethod]
+    public void Properties_WhenFolderHeapIsCorrupt_ShouldThrowOutlookPstFormatException()
+    {
+        // 0x8022 is the Inbox.
+        byte[] input = OutlookMailStoreTests.GenerateWithCorruptHeap("gen:Mail()", 0x8022);
+        using OutlookMailStore store = OutlookMailStore.Open(new MemoryStream(input, writable: false), new OutlookMailStoreReaderOptions());
+        OutlookMailFolder inbox = store.RootFolder.EnumerateSubfolders().Single();
+
+        var ex = Assert.ThrowsExactly<OutlookPstFormatException>(() =>
+        {
+            _ = inbox.Properties;
+        });
+
+        Assert.IsNotNull(ex.InnerException);
+        Assert.IsInstanceOfType<PstFileFormatException>(ex.InnerException);
+        Assert.AreEqual(PstFileError.InvalidHeap, ((PstFileFormatException)ex.InnerException).Error);
     }
 }

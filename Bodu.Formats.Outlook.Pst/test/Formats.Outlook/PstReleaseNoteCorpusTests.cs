@@ -81,6 +81,19 @@ public sealed partial class PstReleaseNoteCorpusTests
         RejectRows(nameof(PstUnsupportedFormatException));
 
     /// <summary>
+    /// Gets the runnable rows of kind <c>reject</c> on the Store surface that expect one of the container's exceptions,
+    /// <see cref="PstFileFormatException" /> or <see cref="PstUnsupportedFormatException" />.
+    /// </summary>
+    /// <value>One single-element argument array per row.</value>
+    public static IEnumerable<object[]> StoreSurfaceContainerRows =>
+        AllRows
+            .Where(static fix => fix.IsRunnable
+                && fix.Kind == "reject"
+                && fix.Expected is nameof(PstFileFormatException) or nameof(PstUnsupportedFormatException)
+                && RowOptions.Parse(fix.Options).Surface == "Store")
+            .Select(static fix => new object[] { fix });
+
+    /// <summary>
     /// Gets the runnable rows of kind <c>reject</c> that expect <see cref="OutlookPstFormatException" />.
     /// </summary>
     /// <value>One single-element argument array per row.</value>

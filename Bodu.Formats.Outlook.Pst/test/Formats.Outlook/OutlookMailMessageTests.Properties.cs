@@ -205,4 +205,81 @@ public partial class OutlookMailMessageTests
 
         Assert.AreEqual("stop", ex.Message);
     }
+
+    /// <summary>
+    /// Verifies that, by default, a message property whose heap reference does not resolve fails the message's
+    /// properties with <see cref="OutlookPstFormatException" /> at every validation level, keeping the container's
+    /// <see cref="PstFileFormatException" /> as the inner exception.
+    /// </summary>
+    /// <param name="testName">The row's display name.</param>
+    /// <param name="level">The validation level.</param>
+    [TestMethod]
+    [DataRow("Compatible", PstValidationLevel.Compatible)]
+    [DataRow("Strict", PstValidationLevel.Strict)]
+    [DataRow("Minimal", PstValidationLevel.Minimal)]
+    public void Properties_WhenAValueDoesNotResolve_ShouldThrowOutlookPstFormatException(string testName, PstValidationLevel level)
+    {
+        _ = testName;
+        using OutlookMailStore store = OpenSynthetic(static b => b.DanglingMessagePropertyIds.Add(MapiPropertyIds.SenderName), level);
+        OutlookMailMessage message = store.RootFolder.EnumerateSubfolders().Single().EnumerateMessages()
+            .Single(static m => m.Node.NodeId.Value == PstMessagingFixtureBuilder.MessageNodeId);
+
+        var ex = Assert.ThrowsExactly<OutlookPstFormatException>(() =>
+        {
+            _ = message.Properties;
+        });
+
+        Assert.IsNotNull(ex.InnerException);
+        Assert.IsInstanceOfType<PstFileFormatException>(ex.InnerException);
+        Assert.AreEqual(PstFileError.InvalidHeap, ((PstFileFormatException)ex.InnerException).Error);
+    }
+
+    /// <summary>
+    /// Verifies that reading the properties of a message whose node has a corrupt heap throws
+    /// <see cref="OutlookPstFormatException" />, keeping the container's <see cref="PstFileFormatException" /> as the
+    /// inner exception.
+    /// </summary>
+    [TestMethod]
+    public void Properties_WhenMessageHeapIsCorrupt_ShouldThrowOutlookPstFormatException()
+    {
+        // 0x200024 is the Inbox's first message.
+        byte[] input = OutlookMailStoreTests.GenerateWithCorruptHeap("gen:Mail()", 0x200024);
+        using OutlookMailStore store = OutlookMailStore.Open(new MemoryStream(input, writable: false), new OutlookMailStoreReaderOptions());
+        OutlookMailMessage message = store.RootFolder.EnumerateSubfolders().Single().EnumerateMessages().Single();
+
+        var ex = Assert.ThrowsExactly<OutlookPstFormatException>(() =>
+        {
+            _ = message.Properties;
+        });
+
+        Assert.IsNotNull(ex.InnerException);
+        Assert.IsInstanceOfType<PstFileFormatException>(ex.InnerException);
+        Assert.AreEqual(PstFileError.InvalidHeap, ((PstFileFormatException)ex.InnerException).Error);
+    }
+
+    /// <summary>
+    /// Verifies that a container exception the omission callback itself throws propagates from the property access
+    /// unchanged rather than as a container fault of the store.
+    /// </summary>
+    [TestMethod]
+    public void Properties_WhenValueOmittedCallbackThrowsPstFileException_ShouldPropagateItUnchanged()
+    {
+        var thrown = new PstFileFormatException("thrown by the callback");
+        var options = new OutlookMailStoreReaderOptions
+        {
+            OmitUnresolvableValues = true,
+            ValueOmittedCallback = _ => throw thrown,
+        };
+
+        using OutlookMailStore store = OpenSynthetic(static b => b.DanglingMessagePropertyIds.Add(MapiPropertyIds.SenderName), options);
+        OutlookMailMessage message = store.RootFolder.EnumerateSubfolders().Single().EnumerateMessages()
+            .Single(static m => m.Node.NodeId.Value == PstMessagingFixtureBuilder.MessageNodeId);
+
+        PstFileFormatException ex = Assert.ThrowsExactly<PstFileFormatException>(() =>
+        {
+            _ = message.Properties;
+        });
+
+        Assert.AreSame(thrown, ex);
+    }
 }

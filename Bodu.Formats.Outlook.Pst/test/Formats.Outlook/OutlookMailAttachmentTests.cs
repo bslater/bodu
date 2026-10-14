@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.IO.Pst;
+
 namespace Bodu.Formats.Outlook;
 
 /// <summary>
@@ -21,4 +23,20 @@ public partial class OutlookMailAttachmentTests
     /// <returns>The attachment views.</returns>
     internal static IReadOnlyList<OutlookMailAttachment> GetAttachments(OutlookMailStore store) =>
         OutlookMailMessageTests.GetFullMessage(store).Attachments;
+
+    /// <summary>
+    /// Finds the identifier of a message's first attachment object, a subnode of the message.
+    /// </summary>
+    /// <param name="file">The container bytes.</param>
+    /// <param name="messageNodeId">The message node identifier.</param>
+    /// <returns>The attachment object's subnode identifier.</returns>
+    internal static uint FindAttachmentObjectId(byte[] file, uint messageNodeId)
+    {
+        using PstFile container = PstFile.Open(new MemoryStream(file, writable: false), new PstFileOptions());
+
+        return container.GetNode(new PstNodeId(messageNodeId))
+            .EnumerateSubnodes()
+            .First(static subnode => subnode.NodeId.Type == PstNodeType.Attachment)
+            .NodeId.Value;
+    }
 }
