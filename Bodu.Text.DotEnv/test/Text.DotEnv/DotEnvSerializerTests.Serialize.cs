@@ -375,4 +375,48 @@ public partial class DotEnvSerializerTests
         Assert.IsTrue(ex.Message.Contains("'B'", StringComparison.Ordinal), ex.Message);
         Assert.IsTrue(ex.Message.Contains(typeof(Dictionary<string, string>).ToString(), StringComparison.Ordinal), ex.Message);
     }
+
+    /// <summary>
+    /// Verifies that a member whose value is not a scalar throws <see cref="DotEnvSerializationException" /> under every
+    /// default ignore condition, none of which leaves out a value that is not <see langword="null" />.
+    /// </summary>
+    /// <param name="condition">The options' default ignore condition.</param>
+    [TestMethod]
+    [DataRow(IgnoreCondition.Never)]
+    [DataRow(IgnoreCondition.WhenWritingNull)]
+    [DataRow(IgnoreCondition.WhenWritingDefault)]
+    public void Serialize_WhenAMemberIsNotAScalar_ForEveryIgnoreCondition_ShouldThrowDotEnvSerializationException(IgnoreCondition condition)
+    {
+        var options = new DotEnvSerializerOptions { DefaultIgnoreCondition = condition };
+        var config = new DictionaryMemberConfig { Name = "a", Counts = new Dictionary<string, int> { ["x"] = 1 } };
+
+        var ex = Assert.ThrowsExactly<DotEnvSerializationException>(() =>
+        {
+            _ = DotEnvSerializer.Serialize(config, options);
+        });
+
+        Assert.IsTrue(ex.Message.Contains("'Counts'", StringComparison.Ordinal), ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that a dictionary entry whose value is not a scalar throws <see cref="DotEnvSerializationException" />
+    /// under every default ignore condition.
+    /// </summary>
+    /// <param name="condition">The options' default ignore condition.</param>
+    [TestMethod]
+    [DataRow(IgnoreCondition.Never)]
+    [DataRow(IgnoreCondition.WhenWritingNull)]
+    [DataRow(IgnoreCondition.WhenWritingDefault)]
+    public void Serialize_WhenADictionaryValueIsNotAScalar_ForEveryIgnoreCondition_ShouldThrowDotEnvSerializationException(IgnoreCondition condition)
+    {
+        var options = new DotEnvSerializerOptions { DefaultIgnoreCondition = condition };
+        var map = new Dictionary<string, object> { ["A"] = new List<int> { 1 } };
+
+        var ex = Assert.ThrowsExactly<DotEnvSerializationException>(() =>
+        {
+            _ = DotEnvSerializer.Serialize(map, options);
+        });
+
+        Assert.IsTrue(ex.Message.Contains("'A'", StringComparison.Ordinal), ex.Message);
+    }
 }

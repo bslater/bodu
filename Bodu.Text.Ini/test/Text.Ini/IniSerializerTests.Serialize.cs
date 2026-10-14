@@ -744,4 +744,89 @@ public partial class IniSerializerTests
 
         Assert.IsTrue(ex.Message.Contains("'a'", StringComparison.Ordinal), ex.Message);
     }
+
+    /// <summary>
+    /// Verifies that a root dictionary entry whose value is not a scalar throws <see cref="IniSerializationException" />
+    /// under every default ignore condition, none of which leaves out a value that is not <see langword="null" />.
+    /// </summary>
+    /// <param name="condition">The options' default ignore condition.</param>
+    [TestMethod]
+    [DataRow(IgnoreCondition.Never)]
+    [DataRow(IgnoreCondition.WhenWritingNull)]
+    [DataRow(IgnoreCondition.WhenWritingDefault)]
+    public void Serialize_WhenARootEntryIsNotAScalar_ForEveryIgnoreCondition_ShouldThrowIniSerializationException(IgnoreCondition condition)
+    {
+        var options = new IniSerializerOptions { DefaultIgnoreCondition = condition };
+        var root = new Dictionary<string, object> { ["a"] = new List<int> { 1 } };
+
+        var ex = Assert.ThrowsExactly<IniSerializationException>(() =>
+        {
+            _ = IniSerializer.Serialize(root, options);
+        });
+
+        Assert.IsTrue(ex.Message.Contains("'a'", StringComparison.Ordinal), ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that a section dictionary entry whose value is not a scalar throws
+    /// <see cref="IniSerializationException" /> under every default ignore condition.
+    /// </summary>
+    /// <param name="condition">The options' default ignore condition.</param>
+    [TestMethod]
+    [DataRow(IgnoreCondition.Never)]
+    [DataRow(IgnoreCondition.WhenWritingNull)]
+    [DataRow(IgnoreCondition.WhenWritingDefault)]
+    public void Serialize_WhenASectionEntryIsNotAScalar_ForEveryIgnoreCondition_ShouldThrowIniSerializationException(IgnoreCondition condition)
+    {
+        var options = new IniSerializerOptions { DefaultIgnoreCondition = condition };
+        var root = new Dictionary<string, Dictionary<string, object>> { ["s"] = new() { ["a"] = new List<int> { 1 } } };
+
+        var ex = Assert.ThrowsExactly<IniSerializationException>(() =>
+        {
+            _ = IniSerializer.Serialize(root, options);
+        });
+
+        Assert.IsTrue(ex.Message.Contains("'a'", StringComparison.Ordinal), ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that a section POCO's member that is not a scalar throws <see cref="IniSerializationException" /> under
+    /// every default ignore condition, by its declared type, even while it is <see langword="null" />.
+    /// </summary>
+    /// <param name="condition">The options' default ignore condition.</param>
+    [TestMethod]
+    [DataRow(IgnoreCondition.Never)]
+    [DataRow(IgnoreCondition.WhenWritingNull)]
+    [DataRow(IgnoreCondition.WhenWritingDefault)]
+    public void Serialize_WhenASectionMemberIsNotAScalar_ForEveryIgnoreCondition_ShouldThrowIniSerializationException(IgnoreCondition condition)
+    {
+        var options = new IniSerializerOptions { DefaultIgnoreCondition = condition };
+        var config = new DeepConfig { Outer = new OuterSection() };
+
+        Assert.ThrowsExactly<IniSerializationException>(() =>
+        {
+            _ = IniSerializer.Serialize(config, options);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that a root member declared as <see cref="object" /> throws <see cref="IniSerializationException" />
+    /// under every default ignore condition, by its declared type, even while it is <see langword="null" />.
+    /// </summary>
+    /// <param name="condition">The options' default ignore condition.</param>
+    [TestMethod]
+    [DataRow(IgnoreCondition.Never)]
+    [DataRow(IgnoreCondition.WhenWritingNull)]
+    [DataRow(IgnoreCondition.WhenWritingDefault)]
+    public void Serialize_WhenARootMemberIsDeclaredAsObject_ForEveryIgnoreCondition_ShouldThrowIniSerializationException(IgnoreCondition condition)
+    {
+        var options = new IniSerializerOptions { DefaultIgnoreCondition = condition };
+
+        var ex = Assert.ThrowsExactly<IniSerializationException>(() =>
+        {
+            _ = IniSerializer.Serialize(new ObjectMemberConfig { Name = "app" }, options);
+        });
+
+        Assert.IsTrue(ex.Message.Contains("'O'", StringComparison.Ordinal), ex.Message);
+    }
 }

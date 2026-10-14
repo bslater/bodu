@@ -410,4 +410,38 @@ public partial class DelimitedSerializerTests
         Assert.AreEqual(original.Size, restored.Size, text);
         Assert.AreEqual(original.MaybeHandle, restored.MaybeHandle, text);
     }
+
+    /// <summary>
+    /// Verifies that <see langword="null" /> scalar members, which Delimited always writes as empty fields, read back as
+    /// <see langword="null" /> for a nullable value type and as the empty text they are written as for a
+    /// <see cref="string" />.
+    /// </summary>
+    [TestMethod]
+    public void SerializeDeserialize_WhenScalarMembersAreNull_ShouldReadBackEachValue()
+    {
+        var records = new List<NullableColumnsRecord> { new() { Id = 1 } };
+
+        List<NullableColumnsRecord> result = DelimitedSerializer.Deserialize<NullableColumnsRecord>(DelimitedSerializer.Serialize(records));
+
+        Assert.AreEqual(1, result.Count);
+        Assert.AreEqual(1, result[0].Id);
+        Assert.IsNull(result[0].Value);
+        Assert.AreEqual(string.Empty, result[0].Name);
+    }
+
+    /// <summary>
+    /// Verifies that a <see langword="null" /> member declared as <see cref="object" />, which Delimited writes as an
+    /// empty field, reads back as the empty text, since a member declared as <see cref="object" /> reads its field as
+    /// text.
+    /// </summary>
+    [TestMethod]
+    public void SerializeDeserialize_WhenAnObjectMemberIsNull_ShouldReadBackTheEmptyText()
+    {
+        var records = new List<ObjectValueRecord> { new() };
+
+        List<ObjectValueRecord> result = DelimitedSerializer.Deserialize<ObjectValueRecord>(DelimitedSerializer.Serialize(records));
+
+        Assert.AreEqual(1, result.Count);
+        Assert.AreEqual(string.Empty, result[0].Value);
+    }
 }
