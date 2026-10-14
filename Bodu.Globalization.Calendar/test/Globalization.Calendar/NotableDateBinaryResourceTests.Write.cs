@@ -280,6 +280,81 @@ public sealed partial class NotableDateBinaryResourceTests
     }
 
     /// <summary>
+    /// Verifies that the enumeration test resource writes when every enumeration value is one its type defines, so each
+    /// rejection the per-field test observes is caused by the one value it replaces.
+    /// </summary>
+    [TestMethod]
+    public void Write_WhenEveryEnumValueIsDefined_ShouldWrite()
+    {
+        byte[] pack = WritePack(EnumFieldResource(null, 0));
+
+        Assert.AreEqual("test.write", ReadPack(pack).ResourceId);
+    }
+
+    /// <summary>
+    /// Verifies that writing a resource holding an enumeration value its type does not define throws
+    /// <see cref="NotableDateValidationException" /> carrying the loader's <c>BODU-CAL-ENUM</c> diagnostic naming the
+    /// field and the value, rather than encoding a pack that cannot be read back or, for a value beyond a byte, one that
+    /// reads back as another member.
+    /// </summary>
+    /// <param name="field">The field holding the value.</param>
+    /// <param name="value">The undefined value.</param>
+    /// <param name="label">The name the loader gives the field in its diagnostic.</param>
+    [TestMethod]
+    [DataRow("duplicatePolicy", 99, "duplicatePolicy")]
+    [DataRow("sameDayCollisionPolicy", 99, "sameDayCollisionPolicy")]
+    [DataRow("spanCollisionPolicy", 99, "spanCollisionPolicy")]
+    [DataRow("priorityDirection", 99, "priorityDirection")]
+    [DataRow("observedDateRangePolicy", 99, "observedDateRangePolicy")]
+    [DataRow("categoryPrecedence", 99, "categoryPrecedence")]
+    [DataRow("scope.calendars", 99, "scope calendars")]
+    [DataRow("scope.categories", 99, "scope categories")]
+    [DataRow("trigger", 99, "trigger type")]
+    [DataRow("trigger", 258, "trigger type")]
+    [DataRow("triggerWeekdays", 7, "trigger weekdays")]
+    [DataRow("action", 99, "action type")]
+    [DataRow("actionWeekday", 7, "action dayOfWeek")]
+    [DataRow("emission", 99, "emission mode")]
+    [DataRow("triggerWeekOrdinal", 99, "trigger weekOrdinal")]
+    [DataRow("definition.category", 99, "category")]
+    [DataRow("definition.category", 256, "category")]
+    [DataRow("rule.category", -1, "category")]
+    [DataRow("applicability.calendar", 99, "calendar")]
+    [DataRow("untilDate.startBoundary", 99, "untilDate startBoundary")]
+    [DataRow("untilDate.endBoundary", 99, "untilDate endBoundary")]
+    [DataRow("untilDate.selection", 99, "untilDate selection")]
+    public void Write_WhenEnumValueIsUndefined_ShouldThrowEnumDiagnostic(string field, int value, string label)
+    {
+        NotableDateResource resource = EnumFieldResource(field, value);
+
+        var ex = Assert.ThrowsExactly<NotableDateValidationException>(() =>
+        {
+            _ = WritePack(resource);
+        });
+
+        string named = string.Format(CultureInfo.InvariantCulture, "The {0} value '{1}'", label, value);
+        Assert.Contains(d => d.Code == "BODU-CAL-ENUM" && d.Severity == NotableDateValidationSeverity.Error && d.Message.StartsWith(named, StringComparison.Ordinal), ex.Diagnostics, named);
+    }
+
+    /// <summary>
+    /// Verifies that a resource holding an undefined enumeration value is refused before anything is encoded, so the
+    /// stream is left empty rather than holding a pack.
+    /// </summary>
+    [TestMethod]
+    public void Write_WhenEnumValueIsUndefined_ShouldWriteNothing()
+    {
+        NotableDateResource resource = EnumFieldResource("trigger", 258);
+        using MemoryStream stream = new();
+
+        _ = Assert.ThrowsExactly<NotableDateValidationException>(() =>
+        {
+            NotableDateBinaryResource.Write(resource, stream);
+        });
+
+        Assert.AreEqual(0L, stream.Length);
+    }
+
+    /// <summary>
     /// Verifies that each notable-date pack the library and its regional data bundles embed passes the checks writing
     /// runs, and that writing the resource read back from its pack reproduces the pack byte for byte.
     /// </summary>
@@ -414,6 +489,73 @@ public sealed partial class NotableDateBinaryResourceTests
             ResolutionPolicy.Default,
             [policy],
             [new NotableDateDefinition("anchor", "Anchor", NotableDateCategory.PublicHoliday, true, Value("definition.defaultDurationDays", 1), [], [rule])]);
+    }
+
+    /// <summary>
+    /// Builds a resource holding every enumeration value the binary format writes outside a strategy or recurrence, each
+    /// one its type defines except the one named, which holds the supplied value.
+    /// </summary>
+    /// <param name="field">The field to set, or <see langword="null" /> to set none.</param>
+    /// <param name="value">The value the named field holds.</param>
+    /// <returns>The resource.</returns>
+    private static NotableDateResource EnumFieldResource(string? field, int value)
+    {
+        TEnum Value<TEnum>(string name, TEnum valid)
+            where TEnum : struct, Enum =>
+            name == field ? (TEnum)Enum.ToObject(typeof(TEnum), value) : valid;
+
+        ResolutionPolicy resolutionPolicy = new(
+            Value("duplicatePolicy", DuplicatePolicy.KeepFirst),
+            Value("sameDayCollisionPolicy", CollisionPolicy.HighestPriorityOnly),
+            Value("spanCollisionPolicy", CollisionPolicy.KeepAll),
+            Value("priorityDirection", PriorityDirection.LowerWins),
+            Value("observedDateRangePolicy", ObservedDateRangePolicy.ObservedOccurrenceControlsInclusion),
+            null,
+            [Value("categoryPrecedence", NotableDateCategory.PublicHoliday)]);
+
+        AdjustmentPolicy policy = new(
+            "observed",
+            0,
+            new AdjustmentScope(
+                [],
+                [Value("scope.calendars", CalendarSystem.Gregorian)],
+                [Value("scope.categories", NotableDateCategory.PublicHoliday)],
+                [],
+                []),
+            Value("trigger", AdjustmentTrigger.IfWeekend),
+            [Value("triggerWeekdays", DayOfWeek.Saturday)],
+            Value("action", AdjustmentAction.MoveToNextWorkingDay),
+            Value("actionWeekday", DayOfWeek.Monday),
+            0,
+            null,
+            false,
+            false,
+            Value("emission", EmissionMode.ObservedOnly),
+            null,
+            null,
+            triggerWeekOrdinal: Value("triggerWeekOrdinal", WeekOrdinal.First));
+
+        NotableDateRule rule = new(
+            "r",
+            0,
+            Value("rule.category", NotableDateCategory.Observance),
+            null,
+            new CalculatedEndDateDurationDefinition(
+                new FixedDateStrategy(3, 5),
+                Value("untilDate.startBoundary", DateBoundary.Inclusive),
+                Value("untilDate.endBoundary", DateBoundary.Exclusive),
+                Value("untilDate.selection", EndDateSelection.FirstOnOrAfterStart)),
+            new RuleApplicability(Value("applicability.calendar", CalendarSystem.Gregorian), null, null, [], [], []),
+            new FixedDateStrategy(3, 1),
+            ["observed"],
+            []);
+
+        return new NotableDateResource(
+            "test.write",
+            "1.0",
+            resolutionPolicy,
+            [policy],
+            [new NotableDateDefinition("anchor", "Anchor", Value("definition.category", NotableDateCategory.PublicHoliday), true, 1, [], [rule])]);
     }
 
     /// <summary>
