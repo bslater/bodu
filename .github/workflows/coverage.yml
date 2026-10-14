@@ -120,7 +120,8 @@ jobs:
         uses: actions/setup-dotnet@v6
         with:
           # The .NET 10 SDK is the exact version global.json pins, so an SDK upgrade is a deliberate
-          # change. The .NET 8 SDK beside it builds the Bodu.CodeStyle solution and runs the net8.0 legs.
+          # change. The .NET 8 SDK beside it builds the Bodu.CodeStyle solution; collect-coverage.sh
+          # covers one framework, the newest in BoduNetTargets, so the net8.0 legs are not run here.
           global-json-file: global.json
           dotnet-version: 8.0.x
 

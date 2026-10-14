@@ -36,6 +36,19 @@ Pass the settings file, and **do not** also pass a `--collect` switch: a
 command-line collector is a second, unconfigured instance whose exclusion lists
 are empty, which silently readmits generated sources to the denominator.
 
+**One framework.** Every test project targets each framework in
+`$(BoduNetTargets)`, and an unrestricted `dotnet test` runs, and covers, each of
+them. `bld/collect-coverage.sh` collects one, the same for every project: the
+newest in `$(BoduNetTargets)` (net10.0 today), or the one `--framework` names, and
+`environment.json` records it. Before it did, the script ran every leg and kept
+whichever leg's file was written last, so a package's figure depended on the
+finish order, and a file under a framework conditional, such as
+`#if NET10_0_OR_GREATER` and its fallback, reported different line sets from
+different projects, which the matrix's stale-numbering check reads as stale
+data. Code compiled only for an older framework, such as a polyfill guarded by
+`#if !NET9_0_OR_GREATER`, is outside the measured assembly and so outside the
+denominator.
+
 The current measured figures live in [Coverage baseline](coverage-baseline.md).
 
 `tools/Filter-CoverageXml.ps1` extracts a single assembly's results from a
