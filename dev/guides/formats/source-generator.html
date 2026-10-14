@@ -239,7 +239,7 @@ string globals = IniSerializer.SerializeSection(&quot;&quot;, server, ServerSect
 string generated  = DelimitedSerializer.Serialize(trades, Trade.DelimitedFactory);  // no annotations
 bool same = reflection == generated;                                                // true
 </code></pre>
-<p>A factory's names are fixed at compile time, so <code>PropertyNamingPolicy</code> on the options is ignored by the factory overloads; use <code>[PropertyName]</code> to pin wire names. That is not the only difference: inherited, get-only and <code>init</code>-only properties, <code>[PropertyOrder]</code>, case-insensitive name matching, and <code>[Required]</code> all separate the two paths, as the package page lists under <a href="../../docs/formats/generators.html#differences-from-the-reflection-binder">Differences from the reflection binder</a>.</p>
+<p>A factory's names are fixed at compile time, so <code>PropertyNamingPolicy</code> on the options is ignored by the factory overloads; use <code>[PropertyName]</code> to pin wire names. That is not the only difference: inherited, get-only and <code>init</code>-only properties, <code>[PropertyOrder]</code>, case-insensitive name matching, <code>[Required]</code>, and a member declared as <code>object</code> all separate the two paths, as the package page lists under <a href="../../docs/formats/generators.html#differences-from-the-reflection-binder">Differences from the reflection binder</a>.</p>
 <h2 id="diagnostics-walk-through">Diagnostics walk-through</h2>
 <p>The generator reports three diagnostics, all in category <code>Bodu.Text.Formats.Generators</code>.</p>
 <p><strong><code>BTFG001</code> (error) - the type is not partial.</strong> The most common first-run failure: the attribute is present, the <code>partial</code> modifier is not. No factory is generated, so <code>Trade.DelimitedFactory</code> also fails to resolve.</p>
@@ -247,12 +247,21 @@ bool same = reflection == generated;                                            
 public sealed class Trade { … }          // BTFG001: … is not declared partial, so no factory is generated
 </code></pre>
 <p>A nested type must have <em>every</em> containing type marked <code>partial</code> too.</p>
-<p><strong><code>BTFG002</code> (warning) - a member type is not a supported scalar.</strong> The factory is still generated; the flagged member is left out of <code>Headers</code> / <code>Keys</code> and never written or read. The reflection binder rejects such a type whole, when it writes it and when it reads it, so this is one place where the factory and the reflection path differ. Either move the value to a supported scalar (for example, join a list into a delimited <code>string</code>), or drop the member with <code>[Ignore]</code> to silence the warning deliberately.</p>
+<p><strong><code>BTFG002</code> (error) - a member type is not a supported scalar.</strong> No factory is generated for the type, so <code>Order.DelimitedFactory</code> fails to resolve too. The reflection binder rejects such a type whole, when it writes it and when it reads it, so the build fails where the reflection path would throw at run time, rather than emitting a factory that leaves the member out. The check covers every public instance property the reflection binder maps, so an inherited, get-only or <code>init</code>-only property of such a type fails the build too, although the factory does not map it. A member declared as <code>object</code> is refused as well, although <code>DelimitedSerializer</code> accepts one that holds a scalar. Either move the value to a supported scalar (for example, join a list into a delimited <code>string</code>), or leave the member out deliberately with <code>[Ignore]</code>, which the factory and the reflection binder both honor.</p>
 <pre><code class="lang-csharp">[DelimitedRecord]
 public sealed partial class Order
 {
     public int Id { get; set; }
-    public List&lt;string&gt; Tags { get; set; } = [];   // BTFG002: type 'List&lt;string&gt;' is not a supported scalar; the generated factory skips it
+    public List&lt;string&gt; Tags { get; set; } = [];   // BTFG002: type 'List&lt;string&gt;' is not a supported scalar, so no factory is generated
+}
+
+[DelimitedRecord]
+public sealed partial class TaggedOrder
+{
+    public int Id { get; set; }
+
+    [Ignore]
+    public List&lt;string&gt; Tags { get; set; } = [];   // no diagnostic: the factory and the reflection binder both leave Tags out
 }
 </code></pre>
 <p><strong><code>BTFG003</code> (error) - the type is generic.</strong> A static <code>DelimitedFactory</code> property cannot exist on an open generic, and the same applies to a type nested inside a generic type. No source is emitted; close the type over its arguments or write the factory by hand.</p>
@@ -285,7 +294,7 @@ public sealed partial class Section&lt;T&gt; { … }   // BTFG003: … is generi
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 635d7a7 · Built: 2026-10-14 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 37ccf4c · Built: 2026-10-14 (UTC)</span>
         </div>
       </div>
     </footer>

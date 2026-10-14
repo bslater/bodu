@@ -142,8 +142,8 @@
 <td>Static members, indexers, non-public accessors, <code>init</code>-only setters, and fields are not mapped (silently).</td>
 </tr>
 <tr>
-<td>Each mapped property's type is a supported scalar or its <code>Nullable&lt;T&gt;</code>: <code>string</code>, <code>bool</code>, <code>char</code>, <code>sbyte</code>/<code>byte</code>/<code>short</code>/<code>ushort</code>/<code>int</code>/<code>uint</code>/<code>long</code>/<code>ulong</code>, <code>nint</code>/<code>nuint</code>, <code>float</code>/<code>double</code>/<code>decimal</code>, <code>Int128</code>/<code>UInt128</code>/<code>Half</code>/<code>BigInteger</code>, <code>Guid</code>, <code>DateTime</code>, <code>DateTimeOffset</code>, <code>DateOnly</code>, <code>TimeOnly</code>, <code>TimeSpan</code>, <code>Uri</code>, or any enum - the scalar set the reflection binders convert, which a test holds the generator to.</td>
-<td>Anything else - collections, nested objects - is skipped with <code>BTFG002</code>; the factory is still generated for the remaining members.</td>
+<td>Each public instance property that <code>[Ignore]</code> does not leave out, inherited, get-only and <code>init</code>-only ones included, has a supported scalar type or its <code>Nullable&lt;T&gt;</code>: <code>string</code>, <code>bool</code>, <code>char</code>, <code>sbyte</code>/<code>byte</code>/<code>short</code>/<code>ushort</code>/<code>int</code>/<code>uint</code>/<code>long</code>/<code>ulong</code>, <code>nint</code>/<code>nuint</code>, <code>float</code>/<code>double</code>/<code>decimal</code>, <code>Int128</code>/<code>UInt128</code>/<code>Half</code>/<code>BigInteger</code>, <code>Guid</code>, <code>DateTime</code>, <code>DateTimeOffset</code>, <code>DateOnly</code>, <code>TimeOnly</code>, <code>TimeSpan</code>, <code>Uri</code>, or any enum - the scalar set the reflection binders convert, which a test holds the generator to.</td>
+<td>Anything else - collections, nested objects, <code>object</code> - fails the build with <code>BTFG002</code>, and no factory is generated for the type, as the reflection binders reject such a type rather than leave the member out. They map inherited, get-only and <code>init</code>-only properties too, so the generator tests those although the factory does not map them. Leave the member out with <code>[Ignore]</code>.</td>
 </tr>
 <tr>
 <td><code>[Ignore]</code> with the default condition excludes a member; <code>[Ignore(Condition = …)]</code> with any <em>other</em> condition leaves it mapped. An INI factory applies that condition when writing, and <code>WhenWritingNull</code>, the serializer's default, to a member without one, as <code>IniSerializer</code> does; a Delimited factory writes every mapped member, as <code>DelimitedSerializer</code> does.</td>
@@ -155,12 +155,12 @@
 <p>A factory and the reflection binder agree for a type whose members are all settable properties declared on the type itself, in the order they should be written, with supported scalar types and names pinned with <code>[PropertyName]</code> - the shape of the examples on this page. Outside that shape they differ, so switching a type to its factory can change the header or keys written and the values read:</p>
 <ul>
 <li>The options-level <code>PropertyNamingPolicy</code> is <strong>not</strong> applied by a factory: its header and key names are fixed at compile time, so pin names with <code>[PropertyName]</code>. <code>IncludeFields</code> has no effect, since fields are never mapped.</li>
-<li>Only properties declared on the type itself are mapped; the reflection binders also map the public properties it inherits.</li>
-<li>Get-only and <code>init</code>-only properties are not mapped. The reflection binders write a get-only property as a column or key, and set an <code>init</code>-only one when reading.</li>
+<li>Only properties declared on the type itself are mapped; the reflection binders also map the public properties it inherits. An inherited property whose type is not a supported scalar still fails the build with <code>BTFG002</code>, since the reflection binders reject the type for it.</li>
+<li>Get-only and <code>init</code>-only properties are not mapped. The reflection binders write a get-only property as a column or key, and set an <code>init</code>-only one when reading. Either kind whose type is not a supported scalar still fails the build with <code>BTFG002</code>, as an inherited one does.</li>
 <li><code>[PropertyOrder]</code> is ignored: a factory writes in declaration order, while the reflection binders order their columns and keys by it.</li>
 <li>A factory's <code>Bind</code> falls back to a case-insensitive match of every name; the reflection binders match names case-sensitively unless <code>PropertyNameCaseInsensitive</code> is set.</li>
 <li>An INI factory does not enforce <code>[Required]</code>; <code>IniSerializer</code>'s reflection binder throws <code>IniSerializationException</code> for a missing required key.</li>
-<li>A member whose type is not a supported scalar is left out of a factory, with <code>BTFG002</code>, and the factory reads and writes the rest of the type; the reflection binders reject the whole type instead, when they write it and when they read it, with <code>DelimitedSerializationException</code> or <code>IniSerializationException</code> naming the member.</li>
+<li>A member declared as <code>object</code> fails the build with <code>BTFG002</code>, so its type gets no factory. <code>DelimitedSerializer</code>'s reflection binder accepts one that holds a scalar, writing the value by its own type and reading the field back as its text; <code>IniSerializer</code>'s rejects it, as it rejects every member that is not a scalar.</li>
 </ul>
 <h2 id="diagnostics">Diagnostics</h2>
 <p>All three diagnostics share the category <code>Bodu.Text.Formats.Generators</code> and are enabled by default.</p>
@@ -182,9 +182,9 @@
 </tr>
 <tr>
 <td><code>BTFG002</code></td>
-<td>Warning</td>
-<td>The property '{0}' on '{1}' has type '{2}', which is not a supported scalar; the generated factory skips it</td>
-<td>A public read/write property has a type outside the scalar set above. The factory is emitted without that member.</td>
+<td>Error</td>
+<td>The property '{0}' on '{1}' has type '{2}', which is not a supported scalar, so no factory is generated; leave the property out with [Ignore] or give it a supported scalar type</td>
+<td>A public instance property that <code>[Ignore]</code> does not leave out, declared or inherited, read/write, get-only or <code>init</code>-only, has a type outside the scalar set above. No source is emitted for the type.</td>
 </tr>
 <tr>
 <td><code>BTFG003</code></td>
@@ -194,7 +194,7 @@
 </tr>
 </tbody>
 </table>
-<p>Because <code>BTFG001</code> and <code>BTFG003</code> are errors, the missing <code>DelimitedFactory</code> / <code>IniFactory</code> property surfaces as a compile error at the call site as well; fix the declaration rather than suppressing the diagnostic.</p>
+<p>Because all three are errors, the missing <code>DelimitedFactory</code> / <code>IniFactory</code> property surfaces as a compile error at the call site as well; fix the declaration rather than suppressing the diagnostic.</p>
 <h2 id="the-serializer-overloads-that-consume-a-factory">The serializer overloads that consume a factory</h2>
 <p>The factory overloads are exact counterparts of the reflection entry points, with the factory as an extra parameter, and carry <strong>no</strong> trimming annotations:</p>
 <table>
@@ -285,7 +285,7 @@ public sealed class TradeFactory : IDelimitedRecordFactory&lt;Trade&gt;
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 635d7a7 · Built: 2026-10-14 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 37ccf4c · Built: 2026-10-14 (UTC)</span>
         </div>
       </div>
     </footer>
