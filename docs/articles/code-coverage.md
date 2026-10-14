@@ -307,9 +307,9 @@ express:
 - **subtracts** those files from the `Toml` / `Bencode` / `Yaml` rows, so the
   solution total does not count them once per host.
 
-### There are four such sets, not one
+### There are six such sets, not one
 
-The serializer core is the largest, but three more source sets are `Compile
+The serializer core is the largest, but five more source sets are `Compile
 Include`d across projects, and each gets its own synthetic unit. The table lives
 at `$SharedSourceSets` in `tools/New-CoverageMatrix.ps1`; keep it in step with
 the host csproj globs.
@@ -320,6 +320,8 @@ the host csproj globs.
 | `Bodu.IO.Hashing/shared/**` (`CrcCore.cs`) | `Bodu.IO.Hashing (shared source)` | `IO.Hashing`, `IO.Pst`, `Formats.Outlook.Msg`, `Formats.Outlook.Pst` |
 | `Bodu.Formats.Outlook/shared/**` (the MAPI decode layer) | `Bodu.Formats.Outlook (shared source)` | `Formats.Outlook.Msg`, `Formats.Outlook.Pst` |
 | `shared/Caching/**` | `Caching (shared source)` | `Financial.ExchangeRates.Caching`, `Globalization.Calendar.Caching` |
+| `Bodu.Text.Serialization/flat/src/*` (the line formats' member discovery, scalar codec, line cursor and output sink) | `Bodu.Text.Serialization (line-format shared source)` | `Delimited`, `DotEnv`, `Ini` |
+| `Bodu.Financial.ExchangeRates/shared/*` (the provider plumbing each feed links file by file) | `Bodu.Financial.ExchangeRates (shared source)` | `Financial.ExchangeRates` and the `Boe`, `Ecb`, `Imf`, `Rba`, `ExchangeRateHost`, `Fixer`, `Oanda`, `Ofx`, `Xe` and `Yahoo` providers |
 
 Attribution matters even where the totals do not move. The file map is keyed by
 repo-relative path, so a shared file is never *double-counted* - but before this
@@ -339,11 +341,26 @@ from a net10.0 collection of the two readers' test projects, less the grace
 band: the unit at 96.7 / 94.6, `Outlook.Msg` at 94.3 / 93.0 and `Outlook.Pst`
 at 93.5 / 88.0 (line / branch).
 
-The four sets are not alike in one respect that the stale-numbering check cares
+The last two sets joined the table the same way, from a net10.0 collection of
+the 20 test projects under `Bodu.Text.Delimited`, `Bodu.Text.DotEnv`,
+`Bodu.Text.Ini`, `Bodu.Text.Formats.Generators` and every
+`Bodu.Financial.ExchangeRates*` project. The merge had credited each file to
+the first of its hosts in name order: all of `flat/src` to `Delimited`, and
+the exchange-rate files to the core package, `Boe`, `Ecb`, `ExchangeRateHost`
+or `Imf`. The two units' floors are their measured rates less the grace band:
+98.4 / 96.8 for the line formats' source (measured 98.9 / 97.3) and 95.2 / 90.6
+for the exchange-rate source (95.7 / 91.1). The hosts whose rates fell had
+their floors lowered by exactly the change the split made to their measured
+rates - `Delimited` by 0.8 / 0.6, `Financial.ExchangeRates` by 0.5 line,
+`Boe` by 0.1 / 0.6, `Ecb` by 0.2 / 1.1 and `ExchangeRateHost` by 0.4 / 5.0,
+the last because the shared JSON reader, exercised by six providers' tests,
+had lifted its branch figure - while `Imf`, whose rates rose, kept its floors.
+
+The six sets are not alike in one respect that the stale-numbering check cares
 about. `Bodu.Text.Serialization/shared/**` and `Bodu.Formats.Outlook/shared/**`
 select **whole members** by format symbol (the Outlook layer throws each
 reader's own exception type), so their hosts legitimately instrument different
-line sets and they are exempt from that check. The other two select only a
+line sets and they are exempt from that check. The other four select at most a
 namespace declaration, which carries no sequence points - so if their hosts ever
 disagree about which lines are instrumentable, that really is stale data and
 should be reported.
