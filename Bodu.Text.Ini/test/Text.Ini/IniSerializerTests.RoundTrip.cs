@@ -517,4 +517,22 @@ public partial class IniSerializerTests
 
         Assert.AreEqual(value, result);
     }
+
+    /// <summary>
+    /// Verifies that under <see cref="IgnoreCondition.WhenWritingDefault" /> nullable members that hold their underlying
+    /// types' defaults read back as those values rather than as <see langword="null" />.
+    /// </summary>
+    [TestMethod]
+    public void SerializeDeserialize_WhenNullableMembersHoldTheirUnderlyingDefaults_UnderWhenWritingDefault_ShouldReadBackEachValue()
+    {
+        var options = new IniSerializerOptions { DefaultIgnoreCondition = IgnoreCondition.WhenWritingDefault };
+        var config = new NullableDefaultsConfig { Number = 0, Flag = false, At = default(DateTime), S = default(PortStruct) };
+
+        NullableDefaultsConfig result = IniSerializer.Deserialize<NullableDefaultsConfig>(IniSerializer.Serialize(config, options), options);
+
+        Assert.AreEqual(0, result.Number);
+        Assert.AreEqual(false, result.Flag);
+        Assert.AreEqual(default(DateTime), result.At);
+        Assert.AreEqual(default(PortStruct), result.S);
+    }
 }
