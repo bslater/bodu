@@ -4,7 +4,7 @@ title: Thread-safety contracts across Core Foundations
 
 # Thread-safety contracts across Core Foundations
 
-This page is the one-table answer to "can I share this object between threads?" for every public type in **Bodu.Core**, **Bodu.Collections**, and **Bodu.Collections.Concurrent**. Each row is derived from the type's XML documentation and source - the presence or absence of internal synchronization, whether reads mutate state, and how enumeration behaves under concurrent modification - not from a general assumption.
+This page is the one-table answer to "can I share this object between threads?" for every public type in **Bodu.Core**, **Bodu.Collections**, and **Bodu.Collections.Concurrent**. Each row is derived from the type's XML documentation and source - the presence or absence of internal synchronization, whether reads mutate state, and how enumeration behaves under concurrent modification - not from a general assumption. For the other packages - the cryptography and hashing algorithms, the calendar services, the serializers, the document sessions, and the exchange-rate providers - see [thread safety across the suite](../../docs/topics/thread-safety.md).
 
 The columns use these terms:
 
@@ -101,6 +101,7 @@ Every mutable collection in this package is **single-threaded by design**: none 
 
 ## Where to go next
 
+- [Thread safety across the suite](../../docs/topics/thread-safety.md) - the same answer for every other package.
 - [Concurrent collections](concurrent-collections.md) - the four concurrent collections in depth.
 - [Async coordination primitives](async-primitives.md) - the locks and gates for coordinating the rest.
 - [Choosing a collection](choosing-a-collection.md) - picking by requirement, including "shared between threads".

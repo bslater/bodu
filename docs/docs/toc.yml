@@ -318,3 +318,5 @@
   items:
     - name: Trimming and native AOT
       href: topics/trimming-and-native-aot.md
+    - name: Thread safety
+      href: topics/thread-safety.md
