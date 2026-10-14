@@ -99,9 +99,13 @@
     "line": 95.4,
     "branch": 88.4
   },
+  "Bodu.Formats.Outlook (shared source)": {
+    "line": 96.7,
+    "branch": 94.6
+  },
   "Bodu.Formats.Outlook.Msg": {
-    "line": 93.7,
-    "branch": 89.7
+    "line": 94.3,
+    "branch": 93.0
   },
   "Bodu.Formats.Outlook.Pst": {
     "line": 93.5,
