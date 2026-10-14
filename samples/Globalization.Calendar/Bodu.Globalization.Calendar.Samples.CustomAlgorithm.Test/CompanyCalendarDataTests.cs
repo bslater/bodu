@@ -62,7 +62,7 @@ public sealed class CompanyCalendarDataTests
     }
 
     /// <summary>
-    /// Verifies that the algorithm itself honours its contract at the unit level: every returned
+    /// Verifies that the algorithm itself honors its contract at the unit level: every returned
     /// date is a Friday, and pre-founding years return <see langword="null" />.
     /// </summary>
     [TestMethod]

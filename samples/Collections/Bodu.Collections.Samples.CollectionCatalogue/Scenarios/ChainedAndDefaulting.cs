@@ -10,9 +10,9 @@ namespace Bodu.Collections.Samples.CollectionCatalogue.Scenarios;
 
 /// <summary>
 /// Demonstrates the two dictionary decorators: <see cref="LayeredDictionary{TKey, TValue}" />, a live first-wins view
-/// over several dictionaries (the .NET analogue of Python's <c>collections.ChainMap</c>), and
+/// over several dictionaries (the .NET analog of Python's <c>collections.ChainMap</c>), and
 /// <see cref="DefaultingDictionary{TKey, TValue}" />, whose indexer materializes missing entries on demand (the
-/// analogue of <c>collections.defaultdict</c>).
+/// analog of <c>collections.defaultdict</c>).
 /// </summary>
 /// <remarks>
 /// Both decorators make the indexer do more than look up, and both do it in a way worth knowing before you rely on

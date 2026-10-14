@@ -48,7 +48,7 @@ public partial class XmlDocFormatterTests
     }
 
     /// <summary>
-    /// Verifies that a self-closing tag with the trailing-space override gets normalised to include the space.
+    /// Verifies that a self-closing tag with the trailing-space override gets normalized to include the space.
     /// </summary>
     [TestMethod]
     public void Format_WhenSelfClosingTagMissingTrailingSpace_ShouldEmitSpace()

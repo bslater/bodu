@@ -20,11 +20,11 @@ namespace Bodu.Financial.ExchangeRates;
 /// <see cref="WebRateProviderOptions.BaseAddress" /> at the Interactive Statistical Database (IADB), identifies the
 /// requests with a Bodu user agent, sets a ten-day <see cref="WebRateProviderOptions.DefaultLookback" />, and floors
 /// the advertised history at 2 January 1975. The members declared here are Bank of England-specific: the
-/// <see cref="Series" /> catalogue, the IADB <see cref="QueryPath" />, and the on-disk cache settings.
+/// <see cref="Series" /> catalog, the IADB <see cref="QueryPath" />, and the on-disk cache settings.
 /// </para>
 /// <para>
 /// A range request is composed from <see cref="WebRateProviderOptions.BaseAddress" />, <see cref="QueryPath" />, the
-/// catalogue's series codes, and the inclusive date range. The inherited
+/// catalog's series codes, and the inclusive date range. The inherited
 /// <see cref="WebRateProviderOptions.RefreshInterval" /> governs both the in-memory ranges and the on-disk cache: a
 /// cached range response older than the interval is downloaded again, and in memory a loaded range keeps for good every
 /// day before the day it was downloaded and every later day it returned a rate for, while its other days are downloaded
@@ -32,8 +32,8 @@ namespace Bodu.Financial.ExchangeRates;
 /// </para>
 /// <para>
 /// The IADB names series, not currencies, so <see cref="WebRateProviderOptions.CurrencyAliases" /> applies to the quote
-/// label of each <see cref="BoeSeries" /> in the catalogue: a label found among the keys is replaced by its value,
-/// which must be the ISO 4217 code the provider serves the series under. Every member carries a working default, so the
+/// label of each <see cref="BoeSeries" /> in the catalog: a label found among the keys is replaced by its value, which
+/// must be the ISO 4217 code the provider serves the series under. Every member carries a working default, so the
 /// options bind cleanly through <c>Microsoft.Extensions.Options</c>; the dependency-injection registration binds this
 /// type from configuration and a <c>configure</c> delegate.
 /// </para>
@@ -51,9 +51,9 @@ public sealed class BoeRateProviderOptions
     /// <remarks>
     /// The IADB daily spot series (<c>XUDL*</c>) begin on 2 January 1975 for the longest-running currencies; some
     /// series start later (the euro series begins 4 January 1999, with the launch of the euro). The advertised history
-    /// is advisory - it bounds the earliest date worth requesting for the default <see cref="Series" /> catalogue, not
-    /// a per-series guarantee - so narrow <see cref="WebRateProviderOptions.HistoryAvailability" /> when the catalogue
-    /// is restricted to later-inception series.
+    /// is advisory - it bounds the earliest date worth requesting for the default <see cref="Series" /> catalog, not a
+    /// per-series guarantee - so narrow <see cref="WebRateProviderOptions.HistoryAvailability" /> when the catalog is
+    /// restricted to later-inception series.
     /// </remarks>
     public BoeRateProviderOptions()
     {
@@ -130,7 +130,7 @@ public sealed class BoeRateProviderOptions
     internal string MapQuoteCurrency(string quoteLabel) => MapCurrency(quoteLabel);
 
     /// <summary>
-    /// Validates the Bank of England-specific options, ensuring the series catalogue is not empty and the query path is
+    /// Validates the Bank of England-specific options, ensuring the series catalog is not empty and the query path is
     /// usable.
     /// </summary>
     /// <param name="error">

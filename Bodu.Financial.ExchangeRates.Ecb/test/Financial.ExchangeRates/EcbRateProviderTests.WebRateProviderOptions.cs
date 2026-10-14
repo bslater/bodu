@@ -73,7 +73,7 @@ public partial class EcbRateProviderTests
 
     /// <summary>
     /// Verifies that a <see cref="WebRateProviderOptions.HistoryAvailability" /> set on the options is the depth the
-    /// provider advertises, in place of the depth of its feed catalogue.
+    /// provider advertises, in place of the depth of its feed catalog.
     /// </summary>
     [TestMethod]
     public void HistoryAvailability_WhenSetOnTheOptions_ShouldAdvertiseIt()

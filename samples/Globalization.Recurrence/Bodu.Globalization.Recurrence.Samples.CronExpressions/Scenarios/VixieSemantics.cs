@@ -9,7 +9,7 @@ using System.Globalization;
 namespace Bodu.Globalization.Recurrence.Samples.CronExpressions.Scenarios;
 
 /// <summary>
-/// Demonstrates the two Vixie behaviours that separate this dialect from the Quartz-flavoured cron
+/// Demonstrates the two Vixie behaviors that separate this dialect from the Quartz-flavored cron
 /// many .NET libraries implement: the day-of-month / day-of-week union rule decided by a field's
 /// leading character, and a step wider than its range collapsing to the range start.
 /// </summary>

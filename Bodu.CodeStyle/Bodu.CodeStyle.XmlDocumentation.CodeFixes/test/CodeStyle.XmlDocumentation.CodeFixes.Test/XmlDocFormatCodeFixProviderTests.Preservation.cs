@@ -160,7 +160,7 @@ public partial class XmlDocFormatCodeFixProviderTests
 
     /// <summary>
     /// Verifies that a <c>#region</c> directive between the doc comment and the documented member does
-    /// not block the fix. Region directives are purely organisational and do not change which member the
+    /// not block the fix. Region directives are purely organizational and do not change which member the
     /// doc comment attaches to, so they sit alongside <c>#pragma</c>, <c>#nullable</c>, and <c>#line</c>
     /// on the safe-to-rewrite-around list.
     /// </summary>

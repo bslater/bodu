@@ -10,7 +10,7 @@ using Bodu.Financial.Currencies;
 namespace Bodu.Financial.Samples.CurrencyServices.Scenarios;
 
 /// <summary>
-/// Demonstrates the currency catalogue surface: the shipped ISO 4217 registry
+/// Demonstrates the currency catalog surface: the shipped ISO 4217 registry
 /// (<see cref="CurrencyRegistry" />), the <see cref="CurrencyInfo" /> record it stores, the
 /// <see cref="CurrencyCode" /> enum bridge, and the indexed <see cref="CurrencyLookupService" />
 /// (<see cref="ICurrencyLookup" />). The headline fact: minor units are per-currency data, not a

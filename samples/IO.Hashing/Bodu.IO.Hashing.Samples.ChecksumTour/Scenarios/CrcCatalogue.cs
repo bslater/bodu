@@ -10,14 +10,14 @@ namespace Bodu.IO.Hashing.Samples.ChecksumTour.Scenarios;
 
 /// <summary>
 /// Demonstrates the parametric CRC design: one <see cref="Crc" /> engine, driven by an immutable
-/// <see cref="CrcStandard" /> parameter bundle, covers the entire RevEng catalogue - so "which
-/// CRC does this protocol use?" is answered by picking a catalogue entry, never by writing a new
+/// <see cref="CrcStandard" /> parameter bundle, covers the entire RevEng catalog - so "which
+/// CRC does this protocol use?" is answered by picking a catalog entry, never by writing a new
 /// implementation.
 /// </summary>
 public static class CrcCatalogue
 {
     /// <summary>
-    /// Enumerates the catalogue and runs several well-known standards over the RevEng check input.
+    /// Enumerates the catalog and runs several well-known standards over the RevEng check input.
     /// </summary>
     public static void Run()
     {

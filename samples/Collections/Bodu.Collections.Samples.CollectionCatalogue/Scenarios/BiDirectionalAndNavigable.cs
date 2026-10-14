@@ -12,10 +12,10 @@ namespace Bodu.Collections.Samples.CollectionCatalogue.Scenarios;
 /// Demonstrates <see cref="BiDictionary{TKey, TValue}" /> (a one-to-one map with a live inverse and a
 /// configurable duplicate-value policy) and the sorted, navigable containers
 /// <see cref="NavigableSet{T}" /> / <see cref="NavigableDictionary{TKey, TValue}" /> (floor/ceiling/lower/
-/// higher neighbour queries and inclusive range views).
+/// higher neighbor queries and inclusive range views).
 /// </summary>
 /// <remarks>
-/// The neighbour quartet is easy to misread. Floor and ceiling are inclusive of an exact match; lower and higher
+/// The neighbor quartet is easy to misread. Floor and ceiling are inclusive of an exact match; lower and higher
 /// are strictly exclusive - so against a set containing 30, <c>Floor(30)</c> is 30 while <c>Lower(30)</c> is 20.
 /// Reaching for the wrong pair is an off-by-one that only appears when a query happens to land exactly on an
 /// element, which is precisely the case a small test set is least likely to cover.
@@ -23,7 +23,7 @@ namespace Bodu.Collections.Samples.CollectionCatalogue.Scenarios;
 public static class BiDirectionalAndNavigable
 {
     /// <summary>
-    /// Maps values both directions, then answers neighbour and range queries against sorted containers.
+    /// Maps values both directions, then answers neighbor and range queries against sorted containers.
     /// </summary>
     public static void Run()
     {
@@ -72,7 +72,7 @@ public static class BiDirectionalAndNavigable
     }
 
     /// <summary>
-    /// Answers floor/ceiling/lower/higher neighbour queries and an inclusive range view over a sorted set.
+    /// Answers floor/ceiling/lower/higher neighbor queries and an inclusive range view over a sorted set.
     /// </summary>
     private static void RunNavigableSet()
     {

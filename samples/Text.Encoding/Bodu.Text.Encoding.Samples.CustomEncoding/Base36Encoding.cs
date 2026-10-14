@@ -17,7 +17,7 @@ namespace Bodu.Samples.Text.Encoding.CustomEncoding;
 /// is preserved as a leading <c>'0'</c> character.
 /// </summary>
 /// <remarks>
-/// The implementation favours clarity over throughput (it round-trips through
+/// The implementation favors clarity over throughput (it round-trips through
 /// <see cref="BigInteger" />). A production codec would divide in place over the byte buffer the
 /// way the library's own Base58 does - the contract it must satisfy is the same either way,
 /// which is what the accompanying contract-test project verifies.

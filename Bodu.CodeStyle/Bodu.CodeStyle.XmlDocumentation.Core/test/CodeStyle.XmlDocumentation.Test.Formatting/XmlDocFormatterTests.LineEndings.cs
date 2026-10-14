@@ -53,7 +53,7 @@ public partial class XmlDocFormatterTests
     }
 
     /// <summary>
-    /// Verifies that an input mixing CR-only and LF line endings is normalised to the context line ending.
+    /// Verifies that an input mixing CR-only and LF line endings is normalized to the context line ending.
     /// </summary>
     [TestMethod]
     public void Format_WhenInputMixesLineEndings_ShouldNormaliseToContext()

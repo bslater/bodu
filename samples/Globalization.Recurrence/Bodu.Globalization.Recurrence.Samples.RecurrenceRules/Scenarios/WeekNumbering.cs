@@ -9,7 +9,7 @@ using System.Globalization;
 namespace Bodu.Globalization.Recurrence.Samples.RecurrenceRules.Scenarios;
 
 /// <summary>
-/// Demonstrates that <c>WKST</c> reparameterises week numbering rather than merely shifting weekly
+/// Demonstrates that <c>WKST</c> reparameterizes week numbering rather than merely shifting weekly
 /// intervals: it changes which dates <c>BYWEEKNO</c> resolves to, and which years have a
 /// fifty-third week. Numbered weeks straddle the calendar year, so week 1 can begin in December.
 /// </summary>

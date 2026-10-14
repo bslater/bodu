@@ -17,7 +17,7 @@ namespace Bodu.Financial.ExchangeRates;
 /// contract (timeout, user agent and response-size cap), the synchronous-access, look-back and refresh behavior, the
 /// advertised history, the currency-alias map, and the per-concern log levels. The constructor points
 /// <see cref="WebRateProviderOptions.BaseAddress" /> at the ECB's <c>eurofxref</c> statistics path and identifies the
-/// requests with a Bodu user agent. The members declared here are ECB-specific: the <see cref="Feeds" /> catalogue and
+/// requests with a Bodu user agent. The members declared here are ECB-specific: the <see cref="Feeds" /> catalog and
 /// the on-disk cache settings.
 /// </para>
 /// <para>
@@ -33,7 +33,7 @@ namespace Bodu.Financial.ExchangeRates;
 /// <para>
 /// The ECB publishes ISO 4217 codes, so <see cref="WebRateProviderOptions.CurrencyAliases" /> is empty by default; a
 /// currency label in a feed that is found among its keys is replaced by its value while the feed is read. The provider
-/// advertises the depth of its <see cref="Feeds" /> catalogue while
+/// advertises the depth of its <see cref="Feeds" /> catalog while
 /// <see cref="WebRateProviderOptions.HistoryAvailability" /> is left at
 /// <see cref="RateHistoryAvailability.Unbounded" />, and any other value set there in its place. Every member carries a
 /// working default, so the options bind cleanly through <c>Microsoft.Extensions.Options</c>; the dependency-injection
@@ -98,7 +98,7 @@ public sealed class EcbRateProviderOptions
     }
 
     /// <summary>
-    /// Validates the ECB-specific options, ensuring the feed catalogue is not empty.
+    /// Validates the ECB-specific options, ensuring the feed catalog is not empty.
     /// </summary>
     /// <param name="error">
     /// When this method returns <see langword="false" />, a message describing the violated invariant; otherwise

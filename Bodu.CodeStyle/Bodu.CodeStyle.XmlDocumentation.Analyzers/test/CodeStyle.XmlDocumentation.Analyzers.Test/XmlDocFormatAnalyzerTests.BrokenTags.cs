@@ -16,7 +16,7 @@ namespace Bodu.CodeStyle.XmlDocumentation.Analyzers.Test;
 public partial class XmlDocFormatAnalyzerTests
 {
     /// <summary>
-    /// Verifies that prose spanning multiple <c>///</c> lines inside a single block tag is recognised as
+    /// Verifies that prose spanning multiple <c>///</c> lines inside a single block tag is recognized as
     /// non-canonical and triggers BODU1001.
     /// </summary>
     [TestMethod]

@@ -198,7 +198,7 @@ internal static class SampleWorkbook
     }
 
     /// <summary>
-    /// Returns a station's reading for a day, in millimetres to two decimal places.
+    /// Returns a station's reading for a day, in millimeters to two decimal places.
     /// </summary>
     /// <param name="day">The zero-based day.</param>
     /// <param name="station">The zero-based station.</param>

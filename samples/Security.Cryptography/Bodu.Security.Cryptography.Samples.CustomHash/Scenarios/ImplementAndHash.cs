@@ -43,7 +43,7 @@ public static class ImplementAndHash
     }
 
     /// <summary>
-    /// Hashes <paramref name="input" /> with the supplied algorithm and prints the labelled hex digest.
+    /// Hashes <paramref name="input" /> with the supplied algorithm and prints the labeled hex digest.
     /// </summary>
     /// <param name="algorithm">The hash algorithm to drive.</param>
     /// <param name="label">A short human-readable label for the input.</param>

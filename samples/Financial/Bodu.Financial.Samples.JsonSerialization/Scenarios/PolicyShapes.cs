@@ -14,7 +14,7 @@ namespace Bodu.Financial.Samples.JsonSerialization.Scenarios;
 /// <summary>
 /// Demonstrates how the <see cref="FinancialJsonPolicy" /> argument to
 /// <see cref="FinancialJsonSerializerOptionsExtensions.AddFinancialJsonConverters" /> selects the wire shape:
-/// the canonical <c>Strict</c> object form, the forgiving <c>Lenient</c> import form (same shape, normalising
+/// the canonical <c>Strict</c> object form, the forgiving <c>Lenient</c> import form (same shape, normalizing
 /// reads), and the terse <c>Compact</c> string form. The same in-memory values are serialized under each policy.
 /// </summary>
 public static class PolicyShapes

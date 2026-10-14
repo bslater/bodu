@@ -31,7 +31,7 @@ public partial class BoeRateProviderOptionsTests
 
     /// <summary>
     /// Verifies that the constructor sets the Bank of England-specific defaults: the IADB column query path, the default
-    /// series catalogue, and the on-disk cache enabled under the default directory.
+    /// series catalog, and the on-disk cache enabled under the default directory.
     /// </summary>
     [TestMethod]
     public void Ctor_ShouldSetTheBankOfEnglandSpecificDefaults()

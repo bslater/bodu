@@ -46,7 +46,7 @@ public static class CryptographicHashes
     }
 
     /// <summary>
-    /// Hashes the fixed message with the supplied algorithm, disposes it, and prints the labelled digest.
+    /// Hashes the fixed message with the supplied algorithm, disposes it, and prints the labeled digest.
     /// </summary>
     /// <param name="label">A short human-readable label including the output size.</param>
     /// <param name="algorithm">The hash algorithm to drive.</param>

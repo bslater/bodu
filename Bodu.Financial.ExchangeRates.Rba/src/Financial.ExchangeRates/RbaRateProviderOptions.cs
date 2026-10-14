@@ -16,7 +16,7 @@ namespace Bodu.Financial.ExchangeRates;
 /// advertised history, the currency-alias map, and the per-concern log levels. The constructor points
 /// <see cref="WebRateProviderOptions.BaseAddress" /> at the RBA's historical statistics path, identifies the requests
 /// with a Bodu user agent, and maps the RBA's <c>SDR</c> units label to the ISO code <c>XDR</c>. The members declared
-/// here are RBA-specific: the <see cref="Eras" /> catalogue and the on-disk cache settings, which are off by default.
+/// here are RBA-specific: the <see cref="Eras" /> catalog and the on-disk cache settings, which are off by default.
 /// </para>
 /// <para>
 /// The absolute URL of an era workbook is its <see cref="RbaEraWorkbook.FileName" /> resolved against
@@ -31,7 +31,7 @@ namespace Bodu.Financial.ExchangeRates;
 /// <para>
 /// The RBA names each column's currency with a units label, so <see cref="WebRateProviderOptions.CurrencyAliases" />
 /// maps a label found among its keys to the ISO 4217 code its value gives while a workbook is read. The provider
-/// advertises the depth of its <see cref="Eras" /> catalogue while
+/// advertises the depth of its <see cref="Eras" /> catalog while
 /// <see cref="WebRateProviderOptions.HistoryAvailability" /> is left at
 /// <see cref="RateHistoryAvailability.Unbounded" />, and any other value set there in its place. Every member carries a
 /// working default, so the options bind cleanly through <c>Microsoft.Extensions.Options</c>; the dependency-injection
@@ -76,7 +76,7 @@ public sealed class RbaRateProviderOptions
     public string? CacheDirectory { get; set; }
 
     /// <summary>
-    /// Validates the RBA-specific options, ensuring the era catalogue is not empty.
+    /// Validates the RBA-specific options, ensuring the era catalog is not empty.
     /// </summary>
     /// <param name="error">
     /// When this method returns <see langword="false" />, a message describing the violated invariant; otherwise

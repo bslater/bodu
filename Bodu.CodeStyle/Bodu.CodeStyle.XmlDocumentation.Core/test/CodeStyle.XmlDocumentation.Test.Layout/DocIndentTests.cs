@@ -113,7 +113,7 @@ public sealed class DocIndentTests
 
     /// <summary>
     /// Verifies that an empty content line is emitted with the prefix's leading characters (no trailing space)
-    /// to honour the trim-trailing-whitespace convention.
+    /// to honor the trim-trailing-whitespace convention.
     /// </summary>
     [TestMethod]
     public void Reapply_WhenContentLineIsEmpty_ShouldEmitPrefixWithoutTrailingSpace()

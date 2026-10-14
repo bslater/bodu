@@ -21,7 +21,7 @@ public partial class EcbRateProviderOptionsTests
     }
 
     /// <summary>
-    /// Verifies that the options declare only the ECB-specific members - the feed catalogue and the on-disk cache
+    /// Verifies that the options declare only the ECB-specific members - the feed catalog and the on-disk cache
     /// settings - and neither redeclare a shared member nor keep the nested <c>Endpoint</c>.
     /// </summary>
     [TestMethod]

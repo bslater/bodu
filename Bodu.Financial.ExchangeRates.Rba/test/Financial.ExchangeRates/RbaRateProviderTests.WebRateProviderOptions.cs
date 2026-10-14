@@ -118,7 +118,7 @@ public partial class RbaRateProviderTests
 
     /// <summary>
     /// Verifies that a <see cref="WebRateProviderOptions.HistoryAvailability" /> set on the options is the depth the
-    /// provider advertises, in place of the depth of its era catalogue.
+    /// provider advertises, in place of the depth of its era catalog.
     /// </summary>
     [TestMethod]
     public void HistoryAvailability_WhenSetOnTheOptions_ShouldAdvertiseIt()

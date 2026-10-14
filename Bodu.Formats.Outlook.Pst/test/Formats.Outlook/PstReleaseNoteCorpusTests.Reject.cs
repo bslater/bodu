@@ -82,11 +82,11 @@ public sealed partial class PstReleaseNoteCorpusTests
     }
 
     /// <summary>
-    /// Verifies that each catalogued file a fix established as a container fault, read on the Store surface, is
+    /// Verifies that each cataloged file a fix established as a container fault, read on the Store surface, is
     /// rejected with <see cref="OutlookPstFormatException" />, the mail store's own exception, whose inner exception is
     /// the container exception the row names.
     /// </summary>
-    /// <param name="fix">The catalogue row.</param>
+    /// <param name="fix">The catalog row.</param>
     [TestMethod]
     [TestCategory("Regression")]
     [DynamicData(

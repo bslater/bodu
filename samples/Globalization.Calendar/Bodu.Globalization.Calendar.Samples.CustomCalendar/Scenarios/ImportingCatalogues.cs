@@ -10,16 +10,16 @@ using Bodu.Globalization.Calendar.Builder;
 namespace Bodu.Globalization.Calendar.Samples.CustomCalendar.Scenarios;
 
 /// <summary>
-/// Demonstrates composing an authored calendar with the shared catalogues the data packs themselves
-/// import: declare an <c>Import</c>, cherry-pick concepts with <c>Use</c> (optionally re-categorised
+/// Demonstrates composing an authored calendar with the shared catalogs the data packs themselves
+/// import: declare an <c>Import</c>, cherry-pick concepts with <c>Use</c> (optionally re-categorized
 /// or re-scoped per territory), and resolve the import through
 /// <see cref="CommonNotableDateResources.Resolver" /> at build time. No rule is copied - the
-/// catalogue stays the single source of truth for the Easter computus and friends.
+/// catalog stays the single source of truth for the Easter computus and friends.
 /// </summary>
 public static class ImportingCatalogues
 {
     /// <summary>
-    /// Imports Easter concepts from the shared western-Christian catalogue into a company calendar.
+    /// Imports Easter concepts from the shared western-Christian catalog into a company calendar.
     /// </summary>
     public static void Run()
     {

@@ -12,7 +12,7 @@ namespace Bodu.CodeStyle.XmlDocumentation;
 public enum XmlDocFormatRangeKind
 {
     /// <summary>
-    /// The documentation line prefix or indent was normalised.
+    /// The documentation line prefix or indent was normalized.
     /// </summary>
     LinePrefix = 0,
 
@@ -42,7 +42,7 @@ public enum XmlDocFormatRangeKind
     TrailingWhitespace = 5,
 
     /// <summary>
-    /// A blank documentation line was added, removed, or normalised.
+    /// A blank documentation line was added, removed, or normalized.
     /// </summary>
     BlankLine = 6,
 }

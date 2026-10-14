@@ -10,9 +10,9 @@ namespace Bodu.Samples.Text.Encoding.CustomEncoding;
 
 /// <summary>
 /// Entry point for the custom-encoding sample: implementing <c>IBinaryEncoding</c> yourself -
-/// a Base36 codec - and exercising it through the same interface the built-in catalogue
+/// a Base36 codec - and exercising it through the same interface the built-in catalog
 /// exposes. The companion <c>*.CustomEncoding.Test</c> project derives the library's
-/// <c>BinaryEncodingContractTests&lt;T&gt;</c> base to prove the implementation honours the
+/// <c>BinaryEncodingContractTests&lt;T&gt;</c> base to prove the implementation honors the
 /// shared contract.
 /// </summary>
 public static class Program

@@ -22,8 +22,8 @@ public sealed class FormatterKatTests
     public static IEnumerable<object[]> Kats() => BoduCodeStyleKats.Data(CodeStyleKatArea.XmlDocumentationFormatting);
 
     /// <summary>
-    /// Verifies that each formatter KAT produces the expected output, honours the <c>ExpectedChanged</c> flag,
-    /// recognises malformed-XML inputs, and is idempotent on a second pass.
+    /// Verifies that each formatter KAT produces the expected output, honors the <c>ExpectedChanged</c> flag,
+    /// recognizes malformed-XML inputs, and is idempotent on a second pass.
     /// </summary>
     [TestMethod]
     [DynamicData(nameof(Kats), DynamicDataDisplayName = nameof(GetDisplayName))]
