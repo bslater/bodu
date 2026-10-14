@@ -444,4 +444,18 @@ public partial class DelimitedSerializerTests
         Assert.AreEqual(1, result.Count);
         Assert.AreEqual(string.Empty, result[0].Value);
     }
+
+    /// <summary>
+    /// Verifies that a dictionary root, which Delimited writes as <c>Key</c> and <c>Value</c> columns, reads back into
+    /// its <see cref="KeyValuePair{TKey, TValue}" /> records with every key and value.
+    /// </summary>
+    [TestMethod]
+    public void SerializeDeserialize_WhenRootIsADictionary_ShouldReadBackEachEntry()
+    {
+        var pairs = new Dictionary<string, int> { ["a"] = 1, ["b"] = 2 };
+
+        List<KeyValuePair<string, int>> result = DelimitedSerializer.Deserialize<KeyValuePair<string, int>>(DelimitedSerializer.Serialize(pairs));
+
+        CollectionAssert.AreEqual(pairs.ToList(), result);
+    }
 }

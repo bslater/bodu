@@ -830,4 +830,21 @@ public partial class DelimitedSerializerTests
         Assert.AreEqual(string.Format(CultureInfo.CurrentCulture, DelimitedResourceStrings.Op_Invalid_DelimitedValueNotScalar, "Counts", typeof(Dictionary<string, int>)), ex.Message);
         Assert.AreEqual(0, stream.Position);
     }
+
+    /// <summary>
+    /// Verifies that the streaming reader binds <see cref="KeyValuePair{TKey, TValue}" /> records by header name, as
+    /// the buffered overloads do.
+    /// </summary>
+    /// <returns>A task representing the asynchronous test.</returns>
+    [TestMethod]
+    public async Task DeserializeAsyncEnumerableAsync_WhenRecordsAreKeyValuePairs_ShouldBindKeyAndValue()
+    {
+        using var stream = new MemoryStream(Encoding.UTF8.GetBytes("Value,Key\n1,a\n2,b\n"));
+        var result = new List<KeyValuePair<string, int>>();
+
+        await foreach (KeyValuePair<string, int> pair in DelimitedSerializer.DeserializeAsyncEnumerableAsync<KeyValuePair<string, int>>(stream))
+            result.Add(pair);
+
+        CollectionAssert.AreEqual(new[] { new KeyValuePair<string, int>("a", 1), new KeyValuePair<string, int>("b", 2) }, result);
+    }
 }
