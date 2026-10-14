@@ -402,4 +402,18 @@ public partial class DotEnvSerializerTests
         Assert.AreEqual(string.Format(CultureInfo.CurrentCulture, DotEnvResourceStrings.Op_Invalid_DotEnvValueNotScalar, "Counts", typeof(Dictionary<string, int>)), ex.Message);
         Assert.AreEqual(0, stream.Position);
     }
+
+    /// <summary>
+    /// Verifies that a root whose type is a nullable structure is read into the structure, as a root of the structure
+    /// itself is, rather than rejected for <see cref="Nullable{T}.Value" />.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenTheRootIsANullableStruct_ShouldReadIt()
+    {
+        PortStruct? result = DotEnvSerializer.Deserialize<PortStruct?>("Port=5\nHost=h\n");
+
+        Assert.IsNotNull(result);
+        Assert.AreEqual(5, result.Value.Port);
+        Assert.AreEqual("h", result.Value.Host);
+    }
 }

@@ -605,4 +605,18 @@ public partial class DelimitedSerializerTests
 
         Assert.AreEqual(string.Format(CultureInfo.CurrentCulture, DelimitedResourceStrings.Op_Invalid_DelimitedValueNotScalar, "Counts", typeof(Dictionary<string, int>)), ex.Message);
     }
+
+    /// <summary>
+    /// Verifies that records whose type is a nullable structure are written as records of the structure itself are,
+    /// with a <see langword="null" /> record left out, as a <see langword="null" /> record of a class is.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenTheRecordTypeIsANullableStruct_ShouldWriteEachValueAsTheStruct()
+    {
+        var value = new PortRecord { Port = 5, Host = "h" };
+
+        string text = DelimitedSerializer.Serialize(new PortRecord?[] { value, null });
+
+        Assert.AreEqual(DelimitedSerializer.Serialize(new[] { value }), text);
+    }
 }

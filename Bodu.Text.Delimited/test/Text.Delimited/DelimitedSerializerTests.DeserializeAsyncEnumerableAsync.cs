@@ -847,4 +847,19 @@ public partial class DelimitedSerializerTests
 
         CollectionAssert.AreEqual(new[] { new KeyValuePair<string, int>("a", 1), new KeyValuePair<string, int>("b", 2) }, result);
     }
+
+    /// <summary>
+    /// Verifies that records whose type is a nullable structure are yielded as the structure, as records of the
+    /// structure itself are.
+    /// </summary>
+    /// <returns>A task representing the asynchronous test.</returns>
+    [TestMethod]
+    public async Task DeserializeAsyncEnumerableAsync_WhenTheRecordTypeIsANullableStruct_ShouldYieldEachRecordAsTheStruct()
+    {
+        using var stream = new MemoryStream(Encoding.UTF8.GetBytes("Port,Host\n5,h\n"));
+
+        List<PortRecord?> records = await ToListAsync(DelimitedSerializer.DeserializeAsyncEnumerableAsync<PortRecord?>(stream));
+
+        CollectionAssert.AreEqual(new PortRecord?[] { new PortRecord { Port = 5, Host = "h" } }, records);
+    }
 }

@@ -458,4 +458,17 @@ public partial class DelimitedSerializerTests
 
         CollectionAssert.AreEqual(pairs.ToList(), result);
     }
+
+    /// <summary>
+    /// Verifies that records whose type is a nullable structure read back as the values written.
+    /// </summary>
+    [TestMethod]
+    public void SerializeDeserialize_WhenTheRecordTypeIsANullableStruct_ShouldReadBackEachValue()
+    {
+        var records = new PortRecord?[] { new PortRecord { Port = 5, Host = "h" }, new PortRecord { Port = 6, Host = "i" } };
+
+        List<PortRecord?> result = DelimitedSerializer.Deserialize<PortRecord?>(DelimitedSerializer.Serialize(records));
+
+        CollectionAssert.AreEqual(records, result);
+    }
 }

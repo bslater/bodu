@@ -245,6 +245,20 @@ public partial class DelimitedSerializerTests
     }
 
     /// <summary>
+    /// A record structure of two columns, <c>Port</c> and <c>Host</c>.
+    /// </summary>
+    public struct PortRecord
+    {
+        /// <summary>Gets or sets the port.</summary>
+        /// <value>The port.</value>
+        public int Port { get; set; }
+
+        /// <summary>Gets or sets the host.</summary>
+        /// <value>The host, or <see langword="null" />.</value>
+        public string? Host { get; set; }
+    }
+
+    /// <summary>
     /// A record POCO of two nullable <see cref="int" /> columns, <c>A</c> and <c>B</c>.
     /// </summary>
     public sealed class NullableIntPairRecord

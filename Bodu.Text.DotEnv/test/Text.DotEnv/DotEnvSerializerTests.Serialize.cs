@@ -443,4 +443,15 @@ public partial class DotEnvSerializerTests
 
         Assert.AreEqual(string.Format(CultureInfo.CurrentCulture, DotEnvResourceStrings.Op_Invalid_DotEnvValueNotScalar, "Counts", typeof(Dictionary<string, int>)), ex.Message);
     }
+
+    /// <summary>
+    /// Verifies that a root whose type is a nullable structure is written as the structure itself is.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenTheRootIsANullableStruct_ShouldWriteTheStruct()
+    {
+        var value = new PortStruct { Port = 5, Host = "h" };
+
+        Assert.AreEqual(DotEnvSerializer.Serialize(value), DotEnvSerializer.Serialize<PortStruct?>(value));
+    }
 }
