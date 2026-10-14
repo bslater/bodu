@@ -24,6 +24,10 @@ namespace Bodu.Globalization.Calendar;
 /// <see cref="INotableDateResourceProvider" /> registered by <c>AddReloadableNotableDateService</c> is observed
 /// automatically, so a reload invalidates the cache.
 /// </para>
+/// <para>
+/// Only the most recent unkeyed registration is decorated. Keyed <see cref="INotableDateService" /> registrations,
+/// added before or after it, are left in place and resolve undecorated.
+/// </para>
 /// </remarks>
 /// <example>
 /// <code language="csharp">
@@ -55,7 +59,7 @@ public static class NotableDateCachingExtensions
     /// Thrown when <paramref name="services" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="InvalidOperationException">
-    /// Thrown when no <see cref="INotableDateService" /> has been registered.
+    /// Thrown when no unkeyed <see cref="INotableDateService" /> has been registered.
     /// </exception>
     public static IServiceCollection AddCachedNotableDateService(
         this IServiceCollection services,
@@ -83,7 +87,7 @@ public static class NotableDateCachingExtensions
     /// Thrown when <paramref name="sectionName" /> is empty or white space.
     /// </exception>
     /// <exception cref="InvalidOperationException">
-    /// Thrown when no <see cref="INotableDateService" /> has been registered.
+    /// Thrown when no unkeyed <see cref="INotableDateService" /> has been registered.
     /// </exception>
     public static IServiceCollection AddCachedNotableDateService(
         this IServiceCollection services,
@@ -98,7 +102,7 @@ public static class NotableDateCachingExtensions
         ServiceDescriptor? existing = null;
         for (int i = services.Count - 1; i >= 0; i--)
         {
-            if (services[i].ServiceType == typeof(INotableDateService))
+            if (services[i].ServiceType == typeof(INotableDateService) && !services[i].IsKeyedService)
             {
                 existing = services[i];
                 services.RemoveAt(i);

@@ -34,6 +34,10 @@ namespace Bodu.Financial.ExchangeRates;
 /// automatically. Use the full overload when the options type does not inherit from
 /// <see cref="WebRateProviderOptions" /> and the caller must supply explicit selectors.
 /// </para>
+/// <para>
+/// Whichever overload registers it, when the options derive from <see cref="WebRateProviderOptions" /> the named client
+/// is capped at <see cref="WebRateProviderOptions.MaxResponseContentBufferSize" />, as a provider-owned client is.
+/// </para>
 /// </remarks>
 public static class WebRateProviderExtensions
 {
@@ -245,6 +249,11 @@ public static class WebRateProviderExtensions
                 string? userAgent = getUserAgent(options);
                 if (!string.IsNullOrWhiteSpace(userAgent))
                     client.DefaultRequestHeaders.TryAddWithoutValidation("User-Agent", userAgent);
+
+                // The cap a provider-owned client gets from RateProviderHttpClientFactory; an options type outside
+                // the WebRateProviderOptions hierarchy has no cap to apply.
+                if (options is WebRateProviderOptions webOptions)
+                    client.MaxResponseContentBufferSize = webOptions.MaxResponseContentBufferSize;
             })
             .AddStandardResilienceHandler()
             .Configure((resilienceOptions, serviceProvider) =>

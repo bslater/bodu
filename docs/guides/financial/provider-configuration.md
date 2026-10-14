@@ -106,7 +106,7 @@ directly under the section. Every key below binds, shown at its default:
 |---|---|---|
 | `BaseAddress` | `https://www.ecb.europa.eu/stats/eurofxref/` | The directory the feed files are resolved against. |
 | `HttpTimeout` | 30 s | The per-attempt timeout; with DI it drives the resilience pipeline (Pattern 5). |
-| `MaxResponseContentBufferSize` | 64 MiB | Response-size ceiling on a provider-owned client; not applied to a client the host supplies. |
+| `MaxResponseContentBufferSize` | 64 MiB | Response-size ceiling on the provider's client, whether the provider owns it or `Add<Source>ExchangeRates` registers it; not applied to a client passed to the constructor. |
 | `UserAgent` | `Bodu.Financial.ExchangeRates.Ecb` | The `User-Agent` header on every request. |
 | `AllowSynchronousNetworkAccess` | `false` | Whether a *synchronous* lookup that misses may block to download. Off, a synchronous miss is reported as a miss and only the asynchronous surface or an explicit warm-up fetches. |
 | `DefaultLookback` | 7 days | The window, ending on the requested date, an on-demand lookup loads: the narrowest feed that covers it. |
@@ -172,7 +172,7 @@ three are Fixer's own, from <xref:Bodu.Financial.ExchangeRates.FixerRateProvider
 |---|---|---|
 | `BaseAddress` | per provider | The API host; keep the trailing slash so relative paths resolve. |
 | `HttpTimeout` | 30 s | Per-attempt timeout (drives the resilience pipeline under DI). |
-| `MaxResponseContentBufferSize` | 64 MiB | Response-size ceiling on a provider-owned client; not applied to a client the host supplies. |
+| `MaxResponseContentBufferSize` | 64 MiB | Response-size ceiling on the provider's client, whether the provider owns it or `Add<Source>ExchangeRates` registers it; not applied to a client passed to the constructor. |
 | `UserAgent` | a browser-like string | Several public endpoints reject requests without a recognizable user agent. |
 | `AllowSynchronousNetworkAccess` | `false` | As for the bulk providers. |
 | `DefaultLookback` | 7 days | The window a synchronous or undated lookup fetches on demand: it ends on the requested date and spans this duration. |
