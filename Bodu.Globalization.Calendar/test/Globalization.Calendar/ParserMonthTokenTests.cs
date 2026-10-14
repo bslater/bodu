@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Globalization;
+
 namespace Bodu.Globalization.Calendar;
 
 /// <summary>
@@ -330,72 +332,219 @@ public sealed class ParserMonthTokenTests
 
     /// <summary>
     /// Verifies that an English month name on a <c>Fixed</c> rule in a calendar other than Gregorian, loaded from XML,
-    /// is reported with a <c>BODU-CAL-MONTH</c> message naming what that calendar accepts, an integer from 1 to 13 or a
-    /// Hebrew month name, rather than the Gregorian forms the value already has.
+    /// is reported with a <c>BODU-CAL-MONTH</c> message naming what that calendar accepts, the integers of its months
+    /// and, for the Hebrew calendar alone, its month names, rather than the Gregorian forms the value already has.
     /// </summary>
     /// <param name="calendar">The rule's calendar.</param>
+    /// <param name="months">The number of months the calendar's year can have.</param>
     [TestMethod]
-    [DataRow("Hebrew")]
-    [DataRow("Hijri")]
-    public void Load_WhenCalendarFixedMonthIsEnglishName_ForXml_ShouldNameTheMonthsTheCalendarAccepts(string calendar)
+    [DataRow("Hebrew", 13)]
+    [DataRow("Hijri", 12)]
+    [DataRow("UmmAlQura", 12)]
+    [DataRow("Persian", 12)]
+    [DataRow("ChineseLunisolar", 13)]
+    public void Load_WhenCalendarFixedMonthIsEnglishName_ForXml_ShouldNameTheMonthsTheCalendarAccepts(string calendar, int months)
     {
-        string xml =
-            $"""
-            <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="test.month">
-              <NotableDates>
-                <NotableDate id="x" displayName="X" category="Religious">
-                  <Rules><Rule id="r"><Applicability calendar="{calendar}" /><Strategy><Fixed month="July" day="15" /></Strategy></Rule></Rules>
-                </NotableDate>
-              </NotableDates>
-            </NotableDateResource>
-            """;
-
         NotableDateValidationException ex = Assert.ThrowsExactly<NotableDateValidationException>(() =>
         {
-            _ = NotableDateResourceLoader.Load(xml);
+            _ = NotableDateResourceLoader.Load(CalendarFixedXml(calendar, "July"));
         });
 
-        AssertCalendarMonthMessage(ex, calendar);
+        AssertCalendarMonthMessage(ex, calendar, "July", months);
     }
 
     /// <summary>
     /// Verifies that an English month name on a <c>Fixed</c> rule in a calendar other than Gregorian, loaded from JSON,
-    /// is reported with a <c>BODU-CAL-MONTH</c> message naming what that calendar accepts, an integer from 1 to 13 or a
-    /// Hebrew month name, rather than the Gregorian forms the value already has.
+    /// is reported with a <c>BODU-CAL-MONTH</c> message naming what that calendar accepts, the integers of its months
+    /// and, for the Hebrew calendar alone, its month names, rather than the Gregorian forms the value already has.
     /// </summary>
     /// <param name="calendar">The rule's calendar.</param>
+    /// <param name="months">The number of months the calendar's year can have.</param>
     [TestMethod]
-    [DataRow("Hebrew")]
-    [DataRow("Hijri")]
-    public void Load_WhenCalendarFixedMonthIsEnglishName_ForJson_ShouldNameTheMonthsTheCalendarAccepts(string calendar)
+    [DataRow("Hebrew", 13)]
+    [DataRow("Hijri", 12)]
+    [DataRow("UmmAlQura", 12)]
+    [DataRow("Persian", 12)]
+    [DataRow("ChineseLunisolar", 13)]
+    public void Load_WhenCalendarFixedMonthIsEnglishName_ForJson_ShouldNameTheMonthsTheCalendarAccepts(string calendar, int months)
     {
-        string json =
-            $$"""
-            { "schemaVersion": "1.0", "resourceId": "test.month",
-              "notableDates": [ { "id": "x", "displayName": "X", "category": "Religious",
-                "rules": [ { "id": "r", "applicability": { "calendar": "{{calendar}}" }, "strategy": { "fixed": { "month": "July", "day": 15 } } } ] } ] }
-            """;
-
         NotableDateValidationException ex = Assert.ThrowsExactly<NotableDateValidationException>(() =>
         {
-            _ = NotableDateResourceLoader.LoadJson(json);
+            _ = NotableDateResourceLoader.LoadJson(CalendarFixedJson(calendar, "\"July\""));
         });
 
-        AssertCalendarMonthMessage(ex, calendar);
+        AssertCalendarMonthMessage(ex, calendar, "July", months);
     }
 
     /// <summary>
-    /// Asserts that a load failed with the one <c>BODU-CAL-MONTH</c> error a non-Gregorian rule's English month name
-    /// <c>July</c> draws, worded for the rule's calendar.
+    /// Verifies that a Hebrew month name on a <c>Fixed</c> rule in a calendar other than the Hebrew, loaded from XML, is
+    /// reported with <c>BODU-CAL-MONTH</c> rather than read as the position the name has in the Hebrew year.
+    /// </summary>
+    /// <param name="calendar">The rule's calendar.</param>
+    /// <param name="months">The number of months the calendar's year can have.</param>
+    [TestMethod]
+    [DataRow("Hijri", 12)]
+    [DataRow("UmmAlQura", 12)]
+    [DataRow("Persian", 12)]
+    [DataRow("ChineseLunisolar", 13)]
+    public void Load_WhenFixedMonthIsHebrewNameInAnotherCalendar_ForXml_ShouldThrowMonthDiagnostic(string calendar, int months)
+    {
+        NotableDateValidationException ex = Assert.ThrowsExactly<NotableDateValidationException>(() =>
+        {
+            _ = NotableDateResourceLoader.Load(CalendarFixedXml(calendar, "Nisan"));
+        });
+
+        AssertCalendarMonthMessage(ex, calendar, "Nisan", months);
+    }
+
+    /// <summary>
+    /// Verifies that a Hebrew month name on a <c>Fixed</c> rule in a calendar other than the Hebrew, loaded from JSON,
+    /// is reported with <c>BODU-CAL-MONTH</c> rather than read as the position the name has in the Hebrew year.
+    /// </summary>
+    /// <param name="calendar">The rule's calendar.</param>
+    /// <param name="months">The number of months the calendar's year can have.</param>
+    [TestMethod]
+    [DataRow("Hijri", 12)]
+    [DataRow("UmmAlQura", 12)]
+    [DataRow("Persian", 12)]
+    [DataRow("ChineseLunisolar", 13)]
+    public void Load_WhenFixedMonthIsHebrewNameInAnotherCalendar_ForJson_ShouldThrowMonthDiagnostic(string calendar, int months)
+    {
+        NotableDateValidationException ex = Assert.ThrowsExactly<NotableDateValidationException>(() =>
+        {
+            _ = NotableDateResourceLoader.LoadJson(CalendarFixedJson(calendar, "\"Nisan\""));
+        });
+
+        AssertCalendarMonthMessage(ex, calendar, "Nisan", months);
+    }
+
+    /// <summary>
+    /// Verifies that a numeric month on a <c>Fixed</c> rule beyond the months its calendar's year can have, loaded from
+    /// XML, is reported with <c>BODU-CAL-MONTH</c> rather than loaded as a month that never occurs: 13 in the twelve
+    /// month calendars, and in the Chinese lunisolar calendar when the month skips the leap month, and 14 in the
+    /// thirteen month calendars.
+    /// </summary>
+    /// <param name="calendar">The rule's calendar.</param>
+    /// <param name="month">The month.</param>
+    /// <param name="skipLeapMonth">A value indicating whether the month skips a Chinese leap month.</param>
+    /// <param name="months">The number of months the rule's month can name.</param>
+    [TestMethod]
+    [DataRow("Hijri", "13", false, 12)]
+    [DataRow("UmmAlQura", "13", false, 12)]
+    [DataRow("Persian", "13", false, 12)]
+    [DataRow("ChineseLunisolar", "13", true, 12)]
+    [DataRow("ChineseLunisolar", "14", false, 13)]
+    [DataRow("Hebrew", "14", false, 13)]
+    public void Load_WhenFixedMonthExceedsCalendarMonths_ForXml_ShouldThrowMonthDiagnostic(string calendar, string month, bool skipLeapMonth, int months)
+    {
+        NotableDateValidationException ex = Assert.ThrowsExactly<NotableDateValidationException>(() =>
+        {
+            _ = NotableDateResourceLoader.Load(CalendarFixedXml(calendar, month, skipLeapMonth));
+        });
+
+        AssertCalendarMonthMessage(ex, calendar, month, months);
+    }
+
+    /// <summary>
+    /// Verifies that a numeric month on a <c>Fixed</c> rule beyond the months its calendar's year can have, loaded from
+    /// JSON, is reported with <c>BODU-CAL-MONTH</c> rather than loaded as a month that never occurs, whether the
+    /// <c>skipLeapMonth</c> flag precedes or follows the month.
+    /// </summary>
+    /// <param name="calendar">The rule's calendar.</param>
+    /// <param name="month">The month, as a JSON literal.</param>
+    /// <param name="skipLeapMonth">A value indicating whether the month skips a Chinese leap month.</param>
+    /// <param name="months">The number of months the rule's month can name.</param>
+    [TestMethod]
+    [DataRow("Hijri", "13", false, 12)]
+    [DataRow("UmmAlQura", "13", false, 12)]
+    [DataRow("Persian", "13", false, 12)]
+    [DataRow("ChineseLunisolar", "13", true, 12)]
+    [DataRow("ChineseLunisolar", "14", false, 13)]
+    [DataRow("Hebrew", "14", false, 13)]
+    public void Load_WhenFixedMonthExceedsCalendarMonths_ForJson_ShouldThrowMonthDiagnostic(string calendar, string month, bool skipLeapMonth, int months)
+    {
+        NotableDateValidationException ex = Assert.ThrowsExactly<NotableDateValidationException>(() =>
+        {
+            _ = NotableDateResourceLoader.LoadJson(CalendarFixedJson(calendar, month, skipLeapMonth));
+        });
+
+        AssertCalendarMonthMessage(ex, calendar, month, months);
+    }
+
+    /// <summary>
+    /// Verifies that the last month a <c>Fixed</c> rule's calendar can name loads as that month: 12 in the twelve month
+    /// calendars and in the Chinese lunisolar calendar when the month skips the leap month, and 13 in the Hebrew and
+    /// the Chinese lunisolar calendars otherwise.
+    /// </summary>
+    /// <param name="calendar">The rule's calendar.</param>
+    /// <param name="month">The month.</param>
+    /// <param name="skipLeapMonth">A value indicating whether the month skips a Chinese leap month.</param>
+    [TestMethod]
+    [DataRow("Hijri", 12, false)]
+    [DataRow("UmmAlQura", 12, false)]
+    [DataRow("Persian", 12, false)]
+    [DataRow("ChineseLunisolar", 12, true)]
+    [DataRow("ChineseLunisolar", 13, false)]
+    [DataRow("Hebrew", 13, false)]
+    public void Load_WhenFixedMonthIsCalendarsLastMonth_ShouldResolveNumericMonth(string calendar, int month, bool skipLeapMonth)
+    {
+        FixedDateStrategy strategy = Strategy(NotableDateResourceLoader.Load(CalendarFixedXml(calendar, month.ToString(CultureInfo.InvariantCulture), skipLeapMonth)));
+
+        Assert.AreEqual((month, (string?)null), (strategy.Month, strategy.MonthAlias));
+    }
+
+    /// <summary>
+    /// Builds a one-concept XML document with a <c>Fixed</c> rule in the supplied calendar whose month token is the
+    /// supplied value.
+    /// </summary>
+    /// <param name="calendar">The rule's calendar.</param>
+    /// <param name="month">The month token to author.</param>
+    /// <param name="skipLeapMonth">A value indicating whether the month skips a Chinese leap month.</param>
+    /// <returns>The XML document content.</returns>
+    private static string CalendarFixedXml(string calendar, string month, bool skipLeapMonth = false) =>
+        $"""
+        <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="test.month">
+          <NotableDates>
+            <NotableDate id="x" displayName="X" category="Religious">
+              <Rules><Rule id="r"><Applicability calendar="{calendar}" /><Strategy><Fixed month="{month}" day="15" skipLeapMonth="{(skipLeapMonth ? "true" : "false")}" /></Strategy></Rule></Rules>
+            </NotableDate>
+          </NotableDates>
+        </NotableDateResource>
+        """;
+
+    /// <summary>
+    /// Builds a one-concept JSON document with a <c>Fixed</c> rule in the supplied calendar whose month is the supplied
+    /// JSON literal, its <c>skipLeapMonth</c> flag written before the month and its day after it.
+    /// </summary>
+    /// <param name="calendar">The rule's calendar.</param>
+    /// <param name="month">The month, as a JSON literal.</param>
+    /// <param name="skipLeapMonth">A value indicating whether the month skips a Chinese leap month.</param>
+    /// <returns>The JSON document content.</returns>
+    private static string CalendarFixedJson(string calendar, string month, bool skipLeapMonth = false) =>
+        $$"""
+        { "schemaVersion": "1.0", "resourceId": "test.month",
+          "notableDates": [ { "id": "x", "displayName": "X", "category": "Religious",
+            "rules": [ { "id": "r", "applicability": { "calendar": "{{calendar}}" },
+              "strategy": { "fixed": { "skipLeapMonth": {{(skipLeapMonth ? "true" : "false")}}, "month": {{month}}, "day": 15 } } } ] } ] }
+        """;
+
+    /// <summary>
+    /// Asserts that a load failed with the one <c>BODU-CAL-MONTH</c> error a non-Gregorian rule's month draws when its
+    /// calendar does not take it, worded for that calendar: the integers of its months and, for the Hebrew calendar
+    /// alone, its month names.
     /// </summary>
     /// <param name="ex">The exception the load threw.</param>
     /// <param name="calendar">The rule's calendar.</param>
-    private static void AssertCalendarMonthMessage(NotableDateValidationException ex, string calendar)
+    /// <param name="month">The month the rule names.</param>
+    /// <param name="months">The number of months the rule's month can name.</param>
+    private static void AssertCalendarMonthMessage(NotableDateValidationException ex, string calendar, string month, int months)
     {
-        string expected =
-            $"Notable date 'x', rule 'r': 'July' is not a valid month value in the {calendar} calendar. Expected an integer " +
-            "between 1 and 13 or a Hebrew month name: Tishri, Heshvan, Kislev, Tevet, Shevat, AdarI, AdarII, LastAdar, " +
-            "Nisan, Iyar, Sivan, Tammuz, Av or Elul.";
+        string expected = calendar == "Hebrew"
+            ? $"Notable date 'x', rule 'r': '{month}' is not a valid month value in the Hebrew calendar. Expected an integer " +
+              "between 1 and 13 or a Hebrew month name: Tishri, Heshvan, Kislev, Tevet, Shevat, AdarI, AdarII, LastAdar, " +
+              "Nisan, Iyar, Sivan, Tammuz, Av or Elul."
+            : $"Notable date 'x', rule 'r': '{month}' is not a valid month value in the {calendar} calendar. Expected an " +
+              $"integer between 1 and {months}.";
 
         string[] messages = [.. ex.Diagnostics.Where(d => d.Code == "BODU-CAL-MONTH").Select(d => d.Message)];
 

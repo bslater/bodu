@@ -546,11 +546,12 @@ public sealed partial class NotableDateDocumentBuilder
 
     /// <summary>
     /// Parses a fixed strategy's month with the loader's rules for the rule's calendar: a Gregorian month as
-    /// <see cref="ParseMonth(string, string, string)" /> reads it, and a month in another calendar as an integer
-    /// between 1 and 13 or a month name the loader recognizes.
+    /// <see cref="ParseMonth(string, string, string)" /> reads it, and a month in another calendar as an integer from 1
+    /// to the number of months its year can have or, in the Hebrew calendar, a Hebrew month name.
     /// </summary>
     /// <param name="value">The string form.</param>
     /// <param name="calendar">The calendar the month is expressed in.</param>
+    /// <param name="skipLeapMonth">A value indicating whether the month skips a Chinese leap month.</param>
     /// <param name="notableDateId">
     /// The identifier of the concept the rule belongs to, used in the exception message.
     /// </param>
@@ -559,10 +560,10 @@ public sealed partial class NotableDateDocumentBuilder
     /// The one-based month, or <c>0</c> when a month alias supplies it, and the alias, or <see langword="null" />.
     /// </returns>
     /// <exception cref="FormatException"><paramref name="value" /> is not a month of the calendar.</exception>
-    private static (int Month, string? Alias) ParseFixedMonth(string value, CalendarSystem calendar, string notableDateId, string ruleId)
+    private static (int Month, string? Alias) ParseFixedMonth(string value, CalendarSystem calendar, bool skipLeapMonth, string notableDateId, string ruleId)
     {
         List<NotableDateValidationDiagnostic> diagnostics = new();
-        (int Month, string? Alias) result = NotableDateDocumentParseHelpers.ParseFixedMonth(value, calendar, notableDateId, ruleId, diagnostics);
+        (int Month, string? Alias) result = NotableDateDocumentParseHelpers.ParseFixedMonth(value, calendar, skipLeapMonth, notableDateId, ruleId, diagnostics);
         ThrowIfMalformed(diagnostics);
 
         return result;

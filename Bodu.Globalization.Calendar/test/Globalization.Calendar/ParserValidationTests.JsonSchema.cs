@@ -21,6 +21,7 @@ public sealed partial class ParserValidationTests
     {
         ["rule.priority"] = "/notableDates/0/rules/0/priority",
         ["rule.durationDays"] = "/notableDates/0/rules/0/durationDays",
+        ["fixed.day"] = "/notableDates/0/rules/0/strategy/fixed/day",
         ["applicability.everyYears"] = "/notableDates/0/rules/0/applicability/everyYears",
         ["applicability.onlyYears.item"] = "/notableDates/0/rules/0/applicability/onlyYears/0",
         ["applicability.exceptYears.item"] = "/notableDates/0/rules/0/applicability/exceptYears/0",
@@ -514,6 +515,106 @@ public sealed partial class ParserValidationTests
     }
 
     /// <summary>
+    /// The JSON pointer into <see cref="DatesTemplateJson" /> of each date the date tests set, keyed by the name that
+    /// stands for it.
+    /// </summary>
+    private static readonly Dictionary<string, string> s_dateFields = new(StringComparer.Ordinal)
+    {
+        ["dailyInterval.anchorDate"] = "/notableDates/0/rules/0/recurrence/dailyInterval/anchorDate",
+        ["weekly.anchorDate"] = "/notableDates/0/rules/1/recurrence/weekly/anchorDate",
+        ["monthlyDay.anchorDate"] = "/notableDates/0/rules/2/recurrence/monthlyDay/anchorDate",
+        ["monthlyWeekday.anchorDate"] = "/notableDates/0/rules/3/recurrence/monthlyWeekday/anchorDate",
+    };
+
+    /// <summary>
+    /// The JSON document under the date tests, which loads and which the companion JSON schema accepts, holding the
+    /// anchor date of each recurrence kind.
+    /// </summary>
+    private const string DatesTemplateJson = """
+        { "schemaVersion": "1.0", "resourceId": "test.dates",
+          "notableDates": [ { "id": "anchor", "displayName": "Anchor", "category": "Observance",
+            "rules": [
+              { "id": "daily", "recurrence": { "dailyInterval": { "anchorDate": "2024-01-01", "intervalDays": 7 } } },
+              { "id": "weekly", "recurrence": { "weekly": { "days": [ "Monday" ], "anchorDate": "2024-01-01" } } },
+              { "id": "monthly-day", "recurrence": { "monthlyDay": { "dayOfMonth": 1, "anchorDate": "2024-01-01" } } },
+              { "id": "monthly-weekday", "recurrence": { "monthlyWeekday": { "dayOfWeek": "Monday", "weekOrdinal": "First", "anchorDate": "2024-01-01" } } } ] } ] }
+        """;
+
+    /// <summary>
+    /// Verifies that the date test document loads and that the companion JSON schema accepts it, so each verdict the
+    /// per-value test compares is caused by the one date it sets.
+    /// </summary>
+    [TestMethod]
+    public void LoadJson_WhenEveryAnchorDateIsWellFormed_ShouldLoadAndPassTheJsonSchema()
+    {
+        string json = FieldJson(DatesTemplateJson, s_dateFields, null, null);
+
+        NotableDateResource resource = NotableDateResourceLoader.LoadJson(json);
+        IReadOnlyList<string> errors = JsonSchemaValidator.Validate(CompanionJsonSchema(), JsonNode.Parse(json));
+
+        Assert.AreEqual("test.dates", resource.ResourceId);
+        Assert.IsEmpty(errors, string.Join(" | ", errors));
+    }
+
+    /// <summary>
+    /// Verifies that the companion JSON schema accepts a recurrence's anchor date exactly when <c>LoadJson</c> loads the
+    /// document, so a date not written as <c>yyyy-MM-dd</c>, which the loader rejects, fails the schema too, whether or
+    /// not the validator asserts <c>format</c>.
+    /// </summary>
+    /// <param name="field">The name of the date.</param>
+    /// <param name="literal">The date, as a JSON literal.</param>
+    [TestMethod]
+    [DataRow("dailyInterval.anchorDate", "\"2024-02-29\"")]
+    [DataRow("dailyInterval.anchorDate", "\"2024-1-1\"")]
+    [DataRow("dailyInterval.anchorDate", "\"2024-01-1\"")]
+    [DataRow("dailyInterval.anchorDate", "\"2024/01/01\"")]
+    [DataRow("dailyInterval.anchorDate", "\"20240101\"")]
+    [DataRow("dailyInterval.anchorDate", "\" 2024-01-01\"")]
+    [DataRow("dailyInterval.anchorDate", "\"2024-01-01T00:00:00\"")]
+    [DataRow("weekly.anchorDate", "\"2024-1-1\"")]
+    [DataRow("monthlyDay.anchorDate", "\"2024-1-1\"")]
+    [DataRow("monthlyWeekday.anchorDate", "\"2024-1-1\"")]
+    public void LoadJson_WhenAnchorDateIsWrittenInAnotherForm_ShouldLoadExactlyWhenTheJsonSchemaAcceptsIt(string field, string literal)
+    {
+        string json = FieldJson(DatesTemplateJson, s_dateFields, field, literal);
+
+        bool loaded = NotableDateResourceLoader.TryLoadJson(json, static _ => null, out _, out IReadOnlyList<NotableDateValidationDiagnostic> diagnostics);
+        IReadOnlyList<string> errors = JsonSchemaValidator.Validate(CompanionJsonSchema(), JsonNode.Parse(json));
+
+        Assert.AreEqual(
+            loaded,
+            errors.Count == 0,
+            "LoadJson " + (loaded ? "loaded" : "rejected") + " " + field + " " + literal + string.Concat(diagnostics.Select(d => "; " + d.Code + ": " + d.Message)) + "; the schema reported: " + string.Join(" | ", errors));
+    }
+
+    /// <summary>
+    /// Verifies that a value draft 2020-12 cannot tell from a valid one, an integer written with a fraction (<c>1.0</c>)
+    /// or, where the validator does not assert <c>format</c>, a <c>yyyy-MM-dd</c> date that names no day, passes the
+    /// companion JSON schema and fails to load, and that the schema's description names it among the forms the schema
+    /// and the loader read differently.
+    /// </summary>
+    /// <param name="template">The name of the test document: <c>bounds</c> or <c>dates</c>.</param>
+    /// <param name="field">The name of the value.</param>
+    /// <param name="literal">The value, as a JSON literal.</param>
+    /// <param name="described">The text the description names the value's form with.</param>
+    [TestMethod]
+    [DataRow("bounds", "fixed.day", "1.0", "(1.0)")]
+    [DataRow("bounds", "applicability.everyYears", "2.0", "(1.0)")]
+    [DataRow("dates", "dailyInterval.anchorDate", "\"2024-02-30\"", "(2024-02-30)")]
+    public void LoadJson_WhenValueIsAFormTheJsonSchemaCannotRefuse_ShouldFailToLoadAsTheSchemaDescribes(string template, string field, string literal, string described)
+    {
+        string json = template == "bounds" ? FieldJson(BoundsTemplateJson, s_boundFields, field, literal) : FieldJson(DatesTemplateJson, s_dateFields, field, literal);
+        JsonObject schema = CompanionJsonSchema();
+
+        bool loaded = NotableDateResourceLoader.TryLoadJson(json, static _ => null, out _, out _);
+        IReadOnlyList<string> errors = JsonSchemaValidator.Validate(schema, JsonNode.Parse(json));
+
+        Assert.IsFalse(loaded, "LoadJson loaded " + field + " " + literal);
+        Assert.IsEmpty(errors, string.Join(" | ", errors));
+        Assert.Contains(described, schema["description"]!.GetValue<string>());
+    }
+
+    /// <summary>
     /// Returns the companion JSON schema embedded beside the XSD.
     /// </summary>
     /// <returns>The schema's root object.</returns>
@@ -531,13 +632,24 @@ public sealed partial class ParserValidationTests
     /// <param name="field">The name of the integer, or <see langword="null" /> to change none.</param>
     /// <param name="literal">The JSON literal the integer is replaced with.</param>
     /// <returns>The JSON document.</returns>
-    private static string BoundFieldJson(string? field, string? literal)
+    private static string BoundFieldJson(string? field, string? literal) =>
+        FieldJson(BoundsTemplateJson, s_boundFields, field, literal);
+
+    /// <summary>
+    /// Returns a test document with one value replaced.
+    /// </summary>
+    /// <param name="template">The test document.</param>
+    /// <param name="fields">The JSON pointer of each value the document holds, keyed by the name that stands for it.</param>
+    /// <param name="field">The name of the value, or <see langword="null" /> to change none.</param>
+    /// <param name="literal">The JSON literal the value is replaced with.</param>
+    /// <returns>The JSON document.</returns>
+    private static string FieldJson(string template, Dictionary<string, string> fields, string? field, string? literal)
     {
-        JsonNode root = JsonNode.Parse(BoundsTemplateJson)!;
+        JsonNode root = JsonNode.Parse(template)!;
         if (field is null)
             return root.ToJsonString();
 
-        string[] segments = s_boundFields[field].Split('/', StringSplitOptions.RemoveEmptyEntries);
+        string[] segments = fields[field].Split('/', StringSplitOptions.RemoveEmptyEntries);
         JsonNode parent = root;
         foreach (string segment in segments[..^1])
             parent = parent is JsonArray array ? array[int.Parse(segment, CultureInfo.InvariantCulture)]! : parent[segment]!;

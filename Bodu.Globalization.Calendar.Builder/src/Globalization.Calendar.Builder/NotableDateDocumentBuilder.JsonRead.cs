@@ -722,18 +722,24 @@ public sealed partial class NotableDateDocumentBuilder
     /// </exception>
     /// <remarks>
     /// An attribute takes its value from the first property that bears its name, ignoring case, and is not the JSON
-    /// literal <c>null</c>, as the loader reads it; any other property is ignored, as the loader ignores it.
+    /// literal <c>null</c>, as the loader reads it; any other property is ignored, as the loader ignores it. A fixed
+    /// strategy's <c>skipLeapMonth</c> is read first, wherever the body holds it, since it decides the months its
+    /// <c>month</c> can name.
     /// </remarks>
     private static XElement BuildKindElement(string kind, string elementName, NotableDateSchemaType type, string[] attributes, JsonObject body, CalendarSystem calendar, string notableDateId, string ruleId)
     {
         ThrowIfRequiredMissing(body, type);
+
+        bool skipLeapMonth = string.Equals(kind, "fixed", StringComparison.Ordinal)
+            && body.FirstOrDefault(property => property.Value is not null && string.Equals(property.Key, "skipLeapMonth", StringComparison.OrdinalIgnoreCase)).Value is JsonNode flag
+            && (ParseNullableBool(ReadScalar(flag, "skipLeapMonth"), "fixed skipLeapMonth") ?? false);
 
         XElement element = new(BuilderXml.Namespace + elementName);
         foreach (KeyValuePair<string, JsonNode?> property in body)
         {
             string? attribute = Array.Find(attributes, name => string.Equals(name, property.Key, StringComparison.OrdinalIgnoreCase));
             if (property.Value is not null && attribute is not null && element.Attribute(attribute) is null)
-                element.SetAttributeValue(attribute, ReadKindAttribute(kind, attribute, ReadScalar(property.Value, attribute)!, calendar, notableDateId, ruleId));
+                element.SetAttributeValue(attribute, ReadKindAttribute(kind, attribute, ReadScalar(property.Value, attribute)!, calendar, skipLeapMonth, notableDateId, ruleId));
         }
 
         return element;
@@ -747,6 +753,7 @@ public sealed partial class NotableDateDocumentBuilder
     /// <param name="attribute">The attribute's schema name.</param>
     /// <param name="value">The attribute's text, as the loader reads it.</param>
     /// <param name="calendar">The calendar a fixed month is read in.</param>
+    /// <param name="skipLeapMonth">A value indicating whether a fixed month skips a Chinese leap month.</param>
     /// <param name="notableDateId">
     /// The identifier of the concept the rule belongs to, used in exception messages.
     /// </param>
@@ -761,14 +768,14 @@ public sealed partial class NotableDateDocumentBuilder
     /// <c>BODU-CAL-ENUM</c> or <c>BODU-CAL-MONTH</c>, or lies outside the range the schema allows, which it reports
     /// with <c>BODU-CAL-SCHEMA</c>.
     /// </exception>
-    private static string ReadKindAttribute(string kind, string attribute, string value, CalendarSystem calendar, string notableDateId, string ruleId)
+    private static string ReadKindAttribute(string kind, string attribute, string value, CalendarSystem calendar, bool skipLeapMonth, string notableDateId, string ruleId)
     {
         string field = kind + " " + attribute;
 
         switch (attribute)
         {
             case "month" when string.Equals(kind, "fixed", StringComparison.Ordinal):
-                (int month, string? alias) = ParseFixedMonth(value, calendar, notableDateId, ruleId);
+                (int month, string? alias) = ParseFixedMonth(value, calendar, skipLeapMonth, notableDateId, ruleId);
                 return calendar == CalendarSystem.Gregorian ? BuilderXml.GetMonthName(month) : alias ?? BuilderXml.Int(month);
 
             case "month":

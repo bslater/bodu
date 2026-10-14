@@ -92,15 +92,57 @@ public partial class NotableDateRuleBuilderTests
     }
 
     /// <summary>
-    /// Verifies that month 13 on a <c>Fixed</c> rule in a calendar other than Gregorian, which such a calendar's leap
-    /// year has, builds a strategy for the thirteenth month rather than throwing.
+    /// Verifies that month 13 on a <c>Fixed</c> rule in a calendar whose leap year has a thirteenth month, the Hebrew or
+    /// the Chinese lunisolar, builds a strategy for the thirteenth month rather than throwing.
     /// </summary>
+    /// <param name="calendar">The rule's calendar.</param>
     [TestMethod]
-    public void Fixed_WhenMonthIsThirteenInCalendarOtherThanGregorian_ShouldBuildMonthThirteen()
+    [DataRow(CalendarSystem.Hebrew)]
+    [DataRow(CalendarSystem.ChineseLunisolar)]
+    public void Fixed_WhenMonthIsThirteenInThirteenMonthCalendar_ShouldBuildMonthThirteen(CalendarSystem calendar)
     {
-        NotableDateResource resource = BuildRule(r => r.ForCalendar(CalendarSystem.Hebrew).Fixed(13, 1));
+        NotableDateResource resource = BuildRule(r => r.ForCalendar(calendar).Fixed(13, 1));
 
         Assert.AreEqual((13, (string?)null), FixedMonth(resource));
+    }
+
+    /// <summary>
+    /// Verifies that month 13 on a <c>Fixed</c> rule in a calendar whose year has twelve months, or in the Chinese
+    /// lunisolar calendar for a month that skips the leap month, throws <see cref="ArgumentOutOfRangeException" />
+    /// naming the <c>month</c> parameter, as the loader rejects that month, rather than writing a month that never
+    /// occurs.
+    /// </summary>
+    /// <param name="calendar">The rule's calendar.</param>
+    /// <param name="skipLeapMonth">A value indicating whether the month skips a Chinese leap month.</param>
+    [TestMethod]
+    [DataRow(CalendarSystem.Hijri, false)]
+    [DataRow(CalendarSystem.UmmAlQura, false)]
+    [DataRow(CalendarSystem.Persian, false)]
+    [DataRow(CalendarSystem.ChineseLunisolar, true)]
+    public void Fixed_WhenMonthIsThirteenInTwelveMonthCalendar_ShouldThrowArgumentOutOfRangeException(CalendarSystem calendar, bool skipLeapMonth)
+    {
+        var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = BuildRule(r => r.ForCalendar(calendar).Fixed(13, 1, skipLeapMonth));
+        });
+
+        Assert.AreEqual("month", ex.ParamName);
+    }
+
+    /// <summary>
+    /// Verifies that month 13 on the <c>Fixed</c> end strategy of a rule in a calendar whose year has twelve months
+    /// throws <see cref="ArgumentOutOfRangeException" /> naming the <c>month</c> parameter, as on the rule's own
+    /// strategy.
+    /// </summary>
+    [TestMethod]
+    public void Fixed_WhenEndStrategyMonthIsThirteenInTwelveMonthCalendar_ShouldThrowArgumentOutOfRangeException()
+    {
+        var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = BuildRule(r => r.ForCalendar(CalendarSystem.Hijri).Fixed(12, 1).UntilDate(e => e.Fixed(13, 1)));
+        });
+
+        Assert.AreEqual("month", ex.ParamName);
     }
 
     /// <summary>

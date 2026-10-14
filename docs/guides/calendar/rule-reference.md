@@ -141,7 +141,7 @@ A rule carries exactly one occurrence source: a `<Strategy>` child (one of the e
 
 | Attribute | Required | Type | Description |
 |---|---|---|---|
-| `month` | Yes | string | Month number `1`-`12` or an English month name. |
+| `month` | Yes | string | Month number `1`-`12` or an English month name. In another calendar, a month number up to the most months its year can have (`1`-`13` in the Hebrew calendar, and in the Chinese lunisolar calendar unless `skipLeapMonth` is set; `1`-`12` in the Hijri, Umm al-Qura and Persian calendars) or, in the Hebrew calendar alone, a Hebrew month name. |
 | `day` | Yes | day (1-31) | Day of month. |
 | `skipLeapMonth` | No | bool | Chinese lunisolar only - advance an ordinal lunar month past an intercalary leap month. |
 | `sweepCalendarYears` | No | bool | Non-Gregorian only - evaluate both candidate calendar years overlapping the requested Gregorian year. |

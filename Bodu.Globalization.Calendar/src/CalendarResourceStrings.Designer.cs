@@ -196,11 +196,20 @@ namespace Bodu {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Notable date &apos;{0}&apos;, rule &apos;{1}&apos;: &apos;{2}&apos; is not a valid month value in the {3} calendar. Expected an integer between 1 and 13 or a Hebrew month name: Tishri, Heshvan, Kislev, Tevet, Shevat, AdarI, AdarII, LastAdar, Nisan, Iyar, Sivan, Tammuz, Av or Elul..
+        ///   Looks up a localized string similar to Notable date &apos;{0}&apos;, rule &apos;{1}&apos;: &apos;{2}&apos; is not a valid month value in the {3} calendar. Expected an integer between 1 and {4}..
         /// </summary>
         internal static string Validation_InvalidCalendarMonthValue {
             get {
                 return ResourceManager.GetString("Validation_InvalidCalendarMonthValue", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Notable date &apos;{0}&apos;, rule &apos;{1}&apos;: &apos;{2}&apos; is not a valid month value in the Hebrew calendar. Expected an integer between 1 and 13 or a Hebrew month name: Tishri, Heshvan, Kislev, Tevet, Shevat, AdarI, AdarII, LastAdar, Nisan, Iyar, Sivan, Tammuz, Av or Elul..
+        /// </summary>
+        internal static string Validation_InvalidHebrewMonthValue {
+            get {
+                return ResourceManager.GetString("Validation_InvalidHebrewMonthValue", resourceCulture);
             }
         }
 
