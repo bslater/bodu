@@ -450,4 +450,71 @@ public partial class IniSerializerTests
         Assert.AreEqual("app", result.Name);
         Assert.AreEqual("a", result.Fixed.Name);
     }
+
+    /// <summary>
+    /// Verifies that a section whose type is a nullable structure reads back as the value written.
+    /// </summary>
+    [TestMethod]
+    public void SerializeDeserialize_WhenASectionIsANullableStruct_ShouldReadBackItsValue()
+    {
+        var config = new NullableStructSectionConfig { Name = "app", S = new PortStruct { Port = 5, Host = "h" } };
+
+        NullableStructSectionConfig result = IniSerializer.Deserialize<NullableStructSectionConfig>(IniSerializer.Serialize(config));
+
+        Assert.AreEqual("app", result.Name);
+        Assert.AreEqual(config.S, result.S);
+    }
+
+    /// <summary>
+    /// Verifies that a <see langword="null" /> section whose type is a nullable structure reads back under every
+    /// default ignore condition, as a section of a class does: as an empty section where the condition writes it and as
+    /// <see langword="null" /> where it leaves it out.
+    /// </summary>
+    /// <param name="condition">The options' default ignore condition.</param>
+    /// <param name="written">Whether the condition writes the <see langword="null" /> section.</param>
+    [TestMethod]
+    [DataRow(IgnoreCondition.Never, true)]
+    [DataRow(IgnoreCondition.WhenWritingNull, false)]
+    [DataRow(IgnoreCondition.WhenWritingDefault, false)]
+    public void SerializeDeserialize_WhenANullableStructSectionIsNull_ShouldReadBackUnderEveryCondition(IgnoreCondition condition, bool written)
+    {
+        var options = new IniSerializerOptions { DefaultIgnoreCondition = condition };
+
+        NullableStructSectionConfig result = IniSerializer.Deserialize<NullableStructSectionConfig>(IniSerializer.Serialize(new NullableStructSectionConfig { Name = "app" }, options), options);
+
+        Assert.AreEqual("app", result.Name);
+        Assert.AreEqual(written ? default(PortStruct) : null, result.S);
+    }
+
+    /// <summary>
+    /// Verifies that the reserved global-section member, when its type is a nullable structure, reads back as the value
+    /// written, or, when it is <see langword="null" /> and nothing is written for it, as the structure of the global
+    /// keys' default values, as a global section of a class does.
+    /// </summary>
+    /// <param name="hasValue">Whether the member holds a value.</param>
+    [TestMethod]
+    [DataRow(true)]
+    [DataRow(false)]
+    public void SerializeDeserialize_WhenTheGlobalSectionMemberIsANullableStruct_ShouldReadBackItsValue(bool hasValue)
+    {
+        var options = new IniSerializerOptions { GlobalSectionName = "S" };
+        var config = new NullableStructSectionConfig { S = hasValue ? new PortStruct { Port = 5, Host = "h" } : null };
+
+        NullableStructSectionConfig result = IniSerializer.Deserialize<NullableStructSectionConfig>(IniSerializer.Serialize(config, options), options);
+
+        Assert.AreEqual(config.S ?? default(PortStruct), result.S);
+    }
+
+    /// <summary>
+    /// Verifies that a root whose type is a nullable structure reads back as the value written.
+    /// </summary>
+    [TestMethod]
+    public void SerializeDeserialize_WhenTheRootIsANullableStruct_ShouldReadBackItsValue()
+    {
+        PortStruct? value = new PortStruct { Port = 5, Host = "h" };
+
+        PortStruct? result = IniSerializer.Deserialize<PortStruct?>(IniSerializer.Serialize(value));
+
+        Assert.AreEqual(value, result);
+    }
 }
