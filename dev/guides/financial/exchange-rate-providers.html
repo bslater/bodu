@@ -206,6 +206,11 @@ plan's base-currency rules). FRED is per-pair too, but each pair must be mapped 
 FRED series identifier - it ships a built-in map for the major pairs and accepts more
 through its options. Fixer, exchangerate.host, and FRED require an API key on their
 options; IMF is keyless.</p>
+<p>The RBA, ECB, BoE, Fixer, exchangerate.host, and FRED providers read published APIs
+and are Stable. The IMF, Yahoo, OFX, XE, and OANDA providers read feeds their
+operators do not publish as APIs, so they are Experimental: a feed can change or start
+refusing requests without notice, and the provider then stops working with no change
+on the Bodu side. Pair an Experimental provider with a Stable one.</p>
 <p>Every provider advertises its history depth through
 <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.WebRateProvider.html#Bodu_Financial_ExchangeRates_WebRateProvider_HistoryAvailability"><code>HistoryAvailability</code></a>,
 so a caller can resolve the earliest date worth requesting before issuing a
@@ -358,6 +363,15 @@ fetches a Yahoo Finance chart per currency pair (the ticker <code>AUDUSD=X</code
 so unlike the central-bank providers it serves arbitrary pairs rather than one base
 currency. Warm a pair over a window with <code>LoadPairAsync</code>. Options are
 <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.YahooRateProviderOptions.html"><code>YahooRateProviderOptions</code></a>.</p>
+<div class="WARNING">
+<h5>Warning</h5>
+<p>This package is <strong>Experimental</strong>. Yahoo publishes no API for the chart service, and
+Yahoo's <a href="https://legal.yahoo.com/us/en/yahoo/terms/otos/index.html">terms of service</a>
+do not permit collecting data from its services by automated means without its
+permission, so check that your use is permitted. The service can change, or start
+refusing requests, without notice. Do not rely on it as your sole rate source in
+production, and pair it with a stable primary feed.</p>
+</div>
 <pre><code class="lang-csharp">using Bodu.Financial.ExchangeRates;
 
 using var yahoo = new YahooRateProvider(new YahooRateProviderOptions());
@@ -371,6 +385,12 @@ fetches the OFX (ofx.com) public spot-rate-history JSON service per currency pai
 so like Yahoo it serves arbitrary pairs rather than one base currency. Warm a pair
 over a window with <code>LoadPairAsync</code>. Options are
 <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.OfxRateProviderOptions.html"><code>OfxRateProviderOptions</code></a>.</p>
+<div class="WARNING">
+<h5>Warning</h5>
+<p>This package is <strong>Experimental</strong>. OFX documents no API for the spot-rate-history
+service, which backs the ofx.com website and can change without notice. Do not rely
+on it as your sole rate source in production, and pair it with a stable primary feed.</p>
+</div>
 <pre><code class="lang-csharp">using Bodu.Financial.ExchangeRates;
 
 using var ofx = new OfxRateProvider(new OfxRateProviderOptions());
@@ -413,6 +433,13 @@ days - so a request for an earlier start date returns just what the feed publish
 The provider advertises this through
 <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.WebRateProvider.html#Bodu_Financial_ExchangeRates_WebRateProvider_HistoryAvailability"><code>HistoryAvailability</code></a>,
 so a caller can resolve the earliest date worth requesting before issuing a lookup.</p>
+<div class="WARNING">
+<h5>Warning</h5>
+<p>This package is <strong>Experimental</strong>. OANDA documents no API for the Historical Currency
+Converter service, which is gated by bot mitigation and can change without notice. Do
+not rely on it as your sole rate source in production, and pair it with a stable
+primary feed.</p>
+</div>
 <pre><code class="lang-csharp">using Bodu.Financial.ExchangeRates;
 
 using var oanda = new OandaRateProvider(new OandaRateProviderOptions());
@@ -501,6 +528,14 @@ quotation direction on ingest, so consumers always see a consistent <code>USD→
 month-based - one download covers every currency across a month's business days - and closed
 months are cached permanently. Options are
 <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.ImfRateProviderOptions.html"><code>ImfRateProviderOptions</code></a>.</p>
+<div class="WARNING">
+<h5>Warning</h5>
+<p>This package is <strong>Experimental</strong>. The IMF publishes the Representative Exchange Rates,
+but it does not document the report's tab-separated export, which can change or
+disappear without notice. Do not rely on it as your sole rate source in production,
+and pair it with a stable primary feed (for example the ECB, Bank of England, RBA, or
+FRED providers).</p>
+</div>
 <pre><code class="lang-csharp">using Bodu.Financial.ExchangeRates;
 
 using var imf = new ImfRateProvider(new ImfRateProviderOptions());
@@ -914,11 +949,11 @@ pair up front with <code>RateSeriesNotFoundException</code>, as the table above 
 </tr>
 <tr>
 <td>An arbitrary pair not quoted by a central bank</td>
-<td>Yahoo, OFX, XE, OANDA, Fixer, or exchangerate.host</td>
+<td>Fixer or exchangerate.host, or the Experimental Yahoo, OFX, XE, or OANDA</td>
 </tr>
 <tr>
 <td>Recent rates for an arbitrary pair (rolling ~180-day window)</td>
-<td>OANDA</td>
+<td>OANDA (Experimental)</td>
 </tr>
 <tr>
 <td>A commercial API you already hold a key for</td>
@@ -930,7 +965,7 @@ pair up front with <code>RateSeriesNotFoundException</code>, as the table above 
 </tr>
 <tr>
 <td>Official daily USD representative rates (keyless)</td>
-<td>IMF</td>
+<td>IMF (Experimental)</td>
 </tr>
 <tr>
 <td>One pair from several sources, with fallback or an average</td>
@@ -975,7 +1010,7 @@ read-through cache and grouping providers.</li>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 35a8907 · Built: 2026-10-14 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 2770356 · Built: 2026-10-14 (UTC)</span>
         </div>
       </div>
     </footer>

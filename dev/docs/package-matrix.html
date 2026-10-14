@@ -408,25 +408,25 @@
 </tr>
 <tr>
 <td><code>Bodu.IO.Pst</code></td>
-<td>Preview</td>
+<td>Stable</td>
 <td>Low-level, read-only container reader for the Outlook personal-folders format (PST / MS-PST). Reads the node database of Unicode and ANSI files - header, node and block B-trees, block data with the permute and cyclic encodings decoded and checksums verified, multi-block data trees, and per-node subnode trees - and the LTP layer over it: heap-on-node, BTree-on-heap, and per-node property-context and table-context views with wire-typed values. The substrate a message-level reader builds on. No MAPI semantics and no writing.</td>
 <td><code>Bodu.Collections</code>, <code>Bodu.Core</code></td>
 </tr>
 <tr>
 <td><code>Bodu.Formats.Outlook</code></td>
-<td>Preview</td>
+<td>Stable</td>
 <td>The shared MAPI value model for the Outlook format readers: property tags and types, decoded property values with a tag-addressed collection, named-property identities, recipient and attachment enumerations, and the shared exception hierarchy. Container-free - the <code>.msg</code> reader (<code>Bodu.Formats.Outlook.Msg</code>) and the <code>.pst</code> mail-store reader (<code>Bodu.Formats.Outlook.Pst</code>, over <code>Bodu.IO.Pst</code>) build on it rather than owning the model.</td>
 <td><code>Bodu.Core</code></td>
 </tr>
 <tr>
 <td><code>Bodu.Formats.Outlook.Msg</code></td>
-<td>Preview</td>
+<td>Stable</td>
 <td>Read-only reader for the Outlook message format (<code>.msg</code> / MS-OXMSG) over the <code>Bodu.IO.Compound</code> OLE2 container. Opens a message as a disposable session exposing every decoded MAPI property, the recipient and attachment tables, nested attached messages, named-property resolution, and the text, HTML, and compressed-RTF bodies - with no MAPI session emulation or message authoring.</td>
 <td><code>Bodu.IO.Compound</code>, <code>Bodu.Formats.Outlook</code>, <code>Bodu.Core</code></td>
 </tr>
 <tr>
 <td><code>Bodu.Formats.Outlook.Pst</code></td>
-<td>Preview</td>
+<td>Stable</td>
 <td>Read-only reader for the Outlook personal-folders format (<code>.pst</code> / MS-PST, Unicode and ANSI formats) over the <code>Bodu.IO.Pst</code> node-database container. Opens a mail store as a disposable session exposing the store properties, the folder hierarchy, and every message with its decoded MAPI properties, recipients, attachments, nested embedded messages, store-wide named-property resolution, and the text, HTML, and compressed-RTF bodies - with no MAPI session emulation or store authoring.</td>
 <td><code>Bodu.IO.Pst</code>, <code>Bodu.Formats.Outlook</code>, <code>Bodu.Core</code></td>
 </tr>
@@ -466,32 +466,32 @@
 </tr>
 <tr>
 <td><code>Bodu.Financial.ExchangeRates.Rba</code></td>
-<td>Preview</td>
+<td>Stable</td>
 <td>Downloads and parses the RBA's published daily exchange-rate <code>.xls</code> files, serving them as <code>ExchangeRate</code> values through <code>IDatedRateProvider</code> / <code>IRateProvider</code>, with an async range API and in-memory plus on-disk caching. Includes its own <code>AddRbaExchangeRates</code> DI registration (in the <code>Bodu.Financial.ExchangeRates</code> namespace), binding <code>RbaRateProviderOptions</code> and backing the provider with a configured <code>HttpClient</code>.</td>
 <td><code>Bodu.Formats.Excel.Binary</code>, <code>Bodu.Financial.ExchangeRates</code>, <code>Bodu.Financial</code>, <code>Bodu.Financial.DependencyInjection</code>, <code>Bodu.Financial.ExchangeRates.DependencyInjection</code>, <code>Bodu.Core</code></td>
 </tr>
 <tr>
 <td><code>Bodu.Financial.ExchangeRates.Boe</code></td>
-<td>Preview</td>
+<td>Stable</td>
 <td>Queries the Bank of England's Interactive Statistical Database (IADB) CSV endpoint for daily spot rates, serving them as <code>ExchangeRate</code> values through <code>IDatedRateProvider</code> / <code>IRateProvider</code>, with an async range API and in-memory plus on-disk caching. Includes its own <code>AddBoeExchangeRates</code> DI registration (in the <code>Bodu.Financial.ExchangeRates</code> namespace), binding <code>BoeRateProviderOptions</code> and backing the provider with a configured <code>HttpClient</code>.</td>
 <td><code>Bodu.Text.Delimited</code>, <code>Bodu.Financial.ExchangeRates</code>, <code>Bodu.Financial</code>, <code>Bodu.Financial.DependencyInjection</code>, <code>Bodu.Financial.ExchangeRates.DependencyInjection</code>, <code>Bodu.Core</code></td>
 </tr>
 <tr>
 <td><code>Bodu.Financial.ExchangeRates.Ecb</code></td>
-<td>Preview</td>
+<td>Stable</td>
 <td>Downloads and parses the ECB's published <code>eurofxref</code> euro foreign-exchange reference-rate XML feeds, serving them as <code>ExchangeRate</code> values through <code>IDatedRateProvider</code> / <code>IRateProvider</code>, with an async range API and in-memory plus on-disk caching. Includes its own <code>AddEcbExchangeRates</code> DI registration (in the <code>Bodu.Financial.ExchangeRates</code> namespace), binding <code>EcbRateProviderOptions</code> and backing the provider with a configured <code>HttpClient</code>.</td>
 <td><code>Bodu.Financial.ExchangeRates</code>, <code>Bodu.Financial</code>, <code>Bodu.Financial.DependencyInjection</code>, <code>Bodu.Financial.ExchangeRates.DependencyInjection</code>, <code>Bodu.Core</code></td>
 </tr>
 <tr>
 <td><code>Bodu.Financial.ExchangeRates.Yahoo</code></td>
-<td>Preview</td>
-<td>Fetches and parses the Yahoo Finance v8 chart JSON service, serving the results as <code>ExchangeRate</code> values through <code>IDatedRateProvider</code> / <code>IRateProvider</code>, with an async range API over arbitrary currency pairs. Includes its own <code>AddYahooExchangeRates</code> DI registration (in the <code>Bodu.Financial.ExchangeRates</code> namespace), binding <code>YahooRateProviderOptions</code> and backing the provider with a configured <code>HttpClient</code>.</td>
+<td>Experimental</td>
+<td>Fetches and parses the Yahoo Finance v8 chart JSON service, serving the results as <code>ExchangeRate</code> values through <code>IDatedRateProvider</code> / <code>IRateProvider</code>, with an async range API over arbitrary currency pairs. Yahoo publishes no API for the service, and its terms of service do not permit automated collection without its permission, so check that your use is permitted and pair it with a stable provider. Includes its own <code>AddYahooExchangeRates</code> DI registration (in the <code>Bodu.Financial.ExchangeRates</code> namespace), binding <code>YahooRateProviderOptions</code> and backing the provider with a configured <code>HttpClient</code>.</td>
 <td><code>Bodu.Financial.ExchangeRates</code>, <code>Bodu.Financial</code>, <code>Bodu.Financial.DependencyInjection</code>, <code>Bodu.Financial.ExchangeRates.DependencyInjection</code>, <code>Bodu.Core</code></td>
 </tr>
 <tr>
 <td><code>Bodu.Financial.ExchangeRates.Ofx</code></td>
-<td>Preview</td>
-<td>Fetches and parses the OFX (ofx.com) public spot-rate-history JSON service, serving the results as <code>ExchangeRate</code> values through <code>IDatedRateProvider</code> / <code>IRateProvider</code>, with an async range API over arbitrary currency pairs. Includes its own <code>AddOfxExchangeRates</code> DI registration (in the <code>Bodu.Financial.ExchangeRates</code> namespace), binding <code>OfxRateProviderOptions</code> and backing the provider with a configured <code>HttpClient</code>.</td>
+<td>Experimental</td>
+<td>Fetches and parses the OFX (ofx.com) public spot-rate-history JSON service, serving the results as <code>ExchangeRate</code> values through <code>IDatedRateProvider</code> / <code>IRateProvider</code>, with an async range API over arbitrary currency pairs. OFX documents no API for the service, which backs its website and can change without notice; pair it with a stable provider. Includes its own <code>AddOfxExchangeRates</code> DI registration (in the <code>Bodu.Financial.ExchangeRates</code> namespace), binding <code>OfxRateProviderOptions</code> and backing the provider with a configured <code>HttpClient</code>.</td>
 <td><code>Bodu.Financial.ExchangeRates</code>, <code>Bodu.Financial</code>, <code>Bodu.Financial.DependencyInjection</code>, <code>Bodu.Financial.ExchangeRates.DependencyInjection</code>, <code>Bodu.Core</code></td>
 </tr>
 <tr>
@@ -502,32 +502,32 @@
 </tr>
 <tr>
 <td><code>Bodu.Financial.ExchangeRates.Oanda</code></td>
-<td>Preview</td>
-<td>Fetches and parses the OANDA Historical Currency Converter rate-history JSON service, serving the results as <code>ExchangeRate</code> values through <code>IDatedRateProvider</code> / <code>IRateProvider</code>, with an async range API over arbitrary currency pairs. The anonymous endpoint serves a rolling recent window (roughly the last 180 days), advertised through the provider's <code>HistoryAvailability</code>. Includes its own <code>AddOandaExchangeRates</code> DI registration (in the <code>Bodu.Financial.ExchangeRates</code> namespace), binding <code>OandaRateProviderOptions</code> and backing the provider with a configured <code>HttpClient</code>.</td>
+<td>Experimental</td>
+<td>Fetches and parses the OANDA Historical Currency Converter rate-history JSON service, serving the results as <code>ExchangeRate</code> values through <code>IDatedRateProvider</code> / <code>IRateProvider</code>, with an async range API over arbitrary currency pairs. The anonymous endpoint serves a rolling recent window (roughly the last 180 days), advertised through the provider's <code>HistoryAvailability</code>. OANDA documents no API for the service, which is gated by bot mitigation and can change without notice; pair it with a stable provider. Includes its own <code>AddOandaExchangeRates</code> DI registration (in the <code>Bodu.Financial.ExchangeRates</code> namespace), binding <code>OandaRateProviderOptions</code> and backing the provider with a configured <code>HttpClient</code>.</td>
 <td><code>Bodu.Financial.ExchangeRates</code>, <code>Bodu.Financial</code>, <code>Bodu.Financial.DependencyInjection</code>, <code>Bodu.Financial.ExchangeRates.DependencyInjection</code>, <code>Bodu.Core</code></td>
 </tr>
 <tr>
 <td><code>Bodu.Financial.ExchangeRates.Fixer</code></td>
-<td>Preview</td>
+<td>Stable</td>
 <td>Fetches and parses the Fixer (fixer.io) time-series and single-date JSON endpoints per currency pair, serving the results as <code>ExchangeRate</code> values through <code>IDatedRateProvider</code> / <code>IRateProvider</code>. Requires a Fixer <code>access_key</code> on <code>FixerRateProviderOptions</code>. Includes its own <code>AddFixerExchangeRates</code> DI registration (in the <code>Bodu.Financial.ExchangeRates</code> namespace).</td>
 <td><code>Bodu.Financial.ExchangeRates</code>, <code>Bodu.Financial</code>, <code>Bodu.Financial.DependencyInjection</code>, <code>Bodu.Financial.ExchangeRates.DependencyInjection</code>, <code>Bodu.Core</code></td>
 </tr>
 <tr>
 <td><code>Bodu.Financial.ExchangeRates.ExchangeRateHost</code></td>
-<td>Preview</td>
-<td>Fetches and parses the exchangerate.host time-series and single-date JSON endpoints per currency pair (quotes keyed by concatenated source+quote code), serving the results through <code>IDatedRateProvider</code> / <code>IRateProvider</code>. Requires an <code>access_key</code> on <code>ExchangeRateHostRateProviderOptions</code>. Includes its own <code>AddExchangeRateHostExchangeRates</code> DI registration (in the <code>Bodu.Financial.ExchangeRates</code> namespace).</td>
+<td>Stable</td>
+<td>Fetches and parses the exchangerate.host time-frame and single-date JSON endpoints per currency pair (quotes keyed by concatenated source+quote code), serving the results through <code>IDatedRateProvider</code> / <code>IRateProvider</code>. Requires an <code>access_key</code> on <code>ExchangeRateHostRateProviderOptions</code>. Includes its own <code>AddExchangeRateHostExchangeRates</code> DI registration (in the <code>Bodu.Financial.ExchangeRates</code> namespace).</td>
 <td><code>Bodu.Financial.ExchangeRates</code>, <code>Bodu.Financial</code>, <code>Bodu.Financial.DependencyInjection</code>, <code>Bodu.Financial.ExchangeRates.DependencyInjection</code>, <code>Bodu.Core</code></td>
 </tr>
 <tr>
 <td><code>Bodu.Financial.ExchangeRates.Fred</code></td>
-<td>Preview</td>
+<td>Stable</td>
 <td>Fetches and parses the St. Louis Fed FRED <code>series/observations</code> JSON endpoint, mapping each currency pair to a FRED <code>series_id</code> through <code>FredRateProviderOptions.SeriesMap</code> (built-in map for the major USD pairs). Requires an <code>api_key</code>. Includes its own <code>AddFredExchangeRates</code> DI registration (in the <code>Bodu.Financial.ExchangeRates</code> namespace).</td>
 <td><code>Bodu.Financial.ExchangeRates</code>, <code>Bodu.Financial</code>, <code>Bodu.Financial.DependencyInjection</code>, <code>Bodu.Financial.ExchangeRates.DependencyInjection</code>, <code>Bodu.Core</code></td>
 </tr>
 <tr>
 <td><code>Bodu.Financial.ExchangeRates.Imf</code></td>
-<td>Preview</td>
-<td>Downloads and parses the IMF's monthly Representative Exchange Rates tab-separated report, serving daily USD-anchored rates through <code>IDatedRateProvider</code> / <code>IRateProvider</code>. A single-base bulk provider over <code>WebRateProvider</code> (base USD, cross pairs rejected) that normalizes the report's quotation direction on ingest; keyless, with a per-month on-disk cache. Includes its own <code>AddImfExchangeRates</code> DI registration (in the <code>Bodu.Financial.ExchangeRates</code> namespace).</td>
+<td>Experimental</td>
+<td>Downloads and parses the IMF's monthly Representative Exchange Rates tab-separated report, serving daily USD-anchored rates through <code>IDatedRateProvider</code> / <code>IRateProvider</code>. A single-base bulk provider over <code>WebRateProvider</code> (base USD, cross pairs rejected) that normalizes the report's quotation direction on ingest; keyless, with a per-month on-disk cache. The IMF does not document the report's tab-separated export, which can change without notice; pair it with a stable provider. Includes its own <code>AddImfExchangeRates</code> DI registration (in the <code>Bodu.Financial.ExchangeRates</code> namespace).</td>
 <td><code>Bodu.Text.Delimited</code>, <code>Bodu.Financial.ExchangeRates</code>, <code>Bodu.Financial</code>, <code>Bodu.Financial.DependencyInjection</code>, <code>Bodu.Financial.ExchangeRates.DependencyInjection</code>, <code>Bodu.Core</code></td>
 </tr>
 <tr>
@@ -777,7 +777,7 @@ dotnet add package Bodu.Globalization.Calendar.MiddleEast
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 35a8907 · Built: 2026-10-14 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 2770356 · Built: 2026-10-14 (UTC)</span>
         </div>
       </div>
     </footer>
