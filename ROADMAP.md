@@ -3,11 +3,13 @@
 Forward-looking plan for the **Bodu** C# utility library. Pairs with
 [`CLAUDE.md`](CLAUDE.md) (repository conventions for contributors).
 
-*Last updated: 2026-10-12. Bodu 1.0.0 shipped on 2026-09-24, after the
+*Last updated: 2026-10-14. Bodu 1.0.0 shipped on 2026-09-24, after the
 0.5.0, 0.6.0 and 0.7.0 waves put 56 packages on nuget.org;
 `Bodu.Security.Cryptography` 1.1.0 and 1.2.0, `Bodu.Core` 1.0.1 and
 `Bodu.Globalization.Calendar` 1.0.1 followed out of band. Next is 1.3.0:
-every Stable package ships at 1.3.0 and every Preview package at 0.7.2.
+every Stable package ships at 1.3.0, ten of them promoted from the
+preview stream, and the three Experimental exchange-rate providers still
+published ship at 0.7.2.
 Since the previous revision (2026-08-19): the `.pst` mail-store reader
 landed, with ANSI stores and a hardening pass; the `Bodu.IO.Biff` codec
 arrived beneath a `.xls` reader that now reads BIFF5 too; the .NET
@@ -109,8 +111,8 @@ README declares (`bld/Versioning.props`, `bld/RELEASING.md`):
 
 | Stream | Ships at | Packages |
 | --- | --- | --- |
-| Stable | `BoduBaseVersion`, the default | 43 published packages |
-| Preview / Experimental | `BoduPreviewVersion`, through `<BoduPackageVersionOverride>$(BoduPreviewVersion)</BoduPackageVersionOverride>` in the csproj | 13 published packages, and the four withheld ones |
+| Stable | `BoduBaseVersion`, the default | 53 published packages |
+| Preview / Experimental | `BoduPreviewVersion`, through `<BoduPackageVersionOverride>$(BoduPreviewVersion)</BoduPackageVersionOverride>` in the csproj | 3 published packages, all Experimental, and the four withheld ones |
 
 One `v<version>` tag releases the whole manifest at the versions
 MSBuild resolves, and a stream whose version did not move publishes
@@ -134,8 +136,15 @@ stream it publishes in, on every pull request.
 | `Bodu.Globalization.Calendar-1.0.1` | 2026-10-01 | Out of band: working-day lookups no longer overflow the stack. |
 
 **Next: 1.3.0.** `BoduBaseVersion` is 1.3.0 and `BoduPreviewVersion`
-0.7.2, so every Stable package ships at 1.3.0 and every Preview package
-at 0.7.2; no package joins the manifest. The Stable stream moves past
+0.7.2, so every Stable package ships at 1.3.0 and every package left on
+the preview stream at 0.7.2; no package joins the manifest. Ten
+packages move from the preview stream to Stable: `Bodu.IO.Pst` and the
+three Outlook packages, and the six exchange-rate providers over
+published APIs (BoE, ECB, RBA, Fixer, exchangerate.host and FRED). Until
+1.3.0 is on nuget.org each pins its package validation to its 0.7.1
+release. The IMF, Yahoo and OFX providers read feeds their operators do
+not publish as APIs, so they are retiered Experimental and stay on the
+preview stream. The Stable stream moves past
 `Bodu.Security.Cryptography` 1.2.0, the highest out-of-band version,
 and the out-of-band overrides are retired. The release carries what
 master has gained since 1.0.0 beyond the out-of-band releases (see
@@ -152,7 +161,7 @@ entry from that list is the decision to ship it:
 | Package | Tier | Why it is held back |
 | --- | --- | --- |
 | `Bodu.Financial.ExchangeRates.Xe` | Experimental | Authenticates with a token scraped from XE.com's bootstrap page, which has no official endpoint, so it can stop working through no fault of the code. |
-| `Bodu.Financial.ExchangeRates.Oanda` | Preview | Calls an undocumented endpoint gated by bot mitigation, capturing a challenge cookie and re-priming when challenged. |
+| `Bodu.Financial.ExchangeRates.Oanda` | Experimental | Calls an undocumented endpoint gated by bot mitigation, capturing a challenge cookie and re-priming when challenged. |
 | `Bodu.Globalization.Calendar.Tool` | Preview | A `PackAsTool` CLI (`bodu-calendar`), with a different consumer contract from a library; it warrants its own decision. |
 | `Bodu.Globalization.Calendar.Build` | Preview | The MSBuild integration (`DevelopmentDependency`) for that tool, held back for the same reason. |
 
@@ -162,7 +171,8 @@ Stable packages and `BoduPreviewPackageValidationBaseline` 0.7.1 for the
 Preview ones. After each publish, `bld/RELEASING.md` (Post-publish)
 moves the Stable baseline to the version just published, and the
 Preview one only when the release moved `BoduPreviewVersion`; after
-1.3.0 that is 1.3.0 and 0.7.2.
+1.3.0 that is 1.3.0 and 0.7.2, and the ten packages 1.3.0 promotes drop
+their 0.7.1 pins.
 
 ## Non-goals
 
@@ -309,6 +319,14 @@ The rest of what 1.3.0 carries:
   member is a serialization error rather than a narrowed value, and a
   string enum converter created with `allowIntegerValues: false` reads
   and writes names only, as System.Text.Json's does from .NET 9.
+- **Ten packages promoted to Stable.** `Bodu.IO.Pst`,
+  `Bodu.Formats.Outlook`, `.Outlook.Msg` and `.Outlook.Pst`, after
+  `Bodu.IO.Pst`'s API was settled and the `.pst` reader wrapped container
+  faults in `OutlookPstFormatException`; and the BoE, ECB, RBA, Fixer,
+  exchangerate.host and FRED providers, after the BoE, ECB and RBA
+  options moved onto `WebRateProviderOptions` and their file caches
+  became internal. The IMF, Yahoo, OFX and OANDA providers, which read
+  feeds with no published API, are retiered Experimental.
 - **Trimming and NativeAOT annotations.** `BencodeSerializer` declares
   `[RequiresUnreferencedCode]` and `[RequiresDynamicCode]` as
   `TomlSerializer` does, `YamlSerializer` now declares both, and the
@@ -789,9 +807,12 @@ extensions declared in the `Bodu.Financial` namespace -
 
 ### `Bodu.Financial.ExchangeRates.*` *(provider + caching family)*
 
-Current state: the source-independent packages are Stable and the
-per-source providers Preview, all first shipped at 0.7.0 apart from the
-withheld `Xe` (Experimental) and `Oanda` (Preview).
+Current state: the source-independent packages are Stable, and from
+1.3.0 so are the six per-source providers over published APIs (`Boe`,
+`Ecb`, `Rba`, `Fixer`, `ExchangeRateHost`, `Fred`). The providers over
+feeds their operators do not publish as APIs are Experimental: `Imf`,
+`Yahoo` and `Ofx`, published, and the withheld `Xe` and `Oanda`. The
+published providers all first shipped at 0.7.0.
 `Bodu.Financial.ExchangeRates` holds the `WebRateProvider` /
 `PairWebRateProvider<TSeries>` bases - `WebRateProvider`'s
 `LoadFileFeedAsync<TTable>` runs the coverage check, fetch, failure
@@ -831,12 +852,21 @@ provider contract-test bases.
   keyless, USD-anchored bulk provider over `WebRateProvider`, like ECB,
   that normalizes quotation direction on ingest. Further sources can
   follow the same template on demand.
+- **The providers over published APIs are Stable (1.3.0).** Before
+  their promotion the BoE, ECB and RBA options moved onto
+  `WebRateProviderOptions` (one `BaseAddress`, `HttpTimeout`,
+  `DefaultLookback`, `RefreshInterval` and `CurrencyAliases` for every
+  provider), their file caches became internal, exchangerate.host's
+  default range path became `timeframe`, and the FRED and
+  exchangerate.host READMEs gained the operators' notices. Yahoo bars
+  are dated in the exchange's time zone.
 
 Forward-looking:
 
-- **Promote the Preview providers to Stable** one package at a time, as
-  each proves reliable against its live upstream endpoint across a
-  release cycle (see *API-stability tiers*).
+- **Revisit an Experimental provider** if its operator publishes an API
+  for the feed it reads: the IMF's tab-separated export, Yahoo's chart
+  service, OFX's rate history and OANDA's converter are undocumented
+  today (see *API-stability tiers*).
 - **De-risk the XE provider.** It is labeled Experimental and withheld
   from nuget.org, with the scrape-token brittleness documented in the
   README, the XML docs and the providers guide; the open half is
@@ -931,8 +961,9 @@ Forward-looking:
 
 ### `Bodu.Formats.Outlook` / `Bodu.Formats.Outlook.Msg`
 
-Current state: Preview; both first shipped at 0.5.0 and have been on the
-Preview stream since 1.0.0. The kickoff plan
+Current state: Stable from 1.3.0; both first shipped at 0.5.0 and were
+on the Preview stream from 1.0.0 until 1.3.0 promoted them. The kickoff
+plan
 ([`Bodu.Formats.Outlook/docs/msg-reader-implementation-plan.md`](Bodu.Formats.Outlook/docs/msg-reader-implementation-plan.md),
 executed) delivered the container-free shared MAPI value model
 (`Bodu.Formats.Outlook`) and the read-only `.msg` reader over
@@ -969,8 +1000,9 @@ Forward-looking:
 
 ### `Bodu.IO.Pst` / `Bodu.Formats.Outlook.Pst`
 
-Current state: Preview; both first shipped at 0.5.0 (wave 3) and have
-been on the Preview stream since 1.0.0. `Bodu.IO.Pst` reads the MS-PST
+Current state: Stable from 1.3.0; both first shipped at 0.5.0 (wave 3)
+and were on the Preview stream from 1.0.0 until 1.3.0 promoted them.
+`Bodu.IO.Pst` reads the MS-PST
 container for Unicode and ANSI stores: header parse with the §5.3 CRC,
 NBT/BBT B-tree walks, block reads with trailer validation and the
 permute/cyclic content encodings decoded, XBLOCK/XXBLOCK data trees,
@@ -1008,6 +1040,10 @@ Landed since the previous revision:
   583 rows (`corpus/pst/`); the defects they found are fixed, so every
   Unicode version from 23 up but 36 now opens, and a B-tree page or
   heap allocation outside its bounds is rejected.
+- **Settled for Stable** (1.3.0): `PstNode.NodeId` / `ParentNodeId`
+  replace `Id` / `ParentId`, `PstFileException` keeps one constructor
+  per argument set, and the mail-store reader wraps every container
+  fault in `OutlookPstFormatException`, as the `.msg` reader does.
 
 Forward-looking:
 
@@ -1296,12 +1332,12 @@ filter were added to *Non-goals* instead.
 - **`Bodu.Formats.Outlook.Msg` - built.** The read-only `.msg` reader
   over `Bodu.IO.Compound`, with the MAPI value model in the flattened
   `Bodu.Formats.Outlook` namespace shared with the `.pst` reader,
-  shipped at 0.5.0 and is on the Preview stream; see the per-project
+  shipped at 0.5.0 and is Stable from 1.3.0; see the per-project
   section *`Bodu.Formats.Outlook` / `Bodu.Formats.Outlook.Msg`*.
 - **`Bodu.Formats.Outlook.Pst` over `Bodu.IO.Pst` - built.** The
   read-only mail-store reader over its own NDB / LTP container (MS-PST
   has no CFB inside), sharing the `Bodu.Formats.Outlook` value model,
-  shipped at 0.5.0 and is on the Preview stream. It reads Unicode and
+  shipped at 0.5.0 and is Stable from 1.3.0. It reads Unicode and
   ANSI stores; the OST variant remains the demand-driven follow-on. See
   the per-project section *`Bodu.IO.Pst` / `Bodu.Formats.Outlook.Pst`*
   and the exploration that sequenced it,
@@ -1570,8 +1606,9 @@ Target state:
 **Done.** Every packable package, published or withheld, carries a
 single tier label as a blockquote directly under its README title, and
 `bld/check-release-manifest.sh` holds each label to the version stream
-the package publishes in (see *Release focus*). The assignment, 43
-published Stable packages, 13 published Preview ones, and four withheld:
+the package publishes in (see *Release focus*). The assignment from
+1.3.0, 53 published Stable packages, 3 published Experimental ones, and
+four withheld:
 
 - **Stable** - the mature core of the solution: `Bodu.Core`,
   `Bodu.Collections`, `Bodu.Collections.Concurrent`, `Bodu.IO.Hashing`,
@@ -1590,27 +1627,27 @@ published Stable packages, 13 published Preview ones, and four withheld:
   source-independent half of the exchange-rate stack:
   `Bodu.Financial.ExchangeRates` (the provider base classes and shared
   fetch machinery), the `…ExchangeRates.DependencyInjection` plumbing,
-  and the caching trio `…ExchangeRates.Caching{,.Sqlite,.Distributed}`.
-- **Preview** - the container and mail-store readers whose surfaces are
-  still settling (`Bodu.IO.Pst` and the Outlook packages
-  `Bodu.Formats.Outlook{,.Msg,.Pst}`); the network-dependent per-source
-  exchange-rate providers
-  `Bodu.Financial.ExchangeRates.{Boe,Ecb,Rba,Yahoo,Ofx,Fixer,ExchangeRateHost,Fred,Imf}`,
-  held at Preview until each has been exercised against its live
-  upstream endpoint across a release cycle (the API they expose is the
-  shared base-class contract, which is Stable); and, withheld,
-  `…ExchangeRates.Oanda` and the calendar toolchain
+  and the caching trio `…ExchangeRates.Caching{,.Sqlite,.Distributed}`;
+  and, promoted in 1.3.0, the container and mail-store readers
+  (`Bodu.IO.Pst` and the Outlook packages
+  `Bodu.Formats.Outlook{,.Msg,.Pst}`) and the per-source exchange-rate
+  providers over published APIs
+  (`Bodu.Financial.ExchangeRates.{Boe,Ecb,Rba,Fixer,ExchangeRateHost,Fred}`).
+- **Preview** - withheld only: the calendar toolchain
   `Bodu.Globalization.Calendar.Tool` / `.Build`, whose command-line and
   MSBuild surfaces are still being finalized.
-- **Experimental** - `Bodu.Financial.ExchangeRates.Xe` (withheld), which
-  depends on a scraped auth token and can break without notice.
+- **Experimental** - the per-source exchange-rate providers over feeds
+  their operators do not publish as APIs, which can stop working
+  without notice: `Bodu.Financial.ExchangeRates.{Imf,Yahoo,Ofx}`,
+  published, and, withheld, `…ExchangeRates.Xe` (a scraped auth token)
+  and `…ExchangeRates.Oanda` (an endpoint gated by bot mitigation).
 
-Promote the Preview providers to Stable per package as each proves
-reliable against its endpoint across a release cycle. Promotion is two
-edits, retiering the README banner and deleting the
-`BoduPackageVersionOverride`, and until the package's first Stable
+A package is promoted to Stable by retiering its README banner and
+deleting its `BoduPackageVersionOverride`; until its first Stable
 release is on nuget.org its csproj pins `PackageValidationBaselineVersion`
-to its last preview release (`bld/Versioning.props`).
+to its last preview release (`bld/Versioning.props`), and the pin is
+deleted after that release (`bld/RELEASING.md`, Post-publish). 1.3.0
+promotes ten packages this way, pinned to 0.7.1.
 
 ### Source generators
 
