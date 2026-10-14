@@ -314,3 +314,7 @@
           href: outlook/concepts.md
         - name: Getting started
           href: outlook/getting-started.md
+- name: Cross-cutting
+  items:
+    - name: Trimming and native AOT
+      href: topics/trimming-and-native-aot.md

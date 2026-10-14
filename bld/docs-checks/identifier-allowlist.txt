@@ -42,5 +42,8 @@ JsonFile
 StgCreateStorageEx
 IsTestProject
 PackAsTool
+PublishTrimmed    # MSBuild publish properties named by the trimming and native AOT topic
+PublishAot
+IsAotCompatible   # MSBuild property that turns on the trim and AOT analyzers for a library
 MSTest.TestFramework
 JavaScriptEncoder.UnsafeRelaxedJsonEscaping   # System.Text.Encodings.Web member named in the Complex<T> JSON note
