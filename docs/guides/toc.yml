@@ -46,7 +46,7 @@
         - name: Bodu.Text (namespace)
           items:
             - name: Encoding helpers and BOM detection
-              href: text-encoding/encoding-helpers.md
+              href: core/encoding-helpers.md
     - name: Bodu.Collections
       items:
         - name: Choosing a collection
@@ -416,8 +416,6 @@
           items:
             - name: The IBinaryEncoding interface
               href: text-encoding/binary-encodings-interface.md
-            - name: Encoding helpers and BOM detection
-              href: text-encoding/encoding-helpers.md
     - name: Bodu.Text.Filtering
       items:
         - name: Overview
@@ -633,7 +631,7 @@
           href: io-pst/reading-nodes-and-tables.md
         - name: Streaming and validation
           href: io-pst/streaming-and-validation.md
-    - name: Bodu.Formats.Outlook
+    - name: Bodu.Formats.Outlook (.Msg, .Pst)
       items:
         - name: Overview
           href: outlook/index.md

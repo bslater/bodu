@@ -92,7 +92,7 @@ If you are deciding between this namespace, the binary codecs, and the document 
 - **[Bodu.Core introduction](../core/index.md)** - the host package: pooled buffers, extensions, `ThrowHelper`, and the rest of the assembly this namespace ships in.
 - **[Core Foundations topic overview](../topics/core-foundations.md)** - where `Bodu.Text` sits in the foundation layer.
 - **[Core Foundations concepts](../topics/core-foundations-concepts.md)** - topic-level vocabulary, including a dedicated character-encoding section (preamble, transcoding, validation, span-first surfaces).
-- **[Encoding helpers and BOM detection guide](../../guides/text-encoding/encoding-helpers.md)** - worked patterns for every surface above.
+- **[Encoding helpers and BOM detection guide](../../guides/core/encoding-helpers.md)** - worked patterns for every surface above.
 - **[Bodu.Text.Encoding introduction](../text-encoding/index.md)** - the sibling package for binary-to-text codecs (Base16/32/58/64/85).
-- **[Cross-library getting started](../getting-started.md)** - install commands across the suite; the `Bodu.Text` walk-through itself is the [encoding helpers guide](../../guides/text-encoding/encoding-helpers.md) above.
+- **[Cross-library getting started](../getting-started.md)** - install commands across the suite; the `Bodu.Text` walk-through itself is the [encoding helpers guide](../../guides/core/encoding-helpers.md) above.
 - **[Bodu.Text API reference](xref:Bodu.Text)** - full type-by-type docs.

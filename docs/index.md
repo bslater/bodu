@@ -58,6 +58,7 @@ A family of focused primary libraries organized into **seven topics** - alongsid
   <p>Encoding detection and ergonomic text / byte conversion helpers over <code>System.Text.Encoding</code> - BOM-based <code>EncodingDetection</code>, plus <code>EncodingExtensions</code> and <code>StringEncodingExtensions</code> for span-, UTF-8-, and pooled-buffer-friendly transcoding, preamble handling, and validation. Ships in the <code>Bodu.Core</code> package.</p>
   <div class="bodu-card-links">
     <a href="docs/text/index.md">Introduction</a>
+    <a href="guides/core/encoding-helpers.md">Guides</a>
     <a href="xref:Bodu.Text">API reference</a>
   </div>
 </div>
@@ -294,6 +295,7 @@ A family of focused primary libraries organized into **seven topics** - alongsid
   <p>A low-level, read-only container reader for the Outlook personal-folders format (PST / MS-PST, Unicode and ANSI). Reads the node database - header, node and block B-trees, block data with the permute and cyclic encodings decoded and checksums verified, data and subnode trees - and the LTP layer over it, exposing each <code>PstNode</code>'s property-context and table-context views with wire-typed values. No MAPI semantics and no writing; the substrate the <code>.pst</code> mail-store reader is built on.</p>
   <div class="bodu-card-links">
     <a href="docs/io-pst/index.md">Introduction</a>
+    <a href="guides/io-pst/index.md">Guides</a>
     <a href="xref:Bodu.IO.Pst">API reference</a>
   </div>
 </div>

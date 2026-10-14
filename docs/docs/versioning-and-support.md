@@ -44,7 +44,7 @@ Each package's `README.md`, which is also its nuget.org page, opens with its tie
 | `Bodu.Globalization.Calendar` | The `workingWeek` parameter of the working-day and fiscal extensions, the `ResolutionPolicy` constructor and its `WorkingWeek` property, and `AdjustmentPolicy.IsTriggered` and `ApplyAction` take a `DayOfWeekSet`. |
 | `Bodu.Globalization.Calendar.Builder` | `ResolutionPolicyBuilder.WithWorkingWeek` takes a `DayOfWeekSet`. |
 
-Stored data is unchanged: calendar documents keep `workingDays="0111110"`, and compiled `.bcal` packs keep their byte layout. The [migration table](../../guides/core/day-of-week-set.md#migrating-from-weekpattern) maps each `WeekPattern` member to its `DayOfWeekSet` replacement.
+Stored data is unchanged: calendar documents keep `workingDays="0111110"`, and compiled `.bcal` packs keep their byte layout. The [migration table](../guides/core/day-of-week-set.md#migrating-from-weekpattern) maps each `WeekPattern` member to its `DayOfWeekSet` replacement.
 
 ### How compatibility is checked
 
@@ -99,4 +99,4 @@ Every API page names the package its type ships in and that package's version, u
 
 - **[Package matrix](package-matrix.md)** - every package with its tier, version, and dependencies.
 - **[Getting started](getting-started.md)** - install commands and a first sample from each library.
-- **[Calendar value sets](../../guides/core/day-of-week-set.md)** - `DayOfWeekSet` and the migration from `WeekPattern`.
+- **[Calendar value sets](../guides/core/day-of-week-set.md)** - `DayOfWeekSet` and the migration from `WeekPattern`.

@@ -128,6 +128,7 @@ Each library has a dedicated introduction page that explains its namespaces, the
   <p>Encoding detection and ergonomic text / byte conversion over <code>System.Text.Encoding</code> - BOM-based <code>EncodingDetection</code>, plus span-, UTF-8-, and pooled-buffer-friendly <code>EncodingExtensions</code> and <code>StringEncodingExtensions</code>.</p>
   <div class="bodu-card-links">
     <a href="text/index.md">Introduction</a>
+    <a href="../guides/core/encoding-helpers.md">Guides</a>
     <a href="xref:Bodu.Text">API reference</a>
   </div>
 </div>

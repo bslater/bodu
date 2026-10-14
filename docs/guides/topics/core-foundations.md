@@ -51,7 +51,7 @@ If you have not yet installed the packages, start with the [topic overview](../.
 
 ## Bodu.Text
 
-The `Bodu.Text` character-encoding helpers (BOM detection, span- and UTF-8-friendly transcoding, preamble handling, validation) have their own guide - **[Encoding helpers and BOM detection](../text-encoding/encoding-helpers.md)** - which walks every surface pattern by pattern. Pair it with the [Bodu.Text introduction](../../docs/text/index.md) for the scenario map and the [Bodu.Text API reference](xref:Bodu.Text) for the type-by-type docs.
+The `Bodu.Text` character-encoding helpers (BOM detection, span- and UTF-8-friendly transcoding, preamble handling, validation) have their own guide - **[Encoding helpers and BOM detection](../core/encoding-helpers.md)** - which walks every surface pattern by pattern. Pair it with the [Bodu.Text introduction](../../docs/text/index.md) for the scenario map and the [Bodu.Text API reference](xref:Bodu.Text) for the type-by-type docs.
 
 ## Start here
 

@@ -29,11 +29,16 @@ int byteCount      = "héllo".GetUtf8ByteCount();                  // size witho
 For hot paths, encode straight into a caller-supplied span or an `IBufferWriter<byte>`, or rent the buffer from the pool:
 
 ```csharp
+using System.Buffers;
+using Bodu.Buffers;
+using Bodu.Text;
+
 Span<byte> destination = stackalloc byte[64];
 int written = "héllo".EncodeUtf8To(destination);
 
 if ("héllo".TryEncodeUtf8To(destination, out int n)) { /* … */ }
 
+var bufferWriter = new ArrayBufferWriter<byte>();
 "héllo".WriteUtf8To(bufferWriter);                    // append to a pipeline
 
 using PooledBufferBuilder<byte> pooled = "héllo".GetUtf8BytesPooled();   // ArrayPool-backed (Bodu.Buffers)
@@ -44,7 +49,10 @@ using PooledBufferBuilder<byte> pooled = "héllo".GetUtf8BytesPooled();   // Arr
 `EncodingExtensions` centralizes BOM handling so you never slice preamble bytes by hand:
 
 ```csharp
+using Bodu.Text;
+
 System.Text.Encoding enc = System.Text.Encoding.UTF8;
+byte[] bytes = [0xEF, 0xBB, 0xBF, (byte)'h', (byte)'i'];   // a UTF-8 BOM, then "hi"
 
 bool hasBom   = enc.HasPreamble();
 bool startsBom = enc.StartsWithPreamble(bytes);
@@ -55,6 +63,10 @@ string text   = enc.GetStringSkippingPreamble(bytes);        // decode, ignoring
 To detect the encoding *from* the bytes, use <xref:Bodu.Text.EncodingDetection>:
 
 ```csharp
+using Bodu.Text;
+
+byte[] bytes = File.ReadAllBytes("input.txt");
+
 System.Text.Encoding chosen =
     EncodingDetection.TryDetectByPreamble(bytes, out System.Text.Encoding? detected)
         ? detected
@@ -64,6 +76,10 @@ System.Text.Encoding chosen =
 ## Classifying an encoding
 
 ```csharp
+using Bodu.Text;
+
+System.Text.Encoding enc = System.Text.Encoding.UTF8;
+
 enc.IsUtf8();                 // true
 enc.IsAscii();
 enc.IsAnyUtf();               // UTF-8 / UTF-16 / UTF-32, either endianness
@@ -76,6 +92,8 @@ enc.IsUtf32BigEndian();
 Switch an encoding between *throwing* on invalid data and *replacing* it, without mutating a shared instance:
 
 ```csharp
+using Bodu.Text;
+
 System.Text.Encoding strict  = System.Text.Encoding.UTF8.WithExceptionFallbacks();   // throws on malformed input
 System.Text.Encoding lenient = System.Text.Encoding.UTF8.WithReplacementFallbacks(); // substitutes U+FFFD
 ```
@@ -85,12 +103,20 @@ System.Text.Encoding lenient = System.Text.Encoding.UTF8.WithReplacementFallback
 For large or streamed payloads, the owned-memory and chunked surfaces avoid intermediate arrays:
 
 ```csharp
-using IMemoryOwner<byte> owner = enc.GetBytesOwner(chars);    // caller disposes
-using PooledBufferBuilder<char> chars = enc.GetCharsPooled(bytes);
+using System.Buffers;
+using Bodu.Buffers;
+using Bodu.Text;
+
+System.Text.Encoding enc = System.Text.Encoding.UTF8;
+string text = "héllo, wörld";
+
+using IMemoryOwner<byte> owner = enc.GetBytesOwner(text);           // caller disposes
+using PooledBufferBuilder<char> chars = enc.GetCharsPooled(owner.Memory.Span);
 
 // Incremental transcoding with explicit backpressure: EncodeChunk extends the stateful Encoder.
 System.Text.Encoder encoder = enc.GetEncoder();
-OperationStatus status = encoder.EncodeChunk(charSpan, byteDestination, flush: true,
+Span<byte> byteDestination = stackalloc byte[8];
+OperationStatus status = encoder.EncodeChunk(text, byteDestination, flush: true,
                                              out int charsRead, out int bytesWritten);
 ```
 
@@ -106,7 +132,7 @@ OperationStatus status = encoder.EncodeChunk(charSpan, byteDestination, flush: t
 
 ## Where to go next
 
-- [The IBinaryEncoding interface](binary-encodings-interface.md) - the binary-encoding contract (Base16-Base85).
-- [Bodu.Text.Encoding overview](index.md) - the full namespace map.
-- [Bodu.Text.Encoding API reference](xref:Bodu.Text.Encoding) - full namespace overview.
-- **[Text & Serialization guides](../topics/text-and-serialization.md)** - every guide in this topic, across Bodu.Text.Encoding, Bodu.Text.Formats, and the Bencode / TOML serializers.
+- [Bodu.Core guides](index.md) - the namespace map of the package this namespace ships in.
+- [Bodu.Text introduction](../../docs/text/index.md) - the namespace's surfaces and when to use each.
+- [Bodu.Text API reference](xref:Bodu.Text) - full namespace overview.
+- [The IBinaryEncoding interface](../text-encoding/binary-encodings-interface.md) - the binary-to-text contract of the separate `Bodu.Text.Encoding` package (Base16 to Base85), for bytes to a printable alphabet rather than to characters.
