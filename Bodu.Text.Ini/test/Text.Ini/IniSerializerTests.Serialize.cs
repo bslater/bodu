@@ -829,4 +829,66 @@ public partial class IniSerializerTests
 
         Assert.IsTrue(ex.Message.Contains("'O'", StringComparison.Ordinal), ex.Message);
     }
+
+    /// <summary>
+    /// Verifies that a type with a member INI cannot represent, whatever the member's accessors and whatever the
+    /// instance holds, throws <see cref="IniSerializationException" /> naming the member, as reading it does.
+    /// </summary>
+    /// <param name="kat">The root type and the exception it raises.</param>
+    [TestMethod]
+    [DynamicData(
+        nameof(UnrepresentableMemberTypes),
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
+    public void Serialize_WhenTheTypeHasAMemberIniCannotRepresent_ShouldThrowIniSerializationException(InvalidKat<Type> kat)
+    {
+        object value = Activator.CreateInstance(kat.Input)!;
+
+        var ex = Assert.ThrowsExactly<IniSerializationException>(() =>
+        {
+            _ = IniSerializer.Serialize(value);
+        });
+
+        Assert.IsTrue(ex.Message.Contains(kat.MessageContains!, StringComparison.Ordinal), ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that a <see langword="null" /> section whose type has a member that is not a scalar throws
+    /// <see cref="IniSerializationException" /> naming that member under every default ignore condition, by the
+    /// section's declared type, so that no empty header is written that does not read back.
+    /// </summary>
+    /// <param name="condition">The options' default ignore condition.</param>
+    [TestMethod]
+    [DataRow(IgnoreCondition.Never)]
+    [DataRow(IgnoreCondition.WhenWritingNull)]
+    [DataRow(IgnoreCondition.WhenWritingDefault)]
+    public void Serialize_WhenANullSectionTypeHasAMemberThatIsNotAScalar_ForEveryIgnoreCondition_ShouldThrowIniSerializationException(IgnoreCondition condition)
+    {
+        var options = new IniSerializerOptions { DefaultIgnoreCondition = condition };
+
+        var ex = Assert.ThrowsExactly<IniSerializationException>(() =>
+        {
+            _ = IniSerializer.Serialize(new NullListSectionConfig(), options);
+        });
+
+        Assert.IsTrue(ex.Message.Contains("'Values'", StringComparison.Ordinal), ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that a type with a member INI cannot represent is rejected before anything is written, so that the
+    /// buffer writer receives no part of the document.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenTheTypeHasAMemberIniCannotRepresent_ForABufferWriter_ShouldWriteNothing()
+    {
+        var destination = new ArrayBufferWriter<byte>();
+        var config = new NullListSectionConfig { S = new ListSection() };
+
+        Assert.ThrowsExactly<IniSerializationException>(() =>
+        {
+            IniSerializer.Serialize(destination, config);
+        });
+
+        Assert.AreEqual(0, destination.WrittenCount);
+    }
 }

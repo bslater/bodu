@@ -533,6 +533,181 @@ public partial class IniSerializerTests
     }
 
     /// <summary>
+    /// A root model whose section type has a list that can only be set.
+    /// </summary>
+    private sealed class SetOnlyListSectionConfig
+    {
+        /// <summary>Gets or sets the section.</summary>
+        public SetOnlyListSection S { get; set; } = new();
+    }
+
+    /// <summary>
+    /// A section model with a list that can only be set, which no key can hold.
+    /// </summary>
+    private sealed class SetOnlyListSection
+    {
+        /// <summary>Gets or sets the name.</summary>
+        public string Name { get; set; } = "a";
+
+        /// <summary>Sets the values, which the setter discards.</summary>
+        public List<int> Values
+        {
+            set => _ = value;
+        }
+    }
+
+    /// <summary>
+    /// A root model with a get-only list, which nests beyond INI's two levels.
+    /// </summary>
+    private sealed class GetOnlyRootListConfig
+    {
+        /// <summary>Gets or sets the name (a global key).</summary>
+        public string Name { get; set; } = "a";
+
+        /// <summary>Gets the values.</summary>
+        public List<int> L { get; } = [];
+    }
+
+    /// <summary>
+    /// A root model with a list that can only be set, which nests beyond INI's two levels.
+    /// </summary>
+    private sealed class SetOnlyRootListConfig
+    {
+        /// <summary>Gets or sets the name (a global key).</summary>
+        public string Name { get; set; } = "a";
+
+        /// <summary>Sets the values, which the setter discards.</summary>
+        public List<int> L
+        {
+            set => _ = value;
+        }
+    }
+
+    /// <summary>
+    /// A root model with a get-only member declared as <see cref="object" />, which maps to neither a key nor a section.
+    /// </summary>
+    private sealed class GetOnlyRootObjectConfig
+    {
+        /// <summary>Gets or sets the name (a global key).</summary>
+        public string Name { get; set; } = "a";
+
+        /// <summary>Gets a value of any type.</summary>
+        public object O { get; } = 1;
+    }
+
+    /// <summary>
+    /// A root model with a member declared as <see cref="object" /> that can only be set, which maps to neither a key
+    /// nor a section.
+    /// </summary>
+    private sealed class SetOnlyRootObjectConfig
+    {
+        /// <summary>Gets or sets the name (a global key).</summary>
+        public string Name { get; set; } = "a";
+
+        /// <summary>Sets a value of any type, which the setter discards.</summary>
+        public object O
+        {
+            set => _ = value;
+        }
+    }
+
+    /// <summary>
+    /// A root model with a get-only section whose type has a list.
+    /// </summary>
+    private sealed class GetOnlyListSectionMemberConfig
+    {
+        /// <summary>Gets or sets the name (a global key).</summary>
+        public string Name { get; set; } = "a";
+
+        /// <summary>Gets the section.</summary>
+        public ListSection S { get; } = new();
+    }
+
+    /// <summary>
+    /// A root model with a section, <see langword="null" /> unless set, whose type has a list.
+    /// </summary>
+    private sealed class NullListSectionConfig
+    {
+        /// <summary>Gets or sets the name (a global key).</summary>
+        public string Name { get; set; } = "a";
+
+        /// <summary>Gets or sets the section.</summary>
+        public ListSection? S { get; set; }
+    }
+
+    /// <summary>
+    /// A section model with a settable list, which no key can hold.
+    /// </summary>
+    private sealed class ListSection
+    {
+        /// <summary>Gets or sets the name.</summary>
+        public string Name { get; set; } = "b";
+
+        /// <summary>Gets or sets the values.</summary>
+        public List<int> Values { get; set; } = [];
+    }
+
+    /// <summary>
+    /// A root model whose members INI cannot represent are all left out with <see cref="Bodu.Text.Serialization.IgnoreAttribute" />,
+    /// whatever their accessors, at the root and in a section.
+    /// </summary>
+    private sealed class IgnoredUnrepresentableConfig
+    {
+        /// <summary>Gets or sets the name (a global key).</summary>
+        public string Name { get; set; } = "a";
+
+        /// <summary>Gets a list, left out.</summary>
+        [Bodu.Text.Serialization.Ignore]
+        public List<int> L { get; } = [];
+
+        /// <summary>Sets a value of any type, left out.</summary>
+        [Bodu.Text.Serialization.Ignore]
+        public object O
+        {
+            set => _ = value;
+        }
+
+        /// <summary>Gets or sets the section.</summary>
+        public IgnoredUnrepresentableSection S { get; set; } = new();
+    }
+
+    /// <summary>
+    /// A section model whose list, which can only be set, is left out with
+    /// <see cref="Bodu.Text.Serialization.IgnoreAttribute" />.
+    /// </summary>
+    private sealed class IgnoredUnrepresentableSection
+    {
+        /// <summary>Gets or sets the host.</summary>
+        public string Host { get; set; } = "h";
+
+        /// <summary>Sets the values, left out.</summary>
+        [Bodu.Text.Serialization.Ignore]
+        public List<int> Values
+        {
+            set => _ = value;
+        }
+    }
+
+    /// <summary>
+    /// A root model of shapes INI represents whatever their accessors and values: a get-only scalar, a section that is
+    /// <see langword="null" /> unless set, and a get-only section of scalars.
+    /// </summary>
+    private sealed class RepresentableShapesConfig
+    {
+        /// <summary>Gets or sets the name (a global key).</summary>
+        public string Name { get; set; } = "a";
+
+        /// <summary>Gets a computed number, written and not read.</summary>
+        public int Computed => 7;
+
+        /// <summary>Gets or sets the database section.</summary>
+        public DatabaseSection? Database { get; set; }
+
+        /// <summary>Gets a section, written and not read.</summary>
+        public GetOnlyMembersSection Fixed { get; } = new();
+    }
+
+    /// <summary>
     /// A dictionary keyed by <see cref="int" /> that implements the generic <see cref="IDictionary{TKey, TValue}" />
     /// interface but not the non-generic <see cref="IDictionary" />, so that it is neither a string-keyed dictionary nor
     /// one the serializer recognizes as a dictionary through the non-generic interface.
@@ -681,6 +856,24 @@ public partial class IniSerializerTests
         [new InvalidKat<Type>("int?", typeof(int?), typeof(IniSerializationException), MessageContains: "System.Nullable")],
         [new InvalidKat<Type>("Guid?", typeof(Guid?), typeof(IniSerializationException), MessageContains: "System.Nullable")],
         [new InvalidKat<Type>("DateOnly?", typeof(DateOnly?), typeof(IniSerializationException), MessageContains: "System.Nullable")],
+    ];
+
+    /// <summary>
+    /// Gets root types with a member INI cannot represent, whatever its accessors or value, each of which serialization
+    /// and deserialization must reject with <see cref="IniSerializationException" /> naming the member.
+    /// </summary>
+    /// <value>The rows, each a named root type and the exception it raises.</value>
+    public static IEnumerable<object[]> UnrepresentableMemberTypes =>
+    [
+        [new InvalidKat<Type>("A section's list that can only be set", typeof(SetOnlyListSectionConfig), typeof(IniSerializationException), MessageContains: "'Values'")],
+        [new InvalidKat<Type>("A section's get-only list", typeof(GetOnlyListSectionConfig), typeof(IniSerializationException), MessageContains: "'Values'")],
+        [new InvalidKat<Type>("A get-only root list", typeof(GetOnlyRootListConfig), typeof(IniSerializationException), MessageContains: "'L'")],
+        [new InvalidKat<Type>("A root list that can only be set", typeof(SetOnlyRootListConfig), typeof(IniSerializationException), MessageContains: "'L'")],
+        [new InvalidKat<Type>("A get-only root object", typeof(GetOnlyRootObjectConfig), typeof(IniSerializationException), MessageContains: "'O'")],
+        [new InvalidKat<Type>("A root object that can only be set", typeof(SetOnlyRootObjectConfig), typeof(IniSerializationException), MessageContains: "'O'")],
+        [new InvalidKat<Type>("A get-only section with a list", typeof(GetOnlyListSectionMemberConfig), typeof(IniSerializationException), MessageContains: "'Values'")],
+        [new InvalidKat<Type>("A null section with a list", typeof(NullListSectionConfig), typeof(IniSerializationException), MessageContains: "'Values'")],
+        [new InvalidKat<Type>("A null section with a nested section", typeof(DeepConfig), typeof(IniSerializationException), MessageContains: "'Inner'")],
     ];
 
     /// <summary>

@@ -36,10 +36,7 @@ namespace Bodu.Text.Ini;
 /// type decides: a string-keyed dictionary type writes it as an empty section, a scalar or <see cref="object" /> as an
 /// empty key, and any other type, which no empty key reads back as, is rejected. A <see langword="null" /> entry of a
 /// dictionary written as a section, the reserved global section included, is decided in the same way, except that a
-/// string-keyed dictionary type, a third level, is rejected. A root member declared as <see cref="object" />, which
-/// could be a key or a section, is rejected with <see cref="IniSerializationException" /> naming the member, when
-/// written and when read, whatever its value. A member nested beyond the second level is rejected when its section is
-/// written and when it is read, whether or not the member can be set. Property names honor
+/// string-keyed dictionary type, a third level, is rejected. Property names honor
 /// <see cref="IniSerializerOptions.PropertyNamingPolicy" /> and the
 /// <see cref="Bodu.Text.Serialization.PropertyNameAttribute" /> family; the callback interfaces (<see cref="Bodu.Text.Serialization.IOnSerializing" />
 /// and its siblings) fire around the mapping. Each member name maps to one key or section, its most derived
@@ -47,6 +44,17 @@ namespace Bodu.Text.Ini;
 /// that maps two members to one name is rejected with <see cref="IniSerializationException" /> before anything is read
 /// or written. A member declared with the C# <see langword="required" /> keyword is required, as one marked
 /// <see cref="Bodu.Text.Serialization.RequiredAttribute" /> is: reading a document without its key or section throws.
+/// </para>
+/// <para>
+/// A POCO root's type is checked whole, once per type and options instance, before the input is read or anything is
+/// written. A member declared as <see cref="object" />, which could be a key or a section, a member whose type is a
+/// collection other than a string-keyed dictionary, and a member of a section type that is not a scalar, which would
+/// nest beyond the second level, are each rejected with <see cref="IniSerializationException" /> naming the member. The
+/// check is on the type's shape, not the instance: it covers every mapped member, whether it can be read, set or both,
+/// and the declared type of every section, whether or not the instance holds one, so a type is rejected in both
+/// directions or in neither, and reading rejects it whether or not the document has the section. A member left out with
+/// <see cref="Bodu.Text.Serialization.IgnoreAttribute" /> is not checked. A string-keyed dictionary, as the root or as
+/// a section, is checked by its entries' values instead, as they are written.
 /// </para>
 /// <para>
 /// Deserialization always routes through the normalized document model, applying the options' duplicate-section and
@@ -64,11 +72,12 @@ public static partial class IniSerializer
     /// <param name="options">The serializer options, or <see langword="null" /> to use the defaults.</param>
     /// <returns>The INI text.</returns>
     /// <exception cref="IniSerializationException">
-    /// Thrown when <typeparamref name="T" /> cannot be mapped to an INI document, including when a dictionary entry
-    /// that is not a section holds a value that is not a scalar, or when <paramref name="value" /> maps to a key,
-    /// section name or value that <see cref="Utf8IniWriter" /> refuses because it would not read back unchanged; the
-    /// message then names the section and key, and the writer's <see cref="ArgumentException" /> is the inner
-    /// exception.
+    /// Thrown when <typeparamref name="T" /> cannot be mapped to an INI document, including when the type of
+    /// <paramref name="value" /> has a member INI cannot represent, which is reported before anything is written, when
+    /// a dictionary entry that is not a section holds a value that is not a scalar, or when <paramref name="value" />
+    /// maps to a key, section name or value that <see cref="Utf8IniWriter" /> refuses because it would not read back
+    /// unchanged; the message then names the section and key, and the writer's <see cref="ArgumentException" /> is the
+    /// inner exception.
     /// </exception>
     [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
     [RequiresDynamicCode(RequiresDynamicCodeMessage)]
@@ -91,11 +100,12 @@ public static partial class IniSerializer
     /// Thrown when <paramref name="destination" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="IniSerializationException">
-    /// Thrown when <typeparamref name="T" /> cannot be mapped to an INI document, including when a dictionary entry
-    /// that is not a section holds a value that is not a scalar, or when <paramref name="value" /> maps to a key,
-    /// section name or value that <see cref="Utf8IniWriter" /> refuses because it would not read back unchanged; the
-    /// message then names the section and key, and the writer's <see cref="ArgumentException" /> is the inner
-    /// exception.
+    /// Thrown when <typeparamref name="T" /> cannot be mapped to an INI document, including when the type of
+    /// <paramref name="value" /> has a member INI cannot represent, which is reported before anything is written, when
+    /// a dictionary entry that is not a section holds a value that is not a scalar, or when <paramref name="value" />
+    /// maps to a key, section name or value that <see cref="Utf8IniWriter" /> refuses because it would not read back
+    /// unchanged; the message then names the section and key, and the writer's <see cref="ArgumentException" /> is the
+    /// inner exception.
     /// </exception>
     [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
     [RequiresDynamicCode(RequiresDynamicCodeMessage)]
@@ -124,11 +134,12 @@ public static partial class IniSerializer
     /// Thrown when <paramref name="destination" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="IniSerializationException">
-    /// Thrown when <typeparamref name="T" /> cannot be mapped to an INI document, including when a dictionary entry
-    /// that is not a section holds a value that is not a scalar, or when <paramref name="value" /> maps to a key,
-    /// section name or value that <see cref="Utf8IniWriter" /> refuses because it would not read back unchanged; the
-    /// message then names the section and key, and the writer's <see cref="ArgumentException" /> is the inner
-    /// exception.
+    /// Thrown when <typeparamref name="T" /> cannot be mapped to an INI document, including when the type of
+    /// <paramref name="value" /> has a member INI cannot represent, which is reported before anything is written, when
+    /// a dictionary entry that is not a section holds a value that is not a scalar, or when <paramref name="value" />
+    /// maps to a key, section name or value that <see cref="Utf8IniWriter" /> refuses because it would not read back
+    /// unchanged; the message then names the section and key, and the writer's <see cref="ArgumentException" /> is the
+    /// inner exception.
     /// </exception>
     [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
     [RequiresDynamicCode(RequiresDynamicCodeMessage)]
@@ -155,7 +166,8 @@ public static partial class IniSerializer
     /// <exception cref="IniFormatException">Thrown when the text is not valid INI.</exception>
     /// <exception cref="IniSerializationException">
     /// Thrown when the document cannot be mapped to <typeparamref name="T" />, including when <typeparamref name="T" />,
-    /// or the type of a section it is read into, is abstract or has no public parameterless constructor.
+    /// or the type of a section it is read into, is abstract or has no public parameterless constructor, or when
+    /// <typeparamref name="T" /> has a member INI cannot represent, which is reported before the input is read.
     /// </exception>
     [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
     [RequiresDynamicCode(RequiresDynamicCodeMessage)]
@@ -179,14 +191,14 @@ public static partial class IniSerializer
     /// </exception>
     /// <exception cref="IniSerializationException">
     /// Thrown when the document cannot be mapped to <typeparamref name="T" />, including when <typeparamref name="T" />,
-    /// or the type of a section it is read into, is abstract or has no public parameterless constructor.
+    /// or the type of a section it is read into, is abstract or has no public parameterless constructor, or when
+    /// <typeparamref name="T" /> has a member INI cannot represent, which is reported before the input is read.
     /// </exception>
     [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
     [RequiresDynamicCode(RequiresDynamicCodeMessage)]
     public static T Deserialize<T>(ReadOnlySpan<byte> utf8Ini, IniSerializerOptions? options = null)
     {
-        IniSerializerOptions effective = options ?? IniSerializerOptions.Default;
-        effective.MakeReadOnly();
+        IniSerializerOptions effective = PrepareRead(typeof(T), options);
 
         IniNormalizedDocument document = IniNormalizedDocument.Parse(utf8Ini, IniReaderOptions.Default, effective.ToDocumentOptions());
 
@@ -206,7 +218,8 @@ public static partial class IniSerializer
     /// <exception cref="IniFormatException">Thrown when the content is not valid INI.</exception>
     /// <exception cref="IniSerializationException">
     /// Thrown when the document cannot be mapped to <typeparamref name="T" />, including when <typeparamref name="T" />,
-    /// or the type of a section it is read into, is abstract or has no public parameterless constructor.
+    /// or the type of a section it is read into, is abstract or has no public parameterless constructor, or when
+    /// <typeparamref name="T" /> has a member INI cannot represent, which is reported before the input is read.
     /// </exception>
     [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
     [RequiresDynamicCode(RequiresDynamicCodeMessage)]
@@ -214,10 +227,12 @@ public static partial class IniSerializer
     {
         ThrowHelper.ThrowIfNull(source);
 
+        IniSerializerOptions effective = PrepareRead(typeof(T), options);
+
         using var memory = new MemoryStream();
         source.CopyTo(memory);
 
-        return Deserialize<T>(memory.GetBuffer().AsSpan(0, (int)memory.Length), options);
+        return Deserialize<T>(memory.GetBuffer().AsSpan(0, (int)memory.Length), effective);
     }
 
     /// <summary>
@@ -235,7 +250,8 @@ public static partial class IniSerializer
     /// <exception cref="IniFormatException">Thrown when the content is not valid INI.</exception>
     /// <exception cref="IniSerializationException">
     /// Thrown when the document cannot be mapped to <typeparamref name="T" />, including when <typeparamref name="T" />,
-    /// or the type of a section it is read into, is abstract or has no public parameterless constructor.
+    /// or the type of a section it is read into, is abstract or has no public parameterless constructor, or when
+    /// <typeparamref name="T" /> has a member INI cannot represent, which is reported before the input is read.
     /// </exception>
     [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
     [RequiresDynamicCode(RequiresDynamicCodeMessage)]
@@ -243,9 +259,31 @@ public static partial class IniSerializer
     {
         ThrowHelper.ThrowIfNull(source);
 
+        IniSerializerOptions effective = PrepareRead(typeof(T), options);
+
         using var memory = new MemoryStream();
         await source.CopyToAsync(memory, cancellationToken).ConfigureAwait(false);
 
-        return Deserialize<T>(memory.GetBuffer().AsSpan(0, (int)memory.Length), options);
+        return Deserialize<T>(memory.GetBuffer().AsSpan(0, (int)memory.Length), effective);
+    }
+
+    /// <summary>
+    /// Resolves the options a read uses and checks the target type's shape, before any input is read.
+    /// </summary>
+    /// <param name="targetType">The type to read the document into.</param>
+    /// <param name="options">The serializer options, or <see langword="null" /> to use the defaults.</param>
+    /// <returns>The read-only options to read with.</returns>
+    /// <exception cref="IniSerializationException">
+    /// Thrown when <paramref name="targetType" /> cannot hold an INI document: a scalar or a collection other than a
+    /// string-keyed dictionary, a type that maps two members to one name, or one with a member INI cannot represent.
+    /// </exception>
+    [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
+    private static IniSerializerOptions PrepareRead(Type targetType, IniSerializerOptions? options)
+    {
+        IniSerializerOptions effective = options ?? IniSerializerOptions.Default;
+        effective.MakeReadOnly();
+        ThrowIfRootNotSupported(targetType, effective);
+
+        return effective;
     }
 }

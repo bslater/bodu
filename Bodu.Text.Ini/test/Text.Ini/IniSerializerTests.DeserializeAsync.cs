@@ -28,4 +28,22 @@ public partial class IniSerializerTests
         Assert.IsNotNull(config.Database);
         Assert.AreEqual(7, config.Database.Port);
     }
+
+    /// <summary>
+    /// Verifies that a type with a member INI cannot represent is rejected before the stream is read, leaving the
+    /// stream at its start.
+    /// </summary>
+    /// <returns>A task that completes when the assertion has run.</returns>
+    [TestMethod]
+    public async Task DeserializeAsync_WhenTheTypeHasAMemberIniCannotRepresent_ShouldThrowBeforeReadingTheStream()
+    {
+        using var stream = new MemoryStream(Encoding.UTF8.GetBytes("Name=a\n"));
+
+        await Assert.ThrowsExactlyAsync<IniSerializationException>(async () =>
+        {
+            _ = await IniSerializer.DeserializeAsync<GetOnlyRootListConfig>(stream);
+        });
+
+        Assert.AreEqual(0, stream.Position);
+    }
 }

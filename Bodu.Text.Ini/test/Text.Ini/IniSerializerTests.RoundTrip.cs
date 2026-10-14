@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Test.Kat;
 using Bodu.Text.Serialization;
 
 namespace Bodu.Text.Ini;
@@ -386,5 +387,67 @@ public partial class IniSerializerTests
         });
 
         Assert.AreEqual(written.Message, read.Message);
+    }
+
+    /// <summary>
+    /// Verifies that a type with a member INI cannot represent, whatever the member's accessors and whatever the
+    /// instance holds, is rejected in both directions with the same <see cref="IniSerializationException" />.
+    /// </summary>
+    /// <param name="kat">The root type and the exception it raises.</param>
+    [TestMethod]
+    [DynamicData(
+        nameof(UnrepresentableMemberTypes),
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
+    public void SerializeDeserialize_WhenTheTypeHasAMemberIniCannotRepresent_ShouldThrowTheSameExceptionInBothDirections(InvalidKat<Type> kat)
+    {
+        object value = Activator.CreateInstance(kat.Input)!;
+
+        var written = Assert.ThrowsExactly<IniSerializationException>(() =>
+        {
+            _ = IniSerializer.Serialize(value);
+        });
+
+        var read = Assert.ThrowsExactly<IniSerializationException>(() =>
+        {
+            _ = DeserializeAs(kat.Input, "Name=a\n");
+        });
+
+        Assert.AreEqual(written.Message, read.Message);
+        Assert.IsTrue(read.Message.Contains(kat.MessageContains!, StringComparison.Ordinal), read.Message);
+    }
+
+    /// <summary>
+    /// Verifies that members INI cannot represent, left out with <see cref="Bodu.Text.Serialization.IgnoreAttribute" />
+    /// at the root and in a section whatever their accessors, do not stop the type from being written and read back.
+    /// </summary>
+    [TestMethod]
+    public void SerializeDeserialize_WhenMembersIniCannotRepresentAreIgnored_ShouldReadBack()
+    {
+        var config = new IgnoredUnrepresentableConfig { Name = "app", S = new IgnoredUnrepresentableSection { Host = "db" } };
+
+        IgnoredUnrepresentableConfig result = IniSerializer.Deserialize<IgnoredUnrepresentableConfig>(IniSerializer.Serialize(config));
+
+        Assert.AreEqual("app", result.Name);
+        Assert.AreEqual("db", result.S.Host);
+    }
+
+    /// <summary>
+    /// Verifies that a type whose shapes INI represents, a get-only scalar, a <see langword="null" /> section and a
+    /// get-only section of scalars, is written and read back under every default ignore condition.
+    /// </summary>
+    /// <param name="condition">The options' default ignore condition.</param>
+    [TestMethod]
+    [DataRow(IgnoreCondition.Never)]
+    [DataRow(IgnoreCondition.WhenWritingNull)]
+    [DataRow(IgnoreCondition.WhenWritingDefault)]
+    public void SerializeDeserialize_WhenEveryMemberIsRepresentable_ShouldReadBackUnderEveryCondition(IgnoreCondition condition)
+    {
+        var options = new IniSerializerOptions { DefaultIgnoreCondition = condition };
+
+        RepresentableShapesConfig result = IniSerializer.Deserialize<RepresentableShapesConfig>(IniSerializer.Serialize(new RepresentableShapesConfig { Name = "app" }, options), options);
+
+        Assert.AreEqual("app", result.Name);
+        Assert.AreEqual("a", result.Fixed.Name);
     }
 }
