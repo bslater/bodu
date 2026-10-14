@@ -4,8 +4,12 @@
     <PropertyGroup>
         <TargetFrameworks>$(BoduNetTargets)</TargetFrameworks>
 
-        <!-- Preview tier: ships on the preview stream, not at BoduBaseVersion. -->
-        <BoduPackageVersionOverride>$(BoduPreviewVersion)</BoduPackageVersionOverride>
+        <!--
+            Stable tier, promoted from the preview stream in 1.3.0. Until 1.3.0 is on nuget.org the
+            package validates against its last preview release, since it has never shipped at the
+            Stable baseline; delete this pin then (bld/RELEASING.md, Post-publish).
+        -->
+        <PackageValidationBaselineVersion>0.7.1</PackageValidationBaselineVersion>
         <RootNamespace>Bodu</RootNamespace>
         <Title>Bodu - exchangerate.host Exchange Rates</Title>
         <Description>exchangerate.host exchange-rate provider for Bodu.Financial. Fetches and parses the exchangerate.host time-series and historical JSON endpoints and serves the results as Bodu.Financial.ExchangeRates.ExchangeRate values through IDatedRateProvider and IRateProvider, with an async range API over currency pairs. Includes the dependency-injection registration extensions (AddExchangeRateHostExchangeRates) for IServiceCollection and IFinancialServiceBuilder.</Description>

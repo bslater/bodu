@@ -1,6 +1,10 @@
 # Bodu.Financial.ExchangeRates.Ofx
 
-> **API stability - Preview.** The public API surface is largely settled but is still being finalized ahead of the 1.0 release and may change; breaking changes can land in a minor version until then.
+> **API stability - Experimental.** The public API surface and behaviour are still evolving and may change or be removed without a major-version bump.
+
+> **No published API.** OFX documents no API for the spot-rate-history service this provider
+> reads: the service backs the ofx.com website and can change without notice, and the provider
+> would then stop working with no change on the Bodu side. Pair it with a Stable provider.
 
 A [Bodu.Financial](../Bodu.Financial) exchange-rate provider backed by **OFX's**
 (ofx.com) spot-rate history, queried from their public JSON endpoint.

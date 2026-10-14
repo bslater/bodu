@@ -1,6 +1,11 @@
 # Bodu.Financial.ExchangeRates.Oanda
 
-> **API stability - Preview.** The public API surface is largely settled but is still being finalized ahead of the 1.0 release and may change; breaking changes can land in a minor version until then.
+> **API stability - Experimental.** The public API surface and behaviour are still evolving and may change or be removed without a major-version bump.
+
+> **No published API.** OANDA documents no API for the Historical Currency Converter service
+> this provider reads, and the service is gated by bot mitigation. It can change without notice,
+> and the provider would then stop working with no change on the Bodu side. Pair it with a
+> Stable provider.
 
 > **Not published to nuget.org.** This package is withheld from nuget.org on purpose (see the
 > [package matrix](https://github.com/bslater/bodu/blob/master/docs/docs/package-matrix.md#not-published-to-nugetorg));

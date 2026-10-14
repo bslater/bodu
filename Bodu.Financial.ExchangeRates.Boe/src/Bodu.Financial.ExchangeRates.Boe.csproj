@@ -4,8 +4,12 @@
     <PropertyGroup>
         <TargetFrameworks>$(BoduNetTargets)</TargetFrameworks>
 
-        <!-- Preview tier: ships on the preview stream, not at BoduBaseVersion. -->
-        <BoduPackageVersionOverride>$(BoduPreviewVersion)</BoduPackageVersionOverride>
+        <!--
+            Stable tier, promoted from the preview stream in 1.3.0. Until 1.3.0 is on nuget.org the
+            package validates against its last preview release, since it has never shipped at the
+            Stable baseline; delete this pin then (bld/RELEASING.md, Post-publish).
+        -->
+        <PackageValidationBaselineVersion>0.7.1</PackageValidationBaselineVersion>
         <RootNamespace>Bodu</RootNamespace>
         <Title>Bodu - BoE Exchange Rates</Title>
         <Description>Bank of England (BoE) daily spot exchange-rate provider for Bodu.Financial. Queries the BoE's Interactive Statistical Database (IADB) CSV endpoint and serves the results as Bodu.Financial.ExchangeRates.ExchangeRate values through IDatedRateProvider and IRateProvider, with an async range API and in-memory plus on-disk caching. Includes dependency-injection extensions that register the provider on a configured, resilient HttpClient and bind its options.</Description>

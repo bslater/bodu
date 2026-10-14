@@ -191,7 +191,12 @@ unable to confirm that anything is new.
    package runs the ApiCompat comparison against its stream's last release,
    catching accidental breaking changes at pack time. Delete any entry in a
    `CompatibilitySuppressions.xml` that only the old baseline needed, since
-   ApiCompat fails a pack on a suppression it no longer needs. Verify once
+   ApiCompat fails a pack on a suppression it no longer needs. Delete, too,
+   the `PackageValidationBaselineVersion` pin of every package the release
+   promoted from the preview stream (see
+   [Promoting a package to Stable](#promoting-a-package-to-stable)), so it
+   validates against the Stable baseline from then on: 1.3.0 promoted ten,
+   each pinned to 0.7.1. Verify once
    nuget.org lists the packages (each baseline package is restored during
    validation), with the release's own pack, which validates both streams:
 
@@ -255,6 +260,27 @@ goes red and the site never goes dark:
 
 That ordering is the lesson from the original cutover, where the reverse was
 written down first and would have produced a window of failing runs.
+
+## Promoting a package to Stable
+
+A package moves from the preview stream to Stable in the release that
+first ships it at `BoduBaseVersion`:
+
+1. Retier its README banner to Stable, and delete the
+   `<BoduPackageVersionOverride>$(BoduPreviewVersion)</BoduPackageVersionOverride>`
+   line from its csproj.
+2. In the same csproj, pin `PackageValidationBaselineVersion` to its last
+   preview release. It has never shipped at the Stable baseline, so a pack
+   compared with that baseline would fail with `NU1102`. A command-line
+   `-p:PackageValidationBaselineVersion` cannot stand in, because it also
+   reaches the package's dependencies.
+3. Update its status in `docs/docs/package-matrix.md` and the pages that
+   repeat it (`python3 bld/check-docs.py status` lists them), and its
+   `ROADMAP.md` tier.
+4. After the release is on nuget.org, delete the pin (Post-publish step 3).
+
+`bld/check-release-manifest.sh` fails a package tiered Stable that still
+ships on the preview stream.
 
 ## Next waves
 

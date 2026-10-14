@@ -1,6 +1,13 @@
 # Bodu.Financial.ExchangeRates.Yahoo
 
-> **API stability - Preview.** The public API surface is largely settled but is still being finalized ahead of the 1.0 release and may change; breaking changes can land in a minor version until then.
+> **API stability - Experimental.** The public API surface and behaviour are still evolving and may change or be removed without a major-version bump.
+
+> **No published API.** Yahoo publishes no API for the Yahoo Finance chart service this
+> provider reads, and Yahoo's [terms of service](https://legal.yahoo.com/us/en/yahoo/terms/otos/index.html)
+> do not permit collecting data from its services by automated means without its permission.
+> Check that your use is permitted. The service can change, or start refusing requests, without
+> notice, and the provider would then stop working with no change on the Bodu side. Pair it with
+> a Stable provider.
 
 A [Bodu.Financial](../Bodu.Financial) exchange-rate provider backed by the **Yahoo
 Finance** chart REST service.

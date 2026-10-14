@@ -34,7 +34,8 @@ dotnet add package Bodu.Collections
 
 Every package's own `README.md` (shown on its NuGet page) states its API-stability tier. **Stable**
 packages follow semantic versioning from 1.0; **Preview** packages stay below 1.0 while their API
-settles, and may change between minor versions.
+settles, and may change between minor versions; **Experimental** packages also stay below 1.0,
+because they read a feed with no published API that can stop working without notice.
 
 ## Building from source
 

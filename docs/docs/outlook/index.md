@@ -22,11 +22,11 @@ Every public type in all three packages lives in the single flattened `Bodu.Form
 
 | You have | You want | Install | Status |
 |---|---|---|---|
-| A `.msg` file | The subject, sender, recipients, attachments, bodies, and every MAPI property of one message | `Bodu.Formats.Outlook.Msg` | Preview |
-| A `.pst` archive | The folder hierarchy and every message, recipient, and attachment in a mail store | `Bodu.Formats.Outlook.Pst` | Preview |
-| Either, in a library that only models properties | The value model alone - tags, collections, named-property identities - without a container | `Bodu.Formats.Outlook` | Preview |
+| A `.msg` file | The subject, sender, recipients, attachments, bodies, and every MAPI property of one message | `Bodu.Formats.Outlook.Msg` | Stable |
+| A `.pst` archive | The folder hierarchy and every message, recipient, and attachment in a mail store | `Bodu.Formats.Outlook.Pst` | Stable |
+| Either, in a library that only models properties | The value model alone - tags, collections, named-property identities - without a container | `Bodu.Formats.Outlook` | Stable |
 | A `.msg` (or any OLE2 file) | The raw named streams and storages, with no MAPI interpretation | `Bodu.IO.Compound` | Stable |
-| A `.pst` | The raw nodes, property contexts, and table contexts, with no MAPI interpretation | `Bodu.IO.Pst` | Preview |
+| A `.pst` | The raw nodes, property contexts, and table contexts, with no MAPI interpretation | `Bodu.IO.Pst` | Stable |
 
 The two readers reference `Bodu.Formats.Outlook` transitively, so installing either one is enough for its format. Install both when an application handles `.msg` attachments extracted from a `.pst` - the value model, the recipient type, and the enumerations are shared, so code written against one reader's property surface carries over to the other.
 

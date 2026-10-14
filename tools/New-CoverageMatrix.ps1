@@ -175,14 +175,14 @@ $packableProjects = Get-ChildItem -Path $repoRoot -Filter '*.csproj' -Recurse -F
 
 $packableNames = @($packableProjects | ForEach-Object { $_.BaseName } | Sort-Object -Unique)
 
-# Package status (Stable / Preview) as published by the package matrix.
+# Package status (Stable / Preview / Experimental) as published by the package matrix.
 $status = @{}
 $packageMatrixPath = Join-Path $repoRoot 'docs/docs/package-matrix.md'
 if (Test-Path -LiteralPath $packageMatrixPath) {
     foreach ($line in Get-Content -LiteralPath $packageMatrixPath) {
         if ($line -match '`(Bodu\.[A-Za-z0-9.]+)`' ) {
             $name = $Matches[1]
-            if ($line -match '\|\s*(Stable|Preview)\s*\|' -and -not $status.ContainsKey($name)) {
+            if ($line -match '\|\s*(Stable|Preview|Experimental)\s*\|' -and -not $status.ContainsKey($name)) {
                 $status[$name] = $Matches[1]
             }
         }

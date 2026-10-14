@@ -9,6 +9,7 @@ not backported to earlier release lines.
 |---|---|
 | **Stable** (1.0 and later) | The latest release of the current major version |
 | **Preview** (below 1.0) | The latest release only |
+| **Experimental** (below 1.0) | The latest release only |
 
 Each package's `README.md`, shown on its nuget.org page, states which tier it belongs to. Packages that
 are built in this repository but not published to nuget.org are not covered.
