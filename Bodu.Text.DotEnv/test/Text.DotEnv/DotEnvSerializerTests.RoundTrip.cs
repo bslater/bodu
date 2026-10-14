@@ -246,4 +246,34 @@ public partial class DotEnvSerializerTests
 
         Assert.AreEqual(string.Empty, result.Value);
     }
+
+    /// <summary>
+    /// Verifies that a root whose type is a nullable structure reads back as the value written.
+    /// </summary>
+    [TestMethod]
+    public void SerializeDeserialize_WhenTheRootIsANullableStruct_ShouldReadBackItsValue()
+    {
+        PortStruct? value = new PortStruct { Port = 5, Host = "h" };
+
+        PortStruct? result = DotEnvSerializer.Deserialize<PortStruct?>(DotEnvSerializer.Serialize(value));
+
+        Assert.AreEqual(value, result);
+    }
+
+    /// <summary>
+    /// Verifies that under <see cref="IgnoreCondition.WhenWritingDefault" /> nullable members that hold their underlying
+    /// types' defaults read back as those values rather than as <see langword="null" />.
+    /// </summary>
+    [TestMethod]
+    public void SerializeDeserialize_WhenNullableMembersHoldTheirUnderlyingDefaults_UnderWhenWritingDefault_ShouldReadBackEachValue()
+    {
+        var options = new DotEnvSerializerOptions { DefaultIgnoreCondition = IgnoreCondition.WhenWritingDefault };
+        var config = new NullableDefaultsConfig { Number = 0, Flag = false, At = default(DateTime) };
+
+        NullableDefaultsConfig result = DotEnvSerializer.Deserialize<NullableDefaultsConfig>(DotEnvSerializer.Serialize(config, options), options);
+
+        Assert.AreEqual(0, result.Number);
+        Assert.AreEqual(false, result.Flag);
+        Assert.AreEqual(default(DateTime), result.At);
+    }
 }

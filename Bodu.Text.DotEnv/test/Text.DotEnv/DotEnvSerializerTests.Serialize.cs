@@ -443,4 +443,43 @@ public partial class DotEnvSerializerTests
 
         Assert.AreEqual(string.Format(CultureInfo.CurrentCulture, DotEnvResourceStrings.Op_Invalid_DotEnvValueNotScalar, "Counts", typeof(Dictionary<string, int>)), ex.Message);
     }
+
+    /// <summary>
+    /// Verifies that a root whose type is a nullable structure is written as the structure itself is.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenTheRootIsANullableStruct_ShouldWriteTheStruct()
+    {
+        var value = new PortStruct { Port = 5, Host = "h" };
+
+        Assert.AreEqual(DotEnvSerializer.Serialize(value), DotEnvSerializer.Serialize<PortStruct?>(value));
+    }
+
+    /// <summary>
+    /// Verifies that under <see cref="IgnoreCondition.WhenWritingDefault" /> a nullable member that holds its underlying
+    /// type's default, <c>0</c>, <see langword="false" /> or a default <see cref="DateTime" />, is written, since a
+    /// nullable member's default is <see langword="null" />, as <c>System.Text.Json</c> decides it.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenNullableMembersHoldTheirUnderlyingDefaults_UnderWhenWritingDefault_ShouldWriteThem()
+    {
+        var options = new DotEnvSerializerOptions { DefaultIgnoreCondition = IgnoreCondition.WhenWritingDefault };
+        var config = new NullableDefaultsConfig { Number = 0, Flag = false, At = default(DateTime) };
+
+        string text = DotEnvSerializer.Serialize(config, options);
+
+        Assert.AreEqual("Number=0\nFlag=false\nAt=0001-01-01T00:00:00.0000000\n", text);
+    }
+
+    /// <summary>
+    /// Verifies that under <see cref="IgnoreCondition.WhenWritingDefault" /> a nullable member that is
+    /// <see langword="null" />, its declared type's default, is still left out.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenNullableMembersAreNull_UnderWhenWritingDefault_ShouldLeaveThemOut()
+    {
+        var options = new DotEnvSerializerOptions { DefaultIgnoreCondition = IgnoreCondition.WhenWritingDefault };
+
+        Assert.AreEqual(string.Empty, DotEnvSerializer.Serialize(new NullableDefaultsConfig(), options));
+    }
 }

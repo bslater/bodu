@@ -268,7 +268,9 @@ internal static class FactoryEmitter
     /// The member's own <c>[Ignore]</c> condition applies, and a member without one takes <c>WhenWritingNull</c>, the
     /// default of <c>IniSerializerOptions.DefaultIgnoreCondition</c>: a factory never sees the options, so it cannot
     /// follow another default. <c>WhenWritingNull</c> leaves out a <see langword="null" /> value, and
-    /// <c>WhenWritingDefault</c> also a value type's default, as the binder does.
+    /// <c>WhenWritingDefault</c> the default of the member's declared type, as the binder does: <see langword="null" />
+    /// for a reference type and for a nullable value type, whose underlying type's default is written, and the zero
+    /// value of any other value type.
     /// </remarks>
     private static string? BuildWriteCondition(MemberModel member, string receiver)
     {
@@ -288,10 +290,12 @@ internal static class FactoryEmitter
             if (IsReferenceType(member))
                 return $"{access} is not null";
 
+            // A nullable member's default is null, so it is left out only when it holds no value.
+            if (member.IsNullable)
+                return $"{access}.HasValue";
+
             string comparer = $"global::System.Collections.Generic.EqualityComparer<{member.TypeDisplay}>.Default";
-            return member.IsNullable
-                ? $"{access}.HasValue && !{comparer}.Equals({access}.Value, default({member.TypeDisplay}))"
-                : $"!{comparer}.Equals({access}, default({member.TypeDisplay}))";
+            return $"!{comparer}.Equals({access}, default({member.TypeDisplay}))";
         }
 
         return null;

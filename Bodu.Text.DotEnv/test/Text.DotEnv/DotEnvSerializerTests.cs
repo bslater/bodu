@@ -170,6 +170,24 @@ public partial class DotEnvSerializerTests
     }
 
     /// <summary>
+    /// A POCO of nullable members, each of which can hold its underlying type's default.
+    /// </summary>
+    public sealed class NullableDefaultsConfig
+    {
+        /// <summary>Gets or sets an optional number.</summary>
+        /// <value>The number, or <see langword="null" />.</value>
+        public int? Number { get; set; }
+
+        /// <summary>Gets or sets an optional flag.</summary>
+        /// <value>The flag, or <see langword="null" />.</value>
+        public bool? Flag { get; set; }
+
+        /// <summary>Gets or sets an optional time.</summary>
+        /// <value>The time, or <see langword="null" />.</value>
+        public DateTime? At { get; set; }
+    }
+
+    /// <summary>
     /// A value-type POCO with two members.
     /// </summary>
     public struct PortStruct

@@ -148,7 +148,7 @@ public static partial class DotEnvSerializer
 
             object? memberValue = member.GetValue(value);
 
-            if (FlatBinding.ShouldSkipOnWrite(memberValue, member.IgnoreCondition, options.DefaultIgnoreCondition))
+            if (FlatBinding.ShouldSkipOnWrite(memberValue, member.MemberType, member.IgnoreCondition, options.DefaultIgnoreCondition))
                 continue;
 
             ThrowIfNotScalar(memberValue, member.MemberType, member.ScalarKind, member.Name);
@@ -177,7 +177,8 @@ public static partial class DotEnvSerializer
         if (IsScalarOrEnumerable(targetType))
             throw new DotEnvSerializationException(string.Format(CultureInfo.CurrentCulture, DotEnvResourceStrings.Op_Invalid_DotEnvRootType, targetType));
 
-        ThrowIfAnyMemberIsNotScalar(targetType, options);
+        // A nullable structure is read into the structure, so the structure's members are checked.
+        ThrowIfAnyMemberIsNotScalar(Nullable.GetUnderlyingType(targetType) ?? targetType, options);
     }
 
     /// <summary>
@@ -214,6 +215,10 @@ public static partial class DotEnvSerializer
     /// <exception cref="DotEnvSerializationException">
     /// Thrown when the document cannot be mapped to the target type.
     /// </exception>
+    /// <remarks>
+    /// A target type that is a <see cref="Nullable{T}" /> of a structure is read into the structure, which the caller
+    /// unboxes into the nullable type, as a root of the structure itself is read.
+    /// </remarks>
     [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
     [RequiresDynamicCode(RequiresDynamicCodeMessage)]
     private static object ReadValue(List<KeyValuePair<string, string>> entries, Type targetType, DotEnvSerializerOptions options)
@@ -224,7 +229,7 @@ public static partial class DotEnvSerializer
         if (IsScalarOrEnumerable(targetType))
             throw new DotEnvSerializationException(string.Format(CultureInfo.CurrentCulture, DotEnvResourceStrings.Op_Invalid_DotEnvRootType, targetType));
 
-        return ReadPoco(entries, targetType, options);
+        return ReadPoco(entries, Nullable.GetUnderlyingType(targetType) ?? targetType, options);
     }
 
     /// <summary>

@@ -823,4 +823,28 @@ public partial class DelimitedSerializerTests
 
         CollectionAssert.AreEqual(new[] { new KeyValuePair<string, int>("a", 1) }, result);
     }
+
+    /// <summary>
+    /// Verifies that records whose type is a nullable structure are read into the structure, as records of the
+    /// structure itself are, rather than rejected for <see cref="Nullable{T}.Value" />.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenTheRecordTypeIsANullableStruct_ShouldReadEachRecordIntoTheStruct()
+    {
+        List<PortRecord?> result = DelimitedSerializer.Deserialize<PortRecord?>("Port,Host\n5,h\n6,i\n");
+
+        CollectionAssert.AreEqual(new PortRecord?[] { new PortRecord { Port = 5, Host = "h" }, new PortRecord { Port = 6, Host = "i" } }, result);
+    }
+
+    /// <summary>
+    /// Verifies that records whose type is a nullable <see cref="KeyValuePair{TKey, TValue}" /> bind their <c>Key</c>
+    /// and <c>Value</c> columns through the pair's constructor, as records of the pair itself do.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenTheRecordTypeIsANullableKeyValuePair_ShouldBindKeyAndValue()
+    {
+        List<KeyValuePair<string, int>?> result = DelimitedSerializer.Deserialize<KeyValuePair<string, int>?>("Key,Value\na,1\n");
+
+        CollectionAssert.AreEqual(new KeyValuePair<string, int>?[] { new KeyValuePair<string, int>("a", 1) }, result);
+    }
 }

@@ -263,4 +263,20 @@ public partial class FormatFactoryGeneratorTests
             MaybeDay = setEveryMember ? new DateOnly(1999, 12, 31) : null,
             MaybeLarge = setEveryMember ? Int128.MaxValue : null,
         };
+
+    /// <summary>
+    /// Verifies that the generated INI factory writes a nullable member whose own condition is
+    /// <see cref="IgnoreCondition.WhenWritingDefault" /> when it holds <c>0</c>, since a nullable member's default is
+    /// <see langword="null" />, and leaves it out only when it is <see langword="null" />, as INI's reflection binder
+    /// does.
+    /// </summary>
+    [TestMethod]
+    public void IniFactory_WhenANullableMemberUnderWhenWritingDefaultHoldsZero_ShouldWriteIt()
+    {
+        string zero = IniSerializer.SerializeSection("conditional", new GeneratedConditionalSection { MaybeZero = 0 }, GeneratedConditionalSection.IniFactory);
+        string none = IniSerializer.SerializeSection("conditional", new GeneratedConditionalSection(), GeneratedConditionalSection.IniFactory);
+
+        Assert.IsTrue(zero.Contains("MaybeZero=0", StringComparison.Ordinal), zero);
+        Assert.IsFalse(none.Contains("MaybeZero", StringComparison.Ordinal), none);
+    }
 }

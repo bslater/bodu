@@ -43,7 +43,8 @@ public sealed partial class GeneratedConditionalSection
     public int Zero { get; set; }
 
     /// <summary>
-    /// Gets or sets an optional number that is left out when it is <see langword="null" /> or zero.
+    /// Gets or sets an optional number that is left out only when it is <see langword="null" />, a nullable number's
+    /// default, so that zero is written.
     /// </summary>
     /// <value>The number, or <see langword="null" />.</value>
     [Bodu.Text.Serialization.Ignore(Condition = IgnoreCondition.WhenWritingDefault)]
