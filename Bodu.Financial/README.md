@@ -1,6 +1,6 @@
 # Bodu.Financial
 
-> **API stability - Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
+> **API stability - Stable.** The public API surface is committed: breaking changes are reserved for a major-version bump per [SemVer](https://semver.org), except a deliberate break that is recorded in the release notes and in the package's `CompatibilitySuppressions.xml`. See [versioning and support](https://bslater.github.io/bodu/docs/versioning-and-support.html).
 
 Financial primitives for .NET - runtime-tagged and strongly-typed money, an ISO 4217 currency catalogue (the active currencies, less the fund and special-purpose codes, plus 29 historic ones, with numeric codes and an enum covering every shipped code), multi-currency aggregates, and a foreign-exchange provider stack with both runtime and typed rate forms.
 

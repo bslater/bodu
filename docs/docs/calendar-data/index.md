@@ -6,7 +6,7 @@ title: Bodu.Globalization.Calendar data packs - Introduction
 
 ![Bodu.Globalization.Calendar.Americas](../../images/hero-calendar-americas.svg)
 
-The **`Bodu.Globalization.Calendar.<Region>`** packages are the curated holiday data for the calendar runtime: five independent NuGet packages - **Americas**, **AsiaPacific**, **Europe**, **MiddleEast**, and **Africa** - each embedding one self-contained rule document per country (national rules plus the subdivisions the pack authors, such as `AU-NSW`, `CA-ON`, `DE-BY`, `GB-SCT`, `US-CA`) and exposing a single `<Region>CalendarData` factory. They are part of the **[Globalization & Calendars](../topics/globalization-and-calendars.md)** topic and ship on their own cadence, so a rule correction never forces a runtime rebuild.
+The **`Bodu.Globalization.Calendar.<Region>`** packages are the curated holiday data for the calendar runtime: five independent NuGet packages - **Americas**, **AsiaPacific**, **Europe**, **MiddleEast**, and **Africa** - each embedding one self-contained rule document per country (national rules plus the subdivisions the pack authors, such as `AU-NSW`, `CA-ON`, `DE-BY`, `GB-SCT`, `US-CA`) and exposing a single `<Region>CalendarData` factory. They are part of the **[Globalization & Calendars](../topics/globalization-and-calendars.md)** topic. They version with the runtime, in the Stable stream (see [Versioning, stability, and support](../versioning-and-support.md)), and the runtime takes no dependency on them, so an application references only the regions it needs.
 
 Install only the regions you need. The runtime `Bodu.Globalization.Calendar` is required by every pack; nothing else is.
 

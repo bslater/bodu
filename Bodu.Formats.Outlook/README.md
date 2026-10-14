@@ -1,6 +1,6 @@
 # Bodu.Formats.Outlook
 
-> **API stability - Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
+> **API stability - Stable.** The public API surface is committed: breaking changes are reserved for a major-version bump per [SemVer](https://semver.org), except a deliberate break that is recorded in the release notes and in the package's `CompatibilitySuppressions.xml`. See [versioning and support](https://bslater.github.io/bodu/docs/versioning-and-support.html).
 
 The shared **MAPI value model** for the Bodu Outlook format readers: property tags and
 types, decoded property values with a tag-addressed collection, named-property

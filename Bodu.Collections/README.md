@@ -1,6 +1,6 @@
 # Bodu.Collections
 
-> **API stability - Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
+> **API stability - Stable.** The public API surface is committed: breaking changes are reserved for a major-version bump per [SemVer](https://semver.org), except a deliberate break that is recorded in the release notes and in the package's `CompatibilitySuppressions.xml`. See [versioning and support](https://bslater.github.io/bodu/docs/versioning-and-support.html).
 
 The specialized generic-collection catalogue for the Bodu solution and for general use on .NET 8 and .NET 10: bounded and ordered collections, bidirectional and layered dictionaries, navigable (order-statistic) sets and maps, interval and range-keyed lookups, graph and tree structures, and probabilistic sketches. The catalogue was split out of `Bodu.Core` with namespaces unchanged - code written against `Bodu.Collections.Generic` and its siblings keeps compiling; only the package reference changes. Most collections ship a struct enumerator for allocation-free iteration, and the collections implement the standard BCL interfaces (`IEnumerable<T>`, `ICollection<T>`, `IReadOnlyCollection<T>`, `ISet<T>`, `IList<T>`) so the types drop into existing code. The package references `Bodu.Core` for its shared `ThrowHelper` argument validation.
 

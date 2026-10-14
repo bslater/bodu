@@ -1,6 +1,6 @@
 # Bodu.Financial.Serialization.Json
 
-> **API stability - Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
+> **API stability - Stable.** The public API surface is committed: breaking changes are reserved for a major-version bump per [SemVer](https://semver.org), except a deliberate break that is recorded in the release notes and in the package's `CompatibilitySuppressions.xml`. See [versioning and support](https://bslater.github.io/bodu/docs/versioning-and-support.html).
 
 `System.Text.Json` integration for **[Bodu.Financial](https://www.nuget.org/packages/Bodu.Financial)**. The core library is deliberately serialization-agnostic - its monetary types carry no `[JsonConverter]` attribute and take no `System.Text.Json` integration of their own - so JSON support is opt-in through this companion package (the NodaTime companion-package pattern):
 

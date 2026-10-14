@@ -33,9 +33,12 @@ dotnet add package Bodu.Collections
 | **Binary formats and I/O** | [`Bodu.IO.Compound`](https://www.nuget.org/packages/Bodu.IO.Compound), [`Bodu.IO.Biff`](https://www.nuget.org/packages/Bodu.IO.Biff), [`Bodu.Formats.Excel.Binary`](https://www.nuget.org/packages/Bodu.Formats.Excel.Binary), [`Bodu.IO.Pst`](https://www.nuget.org/packages/Bodu.IO.Pst), [`Bodu.Formats.Outlook.Msg`](https://www.nuget.org/packages/Bodu.Formats.Outlook.Msg), [`Bodu.Formats.Outlook.Pst`](https://www.nuget.org/packages/Bodu.Formats.Outlook.Pst) |
 
 Every package's own `README.md` (shown on its NuGet page) states its API-stability tier. **Stable**
-packages follow semantic versioning from 1.0; **Preview** packages stay below 1.0 while their API
-settles, and may change between minor versions; **Experimental** packages also stay below 1.0,
-because they read a feed with no published API that can stop working without notice.
+packages follow semantic versioning from 1.0, apart from a deliberate break recorded in the release
+notes (1.3.0's replacement of `WeekPattern` is the one so far); **Preview** packages stay below 1.0
+while their API settles, and may change between minor versions; **Experimental** packages also stay
+below 1.0, because they read a feed with no published API that can stop working without notice. The
+packages install separately but version together, the Stable ones at one version and the others at
+another: see [versioning and support](https://bslater.github.io/bodu/docs/versioning-and-support.html).
 
 ## Building from source
 

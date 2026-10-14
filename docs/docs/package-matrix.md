@@ -44,7 +44,7 @@ For the high-level shape of each library, follow the **Intro** link in the table
 
 ## Companion packages
 
-Several capabilities ship as independent companion packages so they can release on their own cadence without forcing a main-library rebuild. The calendar runtime in particular is intentionally small - fluent rule authoring, plugin loading, and dependency-injection registration are all opt-in.
+Several capabilities ship as separate companion packages, so a consumer installs only what it uses and the main library takes on none of their dependencies. They version with the rest of their stream (see [Versioning, stability, and support](versioning-and-support.md)). The calendar runtime in particular is intentionally small - fluent rule authoring, plugin loading, and dependency-injection registration are all opt-in.
 
 | Package | Status | Version | Purpose | Depends on |
 |---|---|---|---|---|
@@ -169,11 +169,11 @@ See the [Calendar introduction](calendar/index.md) for how the companion package
 
 | Status | What it commits to |
 |---|---|
-| **Stable** | The public API surface is committed. Breaking changes are reserved for a major-version bump; additive changes ship in minor versions; bug fixes in patch versions. |
+| **Stable** | The public API surface is committed. Breaking changes are reserved for a major-version bump, except a deliberate break that is recorded in the release notes and in the package's `CompatibilitySuppressions.xml` - 1.3.0's replacement of `WeekPattern` with `DayOfWeekSet` in `Bodu.Core`, `Bodu.Globalization.Calendar`, and `Bodu.Globalization.Calendar.Builder` is the one so far. Additive changes ship in minor versions; bug fixes in patch versions. |
 | **Preview** | Offered for early evaluation. The public API surface is still taking shape and may change between releases without a major-version bump. |
 | **Experimental** | Behaviour depends on an external resource that offers no versioned contract (for example a scraped web page), so it can stop working without any change on the Bodu side. Treat it as best-effort and pair it with a stable alternative. |
 
-Status describes the **API contract**, not availability: it says what a version bump may do to code you have already written. Whether a package is on nuget.org is a separate decision, and four packages in this matrix are deliberately not - see below.
+Status describes the **API contract**, not availability: it says what a version bump may do to code you have already written. [Versioning, stability, and support](versioning-and-support.md) covers the two version streams, the 1.3.0 break, and which releases receive fixes. Whether a package is on nuget.org is a separate decision, and four packages in this matrix are deliberately not - see below.
 
 ## Not published to nuget.org
 

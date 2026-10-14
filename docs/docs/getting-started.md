@@ -18,7 +18,7 @@ dotnet --version
 
 ## Install
 
-Each package is versioned and released independently; install only the ones you need. `Bodu.Core` is the common foundation and is pulled in automatically. A few packages layer on other Bodu packages - `Bodu.Financial` on `Bodu.Numerics`, `Bodu.Formats.Excel.Binary` on `Bodu.IO.Compound` and `Bodu.IO.Biff`, `Bodu.IO.Pst` on `Bodu.Collections`, every serializer on `Bodu.Text.Serialization` - and NuGet resolves those transitively too; the [package matrix](package-matrix.md) lists each package's dependencies.
+Each package installs independently; install only the ones you need. The packages version together, though: every Stable package ships at 1.3.0 and every Preview or Experimental package at 0.7.2, so keep your `Bodu.*` references on matching versions - [Versioning, stability, and support](versioning-and-support.md) explains the two streams. `Bodu.Core` is the common foundation and is pulled in automatically. A few packages layer on other Bodu packages - `Bodu.Financial` on `Bodu.Numerics`, `Bodu.Formats.Excel.Binary` on `Bodu.IO.Compound` and `Bodu.IO.Biff`, `Bodu.IO.Pst` on `Bodu.Collections`, every serializer on `Bodu.Text.Serialization` - and NuGet resolves those transitively too; the [package matrix](package-matrix.md) lists each package's dependencies.
 
 ```bash
 # Core Foundations

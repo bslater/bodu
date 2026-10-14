@@ -1,6 +1,6 @@
 # Bodu.Security.Cryptography
 
-> **API stability - Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
+> **API stability - Stable.** The public API surface is committed: breaking changes are reserved for a major-version bump per [SemVer](https://semver.org), except a deliberate break that is recorded in the release notes and in the package's `CompatibilitySuppressions.xml`. See [versioning and support](https://bslater.github.io/bodu/docs/versioning-and-support.html).
 
 Managed implementations of modern and legacy cryptographic primitives for .NET 8 and later. The library provides block ciphers, AEAD modes, hash and MAC functions, padding schemes, asymmetric key agreement and signatures (including the FIPS 203/204 post-quantum algorithms), and the supporting transform infrastructure to compose them. Most algorithms are exposed through the standard `SymmetricAlgorithm` / `HashAlgorithm` / `AsymmetricAlgorithm` contracts so they slot into existing BCL pipelines (including `CryptoStream`); the keyed hashes are `HashAlgorithm`s with a `Key` property, through Bodu's `KeyedBlockHashAlgorithm` and `KeyedDeferredFinalBlockHashAlgorithm` rather than the BCL `KeyedHashAlgorithm`, and the stream ciphers, AEAD transforms, ASCON XOFs, KDFs, and Merkle tree have their own shapes.
 

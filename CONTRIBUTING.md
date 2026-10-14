@@ -14,8 +14,10 @@ Everyone taking part is expected to follow the [Code of Conduct](CODE_OF_CONDUCT
   instead. Documentation that contradicts the library's behaviour is a bug too.
 - **Features and API changes:** open an issue with the **Feature request** form before writing code, so
   the shape of the API can be agreed first. Each package's `README.md` states its API-stability tier: a
-  **Stable** package does not take breaking changes outside a major version, so a proposal that breaks
-  one needs a strong case.
+  **Stable** package does not take breaking changes outside a major version, except a deliberate break
+  recorded in the release notes and in the package's `CompatibilitySuppressions.xml` (1.3.0's
+  replacement of `WeekPattern` with `DayOfWeekSet` is the one so far), so a proposal that breaks one
+  needs a strong case.
 
 Search the [existing issues](https://github.com/bslater/bodu/issues) first; a comment on an existing
 issue is better than a duplicate.
@@ -142,7 +144,10 @@ Every pull request runs:
 
 A change to a published package's public API is also compared against its last release by package
 validation when the package is packed, which CI does on every pull request. An intended breaking change
-needs a reviewed reason and, for a Stable package, a major version.
+needs a reviewed reason and, for a Stable package, a major version, unless the maintainers accept it as a
+deliberate break inside a minor release: then it is recorded, with its reason, in the package's
+`CompatibilitySuppressions.xml` and called out in the release notes, as 1.3.0's `WeekPattern` removal
+was.
 
 ## License
 

@@ -1,6 +1,6 @@
 # Bodu.Collections.Concurrent
 
-> **API stability - Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
+> **API stability - Stable.** The public API surface is committed: breaking changes are reserved for a major-version bump per [SemVer](https://semver.org), except a deliberate break that is recorded in the release notes and in the package's `CompatibilitySuppressions.xml`. See [versioning and support](https://bslater.github.io/bodu/docs/versioning-and-support.html).
 
 The thread-safe collection variants of the Bodu collection catalogue: a lock-free bounded MPMC ring buffer, a lock-free split-ordered concurrent set, a lock-striped bounded cache, and a read-optimized bounded cache with lock-free reads. The original two types were split out of `Bodu.Collections` with the namespace unchanged - code written against `Bodu.Collections.Generic.Concurrent` keeps compiling; only the package reference changes. All collections implement the standard BCL interfaces and ship struct enumerators over best-effort snapshots. The package references `Bodu.Collections` (and transitively `Bodu.Core`).
 
