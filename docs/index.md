@@ -356,6 +356,5 @@ the rule-pack toolchain - are
   <a href="docs/package-matrix.md">Package matrix</a>
   <a href="docs/getting-started.md">Getting started</a>
   <a href="guides/index.md">Guides</a>
-  <a href="articles/index.md">Articles</a>
   <a href="xref:Bodu">API reference</a>
 </div>

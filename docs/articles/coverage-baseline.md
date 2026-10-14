@@ -5,6 +5,9 @@ Cobertura report. Regenerate with `pwsh tools/New-CoverageMatrix.ps1`; do not ha
 
 Legend: `-` = not part of this collection · `n/a` = excluded by design (see [Code coverage strategy](code-coverage.md)).
 
+> [!NOTE]
+> This table is the last full collection, at the commit named under [Baseline evidence](#baseline-evidence), and it has not been regenerated since. It predates `Bodu.IO.Biff` and `Bodu.Formats.Outlook.Pst`, so neither has a row, and a package that has grown since shows its size at that commit (`Bodu.IO.Pst`'s 408 lines, for one). The current floor of every package, those two included, is in `bld/coverage-thresholds.json`, which the coverage workflow enforces on every collection.
+
 | Package | Status | Line % | Branch % | Covered / total lines |
 |---|---|--:|--:|--:|
 | `Bodu.Collections` | Stable | 97.7% | 95.9% | 6028 / 6171 |

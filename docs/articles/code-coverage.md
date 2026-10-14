@@ -118,8 +118,9 @@ the standard KAT suites; coverage simply depends on where the suite runs. The
 report that prompted this work was collected on a non-AVX512 machine, which is
 why those files appeared at 0%.
 
-> **Measured correction - see [Coverage baseline](coverage-baseline.md).** That
-> reasoning holds for whichever path the host *can* execute, but it has been used
+> **Measured correction (historical: it predates the SIMD-off assembly's linked
+> known-answer suites, described under [The switch itself](#the-switch-itself)).**
+> That reasoning holds for whichever path the host *can* execute, but it has been used
 > to wave away both. Collected on an **AVX512-capable** host with
 > `Bodu.Security.Cryptography.Simd.Test` in the merge, the split is:
 >
@@ -130,9 +131,11 @@ why those files appeared at 0%.
 >
 > The scalar fallbacks are a **real** gap, not a hardware artifact:
 > `ThreefishBlockCipher.1024.cs` sits at 8.3%, `.256.cs` at 19.0%, and `.512.cs`
-> at 12.8%. The two-run merge is what should close this, but
-> `Bodu.Security.Cryptography.Simd.Test` runs **3 tests** against the main
-> suite's 28,757 - the feature switch works, the suite behind it is a stub.
+> at 12.8%. The two-run merge is what should close this, but at the time
+> `Bodu.Security.Cryptography.Simd.Test` ran **3 tests** against the main
+> suite's 28,757 - the feature switch worked, the suite behind it was a stub. It
+> now links the main suite's test infrastructure and fourteen of its known-answer
+> source files.
 >
 > The symmetry is what makes this easy to miss: on a non-AVX512 machine the same
 > gap is invisible, because there the scalar paths are the ones the KAT suite
