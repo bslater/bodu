@@ -154,4 +154,69 @@ public sealed partial class FixedDateStrategyTests
 
         Assert.AreEqual("day", ex.ParamName);
     }
+
+    /// <summary>
+    /// Verifies that a Gregorian day beyond the longest its month ever has, which the loader rejects with
+    /// <c>BODU-CAL-DAY</c>, throws <see cref="ArgumentOutOfRangeException" /> naming the <c>day</c> parameter, through
+    /// both constructors.
+    /// </summary>
+    /// <param name="month">The month.</param>
+    /// <param name="day">The day.</param>
+    [TestMethod]
+    [DataRow(2, 30)]
+    [DataRow(2, 31)]
+    [DataRow(4, 31)]
+    [DataRow(6, 31)]
+    [DataRow(9, 31)]
+    [DataRow(11, 31)]
+    public void Ctor_WhenGregorianDayIsBeyondTheMonthsLongest_ShouldThrowArgumentOutOfRangeException(int month, int day)
+    {
+        var shortEx = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = new FixedDateStrategy(month, day);
+        });
+        var longEx = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = new FixedDateStrategy(month, day, CalendarSystem.Gregorian, sweepCalendarYears: false, skipLeapMonth: false, monthAlias: null);
+        });
+
+        Assert.AreEqual(("day", "day"), (shortEx.ParamName, longEx.ParamName));
+    }
+
+    /// <summary>
+    /// Verifies that the longest day a Gregorian month ever has is kept, February 29 included.
+    /// </summary>
+    /// <param name="month">The month.</param>
+    /// <param name="day">The day.</param>
+    [TestMethod]
+    [DataRow(1, 31)]
+    [DataRow(2, 29)]
+    [DataRow(4, 30)]
+    [DataRow(11, 30)]
+    [DataRow(12, 31)]
+    public void Ctor_WhenGregorianDayIsTheMonthsLongest_ShouldKeepTheDay(int month, int day)
+    {
+        var strategy = new FixedDateStrategy(month, day);
+
+        Assert.AreEqual((month, day), (strategy.Month, strategy.Day));
+    }
+
+    /// <summary>
+    /// Verifies that a calendar other than the Gregorian keeps the day bound the loader holds it to, 1 to 31, for every
+    /// month, since its month lengths vary from year to year.
+    /// </summary>
+    /// <param name="calendar">The calendar system.</param>
+    /// <param name="month">The month.</param>
+    [TestMethod]
+    [DataRow(CalendarSystem.Hijri, 2)]
+    [DataRow(CalendarSystem.UmmAlQura, 12)]
+    [DataRow(CalendarSystem.Persian, 12)]
+    [DataRow(CalendarSystem.Hebrew, 13)]
+    [DataRow(CalendarSystem.ChineseLunisolar, 2)]
+    public void Ctor_WhenDayIsThirtyFirstInAnotherCalendar_ShouldKeepTheDay(CalendarSystem calendar, int month)
+    {
+        var strategy = new FixedDateStrategy(month, 31, calendar, sweepCalendarYears: false, skipLeapMonth: false, monthAlias: null);
+
+        Assert.AreEqual(31, strategy.Day);
+    }
 }

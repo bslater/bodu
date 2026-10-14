@@ -223,6 +223,22 @@ public sealed class AdjustmentScope
         string.IsNullOrEmpty(notableDateRef) ? ruleRef : notableDateRef + RuleRefSeparator + ruleRef;
 
     /// <summary>
+    /// Splits a rule reference a scope stores into the concept it names, if any, and the rule, the inverse of
+    /// <see cref="QualifyRuleRef" />.
+    /// </summary>
+    /// <param name="scoped">The rule reference declared by the scope.</param>
+    /// <returns>
+    /// The text before the first separator and the text after it, or <see langword="null" /> and the whole reference
+    /// when it holds no separator.
+    /// </returns>
+    internal static (string? NotableDateRef, string RuleRef) SplitRuleRef(string scoped)
+    {
+        int separator = scoped.IndexOf(RuleRefSeparator, StringComparison.Ordinal);
+
+        return separator < 0 ? (null, scoped) : (scoped[..separator], scoped[(separator + 1)..]);
+    }
+
+    /// <summary>
     /// Determines whether a scoped rule reference names the supplied rule.
     /// </summary>
     /// <param name="scoped">The rule reference declared by the scope.</param>

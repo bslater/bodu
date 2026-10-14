@@ -397,7 +397,7 @@ public sealed partial class ParserValidationTests
     /// </summary>
     /// <param name="pack">The pack, as its assembly's name and its resource name.</param>
     /// <returns>The XML document.</returns>
-    private static string BundledPackXml(string pack)
+    internal static string BundledPackXml(string pack)
     {
         string assemblyName = pack[..pack.IndexOf('/', StringComparison.Ordinal)];
         Assembly assembly = BundledPackAssemblies().Single(candidate => candidate.GetName().Name == assemblyName);
@@ -413,7 +413,7 @@ public sealed partial class ParserValidationTests
     /// </summary>
     /// <param name="name">The imported resource's name.</param>
     /// <returns>The XML document, or <see langword="null" /> when no assembly embeds the name.</returns>
-    private static string? ResolveBundledPack(string name)
+    internal static string? ResolveBundledPack(string name)
     {
         foreach (Assembly assembly in BundledPackAssemblies())
         {

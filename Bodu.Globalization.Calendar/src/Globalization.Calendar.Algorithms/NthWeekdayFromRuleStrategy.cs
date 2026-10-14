@@ -44,14 +44,22 @@ public sealed class NthWeekdayFromRuleStrategy
     /// <exception cref="ArgumentNullException">
     /// <paramref name="notableDateRef" /> is <see langword="null" />.
     /// </exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="notableDateRef" />, or a <paramref name="ruleRef" /> that is not <see langword="null" />, is not
+    /// an identifier a notable-date document could declare: groups of lowercase ASCII letters and digits joined by
+    /// single hyphens, beginning with a letter.
+    /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="dayOfWeek" /> is not a defined <see cref="System.DayOfWeek" />, or <paramref name="ordinal" />
-    /// is zero.
+    /// is zero or has an absolute value greater than 366.
     /// </exception>
     public NthWeekdayFromRuleStrategy(string notableDateRef, string? ruleRef, DayOfWeek dayOfWeek, int ordinal, int referenceYearOffset = 0)
     {
         ThrowHelper.ThrowIfNull(notableDateRef);
+        NotableDateSchemaPatterns.ThrowIfNotMatch(notableDateRef, NotableDateSchemaPattern.Identifier);
+        if (ruleRef is not null) NotableDateSchemaPatterns.ThrowIfNotMatch(ruleRef, NotableDateSchemaPattern.Identifier);
         ThrowHelper.ThrowIfEnumValueIsUndefined(dayOfWeek);
+        ThrowHelper.ThrowIfOutOfRange(ordinal, NotableDateSchemaRanges.MinimumOrdinal, NotableDateSchemaRanges.MaximumOrdinal);
         if (ordinal == 0)
             throw new ArgumentOutOfRangeException(nameof(ordinal), CalendarResourceStrings.Arg_OutOfRange_OrdinalZero);
 

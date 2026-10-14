@@ -7,7 +7,8 @@
 namespace Bodu.Globalization.Calendar;
 
 /// <summary>
-/// The exception thrown when a notable-date document resource fails to load because one or more error-severity
+/// The exception thrown when a notable-date document resource fails to load, or a resource is refused by
+/// <see cref="NotableDateBinaryResource.Write(NotableDateResource, Stream)" />, because one or more error-severity
 /// validation diagnostics were produced. This class cannot be inherited.
 /// </summary>
 /// <remarks>

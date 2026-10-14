@@ -18,6 +18,7 @@ The <xref:Bodu.Globalization.Calendar.Builder.NotableDateDocumentBuilder> serial
 | `ToXml()` → canonical loader | **Loader parity.** XML the builder emits, loaded through <xref:Bodu.Globalization.Calendar.NotableDateResourceLoader>, assembles the same resource as calling `Build()` directly - `Build()` *is* the canonical loader over `ToXml()`. | `…Serialization.ToXml_WhenLoadedByResourceLoader_ShouldMatchDirectBuild` |
 | `ToXml()` vs `ToJson()` of the same document | **Format parity.** When a document fits the JSON subset, its XML and JSON serializations resolve identical occurrences. | `…Serialization.ToXmlAndToJson_WhenResolved_ShouldAgree` |
 | `Save(path)` → `Load(path)` | **Disk round-trip.** Saving and re-loading a document (`.xml` or `.json`, format inferred from the extension) resolves identically. A `.bcal` save writes a binary rule pack, which `Load` rejects with `NotSupportedException`. | `…SaveLoad.SaveLoad_WhenXmlFile_ShouldRoundTripThroughDisk`, `…SaveLoad_WhenJsonFile_ShouldRoundTripThroughDisk` |
+| `SaveBinary(stream)` → `NotableDateResourceLoader.LoadBinary` | **Same resolved occurrences.** A document compiled to a binary rule pack loads back as a resource that resolves the same dates as `Build()`. The pack holds only content the loader accepts: `SaveBinary` builds through the canonical loader, and `NotableDateBinaryResource.Write` runs the loader's identifier, duplicate and cross-reference checks again before encoding. | `…SaveBinary.SaveBinary_WhenWrittenToStream_ShouldLoadWithResolutionParity` |
 | `Clone()` | **Deep, independent copy.** Mutating a clone never affects the original. | `…Clone` partial |
 
 ## XML is the full-fidelity format
@@ -69,6 +70,7 @@ Load such documents with `NotableDateResourceLoader.LoadJson` instead.
 
 - **Byte identity for hand-authored input.** Formatting, comments, and lexical variants are normalized to the canonical form (see above).
 - **JSON representability of every document.** XML → JSON throws for features outside the subset; it never degrades the document.
+- **Revalidation of a binary rule pack on load.** `LoadBinary` checks a pack's structure, enumeration values, references, model-constructor domains and digest, but not the loader's identifier, duplicate and cross-reference rules, which `Write` applied before encoding. A pack not produced by `Write`, such as one edited by hand, is not revalidated; load the document it was compiled from to validate it.
 - **Stability of the canonical rendering across library versions.** The canonical XML/JSON layout may evolve between versions; the semantic (resolved-occurrence) guarantees are the durable contract. Do not diff canonical output across different library versions as a change-detection mechanism.
 
 ## Where to go next

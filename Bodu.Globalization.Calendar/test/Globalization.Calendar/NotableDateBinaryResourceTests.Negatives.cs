@@ -61,6 +61,27 @@ public sealed partial class NotableDateBinaryResourceTests
     }
 
     /// <summary>
+    /// Verifies that a pack whose Gregorian fixed strategy names a day its month never has, which the loader rejects with
+    /// <c>BODU-CAL-DAY</c>, is rejected with <see cref="NotableDateBinaryFormatException" /> carrying the strategy's
+    /// <see cref="ArgumentOutOfRangeException" />, rather than read as a rule that never occurs.
+    /// </summary>
+    [TestMethod]
+    public void Read_WhenFixedStrategyDayIsBeyondTheGregorianMonthsLongest_ShouldThrowBinaryFormatException()
+    {
+        byte[] pack = WritePack(FixedRuleResource("Gregorian", "2", 29));
+
+        // Month 2 is the zigzag byte 0x04 and day 29 the byte 0x3A; day 30 is 0x3C.
+        PatchStrategy(pack, [NotableDateBinaryFormat.StrategyFixedDate, 0x04, 0x3A, (byte)CalendarSystem.Gregorian], 2, 0x3C);
+
+        var ex = Assert.ThrowsExactly<NotableDateBinaryFormatException>(() =>
+        {
+            _ = ReadPack(pack);
+        });
+
+        Assert.IsInstanceOfType<ArgumentOutOfRangeException>(ex.InnerException);
+    }
+
+    /// <summary>
     /// Verifies that a pack whose strategy carries a weekday value <see cref="DayOfWeek" /> does not define, which the
     /// loader rejects with <c>BODU-CAL-ENUM</c> and the strategy's constructor accepts, is rejected with
     /// <see cref="NotableDateBinaryFormatException" /> by the reader's own enumeration check.

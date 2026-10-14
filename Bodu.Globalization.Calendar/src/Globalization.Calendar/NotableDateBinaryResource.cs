@@ -17,12 +17,16 @@ namespace Bodu.Globalization.Calendar;
 /// </summary>
 /// <remarks>
 /// <para>
-/// A pack is written from an already-built resource, so only content that passed the canonical loader's validation is
-/// ever encoded, and reading a pack skips parsing and validation entirely - the trim- and AOT-friendly load path. The
-/// format is <em>sealed</em>: it enumerates the engine's strategy, recurrence, and duration types exhaustively with
-/// one-byte discriminators, carries no type names and no extension points, and the reader rejects unknown versions,
-/// unknown discriminators, undefined enum values, out-of-range references, truncation, and payload-digest mismatches
-/// with <see cref="NotableDateBinaryFormatException" />.
+/// <see cref="Write(NotableDateResource, Stream)" /> runs the loader's identifier, duplicate and cross-reference checks
+/// on the resource before it encodes anything, and refuses a resource the loader would reject with the
+/// <see cref="NotableDateValidationException" /> and diagnostics the loader reports, so a resource assembled in code is
+/// held to the rules a document is. Reading a pack skips parsing and that validation entirely - the trim- and
+/// AOT-friendly load path - so a pack not produced by <see cref="Write(NotableDateResource, Stream)" />, such as one
+/// edited by hand, is not revalidated. The format is <em>sealed</em>: it enumerates the engine's strategy, recurrence,
+/// and duration types exhaustively with one-byte discriminators, carries no type names and no extension points, and the
+/// reader rejects unknown versions, unknown discriminators, undefined enum values, out-of-range references, values a
+/// model constructor refuses, truncation, and payload-digest mismatches with
+/// <see cref="NotableDateBinaryFormatException" />.
 /// </para>
 /// <para>
 /// Writing is byte-stable: the same resource always produces the same bytes, so build systems can use pack outputs for
@@ -40,22 +44,67 @@ namespace Bodu.Globalization.Calendar;
 public static partial class NotableDateBinaryResource
 {
     /// <summary>
-    /// Writes a resource to a stream in the binary rule-pack format.
+    /// Writes a resource to a stream in the binary rule-pack format, accepting only the built-in algorithm keys.
     /// </summary>
-    /// <param name="resource">The validated resource to encode.</param>
+    /// <param name="resource">The resource to encode.</param>
     /// <param name="stream">The writable stream receiving the pack.</param>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="resource" /> or <paramref name="stream" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="NotableDateValidationException">
+    /// The resource fails one of the loader's identifier, duplicate or cross-reference checks, such as a concept
+    /// identifier that is not an identifier, two concepts sharing one, or an algorithm key that is not built in; the
+    /// <see cref="NotableDateValidationException.Diagnostics" /> are those the loader reports, and nothing is written.
     /// </exception>
     /// <exception cref="NotSupportedException">
     /// A rule uses a calculation strategy, recurrence strategy, or duration definition outside the sealed set the
     /// format enumerates, such as a custom <see cref="IDateCalculationStrategy" /> in a resource assembled in code; the
     /// message names the unsupported type.
     /// </exception>
-    public static void Write(NotableDateResource resource, Stream stream)
+    /// <remarks>
+    /// A resource the loader produced passes the checks, unless it was loaded with a custom algorithm registry; write
+    /// such a resource with <see cref="Write(NotableDateResource, Stream, INotableDateAlgorithmRegistry)" />.
+    /// </remarks>
+    public static void Write(NotableDateResource resource, Stream stream) =>
+        Write(resource, stream, null);
+
+    /// <summary>
+    /// Writes a resource to a stream in the binary rule-pack format, accepting the algorithm keys a registry declares
+    /// as well as the built-in ones.
+    /// </summary>
+    /// <param name="resource">The resource to encode.</param>
+    /// <param name="stream">The writable stream receiving the pack.</param>
+    /// <param name="algorithms">
+    /// The custom algorithm registry whose keys the resource's algorithm strategies may name, as the loader accepts
+    /// them, or <see langword="null" /> to accept only the built-in keys.
+    /// </param>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="resource" /> or <paramref name="stream" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="NotableDateValidationException">
+    /// The resource fails one of the loader's identifier, duplicate or cross-reference checks, such as a concept
+    /// identifier that is not an identifier, two concepts sharing one, or an algorithm key that is neither built in nor
+    /// declared by <paramref name="algorithms" />; the <see cref="NotableDateValidationException.Diagnostics" /> are
+    /// those the loader reports, and nothing is written.
+    /// </exception>
+    /// <exception cref="NotSupportedException">
+    /// A rule uses a calculation strategy, recurrence strategy, or duration definition outside the sealed set the
+    /// format enumerates, such as a custom <see cref="IDateCalculationStrategy" /> in a resource assembled in code; the
+    /// message names the unsupported type.
+    /// </exception>
+    /// <remarks>
+    /// The checks are those the loader runs on the resource it assembles: each identifier, reference and territory code
+    /// against the pattern the notable-date schema requires of it (<c>BODU-CAL-SCHEMA</c>), duplicate concept, rule and
+    /// adjustment-policy identifiers, adjustment and strategy references that do not resolve, inverted year bounds,
+    /// adjustment actions missing their target or handler, and algorithm keys. The registry is not recorded in the
+    /// pack; a reader resolves an algorithm key against the registry its service is given.
+    /// </remarks>
+    public static void Write(NotableDateResource resource, Stream stream, INotableDateAlgorithmRegistry? algorithms)
     {
         ThrowHelper.ThrowIfNull(resource);
         ThrowHelper.ThrowIfNull(stream);
+
+        ThrowIfLoaderWouldReject(resource, algorithms);
 
         using PayloadWriter writer = new();
         WriteResource(writer, resource);
@@ -79,6 +128,30 @@ public static partial class NotableDateBinaryResource
 
         stream.Write(header);
         stream.Write(payload);
+    }
+
+    /// <summary>
+    /// Runs the loader's identifier, duplicate and cross-reference checks on a resource, throwing when any reports an
+    /// error.
+    /// </summary>
+    /// <param name="resource">The resource to check.</param>
+    /// <param name="algorithms">
+    /// The custom algorithm registry whose keys are accepted, or <see langword="null" />.
+    /// </param>
+    /// <exception cref="NotableDateValidationException">One or more checks reported an error.</exception>
+    private static void ThrowIfLoaderWouldReject(NotableDateResource resource, INotableDateAlgorithmRegistry? algorithms)
+    {
+        List<NotableDateValidationDiagnostic> diagnostics = [];
+        NotableDateRuleValidator.ValidateIdentifiers(resource, diagnostics);
+        NotableDateRuleValidator.Validate(resource, diagnostics, algorithms);
+
+        int errors = diagnostics.Count(d => d.Severity == NotableDateValidationSeverity.Error);
+        if (errors > 0)
+        {
+            throw new NotableDateValidationException(
+                string.Format(CultureInfo.CurrentCulture, CalendarResourceStrings.Op_Invalid_BinaryPackResourceInvalid, resource.ResourceId, errors),
+                diagnostics);
+        }
     }
 
     /// <summary>

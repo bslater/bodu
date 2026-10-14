@@ -84,6 +84,9 @@
   <data name="Op_Invalid_NoNonWorkingDayFound" xml:space="preserve">
     <value>No non-working day was found within the search limit.</value>
   </data>
+  <data name="Op_Invalid_BinaryPackResourceInvalid" xml:space="preserve">
+    <value>The resource '{0}' cannot be written as a binary rule pack: it fails the loader's validation with {1} error diagnostic(s). Inspect the Diagnostics collection for details.</value>
+  </data>
   <data name="Op_NotSupported_BinaryPackType" xml:space="preserve">
     <value>The binary rule-pack format cannot encode '{0}'; it supports only the built-in calculation strategies, recurrence strategies, and duration definitions.</value>
   </data>
@@ -233,6 +236,9 @@
   </data>
   <data name="Arg_Invalid_MonthAlias" xml:space="preserve">
     <value>'{0}' is not a Hebrew month alias. Expected AdarII, LastAdar, Nisan, Iyar, Sivan, Tammuz, Av or Elul.</value>
+  </data>
+  <data name="Arg_Invalid_SchemaPatternMismatch" xml:space="preserve">
+    <value>The value '{0}' does not match the pattern '{1}' the notable-date schema requires.</value>
   </data>
   <data name="Validation_DurationConflict" xml:space="preserve">
     <value>Notable date '{0}', rule '{1}': a rule must not declare both durationDays and a calculated end-date duration.</value>

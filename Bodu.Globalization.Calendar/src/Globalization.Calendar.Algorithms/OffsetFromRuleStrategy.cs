@@ -46,9 +46,16 @@ public sealed class OffsetFromRuleStrategy
     /// <exception cref="ArgumentNullException">
     /// <paramref name="notableDateRef" /> is <see langword="null" />.
     /// </exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="notableDateRef" />, or a <paramref name="ruleRef" /> that is not <see langword="null" />, is not
+    /// an identifier a notable-date document could declare: groups of lowercase ASCII letters and digits joined by
+    /// single hyphens, beginning with a letter.
+    /// </exception>
     public OffsetFromRuleStrategy(string notableDateRef, string? ruleRef, int offsetDays)
     {
         ThrowHelper.ThrowIfNull(notableDateRef);
+        NotableDateSchemaPatterns.ThrowIfNotMatch(notableDateRef, NotableDateSchemaPattern.Identifier);
+        if (ruleRef is not null) NotableDateSchemaPatterns.ThrowIfNotMatch(ruleRef, NotableDateSchemaPattern.Identifier);
 
         NotableDateRef = notableDateRef;
         RuleRef = ruleRef;

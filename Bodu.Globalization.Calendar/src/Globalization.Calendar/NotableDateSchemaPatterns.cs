@@ -5,13 +5,14 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Globalization;
+using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 
 namespace Bodu.Globalization.Calendar;
 
 /// <summary>
 /// Holds the patterns the notable-date XML schema enforces on identifiers, references, territory codes and ordinals, as
-/// the schema writes them, so the JSON reader applies the same ones.
+/// the schema writes them, so the JSON reader and the strategy constructors apply the same ones.
 /// </summary>
 internal static partial class NotableDateSchemaPatterns
 {
@@ -78,6 +79,23 @@ internal static partial class NotableDateSchemaPatterns
                 NotableDateValidationSeverity.Error,
                 "BODU-CAL-SCHEMA",
                 string.Format(CultureInfo.CurrentCulture, CalendarResourceStrings.Validation_SchemaPatternMismatch, field, value, GetPattern(pattern)));
+
+    /// <summary>
+    /// Throws an <see cref="ArgumentException" /> when a value does not match a pattern as the schema matches it, so a
+    /// model constructor refuses a value the loader would reject.
+    /// </summary>
+    /// <param name="value">The value. Must not be <see langword="null" />.</param>
+    /// <param name="pattern">The pattern the schema enforces on the value.</param>
+    /// <param name="paramName">The name of the parameter that supplied the value.</param>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="value" /> does not match <paramref name="pattern" />.
+    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="pattern" /> names no pattern.</exception>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static void ThrowIfNotMatch(string value, NotableDateSchemaPattern pattern, [CallerArgumentExpression(nameof(value))] string? paramName = null)
+    {
+        if (!IsMatch(value, pattern)) throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, CalendarResourceStrings.Arg_Invalid_SchemaPatternMismatch, value, GetPattern(pattern)), paramName);
+    }
 
     /// <summary>
     /// Returns the expression that matches a whole value against the <see cref="Identifier" /> pattern.

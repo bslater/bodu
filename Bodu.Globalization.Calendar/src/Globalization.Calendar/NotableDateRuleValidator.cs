@@ -10,13 +10,11 @@ namespace Bodu.Globalization.Calendar;
 
 /// <summary>
 /// Performs the pre-resolution semantic validation that the XSD cannot express: duplicate identities, unresolved
-/// adjustment references, inverted year bounds, and impossible fixed dates.
+/// adjustment and strategy references, and inverted year bounds; and, for a resource no reader produced, the identifier
+/// patterns the XSD does express.
 /// </summary>
 internal static class NotableDateRuleValidator
 {
-    /// <summary>The maximum day-of-month for each month, indexed so that January is at index zero and February allows 29.</summary>
-    private static readonly int[] s_maxDaysPerMonth = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-
     /// <summary>
     /// Validates the assembled resource, recording an error diagnostic for each violation.
     /// </summary>
@@ -32,6 +30,85 @@ internal static class NotableDateRuleValidator
         ValidateAdjustmentActions(resource, diagnostics);
         ValidateAdjustmentTriggers(resource, diagnostics);
         ValidateNotableDates(resource, diagnostics, algorithms);
+    }
+
+    /// <summary>
+    /// Reports each identifier, reference and territory code of an assembled resource that breaks the pattern the
+    /// notable-date schema requires of it, with the <c>BODU-CAL-SCHEMA</c> error the JSON reader reports for the same
+    /// value.
+    /// </summary>
+    /// <param name="resource">The resource to validate.</param>
+    /// <param name="diagnostics">The collection that receives validation diagnostics.</param>
+    /// <remarks>
+    /// The loader checks these values as it reads a document, so <see cref="Validate" /> does not repeat the check; a
+    /// resource assembled in code, which no reader produced, is held to them before it is written as a binary rule
+    /// pack. A strategy's references need no check here, since the strategy's constructor refuses one that breaks the
+    /// pattern. Each diagnostic names the JSON property the value is written under, as the JSON reader names it.
+    /// </remarks>
+    public static void ValidateIdentifiers(NotableDateResource resource, ICollection<NotableDateValidationDiagnostic> diagnostics)
+    {
+        CheckPattern(resource.ResourceId, NotableDateSchemaPattern.ResourceIdentifier, "resourceId", diagnostics);
+
+        foreach (AdjustmentPolicy policy in resource.AdjustmentPolicies)
+        {
+            CheckPattern(policy.Id, NotableDateSchemaPattern.Identifier, "id", diagnostics);
+            CheckPatterns(policy.Scope.Territories, NotableDateSchemaPattern.TerritoryCode, "territories", diagnostics);
+            CheckPatterns(policy.Scope.NotableDateRefs, NotableDateSchemaPattern.Identifier, "notableDateRefs", diagnostics);
+
+            foreach (string scoped in policy.Scope.RuleRefs)
+            {
+                (string? qualifier, string name) = AdjustmentScope.SplitRuleRef(scoped);
+                if (qualifier is not null)
+                    CheckPattern(qualifier, NotableDateSchemaPattern.Identifier, "ruleRefs", diagnostics);
+
+                CheckPattern(name, NotableDateSchemaPattern.Identifier, "ruleRefs", diagnostics);
+            }
+
+            if (policy.ActionNotableDateRef is not null)
+                CheckPattern(policy.ActionNotableDateRef, NotableDateSchemaPattern.Identifier, "notableDateRef", diagnostics);
+
+            if (policy.ActionRuleRef is not null)
+                CheckPattern(policy.ActionRuleRef, NotableDateSchemaPattern.Identifier, "ruleRef", diagnostics);
+        }
+
+        foreach (NotableDateDefinition definition in resource.NotableDates)
+        {
+            CheckPattern(definition.Id, NotableDateSchemaPattern.Identifier, "id", diagnostics);
+
+            foreach (NotableDateRule rule in definition.Rules)
+            {
+                CheckPattern(rule.Id, NotableDateSchemaPattern.Identifier, "id", diagnostics);
+                CheckPatterns(rule.Applicability.Territories, NotableDateSchemaPattern.TerritoryCode, "territories", diagnostics);
+                CheckPatterns(rule.AdjustmentPolicyRefs, NotableDateSchemaPattern.Identifier, "adjustments", diagnostics);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Records the <c>BODU-CAL-SCHEMA</c> error for a value that breaks the pattern the schema requires of it.
+    /// </summary>
+    /// <param name="value">The value.</param>
+    /// <param name="pattern">The pattern the schema requires of the value.</param>
+    /// <param name="field">The name of the JSON property the value is written under, used in the diagnostic.</param>
+    /// <param name="diagnostics">The collection that receives the diagnostic.</param>
+    private static void CheckPattern(string value, NotableDateSchemaPattern pattern, string field, ICollection<NotableDateValidationDiagnostic> diagnostics)
+    {
+        if (NotableDateSchemaPatterns.Check(value, pattern, field) is NotableDateValidationDiagnostic diagnostic)
+            diagnostics.Add(diagnostic);
+    }
+
+    /// <summary>
+    /// Records the <c>BODU-CAL-SCHEMA</c> error for each value of a list that breaks the pattern the schema requires of
+    /// it.
+    /// </summary>
+    /// <param name="values">The values.</param>
+    /// <param name="pattern">The pattern the schema requires of each value.</param>
+    /// <param name="field">The name of the JSON property the list is written under, used in the diagnostics.</param>
+    /// <param name="diagnostics">The collection that receives the diagnostics.</param>
+    private static void CheckPatterns(IEnumerable<string> values, NotableDateSchemaPattern pattern, string field, ICollection<NotableDateValidationDiagnostic> diagnostics)
+    {
+        foreach (string value in values)
+            CheckPattern(value, pattern, field, diagnostics);
     }
 
     /// <summary>
@@ -191,8 +268,8 @@ internal static class NotableDateRuleValidator
     }
 
     /// <summary>
-    /// Reports duplicate rule identifiers, unresolved adjustment references, inverted year bounds, and impossible fixed
-    /// dates within a single concept.
+    /// Reports duplicate rule identifiers, unresolved adjustment and strategy references, and inverted year bounds
+    /// within a single concept.
     /// </summary>
     /// <param name="resource">The resource being validated, used to resolve offset references.</param>
     /// <param name="definition">The concept to validate.</param>
@@ -232,7 +309,6 @@ internal static class NotableDateRuleValidator
             }
 
             ValidateYearBounds(definition, rule, diagnostics);
-            ValidateFixedDate(definition, rule, diagnostics);
             ValidateStrategyReferences(resource, definition, rule, diagnostics, algorithms);
         }
     }
@@ -403,43 +479,6 @@ internal static class NotableDateRuleValidator
                 NotableDateValidationSeverity.Error,
                 "BODU-CAL-YEARS",
                 string.Format(CultureInfo.CurrentCulture, CalendarResourceStrings.Validation_FromYearAfterToYear, definition.Id, rule.Id, from, to)));
-        }
-    }
-
-    /// <summary>
-    /// Reports a fixed-date rule whose day can never exist in its month.
-    /// </summary>
-    /// <param name="definition">The owning concept.</param>
-    /// <param name="rule">The rule to validate.</param>
-    /// <param name="diagnostics">The collection that receives diagnostics.</param>
-    private static void ValidateFixedDate(
-        NotableDateDefinition definition,
-        NotableDateRule rule,
-        ICollection<NotableDateValidationDiagnostic> diagnostics)
-    {
-        if (rule.Strategy is not FixedDateStrategy strategy)
-            return;
-
-        // Non-Gregorian month/day ranges vary by calendar (and a Hebrew alias defers the month), so the
-        // proleptic-Gregorian day-in-month check does not apply.
-        if (strategy.Calendar != CalendarSystem.Gregorian)
-            return;
-
-        if (strategy.Month is < 1 or > 12)
-            return;
-
-        if (strategy.Day > s_maxDaysPerMonth[strategy.Month - 1])
-        {
-            diagnostics.Add(new NotableDateValidationDiagnostic(
-                NotableDateValidationSeverity.Error,
-                "BODU-CAL-DAY",
-                string.Format(
-                    CultureInfo.CurrentCulture,
-                    CalendarResourceStrings.Validation_InvalidDayValue,
-                    definition.Id,
-                    rule.Id,
-                    strategy.Day,
-                    strategy.Month)));
         }
     }
 }

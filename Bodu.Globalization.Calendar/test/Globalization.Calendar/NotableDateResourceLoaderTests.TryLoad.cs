@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateResourceLoaderTests.TryLoad.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
@@ -144,6 +144,82 @@ public sealed partial class NotableDateResourceLoaderTests
         Assert.IsFalse(loaded);
         Assert.IsNull(resource);
         Assert.Contains(d => d.Code == "BODU-CAL-STRATEGY" && d.Severity == NotableDateValidationSeverity.Error, diagnostics, "BODU-CAL-STRATEGY");
+    }
+
+    /// <summary>
+    /// Verifies that a strategy reference that is not an identifier is reported as a <c>BODU-CAL-STRATEGY</c> error
+    /// beside the schema's <c>BODU-CAL-SCHEMA</c> error, in XML and JSON alike, and is not resolved, so no
+    /// cross-reference error is reported for it.
+    /// </summary>
+    /// <param name="notableDateRef">The concept reference the strategy holds.</param>
+    /// <param name="ruleRef">The rule reference the strategy holds.</param>
+    [TestMethod]
+    [DataRow("New-Year", "r")]
+    [DataRow("anchor", "R")]
+    public void TryLoad_WhenStrategyReferenceIsNotAnIdentifier_ShouldReportStrategyDiagnostic(string notableDateRef, string ruleRef)
+    {
+        string xml = $$"""
+            <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="test.trylad.reference">
+              <NotableDates>
+                <NotableDate id="anchor" displayName="Anchor" category="Observance">
+                  <Rules><Rule id="r"><Strategy><Fixed month="3" day="1" /></Strategy></Rule></Rules>
+                </NotableDate>
+                <NotableDate id="x" displayName="X" category="PublicHoliday">
+                  <Rules><Rule id="r"><Strategy><OffsetFromRule notableDateRef="{{notableDateRef}}" ruleRef="{{ruleRef}}" offsetDays="1" /></Strategy></Rule></Rules>
+                </NotableDate>
+              </NotableDates>
+            </NotableDateResource>
+            """;
+        string json = $$"""
+            { "schemaVersion": "1.0", "resourceId": "test.trylad.reference",
+              "notableDates": [
+                { "id": "anchor", "displayName": "Anchor", "category": "Observance",
+                  "rules": [ { "id": "r", "strategy": { "fixed": { "month": 3, "day": 1 } } } ] },
+                { "id": "x", "displayName": "X", "category": "PublicHoliday",
+                  "rules": [ { "id": "r", "strategy": { "offsetFromRule": { "notableDateRef": "{{notableDateRef}}", "ruleRef": "{{ruleRef}}", "offsetDays": 1 } } } ] } ] }
+            """;
+
+        _ = NotableDateResourceLoader.TryLoad(xml, _ => null, out _, out IReadOnlyList<NotableDateValidationDiagnostic> xmlDiagnostics);
+        _ = NotableDateResourceLoader.TryLoadJson(json, _ => null, out _, out IReadOnlyList<NotableDateValidationDiagnostic> jsonDiagnostics);
+
+        string[] expected = ["BODU-CAL-SCHEMA", "BODU-CAL-STRATEGY"];
+        CollectionAssert.AreEquivalent(expected, xmlDiagnostics.Select(d => d.Code).Distinct().ToArray(), "XML");
+        CollectionAssert.AreEquivalent(expected, jsonDiagnostics.Select(d => d.Code).Distinct().ToArray(), "JSON");
+    }
+
+    /// <summary>
+    /// Verifies that a Gregorian fixed day beyond the longest its month ever has is reported as the
+    /// <c>BODU-CAL-DAY</c> error alone, in XML and JSON alike, rather than as a <c>BODU-CAL-STRATEGY</c> error from the
+    /// strategy's constructor.
+    /// </summary>
+    /// <param name="month">The month.</param>
+    /// <param name="day">The day.</param>
+    [TestMethod]
+    [DataRow(2, 30)]
+    [DataRow(4, 31)]
+    public void TryLoad_WhenGregorianDayIsBeyondTheMonthsLongest_ShouldReportDayDiagnostic(int month, int day)
+    {
+        string xml = $$"""
+            <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="test.trylad.day">
+              <NotableDates>
+                <NotableDate id="x" displayName="X" category="PublicHoliday">
+                  <Rules><Rule id="r"><Strategy><Fixed month="{{month}}" day="{{day}}" /></Strategy></Rule></Rules>
+                </NotableDate>
+              </NotableDates>
+            </NotableDateResource>
+            """;
+        string json = $$"""
+            { "schemaVersion": "1.0", "resourceId": "test.trylad.day",
+              "notableDates": [ { "id": "x", "displayName": "X", "category": "PublicHoliday",
+                "rules": [ { "id": "r", "strategy": { "fixed": { "month": {{month}}, "day": {{day}} } } } ] } ] }
+            """;
+
+        _ = NotableDateResourceLoader.TryLoad(xml, _ => null, out _, out IReadOnlyList<NotableDateValidationDiagnostic> xmlDiagnostics);
+        _ = NotableDateResourceLoader.TryLoadJson(json, _ => null, out _, out IReadOnlyList<NotableDateValidationDiagnostic> jsonDiagnostics);
+
+        string[] expected = ["BODU-CAL-DAY"];
+        CollectionAssert.AreEquivalent(expected, xmlDiagnostics.Select(d => d.Code).ToArray(), "XML");
+        CollectionAssert.AreEquivalent(expected, jsonDiagnostics.Select(d => d.Code).ToArray(), "JSON");
     }
 
     /// <summary>

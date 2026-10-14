@@ -38,11 +38,13 @@ public sealed class WorkingDayInMonthStrategy
     /// <param name="month">The one-based month.</param>
     /// <param name="ordinal">The signed ordinal position of the working day within the month.</param>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="month" /> is not between 1 and 12, or <paramref name="ordinal" /> is zero.
+    /// <paramref name="month" /> is not between 1 and 12, or <paramref name="ordinal" /> is zero or has an absolute
+    /// value greater than 366.
     /// </exception>
     public WorkingDayInMonthStrategy(int month, int ordinal)
     {
         ThrowHelper.ThrowIfOutOfRange(month, 1, 12);
+        ThrowHelper.ThrowIfOutOfRange(ordinal, NotableDateSchemaRanges.MinimumOrdinal, NotableDateSchemaRanges.MaximumOrdinal);
         if (ordinal == 0)
             throw new ArgumentOutOfRangeException(nameof(ordinal), CalendarResourceStrings.Arg_OutOfRange_OrdinalZero);
 

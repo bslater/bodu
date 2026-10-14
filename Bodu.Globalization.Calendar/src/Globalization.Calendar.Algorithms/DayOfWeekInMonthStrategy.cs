@@ -35,10 +35,15 @@ public sealed class DayOfWeekInMonthStrategy
     /// <param name="month">The one-based month of the occurrence.</param>
     /// <param name="dayOfWeek">The weekday to select.</param>
     /// <param name="weekOrdinal">The occurrence of the weekday to select.</param>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="month" /> is not between 1 and 12.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="month" /> is not between 1 and 12, or <paramref name="dayOfWeek" /> or
+    /// <paramref name="weekOrdinal" /> is not a value its enumeration defines.
+    /// </exception>
     public DayOfWeekInMonthStrategy(int month, DayOfWeek dayOfWeek, WeekOrdinal weekOrdinal)
     {
         ThrowHelper.ThrowIfOutOfRange(month, 1, 12);
+        ThrowHelper.ThrowIfEnumValueIsUndefined(dayOfWeek);
+        ThrowHelper.ThrowIfEnumValueIsUndefined(weekOrdinal);
 
         Month = month;
         DayOfWeek = dayOfWeek;

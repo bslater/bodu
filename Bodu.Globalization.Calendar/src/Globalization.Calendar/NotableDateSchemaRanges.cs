@@ -14,6 +14,12 @@ namespace Bodu.Globalization.Calendar;
 /// </summary>
 internal static class NotableDateSchemaRanges
 {
+    /// <summary>The least value of the schema's <c>nonZeroOrdinal</c> type, shared with the strategy constructors.</summary>
+    internal const int MinimumOrdinal = -366;
+
+    /// <summary>The greatest value of the schema's <c>nonZeroOrdinal</c> type, shared with the strategy constructors.</summary>
+    internal const int MaximumOrdinal = 366;
+
     /// <summary>
     /// Returns the least value a range allows.
     /// </summary>
@@ -26,7 +32,7 @@ internal static class NotableDateSchemaRanges
             NotableDateSchemaRange.PositiveInteger => 1,
             NotableDateSchemaRange.UnsignedShort => 0,
             NotableDateSchemaRange.DayValue => 1,
-            NotableDateSchemaRange.NonZeroOrdinal => -366,
+            NotableDateSchemaRange.NonZeroOrdinal => MinimumOrdinal,
             NotableDateSchemaRange.IsoWeekValue => 1,
             _ => throw new ArgumentOutOfRangeException(nameof(range)),
         };
@@ -46,7 +52,7 @@ internal static class NotableDateSchemaRanges
             NotableDateSchemaRange.PositiveInteger => int.MaxValue,
             NotableDateSchemaRange.UnsignedShort => ushort.MaxValue,
             NotableDateSchemaRange.DayValue => 31,
-            NotableDateSchemaRange.NonZeroOrdinal => 366,
+            NotableDateSchemaRange.NonZeroOrdinal => MaximumOrdinal,
             NotableDateSchemaRange.IsoWeekValue => 53,
             _ => throw new ArgumentOutOfRangeException(nameof(range)),
         };

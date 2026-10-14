@@ -43,4 +43,27 @@ public sealed partial class WeekdayNearDateStrategyTests
 
         Assert.AreEqual("day", ex.ParamName);
     }
+
+    /// <summary>
+    /// Verifies that an enumeration value its type does not define, which the loader rejects with <c>BODU-CAL-ENUM</c>,
+    /// throws <see cref="ArgumentOutOfRangeException" /> naming the parameter, as the binary pack reader rejects it.
+    /// </summary>
+    /// <param name="parameter">The name of the parameter given the undefined value.</param>
+    [TestMethod]
+    [DataRow("dayOfWeek")]
+    [DataRow("direction")]
+    public void Ctor_WhenEnumValueIsUndefined_ShouldThrowArgumentOutOfRangeException(string parameter)
+    {
+        var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = parameter switch
+            {
+                "dayOfWeek" => new WeekdayNearDateStrategy(5, 1, (DayOfWeek)7, WeekdayProximity.After),
+                "direction" => new WeekdayNearDateStrategy(5, 1, DayOfWeek.Monday, (WeekdayProximity)99),
+                _ => throw new ArgumentOutOfRangeException(nameof(parameter)),
+            };
+        });
+
+        Assert.AreEqual(parameter, ex.ParamName);
+    }
 }
