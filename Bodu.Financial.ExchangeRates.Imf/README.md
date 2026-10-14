@@ -1,6 +1,12 @@
 # Bodu.Financial.ExchangeRates.Imf
 
-> **API stability - Preview.** The public API surface is largely settled but is still being finalized ahead of the 1.0 release and may change; breaking changes can land in a minor version until then.
+> **API stability - Experimental.** The public API surface and behaviour are still evolving and may change or be removed without a major-version bump.
+
+> **No published API.** The IMF publishes the Representative Exchange Rates, but it does not
+> document the tab-separated export of the monthly report that this provider downloads. The
+> export can change or disappear without notice, and the provider would then stop working with
+> no change on the Bodu side. Pair it with a Stable provider, such as the ECB, Bank of England,
+> RBA or FRED providers.
 
 A [Bodu.Financial](../Bodu.Financial) exchange-rate provider backed by the **IMF**
 (International Monetary Fund) **Representative Exchange Rates** - the daily rates each

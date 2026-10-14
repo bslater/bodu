@@ -82,21 +82,24 @@ The contracts and value objects a provider implements ship in the core `Bodu.Fin
 
 ## The provider family
 
-Each per-source package ships its provider, its options type, and its own `Add<Source>ExchangeRates` DI registration; there is no per-provider `*.DependencyInjection` package. Status is as stated in the [package matrix](../package-matrix.md); the XE and OANDA packages are [not published to nuget.org](../package-matrix.md#not-published-to-nugetorg), so build them from a clone.
+Each per-source package ships its provider, its options type, and its own `Add<Source>ExchangeRates` DI registration; there is no per-provider `*.DependencyInjection` package. Status is as stated in the [package matrix](../package-matrix.md): a provider over a published API is Stable, and one over a feed its operator does not publish as an API is Experimental. The XE and OANDA packages are [not published to nuget.org](../package-matrix.md#not-published-to-nugetorg), so build them from a clone.
 
 | Package | Feed | Coverage | API key | Base class | Status | DI registration |
 |---|---|---|---|---|---|---|
 | `Bodu.Financial.ExchangeRates.Rba` | Reserve Bank of Australia `.xls` workbooks | AUD base, historical eras | No | `WebRateProvider` (bulk) | Stable | `AddRbaExchangeRates` |
 | `Bodu.Financial.ExchangeRates.Ecb` | European Central Bank `eurofxref` XML | EUR base, since 1999 | No | `WebRateProvider` (bulk) | Stable | `AddEcbExchangeRates` |
 | `Bodu.Financial.ExchangeRates.Boe` | Bank of England IADB CSV | GBP base, daily spot | No | `WebRateProvider` (bulk) | Stable | `AddBoeExchangeRates` |
-| `Bodu.Financial.ExchangeRates.Imf` | IMF Representative Exchange Rates TSV | USD base, daily, monthly report | No | `WebRateProvider` (bulk) | Preview | `AddImfExchangeRates` |
-| `Bodu.Financial.ExchangeRates.Yahoo` | Yahoo Finance v8 chart JSON | Any pair | No | `PairWebRateProvider<TSeries>` | Preview | `AddYahooExchangeRates` |
-| `Bodu.Financial.ExchangeRates.Ofx` | OFX spot-rate-history JSON | Any pair | No | `PairWebRateProvider<TSeries>` | Preview | `AddOfxExchangeRates` |
+| `Bodu.Financial.ExchangeRates.Imf` | IMF Representative Exchange Rates TSV | USD base, daily, monthly report | No | `WebRateProvider` (bulk) | Experimental | `AddImfExchangeRates` |
+| `Bodu.Financial.ExchangeRates.Yahoo` | Yahoo Finance v8 chart JSON | Any pair | No | `PairWebRateProvider<TSeries>` | Experimental | `AddYahooExchangeRates` |
+| `Bodu.Financial.ExchangeRates.Ofx` | OFX spot-rate-history JSON | Any pair | No | `PairWebRateProvider<TSeries>` | Experimental | `AddOfxExchangeRates` |
 | `Bodu.Financial.ExchangeRates.Xe` | XE.com charting-rates JSON | Any pair | No (token scraped) | `PairWebRateProvider<TSeries>` | Experimental (not on nuget.org) | `AddXeExchangeRates` |
-| `Bodu.Financial.ExchangeRates.Oanda` | OANDA Historical Currency Converter JSON | Any pair, rolling ~180 days | No | `PairWebRateProvider<TSeries>` | Preview (not on nuget.org) | `AddOandaExchangeRates` |
+| `Bodu.Financial.ExchangeRates.Oanda` | OANDA Historical Currency Converter JSON | Any pair, rolling ~180 days | No | `PairWebRateProvider<TSeries>` | Experimental (not on nuget.org) | `AddOandaExchangeRates` |
 | `Bodu.Financial.ExchangeRates.Fixer` | fixer.io time-series / single-date JSON | Any pair the plan allows | `access_key` | `PairWebRateProvider<TSeries>` | Stable | `AddFixerExchangeRates` |
 | `Bodu.Financial.ExchangeRates.ExchangeRateHost` | exchangerate.host time-frame / single-date JSON | Any pair the plan allows | `access_key` | `PairWebRateProvider<TSeries>` | Stable | `AddExchangeRateHostExchangeRates` |
 | `Bodu.Financial.ExchangeRates.Fred` | St. Louis Fed FRED `series/observations` JSON | Mapped pairs via `SeriesMap` | `api_key` | `PairWebRateProvider<TSeries>` | Stable | `AddFredExchangeRates` |
+
+> [!WARNING]
+> The IMF, Yahoo, OFX, XE and OANDA providers are **Experimental**: each reads a feed its operator does not publish as an API, so the feed can change or start refusing requests without notice, and the provider then stops working with no change on the Bodu side. Yahoo's [terms of service](https://legal.yahoo.com/us/en/yahoo/terms/otos/index.html) also do not permit collecting data from its services by automated means without its permission. Do not rely on one of them as your only rate source: put it behind a Stable provider in the [aggregator](../../guides/financial/exchange-rate-caching.md#grouping-providers-with-the-aggregator).
 
 > [!NOTE]
 > The keyed sources serve what their terms and plans allow. Fixer's free plan is locked to a EUR base and to single-date requests. exchangerate.host's free plan supports a USD source currency and single-date requests; switching the source currency needs its Basic plan, and multi-day (`timeframe`) queries its Professional Plus plan. FRED's [API terms of use](https://fred.stlouisfed.org/docs/api/terms_of_use.html) require an application that uses the FRED API to place this notice prominently on the application: "This product uses the FRED&reg; API but is not endorsed or certified by the Federal Reserve Bank of St. Louis." The [providers guide](../../guides/financial/exchange-rate-providers.md) gives each source's details.
@@ -110,8 +113,8 @@ The shared **`Bodu.Financial.ExchangeRates.DependencyInjection`** package (Stabl
 | Official AUD rates with deep history | RBA |
 | Official EUR reference rates | ECB |
 | Official GBP spot rates | BoE |
-| Official daily USD representative rates, no key | IMF |
-| An arbitrary pair not quoted by a central bank, no key | Yahoo, OFX, or OANDA (recent window only) |
+| Official daily USD representative rates, no key | IMF (Experimental) |
+| An arbitrary pair not quoted by a central bank, no key | Yahoo, OFX, or OANDA (recent window only), all Experimental: pair them with a Stable provider |
 | A commercial API you already hold a key for | Fixer or exchangerate.host |
 | Official US-published series for a mapped pair | FRED |
 | One pair from several sources with fallback or an average | any mix behind the [aggregator](../../guides/financial/exchange-rate-caching.md#grouping-providers-with-the-aggregator) |

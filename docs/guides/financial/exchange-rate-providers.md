@@ -38,6 +38,12 @@ FRED series identifier - it ships a built-in map for the major pairs and accepts
 through its options. Fixer, exchangerate.host, and FRED require an API key on their
 options; IMF is keyless.
 
+The RBA, ECB, BoE, Fixer, exchangerate.host, and FRED providers read published APIs
+and are Stable. The IMF, Yahoo, OFX, XE, and OANDA providers read feeds their
+operators do not publish as APIs, so they are Experimental: a feed can change or start
+refusing requests without notice, and the provider then stops working with no change
+on the Bodu side. Pair an Experimental provider with a Stable one.
+
 Every provider advertises its history depth through
 [`HistoryAvailability`](xref:Bodu.Financial.ExchangeRates.WebRateProvider.HistoryAvailability),
 so a caller can resolve the earliest date worth requesting before issuing a
@@ -224,6 +230,14 @@ so unlike the central-bank providers it serves arbitrary pairs rather than one b
 currency. Warm a pair over a window with `LoadPairAsync`. Options are
 [`YahooRateProviderOptions`](xref:Bodu.Financial.ExchangeRates.YahooRateProviderOptions).
 
+> [!WARNING]
+> This package is **Experimental**. Yahoo publishes no API for the chart service, and
+> Yahoo's [terms of service](https://legal.yahoo.com/us/en/yahoo/terms/otos/index.html)
+> do not permit collecting data from its services by automated means without its
+> permission, so check that your use is permitted. The service can change, or start
+> refusing requests, without notice. Do not rely on it as your sole rate source in
+> production, and pair it with a stable primary feed.
+
 ```csharp
 using Bodu.Financial.ExchangeRates;
 
@@ -240,6 +254,11 @@ fetches the OFX (ofx.com) public spot-rate-history JSON service per currency pai
 so like Yahoo it serves arbitrary pairs rather than one base currency. Warm a pair
 over a window with `LoadPairAsync`. Options are
 [`OfxRateProviderOptions`](xref:Bodu.Financial.ExchangeRates.OfxRateProviderOptions).
+
+> [!WARNING]
+> This package is **Experimental**. OFX documents no API for the spot-rate-history
+> service, which backs the ofx.com website and can change without notice. Do not rely
+> on it as your sole rate source in production, and pair it with a stable primary feed.
 
 ```csharp
 using Bodu.Financial.ExchangeRates;
@@ -290,6 +309,12 @@ days - so a request for an earlier start date returns just what the feed publish
 The provider advertises this through
 [`HistoryAvailability`](xref:Bodu.Financial.ExchangeRates.WebRateProvider.HistoryAvailability),
 so a caller can resolve the earliest date worth requesting before issuing a lookup.
+
+> [!WARNING]
+> This package is **Experimental**. OANDA documents no API for the Historical Currency
+> Converter service, which is gated by bot mitigation and can change without notice. Do
+> not rely on it as your sole rate source in production, and pair it with a stable
+> primary feed.
 
 ```csharp
 using Bodu.Financial.ExchangeRates;
@@ -391,6 +416,13 @@ quotation direction on ingest, so consumers always see a consistent `USD→X` ra
 month-based - one download covers every currency across a month's business days - and closed
 months are cached permanently. Options are
 [`ImfRateProviderOptions`](xref:Bodu.Financial.ExchangeRates.ImfRateProviderOptions).
+
+> [!WARNING]
+> This package is **Experimental**. The IMF publishes the Representative Exchange Rates,
+> but it does not document the report's tab-separated export, which can change or
+> disappear without notice. Do not rely on it as your sole rate source in production,
+> and pair it with a stable primary feed (for example the ECB, Bank of England, RBA, or
+> FRED providers).
 
 ```csharp
 using Bodu.Financial.ExchangeRates;
@@ -709,11 +741,11 @@ pair up front with `RateSeriesNotFoundException`, as the table above describes.
 | Official AUD rates with deep history | RBA |
 | Official EUR reference rates | ECB |
 | Official GBP spot rates | BoE |
-| An arbitrary pair not quoted by a central bank | Yahoo, OFX, XE, OANDA, Fixer, or exchangerate.host |
-| Recent rates for an arbitrary pair (rolling ~180-day window) | OANDA |
+| An arbitrary pair not quoted by a central bank | Fixer or exchangerate.host, or the Experimental Yahoo, OFX, XE, or OANDA |
+| Recent rates for an arbitrary pair (rolling ~180-day window) | OANDA (Experimental) |
 | A commercial API you already hold a key for | Fixer or exchangerate.host |
 | Official US-published FX series (per mapped pair) | FRED |
-| Official daily USD representative rates (keyless) | IMF |
+| Official daily USD representative rates (keyless) | IMF (Experimental) |
 | One pair from several sources, with fallback or an average | the [aggregator](exchange-rate-caching.md) over any mix |
 
 ## See also

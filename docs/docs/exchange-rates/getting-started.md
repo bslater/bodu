@@ -55,6 +55,8 @@ RateLookupResult aud = await yahoo.GetRateAsync(
     RateLookupOptions.PreviousWithin(7));
 ```
 
+The Yahoo provider is Experimental (see [the provider family](index.md#the-provider-family)); the same calls work on every provider.
+
 A single-date lookup on a pair provider fetches the window `[date − DefaultLookback, date]` (seven days by default), which is why `PreviousWithin(7)` has observations to fall back to when the requested date is a weekend.
 
 ### Read a range
