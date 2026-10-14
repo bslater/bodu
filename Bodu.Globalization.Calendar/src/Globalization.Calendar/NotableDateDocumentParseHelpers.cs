@@ -200,6 +200,44 @@ internal static class NotableDateDocumentParseHelpers
     }
 
     /// <summary>
+    /// Checks a fixed-strategy day against the most days its month can have in its calendar, recording
+    /// <c>BODU-CAL-DAY</c> for a day beyond them.
+    /// </summary>
+    /// <param name="day">The day read from the document.</param>
+    /// <param name="month">The one-based month, or <c>0</c> when a Hebrew month alias supplies it.</param>
+    /// <param name="calendar">The calendar system the month and day are expressed in.</param>
+    /// <param name="notableDateId">The identifier of the owning concept, used in diagnostics.</param>
+    /// <param name="ruleId">The identifier of the owning rule, used in diagnostics.</param>
+    /// <param name="diagnostics">The collection that receives semantic diagnostics.</param>
+    /// <returns>
+    /// <paramref name="day" />, or 1 when it is beyond the month's days. The caller has then recorded an error, so the
+    /// substitute never reaches a loaded resource.
+    /// </returns>
+    /// <remarks>
+    /// The bound is <see cref="CalendarSystems.GetFixedDayCount" />, which <see cref="Algorithms.FixedDateStrategy" />
+    /// also holds a day to, so a day such as February 30 is reported here, as <c>BODU-CAL-DAY</c>, rather than by the
+    /// constructor. A day outside 1 to 31 is returned unchanged, for the constructor to refuse.
+    /// </remarks>
+    public static int CheckFixedDay(
+        int day,
+        int month,
+        CalendarSystem calendar,
+        string notableDateId,
+        string ruleId,
+        ICollection<NotableDateValidationDiagnostic> diagnostics)
+    {
+        if (day > 31 || day <= CalendarSystems.GetFixedDayCount(calendar, month))
+            return day;
+
+        diagnostics.Add(new NotableDateValidationDiagnostic(
+            NotableDateValidationSeverity.Error,
+            "BODU-CAL-DAY",
+            string.Format(CultureInfo.CurrentCulture, CalendarResourceStrings.Validation_InvalidDayValue, notableDateId, ruleId, day, month)));
+
+        return 1;
+    }
+
+    /// <summary>
     /// Parses an enumeration value by member name, ignoring case, falling back to a default when the value is absent
     /// and recording an error diagnostic when it names no member.
     /// </summary>

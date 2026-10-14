@@ -10,13 +10,10 @@ namespace Bodu.Globalization.Calendar;
 
 /// <summary>
 /// Performs the pre-resolution semantic validation that the XSD cannot express: duplicate identities, unresolved
-/// adjustment references, inverted year bounds, and impossible fixed dates.
+/// adjustment and strategy references, and inverted year bounds.
 /// </summary>
 internal static class NotableDateRuleValidator
 {
-    /// <summary>The maximum day-of-month for each month, indexed so that January is at index zero and February allows 29.</summary>
-    private static readonly int[] s_maxDaysPerMonth = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-
     /// <summary>
     /// Validates the assembled resource, recording an error diagnostic for each violation.
     /// </summary>
@@ -191,8 +188,8 @@ internal static class NotableDateRuleValidator
     }
 
     /// <summary>
-    /// Reports duplicate rule identifiers, unresolved adjustment references, inverted year bounds, and impossible fixed
-    /// dates within a single concept.
+    /// Reports duplicate rule identifiers, unresolved adjustment and strategy references, and inverted year bounds
+    /// within a single concept.
     /// </summary>
     /// <param name="resource">The resource being validated, used to resolve offset references.</param>
     /// <param name="definition">The concept to validate.</param>
@@ -232,7 +229,6 @@ internal static class NotableDateRuleValidator
             }
 
             ValidateYearBounds(definition, rule, diagnostics);
-            ValidateFixedDate(definition, rule, diagnostics);
             ValidateStrategyReferences(resource, definition, rule, diagnostics, algorithms);
         }
     }
@@ -403,43 +399,6 @@ internal static class NotableDateRuleValidator
                 NotableDateValidationSeverity.Error,
                 "BODU-CAL-YEARS",
                 string.Format(CultureInfo.CurrentCulture, CalendarResourceStrings.Validation_FromYearAfterToYear, definition.Id, rule.Id, from, to)));
-        }
-    }
-
-    /// <summary>
-    /// Reports a fixed-date rule whose day can never exist in its month.
-    /// </summary>
-    /// <param name="definition">The owning concept.</param>
-    /// <param name="rule">The rule to validate.</param>
-    /// <param name="diagnostics">The collection that receives diagnostics.</param>
-    private static void ValidateFixedDate(
-        NotableDateDefinition definition,
-        NotableDateRule rule,
-        ICollection<NotableDateValidationDiagnostic> diagnostics)
-    {
-        if (rule.Strategy is not FixedDateStrategy strategy)
-            return;
-
-        // Non-Gregorian month/day ranges vary by calendar (and a Hebrew alias defers the month), so the
-        // proleptic-Gregorian day-in-month check does not apply.
-        if (strategy.Calendar != CalendarSystem.Gregorian)
-            return;
-
-        if (strategy.Month is < 1 or > 12)
-            return;
-
-        if (strategy.Day > s_maxDaysPerMonth[strategy.Month - 1])
-        {
-            diagnostics.Add(new NotableDateValidationDiagnostic(
-                NotableDateValidationSeverity.Error,
-                "BODU-CAL-DAY",
-                string.Format(
-                    CultureInfo.CurrentCulture,
-                    CalendarResourceStrings.Validation_InvalidDayValue,
-                    definition.Id,
-                    rule.Id,
-                    strategy.Day,
-                    strategy.Month)));
         }
     }
 }

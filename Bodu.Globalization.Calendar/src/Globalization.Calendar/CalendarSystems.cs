@@ -177,6 +177,26 @@ internal static class CalendarSystems
         };
 
     /// <summary>
+    /// Returns the number of days a fixed month and day can name in a month of a calendar: the most days the month can
+    /// have.
+    /// </summary>
+    /// <param name="calendar">The calendar system the month and day are expressed in.</param>
+    /// <param name="month">The one-based month, or <c>0</c> when a Hebrew month alias supplies it.</param>
+    /// <returns>
+    /// For a Gregorian month from 1 to 12, the days the month has in a leap year: 29 for February, 30 for April, June,
+    /// September and November, and 31 for the others. Otherwise 31.
+    /// </returns>
+    /// <remarks>
+    /// The loader and <see cref="Algorithms.FixedDateStrategy" /> hold a fixed day to this count, so February 29 is
+    /// kept, and occurs only in leap years, while February 30 is refused. A month of another calendar is held to 31
+    /// alone, since its length can vary from year to year and a day it lacks in one year resolves to no occurrence.
+    /// </remarks>
+    public static int GetFixedDayCount(CalendarSystem calendar, int month) =>
+        calendar == CalendarSystem.Gregorian && month is >= 1 and <= 12
+            ? DateTime.DaysInMonth(2000, month)
+            : 31;
+
+    /// <summary>
     /// Returns a value indicating whether a value is one of the Hebrew month aliases whose number shifts in a leap
     /// year, in its canonical spelling.
     /// </summary>

@@ -44,7 +44,8 @@ public sealed class FixedDateStrategy
     /// <param name="month">The one-based month of the occurrence.</param>
     /// <param name="day">The one-based day of the occurrence.</param>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="month" /> is not between 1 and 12, or <paramref name="day" /> is not between 1 and 31.
+    /// <paramref name="month" /> is not between 1 and 12, or <paramref name="day" /> is not between 1 and the most days
+    /// the month has: 29 in February, 30 in April, June, September and November, and 31 otherwise.
     /// </exception>
     public FixedDateStrategy(int month, int day)
         : this(month, day, CalendarSystem.Gregorian, false, false, null)
@@ -69,9 +70,11 @@ public sealed class FixedDateStrategy
     /// </param>
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="day" /> is not between 1 and 31; <paramref name="calendar" /> is not a defined
-    /// <see cref="CalendarSystem" />; or, with no alias, <paramref name="month" /> is not between 1 and the months the
+    /// <see cref="CalendarSystem" />; with no alias, <paramref name="month" /> is not between 1 and the months the
     /// calendar can name: 13 in the Hebrew calendar, and in the Chinese lunisolar calendar unless
-    /// <paramref name="skipLeapMonth" /> is <see langword="true" />, and 12 otherwise.
+    /// <paramref name="skipLeapMonth" /> is <see langword="true" />, and 12 otherwise; or, in the Gregorian calendar,
+    /// <paramref name="day" /> is beyond the most days its month has: 29 in February, and 30 in April, June, September
+    /// and November.
     /// </exception>
     /// <exception cref="ArgumentException">
     /// <paramref name="monthAlias" /> is set and <paramref name="calendar" /> is not
@@ -93,6 +96,7 @@ public sealed class FixedDateStrategy
             throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, CalendarResourceStrings.Arg_Invalid_MonthAliasCalendar, calendar), nameof(monthAlias));
         else if (!CalendarSystems.IsHebrewMonthAlias(monthAlias))
             throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, CalendarResourceStrings.Arg_Invalid_MonthAlias, monthAlias), nameof(monthAlias));
+        ThrowHelper.ThrowIfGreaterThan(day, CalendarSystems.GetFixedDayCount(calendar, month));
 
         Month = month;
         Day = day;
