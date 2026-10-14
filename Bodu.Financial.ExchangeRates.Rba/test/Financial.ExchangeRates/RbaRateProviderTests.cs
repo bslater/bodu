@@ -82,7 +82,8 @@ public partial class RbaRateProviderTests
     }
 
     /// <summary>
-    /// Verifies that a synchronous lookup blocks to load the covering era on demand when permitted.
+    /// Verifies that a synchronous lookup blocks to load on demand, when permitted, every era its look-back window
+    /// reaches: for 3 January 2023 the seven-day window also reaches the era that closed on 31 December 2022.
     /// </summary>
     [TestMethod]
     public void TryGetRate_WhenEraNotLoadedAndSyncEnabled_ShouldLazyLoadAndResolve()
@@ -93,7 +94,7 @@ public partial class RbaRateProviderTests
 
         Assert.IsTrue(found);
         Assert.AreEqual(0.6828m, result.Rate.Rate);
-        Assert.AreEqual(1, source.GetTableCallCount);
+        CollectionAssert.AreEquivalent(new[] { "2018-2022", "2023-current" }, source.RequestedEras.ToArray());
     }
 
     /// <summary>

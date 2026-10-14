@@ -99,7 +99,7 @@ public class EcbXmlRateTableSourceTests
 
         Assert.IsNotNull(table);
         Assert.AreEqual(1, handler.RequestCount);
-        Assert.AreEqual(options.Endpoint.ResolveFeedUrl(feed), handler.LastRequestUri);
+        Assert.AreEqual(options.ResolveFeedUrl(feed), handler.LastRequestUri);
     }
 
     /// <summary>

@@ -1,0 +1,75 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+  https://learn.microsoft.com/dotnet/fundamentals/package-validation/diagnostic-ids
+
+  Every entry here is a deliberate, reviewed decision. A suppression that nobody can explain is a
+  silenced bug, so do not add one without recording why below, and delete one the moment the reason
+  stops holding. Regenerating this file with -p:ApiCompatGenerateSuppressionFile=true rewrites it and
+  DISCARDS these comments - regenerate into a scratch copy and merge by hand instead.
+
+  Bodu.Financial.ExchangeRates.Rba moves its options onto WebRateProviderOptions in 1.3.0, before
+  the package is promoted from Preview to Stable (#1312). RbaRateProviderOptions.BaseUrl and
+  CurrentEraRefreshInterval are removed (CP0002): they are the inherited BaseAddress and
+  RefreshInterval, whose documented meanings they share. The members RbaRateProviderOptions
+  declared that WebRateProviderOptions also declares now come from the base and need no entry.
+  Delete these entries when the Preview validation baseline moves past 0.7.x, or when the package
+  takes a Stable baseline.
+-->
+<Suppressions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Bodu.Financial.ExchangeRates.RbaRateProviderOptions.get_BaseUrl</Target>
+    <Left>lib/net10.0/Bodu.Financial.ExchangeRates.Rba.dll</Left>
+    <Right>lib/net10.0/Bodu.Financial.ExchangeRates.Rba.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Bodu.Financial.ExchangeRates.RbaRateProviderOptions.get_CurrentEraRefreshInterval</Target>
+    <Left>lib/net10.0/Bodu.Financial.ExchangeRates.Rba.dll</Left>
+    <Right>lib/net10.0/Bodu.Financial.ExchangeRates.Rba.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Bodu.Financial.ExchangeRates.RbaRateProviderOptions.set_BaseUrl(System.Uri)</Target>
+    <Left>lib/net10.0/Bodu.Financial.ExchangeRates.Rba.dll</Left>
+    <Right>lib/net10.0/Bodu.Financial.ExchangeRates.Rba.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Bodu.Financial.ExchangeRates.RbaRateProviderOptions.set_CurrentEraRefreshInterval(System.TimeSpan)</Target>
+    <Left>lib/net10.0/Bodu.Financial.ExchangeRates.Rba.dll</Left>
+    <Right>lib/net10.0/Bodu.Financial.ExchangeRates.Rba.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Bodu.Financial.ExchangeRates.RbaRateProviderOptions.get_BaseUrl</Target>
+    <Left>lib/net8.0/Bodu.Financial.ExchangeRates.Rba.dll</Left>
+    <Right>lib/net8.0/Bodu.Financial.ExchangeRates.Rba.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Bodu.Financial.ExchangeRates.RbaRateProviderOptions.get_CurrentEraRefreshInterval</Target>
+    <Left>lib/net8.0/Bodu.Financial.ExchangeRates.Rba.dll</Left>
+    <Right>lib/net8.0/Bodu.Financial.ExchangeRates.Rba.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Bodu.Financial.ExchangeRates.RbaRateProviderOptions.set_BaseUrl(System.Uri)</Target>
+    <Left>lib/net8.0/Bodu.Financial.ExchangeRates.Rba.dll</Left>
+    <Right>lib/net8.0/Bodu.Financial.ExchangeRates.Rba.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Bodu.Financial.ExchangeRates.RbaRateProviderOptions.set_CurrentEraRefreshInterval(System.TimeSpan)</Target>
+    <Left>lib/net8.0/Bodu.Financial.ExchangeRates.Rba.dll</Left>
+    <Right>lib/net8.0/Bodu.Financial.ExchangeRates.Rba.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+</Suppressions>

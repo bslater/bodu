@@ -106,24 +106,6 @@ namespace Bodu.Financial.ExchangeRates {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to The ECB endpoint options must specify a base URL..
-        /// </summary>
-        internal static string Arg_Invalid_EcbOptionsBaseUrl {
-            get {
-                return ResourceManager.GetString("Arg_Invalid_EcbOptionsBaseUrl", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to The ECB options must specify endpoint options..
-        /// </summary>
-        internal static string Arg_Invalid_EcbOptionsEndpoint {
-            get {
-                return ResourceManager.GetString("Arg_Invalid_EcbOptionsEndpoint", resourceCulture);
-            }
-        }
-
-        /// <summary>
         ///   Looks up a localized string similar to The ECB options must specify at least one feed..
         /// </summary>
         internal static string Arg_Invalid_EcbOptionsFeeds {
@@ -138,48 +120,6 @@ namespace Bodu.Financial.ExchangeRates {
         internal static string Arg_Invalid_EcbFeedFileName {
             get {
                 return ResourceManager.GetString("Arg_Invalid_EcbFeedFileName", resourceCulture);
-            }
-        }
-
-        internal static string Op_Invalid_EcbEndpointBaseUrl {
-            get {
-                return ResourceManager.GetString("Op_Invalid_EcbEndpointBaseUrl", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to The ECB endpoint options HTTP timeout must be greater than zero..
-        /// </summary>
-        internal static string Arg_Invalid_EcbEndpointHttpTimeout {
-            get {
-                return ResourceManager.GetString("Arg_Invalid_EcbEndpointHttpTimeout", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to The ECB options refresh interval must be greater than zero..
-        /// </summary>
-        internal static string Arg_Invalid_EcbOptionsRefreshInterval {
-            get {
-                return ResourceManager.GetString("Arg_Invalid_EcbOptionsRefreshInterval", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to The ECB options currency alias map must not be null..
-        /// </summary>
-        internal static string Arg_Invalid_EcbOptionsCurrencyAliases {
-            get {
-                return ResourceManager.GetString("Arg_Invalid_EcbOptionsCurrencyAliases", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to The ECB options must specify a defined log level for every logging concern..
-        /// </summary>
-        internal static string Arg_Invalid_EcbOptionsLogLevel {
-            get {
-                return ResourceManager.GetString("Arg_Invalid_EcbOptionsLogLevel", resourceCulture);
             }
         }
 

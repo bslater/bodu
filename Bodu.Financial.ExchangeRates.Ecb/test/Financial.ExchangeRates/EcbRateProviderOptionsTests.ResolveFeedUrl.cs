@@ -1,22 +1,22 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="EcbEndpointOptionsTests.ResolveFeedUrl.cs" company="Bodu Pty. Ltd.">
+// <copyright file="EcbRateProviderOptionsTests.ResolveFeedUrl.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 namespace Bodu.Financial.ExchangeRates;
 
-public partial class EcbEndpointOptionsTests
+public partial class EcbRateProviderOptionsTests
 {
     /// <summary>
-    /// Verifies that a feed's absolute URL is composed from the base URL and the feed's relative file name.
+    /// Verifies that a feed's absolute URL is composed from the base address and the feed's relative file name.
     /// </summary>
     [TestMethod]
-    public void ResolveFeedUrl_ShouldCombineBaseUrlAndFileName()
+    public void ResolveFeedUrl_ShouldCombineBaseAddressAndFileName()
     {
-        EcbEndpointOptions endpoint = new() { BaseUrl = new Uri("https://mirror.example/fx/") };
+        EcbRateProviderOptions options = new() { BaseAddress = new Uri("https://mirror.example/fx/") };
 
-        Uri url = endpoint.ResolveFeedUrl(EcbRateFeed.Full);
+        Uri url = options.ResolveFeedUrl(EcbRateFeed.Full);
 
         Assert.AreEqual(new Uri("https://mirror.example/fx/eurofxref-hist.xml"), url);
     }
@@ -27,17 +27,17 @@ public partial class EcbEndpointOptionsTests
     [TestMethod]
     public void ResolveFeedUrl_WhenFeedIsNull_ShouldThrowArgumentNullException()
     {
-        EcbEndpointOptions endpoint = new();
+        EcbRateProviderOptions options = new();
 
         _ = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            _ = endpoint.ResolveFeedUrl(null!);
+            _ = options.ResolveFeedUrl(null!);
         });
     }
 
     /// <summary>
     /// Verifies that a feed whose file name is not a plain relative name - a parent-directory reference, a rooted
-    /// path, or an absolute URL - is rejected rather than retargeting the request outside the configured base URL.
+    /// path, or an absolute URL - is rejected rather than retargeting the request outside the configured base address.
     /// </summary>
     /// <param name="fileName">The crafted feed file name.</param>
     [TestMethod]
@@ -47,12 +47,12 @@ public partial class EcbEndpointOptionsTests
     [DataRow("//evil.example/feed.xml")]
     public void ResolveFeedUrl_WhenFeedFileNameEscapesBase_ShouldThrowArgumentException(string fileName)
     {
-        EcbEndpointOptions endpoint = new();
+        EcbRateProviderOptions options = new();
         EcbRateFeed feed = new("crafted", fileName, null);
 
         ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
-            _ = endpoint.ResolveFeedUrl(feed);
+            _ = options.ResolveFeedUrl(feed);
         });
 
         Assert.AreEqual("feed", ex.ParamName);

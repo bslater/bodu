@@ -18,4 +18,19 @@ public partial class EcbRateProviderOptionsTests
 
         _ = Assert.ThrowsExactly<ArgumentException>(options.Validate);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="WebRateProviderOptions.Validate" /> throws <see cref="ArgumentException" /> for a missing
+    /// base address.
+    /// </summary>
+    [TestMethod]
+    public void Validate_WhenBaseAddressIsNull_ShouldThrowArgumentException()
+    {
+        EcbRateProviderOptions options = new() { BaseAddress = null! };
+
+        _ = Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            options.Validate();
+        });
+    }
 }

@@ -48,7 +48,7 @@ internal sealed class EcbXmlRateTableSource
             feed,
             _options.RefreshInterval,
             _httpClient,
-            () => _options.Endpoint.ResolveFeedUrl(feed),
+            () => _options.ResolveFeedUrl(feed),
             cancellationToken).ConfigureAwait(false);
 
         using MemoryStream stream = new(bytes, writable: false);

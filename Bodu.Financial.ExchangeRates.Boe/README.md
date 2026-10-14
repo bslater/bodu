@@ -42,7 +42,7 @@ foreach (BoeSeriesInfo info in provider.GetAvailablePairs())
 - **Range queries.** The IADB is queried by date range rather than by fixed file, so
   loading is range-based. `LoadRangeAsync` fetches an inclusive range; a synchronous lookup
   that misses an unloaded date blocks to download a bounded look-back window ending on it
-  (configurable via `OnDemandWindowDays`) only when `AllowSynchronousNetworkAccess` is enabled (it is
+  (`DefaultLookback`, ten days by default) only when `AllowSynchronousNetworkAccess` is enabled (it is
   `false` by default, so the provider serves a snapshot of already-loaded data and a
   synchronous miss does not reach the network). Only the part of a range not already loaded,
   from its first missing day to its last, is downloaded, so a look-back window that slides
@@ -53,11 +53,30 @@ foreach (BoeSeriesInfo info in provider.GetAvailablePairs())
   In memory, a loaded range keeps its past days for good, while today (and any later day
   it returned no rate for) is downloaded again by a request that reaches it once
   `RefreshInterval` has passed, so a rate published after the first download is picked up.
-- **Configuration.** `BoeRateProviderOptions` carries working defaults and binds through
-  `Microsoft.Extensions.Options`. The provider's connection to the IADB is grouped under
-  its `Endpoint` (`BoeEndpointOptions`) - base URL, query path, HTTP timeout, and
-  user-agent - so the query can be pointed at a mirror or proxy without touching caching or
-  series configuration. The package ships its own `AddBoeExchangeRates` registration in the `Bodu.Financial.ExchangeRates` namespace.
+- **Configuration.** `BoeRateProviderOptions` derives from `WebRateProviderOptions`, so it
+  shares the base address, HTTP, look-back, refresh, alias and log-level members every web
+  provider's options carry, carries working defaults, and binds through
+  `Microsoft.Extensions.Options`. Point `BaseAddress` (with `QueryPath`) at a mirror or proxy
+  of the IADB without touching caching or series configuration. The package ships its own
+  `AddBoeExchangeRates` registration in the `Bodu.Financial.ExchangeRates` namespace.
+
+## Options
+
+| Option | Default | Purpose |
+|---|---|---|
+| `BaseAddress` | `https://www.bankofengland.co.uk/boeapps/database/` | The IADB host. |
+| `QueryPath` | `_iadb-fromshowcolumns.asp` | The CSV column query, resolved against `BaseAddress`. |
+| `HttpTimeout` | 30 s | Applied to the `HttpClient` the provider creates, or by the DI registration. |
+| `UserAgent` | `Bodu.Financial.ExchangeRates.Boe` | The `User-Agent` header, applied as `HttpTimeout` is. |
+| `MaxResponseContentBufferSize` | 64 MiB | The response-size cap on the `HttpClient` the provider creates. |
+| `AllowSynchronousNetworkAccess` | `false` | Opt in to blocking on-demand downloads from synchronous lookups. |
+| `DefaultLookback` | 10 days | The window, ending on the requested date, an on-demand lookup downloads. |
+| `RefreshInterval` | 12 h | How long a cached response, and a loaded day the bank could still publish, is served before it is downloaded again. |
+| `HistoryAvailability` | since 2 January 1975 | The history depth the provider advertises (set in code). |
+| `Series` | `BoeSeries.Default` | The currency series to request (set in code). |
+| `CurrencyAliases` | empty | Maps a series' quote label to the ISO code it is served under. |
+| `EnableDiskCache` | `true` | Persist downloaded range responses on disk. |
+| `CacheDirectory` | `null` | The cache folder; `null` uses `bodu-boe` under the system temporary path. |
 
 ## HTTP client and lifetime
 
@@ -88,6 +107,7 @@ configurable on `BoeRateProviderOptions`:
 | A range loaded (with its observation count) | `Information` | `DownloadCompletedLogLevel` |
 | Each individual rate observation ingested | `Trace` | `ObservationIngestedLogLevel` |
 | A range download failed (logged, then re-thrown) | `Warning` | `DownloadFailedLogLevel` |
+| A synchronous lookup triggered a blocking network fetch | `Warning` | `SynchronousNetworkFetchLogLevel` |
 
 ```csharp
 // Quieten the per-range line and turn off per-observation tracing entirely.

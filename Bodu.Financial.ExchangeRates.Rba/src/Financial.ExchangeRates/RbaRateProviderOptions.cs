@@ -4,8 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Microsoft.Extensions.Logging;
-
 namespace Bodu.Financial.ExchangeRates;
 
 /// <summary>
@@ -13,59 +11,52 @@ namespace Bodu.Financial.ExchangeRates;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Every member carries a working default, so the options bind cleanly through <c>Microsoft.Extensions.Options</c> and
-/// require no configuration for the common case. The dependency-injection package binds this type from configuration
-/// and a <c>configure</c> delegate.
+/// This type derives from <see cref="WebRateProviderOptions" />, which supplies the endpoint base address, the HTTP
+/// contract (timeout, user agent and response-size cap), the synchronous-access, look-back and refresh behavior, the
+/// advertised history, the currency-alias map, and the per-concern log levels. The constructor points
+/// <see cref="WebRateProviderOptions.BaseAddress" /> at the RBA's historical statistics path, identifies the requests
+/// with a Bodu user agent, and maps the RBA's <c>SDR</c> units label to the ISO code <c>XDR</c>. The members declared
+/// here are RBA-specific: the <see cref="Eras" /> catalogue and the on-disk cache settings, which are off by default.
 /// </para>
 /// <para>
-/// The <c>*LogLevel</c> members set the <see cref="LogLevel" /> at which each diagnostic the provider emits is logged,
-/// so consumers can re-tune verbosity per concern without category-wide log filters. Set any of them to
-/// <see cref="LogLevel.None" /> to suppress that event entirely.
+/// The absolute URL of an era workbook is its <see cref="RbaEraWorkbook.FileName" /> resolved against
+/// <see cref="WebRateProviderOptions.BaseAddress" />. An on-demand load reads every era the
+/// <see cref="WebRateProviderOptions.DefaultLookback" /> window ending on the requested date reaches, so a date early
+/// in an era also loads the era before it. The inherited <see cref="WebRateProviderOptions.RefreshInterval" /> governs
+/// the open-ended current era, in memory and in the on-disk cache: a cached copy older than the interval is downloaded
+/// again, and in memory the loaded current era serves for good a request that ends before the day it was downloaded, or
+/// on a day it returned rates for, while a request that reaches a later day downloads the era again once the interval
+/// has passed. A closed era is loaded once, and its cached copy never expires.
+/// </para>
+/// <para>
+/// The RBA names each column's currency with a units label, so <see cref="WebRateProviderOptions.CurrencyAliases" />
+/// maps a label found among its keys to the ISO 4217 code its value gives while a workbook is read. The provider
+/// advertises the depth of its <see cref="Eras" /> catalogue while
+/// <see cref="WebRateProviderOptions.HistoryAvailability" /> is left at
+/// <see cref="RateHistoryAvailability.Unbounded" />, and any other value set there in its place. Every member carries a
+/// working default, so the options bind cleanly through <c>Microsoft.Extensions.Options</c>; the dependency-injection
+/// registration binds this type from configuration and a <c>configure</c> delegate.
 /// </para>
 /// </remarks>
 public sealed class RbaRateProviderOptions
+    : WebRateProviderOptions
 {
     /// <summary>
-    /// Gets or sets the base URL under which the RBA publishes its historical exchange-rate files. Should end with a
-    /// trailing slash so era file names resolve as relative paths.
+    /// Initializes a new instance of the <see cref="RbaRateProviderOptions" /> class with the RBA historical statistics
+    /// path as its base address, a Bodu user agent, and the <c>SDR</c> to <c>XDR</c> currency alias.
     /// </summary>
-    /// <value>The base URL; defaults to the RBA historical statistics path.</value>
-    public Uri BaseUrl { get; set; } = new("https://www.rba.gov.au/statistics/tables/xls-hist/");
+    public RbaRateProviderOptions()
+    {
+        BaseAddress = new Uri("https://www.rba.gov.au/statistics/tables/xls-hist/");
+        UserAgent = "Bodu.Financial.ExchangeRates.Rba";
+        CurrencyAliases["SDR"] = "XDR";
+    }
 
     /// <summary>
     /// Gets or sets the catalogue of era files to draw from.
     /// </summary>
     /// <value>The era catalogue; defaults to <see cref="RbaEraWorkbook.Default" />.</value>
     public IReadOnlyList<RbaEraWorkbook> Eras { get; set; } = RbaEraWorkbook.Default;
-
-    /// <summary>
-    /// Gets or sets the HTTP request timeout applied to era downloads by the dependency-injection registration.
-    /// </summary>
-    /// <value>The HTTP timeout; defaults to 30 seconds.</value>
-    public TimeSpan HttpTimeout { get; set; } = TimeSpan.FromSeconds(30);
-
-    /// <summary>
-    /// Gets or sets the <c>User-Agent</c> header applied to era downloads by the dependency-injection registration.
-    /// </summary>
-    /// <value>The user-agent string; defaults to a Bodu identifier.</value>
-    public string UserAgent { get; set; } = "Bodu.Financial.ExchangeRates.Rba";
-
-    /// <summary>
-    /// Gets or sets a value indicating whether a synchronous lookup may block to download a missing era on demand.
-    /// </summary>
-    /// <value>
-    /// <see langword="true" /> to allow synchronous, blocking downloads from <see cref="IDatedRateProvider" /> lookups;
-    /// <see langword="false" /> to serve only already-loaded data. Defaults to <see langword="false" />, so the
-    /// provider serves a snapshot of already-loaded data and a synchronous miss does not reach the network.
-    /// </value>
-    /// <remarks>
-    /// Blocking on network I/O from a synchronous method can deadlock in environments with a single-threaded
-    /// synchronization context (classic ASP.NET, WPF, WinForms), so the default is snapshot-only. Leave this
-    /// <see langword="false" /> and warm the store with <see cref="RbaRateProvider.PreloadAsync" /> or
-    /// <see cref="RbaRateProvider.LoadRangeAsync" /> at startup; set it to <see langword="true" /> only to opt in to a
-    /// blocking on-demand fetch from the synchronous lookup path.
-    /// </remarks>
-    public bool AllowSynchronousNetworkAccess { get; set; }
 
     /// <summary>
     /// Gets or sets a value indicating whether downloaded era files are persisted to an on-disk cache.
@@ -85,129 +76,24 @@ public sealed class RbaRateProviderOptions
     public string? CacheDirectory { get; set; }
 
     /// <summary>
-    /// Gets or sets how long a cached copy of the open-ended current era remains fresh before it is re-downloaded, and
-    /// how long the loaded current era serves a request for a day the RBA could still publish before it is downloaded
-    /// again.
-    /// </summary>
-    /// <value>The refresh interval; defaults to 12 hours. Immutable historical eras are cached indefinitely.</value>
-    /// <remarks>
-    /// In memory, the loaded current era serves for good a request that ends before the day it was downloaded, or on a
-    /// day it returned rates for; a request that reaches a later day downloads the era again once this interval has
-    /// passed. A closed era is loaded once.
-    /// </remarks>
-    public TimeSpan CurrentEraRefreshInterval { get; set; } = TimeSpan.FromHours(12);
-
-    /// <summary>
-    /// Gets or sets the map from RBA units labels to ISO 4217 codes, applied while resolving a column's currency.
-    /// </summary>
-    /// <value>The alias map; defaults to mapping <c>SDR</c> to the ISO code <c>XDR</c>.</value>
-    public IDictionary<string, string> CurrencyAliases { get; set; } =
-        new Dictionary<string, string>(StringComparer.Ordinal) { ["SDR"] = "XDR" };
-
-    /// <summary>
-    /// Gets or sets the level at which the start of an era download is logged.
-    /// </summary>
-    /// <value>The log level; defaults to <see cref="LogLevel.Debug" />.</value>
-    public LogLevel DownloadStartingLogLevel { get; set; } = LogLevel.Debug;
-
-    /// <summary>
-    /// Gets or sets the level at which a completed era download (with its observation count) is logged.
-    /// </summary>
-    /// <value>The log level; defaults to <see cref="LogLevel.Information" />.</value>
-    public LogLevel DownloadCompletedLogLevel { get; set; } = LogLevel.Information;
-
-    /// <summary>
-    /// Gets or sets the level at which a failed era download is logged.
-    /// </summary>
-    /// <value>The log level; defaults to <see cref="LogLevel.Warning" />.</value>
-    public LogLevel DownloadFailedLogLevel { get; set; } = LogLevel.Warning;
-
-    /// <summary>
-    /// Gets or sets the level at which each individual ingested rate observation is logged.
-    /// </summary>
-    /// <value>
-    /// The log level; defaults to <see cref="LogLevel.Trace" />, because a load can ingest thousands of observations.
-    /// </value>
-    public LogLevel ObservationIngestedLogLevel { get; set; } = LogLevel.Trace;
-
-    /// <summary>
-    /// Validates the options, throwing when a required value is missing or an invariant is violated.
-    /// </summary>
-    /// <exception cref="ArgumentException">
-    /// Thrown when <see cref="BaseUrl" /> is <see langword="null" />; <see cref="Eras" /> is <see langword="null" /> or
-    /// empty; <see cref="HttpTimeout" /> or <see cref="CurrentEraRefreshInterval" /> is not greater than zero;
-    /// <see cref="CurrencyAliases" /> is <see langword="null" />; or any <c>*LogLevel</c> is not a defined
-    /// <see cref="LogLevel" />.
-    /// </exception>
-    public void Validate()
-    {
-        if (!TryValidate(out string? error))
-            throw new ArgumentException(error);
-    }
-
-    /// <summary>
-    /// Attempts to validate the options without throwing, reporting the first invariant that is violated.
+    /// Validates the RBA-specific options, ensuring the era catalogue is not empty.
     /// </summary>
     /// <param name="error">
-    /// When this method returns <see langword="false" />, a message describing the first violated invariant; otherwise
+    /// When this method returns <see langword="false" />, a message describing the violated invariant; otherwise
     /// <see langword="null" />.
     /// </param>
-    /// <returns><see langword="true" /> when every invariant holds; otherwise <see langword="false" />.</returns>
-    /// <remarks>
-    /// The throwing <see cref="Validate" /> method is expressed in terms of this method, and the dependency-injection
-    /// registration wires it into <c>ValidateOnStart</c> so misconfiguration fails fast at application startup.
-    /// </remarks>
-    public bool TryValidate(out string? error)
+    /// <returns>
+    /// <see langword="true" /> when every RBA-specific invariant holds; otherwise <see langword="false" />.
+    /// </returns>
+    protected override bool TryValidateCore(out string? error)
     {
-        if (BaseUrl is null)
-        {
-            error = RbaResourceStrings.Arg_Invalid_RbaOptionsBaseUrl;
-            return false;
-        }
-
         if (Eras is null || Eras.Count == 0)
         {
             error = RbaResourceStrings.Arg_Invalid_RbaOptionsEras;
             return false;
         }
 
-        if (HttpTimeout <= TimeSpan.Zero)
-        {
-            error = RbaResourceStrings.Arg_Invalid_RbaOptionsHttpTimeout;
-            return false;
-        }
-
-        if (CurrentEraRefreshInterval <= TimeSpan.Zero)
-        {
-            error = RbaResourceStrings.Arg_Invalid_RbaOptionsCurrentEraRefreshInterval;
-            return false;
-        }
-
-        if (CurrencyAliases is null)
-        {
-            error = RbaResourceStrings.Arg_Invalid_RbaOptionsCurrencyAliases;
-            return false;
-        }
-
-        if (!AreLogLevelsDefined())
-        {
-            error = RbaResourceStrings.Arg_Invalid_RbaOptionsLogLevel;
-            return false;
-        }
-
         error = null;
         return true;
     }
-
-    /// <summary>
-    /// Reports whether every configurable log level is a defined <see cref="LogLevel" /> value.
-    /// </summary>
-    /// <returns>
-    /// <see langword="true" /> when every <c>*LogLevel</c> property is defined; otherwise <see langword="false" />.
-    /// </returns>
-    private bool AreLogLevelsDefined() =>
-        Enum.IsDefined(DownloadStartingLogLevel)
-        && Enum.IsDefined(DownloadCompletedLogLevel)
-        && Enum.IsDefined(DownloadFailedLogLevel)
-        && Enum.IsDefined(ObservationIngestedLogLevel);
 }

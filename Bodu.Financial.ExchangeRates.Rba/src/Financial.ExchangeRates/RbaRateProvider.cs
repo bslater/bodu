@@ -25,10 +25,11 @@ namespace Bodu.Financial.ExchangeRates;
 /// </para>
 /// <para>
 /// <strong>HttpClient ownership.</strong> The constructor that takes only options builds and owns an
-/// <see cref="HttpClient" /> configured from <see cref="RbaRateProviderOptions.UserAgent" /> and
-/// <see cref="RbaRateProviderOptions.HttpTimeout" />, disposing it with the provider. The constructor that takes an
-/// <see cref="HttpClient" /> uses the caller-supplied client as-is; this is the path the dependency-injection package
-/// uses.
+/// <see cref="HttpClient" /> configured from <see cref="WebRateProviderOptions.UserAgent" />,
+/// <see cref="WebRateProviderOptions.HttpTimeout" /> and
+/// <see cref="WebRateProviderOptions.MaxResponseContentBufferSize" />, disposing it with the provider. The constructor
+/// that takes an <see cref="HttpClient" /> uses the caller-supplied client as-is; this is the path the
+/// dependency-injection package uses.
 /// </para>
 /// <para>
 /// <strong>Logging.</strong> When an <see cref="ILogger" /> is supplied (directly or through the dependency-injection
@@ -177,14 +178,20 @@ public sealed class RbaRateProvider
 
     /// <inheritdoc />
     /// <remarks>
-    /// Computed from the configured <see cref="RbaRateProviderOptions.Eras" />: the earliest era start bounds how far
-    /// back the historical workbook catalogue reaches - 1 January 1983 for the default
-    /// <see cref="RbaEraWorkbook.Default" /> catalogue.
+    /// The options' <see cref="WebRateProviderOptions.HistoryAvailability" /> when it is set to anything other than
+    /// <see cref="RateHistoryAvailability.Unbounded" />, its default. Otherwise the depth is computed from the
+    /// configured <see cref="RbaRateProviderOptions.Eras" />: the earliest era start bounds how far back the historical
+    /// workbook catalogue reaches - 1 January 1983 for the default <see cref="RbaEraWorkbook.Default" /> catalogue.
     /// </remarks>
     public override RateHistoryAvailability HistoryAvailability
     {
         get
         {
+            // No RBA era catalogue reaches back without bound, so the base default, Unbounded, stands for "not set" and
+            // the depth of the era catalogue is advertised in its place.
+            if (_options.HistoryAvailability.Kind != RateHistoryAvailabilityKind.Unbounded)
+                return _options.HistoryAvailability;
+
             DateOnly earliest = _options.Eras[0].Start;
             foreach (RbaEraWorkbook era in _options.Eras)
             {
@@ -197,7 +204,7 @@ public sealed class RbaRateProvider
     }
 
     /// <inheritdoc />
-    protected override TimeSpan DefaultLookback => TimeSpan.Zero;
+    protected override TimeSpan DefaultLookback => _options.DefaultLookback;
 
     /// <summary>
     /// Downloads and loads every era in the configured catalogue.
@@ -225,8 +232,8 @@ public sealed class RbaRateProvider
     /// </exception>
     /// <remarks>
     /// A closed era never changes and is loaded once. The open-ended current era, loaded before the RBA published the
-    /// latest day's rates, is downloaded again once <see cref="RbaRateProviderOptions.CurrentEraRefreshInterval" /> has
-    /// passed since it was loaded.
+    /// latest day's rates, is downloaded again once <see cref="WebRateProviderOptions.RefreshInterval" /> has passed
+    /// since it was loaded.
     /// </remarks>
     public Task LoadEraAsync(RbaEraWorkbook era, CancellationToken cancellationToken = default)
     {
@@ -308,6 +315,10 @@ public sealed class RbaRateProvider
     }
 
     /// <inheritdoc />
+    protected override void OnSynchronousNetworkFetch(DateOnly date) =>
+        Log.SynchronousNetworkFetch(_logger, _options.SynchronousNetworkFetchLogLevel, date);
+
+    /// <inheritdoc />
     protected override string FormatRateNotFound(string fromIsoCode, string toIsoCode, DateOnly date) =>
         string.Format(CultureInfo.CurrentCulture, RbaResourceStrings.IO_KeyNotFound_RbaRate, fromIsoCode, toIsoCode, date);
 
@@ -343,7 +354,7 @@ public sealed class RbaRateProvider
         ThrowHelper.ThrowIfNull(options);
         options.Validate();
 
-        return RateProviderHttpClientFactory.Create(options.UserAgent, options.HttpTimeout);
+        return RateProviderHttpClientFactory.Create(options.UserAgent, options.HttpTimeout, options.MaxResponseContentBufferSize);
     }
 
     /// <summary>
@@ -476,7 +487,7 @@ public sealed class RbaRateProvider
                 // Record the era as loaded only once its observations are in, so a publish that fails part-way leaves
                 // it unloaded and the next request downloads it again.
                 int count = AddObservations(table.EnumerateRates(), fetchedAt);
-                _loadedEras[era.Label] = LoadedUnit.Create(era.End, table.GetLastDate(), fetchedAt, _options.CurrentEraRefreshInterval);
+                _loadedEras[era.Label] = LoadedUnit.Create(era.End, table.GetLastDate(), fetchedAt, _options.RefreshInterval);
                 return count;
             },
             logCompleted: count => Log.EraLoaded(_logger, _options.DownloadCompletedLogLevel, era.Label, count),

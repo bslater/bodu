@@ -66,7 +66,7 @@ public partial class EcbServiceRegistrationTests
     }
 
     /// <summary>
-    /// Verifies that options, including the nested endpoint settings, bind from a configuration section.
+    /// Verifies that the ECB-specific options bind from a configuration section.
     /// </summary>
     [TestMethod]
     public void AddEcbExchangeRates_ShouldBindOptionsFromConfiguration()
@@ -75,9 +75,7 @@ public partial class EcbServiceRegistrationTests
             .AddInMemoryCollection(new Dictionary<string, string?>
             {
                 ["Financial:Ecb:EnableDiskCache"] = "false",
-                ["Financial:Ecb:RefreshInterval"] = "06:00:00",
-                ["Financial:Ecb:Endpoint:BaseUrl"] = "https://mirror.example/fx/",
-                ["Financial:Ecb:Endpoint:UserAgent"] = "test-agent",
+                ["Financial:Ecb:CacheDirectory"] = "ecb-cache",
             })
             .Build();
 
@@ -88,9 +86,7 @@ public partial class EcbServiceRegistrationTests
         EcbRateProviderOptions options = provider.GetRequiredService<IOptions<EcbRateProviderOptions>>().Value;
 
         Assert.IsFalse(options.EnableDiskCache);
-        Assert.AreEqual(TimeSpan.FromHours(6), options.RefreshInterval);
-        Assert.AreEqual(new Uri("https://mirror.example/fx/"), options.Endpoint.BaseUrl);
-        Assert.AreEqual("test-agent", options.Endpoint.UserAgent);
+        Assert.AreEqual("ecb-cache", options.CacheDirectory);
     }
 
     /// <summary>
@@ -165,12 +161,12 @@ public partial class EcbServiceRegistrationTests
     public void AddEcbExchangeRates_ShouldApplyConfigureCallback()
     {
         ServiceCollection services = new();
-        services.AddFinancialService().AddEcbExchangeRates(configure: o => o.Endpoint.UserAgent = "callback-agent");
+        services.AddFinancialService().AddEcbExchangeRates(configure: o => o.UserAgent = "callback-agent");
         using ServiceProvider provider = services.BuildServiceProvider();
 
         EcbRateProviderOptions options = provider.GetRequiredService<IOptions<EcbRateProviderOptions>>().Value;
 
-        Assert.AreEqual("callback-agent", options.Endpoint.UserAgent);
+        Assert.AreEqual("callback-agent", options.UserAgent);
     }
 
     /// <summary>

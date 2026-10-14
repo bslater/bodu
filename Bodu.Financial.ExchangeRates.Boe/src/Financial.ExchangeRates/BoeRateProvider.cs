@@ -24,10 +24,11 @@ namespace Bodu.Financial.ExchangeRates;
 /// </para>
 /// <para>
 /// <strong>HttpClient ownership.</strong> The constructor that takes only options builds and owns an
-/// <see cref="HttpClient" /> configured from <see cref="BoeEndpointOptions.UserAgent" /> and
-/// <see cref="BoeEndpointOptions.HttpTimeout" />, disposing it with the provider. The constructor that takes an
-/// <see cref="HttpClient" /> uses the caller-supplied client as-is; this is the path the dependency-injection package
-/// uses.
+/// <see cref="HttpClient" /> configured from <see cref="WebRateProviderOptions.UserAgent" />,
+/// <see cref="WebRateProviderOptions.HttpTimeout" /> and
+/// <see cref="WebRateProviderOptions.MaxResponseContentBufferSize" />, disposing it with the provider. The constructor
+/// that takes an <see cref="HttpClient" /> uses the caller-supplied client as-is; this is the path the
+/// dependency-injection package uses.
 /// </para>
 /// <para>
 /// <strong>Logging.</strong> When an <see cref="ILogger" /> is supplied (directly or through the dependency-injection
@@ -175,11 +176,11 @@ public sealed class BoeRateProvider
     protected override bool AllowSynchronousNetworkAccess => _options.AllowSynchronousNetworkAccess;
 
     /// <inheritdoc />
-    protected override TimeSpan DefaultLookback => TimeSpan.FromDays(_options.OnDemandWindowDays);
+    protected override TimeSpan DefaultLookback => _options.DefaultLookback;
 
     /// <inheritdoc />
     /// <remarks>
-    /// Forwards <see cref="BoeRateProviderOptions.HistoryAvailability" />, which defaults to a fixed floor of 2 January
+    /// Forwards <see cref="WebRateProviderOptions.HistoryAvailability" />, which defaults to a fixed floor of 2 January
     /// 1975 - the inception of the Bank of England's daily spot exchange-rate series.
     /// </remarks>
     public override RateHistoryAvailability HistoryAvailability => _options.HistoryAvailability;
@@ -251,6 +252,10 @@ public sealed class BoeRateProvider
     }
 
     /// <inheritdoc />
+    protected override void OnSynchronousNetworkFetch(DateOnly date) =>
+        Log.SynchronousNetworkFetch(_logger, _options.SynchronousNetworkFetchLogLevel, date);
+
+    /// <inheritdoc />
     protected override string FormatRateNotFound(string fromIsoCode, string toIsoCode, DateOnly date) =>
         string.Format(CultureInfo.CurrentCulture, BoeResourceStrings.IO_KeyNotFound_BoeRate, fromIsoCode, toIsoCode, date);
 
@@ -286,7 +291,7 @@ public sealed class BoeRateProvider
         ThrowHelper.ThrowIfNull(options);
         options.Validate();
 
-        return RateProviderHttpClientFactory.Create(options.Endpoint.UserAgent, options.Endpoint.HttpTimeout);
+        return RateProviderHttpClientFactory.Create(options.UserAgent, options.HttpTimeout, options.MaxResponseContentBufferSize);
     }
 
     /// <summary>

@@ -25,10 +25,11 @@ namespace Bodu.Financial.ExchangeRates;
 /// column's currency per one pound sterling.
 /// </para>
 /// <para>
-/// Columns whose series code is not in the configured catalogue are ignored, and cells that are empty, non-numeric, or
-/// not strictly positive are skipped, because the IADB leaves a cell blank when a currency was not quoted on a given
-/// day. A response that lacks the <c>DATE</c> header - for example, an HTML error page returned in place of the CSV -
-/// is reported as a format failure.
+/// Each column's currency is the quote label of its series in the configured catalogue, mapped through the options'
+/// currency aliases. Columns whose series code is not in the catalogue are ignored, and cells that are empty,
+/// non-numeric, or not strictly positive are skipped, because the IADB leaves a cell blank when a currency was not
+/// quoted on a given day. A response that lacks the <c>DATE</c> header - for example, an HTML error page returned in
+/// place of the CSV - is reported as a format failure.
 /// </para>
 /// </remarks>
 internal static class BoeRateCsvParser
@@ -141,7 +142,7 @@ internal static class BoeRateCsvParser
             }
 
             Dictionary<string, BoeSeries> byCode = BuildSeriesIndex(options);
-            BoeSeries?[] columns = MapColumns(headers, byCode, out Dictionary<string, BoeSeries> present);
+            BoeSeries?[] columns = MapColumns(headers, byCode, options, out string?[] codes, out Dictionary<string, BoeSeries> present);
 
             var observations = new List<BoeRateObservation>();
             for (int index = 1; index < rowCount; index++)
@@ -153,12 +154,11 @@ internal static class BoeRateCsvParser
 
                 for (int column = 1; column < columns.Length && column < fieldCount; column++)
                 {
-                    BoeSeries? series = columns[column];
-                    if (series is null)
+                    if (columns[column] is null)
                         continue;
 
                     if (TryParseRate(row[column].GetString(), out decimal rate))
-                        observations.Add(new BoeRateObservation(date, series.QuoteIsoCode, rate));
+                        observations.Add(new BoeRateObservation(date, codes[column]!, rate));
                 }
             }
 
@@ -200,25 +200,37 @@ internal static class BoeRateCsvParser
     }
 
     /// <summary>
-    /// Maps each header column to its configured series, recording which currencies are present.
+    /// Maps each header column to its configured series and the currency code it is served under, recording which
+    /// currencies are present.
     /// </summary>
     /// <param name="headers">The parsed header row.</param>
     /// <param name="byCode">The series index keyed by code.</param>
-    /// <param name="present">
-    /// On return, the series descriptors for the columns present, keyed by quote ISO code.
+    /// <param name="options">The provider options supplying the currency aliases.</param>
+    /// <param name="codes">
+    /// On return, the currency code of each column: its series' quote label mapped through the currency aliases;
+    /// <see langword="null" /> for unmapped columns.
     /// </param>
+    /// <param name="present">On return, the series descriptors for the columns present, keyed by currency code.</param>
     /// <returns>A per-column array of series descriptors; <see langword="null" /> for unmapped columns.</returns>
-    private static BoeSeries?[] MapColumns(List<string> headers, Dictionary<string, BoeSeries> byCode, out Dictionary<string, BoeSeries> present)
+    private static BoeSeries?[] MapColumns(
+        List<string> headers,
+        Dictionary<string, BoeSeries> byCode,
+        BoeRateProviderOptions options,
+        out string?[] codes,
+        out Dictionary<string, BoeSeries> present)
     {
         var columns = new BoeSeries?[headers.Count];
+        codes = new string?[headers.Count];
         var found = new Dictionary<string, BoeSeries>(StringComparer.Ordinal);
 
         for (int column = 1; column < headers.Count; column++)
         {
             if (byCode.TryGetValue(headers[column], out BoeSeries? series))
             {
+                string code = options.MapQuoteCurrency(series.QuoteIsoCode);
                 columns[column] = series;
-                found[series.QuoteIsoCode] = series;
+                codes[column] = code;
+                found[code] = series;
             }
         }
 

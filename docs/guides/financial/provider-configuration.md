@@ -73,24 +73,25 @@ them behind one contract.
 ## Pattern 2 - a bulk provider in full: ECB
 
 The bulk providers (ECB, BoE, RBA, IMF) download one file that covers many pairs, so their options
-describe the feed: an endpoint, a payload-cache location, and a refresh interval. Every key below
-binds to <xref:Bodu.Financial.ExchangeRates.EcbRateProviderOptions> (and its nested
-<xref:Bodu.Financial.ExchangeRates.EcbEndpointOptions>), shown at its default:
+describe the feed: an endpoint, a payload-cache location, and a refresh interval. Like every
+provider's options, <xref:Bodu.Financial.ExchangeRates.EcbRateProviderOptions> derives from
+<xref:Bodu.Financial.ExchangeRates.WebRateProviderOptions>, so the endpoint and HTTP keys sit
+directly under the section. Every key below binds, shown at its default:
 
 ```json
 {
   "Financial": {
     "Ecb": {
-      "Endpoint": {
-        "BaseUrl": "https://www.ecb.europa.eu/stats/eurofxref/",
-        "HttpTimeout": "00:00:30",
-        "UserAgent": "Bodu.Financial.ExchangeRates.Ecb"
-      },
+      "BaseAddress": "https://www.ecb.europa.eu/stats/eurofxref/",
+      "HttpTimeout": "00:00:30",
+      "MaxResponseContentBufferSize": 67108864,
+      "UserAgent": "Bodu.Financial.ExchangeRates.Ecb",
       "AllowSynchronousNetworkAccess": false,
-      "EnableDiskCache": true,
-      "CacheDirectory": null,
+      "DefaultLookback": "7.00:00:00",
       "RefreshInterval": "12:00:00",
       "CurrencyAliases": {},
+      "EnableDiskCache": true,
+      "CacheDirectory": null,
       "DownloadStartingLogLevel": "Debug",
       "DownloadCompletedLogLevel": "Information",
       "DownloadFailedLogLevel": "Warning",
@@ -103,19 +104,23 @@ binds to <xref:Bodu.Financial.ExchangeRates.EcbRateProviderOptions> (and its nes
 
 | Key | Default | Meaning |
 |---|---|---|
-| `Endpoint:BaseUrl` | `https://www.ecb.europa.eu/stats/eurofxref/` | The directory the feed files are resolved against. |
-| `Endpoint:HttpTimeout` | 30 s | The per-attempt timeout; with DI it drives the resilience pipeline (Pattern 5). |
-| `Endpoint:UserAgent` | `Bodu.Financial.ExchangeRates.Ecb` | The `User-Agent` header on every request. |
+| `BaseAddress` | `https://www.ecb.europa.eu/stats/eurofxref/` | The directory the feed files are resolved against. |
+| `HttpTimeout` | 30 s | The per-attempt timeout; with DI it drives the resilience pipeline (Pattern 5). |
+| `MaxResponseContentBufferSize` | 64 MiB | Response-size ceiling on a provider-owned client; not applied to a client the host supplies. |
+| `UserAgent` | `Bodu.Financial.ExchangeRates.Ecb` | The `User-Agent` header on every request. |
 | `AllowSynchronousNetworkAccess` | `false` | Whether a *synchronous* lookup that misses may block to download. Off, a synchronous miss is reported as a miss and only the asynchronous surface or an explicit warm-up fetches. |
-| `EnableDiskCache` | `true` | Whether downloaded feed files are kept on disk so immutable history is not re-fetched. |
-| `CacheDirectory` | `null` | Where the payload cache lives. `null` or blank resolves to `bodu-ecb` under `Path.GetTempPath()`. |
+| `DefaultLookback` | 7 days | The window, ending on the requested date, an on-demand lookup loads: the narrowest feed that covers it. |
 | `RefreshInterval` | 12 h | A cached file older than this is re-downloaded, and a loaded feed serves a day the ECB could still publish for this long before the next request that reaches it downloads the feed again. |
 | `CurrencyAliases` | `{}` | Feed currency label → ISO code, applied while the feed is parsed (the reverse of the pair providers' ISO code → request symbol map). Empty by default, because the ECB publishes ISO codes. |
+| `EnableDiskCache` | `true` | Whether downloaded feed files are kept on disk so immutable history is not re-fetched. |
+| `CacheDirectory` | `null` | Where the payload cache lives. `null` or blank resolves to `bodu-ecb` under `Path.GetTempPath()`. |
 | `*LogLevel` | see block | The level each diagnostic is logged at; `None` suppresses it. |
 
-One member does **not** bind: `Feeds`, an `IReadOnlyList<EcbRateFeed>` whose elements carry a
-constructor. The configuration binder leaves it at `EcbRateFeed.Default` (the 90-day feed, then
-the full history) even when the section supplies a `Feeds` array. Set it - and anything else
+Two members do **not** bind. `Feeds` is an `IReadOnlyList<EcbRateFeed>` whose elements carry a
+constructor, so the configuration binder leaves it at `EcbRateFeed.Default` (the 90-day feed, then
+the full history) even when the section supplies a `Feeds` array. `HistoryAvailability` is a record
+struct with factory members; left at its default, `Unbounded`, the provider advertises the depth of
+`Feeds`, and any other value set in code is advertised in its place. Set it - and anything else
 that is not a plain value - through the `configure` callback, which runs after binding:
 
 ```csharp
@@ -135,7 +140,7 @@ builder.Services
 The pair providers (Yahoo, OFX, XE, OANDA, Fixer, exchangerate.host, FRED) fetch one currency
 pair per request, and their options all derive from
 <xref:Bodu.Financial.ExchangeRates.WebRateProviderOptions>, so the first thirteen keys below are
-shared by every one of them (and by IMF, whose options derive from the same base). The last
+shared by every one of them (and by the BoE, ECB, RBA and IMF options, which derive from the same base). The last
 three are Fixer's own, from <xref:Bodu.Financial.ExchangeRates.FixerRateProviderOptions>:
 
 ```json
@@ -191,9 +196,9 @@ reaches the wire.
 
 | Provider | Section | Options type | Shape | Provider-specific keys (defaults) | Key |
 |---|---|---|---|---|---|
-| ECB | `Financial:Ecb` | `EcbRateProviderOptions` | bulk, nested `Endpoint` | `Endpoint` (`BaseUrl`, `HttpTimeout`, `UserAgent`), `EnableDiskCache` (`true`), `CacheDirectory` (`null` → `bodu-ecb`), `RefreshInterval` (12 h), `CurrencyAliases` (`{}`); `Feeds` code-only | none |
-| Bank of England | `Financial:Boe` | `BoeRateProviderOptions` | bulk, nested `Endpoint` | `Endpoint` (`BaseUrl` `https://www.bankofengland.co.uk/boeapps/database/`, `QueryPath` `_iadb-fromshowcolumns.asp`, `HttpTimeout` 30 s, `UserAgent` `Bodu.Financial.ExchangeRates.Boe`), `OnDemandWindowDays` (10 - replaces `DefaultLookback`), `EnableDiskCache` (`true`), `CacheDirectory` (`null` → `bodu-boe`), `RefreshInterval` (12 h); `Series` and `HistoryAvailability` code-only; no `CurrencyAliases`, no `SynchronousNetworkFetchLogLevel` | none |
-| RBA | `Financial:Rba` | `RbaRateProviderOptions` | bulk, flat | `BaseUrl` (`https://www.rba.gov.au/statistics/tables/xls-hist/`), `HttpTimeout` (30 s), `UserAgent` (`Bodu.Financial.ExchangeRates.Rba`), `EnableDiskCache` (**`false`**), `CacheDirectory` (`null` → `bodu-rba`), `CurrentEraRefreshInterval` (12 h), `CurrencyAliases` (`{ "SDR": "XDR" }`); `Eras` code-only; no `SynchronousNetworkFetchLogLevel` | none |
+| ECB | `Financial:Ecb` | `EcbRateProviderOptions` | `WebRateProviderOptions` + feed keys | `BaseAddress` (`https://www.ecb.europa.eu/stats/eurofxref/`), `UserAgent` (`Bodu.Financial.ExchangeRates.Ecb`), `EnableDiskCache` (`true`), `CacheDirectory` (`null` → `bodu-ecb`); `CurrencyAliases` maps a feed label to an ISO code; `Feeds` code-only | none |
+| Bank of England | `Financial:Boe` | `BoeRateProviderOptions` | `WebRateProviderOptions` + IADB keys | `BaseAddress` (`https://www.bankofengland.co.uk/boeapps/database/`), `QueryPath` (`_iadb-fromshowcolumns.asp`), `UserAgent` (`Bodu.Financial.ExchangeRates.Boe`), `DefaultLookback` (10 days), `EnableDiskCache` (`true`), `CacheDirectory` (`null` → `bodu-boe`); `CurrencyAliases` maps a series' quote label to an ISO code; `Series` and `HistoryAvailability` (since 1975-01-02) code-only | none |
+| RBA | `Financial:Rba` | `RbaRateProviderOptions` | `WebRateProviderOptions` + era keys | `BaseAddress` (`https://www.rba.gov.au/statistics/tables/xls-hist/`), `UserAgent` (`Bodu.Financial.ExchangeRates.Rba`), `EnableDiskCache` (**`false`**), `CacheDirectory` (`null` → `bodu-rba`), `CurrencyAliases` (`{ "SDR": "XDR" }`, units label → ISO code); the shared `RefreshInterval` governs the open-ended current era; `Eras` code-only | none |
 | IMF | `Financial:Imf` | `ImfRateProviderOptions` | `WebRateProviderOptions` + report keys | `BaseAddress` (`https://www.imf.org/external/np/fin/data/`), `ReportPath` (`rms_mth.aspx`), `ReportType` (`REP`), `EnableDiskCache` (`true`), `CacheDirectory` (`null` → `bodu-imf`), `CurrencyNames` (report label → ISO code, ~35 defaults, merges); the shared `RefreshInterval` (12 h) also sets how long a cached copy of a month's report, downloaded while the month was open, stays fresh | none |
 | Yahoo Finance | `Financial:Yahoo` | `YahooRateProviderOptions` | pair | `BaseAddress` (`https://query1.finance.yahoo.com/`), `ChartPath` (`v8/finance/chart/{symbol}`), `SymbolFormat` (`{from}{to}=X`) | none |
 | OFX | `Financial:Ofx` | `OfxRateProviderOptions` | pair | `BaseAddress` (`https://api.ofx.com/`), `HistoryPath` (`PublicSite.ApiService/SpotRateHistory/{from}/{to}/{start}/{end}`), `DecimalPlaces` (6), `ReportingInterval` (`daily`), `FutureClampSkew` (`00:00:00`; subtracted from the current instant when capping a request's end bound) | none |
@@ -203,50 +208,56 @@ reaches the wire.
 | exchangerate.host | `Financial:ExchangeRateHost` | `ExchangeRateHostRateProviderOptions` | pair | `BaseAddress` (`https://api.exchangerate.host/`), `TimeSeriesPath` (`timeframe`), `HistoricalPath` (`historical`) | `ApiKey` → `access_key` query parameter |
 | FRED | `Financial:Fred` | `FredRateProviderOptions` | pair | `BaseAddress` (`https://api.stlouisfed.org/fred/`), `ObservationsPath` (`series/observations`), `SeriesMap` (`"EUR/USD": "DEXUSEU"` and 18 more; merges) | `ApiKey` → `api_key` query parameter |
 
-Three shapes, then, and two of them are already shown in full above. RBA's is the flat one:
+One shape, then: every options type derives from `WebRateProviderOptions`, so the shared keys sit
+directly under the section, and each provider adds its own. The ECB and Fixer blocks above show it
+in full. RBA's adds only the cache settings, with the cache off by default:
 
 ```json
 {
   "Financial": {
     "Rba": {
-      "BaseUrl": "https://www.rba.gov.au/statistics/tables/xls-hist/",
+      "BaseAddress": "https://www.rba.gov.au/statistics/tables/xls-hist/",
       "HttpTimeout": "00:00:30",
+      "MaxResponseContentBufferSize": 67108864,
       "UserAgent": "Bodu.Financial.ExchangeRates.Rba",
       "AllowSynchronousNetworkAccess": false,
+      "DefaultLookback": "7.00:00:00",
+      "RefreshInterval": "12:00:00",
+      "CurrencyAliases": { "SDR": "XDR" },
       "EnableDiskCache": false,
       "CacheDirectory": null,
-      "CurrentEraRefreshInterval": "12:00:00",
-      "CurrencyAliases": { "SDR": "XDR" },
       "DownloadStartingLogLevel": "Debug",
       "DownloadCompletedLogLevel": "Information",
       "DownloadFailedLogLevel": "Warning",
-      "ObservationIngestedLogLevel": "Trace"
+      "ObservationIngestedLogLevel": "Trace",
+      "SynchronousNetworkFetchLogLevel": "Warning"
     }
   }
 }
 ```
 
-And the Bank of England's adds a query path and an on-demand window to the nested endpoint shape:
+And the Bank of England's adds the IADB query path, with a ten-day look-back:
 
 ```json
 {
   "Financial": {
     "Boe": {
-      "Endpoint": {
-        "BaseUrl": "https://www.bankofengland.co.uk/boeapps/database/",
-        "QueryPath": "_iadb-fromshowcolumns.asp",
-        "HttpTimeout": "00:00:30",
-        "UserAgent": "Bodu.Financial.ExchangeRates.Boe"
-      },
+      "BaseAddress": "https://www.bankofengland.co.uk/boeapps/database/",
+      "QueryPath": "_iadb-fromshowcolumns.asp",
+      "HttpTimeout": "00:00:30",
+      "MaxResponseContentBufferSize": 67108864,
+      "UserAgent": "Bodu.Financial.ExchangeRates.Boe",
       "AllowSynchronousNetworkAccess": false,
-      "OnDemandWindowDays": 10,
+      "DefaultLookback": "10.00:00:00",
+      "RefreshInterval": "12:00:00",
+      "CurrencyAliases": {},
       "EnableDiskCache": true,
       "CacheDirectory": null,
-      "RefreshInterval": "12:00:00",
       "DownloadStartingLogLevel": "Debug",
       "DownloadCompletedLogLevel": "Information",
       "DownloadFailedLogLevel": "Warning",
-      "ObservationIngestedLogLevel": "Trace"
+      "ObservationIngestedLogLevel": "Trace",
+      "SynchronousNetworkFetchLogLevel": "Warning"
     }
   }
 }
@@ -375,8 +386,8 @@ and owns its own client through
 `GetRate` / `TryGetRate` / `GetRates` that finds nothing loaded reports a miss (`false`, or
 `KeyNotFoundException` from the throwing form) without touching the network; the asynchronous
 surface and the warm-up methods (`LoadRangeAsync`, `LoadPairAsync`) are the paths that fetch.
-On, a synchronous miss blocks to download the missing window - `DefaultLookback` (or BoE's
-`OnDemandWindowDays`) ending on the requested date - which is convenient in a worker but can
+On, a synchronous miss blocks to download the missing window - `DefaultLookback` ending on the
+requested date - which is convenient in a worker but can
 deadlock on a thread with a captured `SynchronizationContext`; the provider converts that case
 into an `InvalidOperationException` rather than a hang. Prefer warming at startup: the
 [warm-up hosted service](caching-configuration.md#pattern-4---warming-the-cache-at-startup)
@@ -399,7 +410,7 @@ workbooks are large and change only for the current era.
 | `Add<Source>ExchangeRates(IConfiguration?, string sectionName, Action<TOptions>?)` | `IServiceCollection`, `Bodu.Financial.ExchangeRates` | Calls `AddFinancialService(configuration)` and then the builder form; no resilience hook. |
 | `<Source>FinancialServiceBuilderExtensions.HttpClientName` | each provider package | The named-client key (`Bodu.Financial.ExchangeRates.<Source>`), for `IHttpClientFactory.CreateClient` or a logging filter. |
 | <xref:Bodu.Financial.ExchangeRates.WebRateProviderExtensions.AddWebRateProvider*> | `Bodu.Financial.ExchangeRates.DependencyInjection` | The shared registration every provider (and [your own](custom-web-provider.md)) delegates to. |
-| <xref:Bodu.Financial.ExchangeRates.WebRateProviderOptions> | `Bodu.Financial.ExchangeRates` | The shared option surface of the pair providers and IMF; `TryValidate` / `Validate` run the shared invariants then the provider's `TryValidateCore`. |
+| <xref:Bodu.Financial.ExchangeRates.WebRateProviderOptions> | `Bodu.Financial.ExchangeRates` | The shared option surface of every web provider; `TryValidate` / `Validate` run the shared invariants then the provider's `TryValidateCore`. |
 | `TryValidate(out string? error)` | every options type | The predicate `ValidateOnStart` runs; call it yourself when constructing options by hand. |
 
 ## Where to go next

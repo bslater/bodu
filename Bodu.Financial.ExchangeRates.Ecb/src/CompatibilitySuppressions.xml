@@ -1,0 +1,61 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+  https://learn.microsoft.com/dotnet/fundamentals/package-validation/diagnostic-ids
+
+  Every entry here is a deliberate, reviewed decision. A suppression that nobody can explain is a
+  silenced bug, so do not add one without recording why below, and delete one the moment the reason
+  stops holding. Regenerating this file with -p:ApiCompatGenerateSuppressionFile=true rewrites it and
+  DISCARDS these comments - regenerate into a scratch copy and merge by hand instead.
+
+  Bodu.Financial.ExchangeRates.Ecb moves its options onto WebRateProviderOptions in 1.3.0, before
+  the package is promoted from Preview to Stable (#1312). EcbEndpointOptions is removed (CP0001):
+  its BaseUrl, HttpTimeout and UserAgent are the inherited BaseAddress, HttpTimeout and UserAgent.
+  EcbRateProviderOptions.Endpoint is removed (CP0002). The members EcbRateProviderOptions declared
+  that WebRateProviderOptions also declares now come from the base and need no entry. Delete these
+  entries when the Preview validation baseline moves past 0.7.x, or when the package takes a Stable
+  baseline.
+-->
+<Suppressions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Suppression>
+    <DiagnosticId>CP0001</DiagnosticId>
+    <Target>T:Bodu.Financial.ExchangeRates.EcbEndpointOptions</Target>
+    <Left>lib/net10.0/Bodu.Financial.ExchangeRates.Ecb.dll</Left>
+    <Right>lib/net10.0/Bodu.Financial.ExchangeRates.Ecb.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0001</DiagnosticId>
+    <Target>T:Bodu.Financial.ExchangeRates.EcbEndpointOptions</Target>
+    <Left>lib/net8.0/Bodu.Financial.ExchangeRates.Ecb.dll</Left>
+    <Right>lib/net8.0/Bodu.Financial.ExchangeRates.Ecb.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Bodu.Financial.ExchangeRates.EcbRateProviderOptions.get_Endpoint</Target>
+    <Left>lib/net10.0/Bodu.Financial.ExchangeRates.Ecb.dll</Left>
+    <Right>lib/net10.0/Bodu.Financial.ExchangeRates.Ecb.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Bodu.Financial.ExchangeRates.EcbRateProviderOptions.set_Endpoint(Bodu.Financial.ExchangeRates.EcbEndpointOptions)</Target>
+    <Left>lib/net10.0/Bodu.Financial.ExchangeRates.Ecb.dll</Left>
+    <Right>lib/net10.0/Bodu.Financial.ExchangeRates.Ecb.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Bodu.Financial.ExchangeRates.EcbRateProviderOptions.get_Endpoint</Target>
+    <Left>lib/net8.0/Bodu.Financial.ExchangeRates.Ecb.dll</Left>
+    <Right>lib/net8.0/Bodu.Financial.ExchangeRates.Ecb.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+  <Suppression>
+    <DiagnosticId>CP0002</DiagnosticId>
+    <Target>M:Bodu.Financial.ExchangeRates.EcbRateProviderOptions.set_Endpoint(Bodu.Financial.ExchangeRates.EcbEndpointOptions)</Target>
+    <Left>lib/net8.0/Bodu.Financial.ExchangeRates.Ecb.dll</Left>
+    <Right>lib/net8.0/Bodu.Financial.ExchangeRates.Ecb.dll</Right>
+    <IsBaselineSuppression>true</IsBaselineSuppression>
+  </Suppression>
+</Suppressions>

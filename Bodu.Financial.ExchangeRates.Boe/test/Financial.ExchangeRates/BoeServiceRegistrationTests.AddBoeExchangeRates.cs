@@ -66,7 +66,7 @@ public partial class BoeServiceRegistrationTests
     }
 
     /// <summary>
-    /// Verifies that options, including the nested endpoint settings, bind from a configuration section.
+    /// Verifies that the Bank of England-specific options bind from a configuration section.
     /// </summary>
     [TestMethod]
     public void AddBoeExchangeRates_ShouldBindOptionsFromConfiguration()
@@ -75,9 +75,8 @@ public partial class BoeServiceRegistrationTests
             .AddInMemoryCollection(new Dictionary<string, string?>
             {
                 ["Financial:Boe:EnableDiskCache"] = "false",
-                ["Financial:Boe:OnDemandWindowDays"] = "5",
-                ["Financial:Boe:Endpoint:BaseUrl"] = "https://mirror.example/db/",
-                ["Financial:Boe:Endpoint:UserAgent"] = "test-agent",
+                ["Financial:Boe:CacheDirectory"] = "boe-cache",
+                ["Financial:Boe:QueryPath"] = "_iadb-mirror.asp",
             })
             .Build();
 
@@ -88,9 +87,8 @@ public partial class BoeServiceRegistrationTests
         BoeRateProviderOptions options = provider.GetRequiredService<IOptions<BoeRateProviderOptions>>().Value;
 
         Assert.IsFalse(options.EnableDiskCache);
-        Assert.AreEqual(5, options.OnDemandWindowDays);
-        Assert.AreEqual(new Uri("https://mirror.example/db/"), options.Endpoint.BaseUrl);
-        Assert.AreEqual("test-agent", options.Endpoint.UserAgent);
+        Assert.AreEqual("boe-cache", options.CacheDirectory);
+        Assert.AreEqual("_iadb-mirror.asp", options.QueryPath);
     }
 
     /// <summary>
@@ -100,12 +98,12 @@ public partial class BoeServiceRegistrationTests
     public void AddBoeExchangeRates_ShouldApplyConfigureCallback()
     {
         ServiceCollection services = new();
-        services.AddFinancialService().AddBoeExchangeRates(configure: o => o.Endpoint.UserAgent = "callback-agent");
+        services.AddFinancialService().AddBoeExchangeRates(configure: o => o.UserAgent = "callback-agent");
         using ServiceProvider provider = services.BuildServiceProvider();
 
         BoeRateProviderOptions options = provider.GetRequiredService<IOptions<BoeRateProviderOptions>>().Value;
 
-        Assert.AreEqual("callback-agent", options.Endpoint.UserAgent);
+        Assert.AreEqual("callback-agent", options.UserAgent);
     }
 
     /// <summary>

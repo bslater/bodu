@@ -64,6 +64,15 @@ internal static partial class Log
     public static partial void FeedLoadFailed(ILogger logger, LogLevel level, DateOnly startDate, DateOnly endDate, Exception exception);
 
     /// <summary>
+    /// Logs that a synchronous lookup triggered an on-demand network fetch.
+    /// </summary>
+    /// <param name="logger">The logger that receives the message.</param>
+    /// <param name="level">The level at which to log the message.</param>
+    /// <param name="date">The date whose look-back window was fetched synchronously.</param>
+    [LoggerMessage(EventId = 4204, Message = "Performed synchronous BoE network fetch to resolve a rate for {date}")]
+    public static partial void SynchronousNetworkFetch(ILogger logger, LogLevel level, DateOnly date);
+
+    /// <summary>
     /// Logs that a range download threw an exception type the fetch is not expected to produce, indicating a probable
     /// bug rather than a transport or data failure.
     /// </summary>

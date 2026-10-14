@@ -73,32 +73,11 @@
   <data name="IO_KeyNotFound_EcbSeries" xml:space="preserve">
     <value>ECB reference rates are quoted against EUR; the cross-currency pair {0}/{1} is not supported.</value>
   </data>
-  <data name="Arg_Invalid_EcbOptionsBaseUrl" xml:space="preserve">
-    <value>The ECB endpoint options must specify a base URL.</value>
-  </data>
-  <data name="Arg_Invalid_EcbOptionsEndpoint" xml:space="preserve">
-    <value>The ECB options must specify endpoint options.</value>
-  </data>
   <data name="Arg_Invalid_EcbOptionsFeeds" xml:space="preserve">
     <value>The ECB options must specify at least one feed.</value>
   </data>
   <data name="Arg_Invalid_EcbFeedFileName" xml:space="preserve">
     <value>The ECB feed file name '{0}' must be a plain relative file name; a rooted path, parent-directory reference, or absolute URL is not permitted.</value>
-  </data>
-  <data name="Op_Invalid_EcbEndpointBaseUrl" xml:space="preserve">
-    <value>The ECB endpoint base URL has not been configured.</value>
-  </data>
-  <data name="Arg_Invalid_EcbEndpointHttpTimeout" xml:space="preserve">
-    <value>The ECB endpoint options HTTP timeout must be greater than zero.</value>
-  </data>
-  <data name="Arg_Invalid_EcbOptionsRefreshInterval" xml:space="preserve">
-    <value>The ECB options refresh interval must be greater than zero.</value>
-  </data>
-  <data name="Arg_Invalid_EcbOptionsCurrencyAliases" xml:space="preserve">
-    <value>The ECB options currency alias map must not be null.</value>
-  </data>
-  <data name="Arg_Invalid_EcbOptionsLogLevel" xml:space="preserve">
-    <value>The ECB options must specify a defined log level for every logging concern.</value>
   </data>
   <data name="Op_Invalid_EcbOptions" xml:space="preserve">
     <value>ECB exchange-rate options are invalid.</value>

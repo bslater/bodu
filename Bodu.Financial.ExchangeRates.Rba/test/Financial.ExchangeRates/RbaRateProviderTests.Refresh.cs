@@ -10,14 +10,14 @@ public partial class RbaRateProviderTests
 {
     /// <summary>
     /// Verifies that the open-ended current era, loaded before the RBA published today's rates, is downloaded again,
-    /// for a request that reaches today, once the current-era refresh interval has passed.
+    /// for a request that reaches today, once the refresh interval has passed.
     /// </summary>
     [TestMethod]
     public async Task LoadRangeAsync_WhenTodayWasNotYetPublished_ShouldLoadAgainAfterTheRefreshInterval()
     {
         DateOnly today = new(2023, 1, 4);
         MutableTimeProvider time = new(new DateTimeOffset(2023, 1, 4, 9, 0, 0, TimeSpan.Zero));
-        RbaRateProviderOptions options = new() { EnableDiskCache = false, CurrentEraRefreshInterval = TimeSpan.FromHours(1) };
+        RbaRateProviderOptions options = new() { EnableDiskCache = false, RefreshInterval = TimeSpan.FromHours(1) };
         FixtureRbaRateTableSource source = new(options) { PublishedThrough = new DateOnly(2023, 1, 3) };
         using RbaRateProvider provider = new(source, options, timeProvider: time);
 
@@ -37,7 +37,7 @@ public partial class RbaRateProviderTests
     public async Task LoadRangeAsync_WhenEraIsClosed_ShouldNotLoadItAgain()
     {
         MutableTimeProvider time = new(new DateTimeOffset(2023, 1, 4, 9, 0, 0, TimeSpan.Zero));
-        RbaRateProviderOptions options = new() { EnableDiskCache = false, CurrentEraRefreshInterval = TimeSpan.FromHours(1) };
+        RbaRateProviderOptions options = new() { EnableDiskCache = false, RefreshInterval = TimeSpan.FromHours(1) };
         FixtureRbaRateTableSource source = new(options);
         using RbaRateProvider provider = new(source, options, timeProvider: time);
 

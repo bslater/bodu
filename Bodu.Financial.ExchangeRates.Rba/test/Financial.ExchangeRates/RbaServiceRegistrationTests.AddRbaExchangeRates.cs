@@ -66,7 +66,7 @@ public partial class RbaServiceRegistrationTests
     }
 
     /// <summary>
-    /// Verifies that options bind from a configuration section.
+    /// Verifies that the RBA-specific options bind from a configuration section.
     /// </summary>
     [TestMethod]
     public void AddRbaExchangeRates_ShouldBindOptionsFromConfiguration()
@@ -74,8 +74,8 @@ public partial class RbaServiceRegistrationTests
         IConfiguration configuration = new ConfigurationBuilder()
             .AddInMemoryCollection(new Dictionary<string, string?>
             {
-                ["Financial:Rba:EnableDiskCache"] = "false",
-                ["Financial:Rba:CurrentEraRefreshInterval"] = "06:00:00",
+                ["Financial:Rba:EnableDiskCache"] = "true",
+                ["Financial:Rba:CacheDirectory"] = "rba-cache",
             })
             .Build();
 
@@ -85,8 +85,8 @@ public partial class RbaServiceRegistrationTests
 
         RbaRateProviderOptions options = provider.GetRequiredService<IOptions<RbaRateProviderOptions>>().Value;
 
-        Assert.IsFalse(options.EnableDiskCache);
-        Assert.AreEqual(TimeSpan.FromHours(6), options.CurrentEraRefreshInterval);
+        Assert.IsTrue(options.EnableDiskCache);
+        Assert.AreEqual("rba-cache", options.CacheDirectory);
     }
 
     /// <summary>

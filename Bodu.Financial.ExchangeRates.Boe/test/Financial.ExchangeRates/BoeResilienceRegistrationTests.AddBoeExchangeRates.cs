@@ -14,13 +14,13 @@ public partial class BoeResilienceRegistrationTests
 {
     /// <summary>
     /// Verifies that the standard resilience options are registered for the named client with the per-attempt timeout
-    /// driven from the configured <see cref="BoeEndpointOptions.HttpTimeout" />.
+    /// driven from the configured <see cref="WebRateProviderOptions.HttpTimeout" />.
     /// </summary>
     [TestMethod]
     public void AddBoeExchangeRates_ShouldRegisterStandardResilienceOptionsForNamedClient()
     {
         ServiceCollection services = new();
-        services.AddFinancialService().AddBoeExchangeRates(configure: o => o.Endpoint.HttpTimeout = TimeSpan.FromSeconds(7));
+        services.AddFinancialService().AddBoeExchangeRates(configure: o => o.HttpTimeout = TimeSpan.FromSeconds(7));
         using ServiceProvider provider = services.BuildServiceProvider();
 
         HttpStandardResilienceOptions options = provider

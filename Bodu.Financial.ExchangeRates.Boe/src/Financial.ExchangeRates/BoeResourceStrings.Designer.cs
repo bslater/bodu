@@ -88,15 +88,6 @@ namespace Bodu.Financial.ExchangeRates {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to The Bank of England options must specify endpoint options..
-        /// </summary>
-        internal static string Arg_Invalid_BoeOptionsEndpoint {
-            get {
-                return ResourceManager.GetString("Arg_Invalid_BoeOptionsEndpoint", resourceCulture);
-            }
-        }
-
-        /// <summary>
         ///   Looks up a localized string similar to The Bank of England options must specify at least one series..
         /// </summary>
         internal static string Arg_Invalid_BoeOptionsSeries {
@@ -106,74 +97,20 @@ namespace Bodu.Financial.ExchangeRates {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to The Bank of England endpoint options must specify a base URL..
-        /// </summary>
-        internal static string Arg_Invalid_BoeEndpointBaseUrl {
-            get {
-                return ResourceManager.GetString("Arg_Invalid_BoeEndpointBaseUrl", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to The Bank of England endpoint options must specify a query path..
-        /// </summary>
-        internal static string Arg_Invalid_BoeEndpointQueryPath {
-            get {
-                return ResourceManager.GetString("Arg_Invalid_BoeEndpointQueryPath", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to The Bank of England endpoint base URL has not been configured..
-        /// </summary>
-        internal static string Op_Invalid_BoeEndpointBaseUrl {
-            get {
-                return ResourceManager.GetString("Op_Invalid_BoeEndpointBaseUrl", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to The Bank of England endpoint options HTTP timeout must be greater than zero..
-        /// </summary>
-        internal static string Arg_Invalid_BoeEndpointHttpTimeout {
-            get {
-                return ResourceManager.GetString("Arg_Invalid_BoeEndpointHttpTimeout", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to The Bank of England options on-demand window radius must not be negative..
-        /// </summary>
-        internal static string Arg_Invalid_BoeOptionsOnDemandWindowDays {
-            get {
-                return ResourceManager.GetString("Arg_Invalid_BoeOptionsOnDemandWindowDays", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to The Bank of England options refresh interval must be greater than zero..
-        /// </summary>
-        internal static string Arg_Invalid_BoeOptionsRefreshInterval {
-            get {
-                return ResourceManager.GetString("Arg_Invalid_BoeOptionsRefreshInterval", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to The Bank of England options must specify a defined log level for every logging concern..
-        /// </summary>
-        internal static string Arg_Invalid_BoeOptionsLogLevel {
-            get {
-                return ResourceManager.GetString("Arg_Invalid_BoeOptionsLogLevel", resourceCulture);
-            }
-        }
-
-        /// <summary>
         ///   Looks up a localized string similar to Bank of England exchange-rate options are invalid..
         /// </summary>
         internal static string Op_Invalid_BoeOptions {
             get {
                 return ResourceManager.GetString("Op_Invalid_BoeOptions", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The Bank of England options must specify a query path..
+        /// </summary>
+        internal static string Arg_Invalid_BoeOptionsQueryPath {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_BoeOptionsQueryPath", resourceCulture);
             }
         }
     }

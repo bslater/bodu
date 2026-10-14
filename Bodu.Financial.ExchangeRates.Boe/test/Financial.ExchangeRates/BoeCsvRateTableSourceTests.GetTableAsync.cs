@@ -25,7 +25,7 @@ public sealed partial class BoeCsvRateTableSourceTests
         BoeRateTable table = await source.GetTableAsync(s_from, s_to);
 
         string[] codes = options.Series.Select(static series => series.SeriesCode).ToArray();
-        Assert.AreEqual(options.Endpoint.BuildRequestUrl(codes, s_from, s_to), handler.LastRequestUri);
+        Assert.AreEqual(options.BuildRequestUrl(codes, s_from, s_to), handler.LastRequestUri);
         Assert.AreEqual(1, cache.StoreCount);
         Assert.AreEqual(TimeSpan.FromHours(5), cache.LastRefreshInterval);
         Assert.IsNotEmpty(table.Observations);

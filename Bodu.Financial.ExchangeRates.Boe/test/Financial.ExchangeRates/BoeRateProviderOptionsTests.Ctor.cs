@@ -28,4 +28,19 @@ public partial class BoeRateProviderOptionsTests
         Assert.IsFalse(options.AllowSynchronousNetworkAccess);
         Assert.IsEmpty(options.CurrencyAliases);
     }
+
+    /// <summary>
+    /// Verifies that the constructor sets the Bank of England-specific defaults: the IADB column query path, the default
+    /// series catalogue, and the on-disk cache enabled under the default directory.
+    /// </summary>
+    [TestMethod]
+    public void Ctor_ShouldSetTheBankOfEnglandSpecificDefaults()
+    {
+        BoeRateProviderOptions options = new();
+
+        Assert.AreEqual("_iadb-fromshowcolumns.asp", options.QueryPath);
+        Assert.AreSame(BoeSeries.Default, options.Series);
+        Assert.IsTrue(options.EnableDiskCache);
+        Assert.IsNull(options.CacheDirectory);
+    }
 }
