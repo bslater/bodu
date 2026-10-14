@@ -48,6 +48,24 @@ public sealed class ExchangeRateHostRateSourceTests
     }
 
     /// <summary>
+    /// Verifies that a multi-day request made with the default options targets <c>timeframe</c>, the range endpoint
+    /// the exchangerate.host API documents.
+    /// </summary>
+    [TestMethod]
+    public async Task LoadPairAsync_WhenRangeSpansMultipleDays_ForDefaultOptions_ShouldRequestTimeframePath()
+    {
+        StubHttpMessageHandler handler = new(ExchangeRateHostFixtures.ReadBytes(ExchangeRateHostFixtures.UsdTimeframeExample));
+        using HttpClient client = new(handler);
+        ExchangeRateHostRateProvider provider = new(client, new ExchangeRateHostRateProviderOptions { ApiKey = "test-key" });
+
+        await provider.LoadPairAsync("USD", "AUD", new DateOnly(2012, 5, 1), new DateOnly(2012, 5, 3));
+
+        Assert.AreEqual(1, handler.RequestCount);
+        Assert.IsNotNull(handler.LastRequestUri);
+        Assert.AreEqual("/timeframe", handler.LastRequestUri!.AbsolutePath);
+    }
+
+    /// <summary>
     /// Verifies that a single-day request targets the historical endpoint and expresses the date as a query
     /// parameter rather than as a range.
     /// </summary>

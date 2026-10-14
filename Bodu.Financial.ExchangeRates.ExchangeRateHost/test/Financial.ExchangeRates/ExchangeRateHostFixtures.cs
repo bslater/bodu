@@ -18,6 +18,13 @@ internal static class ExchangeRateHostFixtures
     /// <summary>The file name of the sample EUR/USD time-series response (early January 2023).</summary>
     public const string EurUsdTimeSeries = "eurusd-timeseries.json";
 
+    /// <summary>
+    /// The file name of the example <c>timeframe</c> response published in the exchangerate.host API's OpenAPI
+    /// specification (the <c>TimeframeResponse</c> schema example: USD against AUD and CHF, 1 to 3 May 2012), copied
+    /// verbatim.
+    /// </summary>
+    public const string UsdTimeframeExample = "usd-timeframe-example.json";
+
     /// <summary>The file name of the sample EUR/USD single-date response.</summary>
     public const string EurUsdHistorical = "eurusd-historical.json";
 

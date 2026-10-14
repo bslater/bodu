@@ -1,0 +1,23 @@
+{
+  "success": true,
+  "terms": "https://currencylayer.com/terms",
+  "privacy": "https://currencylayer.com/privacy",
+  "timeframe": true,
+  "start_date": "2012-05-01",
+  "end_date": "2012-05-03",
+  "source": "USD",
+  "quotes": {
+    "2012-05-01": {
+      "USDAUD": 0.9645,
+      "USDCHF": 0.91957
+    },
+    "2012-05-02": {
+      "USDAUD": 0.9575,
+      "USDCHF": 0.92036
+    },
+    "2012-05-03": {
+      "USDAUD": 0.95404,
+      "USDCHF": 0.91525
+    }
+  }
+}

@@ -39,6 +39,34 @@ public sealed class ExchangeRateHostResponseParserTests
     }
 
     /// <summary>
+    /// Verifies that the example <c>timeframe</c> response the exchangerate.host API documents (the <c>timeframe</c>
+    /// flag, the source currency, the inclusive bounds, and quotes keyed by date) yields the requested pair's rate for
+    /// every date it carries.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenDocumentedTimeframeResponse_ShouldReturnEveryDatedRateForThePair()
+    {
+        CurrencyPairRequest request = new(
+            new CurrencyPair(CurrencyCode.USD, CurrencyCode.CHF),
+            new DateOnly(2012, 5, 1),
+            new DateOnly(2012, 5, 3));
+        byte[] json = ExchangeRateHostFixtures.ReadBytes(ExchangeRateHostFixtures.UsdTimeframeExample);
+
+        PairRateData<ExchangeRateHostSeriesInfo> data = ExchangeRateHostResponseParser.Parse(json, request, "USD", "CHF", Options);
+
+        CollectionAssert.AreEqual(
+            new[]
+            {
+                new RateObservation(new DateOnly(2012, 5, 1), 0.91957m),
+                new RateObservation(new DateOnly(2012, 5, 2), 0.92036m),
+                new RateObservation(new DateOnly(2012, 5, 3), 0.91525m),
+            },
+            data.Observations.OrderBy(o => o.Date).ToArray());
+        Assert.AreEqual("USD", data.Series.SourceIsoCode);
+        Assert.AreEqual("CHF", data.Series.QuoteIsoCode);
+    }
+
+    /// <summary>
     /// Verifies that a time-series response drops dates outside the requested inclusive range.
     /// </summary>
     [TestMethod]
