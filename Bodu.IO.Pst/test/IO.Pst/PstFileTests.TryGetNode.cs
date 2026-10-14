@@ -17,8 +17,8 @@ public partial class PstFileTests
         using PstFile file = OpenSample1();
 
         Assert.IsTrue(file.TryGetNode(PstNodeId.RootFolder, out PstNode? node));
-        Assert.AreEqual(PstNodeId.RootFolder, node.Id);
-        Assert.AreEqual(PstNodeType.NormalFolder, node.Id.Type);
+        Assert.AreEqual(PstNodeId.RootFolder, node.NodeId);
+        Assert.AreEqual(PstNodeType.NormalFolder, node.NodeId.Type);
     }
 
     /// <summary>

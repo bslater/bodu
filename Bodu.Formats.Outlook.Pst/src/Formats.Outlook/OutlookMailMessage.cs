@@ -89,7 +89,7 @@ public sealed partial class OutlookMailMessage
                     _node.ReadPropertyContext(),
                     _inheritedEncoding ?? _store.StoreEncoding,
                     _store.Strict,
-                    _store.CreateOmissionReporter(_node.Id),
+                    _store.CreateOmissionReporter(_node.NodeId),
                     out Encoding encoding);
                 _encoding = encoding;
             }
@@ -159,7 +159,7 @@ public sealed partial class OutlookMailMessage
     /// </summary>
     /// <returns>The subject, or the node identifier when absent.</returns>
     public override string ToString() =>
-        Subject ?? _node.Id.ToString();
+        Subject ?? _node.NodeId.ToString();
 
     /// <summary>
     /// Gets the message node, for the recipient, attachment, and body partials.

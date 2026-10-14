@@ -23,7 +23,7 @@ public partial class PstNodeTests
         Assert.AreEqual(5, subnodes.Count);
         Assert.IsTrue(subnodes.Any(s => s.NodeId == new PstNodeId(0x0671) && s.NodeId.Type == PstNodeType.AttachmentTable));
         Assert.IsTrue(subnodes.Any(s => s.NodeId == new PstNodeId(0x0692) && s.NodeId.Type == PstNodeType.RecipientTable));
-        Assert.IsTrue(subnodes.All(s => s.ParentNodeId == message.Id));
+        Assert.IsTrue(subnodes.All(s => s.ParentNodeId == message.NodeId));
     }
 
     /// <summary>

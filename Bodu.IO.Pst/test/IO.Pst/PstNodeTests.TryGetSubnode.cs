@@ -19,8 +19,8 @@ public partial class PstNodeTests
         var recipientTable = new PstNodeId(0x0692);
 
         Assert.IsTrue(message.TryGetSubnode(recipientTable, out PstNode? subnode));
-        Assert.AreEqual(recipientTable, subnode.Id);
-        Assert.AreEqual(message.Id, subnode.ParentId);
+        Assert.AreEqual(recipientTable, subnode.NodeId);
+        Assert.AreEqual(message.NodeId, subnode.ParentNodeId);
         Assert.IsTrue(subnode.ReadAllBytes().Length > 0);
     }
 

@@ -39,7 +39,7 @@ public sealed partial class OutlookMailStore
     private PstNamedPropertyMap LoadNamedPropertyMap(PstNode node)
     {
         PstPropertyContext context = node.ReadPropertyContext();
-        PstMapiPropertyReader.ReportUnresolvable(context.OmittedPropertyIds, CreateOmissionReporter(node.Id));
+        PstMapiPropertyReader.ReportUnresolvable(context.OmittedPropertyIds, CreateOmissionReporter(node.NodeId));
 
         return PstNamedPropertyMap.Load(context, Strict);
     }

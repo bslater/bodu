@@ -61,7 +61,7 @@ foreach (PstNodeInfo info in file.EnumerateNodes())
         if (!properties.TryGetValueLength(0x3701, out long length))
             continue;
 
-        Console.WriteLine($"{message.Id} -> {child.NodeId}: {length}-byte payload");
+        Console.WriteLine($"{message.NodeId} -> {child.NodeId}: {length}-byte payload");
 
         // ...then copy it block by block; MaxNodeDataLength never applies here.
         if (properties.TryOpenValueStream(0x3701, out Stream? payload))

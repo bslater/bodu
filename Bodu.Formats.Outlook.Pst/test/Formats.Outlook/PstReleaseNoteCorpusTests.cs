@@ -538,7 +538,7 @@ public sealed partial class PstReleaseNoteCorpusTests
     /// <param name="rowId">The row identifier the <c>Lookup</c> view looks up.</param>
     private static void RenderView(List<string> lines, PstNode node, string view, uint? rowId)
     {
-        string nodeText = NodeIdText(node.Id.Value);
+        string nodeText = NodeIdText(node.NodeId.Value);
         switch (view)
         {
             case "Pc":

@@ -105,7 +105,7 @@ public sealed partial class OutlookMailStore
                         storeNode.ReadPropertyContext(),
                         inheritedEncoding: null,
                         Strict,
-                        CreateOmissionReporter(storeNode.Id),
+                        CreateOmissionReporter(storeNode.NodeId),
                         out Encoding encoding);
                     _storeEncoding = encoding;
                 }

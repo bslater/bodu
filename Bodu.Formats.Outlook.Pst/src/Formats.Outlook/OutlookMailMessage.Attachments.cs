@@ -56,7 +56,7 @@ public sealed partial class OutlookMailMessage
                 if (_store.Strict)
                 {
                     throw new OutlookPstFormatException(string.Format(
-                        CultureInfo.CurrentCulture, OutlookPstResourceStrings.Format_Invalid_PstAttachmentObject, attachmentId, _node.Id));
+                        CultureInfo.CurrentCulture, OutlookPstResourceStrings.Format_Invalid_PstAttachmentObject, attachmentId, _node.NodeId));
                 }
 
                 continue;

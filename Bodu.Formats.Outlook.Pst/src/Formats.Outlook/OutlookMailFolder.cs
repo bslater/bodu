@@ -83,7 +83,7 @@ public sealed class OutlookMailFolder
                     _node.ReadPropertyContext(),
                     _inheritedEncoding ?? _store.StoreEncoding,
                     _store.Strict,
-                    _store.CreateOmissionReporter(_node.Id),
+                    _store.CreateOmissionReporter(_node.NodeId),
                     out Encoding encoding);
                 _encoding = encoding;
             }
@@ -143,7 +143,7 @@ public sealed class OutlookMailFolder
     public IEnumerable<OutlookMailFolder> EnumerateSubfolders()
     {
         foreach (PstNode node in EnumerateTableNodes(
-            PstStoreLayout.HierarchyTableOf(_node.Id), PstNodeType.NormalFolder, silentlySkipped: PstNodeType.SearchFolder))
+            PstStoreLayout.HierarchyTableOf(_node.NodeId), PstNodeType.NormalFolder, silentlySkipped: PstNodeType.SearchFolder))
         {
             yield return new OutlookMailFolder(_store, node, FolderEncoding);
         }
@@ -160,7 +160,7 @@ public sealed class OutlookMailFolder
     /// </exception>
     public IEnumerable<OutlookMailMessage> EnumerateMessages()
     {
-        foreach (PstNode node in EnumerateTableNodes(PstStoreLayout.ContentsTableOf(_node.Id), PstNodeType.NormalMessage))
+        foreach (PstNode node in EnumerateTableNodes(PstStoreLayout.ContentsTableOf(_node.NodeId), PstNodeType.NormalMessage))
             yield return new OutlookMailMessage(_store, node, FolderEncoding);
     }
 
@@ -175,7 +175,7 @@ public sealed class OutlookMailFolder
     /// </exception>
     public IEnumerable<OutlookMailMessage> EnumerateAssociatedMessages()
     {
-        foreach (PstNode node in EnumerateTableNodes(PstStoreLayout.AssociatedContentsTableOf(_node.Id), PstNodeType.AssociatedMessage))
+        foreach (PstNode node in EnumerateTableNodes(PstStoreLayout.AssociatedContentsTableOf(_node.NodeId), PstNodeType.AssociatedMessage))
             yield return new OutlookMailMessage(_store, node, FolderEncoding);
     }
 
@@ -184,7 +184,7 @@ public sealed class OutlookMailFolder
     /// </summary>
     /// <returns>The display name, or the node identifier when unnamed.</returns>
     public override string ToString() =>
-        DisplayName ?? _node.Id.ToString();
+        DisplayName ?? _node.NodeId.ToString();
 
     /// <summary>
     /// Gets the encoding the folder's code-page strings decoded with, forcing the properties to decode first.
@@ -221,7 +221,7 @@ public sealed class OutlookMailFolder
             if (rowNodeId.Type == silentlySkipped)
                 continue;
 
-            if (!_store.TryGetNode(rowNodeId, out PstNode? node) || node.Id.Type != expectedType)
+            if (!_store.TryGetNode(rowNodeId, out PstNode? node) || node.NodeId.Type != expectedType)
             {
                 if (_store.Strict)
                 {

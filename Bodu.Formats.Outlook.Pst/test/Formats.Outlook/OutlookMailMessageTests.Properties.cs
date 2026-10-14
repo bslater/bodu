@@ -100,7 +100,7 @@ public partial class OutlookMailMessageTests
         _ = testName;
         using OutlookMailStore store = OpenSynthetic(static b => b.DanglingMessagePropertyIds.Add(MapiPropertyIds.SenderName), level);
         OutlookMailMessage message = store.RootFolder.EnumerateSubfolders().Single().EnumerateMessages()
-            .Single(static m => m.Node.Id.Value == PstMessagingFixtureBuilder.MessageNodeId);
+            .Single(static m => m.Node.NodeId.Value == PstMessagingFixtureBuilder.MessageNodeId);
 
         PstFileFormatException ex = Assert.ThrowsExactly<PstFileFormatException>(() =>
         {
@@ -196,7 +196,7 @@ public partial class OutlookMailMessageTests
 
         using OutlookMailStore store = OpenSynthetic(static b => b.DanglingMessagePropertyIds.Add(MapiPropertyIds.SenderName), options);
         OutlookMailMessage message = store.RootFolder.EnumerateSubfolders().Single().EnumerateMessages()
-            .Single(static m => m.Node.Id.Value == PstMessagingFixtureBuilder.MessageNodeId);
+            .Single(static m => m.Node.NodeId.Value == PstMessagingFixtureBuilder.MessageNodeId);
 
         InvalidOperationException ex = Assert.ThrowsExactly<InvalidOperationException>(() =>
         {

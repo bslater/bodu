@@ -92,7 +92,7 @@ public sealed class OutlookMailAttachment
                     _context,
                     _owner.MessageEncoding,
                     _store.Strict,
-                    _store.CreateOmissionReporter(_node.Id),
+                    _store.CreateOmissionReporter(_node.NodeId),
                     MapiPropertyIds.AttachData,
                     _store.MaxInlineAttachmentBytes,
                     out Encoding encoding);

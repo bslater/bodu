@@ -45,22 +45,8 @@ public sealed class PstNode
     /// Gets the node identifier.
     /// </summary>
     /// <value>The identifier.</value>
-    public PstNodeId Id =>
-        new(_entry.NodeId);
-
-    /// <summary>
-    /// Gets the parent node identifier the directory records.
-    /// </summary>
-    /// <value>The parent identifier, or the zero identifier when none is recorded.</value>
-    public PstNodeId ParentId =>
-        new(_entry.ParentNodeId);
-
-    /// <summary>
-    /// Gets the node identifier.
-    /// </summary>
-    /// <value>The identifier.</value>
     public PstNodeId NodeId =>
-        throw new NotImplementedException();
+        new(_entry.NodeId);
 
     /// <summary>
     /// Gets the parent node identifier the directory records.
@@ -70,7 +56,7 @@ public sealed class PstNode
     /// identifier.
     /// </value>
     public PstNodeId ParentNodeId =>
-        throw new NotImplementedException();
+        new(_entry.ParentNodeId);
 
     /// <summary>
     /// Gets a value indicating whether the node carries a subnode tree.
@@ -237,7 +223,7 @@ public sealed class PstNode
     /// </summary>
     /// <returns>The identifier and its type.</returns>
     public override string ToString() =>
-        $"{Id} ({Id.Type})";
+        $"{NodeId} ({NodeId.Type})";
 
     /// <summary>
     /// Resolves the node's ordered data-tree leaf entries, caching them for the instance's lifetime.
