@@ -9,10 +9,11 @@ namespace Bodu.Financial.ExchangeRates;
 using Microsoft.Extensions.Logging;
 
 /// <summary>
-/// Provides the configuration common to every pair-based web exchange-rate source and to the IMF provider: the endpoint
-/// base address, the HTTP contract (user agent and timeout), the synchronous-access, look-back and refresh behavior,
-/// the currency-alias map, and the per-concern diagnostic log levels. A concrete source derives from this type to add
-/// its own endpoint members and validation.
+/// Provides the configuration common to every web exchange-rate source, the pair-based sources and the Bank of England,
+/// ECB, RBA and IMF feeds alike: the endpoint base address, the HTTP contract (user agent, timeout and response-size
+/// cap), the synchronous-access, look-back and refresh behavior, the advertised history, the currency-alias map, and
+/// the per-concern diagnostic log levels. A concrete source derives from this type to add its own endpoint members and
+/// validation.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -112,7 +113,8 @@ public abstract class WebRateProviderOptions
 
     /// <summary>
     /// Gets or sets the look-back window used when a synchronous, undated, or asynchronous single-date lookup must
-    /// fetch a pair on demand. The provider fetches the window ending on the requested date and spanning this duration.
+    /// fetch on demand. The provider fetches the window ending on the requested date and spanning this duration, in
+    /// whole days; a source that publishes whole files fetches every file the window reaches.
     /// </summary>
     /// <value>The look-back window; defaults to 7 days.</value>
     public TimeSpan DefaultLookback { get; set; } = TimeSpan.FromDays(7);
@@ -144,10 +146,17 @@ public abstract class WebRateProviderOptions
     public RateHistoryAvailability HistoryAvailability { get; set; } = RateHistoryAvailability.Unbounded;
 
     /// <summary>
-    /// Gets or sets the map from ISO 4217 codes to the symbol component the source uses, applied while building a
-    /// request. Codes absent from the map pass through unchanged.
+    /// Gets or sets the map between ISO 4217 codes and the currency symbols or labels the source uses where the two
+    /// differ. Codes and labels absent from the map pass through unchanged.
     /// </summary>
     /// <value>The alias map; defaults to an empty map.</value>
+    /// <remarks>
+    /// A source that names currencies in its requests, as the pair-based sources do, maps the ISO code (the key) to the
+    /// symbol component it sends (the value) while building a request. A source that publishes a table naming its
+    /// currencies, as the Bank of England, ECB and RBA feeds do, maps the label it publishes (the key) to the ISO code
+    /// it is served under (the value) while reading the response. The derived options type states which applies. Every
+    /// value must be a non-empty run of ASCII letters and digits; <see cref="TryValidate" /> rejects any other.
+    /// </remarks>
     public IDictionary<string, string> CurrencyAliases { get; set; } =
         new Dictionary<string, string>(StringComparer.Ordinal);
 

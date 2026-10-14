@@ -1,25 +1,26 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="BoeEndpointOptionsTests.BuildRequestUrl.cs" company="Bodu Pty. Ltd.">
+// <copyright file="BoeRateProviderOptionsTests.BuildRequestUrl.cs" company="Bodu Pty. Ltd.">
 // Copyright (c) Bodu Pty. Ltd. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 namespace Bodu.Financial.ExchangeRates;
 
-public partial class BoeEndpointOptionsTests
+public partial class BoeRateProviderOptionsTests
 {
     /// <summary>
-    /// Verifies that a request URL embeds the series codes and the inclusive date range.
+    /// Verifies that a request URL resolves the query path against the base address and embeds the series codes and
+    /// the inclusive date range.
     /// </summary>
     [TestMethod]
     public void BuildRequestUrl_ShouldEmbedSeriesAndDates()
     {
-        BoeEndpointOptions endpoint = new();
+        BoeRateProviderOptions options = new();
 
-        Uri url = endpoint.BuildRequestUrl(["XUDLUSS", "XUDLERS"], new DateOnly(2023, 1, 1), new DateOnly(2023, 1, 31));
+        Uri url = options.BuildRequestUrl(["XUDLUSS", "XUDLERS"], new DateOnly(2023, 1, 1), new DateOnly(2023, 1, 31));
 
         string text = url.ToString();
-        Assert.IsTrue(text.Contains("_iadb-fromshowcolumns.asp", StringComparison.Ordinal));
+        Assert.AreEqual("https://www.bankofengland.co.uk/boeapps/database/_iadb-fromshowcolumns.asp", url.GetLeftPart(UriPartial.Path));
         Assert.IsTrue(text.Contains("XUDLUSS", StringComparison.Ordinal));
         Assert.IsTrue(text.Contains("XUDLERS", StringComparison.Ordinal));
         Assert.IsTrue(text.Contains("01%2FJan%2F2023", StringComparison.Ordinal));
@@ -33,9 +34,9 @@ public partial class BoeEndpointOptionsTests
     [TestMethod]
     public void BuildRequestUrl_WhenMultipleSeriesCodes_ShouldJoinWithLiteralComma()
     {
-        BoeEndpointOptions endpoint = new();
+        BoeRateProviderOptions options = new();
 
-        Uri url = endpoint.BuildRequestUrl(["XUDLUSS", "XUDLERS"], new DateOnly(2023, 1, 1), new DateOnly(2023, 1, 31));
+        Uri url = options.BuildRequestUrl(["XUDLUSS", "XUDLERS"], new DateOnly(2023, 1, 1), new DateOnly(2023, 1, 31));
 
         string text = url.ToString();
         Assert.IsTrue(
@@ -53,11 +54,11 @@ public partial class BoeEndpointOptionsTests
     [TestMethod]
     public void BuildRequestUrl_WhenSeriesCodesNull_ShouldThrowArgumentNullException()
     {
-        BoeEndpointOptions endpoint = new();
+        BoeRateProviderOptions options = new();
 
         _ = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            _ = endpoint.BuildRequestUrl(null!, new DateOnly(2023, 1, 1), new DateOnly(2023, 1, 31));
+            _ = options.BuildRequestUrl(null!, new DateOnly(2023, 1, 1), new DateOnly(2023, 1, 31));
         });
     }
 }

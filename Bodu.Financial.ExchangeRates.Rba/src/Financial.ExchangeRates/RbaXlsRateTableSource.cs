@@ -49,9 +49,9 @@ internal sealed class RbaXlsRateTableSource
         (byte[] bytes, DateTimeOffset? cachedAtUtc) = await CachedDownload.GetOrDownloadAsync(
             _cache,
             era,
-            _options.CurrentEraRefreshInterval,
+            _options.RefreshInterval,
             _httpClient,
-            () => new Uri(_options.BaseUrl, era.FileName),
+            () => new Uri(_options.BaseAddress, era.FileName),
             cancellationToken).ConfigureAwait(false);
 
         using MemoryStream stream = new(bytes, writable: false);

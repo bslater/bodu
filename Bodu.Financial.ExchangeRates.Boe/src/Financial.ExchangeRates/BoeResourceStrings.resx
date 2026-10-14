@@ -67,34 +67,13 @@
   <data name="IO_KeyNotFound_BoeSeries" xml:space="preserve">
     <value>Bank of England rates are quoted against GBP; the cross-currency pair {0}/{1} is not supported.</value>
   </data>
-  <data name="Arg_Invalid_BoeOptionsEndpoint" xml:space="preserve">
-    <value>The Bank of England options must specify endpoint options.</value>
-  </data>
   <data name="Arg_Invalid_BoeOptionsSeries" xml:space="preserve">
     <value>The Bank of England options must specify at least one series.</value>
   </data>
-  <data name="Arg_Invalid_BoeEndpointBaseUrl" xml:space="preserve">
-    <value>The Bank of England endpoint options must specify a base URL.</value>
-  </data>
-  <data name="Arg_Invalid_BoeEndpointQueryPath" xml:space="preserve">
-    <value>The Bank of England endpoint options must specify a query path.</value>
-  </data>
-  <data name="Op_Invalid_BoeEndpointBaseUrl" xml:space="preserve">
-    <value>The Bank of England endpoint base URL has not been configured.</value>
-  </data>
-  <data name="Arg_Invalid_BoeEndpointHttpTimeout" xml:space="preserve">
-    <value>The Bank of England endpoint options HTTP timeout must be greater than zero.</value>
-  </data>
-  <data name="Arg_Invalid_BoeOptionsOnDemandWindowDays" xml:space="preserve">
-    <value>The Bank of England options on-demand window radius must not be negative.</value>
-  </data>
-  <data name="Arg_Invalid_BoeOptionsRefreshInterval" xml:space="preserve">
-    <value>The Bank of England options refresh interval must be greater than zero.</value>
-  </data>
-  <data name="Arg_Invalid_BoeOptionsLogLevel" xml:space="preserve">
-    <value>The Bank of England options must specify a defined log level for every logging concern.</value>
-  </data>
   <data name="Op_Invalid_BoeOptions" xml:space="preserve">
     <value>Bank of England exchange-rate options are invalid.</value>
+  </data>
+  <data name="Arg_Invalid_BoeOptionsQueryPath" xml:space="preserve">
+    <value>The Bank of England options must specify a query path.</value>
   </data>
 </root>

@@ -15,8 +15,18 @@ internal static class ExchangeRateHostFixtures
     /// <summary>The prefix under which fixtures are embedded.</summary>
     private const string ResourcePrefix = "Bodu.Financial.ExchangeRates.ExchangeRateHost.Fixtures.";
 
-    /// <summary>The file name of the sample EUR/USD time-series response (early January 2023).</summary>
-    public const string EurUsdTimeSeries = "eurusd-timeseries.json";
+    /// <summary>
+    /// The file name of the sample EUR/USD <c>timeframe</c> response (early January 2023), in the shape the
+    /// exchangerate.host API documents for that endpoint.
+    /// </summary>
+    public const string EurUsdTimeframe = "eurusd-timeframe.json";
+
+    /// <summary>
+    /// The file name of the example <c>timeframe</c> response published in the exchangerate.host API's OpenAPI
+    /// specification (the <c>TimeframeResponse</c> schema example: USD against AUD and CHF, 1 to 3 May 2012), copied
+    /// verbatim.
+    /// </summary>
+    public const string UsdTimeframeExample = "usd-timeframe-example.json";
 
     /// <summary>The file name of the sample EUR/USD single-date response.</summary>
     public const string EurUsdHistorical = "eurusd-historical.json";
@@ -27,7 +37,7 @@ internal static class ExchangeRateHostFixtures
     /// <summary>
     /// Reads the raw bytes of an embedded fixture.
     /// </summary>
-    /// <param name="fileName">The fixture file name, for example <c>eurusd-timeseries.json</c>.</param>
+    /// <param name="fileName">The fixture file name, for example <c>eurusd-timeframe.json</c>.</param>
     /// <returns>The fixture content.</returns>
     /// <exception cref="InvalidOperationException">
     /// Thrown when the fixture is not embedded in the test assembly.

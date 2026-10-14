@@ -61,13 +61,13 @@ public class RbaXlsRateTableSourceTests
 
     /// <summary>
     /// Verifies that an era not cached is downloaded from its file under the base address, cached once, and looked up
-    /// with the current-era refresh interval.
+    /// with the refresh interval.
     /// </summary>
     /// <returns>A task that completes when the assertion has run.</returns>
     [TestMethod]
     public async Task GetTableAsync_WhenNotCached_ShouldDownloadTheEraFileAndCacheIt()
     {
-        RbaRateProviderOptions options = new() { CurrentEraRefreshInterval = TimeSpan.FromHours(5) };
+        RbaRateProviderOptions options = new() { RefreshInterval = TimeSpan.FromHours(5) };
         StubHttpMessageHandler handler = new(RbaFixtures.ReadBytes(s_immutableEra.FileName));
         using HttpClient client = new(handler);
         RecordingCache cache = new();
@@ -75,7 +75,7 @@ public class RbaXlsRateTableSourceTests
 
         _ = await source.GetTableAsync(s_immutableEra);
 
-        Assert.AreEqual(new Uri(options.BaseUrl, s_immutableEra.FileName), handler.LastRequestUri);
+        Assert.AreEqual(new Uri(options.BaseAddress, s_immutableEra.FileName), handler.LastRequestUri);
         Assert.AreEqual(1, cache.StoreCount);
         Assert.AreEqual(TimeSpan.FromHours(5), cache.LastRefreshInterval);
     }

@@ -15,8 +15,15 @@ namespace Bodu.Financial.ExchangeRates;
 /// <remarks>
 /// <para>
 /// The chart response carries a parallel <c>timestamp</c> array and an <c>indicators.quote[0].close</c> array. Days
-/// with no published close are emitted as <see langword="null" /> and are skipped. Timestamps are Unix seconds at the
-/// start of each bar and are interpreted in UTC.
+/// with no published close are emitted as <see langword="null" /> and are skipped.
+/// </para>
+/// <para>
+/// Each timestamp is the Unix second at which its daily bar opens, the start of the trading day in the exchange's time
+/// zone, so a bar is dated by converting its timestamp to that zone, named by <c>meta.exchangeTimezoneName</c>. A pair
+/// quoted on London time therefore has its summer bars, stamped at 23:00 UTC on the day before, dated on their London
+/// trading day. When the system does not know the zone, the bar is dated by <c>meta.gmtoffset</c>, the exchange's
+/// offset from UTC in seconds when the response was produced, which can differ from the offset at a bar on the other
+/// side of a daylight-saving change. A response that carries neither is dated in UTC.
 /// </para>
 /// <para>
 /// Closes and timestamps are read as JSON numbers or numeric strings. A point whose close or timestamp is of any other
@@ -26,6 +33,15 @@ namespace Bodu.Financial.ExchangeRates;
 /// </remarks>
 internal static class YahooChartResponseParser
 {
+    /// <summary>The earliest Unix timestamp, in seconds, that <see cref="DateTimeOffset" /> can represent.</summary>
+    private const long MinUnixSeconds = -62_135_596_800;
+
+    /// <summary>The latest Unix timestamp, in seconds, that <see cref="DateTimeOffset" /> can represent.</summary>
+    private const long MaxUnixSeconds = 253_402_300_799;
+
+    /// <summary>The largest offset from UTC, in seconds, that a time zone can have: fourteen hours.</summary>
+    private const long MaxOffsetSeconds = 14 * 60 * 60;
+
     /// <summary>
     /// Parses a chart response, restricting observations to the request's inclusive date range.
     /// </summary>
@@ -77,6 +93,8 @@ internal static class YahooChartResponseParser
             throw NoData(symbol);
 
         string quoteIsoCode = ReadQuoteIsoCode(first, request.Pair.To.ToString());
+        TimeZoneInfo? exchangeZone = ReadExchangeTimeZone(first);
+        long gmtOffsetSeconds = ReadGmtOffsetSeconds(first);
 
         int count = Math.Min(timestamps.GetArrayLength(), closes.GetArrayLength());
         var observations = new List<RateObservation>(count);
@@ -90,8 +108,11 @@ internal static class YahooChartResponseParser
 
             // A non-numeric or out-of-range Unix timestamp must be skipped like any other malformed point, rather
             // than crashing the fetch with an InvalidOperationException / ArgumentOutOfRangeException.
-            if (!JsonRateValueReader.TryReadInt64(timestamps[i], out long unixSeconds) || !TryUnixSecondsToDate(unixSeconds, out DateOnly date))
+            if (!JsonRateValueReader.TryReadInt64(timestamps[i], out long unixSeconds)
+                || !TryUnixSecondsToExchangeDate(unixSeconds, exchangeZone, gmtOffsetSeconds, out DateOnly date))
+            {
                 continue;
+            }
 
             if (date < request.StartDate || date > request.EndDate)
                 continue;
@@ -173,24 +194,77 @@ internal static class YahooChartResponseParser
     }
 
     /// <summary>
-    /// Converts a Unix timestamp in seconds to a UTC date, returning <see langword="false" /> when the value lies
-    /// outside the range representable by <see cref="DateTimeOffset" />.
+    /// Converts a bar's Unix timestamp in seconds to its date in the exchange's time zone, returning
+    /// <see langword="false" /> when the value, or its local time, lies outside the range representable by
+    /// <see cref="DateTimeOffset" />.
     /// </summary>
     /// <param name="unixSeconds">The Unix timestamp, in seconds.</param>
-    /// <param name="date">When this method returns, the corresponding UTC date when conversion succeeded.</param>
+    /// <param name="exchangeZone">The exchange's time zone, or <see langword="null" /> when it is not known.</param>
+    /// <param name="gmtOffsetSeconds">
+    /// The exchange's offset from UTC, in seconds, when the response was produced; used only when
+    /// <paramref name="exchangeZone" /> is <see langword="null" />.
+    /// </param>
+    /// <param name="date">
+    /// When this method returns, the bar's date in the exchange's time zone when conversion succeeded.
+    /// </param>
     /// <returns><see langword="true" /> when the timestamp was converted; otherwise <see langword="false" />.</returns>
-    private static bool TryUnixSecondsToDate(long unixSeconds, out DateOnly date)
+    private static bool TryUnixSecondsToExchangeDate(long unixSeconds, TimeZoneInfo? exchangeZone, long gmtOffsetSeconds, out DateOnly date)
     {
-        // DateTimeOffset.FromUnixTimeSeconds accepts -62,135,596,800 .. 253,402,300,799; anything else is malformed.
-        if (unixSeconds is < -62_135_596_800 or > 253_402_300_799)
-        {
-            date = default;
-            return false;
-        }
+        date = default;
 
-        date = DateOnly.FromDateTime(DateTimeOffset.FromUnixTimeSeconds(unixSeconds).UtcDateTime);
+        // DateTimeOffset.FromUnixTimeSeconds accepts -62,135,596,800 .. 253,402,300,799; anything else is malformed.
+        if (unixSeconds is < MinUnixSeconds or > MaxUnixSeconds)
+            return false;
+
+        // gmtoffset is the exchange's offset when the response was produced, not at each bar, so a range spanning a
+        // daylight-saving change would date the bars on its far side an hour off, which at a midnight stamp is a day.
+        // The zone gives the offset in force at each bar, so it is preferred, and gmtoffset serves only a zone the
+        // system does not know.
+        long offsetSeconds = exchangeZone is null
+            ? gmtOffsetSeconds
+            : (long)exchangeZone.GetUtcOffset(DateTimeOffset.FromUnixTimeSeconds(unixSeconds)).TotalSeconds;
+
+        long localSeconds = unixSeconds + offsetSeconds;
+        if (localSeconds is < MinUnixSeconds or > MaxUnixSeconds)
+            return false;
+
+        date = DateOnly.FromDateTime(DateTimeOffset.FromUnixTimeSeconds(localSeconds).UtcDateTime);
         return true;
     }
+
+    /// <summary>
+    /// Reads the exchange's time zone from the chart meta's <c>exchangeTimezoneName</c>.
+    /// </summary>
+    /// <param name="result">The first chart result element.</param>
+    /// <returns>
+    /// The exchange's time zone, or <see langword="null" /> when meta omits it or the system does not know it.
+    /// </returns>
+    private static TimeZoneInfo? ReadExchangeTimeZone(JsonElement result) =>
+        result.TryGetProperty("meta", out JsonElement meta)
+        && meta.ValueKind == JsonValueKind.Object
+        && meta.TryGetProperty("exchangeTimezoneName", out JsonElement name)
+        && name.ValueKind == JsonValueKind.String
+        && name.GetString() is { Length: > 0 } id
+        && TimeZoneInfo.TryFindSystemTimeZoneById(id, out TimeZoneInfo? zone)
+            ? zone
+            : null;
+
+    /// <summary>
+    /// Reads the exchange's offset from UTC, in seconds, from the chart meta's <c>gmtoffset</c>.
+    /// </summary>
+    /// <param name="result">The first chart result element.</param>
+    /// <returns>
+    /// The offset, or zero when meta omits it, or it is not an integer or lies beyond the fourteen hours an offset from
+    /// UTC can reach.
+    /// </returns>
+    private static long ReadGmtOffsetSeconds(JsonElement result) =>
+        result.TryGetProperty("meta", out JsonElement meta)
+        && meta.ValueKind == JsonValueKind.Object
+        && meta.TryGetProperty("gmtoffset", out JsonElement element)
+        && JsonRateValueReader.TryReadInt64(element, out long seconds)
+        && seconds is >= -MaxOffsetSeconds and <= MaxOffsetSeconds
+            ? seconds
+            : 0;
 
     /// <summary>
     /// Reads the quote-currency code from the chart meta, falling back to the requested code when absent.

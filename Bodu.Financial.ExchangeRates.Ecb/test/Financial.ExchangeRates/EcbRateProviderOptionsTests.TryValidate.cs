@@ -25,12 +25,12 @@ public partial class EcbRateProviderOptionsTests
     }
 
     /// <summary>
-    /// Verifies that a null endpoint is rejected.
+    /// Verifies that a missing base address is rejected.
     /// </summary>
     [TestMethod]
-    public void TryValidate_WhenEndpointIsNull_ShouldReturnFalse()
+    public void TryValidate_WhenBaseAddressIsNull_ShouldReturnFalse()
     {
-        EcbRateProviderOptions options = new() { Endpoint = null! };
+        EcbRateProviderOptions options = new() { BaseAddress = null! };
 
         bool valid = options.TryValidate(out string? error);
 
@@ -39,13 +39,12 @@ public partial class EcbRateProviderOptionsTests
     }
 
     /// <summary>
-    /// Verifies that an invalid endpoint surfaces through the aggregate validation.
+    /// Verifies that a non-positive HTTP timeout is rejected.
     /// </summary>
     [TestMethod]
-    public void TryValidate_WhenEndpointInvalid_ShouldReturnFalse()
+    public void TryValidate_WhenHttpTimeoutIsZero_ShouldReturnFalse()
     {
-        EcbRateProviderOptions options = new();
-        options.Endpoint.HttpTimeout = TimeSpan.Zero;
+        EcbRateProviderOptions options = new() { HttpTimeout = TimeSpan.Zero };
 
         bool valid = options.TryValidate(out string? error);
 

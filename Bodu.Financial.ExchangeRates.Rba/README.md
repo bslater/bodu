@@ -39,19 +39,40 @@ foreach (RbaSeriesInfo info in provider.GetAvailablePairs())
 - **AUD-based.** RBA quotes the Australian dollar against each currency. Direct
   (`AUD→X`) and inverse (`X→AUD`) lookups are supported; cross pairs are not.
 - **Loading.** Call `PreloadAsync` / `LoadRangeAsync` to warm the in-memory store. Up to
-  four eras download at once, and each is published only after the eras before it. A
+  four eras download at once, and each is published only after the eras before it. An
+  on-demand lookup loads every era its `DefaultLookback` window (seven days by default)
+  reaches, so a date in the first days of an era also loads the era before it. A
   synchronous lookup that misses an unloaded era will block to download it only when
   `AllowSynchronousNetworkAccess` is enabled (it is `false` by default, so the provider
   serves a snapshot of already-loaded data and a synchronous miss does not reach the
   network).
 - **Caching.** Downloaded files can be cached on disk by setting `EnableDiskCache` (off by
   default); immutable historical eras are then cached indefinitely and the open-ended current
-  era refreshes on `CurrentEraRefreshInterval`. In memory, a closed era is loaded once, while
+  era refreshes on `RefreshInterval`. In memory, a closed era is loaded once, while
   a request that reaches a day the RBA had not yet published when the current era was
-  loaded downloads it again once `CurrentEraRefreshInterval` has passed.
-- **Configuration.** `RbaRateProviderOptions` carries working defaults and binds through
+  loaded downloads it again once `RefreshInterval` has passed.
+- **Configuration.** `RbaRateProviderOptions` derives from `WebRateProviderOptions`, so it
+  shares the base address, HTTP, look-back, refresh, alias and log-level members every web
+  provider's options carry, carries working defaults, and binds through
   `Microsoft.Extensions.Options`. The package ships its own `AddRbaExchangeRates`
   registration in the `Bodu.Financial.ExchangeRates` namespace.
+
+## Options
+
+| Option | Default | Purpose |
+|---|---|---|
+| `BaseAddress` | `https://www.rba.gov.au/statistics/tables/xls-hist/` | The directory the era workbooks are resolved against. |
+| `HttpTimeout` | 30 s | Applied to the `HttpClient` the provider creates, or by the DI registration. |
+| `UserAgent` | `Bodu.Financial.ExchangeRates.Rba` | The `User-Agent` header, applied as `HttpTimeout` is. |
+| `MaxResponseContentBufferSize` | 64 MiB | The response-size cap on the `HttpClient` the provider creates. |
+| `AllowSynchronousNetworkAccess` | `false` | Opt in to blocking on-demand downloads from synchronous lookups. |
+| `DefaultLookback` | 7 days | The window, ending on the requested date, whose eras an on-demand lookup loads. |
+| `RefreshInterval` | 12 h | How long the cached current era, and a loaded day the RBA could still publish, is served before it is downloaded again. |
+| `HistoryAvailability` | `Unbounded` | Left unbounded, the provider advertises the depth of `Eras`; any other value is advertised as set (set in code). |
+| `Eras` | `RbaEraWorkbook.Default` | The era workbooks to draw from (set in code). |
+| `CurrencyAliases` | `{ "SDR": "XDR" }` | Maps a units label in a workbook to an ISO code. |
+| `EnableDiskCache` | `false` | Persist downloaded era workbooks on disk. |
+| `CacheDirectory` | `null` | The cache folder; `null` uses `bodu-rba` under the system temporary path. |
 
 ## HTTP client and lifetime
 
@@ -82,6 +103,7 @@ is `Trace`, and degraded paths are `Warning`. Every level is individually config
 | An era loaded (with its observation count) | `Information` | `DownloadCompletedLogLevel` |
 | Each individual rate observation ingested | `Trace` | `ObservationIngestedLogLevel` |
 | An era download failed (logged, then re-thrown) | `Warning` | `DownloadFailedLogLevel` |
+| A synchronous lookup triggered a blocking network fetch | `Warning` | `SynchronousNetworkFetchLogLevel` |
 
 ```csharp
 // Quieten the per-fetch line and turn off per-observation tracing entirely.

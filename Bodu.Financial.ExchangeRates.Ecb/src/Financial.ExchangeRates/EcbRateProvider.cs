@@ -25,10 +25,11 @@ namespace Bodu.Financial.ExchangeRates;
 /// </para>
 /// <para>
 /// <strong>HttpClient ownership.</strong> The constructor that takes only options builds and owns an
-/// <see cref="HttpClient" /> configured from <see cref="EcbEndpointOptions.UserAgent" /> and
-/// <see cref="EcbEndpointOptions.HttpTimeout" />, disposing it with the provider. The constructor that takes an
-/// <see cref="HttpClient" /> uses the caller-supplied client as-is; this is the path the dependency-injection package
-/// uses.
+/// <see cref="HttpClient" /> configured from <see cref="WebRateProviderOptions.UserAgent" />,
+/// <see cref="WebRateProviderOptions.HttpTimeout" /> and
+/// <see cref="WebRateProviderOptions.MaxResponseContentBufferSize" />, disposing it with the provider. The constructor
+/// that takes an <see cref="HttpClient" /> uses the caller-supplied client as-is; this is the path the
+/// dependency-injection package uses.
 /// </para>
 /// <para>
 /// <strong>Logging.</strong> When an <see cref="ILogger" /> is supplied (directly or through the dependency-injection
@@ -178,14 +179,21 @@ public sealed class EcbRateProvider
 
     /// <inheritdoc />
     /// <remarks>
-    /// Computed from the configured <see cref="EcbRateProviderOptions.Feeds" />: when the full-history feed is
-    /// configured the provider reaches back to <see cref="EcbRateFeed.Epoch" /> (4 January 1999, the start of the euro
-    /// reference-rate series); otherwise the deepest configured rolling feed bounds the window.
+    /// The options' <see cref="WebRateProviderOptions.HistoryAvailability" /> when it is set to anything other than
+    /// <see cref="RateHistoryAvailability.Unbounded" />, its default. Otherwise the depth is computed from the
+    /// configured <see cref="EcbRateProviderOptions.Feeds" />: when the full-history feed is configured the provider
+    /// reaches back to <see cref="EcbRateFeed.Epoch" /> (4 January 1999, the start of the euro reference-rate series);
+    /// otherwise the deepest configured rolling feed bounds the window.
     /// </remarks>
     public override RateHistoryAvailability HistoryAvailability
     {
         get
         {
+            // No ECB feed reaches back without bound, so the base default, Unbounded, stands for "not set" and the
+            // depth of the feed catalogue is advertised in its place.
+            if (_options.HistoryAvailability.Kind != RateHistoryAvailabilityKind.Unbounded)
+                return _options.HistoryAvailability;
+
             int windowDays = 0;
             foreach (EcbRateFeed feed in _options.Feeds)
             {
@@ -200,7 +208,7 @@ public sealed class EcbRateProvider
     }
 
     /// <inheritdoc />
-    protected override TimeSpan DefaultLookback => TimeSpan.Zero;
+    protected override TimeSpan DefaultLookback => _options.DefaultLookback;
 
     /// <summary>
     /// Downloads and loads the full-history feed, warming the store with every published day.
@@ -226,7 +234,7 @@ public sealed class EcbRateProvider
     /// </exception>
     /// <remarks>
     /// Every ECB feed runs to the latest business day, so a feed loaded before the ECB published that day's rates is
-    /// downloaded again once <see cref="EcbRateProviderOptions.RefreshInterval" /> has passed since it was loaded.
+    /// downloaded again once <see cref="WebRateProviderOptions.RefreshInterval" /> has passed since it was loaded.
     /// </remarks>
     public Task LoadFeedAsync(EcbRateFeed feed, CancellationToken cancellationToken = default)
     {
@@ -247,7 +255,7 @@ public sealed class EcbRateProvider
     /// </exception>
     /// <remarks>
     /// A feed already loaded serves the range without a download, unless the range reaches a day the ECB had not yet
-    /// published when the feed was loaded and <see cref="EcbRateProviderOptions.RefreshInterval" /> has passed since.
+    /// published when the feed was loaded and <see cref="WebRateProviderOptions.RefreshInterval" /> has passed since.
     /// </remarks>
     public Task LoadRangeAsync(DateOnly startDate, DateOnly endDate, CancellationToken cancellationToken = default)
     {
@@ -347,7 +355,7 @@ public sealed class EcbRateProvider
         ThrowHelper.ThrowIfNull(options);
         options.Validate();
 
-        return RateProviderHttpClientFactory.Create(options.Endpoint.UserAgent, options.Endpoint.HttpTimeout);
+        return RateProviderHttpClientFactory.Create(options.UserAgent, options.HttpTimeout, options.MaxResponseContentBufferSize);
     }
 
     /// <summary>

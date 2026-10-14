@@ -16,7 +16,7 @@ namespace Bodu.Financial.ExchangeRates;
 /// contract, the synchronous-access and look-back behaviour, the currency-alias map, and the per-concern log levels.
 /// The members declared here are exchangerate.host-specific: the required <see cref="ApiKey" /> presented as the
 /// <c>access_key</c> query parameter, and the <see cref="TimeSeriesPath" /> and <see cref="HistoricalPath" /> endpoint
-/// paths. A pair request spanning more than a single day is served from the time-series endpoint; a single-day request
+/// paths. A pair request spanning more than a single day is served from the time-frame endpoint; a single-day request
 /// is served from the historical (single-date) endpoint, which carries the target date in a <c>date</c> query
 /// parameter.
 /// </para>
@@ -53,10 +53,13 @@ public sealed class ExchangeRateHostRateProviderOptions
     public string ApiKey { get; set; } = string.Empty;
 
     /// <summary>
-    /// Gets or sets the relative time-series endpoint path used when a request spans more than one day.
+    /// Gets or sets the relative time-frame endpoint path used when a request spans more than one day. The inclusive
+    /// range is presented in the <c>start_date</c> and <c>end_date</c> query parameters.
     /// </summary>
-    /// <value>The time-series path; defaults to <c>timeseries</c>.</value>
-    public string TimeSeriesPath { get; set; } = "timeseries";
+    /// <value>
+    /// The time-frame path; defaults to <c>timeframe</c>, the range endpoint of the exchangerate.host API.
+    /// </value>
+    public string TimeSeriesPath { get; set; } = "timeframe";
 
     /// <summary>
     /// Gets or sets the relative single-date endpoint path used when a request covers exactly one day. The target date

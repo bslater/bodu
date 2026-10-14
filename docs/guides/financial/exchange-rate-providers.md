@@ -25,7 +25,7 @@ caching; that is added in front (see the caching guide).
 | XE.com | `Bodu.Financial.ExchangeRates.Xe` (not on nuget.org) | *any pair* | per-**pair** charting-rates JSON | rolling ~10 years (server-determined, estimated) | `AddXeExchangeRates()` |
 | OANDA | `Bodu.Financial.ExchangeRates.Oanda` (not on nuget.org) | *any pair* | per-**pair** rate-history JSON | rolling ~180 days | `AddOandaExchangeRates()` |
 | Fixer (fixer.io) | `Bodu.Financial.ExchangeRates.Fixer` | *any pair* | per-**pair** time-series / single-date JSON (`access_key`) | since 1999‑01‑01 | `AddFixerExchangeRates()` |
-| exchangerate.host | `Bodu.Financial.ExchangeRates.ExchangeRateHost` | *any pair* | per-**pair** time-series / single-date JSON (`access_key`) | since 1999‑01‑01 | `AddExchangeRateHostExchangeRates()` |
+| exchangerate.host | `Bodu.Financial.ExchangeRates.ExchangeRateHost` | *any pair* | per-**pair** time-frame / single-date JSON (`access_key`) | since 1999‑01‑01 | `AddExchangeRateHostExchangeRates()` |
 | FRED (St. Louis Fed) | `Bodu.Financial.ExchangeRates.Fred` | *mapped pairs* | per-**pair** `series_id` observations JSON (`api_key`) | unbounded (per series) | `AddFredExchangeRates()` |
 | IMF | `Bodu.Financial.ExchangeRates.Imf` | USD | monthly representative-rates **TSV report** (keyless, daily) | unbounded | `AddImfExchangeRates()` |
 
@@ -147,15 +147,15 @@ re-fetched; the pair providers do not cache payloads. This is distinct from the 
 the on-disk payload cache avoids re-downloading the source file, while the rate
 cache stores parsed, resolved rates in front of the provider.
 
-**Shared options.** The pair-provider options - Yahoo, OFX, XE, OANDA, Fixer,
-exchangerate.host, and FRED - plus the IMF options derive from the abstract
-<xref:Bodu.Financial.ExchangeRates.WebRateProviderOptions>, so they share its surface - the
-`BaseAddress`, `HttpTimeout` (default 30s), `UserAgent`, `AllowSynchronousNetworkAccess`,
-`DefaultLookback` (default 7 days), `RefreshInterval` (default 12 hours: how long a day
-the source could still publish, such as today, is served before it is fetched again), a
-`CurrencyAliases` map for non-ISO source symbols, and the per-event `*LogLevel` knobs.
-RBA, ECB, and BoE carry their own option types (`RbaRateProviderOptions` and friends)
-with source-specific settings such as the RBA's era list. The DI registration's
+**Shared options.** Every provider's options - the pair providers (Yahoo, OFX, XE,
+OANDA, Fixer, exchangerate.host, and FRED) and the BoE, ECB, RBA, and IMF feeds - derive
+from the abstract <xref:Bodu.Financial.ExchangeRates.WebRateProviderOptions>, so they
+share its surface - the `BaseAddress`, `HttpTimeout` (default 30s), `UserAgent`,
+`MaxResponseContentBufferSize`, `AllowSynchronousNetworkAccess`, `DefaultLookback`
+(default 7 days; 10 for BoE), `RefreshInterval` (default 12 hours: how long a day the
+source could still publish, such as today, is served before it is fetched again), a
+`CurrencyAliases` map for non-ISO source symbols, and the per-event `*LogLevel` knobs -
+and add source-specific settings such as the RBA's era list. The DI registration's
 `configureResilience` parameter tunes the standard Polly handler
 (`HttpStandardResilienceOptions`) wrapped around the named `HttpClient`.
 
@@ -329,11 +329,20 @@ RateLookupResult usd = fixer.GetRate("EUR", "USD", new DateOnly(2023, 1, 3));
 ## exchangerate.host (any pair, API key)
 
 [`ExchangeRateHostRateProvider`](xref:Bodu.Financial.ExchangeRates.ExchangeRateHostRateProvider)
-fetches the exchangerate.host time-series and single-date JSON endpoints per currency
+fetches the exchangerate.host `timeframe` and single-date JSON endpoints per currency
 pair. The response keys quotes by the concatenated source+quote code (for example
 `EURUSD`). Set the `access_key` through
-[`ExchangeRateHostRateProviderOptions.ApiKey`](xref:Bodu.Financial.ExchangeRates.ExchangeRateHostRateProviderOptions);
-the free plan is locked to a USD source currency.
+[`ExchangeRateHostRateProviderOptions.ApiKey`](xref:Bodu.Financial.ExchangeRates.ExchangeRateHostRateProviderOptions).
+
+> [!NOTE]
+> exchangerate.host's free plan supports a USD source currency and single-date requests;
+> changing the source currency and the `timeframe` (multi-day) endpoint require a paid plan
+> (source-currency switching from the Basic plan, time-frame queries from the Professional Plus
+> plan). A request the plan does not permit surfaces as a fetch failure. On a plan without
+> time-frame queries, warm one day at a time (`LoadPairAsync` with equal start and end dates),
+> because the on-demand and latest-rate lookups fetch the multi-day `DefaultLookback` window. On
+> the free plan request pairs whose source currency is USD; to read `EUR/USD` warm `USD/EUR`
+> first, and its reverse then resolves by inversion from the loaded series.
 
 ```csharp
 using Bodu.Financial.ExchangeRates;
@@ -354,6 +363,12 @@ mapped to its series identifier through
 The options ship a built-in map for the major USD pairs and accept more; a pair with
 no mapping returns no data. Missing values (FRED's `"."`) are skipped. Set the
 `api_key` through `FredRateProviderOptions.ApiKey`.
+
+> [!IMPORTANT]
+> FRED's [API terms of use](https://fred.stlouisfed.org/docs/api/terms_of_use.html) require an
+> application that uses the FRED API to place this notice prominently on the application: "This
+> product uses the FRED&reg; API but is not endorsed or certified by the Federal Reserve Bank of
+> St. Louis." Displaying it is the application's obligation; the provider cannot do it for you.
 
 ```csharp
 using Bodu.Financial.ExchangeRates;

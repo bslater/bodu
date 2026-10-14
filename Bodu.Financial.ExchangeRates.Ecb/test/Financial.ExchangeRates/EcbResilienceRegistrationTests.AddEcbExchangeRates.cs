@@ -14,13 +14,13 @@ public partial class EcbResilienceRegistrationTests
 {
     /// <summary>
     /// Verifies that the standard resilience options are registered for the named client with the per-attempt timeout
-    /// driven from the configured <see cref="EcbEndpointOptions.HttpTimeout" />.
+    /// driven from the configured <see cref="WebRateProviderOptions.HttpTimeout" />.
     /// </summary>
     [TestMethod]
     public void AddEcbExchangeRates_ShouldRegisterStandardResilienceOptionsForNamedClient()
     {
         ServiceCollection services = new();
-        services.AddFinancialService().AddEcbExchangeRates(configure: o => o.Endpoint.HttpTimeout = TimeSpan.FromSeconds(7));
+        services.AddFinancialService().AddEcbExchangeRates(configure: o => o.HttpTimeout = TimeSpan.FromSeconds(7));
         using ServiceProvider provider = services.BuildServiceProvider();
 
         HttpStandardResilienceOptions options = provider

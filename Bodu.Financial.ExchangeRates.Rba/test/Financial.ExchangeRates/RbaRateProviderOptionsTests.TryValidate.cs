@@ -25,12 +25,12 @@ public partial class RbaRateProviderOptionsTests
     }
 
     /// <summary>
-    /// Verifies that a null base URL is rejected.
+    /// Verifies that a missing base address is rejected.
     /// </summary>
     [TestMethod]
-    public void TryValidate_WhenBaseUrlIsNull_ShouldReturnFalse()
+    public void TryValidate_WhenBaseAddressIsNull_ShouldReturnFalse()
     {
-        RbaRateProviderOptions options = new() { BaseUrl = null! };
+        RbaRateProviderOptions options = new() { BaseAddress = null! };
 
         bool valid = options.TryValidate(out string? error);
 
@@ -67,12 +67,12 @@ public partial class RbaRateProviderOptionsTests
     }
 
     /// <summary>
-    /// Verifies that a non-positive current-era refresh interval is rejected.
+    /// Verifies that a non-positive refresh interval is rejected.
     /// </summary>
     [TestMethod]
     public void TryValidate_WhenRefreshIntervalIsNegative_ShouldReturnFalse()
     {
-        RbaRateProviderOptions options = new() { CurrentEraRefreshInterval = TimeSpan.FromHours(-1) };
+        RbaRateProviderOptions options = new() { RefreshInterval = TimeSpan.FromHours(-1) };
 
         bool valid = options.TryValidate(out string? error);
 

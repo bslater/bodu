@@ -25,12 +25,12 @@ public partial class BoeRateProviderOptionsTests
     }
 
     /// <summary>
-    /// Verifies that a null endpoint is rejected.
+    /// Verifies that a missing base address is rejected.
     /// </summary>
     [TestMethod]
-    public void TryValidate_WhenEndpointIsNull_ShouldReturnFalse()
+    public void TryValidate_WhenBaseAddressIsNull_ShouldReturnFalse()
     {
-        BoeRateProviderOptions options = new() { Endpoint = null! };
+        BoeRateProviderOptions options = new() { BaseAddress = null! };
 
         bool valid = options.TryValidate(out string? error);
 
@@ -39,18 +39,31 @@ public partial class BoeRateProviderOptionsTests
     }
 
     /// <summary>
-    /// Verifies that an invalid endpoint surfaces through the aggregate validation.
+    /// Verifies that a non-positive HTTP timeout is rejected.
     /// </summary>
     [TestMethod]
-    public void TryValidate_WhenEndpointInvalid_ShouldReturnFalse()
+    public void TryValidate_WhenHttpTimeoutIsZero_ShouldReturnFalse()
     {
-        BoeRateProviderOptions options = new();
-        options.Endpoint.QueryPath = "   ";
+        BoeRateProviderOptions options = new() { HttpTimeout = TimeSpan.Zero };
 
         bool valid = options.TryValidate(out string? error);
 
         Assert.IsFalse(valid);
         Assert.IsNotNull(error);
+    }
+
+    /// <summary>
+    /// Verifies that a blank query path is rejected with the Bank of England query-path message.
+    /// </summary>
+    [TestMethod]
+    public void TryValidate_WhenQueryPathIsBlank_ShouldReturnFalse()
+    {
+        BoeRateProviderOptions options = new() { QueryPath = "   " };
+
+        bool valid = options.TryValidate(out string? error);
+
+        Assert.IsFalse(valid);
+        Assert.AreEqual(BoeResourceStrings.Arg_Invalid_BoeOptionsQueryPath, error);
     }
 
     /// <summary>
@@ -68,12 +81,12 @@ public partial class BoeRateProviderOptionsTests
     }
 
     /// <summary>
-    /// Verifies that a negative on-demand window radius is rejected.
+    /// Verifies that a look-back that is not greater than zero is rejected.
     /// </summary>
     [TestMethod]
-    public void TryValidate_WhenOnDemandWindowDaysNegative_ShouldReturnFalse()
+    public void TryValidate_WhenDefaultLookbackIsZero_ShouldReturnFalse()
     {
-        BoeRateProviderOptions options = new() { OnDemandWindowDays = -1 };
+        BoeRateProviderOptions options = new() { DefaultLookback = TimeSpan.Zero };
 
         bool valid = options.TryValidate(out string? error);
 

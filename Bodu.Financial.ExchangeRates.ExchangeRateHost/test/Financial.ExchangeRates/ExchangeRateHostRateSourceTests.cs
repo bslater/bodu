@@ -21,13 +21,12 @@ namespace Bodu.Financial.ExchangeRates;
 public sealed class ExchangeRateHostRateSourceTests
 {
     /// <summary>
-    /// Verifies that a multi-day request targets the time-series endpoint and carries the access key, both symbols,
-    /// and the inclusive date bounds.
+    /// Verifies that a multi-day request carries the access key, both symbols, and the inclusive date bounds.
     /// </summary>
     [TestMethod]
-    public async Task LoadPairAsync_WhenRangeSpansMultipleDays_ShouldRequestTimeSeriesEndpoint()
+    public async Task LoadPairAsync_WhenRangeSpansMultipleDays_ShouldCarryKeySymbolsAndDateBounds()
     {
-        StubHttpMessageHandler handler = new(ExchangeRateHostFixtures.ReadBytes(ExchangeRateHostFixtures.EurUsdTimeSeries));
+        StubHttpMessageHandler handler = new(ExchangeRateHostFixtures.ReadBytes(ExchangeRateHostFixtures.EurUsdTimeframe));
         using HttpClient client = new(handler);
         ExchangeRateHostRateProvider provider = new(client, new ExchangeRateHostRateProviderOptions { ApiKey = "test-key" });
 
@@ -35,16 +34,31 @@ public sealed class ExchangeRateHostRateSourceTests
 
         Assert.AreEqual(1, handler.RequestCount);
         Assert.IsNotNull(handler.LastRequestUri);
-        Assert.IsTrue(
-            handler.LastRequestUri!.AbsolutePath.EndsWith("/timeseries", StringComparison.Ordinal),
-            handler.LastRequestUri.AbsolutePath);
 
-        string query = handler.LastRequestUri.Query;
+        string query = handler.LastRequestUri!.Query;
         Assert.Contains("access_key=test-key", query);
         Assert.Contains("source=EUR", query);
         Assert.Contains("currencies=USD", query);
         Assert.Contains("start_date=2023-01-02", query);
         Assert.Contains("end_date=2023-01-04", query);
+    }
+
+    /// <summary>
+    /// Verifies that a multi-day request made with the default options targets <c>timeframe</c>, the range endpoint
+    /// the exchangerate.host API documents.
+    /// </summary>
+    [TestMethod]
+    public async Task LoadPairAsync_WhenRangeSpansMultipleDays_ForDefaultOptions_ShouldRequestTimeframePath()
+    {
+        StubHttpMessageHandler handler = new(ExchangeRateHostFixtures.ReadBytes(ExchangeRateHostFixtures.UsdTimeframeExample));
+        using HttpClient client = new(handler);
+        ExchangeRateHostRateProvider provider = new(client, new ExchangeRateHostRateProviderOptions { ApiKey = "test-key" });
+
+        await provider.LoadPairAsync("USD", "AUD", new DateOnly(2012, 5, 1), new DateOnly(2012, 5, 3));
+
+        Assert.AreEqual(1, handler.RequestCount);
+        Assert.IsNotNull(handler.LastRequestUri);
+        Assert.AreEqual("/timeframe", handler.LastRequestUri!.AbsolutePath);
     }
 
     /// <summary>
@@ -78,7 +92,7 @@ public sealed class ExchangeRateHostRateSourceTests
     [TestMethod]
     public async Task LoadPairAsync_WhenApiKeyRequiresEscaping_ShouldEscapeItInQuery()
     {
-        StubHttpMessageHandler handler = new(ExchangeRateHostFixtures.ReadBytes(ExchangeRateHostFixtures.EurUsdTimeSeries));
+        StubHttpMessageHandler handler = new(ExchangeRateHostFixtures.ReadBytes(ExchangeRateHostFixtures.EurUsdTimeframe));
         using HttpClient client = new(handler);
         ExchangeRateHostRateProvider provider = new(client, new ExchangeRateHostRateProviderOptions { ApiKey = "key with spaces&more" });
 
@@ -95,7 +109,7 @@ public sealed class ExchangeRateHostRateSourceTests
     [TestMethod]
     public async Task LoadPairAsync_WhenBackedByHttp_ShouldResolveParsedRate()
     {
-        StubHttpMessageHandler handler = new(ExchangeRateHostFixtures.ReadBytes(ExchangeRateHostFixtures.EurUsdTimeSeries));
+        StubHttpMessageHandler handler = new(ExchangeRateHostFixtures.ReadBytes(ExchangeRateHostFixtures.EurUsdTimeframe));
         using HttpClient client = new(handler);
         ExchangeRateHostRateProvider provider = new(client, new ExchangeRateHostRateProviderOptions { ApiKey = "test-key" });
 

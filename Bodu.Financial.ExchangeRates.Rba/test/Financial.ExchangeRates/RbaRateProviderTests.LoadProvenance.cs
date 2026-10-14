@@ -26,7 +26,7 @@ public partial class RbaRateProviderTests
             {
                 EnableDiskCache = true,
                 CacheDirectory = directory,
-                CurrentEraRefreshInterval = TimeSpan.FromDays(7),
+                RefreshInterval = TimeSpan.FromDays(7),
             };
             FileSystemRbaWorkbookCache cache = new(directory);
             cache.Store(era, RbaFixtures.ReadBytes(era.FileName));

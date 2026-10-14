@@ -51,6 +51,15 @@ internal static partial class Log
     public static partial void ObservationIngested(ILogger logger, LogLevel level, string fromIsoCode, string toIsoCode, DateOnly date, decimal rate);
 
     /// <summary>
+    /// Logs that a synchronous lookup triggered an on-demand network fetch.
+    /// </summary>
+    /// <param name="logger">The logger that receives the message.</param>
+    /// <param name="level">The level at which to log the message.</param>
+    /// <param name="date">The date whose look-back window was fetched synchronously.</param>
+    [LoggerMessage(EventId = 4304, Message = "Performed synchronous RBA network fetch to resolve a rate for {date}")]
+    public static partial void SynchronousNetworkFetch(ILogger logger, LogLevel level, DateOnly date);
+
+    /// <summary>
     /// Logs that an era download failed.
     /// </summary>
     /// <param name="logger">The logger that receives the message.</param>

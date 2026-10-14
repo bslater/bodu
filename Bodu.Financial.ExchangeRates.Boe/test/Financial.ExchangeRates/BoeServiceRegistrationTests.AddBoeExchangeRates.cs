@@ -66,7 +66,7 @@ public partial class BoeServiceRegistrationTests
     }
 
     /// <summary>
-    /// Verifies that options, including the nested endpoint settings, bind from a configuration section.
+    /// Verifies that the Bank of England-specific options bind from a configuration section.
     /// </summary>
     [TestMethod]
     public void AddBoeExchangeRates_ShouldBindOptionsFromConfiguration()
@@ -75,9 +75,8 @@ public partial class BoeServiceRegistrationTests
             .AddInMemoryCollection(new Dictionary<string, string?>
             {
                 ["Financial:Boe:EnableDiskCache"] = "false",
-                ["Financial:Boe:OnDemandWindowDays"] = "5",
-                ["Financial:Boe:Endpoint:BaseUrl"] = "https://mirror.example/db/",
-                ["Financial:Boe:Endpoint:UserAgent"] = "test-agent",
+                ["Financial:Boe:CacheDirectory"] = "boe-cache",
+                ["Financial:Boe:QueryPath"] = "_iadb-mirror.asp",
             })
             .Build();
 
@@ -88,9 +87,8 @@ public partial class BoeServiceRegistrationTests
         BoeRateProviderOptions options = provider.GetRequiredService<IOptions<BoeRateProviderOptions>>().Value;
 
         Assert.IsFalse(options.EnableDiskCache);
-        Assert.AreEqual(5, options.OnDemandWindowDays);
-        Assert.AreEqual(new Uri("https://mirror.example/db/"), options.Endpoint.BaseUrl);
-        Assert.AreEqual("test-agent", options.Endpoint.UserAgent);
+        Assert.AreEqual("boe-cache", options.CacheDirectory);
+        Assert.AreEqual("_iadb-mirror.asp", options.QueryPath);
     }
 
     /// <summary>
@@ -100,12 +98,79 @@ public partial class BoeServiceRegistrationTests
     public void AddBoeExchangeRates_ShouldApplyConfigureCallback()
     {
         ServiceCollection services = new();
-        services.AddFinancialService().AddBoeExchangeRates(configure: o => o.Endpoint.UserAgent = "callback-agent");
+        services.AddFinancialService().AddBoeExchangeRates(configure: o => o.UserAgent = "callback-agent");
         using ServiceProvider provider = services.BuildServiceProvider();
 
         BoeRateProviderOptions options = provider.GetRequiredService<IOptions<BoeRateProviderOptions>>().Value;
 
-        Assert.AreEqual("callback-agent", options.Endpoint.UserAgent);
+        Assert.AreEqual("callback-agent", options.UserAgent);
+    }
+
+    /// <summary>
+    /// Verifies that the shared <see cref="WebRateProviderOptions" /> keys - <c>BaseAddress</c>, <c>HttpTimeout</c>,
+    /// <c>UserAgent</c>, <c>MaxResponseContentBufferSize</c>, <c>DefaultLookback</c>, <c>RefreshInterval</c>,
+    /// <c>SynchronousNetworkFetchLogLevel</c> and <c>CurrencyAliases</c> - bind directly under the provider's section.
+    /// </summary>
+    [TestMethod]
+    public void AddBoeExchangeRates_WhenSharedKeysConfigured_ShouldBindTheInheritedMembers()
+    {
+        IConfiguration configuration = new ConfigurationBuilder()
+            .AddInMemoryCollection(new Dictionary<string, string?>
+            {
+                ["Financial:Boe:BaseAddress"] = "https://mirror.example/iadb/",
+                ["Financial:Boe:HttpTimeout"] = "00:00:12",
+                ["Financial:Boe:UserAgent"] = "test-agent",
+                ["Financial:Boe:MaxResponseContentBufferSize"] = "1048576",
+                ["Financial:Boe:DefaultLookback"] = "5.00:00:00",
+                ["Financial:Boe:RefreshInterval"] = "06:00:00",
+                ["Financial:Boe:SynchronousNetworkFetchLogLevel"] = "Information",
+                ["Financial:Boe:CurrencyAliases:DOLLAR"] = "USD",
+            })
+            .Build();
+
+        ServiceCollection services = new();
+        services.AddFinancialService(configuration).AddBoeExchangeRates(configuration);
+        using ServiceProvider provider = services.BuildServiceProvider();
+
+        WebRateProviderOptions options = SharedOptions.Of(provider.GetRequiredService<IOptions<BoeRateProviderOptions>>().Value);
+
+        Assert.AreEqual(new Uri("https://mirror.example/iadb/"), options.BaseAddress);
+        Assert.AreEqual(TimeSpan.FromSeconds(12), options.HttpTimeout);
+        Assert.AreEqual("test-agent", options.UserAgent);
+        Assert.AreEqual(1_048_576L, options.MaxResponseContentBufferSize);
+        Assert.AreEqual(TimeSpan.FromDays(5), options.DefaultLookback);
+        Assert.AreEqual(TimeSpan.FromHours(6), options.RefreshInterval);
+        Assert.AreEqual(Microsoft.Extensions.Logging.LogLevel.Information, options.SynchronousNetworkFetchLogLevel);
+        Assert.AreEqual("USD", options.CurrencyAliases["DOLLAR"]);
+    }
+
+    /// <summary>
+    /// Verifies that the retired keys - the nested <c>Endpoint</c> section and <c>OnDemandWindowDays</c> - no longer
+    /// bind, so the shared members keep their defaults.
+    /// </summary>
+    [TestMethod]
+    public void AddBoeExchangeRates_WhenRetiredKeysConfigured_ShouldNotBindThem()
+    {
+        IConfiguration configuration = new ConfigurationBuilder()
+            .AddInMemoryCollection(new Dictionary<string, string?>
+            {
+                ["Financial:Boe:Endpoint:BaseUrl"] = "https://mirror.example/db/",
+                ["Financial:Boe:Endpoint:HttpTimeout"] = "00:00:12",
+                ["Financial:Boe:Endpoint:UserAgent"] = "test-agent",
+                ["Financial:Boe:OnDemandWindowDays"] = "5",
+            })
+            .Build();
+
+        ServiceCollection services = new();
+        services.AddFinancialService(configuration).AddBoeExchangeRates(configuration);
+        using ServiceProvider provider = services.BuildServiceProvider();
+
+        WebRateProviderOptions options = SharedOptions.Of(provider.GetRequiredService<IOptions<BoeRateProviderOptions>>().Value);
+
+        Assert.AreEqual(new Uri("https://www.bankofengland.co.uk/boeapps/database/"), options.BaseAddress);
+        Assert.AreEqual(TimeSpan.FromSeconds(30), options.HttpTimeout);
+        Assert.AreEqual("Bodu.Financial.ExchangeRates.Boe", options.UserAgent);
+        Assert.AreEqual(TimeSpan.FromDays(10), options.DefaultLookback);
     }
 
     /// <summary>

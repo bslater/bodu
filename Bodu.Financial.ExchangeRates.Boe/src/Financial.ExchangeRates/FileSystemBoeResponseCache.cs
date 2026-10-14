@@ -28,7 +28,7 @@ namespace Bodu.Financial.ExchangeRates;
 /// swallowed, so a cache problem never breaks rate retrieval.
 /// </para>
 /// </remarks>
-public sealed class FileSystemBoeResponseCache
+internal sealed class FileSystemBoeResponseCache
     : FileSystemByteCache<(DateOnly StartDate, DateOnly EndDate)>
 {
     /// <summary>

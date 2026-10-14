@@ -47,7 +47,7 @@ internal sealed class BoeCsvRateTableSource
             (startDate, endDate),
             _options.RefreshInterval,
             _httpClient,
-            () => _options.Endpoint.BuildRequestUrl(_options.Series.Select(static series => series.SeriesCode).ToArray(), startDate, endDate),
+            () => _options.BuildRequestUrl(_options.Series.Select(static series => series.SeriesCode).ToArray(), startDate, endDate),
             cancellationToken).ConfigureAwait(false);
 
         BoeRateTable table = BoeRateCsvParser.Parse(bytes, _options);

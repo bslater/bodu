@@ -483,7 +483,7 @@ public static class AcmeServiceCollectionExtensions
 
 The full overload takes the same parameters plus explicit `validateOptions`, `getUserAgent`,
 and `getHttpTimeout` selectors, for an options type that does not derive from
-`WebRateProviderOptions` (the way BoE's nested-endpoint options are registered). Either way the
+`WebRateProviderOptions` (none of the built-in providers needs it). Either way the
 consumer experience matches the built-in providers exactly - section, validation, resilience
 hook, and all:
 

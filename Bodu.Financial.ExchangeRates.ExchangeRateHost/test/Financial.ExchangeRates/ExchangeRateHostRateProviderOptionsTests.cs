@@ -25,14 +25,14 @@ public partial class ExchangeRateHostRateProviderOptionsTests
     }
 
     /// <summary>
-    /// Verifies that the constructor sets the default time-series and historical endpoint paths.
+    /// Verifies that the constructor sets the default time-frame and historical endpoint paths.
     /// </summary>
     [TestMethod]
     public void Ctor_ShouldSetEndpointPathDefaults()
     {
         ExchangeRateHostRateProviderOptions options = new();
 
-        Assert.AreEqual("timeseries", options.TimeSeriesPath);
+        Assert.AreEqual("timeframe", options.TimeSeriesPath);
         Assert.AreEqual("historical", options.HistoricalPath);
     }
 }

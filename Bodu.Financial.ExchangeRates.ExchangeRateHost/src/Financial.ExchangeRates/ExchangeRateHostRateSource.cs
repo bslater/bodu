@@ -9,7 +9,7 @@ using System.Globalization;
 namespace Bodu.Financial.ExchangeRates;
 
 /// <summary>
-/// Obtains a currency pair's rates from exchangerate.host by issuing a GET against the time-series endpoint (for
+/// Obtains a currency pair's rates from exchangerate.host by issuing a GET against the time-frame endpoint (for
 /// multi-day ranges) or the single-date endpoint (for one-day requests) and parsing the JSON response.
 /// </summary>
 /// <remarks>
@@ -55,7 +55,7 @@ internal sealed class ExchangeRateHostRateSource
     }
 
     /// <summary>
-    /// Builds the absolute request URI, selecting the single-date endpoint for a one-day request and the time-series
+    /// Builds the absolute request URI, selecting the single-date endpoint for a one-day request and the time-frame
     /// endpoint otherwise.
     /// </summary>
     /// <param name="sourceSymbol">The mapped source-currency symbol.</param>

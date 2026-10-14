@@ -37,7 +37,7 @@ public partial class ExchangeRateHostRateProviderOptionsTests
     }
 
     /// <summary>
-    /// Verifies that a blank time-series path is rejected.
+    /// Verifies that a blank time-frame path is rejected.
     /// </summary>
     [TestMethod]
     public void TryValidate_WhenTimeSeriesPathBlank_ShouldReturnFalse()

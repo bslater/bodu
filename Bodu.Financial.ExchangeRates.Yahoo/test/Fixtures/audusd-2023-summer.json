@@ -1,0 +1,33 @@
+{
+  "chart": {
+    "result": [
+      {
+        "meta": {
+          "currency": "USD",
+          "symbol": "AUDUSD=X",
+          "regularMarketPrice": 0.6705,
+          "gmtoffset": 3600,
+          "timezone": "BST",
+          "exchangeTimezoneName": "Europe/London"
+        },
+        "timestamp": [
+          1688338800,
+          1688425200,
+          1688511600
+        ],
+        "indicators": {
+          "quote": [
+            {
+              "close": [
+                0.6656,
+                0.6680,
+                0.6705
+              ]
+            }
+          ]
+        }
+      }
+    ],
+    "error": null
+  }
+}

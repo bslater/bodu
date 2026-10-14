@@ -46,6 +46,18 @@ RateLookupResult usd = provider.GetRate("EUR", "USD", new DateOnly(2023, 1, 3));
   `AddCachedRateProvider<…>` from the
   [`Bodu.Financial.ExchangeRates.Caching`](../Bodu.Financial.ExchangeRates.Caching) package.
 
+## FRED terms of use
+
+FRED's [API terms of use](https://fred.stlouisfed.org/docs/api/terms_of_use.html) require an
+application that uses the FRED API to place this notice prominently on the application:
+
+> This product uses the FRED&reg; API but is not endorsed or certified by the Federal Reserve
+> Bank of St. Louis.
+
+The terms also forbid stating or implying that the application is endorsed by the Federal
+Reserve Bank of St. Louis. Displaying the notice is the application's obligation; this package
+cannot do it for you.
+
 ## Endpoint configuration
 
 | Option | Default | Purpose |

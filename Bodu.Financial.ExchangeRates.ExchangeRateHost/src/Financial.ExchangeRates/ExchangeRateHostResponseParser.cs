@@ -14,7 +14,7 @@ namespace Bodu.Financial.ExchangeRates;
 /// </summary>
 /// <remarks>
 /// An exchangerate.host response carries a <c>success</c> flag and, on success, a <c>source</c> currency and a
-/// <c>quotes</c> object. The time-series endpoint returns <c>quotes</c> as a date-keyed map of per-pair objects; the
+/// <c>quotes</c> object. The time-frame endpoint returns <c>quotes</c> as a date-keyed map of per-pair objects; the
 /// single-date endpoint returns <c>quotes</c> as a flat per-pair object accompanied by a top-level <c>date</c>. Both
 /// shapes key their rates by the concatenated <c>{SOURCE}{QUOTE}</c> currency code (for example <c>USDEUR</c>). A
 /// response with <c>success</c> set to <see langword="false" /> is translated into an
@@ -61,7 +61,7 @@ internal static class ExchangeRateHostResponseParser
         {
             if (entry.Value.ValueKind == JsonValueKind.Object)
             {
-                // Time-series shape: the property name is an ISO date and the value is a per-pair object.
+                // Time-frame shape: the property name is an ISO date and the value is a per-pair object.
                 if (DateOnly.TryParseExact(entry.Name, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateOnly date)
                     && date >= request.StartDate && date <= request.EndDate
                     && TryReadRate(entry.Value, pairKey, out decimal rate))

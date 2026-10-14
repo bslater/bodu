@@ -54,7 +54,7 @@ public static class BoeFinancialServiceBuilderExtensions
     /// and tunable through <paramref name="configureResilience" />. The handler sits in the message-handler pipeline
     /// below the provider's single-flight load coordinator, so a retry re-issues the one in-flight request rather than
     /// multiplying across coalesced callers. Because the resilience handler enforces its own per-attempt timeout driven
-    /// from <see cref="BoeEndpointOptions.HttpTimeout" />, the <see cref="HttpClient.Timeout" /> is set to
+    /// from <see cref="WebRateProviderOptions.HttpTimeout" />, the <see cref="HttpClient.Timeout" /> is set to
     /// <see cref="Timeout.InfiniteTimeSpan" /> so the two timeout mechanisms do not compete.
     /// </para>
     /// <example>
@@ -63,7 +63,7 @@ public static class BoeFinancialServiceBuilderExtensions
     /// IServiceCollection services = new ServiceCollection();
     ///
     /// services.AddFinancialService(builder => builder
-    ///     .AddBoeExchangeRates(configuration, configure: opts => opts.Endpoint.HttpTimeout = TimeSpan.FromSeconds(15)));
+    ///     .AddBoeExchangeRates(configuration, configure: opts => opts.HttpTimeout = TimeSpan.FromSeconds(15)));
     ///]]>
     /// </code>
     /// </example>
@@ -78,10 +78,7 @@ public static class BoeFinancialServiceBuilderExtensions
             HttpClientName,
             configuration,
             sectionName,
-            static opts => opts.TryValidate(out _),
             BoeResourceStrings.Op_Invalid_BoeOptions,
-            static opts => opts.Endpoint.UserAgent,
-            static opts => opts.Endpoint.HttpTimeout,
             configure,
             configureResilience,
             static (client, opts, loggerFactory, timeProvider) =>

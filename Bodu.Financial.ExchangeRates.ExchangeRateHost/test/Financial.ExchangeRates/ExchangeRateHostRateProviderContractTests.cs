@@ -12,14 +12,14 @@ namespace Bodu.Financial.ExchangeRates;
 /// <summary>
 /// Verifies that <see cref="ExchangeRateHostRateProvider" /> satisfies the shared dated-provider contract, so the
 /// exchangerate.host source is indistinguishable in shape from any other <see cref="IDatedRateProvider" />. The provider
-/// is seeded offline from the embedded EUR/USD time-series fixture through
+/// is seeded offline from the embedded EUR/USD time-frame fixture through
 /// <see cref="FixtureExchangeRateHostRateSource" />.
 /// </summary>
 [TestClass]
 public sealed class ExchangeRateHostRateProviderContractTests
     : PairWebRateProviderContractTests<ExchangeRateHostRateProvider, ExchangeRateHostSeriesInfo>
 {
-    /// <summary>A date present in the embedded January 2023 time-series fixture (EUR/USD = 1.0546).</summary>
+    /// <summary>A date present in the embedded January 2023 time-frame fixture (EUR/USD = 1.0546).</summary>
     private static readonly DateOnly s_seeded = new(2023, 1, 3);
 
     /// <inheritdoc />

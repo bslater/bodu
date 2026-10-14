@@ -11,7 +11,7 @@ namespace Bodu.Financial.ExchangeRates;
 
 /// <summary>
 /// Serves exchangerate.host exchange rates as <see cref="ExchangeRate" /> values, implementing the Bodu.Financial
-/// provider contracts over the exchangerate.host time-series and historical JSON REST endpoints.
+/// provider contracts over the exchangerate.host <c>timeframe</c> and <c>historical</c> JSON REST endpoints.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -22,7 +22,7 @@ namespace Bodu.Financial.ExchangeRates;
 /// quote currency. Use <see cref="WebRateProvider.LoadPairAsync" /> to warm a pair's in-memory store.
 /// </para>
 /// <para>
-/// <strong>Plan limits.</strong> exchangerate.host serves the source-currency conversion and time-series endpoints
+/// <strong>Plan limits.</strong> exchangerate.host serves the source-currency conversion and time-frame endpoints
 /// subject to the account's plan. A request the account's plan does not permit surfaces as a fetch failure rather than
 /// being pre-empted, so a caller should request pairs its plan supports. A request for the reverse pair sends that
 /// pair's own source currency, so to read the reverse of a supported pair warm the supported direction first; its

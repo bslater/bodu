@@ -114,22 +114,22 @@ IDatedRateProvider rates = app.Services.GetRequiredService<IDatedRateProvider>()
 RateLookupResult result = await rates.GetRateAsync("EUR", "USD", new DateOnly(2024, 1, 3));
 ```
 
-The matching `appsettings.json` section - every key below binds to <xref:Bodu.Financial.ExchangeRates.EcbRateProviderOptions> and its nested <xref:Bodu.Financial.ExchangeRates.EcbEndpointOptions>, shown at their defaults:
+The matching `appsettings.json` section - every key below binds to <xref:Bodu.Financial.ExchangeRates.EcbRateProviderOptions>, which derives from <xref:Bodu.Financial.ExchangeRates.WebRateProviderOptions> like every provider's options, shown at its defaults:
 
 ```json
 {
   "Financial": {
     "Ecb": {
-      "Endpoint": {
-        "BaseUrl": "https://www.ecb.europa.eu/stats/eurofxref/",
-        "HttpTimeout": "00:00:30",
-        "UserAgent": "Bodu.Financial.ExchangeRates.Ecb"
-      },
+      "BaseAddress": "https://www.ecb.europa.eu/stats/eurofxref/",
+      "HttpTimeout": "00:00:30",
+      "MaxResponseContentBufferSize": 67108864,
+      "UserAgent": "Bodu.Financial.ExchangeRates.Ecb",
       "AllowSynchronousNetworkAccess": false,
-      "EnableDiskCache": true,
-      "CacheDirectory": null,
+      "DefaultLookback": "7.00:00:00",
       "RefreshInterval": "12:00:00",
       "CurrencyAliases": {},
+      "EnableDiskCache": true,
+      "CacheDirectory": null,
       "DownloadStartingLogLevel": "Debug",
       "DownloadCompletedLogLevel": "Information",
       "DownloadFailedLogLevel": "Warning",
@@ -140,7 +140,7 @@ The matching `appsettings.json` section - every key below binds to <xref:Bodu.Fi
 }
 ```
 
-The one member that does not bind from configuration is `Feeds` - an `IReadOnlyList<EcbRateFeed>` whose elements carry a constructor, defaulting to `EcbRateFeed.Default` (the 90-day feed, then the full history). Set it through the `configure` callback, which runs after binding:
+The members that do not bind from configuration are `Feeds` - an `IReadOnlyList<EcbRateFeed>` whose elements carry a constructor, defaulting to `EcbRateFeed.Default` (the 90-day feed, then the full history) - and `HistoryAvailability`, a record struct with factory members. Set them through the `configure` callback, which runs after binding:
 
 ```csharp
 builder.Services
@@ -152,7 +152,7 @@ builder.Services
         configureResilience: resilience => resilience.Retry.MaxRetryAttempts = 5);
 ```
 
-Options are validated at startup (`ValidateOnStart`), so a null `BaseUrl` or a non-positive refresh interval (`RefreshInterval` on every provider's options, `CurrentEraRefreshInterval` on RBA's) fails the host before the first request.
+Options are validated at startup (`ValidateOnStart`), so a null `BaseAddress` or a non-positive refresh interval (`RefreshInterval`, on every provider's options) fails the host before the first request.
 
 ### Supply an API key for a pair provider
 
@@ -207,11 +207,11 @@ builder.Services
     .AddFixerExchangeRates(configure: options => options.ApiKey = keyVault.GetSecret("fixer-access-key"));
 ```
 
-The same shape applies to `AddExchangeRateHostExchangeRates` (`Financial:ExchangeRateHost`, `ApiKey` sent as `access_key`) and `AddFredExchangeRates` (`Financial:Fred`, `ApiKey` sent as `api_key`, plus the `SeriesMap` from pair to FRED series identifier).
+The same shape applies to `AddExchangeRateHostExchangeRates` (`Financial:ExchangeRateHost`, `ApiKey` sent as `access_key`, `TimeSeriesPath` defaulting to `timeframe` and `HistoricalPath` to `historical`) and `AddFredExchangeRates` (`Financial:Fred`, `ApiKey` sent as `api_key`, plus the `SeriesMap` from pair to FRED series identifier).
 
 ### Control the payload cache
 
-The bulk providers (ECB, BoE, RBA, IMF) keep a best-effort on-disk cache of the raw files they download so immutable history is not re-fetched across process restarts. It is controlled by three options members; the ECB names are shown, the others match apart from RBA's `CurrentEraRefreshInterval` and `EnableDiskCache` default of `false`:
+The bulk providers (ECB, BoE, RBA, IMF) keep a best-effort on-disk cache of the raw files they download so immutable history is not re-fetched across process restarts. It is controlled by three options members; the ECB names are shown, and the others match apart from RBA's `EnableDiskCache` default of `false` and its `RefreshInterval` governing only the open-ended current era:
 
 | Member | Default | Effect |
 |---|---|---|
