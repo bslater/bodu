@@ -112,7 +112,7 @@ public static partial class DelimitedSerializer
         if (headers.Count == 0)
             return null;
 
-        bool constructed = IsKeyValuePair(recordType);
+        bool constructed = IsKeyValuePair(StructTypeOf(recordType));
         StringComparison comparison = options.PropertyNameCaseInsensitive ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
         int[] columns = new int[members.Length];
         for (int i = 0; i < members.Length; i++)
@@ -139,12 +139,15 @@ public static partial class DelimitedSerializer
     /// those <c>Serialize</c> writes, one for each readable member in member order, so a field binds to the member
     /// written in its position, a get-only member's field is skipped, and a member past the last field keeps its
     /// default. A <see cref="KeyValuePair{TKey, TValue}" /> record, whose <c>Key</c> and <c>Value</c> are get-only, is
-    /// created through its constructor from the fields of both instead.
+    /// created through its constructor from the fields of both instead. A record type that is a
+    /// <see cref="Nullable{T}" /> of a structure is bound as the structure, which the caller unboxes into the nullable
+    /// type.
     /// </remarks>
     [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
     [RequiresDynamicCode(RequiresDynamicCodeMessage)]
     private static object BindRecord(string[] fields, int[]? columns, FlatMemberDescriptor[] members, Type recordType)
     {
+        recordType = StructTypeOf(recordType);
         if (IsKeyValuePair(recordType))
             return BindKeyValuePair(fields, columns, members, recordType);
 
@@ -221,6 +224,21 @@ public static partial class DelimitedSerializer
     /// </returns>
     private static bool IsKeyValuePair(Type recordType) =>
         recordType.IsGenericType && recordType.GetGenericTypeDefinition() == typeof(KeyValuePair<,>);
+
+    /// <summary>
+    /// Gets the type a record of the specified type is written and read as: the structure of a
+    /// <see cref="Nullable{T}" />, or the type itself.
+    /// </summary>
+    /// <param name="recordType">The record type.</param>
+    /// <returns>The underlying structure of a nullable record type; otherwise <paramref name="recordType" />.</returns>
+    /// <remarks>
+    /// A record of a nullable structure, a <see cref="KeyValuePair{TKey, TValue}" /> among them, has the structure's
+    /// columns rather than the <see cref="Nullable{T}.HasValue" /> and <see cref="Nullable{T}.Value" /> of the nullable
+    /// type, and a <see langword="null" /> one is left out when records are written, as a <see langword="null" />
+    /// record of a class is.
+    /// </remarks>
+    private static Type StructTypeOf(Type recordType) =>
+        Nullable.GetUnderlyingType(recordType) ?? recordType;
 
     /// <summary>
     /// Binds the fields of a headerless row to a record by position, each to the member written in its column.
@@ -451,8 +469,9 @@ public static partial class DelimitedSerializer
                 string.Format(CultureInfo.CurrentCulture, DelimitedResourceStrings.Op_Invalid_DelimitedRecordTypeNotCreatable, recordType));
         }
 
-        // A member declared as object is tested again, on its value, as each record is written.
-        FlatMemberDescriptor[] members = GetMembers(recordType, options);
+        // A member declared as object is tested again, on its value, as each record is written. A record of a nullable
+        // structure has the structure's members.
+        FlatMemberDescriptor[] members = GetMembers(StructTypeOf(recordType), options);
         foreach (FlatMemberDescriptor member in members)
             ThrowIfNotScalar(null, member);
 
