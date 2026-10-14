@@ -9991,7 +9991,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Globalization.Calendar.NotableDateValidationException",
-      "Summary": "<p sourcefile=\"api/Bodu.Globalization.Calendar.NotableDateValidationException.yml\" sourcestartlinenumber=\"1\">The exception thrown when a notable-date document resource fails to load because one or more error-severity\nvalidation diagnostics were produced. This class cannot be inherited.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Globalization.Calendar.NotableDateValidationException.yml\" sourcestartlinenumber=\"1\">The exception thrown when a notable-date document resource fails to load, or a resource is refused by\n<xref href=\"Bodu.Globalization.Calendar.NotableDateBinaryResource.Write(Bodu.Globalization.Calendar.NotableDateResource%2cSystem.IO.Stream)\" data-throw-if-not-resolved=\"false\"></xref>, because one or more error-severity\nvalidation diagnostics were produced. This class cannot be inherited.</p>\n"
     },
     {
       "type": "ManagedReference",

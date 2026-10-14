@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Globalization_Calendar_Algorithms_FixedDateStrategy" data-uid="Bodu.Globalization.Calendar.Algorithms.FixedDateStrategy" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 FixedDateStrategy Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/af84b0e6313bdadd911b1ad14b8df4bb3dca3374/Bodu.Globalization.Calendar/src/Globalization.Calendar.Algorithms/FixedDateStrategy.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/c2eb6f6fa5f1532c7fbfd497b1e60fdda01de261/Bodu.Globalization.Calendar/src/Globalization.Calendar.Algorithms/FixedDateStrategy.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -104,7 +104,7 @@ FixedDateStrategy Class
   <dl><dt>Assembly</dt><dd>Bodu.Globalization.Calendar.dll</dd></dl>
   <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Globalization.Calendar">Bodu.Globalization.Calendar</a> <span class="bodu-package-version">1.3.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/af84b0e6313bdadd911b1ad14b8df4bb3dca3374/Bodu.Globalization.Calendar/src/Globalization.Calendar.Algorithms/FixedDateStrategy.cs">FixedDateStrategy.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/c2eb6f6fa5f1532c7fbfd497b1e60fdda01de261/Bodu.Globalization.Calendar/src/Globalization.Calendar.Algorithms/FixedDateStrategy.cs">FixedDateStrategy.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Calculates a notable date that falls on a fixed month and day every year, optionally expressed in a non-Gregorian
@@ -211,7 +211,7 @@ NotableDateResource resource = NotableDateDocumentBuilder.Create("demo")
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Globalization_Calendar_Algorithms_FixedDateStrategy__ctor_System_Int32_System_Int32_" data-uid="Bodu.Globalization.Calendar.Algorithms.FixedDateStrategy.#ctor(System.Int32,System.Int32)">
   FixedDateStrategy(int, int)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/af84b0e6313bdadd911b1ad14b8df4bb3dca3374/Bodu.Globalization.Calendar/src/Globalization.Calendar.Algorithms/FixedDateStrategy.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/c2eb6f6fa5f1532c7fbfd497b1e60fdda01de261/Bodu.Globalization.Calendar/src/Globalization.Calendar.Algorithms/FixedDateStrategy.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -244,7 +244,8 @@ NotableDateResource resource = NotableDateDocumentBuilder.Create("demo")
   <h4 class="section">Exceptions</h4>
   <dl class="parameters">
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
-    <dd><p><code class="paramref">month</code> is not between 1 and 12, or <code class="paramref">day</code> is not between 1 and 31.</p>
+    <dd><p><code class="paramref">month</code> is not between 1 and 12, or <code class="paramref">day</code> is not between 1 and the most days
+the month has: 29 in February, 30 in April, June, September and November, and 31 otherwise.</p>
 </dd>
   </dl>
 
@@ -257,7 +258,7 @@ NotableDateResource resource = NotableDateDocumentBuilder.Create("demo")
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Globalization_Calendar_Algorithms_FixedDateStrategy__ctor_System_Int32_System_Int32_Bodu_Globalization_Calendar_CalendarSystem_System_Boolean_System_Boolean_System_String_" data-uid="Bodu.Globalization.Calendar.Algorithms.FixedDateStrategy.#ctor(System.Int32,System.Int32,Bodu.Globalization.Calendar.CalendarSystem,System.Boolean,System.Boolean,System.String)">
   FixedDateStrategy(int, int, CalendarSystem, bool, bool, string?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/af84b0e6313bdadd911b1ad14b8df4bb3dca3374/Bodu.Globalization.Calendar/src/Globalization.Calendar.Algorithms/FixedDateStrategy.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/c2eb6f6fa5f1532c7fbfd497b1e60fdda01de261/Bodu.Globalization.Calendar/src/Globalization.Calendar.Algorithms/FixedDateStrategy.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -308,9 +309,11 @@ or read from a binary rule pack, is one a document could declare.</p>
   <dl class="parameters">
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentoutofrangeexception">ArgumentOutOfRangeException</a></dt>
     <dd><p><code class="paramref">day</code> is not between 1 and 31; <code class="paramref">calendar</code> is not a defined
-<a class="xref" href="Bodu.Globalization.Calendar.CalendarSystem.html">CalendarSystem</a>; or, with no alias, <code class="paramref">month</code> is not between 1 and the months the
+<a class="xref" href="Bodu.Globalization.Calendar.CalendarSystem.html">CalendarSystem</a>; with no alias, <code class="paramref">month</code> is not between 1 and the months the
 calendar can name: 13 in the Hebrew calendar, and in the Chinese lunisolar calendar unless
-<code class="paramref">skipLeapMonth</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>, and 12 otherwise.</p>
+<code class="paramref">skipLeapMonth</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>, and 12 otherwise; or, in the Gregorian calendar,
+<code class="paramref">day</code> is beyond the most days its month has: 29 in February, and 30 in April, June, September
+and November.</p>
 </dd>
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
     <dd><p><code class="paramref">monthAlias</code> is set and <code class="paramref">calendar</code> is not
@@ -333,7 +336,7 @@ calendar can name: 13 in the Hebrew calendar, and in the Chinese lunisolar calen
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Globalization_Calendar_Algorithms_FixedDateStrategy_Calendar" data-uid="Bodu.Globalization.Calendar.Algorithms.FixedDateStrategy.Calendar">
   Calendar
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/af84b0e6313bdadd911b1ad14b8df4bb3dca3374/Bodu.Globalization.Calendar/src/Globalization.Calendar.Algorithms/FixedDateStrategy.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/c2eb6f6fa5f1532c7fbfd497b1e60fdda01de261/Bodu.Globalization.Calendar/src/Globalization.Calendar.Algorithms/FixedDateStrategy.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -370,7 +373,7 @@ calendar can name: 13 in the Hebrew calendar, and in the Chinese lunisolar calen
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Globalization_Calendar_Algorithms_FixedDateStrategy_Day" data-uid="Bodu.Globalization.Calendar.Algorithms.FixedDateStrategy.Day">
   Day
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/af84b0e6313bdadd911b1ad14b8df4bb3dca3374/Bodu.Globalization.Calendar/src/Globalization.Calendar.Algorithms/FixedDateStrategy.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/c2eb6f6fa5f1532c7fbfd497b1e60fdda01de261/Bodu.Globalization.Calendar/src/Globalization.Calendar.Algorithms/FixedDateStrategy.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -407,7 +410,7 @@ calendar can name: 13 in the Hebrew calendar, and in the Chinese lunisolar calen
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Globalization_Calendar_Algorithms_FixedDateStrategy_Month" data-uid="Bodu.Globalization.Calendar.Algorithms.FixedDateStrategy.Month">
   Month
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/af84b0e6313bdadd911b1ad14b8df4bb3dca3374/Bodu.Globalization.Calendar/src/Globalization.Calendar.Algorithms/FixedDateStrategy.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/c2eb6f6fa5f1532c7fbfd497b1e60fdda01de261/Bodu.Globalization.Calendar/src/Globalization.Calendar.Algorithms/FixedDateStrategy.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -444,7 +447,7 @@ calendar can name: 13 in the Hebrew calendar, and in the Chinese lunisolar calen
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Globalization_Calendar_Algorithms_FixedDateStrategy_MonthAlias" data-uid="Bodu.Globalization.Calendar.Algorithms.FixedDateStrategy.MonthAlias">
   MonthAlias
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/af84b0e6313bdadd911b1ad14b8df4bb3dca3374/Bodu.Globalization.Calendar/src/Globalization.Calendar.Algorithms/FixedDateStrategy.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/c2eb6f6fa5f1532c7fbfd497b1e60fdda01de261/Bodu.Globalization.Calendar/src/Globalization.Calendar.Algorithms/FixedDateStrategy.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -481,7 +484,7 @@ calendar can name: 13 in the Hebrew calendar, and in the Chinese lunisolar calen
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Globalization_Calendar_Algorithms_FixedDateStrategy_SkipLeapMonth" data-uid="Bodu.Globalization.Calendar.Algorithms.FixedDateStrategy.SkipLeapMonth">
   SkipLeapMonth
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/af84b0e6313bdadd911b1ad14b8df4bb3dca3374/Bodu.Globalization.Calendar/src/Globalization.Calendar.Algorithms/FixedDateStrategy.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/c2eb6f6fa5f1532c7fbfd497b1e60fdda01de261/Bodu.Globalization.Calendar/src/Globalization.Calendar.Algorithms/FixedDateStrategy.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -518,7 +521,7 @@ calendar can name: 13 in the Hebrew calendar, and in the Chinese lunisolar calen
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Globalization_Calendar_Algorithms_FixedDateStrategy_SweepCalendarYears" data-uid="Bodu.Globalization.Calendar.Algorithms.FixedDateStrategy.SweepCalendarYears">
   SweepCalendarYears
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/af84b0e6313bdadd911b1ad14b8df4bb3dca3374/Bodu.Globalization.Calendar/src/Globalization.Calendar.Algorithms/FixedDateStrategy.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/c2eb6f6fa5f1532c7fbfd497b1e60fdda01de261/Bodu.Globalization.Calendar/src/Globalization.Calendar.Algorithms/FixedDateStrategy.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -559,7 +562,7 @@ calendar can name: 13 in the Hebrew calendar, and in the Chinese lunisolar calen
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Globalization_Calendar_Algorithms_FixedDateStrategy_Calculate_System_Int32_Bodu_Globalization_Calendar_Algorithms_StrategyResolutionContext_" data-uid="Bodu.Globalization.Calendar.Algorithms.FixedDateStrategy.Calculate(System.Int32,Bodu.Globalization.Calendar.Algorithms.StrategyResolutionContext)">
   Calculate(int, StrategyResolutionContext)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/af84b0e6313bdadd911b1ad14b8df4bb3dca3374/Bodu.Globalization.Calendar/src/Globalization.Calendar.Algorithms/FixedDateStrategy.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/c2eb6f6fa5f1532c7fbfd497b1e60fdda01de261/Bodu.Globalization.Calendar/src/Globalization.Calendar.Algorithms/FixedDateStrategy.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -606,7 +609,7 @@ calendar can name: 13 in the Hebrew calendar, and in the Chinese lunisolar calen
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Globalization_Calendar_Algorithms_FixedDateStrategy_CalculateAll_System_Int32_Bodu_Globalization_Calendar_Algorithms_StrategyResolutionContext_" data-uid="Bodu.Globalization.Calendar.Algorithms.FixedDateStrategy.CalculateAll(System.Int32,Bodu.Globalization.Calendar.Algorithms.StrategyResolutionContext)">
   CalculateAll(int, StrategyResolutionContext)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/af84b0e6313bdadd911b1ad14b8df4bb3dca3374/Bodu.Globalization.Calendar/src/Globalization.Calendar.Algorithms/FixedDateStrategy.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/c2eb6f6fa5f1532c7fbfd497b1e60fdda01de261/Bodu.Globalization.Calendar/src/Globalization.Calendar.Algorithms/FixedDateStrategy.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -682,7 +685,7 @@ month and day can recur twice in one Gregorian year.</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: af84b0e · Built: 2026-10-14 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: c2eb6f6 · Built: 2026-10-14 (UTC)</span>
         </div>
       </div>
     </footer>

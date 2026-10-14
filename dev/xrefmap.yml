@@ -77427,6 +77427,15 @@ references:
   commentId: M:Bodu.Globalization.Calendar.NotableDateBinaryResource.Write(Bodu.Globalization.Calendar.NotableDateResource,System.IO.Stream)
   fullName: Bodu.Globalization.Calendar.NotableDateBinaryResource.Write(Bodu.Globalization.Calendar.NotableDateResource, System.IO.Stream)
   nameWithType: NotableDateBinaryResource.Write(NotableDateResource, Stream)
+- uid: Bodu.Globalization.Calendar.NotableDateBinaryResource.Write(Bodu.Globalization.Calendar.NotableDateResource,System.IO.Stream,Bodu.Globalization.Calendar.Algorithms.INotableDateAlgorithmRegistry)
+  name: Write(NotableDateResource, Stream, INotableDateAlgorithmRegistry?)
+  href: api/Bodu.Globalization.Calendar.NotableDateBinaryResource.html#Bodu_Globalization_Calendar_NotableDateBinaryResource_Write_Bodu_Globalization_Calendar_NotableDateResource_System_IO_Stream_Bodu_Globalization_Calendar_Algorithms_INotableDateAlgorithmRegistry_
+  commentId: M:Bodu.Globalization.Calendar.NotableDateBinaryResource.Write(Bodu.Globalization.Calendar.NotableDateResource,System.IO.Stream,Bodu.Globalization.Calendar.Algorithms.INotableDateAlgorithmRegistry)
+  name.vb: Write(NotableDateResource, Stream, INotableDateAlgorithmRegistry)
+  fullName: Bodu.Globalization.Calendar.NotableDateBinaryResource.Write(Bodu.Globalization.Calendar.NotableDateResource, System.IO.Stream, Bodu.Globalization.Calendar.Algorithms.INotableDateAlgorithmRegistry?)
+  fullName.vb: Bodu.Globalization.Calendar.NotableDateBinaryResource.Write(Bodu.Globalization.Calendar.NotableDateResource, System.IO.Stream, Bodu.Globalization.Calendar.Algorithms.INotableDateAlgorithmRegistry)
+  nameWithType: NotableDateBinaryResource.Write(NotableDateResource, Stream, INotableDateAlgorithmRegistry?)
+  nameWithType.vb: NotableDateBinaryResource.Write(NotableDateResource, Stream, INotableDateAlgorithmRegistry)
 - uid: Bodu.Globalization.Calendar.NotableDateBinaryResource.Write*
   name: Write
   href: api/Bodu.Globalization.Calendar.NotableDateBinaryResource.html#Bodu_Globalization_Calendar_NotableDateBinaryResource_Write_
