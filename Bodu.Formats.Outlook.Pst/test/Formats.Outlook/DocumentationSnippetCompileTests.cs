@@ -11,8 +11,8 @@ using Microsoft.CodeAnalysis.CSharp;
 namespace Bodu.Formats.Outlook;
 
 /// <summary>
-/// Compiles the PST documentation examples that are explicitly opted in, so a code sample cannot silently drift
-/// from the public API it documents.
+/// Compiles the PST container and Outlook landing-page documentation examples that are explicitly opted in, so a code
+/// sample cannot silently drift from the public API it documents.
 /// </summary>
 /// <remarks>
 /// A fenced <c>csharp</c> block is compiled only when the line immediately preceding its opening fence is the sentinel
@@ -20,7 +20,7 @@ namespace Bodu.Formats.Outlook;
 /// this test references. Illustrative fragments stay unmarked and are not compiled.
 /// </remarks>
 [TestClass]
-public sealed class DocumentationSnippetCompileTests
+public sealed partial class DocumentationSnippetCompileTests
 {
     /// <summary>
     /// The sentinel that opts a fenced <c>csharp</c> block into compilation.
@@ -28,17 +28,30 @@ public sealed class DocumentationSnippetCompileTests
     private const string CompileSentinel = "<!-- compile -->";
 
     /// <summary>
-    /// Verifies that every opted-in PST documentation snippet compiles against the current public API, with at least
-    /// one snippet marked so the guard is demonstrably wired.
+    /// The documentation directories, relative to the repository root, whose opted-in snippets this test compiles.
+    /// </summary>
+    /// <remarks>
+    /// The Outlook landing pages show the <c>.msg</c> and <c>.pst</c> readers side by side; this project references both,
+    /// whereas the <c>.msg</c> test project, which compiles the Outlook guides, references only its own reader.
+    /// </remarks>
+    private static readonly string[] s_snippetDirectories =
+    [
+        Path.Combine("docs", "docs", "io-pst"),
+        Path.Combine("docs", "docs", "outlook"),
+    ];
+
+    /// <summary>
+    /// Verifies that every opted-in PST container and Outlook landing-page documentation snippet compiles against the
+    /// current public API, with at least one snippet marked so the guard is demonstrably wired.
     /// </summary>
     [TestMethod]
     [TestCategory("Regression")]
-    public void IoPstDocSnippets_WhenMarkedForCompile_ShouldCompile()
+    public void DocSnippets_WhenMarkedForCompile_ShouldCompile()
     {
-        string? docsDirectory = FindDocsDirectory();
-        if (docsDirectory is null)
+        IReadOnlyList<string>? files = FindMarkedSnippetFiles();
+        if (files is null)
         {
-            Assert.Inconclusive("The io-pst documentation directory was not found from the test base directory.");
+            Assert.Inconclusive("The repository root was not found from the test base directory.");
             return;
         }
 
@@ -46,7 +59,7 @@ public sealed class DocumentationSnippetCompileTests
         var failures = new StringBuilder();
         int marked = 0;
 
-        foreach (string file in Directory.EnumerateFiles(docsDirectory, "*.md"))
+        foreach (string file in files)
         {
             foreach (string snippet in ExtractMarkedSnippets(File.ReadAllLines(file)))
             {
@@ -54,30 +67,40 @@ public sealed class DocumentationSnippetCompileTests
                 List<Diagnostic> errors = Compile(snippet, references);
                 if (errors.Count > 0)
                 {
-                    failures.AppendLine($"{Path.GetFileName(file)}:");
+                    failures.AppendLine($"{Path.GetFileName(Path.GetDirectoryName(file))}/{Path.GetFileName(file)}:");
                     foreach (Diagnostic error in errors)
                         failures.AppendLine($"  {error.Id}: {error.GetMessage()}");
                 }
             }
         }
 
-        Assert.IsGreaterThan(0, marked, $"No '{CompileSentinel}' snippets were found under {docsDirectory}; the compile guard is not wired to any example.");
+        Assert.IsGreaterThan(0, marked, $"No '{CompileSentinel}' snippets were found; the compile guard is not wired to any example.");
         Assert.AreEqual(0, failures.Length, $"Documentation snippets failed to compile:{Environment.NewLine}{failures}");
     }
 
     /// <summary>
     /// Walks up from the test base directory to the repository root (identified by <c>bodu.slnx</c>) and returns the
-    /// io-pst documentation directory beneath it.
+    /// Markdown files of every directory in <see cref="s_snippetDirectories" /> beneath it.
     /// </summary>
-    /// <returns>The documentation directory, or <see langword="null" /> when the repository root cannot be located.</returns>
-    private static string? FindDocsDirectory()
+    /// <returns>
+    /// The full paths of the Markdown files, in directory then name order, or <see langword="null" /> when the repository
+    /// root cannot be located.
+    /// </returns>
+    private static IReadOnlyList<string>? FindMarkedSnippetFiles()
     {
         for (DirectoryInfo? dir = new(AppContext.BaseDirectory); dir is not null; dir = dir.Parent)
         {
             if (File.Exists(Path.Combine(dir.FullName, "bodu.slnx")))
             {
-                string docs = Path.Combine(dir.FullName, "docs", "docs", "io-pst");
-                return Directory.Exists(docs) ? docs : null;
+                string root = dir.FullName;
+
+                return
+                [
+                    .. s_snippetDirectories
+                        .Select(relative => Path.Combine(root, relative))
+                        .Where(Directory.Exists)
+                        .SelectMany(static docs => Directory.EnumerateFiles(docs, "*.md").Order(StringComparer.Ordinal)),
+                ];
             }
         }
 
@@ -111,20 +134,25 @@ public sealed class DocumentationSnippetCompileTests
     }
 
     /// <summary>
-    /// Compiles a snippet as the body of a method and returns the error diagnostics. Leading <c>using</c> directive
-    /// lines are dropped first - documentation snippets often show them for context, but the wrapper method already
-    /// imports the covered namespaces.
+    /// Compiles a snippet as the body of a method and returns the error diagnostics. The snippet's <c>using</c>
+    /// directive lines are moved to the top of the compilation unit first - documentation snippets show the namespaces
+    /// they need, such as <c>Bodu.IO.Compound</c> for the <c>.msg</c> reader's options, and a directive the wrapper
+    /// already imports is harmless.
     /// </summary>
     /// <param name="snippet">The snippet body (method-body statements, optionally preceded by using directives).</param>
     /// <param name="references">The metadata references to compile against.</param>
     /// <returns>The error-severity diagnostics, empty when the snippet compiles.</returns>
     private static List<Diagnostic> Compile(string snippet, List<MetadataReference> references)
     {
-        snippet = string.Join(
-            Environment.NewLine,
-            snippet.Split('\n').Where(static line => !System.Text.RegularExpressions.Regex.IsMatch(line.Trim(), @"^using [A-Za-z0-9_.]+;$")));
+        string[] lines = snippet.Split('\n');
+        static bool IsUsingDirective(string line) =>
+            System.Text.RegularExpressions.Regex.IsMatch(line.Trim(), @"^using [A-Za-z0-9_.]+;$");
+
+        string directives = string.Concat(lines.Where(IsUsingDirective).Select(static line => line.Trim()));
+        snippet = string.Join(Environment.NewLine, lines.Where(static line => !IsUsingDirective(line)));
 
         string source =
+            directives +
             "using System;" +
             "using System.Collections.Generic;" +
             "using System.IO;" +

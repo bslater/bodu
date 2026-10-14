@@ -36,6 +36,19 @@ Pass the settings file, and **do not** also pass a `--collect` switch: a
 command-line collector is a second, unconfigured instance whose exclusion lists
 are empty, which silently readmits generated sources to the denominator.
 
+**One framework.** Every test project targets each framework in
+`$(BoduNetTargets)`, and an unrestricted `dotnet test` runs, and covers, each of
+them. `bld/collect-coverage.sh` collects one, the same for every project: the
+newest in `$(BoduNetTargets)` (net10.0 today), or the one `--framework` names, and
+`environment.json` records it. Before it did, the script ran every leg and kept
+whichever leg's file was written last, so a package's figure depended on the
+finish order, and a file under a framework conditional, such as
+`#if NET10_0_OR_GREATER` and its fallback, reported different line sets from
+different projects, which the matrix's stale-numbering check reads as stale
+data. Code compiled only for an older framework, such as a polyfill guarded by
+`#if !NET9_0_OR_GREATER`, is outside the measured assembly and so outside the
+denominator.
+
 The current measured figures live in [Coverage baseline](coverage-baseline.md).
 
 `tools/Filter-CoverageXml.ps1` extracts a single assembly's results from a
@@ -291,9 +304,9 @@ express:
 - **subtracts** those files from the `Toml` / `Bencode` / `Yaml` rows, so the
   solution total does not count them once per host.
 
-### There are three such sets, not one
+### There are four such sets, not one
 
-The serializer core is the largest, but two more source sets are `Compile
+The serializer core is the largest, but three more source sets are `Compile
 Include`d across projects, and each gets its own synthetic unit. The table lives
 at `$SharedSourceSets` in `tools/New-CoverageMatrix.ps1`; keep it in step with
 the host csproj globs.
@@ -301,7 +314,8 @@ the host csproj globs.
 | Shared set | Synthetic unit | Compiled into |
 |---|---|---|
 | `Bodu.Text.Serialization/shared/**` | `Bodu.Text.Serialization (shared source)` | `Toml`, `Bencode`, `Yaml` |
-| `Bodu.IO.Hashing/shared/**` (`CrcCore.cs`) | `Bodu.IO.Hashing (shared source)` | `IO.Hashing`, `IO.Pst`, `Formats.Outlook.Msg` |
+| `Bodu.IO.Hashing/shared/**` (`CrcCore.cs`) | `Bodu.IO.Hashing (shared source)` | `IO.Hashing`, `IO.Pst`, `Formats.Outlook.Msg`, `Formats.Outlook.Pst` |
+| `Bodu.Formats.Outlook/shared/**` (the MAPI decode layer) | `Bodu.Formats.Outlook (shared source)` | `Formats.Outlook.Msg`, `Formats.Outlook.Pst` |
 | `shared/Caching/**` | `Caching (shared source)` | `Financial.ExchangeRates.Caching`, `Globalization.Calendar.Caching` |
 
 Attribution matters even where the totals do not move. The file map is keyed by
@@ -313,14 +327,23 @@ would have moved a row that does not own it. Splitting the sets out cost
 `Outlook.Msg` 1.1pp and gained `ExchangeRates.Caching` 0.3pp, with the solution
 figure unchanged - a correction, not a regression, so the two `Outlook.Msg`
 ratchet floors were lowered by hand to match. That is the only circumstance in
-which a floor comes down.
+which a floor comes down. The Outlook decode layer was the same kind of
+correction when it joined the table: the merge had credited it to
+`Outlook.Msg`, the first host it emits, while a collection of `Outlook.Pst`
+alone credited it to that package instead (88.6% line there, against 94.0% for
+the package's own code). Its unit and both readers' floors were reset by hand
+from a net10.0 collection of the two readers' test projects, less the grace
+band: the unit at 96.7 / 94.6, `Outlook.Msg` at 94.3 / 93.0 and `Outlook.Pst`
+at 93.5 / 88.0 (line / branch).
 
-The three sets are not alike in one respect that the stale-numbering check cares
-about. `Bodu.Text.Serialization/shared/**` selects **whole members** by format
-symbol, so its hosts legitimately instrument different line sets and it is exempt
-from that check. The other two select only a namespace declaration, which carries
-no sequence points - so if their hosts ever disagree about which lines are
-instrumentable, that really is stale data and should be reported.
+The four sets are not alike in one respect that the stale-numbering check cares
+about. `Bodu.Text.Serialization/shared/**` and `Bodu.Formats.Outlook/shared/**`
+select **whole members** by format symbol (the Outlook layer throws each
+reader's own exception type), so their hosts legitimately instrument different
+line sets and they are exempt from that check. The other two select only a
+namespace declaration, which carries no sequence points - so if their hosts ever
+disagree about which lines are instrumentable, that really is stale data and
+should be reported.
 
 The same keying - by source path and line number rather than by class - also
 collapses the duplicate rows a file containing several classes would otherwise

@@ -109,10 +109,19 @@ $SharedSourceSets = @(
     @{
         Prefix                = 'Bodu.IO.Hashing/shared/'
         Unit                  = 'Bodu.IO.Hashing (shared source)'
-        Hosts                 = @('Bodu.IO.Hashing', 'Bodu.IO.Pst', 'Bodu.Formats.Outlook.Msg')
+        Hosts                 = @('Bodu.IO.Hashing', 'Bodu.IO.Pst', 'Bodu.Formats.Outlook.Msg', 'Bodu.Formats.Outlook.Pst')
 
-        # PST / MSG select only the namespace declaration, which carries no sequence points.
+        # PST / MSG / OUTLOOK_PST select only the namespace declaration, which carries no sequence points.
         ConditionallyCompiled = $false
+    }
+    @{
+        Prefix                = 'Bodu.Formats.Outlook/shared/'
+        Unit                  = 'Bodu.Formats.Outlook (shared source)'
+        Hosts                 = @('Bodu.Formats.Outlook.Msg', 'Bodu.Formats.Outlook.Pst')
+
+        # MSG / OUTLOOK_PST select the namespace and whole members - the format's own exception type, thrown from
+        # CompressedRtf and MapiNamedPropertyRecords - so each host compiles a different line set.
+        ConditionallyCompiled = $true
     }
     @{
         Prefix                = 'shared/Caching/'
@@ -225,10 +234,11 @@ function Get-StaleNumberedFiles([string]$rawRoot) {
     $stale = [System.Collections.Generic.List[string]]::new()
     foreach ($filename in $byFile.Keys) {
         # Conditionally compiled shared source is exempt: Bodu.Text.Serialization/shared/** is compiled into
-        # Toml, Bencode and Yaml under different format symbols, so each host legitimately instruments a
-        # different subset of its lines. That is a real difference in the compiled code, not stale data.
-        # The other shared sets are NOT exempt - their symbols select only a namespace declaration, so a
-        # line-set disagreement between their hosts really is stale data.
+        # Toml, Bencode and Yaml under different format symbols, and Bodu.Formats.Outlook/shared/** into the
+        # .msg and .pst readers, so each host legitimately instruments a different subset of its lines. That is
+        # a real difference in the compiled code, not stale data. The other shared sets are NOT exempt - their
+        # symbols select only a namespace declaration, so a line-set disagreement between their hosts really is
+        # stale data.
         $normalized = $filename.Replace('\', '/')
         if ($conditionalPrefixes | Where-Object { $normalized.Contains($_) }) { continue }
 

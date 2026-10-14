@@ -16,11 +16,20 @@
 # NOT pass --collect, because a command-line collector is a second, unconfigured instance whose
 # exclusion lists are empty.
 #
+# Collection is ONE target framework, every project the same one: the newest in BoduNetTargets
+# (bld/TargetFrameworks.props), today net10.0, unless --framework names another. A test project
+# targets every framework in BoduNetTargets, and an unrestricted `dotnet test` runs - and covers - each
+# of them; keeping only one leg's file made the result depend on which leg finished last, and code under
+# a framework conditional (#if NET10_0_OR_GREATER and its fallbacks) then reported different line sets
+# from different projects, which the matrix's stale-numbering check reads as stale data.
+#
 # Usage:  bld/collect-coverage.sh [options]
 #   --project <path>    Collect a single test project (repo-relative or absolute .csproj path).
 #   --filter <regex>    Collect only test projects whose path matches the extended regex.
 #   --shard <i/N>       Collect shard i of N (1-based), balanced by test-project size.
 #   --configuration <c> Build configuration. Default: Release.
+#   --framework <tfm>   Target framework to build, test, and cover. Default: the newest in
+#                       BoduNetTargets, today net10.0.
 #   --output <dir>      Artifact root. Default: artifacts/coverage.
 #   --no-probe          Skip the AVX-512 capability probe.
 #   --scalar            Re-run with hardware intrinsics disabled, into a parallel '<Name>.scalar'
@@ -44,6 +53,7 @@ repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$repo_root"
 
 configuration="Release"
+framework=""
 output_dir="artifacts/coverage"
 single_project=""
 filter=""
@@ -53,7 +63,7 @@ list_only=false
 scalar_pass=false
 
 usage() {
-    sed -n '2,40p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'
+    sed -n '2,49p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'
 }
 
 while [ $# -gt 0 ]; do
@@ -62,6 +72,7 @@ while [ $# -gt 0 ]; do
         --filter)        filter="${2:?--filter requires a regex}"; shift 2 ;;
         --shard)         shard_spec="${2:?--shard requires i/N}"; shift 2 ;;
         --configuration) configuration="${2:?--configuration requires a value}"; shift 2 ;;
+        --framework)     framework="${2:?--framework requires a target framework}"; shift 2 ;;
         --output)        output_dir="${2:?--output requires a path}"; shift 2 ;;
         --no-probe)      run_probe=false; shift ;;
         --scalar)        scalar_pass=true; shift ;;
@@ -73,6 +84,17 @@ done
 
 raw_dir="$output_dir/raw"
 report_dir="$output_dir/report"
+
+# The newest framework in BoduNetTargets, which lists them oldest first - so widening the matrix there moves
+# the collection with it, and no framework is named here.
+if [ -z "$framework" ]; then
+    framework="$(sed -n 's:.*<BoduNetTargets>\(.*\)</BoduNetTargets>.*:\1:p' bld/TargetFrameworks.props \
+        | head -1 | tr ';' '\n' | sed '/^[[:space:]]*$/d' | tail -1)"
+    if [ -z "$framework" ]; then
+        echo "error: could not read BoduNetTargets from bld/TargetFrameworks.props; pass --framework" >&2
+        exit 2
+    fi
+fi
 
 # ---------------------------------------------------------------------------------------------------------------
 # Project discovery
@@ -222,7 +244,7 @@ while read -r proj; do
         continue
     fi
 
-    if ! dotnet build "$proj" --configuration "$configuration" --no-restore; then
+    if ! dotnet build "$proj" --configuration "$configuration" --framework "$framework" --no-restore; then
         echo "error: build failed for $name" >&2
         status=1
         echo "::endgroup::"
@@ -243,21 +265,32 @@ while read -r proj; do
     # No --collect here: the collector and every exclusion are configured in coverage.runsettings.
     if env ${scalar_env[@]+"${scalar_env[@]}"} dotnet test "$proj" \
         --configuration "$configuration" \
+        --framework "$framework" \
         --no-build \
         --settings coverage.runsettings \
         --results-directory "$raw_dir/$name" \
         --logger "trx;LogFileName=$name.trx"
     then
-        # vstest emits the Cobertura file twice per run: once into the data collector's staging
-        # directory (_<machine>_<timestamp>/In/<machine>/) and once into the attachment GUID
-        # directory. The two are byte-identical, so merging both is harmless but doubles
-        # ReportGenerator's input and makes the report count meaningless. Normalise to exactly one
-        # file per project at a predictable path.
-        newest="$(find "$raw_dir/$name" -name 'coverage.cobertura.xml' -printf '%T@\t%p\n' 2>/dev/null \
-            | sort -rn | head -1 | cut -f2-)"
+        # The project ran once, for $framework, so every Cobertura file under its directory is that one
+        # run's: the attachment in a GUID directory and, with some test platform versions, a byte-identical
+        # copy in the data collector's staging directory (_<machine>_<timestamp>/In/<machine>/). Merging
+        # both would double ReportGenerator's input, so normalise to exactly one file per project at a
+        # predictable path. Files that differ mean more than one run reached the directory; choosing
+        # among them by timestamp would make the result depend on which finished last, so that is an
+        # error rather than a choice.
+        reports="$(find "$raw_dir/$name" -name 'coverage.cobertura.xml' 2>/dev/null | sort)"
+        distinct=0
+        if [ -n "$reports" ]; then
+            distinct="$(echo "$reports" | while read -r report; do sha256sum "$report" | cut -d' ' -f1; done | sort -u | wc -l)"
+        fi
+        first="$(echo "$reports" | head -1)"
 
-        if [ -n "$newest" ]; then
-            cp "$newest" "$raw_dir/$name.cobertura.tmp"
+        if [ "$distinct" -gt 1 ]; then
+            echo "error: $distinct different coverage.cobertura.xml files produced for $name; expected one run for $framework" >&2
+            echo "$reports" >&2
+            status=1
+        elif [ -n "$first" ]; then
+            cp "$first" "$raw_dir/$name.cobertura.tmp"
             find "$raw_dir/$name" -mindepth 1 -type d -exec rm -rf {} + 2>/dev/null
             mv "$raw_dir/$name.cobertura.tmp" "$raw_dir/$name/coverage.cobertura.xml"
             collected=$((collected + 1))
@@ -316,6 +349,7 @@ cat > "$manifest" <<JSON
   "commit": "$(git rev-parse HEAD 2>/dev/null || echo unknown)",
   "branch": "$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo unknown)",
   "configuration": "$configuration",
+  "framework": "$framework",
   "shard": "${shard_spec:-full}",
   "projectsCollected": $collected,
   "avx512Supported": "$avx512",
