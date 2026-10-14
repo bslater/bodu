@@ -3,6 +3,8 @@
   href: docs/
 - name: Packages
   href: docs/package-matrix.md
+- name: Release notes
+  href: docs/release-notes.md
 - name: Guides
   href: guides/
 - name: Samples

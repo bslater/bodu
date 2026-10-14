@@ -77,6 +77,13 @@ manifest at [`release-manifest.txt`](release-manifest.txt).
 4. Every manifest package has a project-root `README.md` (packed as the
    NuGet readme, carrying its API-stability tier) and an icon under
    `bld/icons/<PackageId>.png`.
+5. `docs/docs/release-notes.md` opens with an "Upgrading to <version>" section
+   for the version being cut (the package references to move, the breaking
+   changes, and the behavior changes a caller can see), and its release history
+   has a row for it. The site the tag publishes is the one readers upgrade
+   from, so the page is updated in the pull request that prepares the release;
+   the GitHub Release keeps the full list of changes. Replace the previous
+   release's upgrade section rather than adding to it, and keep its row.
 
 `bld/check-release-manifest.sh` enforces preconditions 2 and 4 mechanically,
 and runs in `build-test.yml` on every pull request - so a malformed manifest
