@@ -41,6 +41,8 @@ public sealed partial class NotableDateSchemaRequirementsTests
         [NotableDateSchemaType.WeeklyRecurrence] = ["$defs", "weeklyRecurrence"],
         [NotableDateSchemaType.MonthlyDayRecurrence] = ["$defs", "monthlyDayRecurrence"],
         [NotableDateSchemaType.MonthlyWeekdayRecurrence] = ["$defs", "monthlyWeekdayRecurrence"],
+        [NotableDateSchemaType.Import] = ["$defs", "import"],
+        [NotableDateSchemaType.ImportUse] = ["$defs", "importUse"],
     };
 
     /// <summary>

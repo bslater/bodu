@@ -2117,6 +2117,83 @@ public sealed partial class ParserValidationTests
     }
 
     /// <summary>
+    /// Verifies that a JSON document without a property the schema requires reports one <c>BODU-CAL-SCHEMA</c> error
+    /// for it, as many as the same document in XML reports, rather than a second error for a value the author never
+    /// wrote.
+    /// </summary>
+    /// <param name="field">The name of the required property removed from both documents.</param>
+    [TestMethod]
+    [DataRow("schemaVersion")]
+    [DataRow("resourceId")]
+    [DataRow("policy.id")]
+    [DataRow("policy.trigger")]
+    [DataRow("policy.action")]
+    [DataRow("policy.emission")]
+    [DataRow("scope.ruleRefs.notableDateRef")]
+    [DataRow("scope.ruleRefs.ruleRef")]
+    [DataRow("trigger.type")]
+    [DataRow("action.type")]
+    [DataRow("emission.mode")]
+    [DataRow("import.resource")]
+    [DataRow("use.notableDateRef")]
+    [DataRow("notableDate.id")]
+    [DataRow("notableDate.displayName")]
+    [DataRow("notableDate.category")]
+    [DataRow("notableDate.rules")]
+    [DataRow("rule.id")]
+    [DataRow("fixed.month")]
+    [DataRow("fixed.day")]
+    [DataRow("dayOfWeekInMonth.month")]
+    [DataRow("dayOfWeekInMonth.dayOfWeek")]
+    [DataRow("dayOfWeekInMonth.weekOrdinal")]
+    [DataRow("weekdayNearDate.month")]
+    [DataRow("weekdayNearDate.day")]
+    [DataRow("weekdayNearDate.dayOfWeek")]
+    [DataRow("weekdayNearDate.direction")]
+    [DataRow("relativeWeekdayInMonth.month")]
+    [DataRow("relativeWeekdayInMonth.dayOfWeek")]
+    [DataRow("relativeWeekdayInMonth.weekOrdinal")]
+    [DataRow("relativeWeekdayInMonth.relativeDayOfWeek")]
+    [DataRow("relativeWeekdayInMonth.direction")]
+    [DataRow("offsetFromRule.notableDateRef")]
+    [DataRow("offsetFromRule.offsetDays")]
+    [DataRow("algorithm.key")]
+    [DataRow("weekdayNearRule.notableDateRef")]
+    [DataRow("weekdayNearRule.dayOfWeek")]
+    [DataRow("weekdayNearRule.direction")]
+    [DataRow("nthWeekdayFromRule.notableDateRef")]
+    [DataRow("nthWeekdayFromRule.dayOfWeek")]
+    [DataRow("nthWeekdayFromRule.ordinal")]
+    [DataRow("workingDayOffsetFromRule.notableDateRef")]
+    [DataRow("workingDayOffsetFromRule.offsetWorkingDays")]
+    [DataRow("workingDayInMonth.month")]
+    [DataRow("workingDayInMonth.ordinal")]
+    [DataRow("ordinalDayOfMonth.month")]
+    [DataRow("ordinalDayOfMonth.ordinal")]
+    [DataRow("isoWeekDate.week")]
+    [DataRow("isoWeekDate.dayOfWeek")]
+    [DataRow("dayOfYear.ordinal")]
+    [DataRow("duration.untilDate")]
+    [DataRow("untilDate.fixed.month")]
+    [DataRow("untilDate.fixed.day")]
+    [DataRow("dailyInterval.anchorDate")]
+    [DataRow("weekly.days")]
+    [DataRow("monthlyDay.dayOfMonth")]
+    [DataRow("monthlyWeekday.dayOfWeek")]
+    [DataRow("monthlyWeekday.weekOrdinal")]
+    [DataRow("patch.notableDateRef")]
+    [DataRow("patch.ruleRef")]
+    [DataRow("remove.notableDateRef")]
+    [DataRow("remove.ruleRef")]
+    [DataRow("add.notableDateRef")]
+    [DataRow("add.rule")]
+    [DataRow("add.rule.id")]
+    public void LoadJson_WhenSchemaRequiredPropertyIsAbsent_ShouldReportAsManySchemaErrorsAsLoad(string field)
+    {
+        AssertSchemaErrorCountsMatch(SchemaFieldJson(field, null), SchemaFieldXml(field, null));
+    }
+
+    /// <summary>
     /// Verifies that a JSON property the schema requires, holding the literal <c>null</c>, which reads as absent, is
     /// reported as the absent property is: with <c>BODU-CAL-SCHEMA</c> and the other diagnostic codes the XML document
     /// without it reports.
@@ -2269,6 +2346,22 @@ public sealed partial class ParserValidationTests
         Assert.IsFalse(jsonLoaded, "The JSON document loaded.");
         CollectionAssert.Contains(actual, "BODU-CAL-SCHEMA");
         CollectionAssert.AreEqual(expected, actual, string.Join(", ", actual) + " against " + string.Join(", ", expected));
+    }
+
+    /// <summary>
+    /// Asserts that a JSON document reports as many <c>BODU-CAL-SCHEMA</c> errors as its XML twin.
+    /// </summary>
+    /// <param name="json">The JSON document.</param>
+    /// <param name="xml">The XML twin.</param>
+    private static void AssertSchemaErrorCountsMatch(string json, string xml)
+    {
+        _ = NotableDateResourceLoader.TryLoad(xml, EnumImportResolver, out _, out IReadOnlyList<NotableDateValidationDiagnostic> xmlDiagnostics);
+        _ = NotableDateResourceLoader.TryLoadJson(json, EnumImportResolver, out _, out IReadOnlyList<NotableDateValidationDiagnostic> jsonDiagnostics);
+
+        string[] expected = [.. xmlDiagnostics.Where(d => d.Severity == NotableDateValidationSeverity.Error && d.Code == "BODU-CAL-SCHEMA").Select(d => d.Message)];
+        string[] actual = [.. jsonDiagnostics.Where(d => d.Severity == NotableDateValidationSeverity.Error && d.Code == "BODU-CAL-SCHEMA").Select(d => d.Message)];
+
+        Assert.AreEqual(expected.Length, actual.Length, string.Join(" | ", actual) + " against " + string.Join(" | ", expected));
     }
 
     /// <summary>

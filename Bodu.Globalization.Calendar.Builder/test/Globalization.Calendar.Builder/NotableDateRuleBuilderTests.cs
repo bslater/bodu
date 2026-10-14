@@ -18,7 +18,14 @@ public partial class NotableDateRuleBuilderTests
     /// <param name="configure">The rule configuration.</param>
     /// <returns>The built resource.</returns>
     private static NotableDateResource BuildRule(Action<NotableDateRuleBuilder> configure) =>
+        RuleDocument(configure).Build();
+
+    /// <summary>
+    /// Creates a one-rule document builder whose rule is configured by the supplied callback.
+    /// </summary>
+    /// <param name="configure">The rule configuration.</param>
+    /// <returns>The document builder.</returns>
+    private static NotableDateDocumentBuilder RuleDocument(Action<NotableDateRuleBuilder> configure) =>
         NotableDateDocumentBuilder.Create("demo.rule")
-            .AddNotableDate("d", "D", NotableDateCategory.Observance, def => def.AddRule("default", configure))
-            .Build();
+            .AddNotableDate("d", "D", NotableDateCategory.Observance, def => def.AddRule("default", configure));
 }

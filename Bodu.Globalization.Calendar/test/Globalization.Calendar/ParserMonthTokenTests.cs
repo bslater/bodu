@@ -329,6 +329,81 @@ public sealed class ParserMonthTokenTests
     }
 
     /// <summary>
+    /// Verifies that an English month name on a <c>Fixed</c> rule in a calendar other than Gregorian, loaded from XML,
+    /// is reported with a <c>BODU-CAL-MONTH</c> message naming what that calendar accepts, an integer from 1 to 13 or a
+    /// Hebrew month name, rather than the Gregorian forms the value already has.
+    /// </summary>
+    /// <param name="calendar">The rule's calendar.</param>
+    [TestMethod]
+    [DataRow("Hebrew")]
+    [DataRow("Hijri")]
+    public void Load_WhenCalendarFixedMonthIsEnglishName_ForXml_ShouldNameTheMonthsTheCalendarAccepts(string calendar)
+    {
+        string xml =
+            $"""
+            <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="test.month">
+              <NotableDates>
+                <NotableDate id="x" displayName="X" category="Religious">
+                  <Rules><Rule id="r"><Applicability calendar="{calendar}" /><Strategy><Fixed month="July" day="15" /></Strategy></Rule></Rules>
+                </NotableDate>
+              </NotableDates>
+            </NotableDateResource>
+            """;
+
+        NotableDateValidationException ex = Assert.ThrowsExactly<NotableDateValidationException>(() =>
+        {
+            _ = NotableDateResourceLoader.Load(xml);
+        });
+
+        AssertCalendarMonthMessage(ex, calendar);
+    }
+
+    /// <summary>
+    /// Verifies that an English month name on a <c>Fixed</c> rule in a calendar other than Gregorian, loaded from JSON,
+    /// is reported with a <c>BODU-CAL-MONTH</c> message naming what that calendar accepts, an integer from 1 to 13 or a
+    /// Hebrew month name, rather than the Gregorian forms the value already has.
+    /// </summary>
+    /// <param name="calendar">The rule's calendar.</param>
+    [TestMethod]
+    [DataRow("Hebrew")]
+    [DataRow("Hijri")]
+    public void Load_WhenCalendarFixedMonthIsEnglishName_ForJson_ShouldNameTheMonthsTheCalendarAccepts(string calendar)
+    {
+        string json =
+            $$"""
+            { "schemaVersion": "1.0", "resourceId": "test.month",
+              "notableDates": [ { "id": "x", "displayName": "X", "category": "Religious",
+                "rules": [ { "id": "r", "applicability": { "calendar": "{{calendar}}" }, "strategy": { "fixed": { "month": "July", "day": 15 } } } ] } ] }
+            """;
+
+        NotableDateValidationException ex = Assert.ThrowsExactly<NotableDateValidationException>(() =>
+        {
+            _ = NotableDateResourceLoader.LoadJson(json);
+        });
+
+        AssertCalendarMonthMessage(ex, calendar);
+    }
+
+    /// <summary>
+    /// Asserts that a load failed with the one <c>BODU-CAL-MONTH</c> error a non-Gregorian rule's English month name
+    /// <c>July</c> draws, worded for the rule's calendar.
+    /// </summary>
+    /// <param name="ex">The exception the load threw.</param>
+    /// <param name="calendar">The rule's calendar.</param>
+    private static void AssertCalendarMonthMessage(NotableDateValidationException ex, string calendar)
+    {
+        string expected =
+            $"Notable date 'x', rule 'r': 'July' is not a valid month value in the {calendar} calendar. Expected an integer " +
+            "between 1 and 13 or a Hebrew month name: Tishri, Heshvan, Kislev, Tevet, Shevat, AdarI, AdarII, LastAdar, " +
+            "Nisan, Iyar, Sivan, Tammuz, Av or Elul.";
+
+        string[] messages = [.. ex.Diagnostics.Where(d => d.Code == "BODU-CAL-MONTH").Select(d => d.Message)];
+
+        Assert.HasCount(1, messages, string.Join(" | ", ex.Diagnostics.Select(d => d.Code + ": " + d.Message)));
+        Assert.AreEqual(expected, messages[0]);
+    }
+
+    /// <summary>
     /// Verifies that a numeric month day token outside the schema's 1..31 range on a <c>Fixed</c> strategy is rejected
     /// before semantic validation with the <c>BODU-CAL-SCHEMA</c> diagnostic (<c>day</c> is constrained by the XSD).
     /// </summary>

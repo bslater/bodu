@@ -17,9 +17,11 @@ namespace Bodu.Globalization.Calendar.Builder;
 /// </summary>
 /// <remarks>
 /// <para>
-/// The JSON form mirrors the companion JSON schema, which omits imports, restricts calendars to Gregorian, and exposes
-/// only the reduced trigger, action, and override surface. Serializing a document that uses a feature outside that
-/// subset throws <see cref="NotSupportedException" /> naming the offending feature.
+/// The JSON form <see cref="ToJson()" /> writes is a subset of the JSON form the loader reads, which the companion JSON
+/// schema describes in full. The subset omits imports, restricts calendars to Gregorian, and exposes only a reduced
+/// trigger, action, and override surface; serializing a document that uses a feature outside it throws
+/// <see cref="NotSupportedException" /> naming the offending feature, while <see cref="FromJson(string)" /> reads the
+/// full form.
 /// </para>
 /// </remarks>
 public sealed partial class NotableDateDocumentBuilder
@@ -136,8 +138,9 @@ public sealed partial class NotableDateDocumentBuilder
     /// <c>PatchRule</c> override's when it carries either, name no recognized kind or more than one between them, an
     /// <c>untilDate</c> declares no end strategy or one that names no recognized kind or more than one, an override's
     /// <c>operation</c> is absent or names no operation, an object lacks a property the XML schema requires of it, a
-    /// concept's <c>rules</c> or a weekly recurrence's <c>days</c> holds no item, or an integer lies outside the range
-    /// the XML schema allows.
+    /// concept's <c>rules</c> or a weekly recurrence's <c>days</c> holds no item, an integer lies outside the range the
+    /// XML schema allows, or an identifier, reference or territory code does not match the pattern the XML schema
+    /// requires of it.
     /// </exception>
     /// <exception cref="NotSupportedException">
     /// <paramref name="json" /> declares a field the builder's document model cannot hold: an empty <c>tags</c> or
@@ -213,7 +216,13 @@ public sealed partial class NotableDateDocumentBuilder
     /// an ISO week outside 1 to 53, or an ordinal that is zero, outside -366 to 366, or written with a plus sign or a
     /// leading zero) throw a <see cref="FormatException" /> carrying the message of the loader's <c>BODU-CAL-SCHEMA</c>
     /// diagnostic, rather than being read with a default in the value's place or written for the schema to reject at
-    /// <see cref="Build()" />. An empty list that is optional reads as absent.
+    /// <see cref="Build()" />. An empty list that is optional reads as absent. Each identifier, reference and territory
+    /// code is held to the pattern the schema requires of it, as the loader holds it: the resource identifier, the
+    /// concept, rule and adjustment policy identifiers, the references of an action, a strategy, an override, an import
+    /// use and a scope, the adjustment policy references of a rule, a patch and an import use, an import use's alias,
+    /// and the territory codes of a scope, an applicability and an import use. A value that breaks its pattern, such as
+    /// <c>New-Year</c> for a concept identifier, throws a <see cref="FormatException" /> carrying the message of the
+    /// loader's <c>BODU-CAL-SCHEMA</c> diagnostic.
     /// </para>
     /// <para>
     /// Parsing does not otherwise validate the document: a document the loader would reject for a reason other than a
@@ -270,8 +279,9 @@ public sealed partial class NotableDateDocumentBuilder
     /// <c>recurrence</c>, or a <c>PatchRule</c> override's when it carries either, name no recognized kind or more than
     /// one between them, an <c>untilDate</c> declares no end strategy or one that names no recognized kind or more than
     /// one, an override's <c>operation</c> is absent or names no operation, an object lacks a property the XML schema
-    /// requires of it, a concept's <c>rules</c> or a weekly recurrence's <c>days</c> holds no item, or an integer lies
-    /// outside the range the XML schema allows.
+    /// requires of it, a concept's <c>rules</c> or a weekly recurrence's <c>days</c> holds no item, an integer lies
+    /// outside the range the XML schema allows, or an identifier, reference or territory code does not match the
+    /// pattern the XML schema requires of it.
     /// </exception>
     /// <exception cref="NotSupportedException">
     /// <paramref name="json" /> declares a field the builder's document model cannot hold; see
@@ -288,7 +298,7 @@ public sealed partial class NotableDateDocumentBuilder
         ThrowIfRequiredMissing(json, NotableDateSchemaType.NotableDateResource);
         NotableDateDocumentBuilder builder = new()
         {
-            _resourceId = ScalarText(json, "resourceId"),
+            _resourceId = PatternedText(json, "resourceId", NotableDateSchemaPattern.ResourceIdentifier),
             _schemaVersion = ScalarText(json, "schemaVersion") ?? string.Empty,
         };
 

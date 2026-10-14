@@ -19,7 +19,7 @@ namespace Bodu.Globalization.Calendar.Builder;
 /// renders the model to XML in the <c>urn:bodu:globalization:calendar</c> namespace; building then loads that XML
 /// through <see cref="NotableDateResourceLoader" />, which remains the single source of validation and assembly. The
 /// XML form expresses every feature of the schema, whereas the JSON form rendered by <see cref="ToJson" /> is
-/// restricted to the subset the companion JSON schema can represent.
+/// restricted to a subset of the JSON form the loader reads.
 /// </para>
 /// <para>
 /// <strong>Workflow.</strong> Obtain a builder with <see cref="Create()" /> or <see cref="Create(string, string)" />,

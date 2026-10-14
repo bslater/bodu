@@ -87,7 +87,7 @@
     <value>The adjustment policy '{0}' is incomplete. A policy must declare a trigger (When), an action (Then), and an emission (Emit) before building or serializing the document.</value>
   </data>
   <data name="Op_NotSupported_JsonFeature" xml:space="preserve">
-    <value>The document cannot be serialized to JSON because it uses the feature '{0}', which the JSON subset schema cannot represent. Use XML serialization for full-fidelity documents.</value>
+    <value>The document cannot be serialized to JSON because it uses the feature '{0}', which the JSON subset does not include. Use XML serialization for full-fidelity documents.</value>
   </data>
   <data name="Op_NotSupported_JsonFieldNotRepresentable" xml:space="preserve">
     <value>The JSON document declares {0}, which the document builder cannot represent. Load the document with NotableDateResourceLoader.LoadJson instead.</value>
