@@ -45,4 +45,52 @@ public sealed partial class WeekdayNearRuleStrategyTests
 
         Assert.AreEqual(parameter, ex.ParamName);
     }
+
+    /// <summary>
+    /// Verifies that a reference that does not match the identifier pattern, which the loader rejects with
+    /// <c>BODU-CAL-SCHEMA</c>, throws <see cref="ArgumentException" /> naming the parameter.
+    /// </summary>
+    /// <param name="parameter">The name of the parameter given the reference.</param>
+    /// <param name="value">The reference.</param>
+    [TestMethod]
+    [DataRow("notableDateRef", "")]
+    [DataRow("notableDateRef", "New-Year")]
+    [DataRow("notableDateRef", "new-year ")]
+    [DataRow("notableDateRef", "1st")]
+    [DataRow("ruleRef", "")]
+    [DataRow("ruleRef", "R")]
+    [DataRow("ruleRef", "r_1")]
+    [DataRow("ruleRef", "rule-")]
+    public void Ctor_WhenReferenceBreaksIdentifierPattern_ShouldThrowArgumentException(string parameter, string value)
+    {
+        var ex = Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            _ = parameter switch
+            {
+                "notableDateRef" => new WeekdayNearRuleStrategy(value, "default", DayOfWeek.Monday, WeekdayProximity.After),
+                "ruleRef" => new WeekdayNearRuleStrategy("anchor", value, DayOfWeek.Monday, WeekdayProximity.After),
+                _ => throw new ArgumentOutOfRangeException(nameof(parameter)),
+            };
+        });
+
+        Assert.AreEqual(parameter, ex.ParamName);
+    }
+
+    /// <summary>
+    /// Verifies that references matching the identifier pattern, and a <see langword="null" /> rule reference, are kept
+    /// as given.
+    /// </summary>
+    /// <param name="notableDateRef">The concept reference.</param>
+    /// <param name="ruleRef">The rule reference, or <see langword="null" />.</param>
+    [TestMethod]
+    [DataRow("a", null)]
+    [DataRow("easter-sunday", "default")]
+    [DataRow("x1-2b", "r2")]
+    public void Ctor_WhenReferencesMatchIdentifierPattern_ShouldKeepThem(string notableDateRef, string? ruleRef)
+    {
+        var strategy = new WeekdayNearRuleStrategy(notableDateRef, ruleRef, DayOfWeek.Monday, WeekdayProximity.After);
+
+        Assert.AreEqual(notableDateRef, strategy.NotableDateRef);
+        Assert.AreEqual(ruleRef, strategy.RuleRef);
+    }
 }
