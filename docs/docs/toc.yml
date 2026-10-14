@@ -3,6 +3,8 @@
   href: introduction.md
 - name: Package matrix
   href: package-matrix.md
+- name: Versioning, stability, and support
+  href: versioning-and-support.md
 - name: Getting Started
   href: getting-started.md
 - name: Licensing
