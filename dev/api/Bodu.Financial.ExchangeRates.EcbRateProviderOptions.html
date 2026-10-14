@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Financial_ExchangeRates_EcbRateProviderOptions" data-uid="Bodu.Financial.ExchangeRates.EcbRateProviderOptions" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 EcbRateProviderOptions Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/254d764f37301db636df7625cec99be6576562e0/Bodu.Financial.ExchangeRates.Ecb/src/Financial.ExchangeRates/EcbRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/29242a9d92c3a3097169e3e3e54abe8bea661be4/Bodu.Financial.ExchangeRates.Ecb/src/Financial.ExchangeRates/EcbRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -104,7 +104,7 @@ EcbRateProviderOptions Class
   <dl><dt>Assembly</dt><dd>Bodu.Financial.ExchangeRates.Ecb.dll</dd></dl>
   <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Financial.ExchangeRates.Ecb">Bodu.Financial.ExchangeRates.Ecb</a> <span class="bodu-package-version">1.3.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/254d764f37301db636df7625cec99be6576562e0/Bodu.Financial.ExchangeRates.Ecb/src/Financial.ExchangeRates/EcbRateProviderOptions.cs">EcbRateProviderOptions.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/29242a9d92c3a3097169e3e3e54abe8bea661be4/Bodu.Financial.ExchangeRates.Ecb/src/Financial.ExchangeRates/EcbRateProviderOptions.cs">EcbRateProviderOptions.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Configures how the <a class="xref" href="Bodu.Financial.ExchangeRates.EcbRateProvider.html">EcbRateProvider</a> downloads, caches, and interprets ECB euro reference-rate data.</p>
@@ -232,7 +232,7 @@ This type derives from <a class="xref" href="Bodu.Financial.ExchangeRates.WebRat
 contract (timeout, user agent and response-size cap), the synchronous-access, look-back and refresh behavior, the
 advertised history, the currency-alias map, and the per-concern log levels. The constructor points
 <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProviderOptions.html#Bodu_Financial_ExchangeRates_WebRateProviderOptions_BaseAddress">BaseAddress</a> at the ECB's <code>eurofxref</code> statistics path and identifies the
-requests with a Bodu user agent. The members declared here are ECB-specific: the <a class="xref" href="Bodu.Financial.ExchangeRates.EcbRateProviderOptions.html#Bodu_Financial_ExchangeRates_EcbRateProviderOptions_Feeds">Feeds</a> catalogue and
+requests with a Bodu user agent. The members declared here are ECB-specific: the <a class="xref" href="Bodu.Financial.ExchangeRates.EcbRateProviderOptions.html#Bodu_Financial_ExchangeRates_EcbRateProviderOptions_Feeds">Feeds</a> catalog and
 the on-disk cache settings.
 </p>
 <p>
@@ -248,7 +248,7 @@ downloads the feed again once the interval has passed.
 <p>
 The ECB publishes ISO 4217 codes, so <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProviderOptions.html#Bodu_Financial_ExchangeRates_WebRateProviderOptions_CurrencyAliases">CurrencyAliases</a> is empty by default; a
 currency label in a feed that is found among its keys is replaced by its value while the feed is read. The provider
-advertises the depth of its <a class="xref" href="Bodu.Financial.ExchangeRates.EcbRateProviderOptions.html#Bodu_Financial_ExchangeRates_EcbRateProviderOptions_Feeds">Feeds</a> catalogue while
+advertises the depth of its <a class="xref" href="Bodu.Financial.ExchangeRates.EcbRateProviderOptions.html#Bodu_Financial_ExchangeRates_EcbRateProviderOptions_Feeds">Feeds</a> catalog while
 <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProviderOptions.html#Bodu_Financial_ExchangeRates_WebRateProviderOptions_HistoryAvailability">HistoryAvailability</a> is left at
 <a class="xref" href="Bodu.Financial.ExchangeRates.RateHistoryAvailability.html#Bodu_Financial_ExchangeRates_RateHistoryAvailability_Unbounded">Unbounded</a>, and any other value set there in its place. Every member carries a
 working default, so the options bind cleanly through <code>Microsoft.Extensions.Options</code>; the dependency-injection
@@ -266,7 +266,7 @@ registration binds this type from configuration and a <code>configure</code> del
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_ExchangeRates_EcbRateProviderOptions__ctor" data-uid="Bodu.Financial.ExchangeRates.EcbRateProviderOptions.#ctor">
   EcbRateProviderOptions()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/254d764f37301db636df7625cec99be6576562e0/Bodu.Financial.ExchangeRates.Ecb/src/Financial.ExchangeRates/EcbRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/29242a9d92c3a3097169e3e3e54abe8bea661be4/Bodu.Financial.ExchangeRates.Ecb/src/Financial.ExchangeRates/EcbRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -302,7 +302,7 @@ statistics path as its base address and a Bodu user agent.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_ExchangeRates_EcbRateProviderOptions_CacheDirectory" data-uid="Bodu.Financial.ExchangeRates.EcbRateProviderOptions.CacheDirectory">
   CacheDirectory
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/254d764f37301db636df7625cec99be6576562e0/Bodu.Financial.ExchangeRates.Ecb/src/Financial.ExchangeRates/EcbRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/29242a9d92c3a3097169e3e3e54abe8bea661be4/Bodu.Financial.ExchangeRates.Ecb/src/Financial.ExchangeRates/EcbRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -339,7 +339,7 @@ statistics path as its base address and a Bodu user agent.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_ExchangeRates_EcbRateProviderOptions_EnableDiskCache" data-uid="Bodu.Financial.ExchangeRates.EcbRateProviderOptions.EnableDiskCache">
   EnableDiskCache
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/254d764f37301db636df7625cec99be6576562e0/Bodu.Financial.ExchangeRates.Ecb/src/Financial.ExchangeRates/EcbRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/29242a9d92c3a3097169e3e3e54abe8bea661be4/Bodu.Financial.ExchangeRates.Ecb/src/Financial.ExchangeRates/EcbRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -377,11 +377,11 @@ statistics path as its base address and a Bodu user agent.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_ExchangeRates_EcbRateProviderOptions_Feeds" data-uid="Bodu.Financial.ExchangeRates.EcbRateProviderOptions.Feeds">
   Feeds
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/254d764f37301db636df7625cec99be6576562e0/Bodu.Financial.ExchangeRates.Ecb/src/Financial.ExchangeRates/EcbRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/29242a9d92c3a3097169e3e3e54abe8bea661be4/Bodu.Financial.ExchangeRates.Ecb/src/Financial.ExchangeRates/EcbRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
-  <div class="markdown level1 summary"><p>Gets or sets the catalogue of feeds to draw from, ordered from the narrowest look-back to the widest.</p>
+  <div class="markdown level1 summary"><p>Gets or sets the catalog of feeds to draw from, ordered from the narrowest look-back to the widest.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -396,7 +396,7 @@ statistics path as its base address and a Bodu user agent.</p>
   <h4 class="section">Property Value</h4>
   <dl class="parameters">
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ireadonlylist-1">IReadOnlyList</a>&lt;<a class="xref" href="Bodu.Financial.ExchangeRates.EcbRateFeed.html">EcbRateFeed</a>&gt;</dt>
-    <dd><p>The feed catalogue; defaults to <a class="xref" href="Bodu.Financial.ExchangeRates.EcbRateFeed.html#Bodu_Financial_ExchangeRates_EcbRateFeed_Default">Default</a>.</p>
+    <dd><p>The feed catalog; defaults to <a class="xref" href="Bodu.Financial.ExchangeRates.EcbRateFeed.html#Bodu_Financial_ExchangeRates_EcbRateFeed_Default">Default</a>.</p>
 </dd>
   </dl>
 
@@ -418,11 +418,11 @@ statistics path as its base address and a Bodu user agent.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_ExchangeRates_EcbRateProviderOptions_TryValidateCore_System_String__" data-uid="Bodu.Financial.ExchangeRates.EcbRateProviderOptions.TryValidateCore(System.String@)">
   TryValidateCore(out string?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/254d764f37301db636df7625cec99be6576562e0/Bodu.Financial.ExchangeRates.Ecb/src/Financial.ExchangeRates/EcbRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/29242a9d92c3a3097169e3e3e54abe8bea661be4/Bodu.Financial.ExchangeRates.Ecb/src/Financial.ExchangeRates/EcbRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
-  <div class="markdown level1 summary"><p>Validates the ECB-specific options, ensuring the feed catalogue is not empty.</p>
+  <div class="markdown level1 summary"><p>Validates the ECB-specific options, ensuring the feed catalog is not empty.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -484,7 +484,7 @@ statistics path as its base address and a Bodu user agent.</p>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 254d764 · Built: 2026-10-14 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 29242a9 · Built: 2026-10-14 (UTC)</span>
         </div>
       </div>
     </footer>

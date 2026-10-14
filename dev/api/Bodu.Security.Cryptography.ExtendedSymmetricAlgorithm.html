@@ -8,7 +8,7 @@
       <meta name="title" content="ExtendedSymmetricAlgorithm Class
  | BODU ">
       
-      <meta name="description" content="Serves as the base class for the library&#39;s  implementations that support the extended cipher-mode and padding catalogues ( / ) beyond the framework  /  enumerations.">
+      <meta name="description" content="Serves as the base class for the library&#39;s  implementations that support the extended cipher-mode and padding catalogs ( / ) beyond the framework  /  enumerations.">
       <link rel="icon" href="../images/favicon.svg">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Security_Cryptography_ExtendedSymmetricAlgorithm" data-uid="Bodu.Security.Cryptography.ExtendedSymmetricAlgorithm" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 ExtendedSymmetricAlgorithm Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/254d764f37301db636df7625cec99be6576562e0/Bodu.Security.Cryptography/src/Security.Cryptography/ExtendedSymmetricAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/29242a9d92c3a3097169e3e3e54abe8bea661be4/Bodu.Security.Cryptography/src/Security.Cryptography/ExtendedSymmetricAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -104,11 +104,11 @@ ExtendedSymmetricAlgorithm Class
   <dl><dt>Assembly</dt><dd>Bodu.Security.Cryptography.dll</dd></dl>
   <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Security.Cryptography">Bodu.Security.Cryptography</a> <span class="bodu-package-version">1.3.0</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/254d764f37301db636df7625cec99be6576562e0/Bodu.Security.Cryptography/src/Security.Cryptography/ExtendedSymmetricAlgorithm.cs">ExtendedSymmetricAlgorithm.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/29242a9d92c3a3097169e3e3e54abe8bea661be4/Bodu.Security.Cryptography/src/Security.Cryptography/ExtendedSymmetricAlgorithm.cs">ExtendedSymmetricAlgorithm.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Serves as the base class for the library's <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.symmetricalgorithm">SymmetricAlgorithm</a> implementations that support the
-extended cipher-mode and padding catalogues (<a class="xref" href="Bodu.Security.Cryptography.CipherModeKind.html">CipherModeKind</a> / <a class="xref" href="Bodu.Security.Cryptography.PaddingModeKind.html">PaddingModeKind</a>) beyond
+extended cipher-mode and padding catalogs (<a class="xref" href="Bodu.Security.Cryptography.CipherModeKind.html">CipherModeKind</a> / <a class="xref" href="Bodu.Security.Cryptography.PaddingModeKind.html">PaddingModeKind</a>) beyond
 the framework <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.ciphermode">CipherMode</a> / <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.paddingmode">PaddingMode</a> enumerations.</p>
 </div>
 
@@ -459,14 +459,14 @@ the framework <a class="xref" href="https://learn.microsoft.com/dotnet/api/syste
 The framework <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.symmetricalgorithm.mode">Mode</a> and <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.symmetricalgorithm.padding">Padding</a> properties can
 only express the members of <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.ciphermode">CipherMode</a> and <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.paddingmode">PaddingMode</a>. This base adds the
 <a class="xref" href="Bodu.Security.Cryptography.ExtendedSymmetricAlgorithm.html#Bodu_Security_Cryptography_ExtendedSymmetricAlgorithm_BlockMode">BlockMode</a> and <a class="xref" href="Bodu.Security.Cryptography.ExtendedSymmetricAlgorithm.html#Bodu_Security_Cryptography_ExtendedSymmetricAlgorithm_BlockPadding">BlockPadding</a> counterparts over the extended
-<a class="xref" href="Bodu.Security.Cryptography.CipherModeKind.html">CipherModeKind</a> / <a class="xref" href="Bodu.Security.Cryptography.PaddingModeKind.html">PaddingModeKind</a> catalogues (which include, for example,
+<a class="xref" href="Bodu.Security.Cryptography.CipherModeKind.html">CipherModeKind</a> / <a class="xref" href="Bodu.Security.Cryptography.PaddingModeKind.html">PaddingModeKind</a> catalogs (which include, for example,
 <a class="xref" href="Bodu.Security.Cryptography.CipherModeKind.html#Bodu_Security_Cryptography_CipherModeKind_CTR">CTR</a> and <a class="xref" href="Bodu.Security.Cryptography.PaddingModeKind.html#Bodu_Security_Cryptography_PaddingModeKind_ISO7816_4">ISO7816_4</a>) and keeps each pair bidirectionally
 synchronized: assigning either member of a pair updates the other whenever an equivalent value exists, so consumers
 inspecting the framework property always observe a consistent configuration.
 </p>
 <p>
 Transform creation in derived classes reads <a class="xref" href="Bodu.Security.Cryptography.ExtendedSymmetricAlgorithm.html#Bodu_Security_Cryptography_ExtendedSymmetricAlgorithm_BlockMode">BlockMode</a> and <a class="xref" href="Bodu.Security.Cryptography.ExtendedSymmetricAlgorithm.html#Bodu_Security_Cryptography_ExtendedSymmetricAlgorithm_BlockPadding">BlockPadding</a>, so both the
-framework properties and the extended properties are honoured regardless of which surface the caller configures.
+framework properties and the extended properties are honored regardless of which surface the caller configures.
 </p>
 </div>
 
@@ -480,7 +480,7 @@ framework properties and the extended properties are honoured regardless of whic
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_ExtendedSymmetricAlgorithm__ctor" data-uid="Bodu.Security.Cryptography.ExtendedSymmetricAlgorithm.#ctor">
   ExtendedSymmetricAlgorithm()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/254d764f37301db636df7625cec99be6576562e0/Bodu.Security.Cryptography/src/Security.Cryptography/ExtendedSymmetricAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/29242a9d92c3a3097169e3e3e54abe8bea661be4/Bodu.Security.Cryptography/src/Security.Cryptography/ExtendedSymmetricAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -515,7 +515,7 @@ framework properties and the extended properties are honoured regardless of whic
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_ExtendedSymmetricAlgorithm_BlockMode" data-uid="Bodu.Security.Cryptography.ExtendedSymmetricAlgorithm.BlockMode">
   BlockMode
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/254d764f37301db636df7625cec99be6576562e0/Bodu.Security.Cryptography/src/Security.Cryptography/ExtendedSymmetricAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/29242a9d92c3a3097169e3e3e54abe8bea661be4/Bodu.Security.Cryptography/src/Security.Cryptography/ExtendedSymmetricAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -566,7 +566,7 @@ unchanged.
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_ExtendedSymmetricAlgorithm_BlockPadding" data-uid="Bodu.Security.Cryptography.ExtendedSymmetricAlgorithm.BlockPadding">
   BlockPadding
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/254d764f37301db636df7625cec99be6576562e0/Bodu.Security.Cryptography/src/Security.Cryptography/ExtendedSymmetricAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/29242a9d92c3a3097169e3e3e54abe8bea661be4/Bodu.Security.Cryptography/src/Security.Cryptography/ExtendedSymmetricAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -609,7 +609,7 @@ unchanged.</p>
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_ExtendedSymmetricAlgorithm_Mode" data-uid="Bodu.Security.Cryptography.ExtendedSymmetricAlgorithm.Mode">
   Mode
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/254d764f37301db636df7625cec99be6576562e0/Bodu.Security.Cryptography/src/Security.Cryptography/ExtendedSymmetricAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/29242a9d92c3a3097169e3e3e54abe8bea661be4/Bodu.Security.Cryptography/src/Security.Cryptography/ExtendedSymmetricAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -637,7 +637,7 @@ unchanged.</p>
 
   <h4 class="section" id="Bodu_Security_Cryptography_ExtendedSymmetricAlgorithm_Mode_remarks">Remarks</h4>
   <div class="markdown level1 remarks"><p>Also synchronizes <a class="xref" href="Bodu.Security.Cryptography.ExtendedSymmetricAlgorithm.html#Bodu_Security_Cryptography_ExtendedSymmetricAlgorithm_BlockMode">BlockMode</a> so that encryptor and decryptor creation, which read
-<a class="xref" href="Bodu.Security.Cryptography.ExtendedSymmetricAlgorithm.html#Bodu_Security_Cryptography_ExtendedSymmetricAlgorithm_BlockMode">BlockMode</a>, honour the assigned value. The inherited <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.symmetricalgorithm.mode">Mode</a> setter
+<a class="xref" href="Bodu.Security.Cryptography.ExtendedSymmetricAlgorithm.html#Bodu_Security_Cryptography_ExtendedSymmetricAlgorithm_BlockMode">BlockMode</a>, honor the assigned value. The inherited <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.symmetricalgorithm.mode">Mode</a> setter
 accepts only <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.ciphermode#system-security-cryptography-ciphermode-cbc">CBC</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.ciphermode#system-security-cryptography-ciphermode-ecb">ECB</a>, and <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.ciphermode#system-security-cryptography-ciphermode-cfb">CFB</a>,
 and throws <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.cryptographicexception">CryptographicException</a> for any other value, <span class="xref">System.Security.Cryptography.CipherMode.OFB</span> and
 <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.security.cryptography.ciphermode#system-security-cryptography-ciphermode-cts">CTS</a> included. Select OFB and CTR through <a class="xref" href="Bodu.Security.Cryptography.ExtendedSymmetricAlgorithm.html#Bodu_Security_Cryptography_ExtendedSymmetricAlgorithm_BlockMode">BlockMode</a> instead; assigning
@@ -660,7 +660,7 @@ it also updates the value this property reports wherever a <a class="xref" href=
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Security_Cryptography_ExtendedSymmetricAlgorithm_Padding" data-uid="Bodu.Security.Cryptography.ExtendedSymmetricAlgorithm.Padding">
   Padding
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/254d764f37301db636df7625cec99be6576562e0/Bodu.Security.Cryptography/src/Security.Cryptography/ExtendedSymmetricAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/29242a9d92c3a3097169e3e3e54abe8bea661be4/Bodu.Security.Cryptography/src/Security.Cryptography/ExtendedSymmetricAlgorithm.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -735,7 +735,7 @@ it also updates the value this property reports wherever a <a class="xref" href=
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 254d764 · Built: 2026-10-14 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 29242a9 · Built: 2026-10-14 (UTC)</span>
         </div>
       </div>
     </footer>
