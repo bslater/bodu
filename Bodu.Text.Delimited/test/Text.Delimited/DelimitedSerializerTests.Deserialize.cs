@@ -4,6 +4,9 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Globalization;
+using System.Text;
+
 namespace Bodu.Text.Delimited;
 
 /// <summary>
@@ -667,5 +670,70 @@ public partial class DelimitedSerializerTests
         Assert.AreEqual(1, people.Count);
         Assert.AreEqual("Ada", people[0].Name);
         Assert.AreEqual(0, people[0].Age);
+    }
+
+    /// <summary>
+    /// Verifies that a record type with a member whose type is not a scalar throws
+    /// <see cref="DelimitedSerializationException" /> when read, with the message <c>Serialize</c> gives for it, even
+    /// though the document has no column for the member.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenARecordMemberIsNotAScalar_ShouldThrowDelimitedSerializationException()
+    {
+        var ex = Assert.ThrowsExactly<DelimitedSerializationException>(() =>
+        {
+            _ = DelimitedSerializer.Deserialize<DictionaryMemberRecord>("Name\na\n");
+        });
+
+        Assert.AreEqual(string.Format(CultureInfo.CurrentCulture, DelimitedResourceStrings.Op_Invalid_DelimitedValueNotScalar, "Counts", typeof(Dictionary<string, int>)), ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that a record type with a member whose type is not a scalar is rejected before the document is read, so
+    /// that malformed text throws <see cref="DelimitedSerializationException" /> for the type rather than
+    /// <see cref="DelimitedFormatException" /> for the text.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenARecordMemberIsNotAScalarAndTheTextIsMalformed_ShouldThrowDelimitedSerializationException()
+    {
+        var ex = Assert.ThrowsExactly<DelimitedSerializationException>(() =>
+        {
+            _ = DelimitedSerializer.Deserialize<DictionaryMemberRecord>("Name\n\"open\n");
+        });
+
+        Assert.AreEqual(string.Format(CultureInfo.CurrentCulture, DelimitedResourceStrings.Op_Invalid_DelimitedValueNotScalar, "Counts", typeof(Dictionary<string, int>)), ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that a record type with a get-only member whose type is not a scalar, which <c>Serialize</c> rejects,
+    /// throws <see cref="DelimitedSerializationException" /> when read too, although reading never sets the member.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenAReadOnlyRecordMemberIsNotAScalar_ShouldThrowDelimitedSerializationException()
+    {
+        var ex = Assert.ThrowsExactly<DelimitedSerializationException>(() =>
+        {
+            _ = DelimitedSerializer.Deserialize<ReadOnlyDictionaryMemberRecord>("Name\na\n");
+        });
+
+        Assert.AreEqual(string.Format(CultureInfo.CurrentCulture, DelimitedResourceStrings.Op_Invalid_DelimitedValueNotScalar, "Counts", typeof(Dictionary<string, int>)), ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that the stream overload rejects a record type with a member whose type is not a scalar before it reads
+    /// the stream, which it leaves at its start.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenARecordMemberIsNotAScalar_ForAStream_ShouldThrowBeforeReadingTheStream()
+    {
+        using var stream = new MemoryStream(Encoding.UTF8.GetBytes("Name\na\n"));
+
+        var ex = Assert.ThrowsExactly<DelimitedSerializationException>(() =>
+        {
+            _ = DelimitedSerializer.Deserialize<DictionaryMemberRecord>(stream);
+        });
+
+        Assert.AreEqual(string.Format(CultureInfo.CurrentCulture, DelimitedResourceStrings.Op_Invalid_DelimitedValueNotScalar, "Counts", typeof(Dictionary<string, int>)), ex.Message);
+        Assert.AreEqual(0, stream.Position);
     }
 }

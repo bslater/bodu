@@ -233,25 +233,6 @@ public partial class DotEnvSerializerTests
     }
 
     /// <summary>
-    /// Verifies that a <see langword="null" /> member whose type is not a scalar, which a condition that leaves out
-    /// <see langword="null" /> values does not write, reads back as <see langword="null" />.
-    /// </summary>
-    /// <param name="condition">The options' default ignore condition.</param>
-    [TestMethod]
-    [DataRow(IgnoreCondition.WhenWritingNull)]
-    [DataRow(IgnoreCondition.WhenWritingDefault)]
-    public void SerializeDeserialize_WhenAMemberThatIsNotAScalarIsNullAndLeftOut_ShouldReadBackNull(IgnoreCondition condition)
-    {
-        var options = new DotEnvSerializerOptions { DefaultIgnoreCondition = condition };
-
-        DictionaryMemberConfig result = DotEnvSerializer.Deserialize<DictionaryMemberConfig>(
-            DotEnvSerializer.Serialize(new DictionaryMemberConfig { Name = "a" }, options), options);
-
-        Assert.AreEqual("a", result.Name);
-        Assert.IsNull(result.Counts);
-    }
-
-    /// <summary>
     /// Verifies that a <see langword="null" /> member declared as <see cref="object" />, written as an empty value
     /// under <see cref="IgnoreCondition.Never" />, reads back as the empty text, since a member declared as
     /// <see cref="object" /> reads its value as text.

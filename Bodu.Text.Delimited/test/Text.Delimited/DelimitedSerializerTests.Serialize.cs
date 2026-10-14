@@ -589,4 +589,20 @@ public partial class DelimitedSerializerTests
 
         Assert.IsTrue(ex.Message.Contains("'Value'", StringComparison.Ordinal), ex.Message);
     }
+
+    /// <summary>
+    /// Verifies that a record type with a set-only member whose type is not a scalar, which <c>Deserialize</c> would
+    /// bind, throws <see cref="DelimitedSerializationException" /> when written too, although writing never reads the
+    /// member.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenAWriteOnlyRecordMemberIsNotAScalar_ShouldThrowDelimitedSerializationException()
+    {
+        var ex = Assert.ThrowsExactly<DelimitedSerializationException>(() =>
+        {
+            _ = DelimitedSerializer.Serialize(new List<WriteOnlyDictionaryMemberRecord> { new() { Name = "a" } });
+        });
+
+        Assert.AreEqual(string.Format(CultureInfo.CurrentCulture, DelimitedResourceStrings.Op_Invalid_DelimitedValueNotScalar, "Counts", typeof(Dictionary<string, int>)), ex.Message);
+    }
 }

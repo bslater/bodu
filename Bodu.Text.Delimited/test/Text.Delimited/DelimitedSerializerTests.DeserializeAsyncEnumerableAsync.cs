@@ -812,4 +812,22 @@ public partial class DelimitedSerializerTests
         CollectionAssert.AreEqual(new[] { "first", "third" }, people.Select(static person => person.Name).ToArray());
         Assert.IsTrue(people.All(static person => person.Age == 0));
     }
+
+    /// <summary>
+    /// Verifies that the streaming reader rejects a record type with a member whose type is not a scalar when it is
+    /// called, before the sequence is enumerated or the stream read, with the message <c>Serialize</c> gives.
+    /// </summary>
+    [TestMethod]
+    public void DeserializeAsyncEnumerableAsync_WhenARecordMemberIsNotAScalar_ShouldThrowWhenCalled()
+    {
+        using var stream = new MemoryStream(Encoding.UTF8.GetBytes("Name\na\n"));
+
+        var ex = Assert.ThrowsExactly<DelimitedSerializationException>(() =>
+        {
+            _ = DelimitedSerializer.DeserializeAsyncEnumerableAsync<DictionaryMemberRecord>(stream);
+        });
+
+        Assert.AreEqual(string.Format(CultureInfo.CurrentCulture, DelimitedResourceStrings.Op_Invalid_DelimitedValueNotScalar, "Counts", typeof(Dictionary<string, int>)), ex.Message);
+        Assert.AreEqual(0, stream.Position);
+    }
 }

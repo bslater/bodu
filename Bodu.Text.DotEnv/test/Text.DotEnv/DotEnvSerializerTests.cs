@@ -218,6 +218,44 @@ public partial class DotEnvSerializerTests
     }
 
     /// <summary>
+    /// A POCO with a get-only member whose type is a dictionary, which is not a scalar.
+    /// </summary>
+    public sealed class ReadOnlyDictionaryMemberConfig
+    {
+        /// <summary>Gets or sets the name.</summary>
+        /// <value>The name.</value>
+        public string? Name { get; set; }
+
+        /// <summary>Gets the counts.</summary>
+        /// <value>The counts.</value>
+        public Dictionary<string, int> Counts { get; } = [];
+    }
+
+    /// <summary>
+    /// A POCO with a set-only member whose type is a dictionary, which is not a scalar.
+    /// </summary>
+    public sealed class WriteOnlyDictionaryMemberConfig
+    {
+        /// <summary>The counts the set-only member holds.</summary>
+        private Dictionary<string, int>? _counts;
+
+        /// <summary>Gets or sets the name.</summary>
+        /// <value>The name.</value>
+        public string? Name { get; set; }
+
+        /// <summary>Sets the counts.</summary>
+        /// <value>The counts, or <see langword="null" />.</value>
+        public Dictionary<string, int>? Counts
+        {
+            set => _counts = value;
+        }
+
+        /// <summary>Gets the counts the set-only member holds.</summary>
+        /// <returns>The counts, or <see langword="null" />.</returns>
+        public Dictionary<string, int>? GetCounts() => _counts;
+    }
+
+    /// <summary>
     /// A POCO whose members are dates and times, two of them also in nullable form.
     /// </summary>
     public sealed class TemporalConfig
