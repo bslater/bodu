@@ -11,7 +11,7 @@ namespace Bodu.Globalization.Calendar;
 /// <summary>
 /// Performs the pre-resolution semantic validation that the XSD cannot express: duplicate identities, unresolved
 /// adjustment and strategy references, and inverted year bounds; and, for a resource no reader produced, the identifier
-/// patterns the XSD does express.
+/// patterns, numeric ranges and enumeration members the XSD does express.
 /// </summary>
 internal static class NotableDateRuleValidator
 {
@@ -82,6 +82,177 @@ internal static class NotableDateRuleValidator
                 CheckPatterns(rule.AdjustmentPolicyRefs, NotableDateSchemaPattern.Identifier, "adjustments", diagnostics);
             }
         }
+    }
+
+    /// <summary>
+    /// Reports each number of an assembled resource that lies outside the range the notable-date schema holds its field
+    /// to, with the <c>BODU-CAL-SCHEMA</c> error the JSON reader reports for the same value, and an adjustment
+    /// trigger's month outside 1 to 12 with the reader's <c>BODU-CAL-VALUE</c> error.
+    /// </summary>
+    /// <param name="resource">The resource to validate.</param>
+    /// <param name="diagnostics">The collection that receives validation diagnostics.</param>
+    /// <remarks>
+    /// The loader checks these values as it reads a document, so <see cref="Validate" /> does not repeat the check; a
+    /// resource assembled in code, which no reader produced, is held to them before it is written as a binary rule
+    /// pack. The bounds are those of <see cref="NotableDateSchemaRanges" />, which the readers apply. A strategy's or
+    /// recurrence's numbers need no check here, since its constructor refuses one outside the range. Each diagnostic
+    /// names the JSON property the value is written under, as the JSON reader names it.
+    /// </remarks>
+    public static void ValidateRanges(NotableDateResource resource, ICollection<NotableDateValidationDiagnostic> diagnostics)
+    {
+        foreach (AdjustmentPolicy policy in resource.AdjustmentPolicies)
+        {
+            CheckRange(policy.Scope.FromYear, NotableDateSchemaRange.UnsignedShort, "fromYear", diagnostics);
+            CheckRange(policy.Scope.ToYear, NotableDateSchemaRange.UnsignedShort, "toYear", diagnostics);
+            CheckRanges(policy.Scope.OnlyYears, NotableDateSchemaRange.UnsignedShort, "onlyYears", diagnostics);
+            CheckRanges(policy.Scope.ExceptYears, NotableDateSchemaRange.UnsignedShort, "exceptYears", diagnostics);
+            CheckRange(policy.MaxSearchDays, NotableDateSchemaRange.PositiveInteger, "maxSearchDays", diagnostics);
+            CheckRange(policy.TriggerDay, NotableDateSchemaRange.DayValue, "day", diagnostics);
+
+            if (policy.TriggerMonth is int month && month is < 1 or > 12)
+                NotableDateDocumentParseHelpers.AddValueError(diagnostics, CalendarResourceStrings.Validation_InvalidTriggerMonth, "trigger month", month.ToString(CultureInfo.InvariantCulture));
+        }
+
+        foreach (NotableDateDefinition definition in resource.NotableDates)
+        {
+            CheckRange(definition.DefaultDurationDays, NotableDateSchemaRange.PositiveInteger, "defaultDurationDays", diagnostics);
+
+            foreach (NotableDateRule rule in definition.Rules)
+            {
+                RuleApplicability applicability = rule.Applicability;
+                CheckRange(applicability.FromYear, NotableDateSchemaRange.UnsignedShort, "fromYear", diagnostics);
+                CheckRange(applicability.ToYear, NotableDateSchemaRange.UnsignedShort, "toYear", diagnostics);
+                CheckRanges(applicability.OnlyYears, NotableDateSchemaRange.UnsignedShort, "onlyYears", diagnostics);
+                CheckRanges(applicability.ExceptYears, NotableDateSchemaRange.UnsignedShort, "exceptYears", diagnostics);
+                CheckRange(applicability.EveryYears, NotableDateSchemaRange.PositiveInteger, "everyYears", diagnostics);
+                CheckRange(applicability.AnchorYear, NotableDateSchemaRange.UnsignedShort, "anchorYear", diagnostics);
+
+                if (rule.Duration is FixedDurationDefinition duration)
+                    CheckRange(duration.Days, NotableDateSchemaRange.PositiveInteger, "durationDays", diagnostics);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Reports each enumeration value of an assembled resource that its type does not define, with the
+    /// <c>BODU-CAL-ENUM</c> error the readers report for a value that names no member.
+    /// </summary>
+    /// <param name="resource">The resource to validate.</param>
+    /// <param name="diagnostics">The collection that receives validation diagnostics.</param>
+    /// <remarks>
+    /// The readers only produce values their types define, so <see cref="Validate" /> does not repeat the check; a
+    /// resource assembled in code, which no reader produced, is held to it before it is written as a binary rule pack,
+    /// whose one-byte encoding would otherwise write a pack that cannot be read back or, for a value beyond a byte, one
+    /// that reads back as another member. The fields are those the resolution policy, the adjustment policies, the
+    /// concepts, the rules' applicability and their calculated durations hold; a strategy's or recurrence's constructor
+    /// already refuses an undefined value. Each diagnostic names the field as the readers name it, and the value by its
+    /// number.
+    /// </remarks>
+    public static void ValidateEnumValues(NotableDateResource resource, ICollection<NotableDateValidationDiagnostic> diagnostics)
+    {
+        ResolutionPolicy resolution = resource.ResolutionPolicy;
+        CheckDefined(resolution.DuplicatePolicy, "duplicatePolicy", diagnostics);
+        CheckDefined(resolution.SameDayCollisionPolicy, "sameDayCollisionPolicy", diagnostics);
+        CheckDefined(resolution.SpanCollisionPolicy, "spanCollisionPolicy", diagnostics);
+        CheckDefined(resolution.PriorityDirection, "priorityDirection", diagnostics);
+        CheckDefined(resolution.ObservedDateRangePolicy, "observedDateRangePolicy", diagnostics);
+        CheckAllDefined(resolution.CategoryPrecedence, "categoryPrecedence", diagnostics);
+
+        foreach (AdjustmentPolicy policy in resource.AdjustmentPolicies)
+        {
+            CheckAllDefined(policy.Scope.Calendars, "scope calendars", diagnostics);
+            CheckAllDefined(policy.Scope.Categories, "scope categories", diagnostics);
+            CheckDefined(policy.Trigger, "trigger type", diagnostics);
+            CheckAllDefined(policy.TriggerWeekdays, "trigger weekdays", diagnostics);
+            CheckDefined(policy.Action, "action type", diagnostics);
+            CheckDefined(policy.Emission, "emission mode", diagnostics);
+
+            if (policy.ActionWeekday is DayOfWeek actionWeekday)
+                CheckDefined(actionWeekday, "action dayOfWeek", diagnostics);
+
+            if (policy.TriggerWeekOrdinal is WeekOrdinal triggerWeekOrdinal)
+                CheckDefined(triggerWeekOrdinal, "trigger weekOrdinal", diagnostics);
+        }
+
+        foreach (NotableDateDefinition definition in resource.NotableDates)
+        {
+            CheckDefined(definition.Category, "category", diagnostics);
+
+            foreach (NotableDateRule rule in definition.Rules)
+            {
+                if (rule.Category is NotableDateCategory category)
+                    CheckDefined(category, "category", diagnostics);
+
+                CheckDefined(rule.Applicability.Calendar, "calendar", diagnostics);
+
+                if (rule.Duration is CalculatedEndDateDurationDefinition untilDate)
+                {
+                    CheckDefined(untilDate.StartBoundary, "untilDate startBoundary", diagnostics);
+                    CheckDefined(untilDate.EndBoundary, "untilDate endBoundary", diagnostics);
+                    CheckDefined(untilDate.EndSelection, "untilDate selection", diagnostics);
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// Records the <c>BODU-CAL-ENUM</c> error for an enumeration value its type does not define.
+    /// </summary>
+    /// <typeparam name="TEnum">The enumeration type.</typeparam>
+    /// <param name="value">The value.</param>
+    /// <param name="field">The name the readers give the field in the diagnostic.</param>
+    /// <param name="diagnostics">The collection that receives the diagnostic.</param>
+    private static void CheckDefined<TEnum>(TEnum value, string field, ICollection<NotableDateValidationDiagnostic> diagnostics)
+        where TEnum : struct, Enum
+    {
+        if (Enum.IsDefined(value))
+            return;
+
+        diagnostics.Add(new NotableDateValidationDiagnostic(
+            NotableDateValidationSeverity.Error,
+            "BODU-CAL-ENUM",
+            string.Format(CultureInfo.CurrentCulture, CalendarResourceStrings.Validation_InvalidEnumValue, field, value, string.Join(", ", Enum.GetNames<TEnum>()))));
+    }
+
+    /// <summary>
+    /// Records the <c>BODU-CAL-ENUM</c> error for each value of a list that its enumeration type does not define.
+    /// </summary>
+    /// <typeparam name="TEnum">The enumeration type.</typeparam>
+    /// <param name="values">The values.</param>
+    /// <param name="field">The name the readers give the list in the diagnostics.</param>
+    /// <param name="diagnostics">The collection that receives the diagnostics.</param>
+    private static void CheckAllDefined<TEnum>(IEnumerable<TEnum> values, string field, ICollection<NotableDateValidationDiagnostic> diagnostics)
+        where TEnum : struct, Enum
+    {
+        foreach (TEnum value in values)
+            CheckDefined(value, field, diagnostics);
+    }
+
+    /// <summary>
+    /// Records the <c>BODU-CAL-SCHEMA</c> error for a number outside the range the schema holds its field to.
+    /// </summary>
+    /// <param name="value">The value, or <see langword="null" /> when the field is absent.</param>
+    /// <param name="range">The range the schema holds the value to.</param>
+    /// <param name="field">The name of the JSON property the value is written under, used in the diagnostic.</param>
+    /// <param name="diagnostics">The collection that receives the diagnostic.</param>
+    private static void CheckRange(int? value, NotableDateSchemaRange range, string field, ICollection<NotableDateValidationDiagnostic> diagnostics)
+    {
+        if (value is int number && NotableDateSchemaRanges.Check(number, range, field) is NotableDateValidationDiagnostic diagnostic)
+            diagnostics.Add(diagnostic);
+    }
+
+    /// <summary>
+    /// Records the <c>BODU-CAL-SCHEMA</c> error for each number of a list outside the range the schema holds its items
+    /// to.
+    /// </summary>
+    /// <param name="values">The values.</param>
+    /// <param name="range">The range the schema holds each value to.</param>
+    /// <param name="field">The name of the JSON property the list is written under, used in the diagnostics.</param>
+    /// <param name="diagnostics">The collection that receives the diagnostics.</param>
+    private static void CheckRanges(IEnumerable<int> values, NotableDateSchemaRange range, string field, ICollection<NotableDateValidationDiagnostic> diagnostics)
+    {
+        foreach (int value in values)
+            CheckRange(value, range, field, diagnostics);
     }
 
     /// <summary>
