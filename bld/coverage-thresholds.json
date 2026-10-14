@@ -24,12 +24,16 @@
     "branch": 99.5
   },
   "Bodu.Financial.ExchangeRates": {
-    "line": 90.5,
+    "line": 90.0,
     "branch": 84.3
   },
+  "Bodu.Financial.ExchangeRates (shared source)": {
+    "line": 95.2,
+    "branch": 90.6
+  },
   "Bodu.Financial.ExchangeRates.Boe": {
-    "line": 90.6,
-    "branch": 84.8
+    "line": 90.5,
+    "branch": 84.2
   },
   "Bodu.Financial.ExchangeRates.Caching": {
     "line": 91.1,
@@ -48,12 +52,12 @@
     "branch": 99.5
   },
   "Bodu.Financial.ExchangeRates.Ecb": {
-    "line": 91.2,
-    "branch": 80.5
+    "line": 91.0,
+    "branch": 79.4
   },
   "Bodu.Financial.ExchangeRates.ExchangeRateHost": {
-    "line": 94.8,
-    "branch": 73.2
+    "line": 94.4,
+    "branch": 68.2
   },
   "Bodu.Financial.ExchangeRates.Fixer": {
     "line": 96.2,
@@ -208,8 +212,8 @@
     "branch": 94.2
   },
   "Bodu.Text.Delimited": {
-    "line": 91.2,
-    "branch": 85.4
+    "line": 90.4,
+    "branch": 84.8
   },
   "Bodu.Text.DotEnv": {
     "line": 89.8,
@@ -230,6 +234,10 @@
   "Bodu.Text.Serialization": {
     "line": 99.5,
     "branch": 99.5
+  },
+  "Bodu.Text.Serialization (line-format shared source)": {
+    "line": 98.4,
+    "branch": 96.8
   },
   "Bodu.Text.Serialization (shared source)": {
     "line": 92.9,

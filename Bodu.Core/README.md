@@ -1,6 +1,6 @@
 # Bodu.Core
 
-> **API stability - Stable.**
+> **API stability - Stable.** The public API surface is committed: breaking changes are reserved for a major-version bump per [SemVer](https://semver.org), except a deliberate break that is recorded in the release notes and in the package's `CompatibilitySuppressions.xml`. See [versioning and support](https://bslater.github.io/bodu/docs/versioning-and-support.html).
 
 Foundational building blocks for .NET 8 and .NET 10: extension methods over strings, dates, numerics, spans; 
 pooled buffer builders; argument validation helpers; a non-cryptographic RNG; a synchronous 
@@ -45,17 +45,9 @@ consumers update the package reference only. `Bodu.Collections` depends on `Bodu
 
 - `PooledBufferBuilder<T>` (Bodu.Buffers) - ArrayPool-backed accumulator with auto-growth
 
-## Testing
+## Building and testing
 
-Tests live in `test/` as MSTest partial classes mirroring `src/`. Run tiers via the runsettings files at the solution root:
-
-```bash
-dotnet test Bodu.Core/test/Bodu.Core.Test.csproj --settings smoke.runsettings
-dotnet test Bodu.Core/test/Bodu.Core.Test.csproj --settings bvt.runsettings
-dotnet test Bodu.Core/test/Bodu.Core.Test.csproj --settings regression.runsettings
-```
-
-Types that share a contract share its tests. The calendar value sets derive from `CalendarSetContractTests<TSet, TElement>`, which covers construction, membership, the operators, equality, enumeration and storage through `ICalendarValueSet<TSelf, TValue>`; the five numeric sets derive from `CalendarValueSetContractTests<TSet>`, which adds their text formats and the order in which `Parse` detects them; and `DayOfWeekSet`'s text forms run the shared `ParseFormatContractTests<T>`. The collection contract suites (`CollectionContractTests<>` and its siblings) test the collections in the `Bodu.Collections` and `Bodu.Collections.Concurrent` packages.
+To build this package from source and run its tests, see [CONTRIBUTING.md](https://github.com/bslater/bodu/blob/master/CONTRIBUTING.md).
 
 ## License
 

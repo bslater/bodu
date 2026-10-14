@@ -60,6 +60,7 @@ public static class SqliteRateCacheExtensions
     ///<![CDATA[
     /// // One shared database file holding several providers' series, each cache keyed by its provider name.
     /// services.AddFinancialService()
+    ///         .AddOfxExchangeRates()
     ///         .AddSqliteRateCache("RBA", configure: o => o.DatabaseFilePath = "/var/cache/fx.db")
     ///         .AddSqliteRateCache("OFX", configure: o => o.DatabaseFilePath = "/var/cache/fx.db")
     ///         .AddSqliteRateCache("XE",  configure: o => o.DatabaseFilePath = "/var/cache/fx.db")

@@ -1,6 +1,6 @@
 # Bodu.Collections
 
-> **API stability - Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
+> **API stability - Stable.** The public API surface is committed: breaking changes are reserved for a major-version bump per [SemVer](https://semver.org), except a deliberate break that is recorded in the release notes and in the package's `CompatibilitySuppressions.xml`. See [versioning and support](https://bslater.github.io/bodu/docs/versioning-and-support.html).
 
 The specialized generic-collection catalogue for the Bodu solution and for general use on .NET 8 and .NET 10: bounded and ordered collections, bidirectional and layered dictionaries, navigable (order-statistic) sets and maps, interval and range-keyed lookups, graph and tree structures, and probabilistic sketches. The catalogue was split out of `Bodu.Core` with namespaces unchanged - code written against `Bodu.Collections.Generic` and its siblings keeps compiling; only the package reference changes. Most collections ship a struct enumerator for allocation-free iteration, and the collections implement the standard BCL interfaces (`IEnumerable<T>`, `ICollection<T>`, `IReadOnlyCollection<T>`, `ISet<T>`, `IList<T>`) so the types drop into existing code. The package references `Bodu.Core` for its shared `ThrowHelper` argument validation.
 
@@ -56,17 +56,9 @@ All three hash through an `IEqualityComparer<T>`, merge with parameter-compatibl
 
 The thread-safe variants (`ConcurrentCircularBuffer<T>`, `ConcurrentHashSet<T>`, `ConcurrentEvictingDictionary<TKey,TValue>`, and `ConcurrentLruCache<TKey,TValue>`) ship separately in the `Bodu.Collections.Concurrent` package.
 
-## Testing
+## Building and testing
 
-Tests live in `test/` as MSTest partial classes mirroring `src/`. Run tiers via the runsettings files at the solution root:
-
-```bash
-dotnet test Bodu.Collections/test/Bodu.Collections.Test.csproj --settings smoke.runsettings
-dotnet test Bodu.Collections/test/Bodu.Collections.Test.csproj --settings bvt.runsettings
-dotnet test Bodu.Collections/test/Bodu.Collections.Test.csproj --settings regression.runsettings
-```
-
-Collection behaviour is validated through shared contract bases (`CollectionContractTests<>`, `ReadOnlyCollectionContractTests<>`, `SetContractTests<>`, `EnumeratorContractTests<>`, `DebugViewContractTests<>`, `NonGenericCollectionContractTests<>`) so every collection is held to the same interface contract.
+To build this package from source and run its tests, see [CONTRIBUTING.md](https://github.com/bslater/bodu/blob/master/CONTRIBUTING.md).
 
 ## License
 

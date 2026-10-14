@@ -1,6 +1,6 @@
 # Bodu.Globalization.Calendar.Europe
 
-> **API stability - Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
+> **API stability - Stable.** The public API surface is committed: breaking changes are reserved for a major-version bump per [SemVer](https://semver.org), except a deliberate break that is recorded in the release notes and in the package's `CompatibilitySuppressions.xml`. See [versioning and support](https://bslater.github.io/bodu/docs/versioning-and-support.html).
 
 Holiday and observance data for the 27 EU member states and the United Kingdom, packaged for the `Bodu.Globalization.Calendar` engine. Each supported country ships as a self-contained embedded notable-date pack - national rules plus, where authored, ISO 3166-2 subdivisions - that imports the shared core, Western Christian, family, and cultural catalogues through the `europe-common` hub. The Orthodox countries (Bulgaria, Cyprus, Greece, Romania) define their Orthodox Easter cycle in their own packs.
 
@@ -35,13 +35,9 @@ The `EuropeCalendarData` factory exposes:
 
 Subdivision rules (the German *Länder*, the UK nations, and the Alsace-Moselle *départements*) resolve automatically when a territory code carries an ISO 3166-2 subdivision.
 
-## Testing
+## Building and testing
 
-```bash
-dotnet test Bodu.Globalization.Calendar.Data/Bodu.Globalization.Calendar.Europe/test/Bodu.Globalization.Calendar.Europe.Test.csproj --settings bvt.runsettings
-```
-
-`EuropeCalendarDataTests` pins every floating or computed holiday (Western and Orthodox Easter offsets, nth-weekday rules) to confirmed published dates, plus a `CreateService_ForEverySupportedCountry_LoadsAndResolves` smoke test.
+To build this package from source and run its tests, see [CONTRIBUTING.md](https://github.com/bslater/bodu/blob/master/CONTRIBUTING.md). The published vectors and corpora the tests hold it to are listed under [conformance and test vectors](https://bslater.github.io/bodu/docs/topics/conformance.html).
 
 ## License
 

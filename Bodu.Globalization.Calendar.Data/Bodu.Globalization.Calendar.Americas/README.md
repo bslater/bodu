@@ -1,6 +1,6 @@
 # Bodu.Globalization.Calendar.Americas
 
-> **API stability - Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
+> **API stability - Stable.** The public API surface is committed: breaking changes are reserved for a major-version bump per [SemVer](https://semver.org), except a deliberate break that is recorded in the release notes and in the package's `CompatibilitySuppressions.xml`. See [versioning and support](https://bslater.github.io/bodu/docs/versioning-and-support.html).
 
 Holiday and observance data for the Americas, packaged for the `Bodu.Globalization.Calendar` engine. Each supported country ships as a self-contained embedded notable-date pack - national rules plus ISO 3166-2 subdivisions - that imports the shared faith and civil catalogues through the `americas-common` hub.
 
@@ -35,13 +35,9 @@ The `AmericasCalendarData` factory exposes:
 
 Subdivision rules (state / provincial holidays) resolve automatically when a territory code carries an ISO 3166-2 subdivision.
 
-## Testing
+## Building and testing
 
-```bash
-dotnet test Bodu.Globalization.Calendar.Data/Bodu.Globalization.Calendar.Americas/test/Bodu.Globalization.Calendar.Americas.Test.csproj --settings bvt.runsettings
-```
-
-`AmericasCalendarDataTests` pins every floating or computed holiday (Easter offsets, nth-weekday rules, weekend-substitution shifts) to confirmed published dates, plus a `CreateService_ForEverySupportedCountry_LoadsAndResolves` smoke test.
+To build this package from source and run its tests, see [CONTRIBUTING.md](https://github.com/bslater/bodu/blob/master/CONTRIBUTING.md). The published vectors and corpora the tests hold it to are listed under [conformance and test vectors](https://bslater.github.io/bodu/docs/topics/conformance.html).
 
 ## License
 

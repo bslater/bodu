@@ -1,6 +1,6 @@
 # Bodu.Financial.DependencyInjection
 
-> **API stability - Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
+> **API stability - Stable.** The public API surface is committed: breaking changes are reserved for a major-version bump per [SemVer](https://semver.org), except a deliberate break that is recorded in the release notes and in the package's `CompatibilitySuppressions.xml`. See [versioning and support](https://bslater.github.io/bodu/docs/versioning-and-support.html).
 
 `Microsoft.Extensions.DependencyInjection` integration for `Bodu.Financial`. Registers currency lookup, financial options, exchange-rate providers, and named monetary contexts behind a small fluent builder. Financial JSON registration (`AddFinancialJson`) ships in the companion `Bodu.Financial.Serialization.Json` package.
 
@@ -40,11 +40,9 @@ The provider methods register through `TryAdd`, and the generic form needs a typ
 
 `FinancialOptions` is bound from the supplied configuration section (default `"Financial"`); it currently declares no settings of its own and exists as the binding seam for future options. The JSON registration `services.AddFinancialJson(policy)` (a `JsonSerializerOptions` keyed `"Financial"` with the financial converters) lives in the companion `Bodu.Financial.Serialization.Json` package.
 
-## Testing
+## Building and testing
 
-```bash
-dotnet test Bodu.Financial.DependencyInjection/test/Bodu.Financial.DependencyInjection.Test.csproj --settings bvt.runsettings
-```
+To build this package from source and run its tests, see [CONTRIBUTING.md](https://github.com/bslater/bodu/blob/master/CONTRIBUTING.md).
 
 ## License
 

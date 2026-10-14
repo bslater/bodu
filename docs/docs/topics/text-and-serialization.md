@@ -11,7 +11,7 @@ The **Text & Serialization** topic groups the packages that move data into and o
 | Job | What it preserves | Package(s) |
 |---|---|---|
 | **Binary-to-text codec** - bytes ⇄ printable text | The exact byte sequence. No structure is added or interpreted; `Encode` then `Decode` returns the identical bytes. | `Bodu.Text.Encoding` - Base16, Base32, Base58, Base64, Base85, plus Base45, Base62, and Bech32 / Bech32m. |
-| **Document format** - parse, edit, and write structured documents | The document's structure and (where the format supports it) its trivia - comments, ordering, whitespace - for faithful round-trips. | `Bodu.Text.Formats` - Delimited (RFC 4180 CSV / TSV), DotEnv, INI; each with a typed value model and streaming readers / writers. |
+| **Document format** - parse, edit, and write structured documents | The document's structure and order and, where the format supports it, its comment lines (the INI tree keeps them; the source's spacing and inline comments are not kept). | `Bodu.Text.Formats` - Delimited (RFC 4180 CSV / TSV), DotEnv, INI; each with a typed value model and streaming readers / writers. |
 | **Object serializer** - POCO ⇄ wire format | Your object graph. Types, members, and collections are mapped to the format and bound back, `System.Text.Json`-style. | `Bodu.Text.Bencode` (BEP 3, binary), `Bodu.Text.Toml` (TOML v1.0.0 / v1.1.0, text), and `Bodu.Text.Yaml` (YAML 1.2 core schema, text) - a shared architecture and member shape. |
 | **Text filter** - select values by pattern | Nothing about the values themselves - it decides only which values pass, via include/exclude glob and regex patterns compiled into one matcher. | `Bodu.Text.Filtering` - AnyMatch sets or gitignore-style ordered rules, cost-tiered evaluation, built-in match telemetry. |
 
@@ -104,22 +104,34 @@ However different the three jobs are, the packages share the suite's design grai
 ## A taste of each surface
 
 ```csharp
+using System.Security.Cryptography;
 using Bodu.Text.Encoding;
-using Bodu.Text.Ini;
+using Bodu.Text.Ini.Nodes;
 using Bodu.Text.Toml;
 
 // 1. Codec - bytes to printable text and back:
+byte[] hash  = SHA256.HashData("hello"u8);
 string hex   = Base16.Encode(hash);
-byte[] token = Base64.Decode(segment, Base64Variant.UrlSafe, BaseFormatStyles.AllowMissingPadding);
+byte[] token = Base64.Decode("aGVsbG8", Base64Variant.UrlSafe, BaseFormatStyles.AllowMissingPadding);
 
-// 2. Document format - parse, edit, round-trip with comments preserved:
-IniObject config = IniNode.Parse(utf8Source);
+// 2. Document format - parse, edit, and write back with the comment lines kept:
+IniObject config = IniNode.Parse("""
+    ; connection settings
+    [database]
+    port = 5432
+    """);
 config["database"].AsObject()["port"].AsValue().Value = "5433";
 string updated = config.ToString();
 
 // 3. Serializer - POCO to wire format and back:
 string toml = TomlSerializer.Serialize(new AppSettings { Name = "demo", Retries = 3 });
 AppSettings roundTripped = TomlSerializer.Deserialize<AppSettings>(toml);
+
+public sealed class AppSettings
+{
+    public string Name { get; set; } = "";
+    public int Retries { get; set; }
+}
 ```
 
 ## Boundaries with neighboring packages

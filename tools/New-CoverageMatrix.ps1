@@ -15,7 +15,7 @@
          dragging every aggregate down. Any row whose file does not resolve on disk is discarded and
          counted.
 
-      2. Shared-source attribution. Three source sets are compiled directly into more than one
+      2. Shared-source attribution. Some source sets are compiled directly into more than one
          assembly, so their lines appear under several package names at once. Each set is reported
          once as a synthetic unit whose coverage is the union across its hosts, and is removed from
          the host packages so the solution total counts it exactly once. See $SharedSourceSets.
@@ -129,6 +129,25 @@ $SharedSourceSets = @(
         Hosts                 = @('Bodu.Financial.ExchangeRates.Caching', 'Bodu.Globalization.Calendar.Caching')
         ConditionallyCompiled = $false
     }
+    @{
+        Prefix                = 'Bodu.Text.Serialization/flat/src/'
+        Unit                  = 'Bodu.Text.Serialization (line-format shared source)'
+        Hosts                 = @('Bodu.Text.Delimited', 'Bodu.Text.DotEnv', 'Bodu.Text.Ini')
+        ConditionallyCompiled = $false
+    }
+    @{
+        Prefix                = 'Bodu.Financial.ExchangeRates/shared/'
+        Unit                  = 'Bodu.Financial.ExchangeRates (shared source)'
+
+        # Each host links only the files it needs (Utf8Content.cs into Boe and Imf, JsonRateValueReader.cs into the
+        # six JSON pair providers, and so on), but no file selects lines by symbol.
+        Hosts                 = @(
+            'Bodu.Financial.ExchangeRates', 'Bodu.Financial.ExchangeRates.Boe', 'Bodu.Financial.ExchangeRates.Ecb',
+            'Bodu.Financial.ExchangeRates.Imf', 'Bodu.Financial.ExchangeRates.Rba', 'Bodu.Financial.ExchangeRates.ExchangeRateHost',
+            'Bodu.Financial.ExchangeRates.Fixer', 'Bodu.Financial.ExchangeRates.Oanda', 'Bodu.Financial.ExchangeRates.Ofx',
+            'Bodu.Financial.ExchangeRates.Xe', 'Bodu.Financial.ExchangeRates.Yahoo')
+        ConditionallyCompiled = $false
+    }
 )
 
 $SharedSourceUnits = @($SharedSourceSets | ForEach-Object { $_.Unit })
@@ -237,8 +256,8 @@ function Get-StaleNumberedFiles([string]$rawRoot) {
         # Toml, Bencode and Yaml under different format symbols, and Bodu.Formats.Outlook/shared/** into the
         # .msg and .pst readers, so each host legitimately instruments a different subset of its lines. That is
         # a real difference in the compiled code, not stale data. The other shared sets are NOT exempt - their
-        # symbols select only a namespace declaration, so a line-set disagreement between their hosts really is
-        # stale data.
+        # symbols, where they have any, select only a namespace declaration, so a line-set disagreement between
+        # their hosts really is stale data.
         $normalized = $filename.Replace('\', '/')
         if ($conditionalPrefixes | Where-Object { $normalized.Contains($_) }) { continue }
 

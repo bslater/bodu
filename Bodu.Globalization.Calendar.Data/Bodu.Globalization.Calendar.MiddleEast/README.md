@@ -1,6 +1,6 @@
 # Bodu.Globalization.Calendar.MiddleEast
 
-> **API stability - Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
+> **API stability - Stable.** The public API surface is committed: breaking changes are reserved for a major-version bump per [SemVer](https://semver.org), except a deliberate break that is recorded in the release notes and in the package's `CompatibilitySuppressions.xml`. See [versioning and support](https://bslater.github.io/bodu/docs/versioning-and-support.html).
 
 Holiday and observance data for the Middle East, packaged for the `Bodu.Globalization.Calendar` engine. Each supported country ships as a self-contained embedded notable-date pack - national rules plus ISO 3166-2 subdivisions - that draws on the shared catalogues: the UAE, Jordan, Qatar, and Turkey packs import the tabular Islamic catalogue through the `middleeast-common` hub, Saudi Arabia imports the Umm al-Qura variant directly, and Israel imports the Jewish catalogue directly. Working-week definitions are territory-specific (Israel, Jordan, Qatar, and Saudi Arabia observe a Friday-Saturday weekend).
 
@@ -35,13 +35,9 @@ The `MiddleEastCalendarData` factory exposes:
 
 Each country's working-week definition (and any weekend-substitution rules) is encoded in its pack and applied automatically by the working-day extensions.
 
-## Testing
+## Building and testing
 
-```bash
-dotnet test Bodu.Globalization.Calendar.Data/Bodu.Globalization.Calendar.MiddleEast/test/Bodu.Globalization.Calendar.MiddleEast.Test.csproj --settings bvt.runsettings
-```
-
-`MiddleEastCalendarDataTests` pins every floating or computed holiday (Hijri and Hebrew festivals, weekend-substitution shifts) to confirmed published dates - exact where deterministic, with a ±2-day tolerance for moon-sighting festivals - plus a `CreateService_ForEverySupportedCountry_LoadsAndResolves` smoke test.
+To build this package from source and run its tests, see [CONTRIBUTING.md](https://github.com/bslater/bodu/blob/master/CONTRIBUTING.md). The published vectors and corpora the tests hold it to are listed under [conformance and test vectors](https://bslater.github.io/bodu/docs/topics/conformance.html).
 
 ## License
 

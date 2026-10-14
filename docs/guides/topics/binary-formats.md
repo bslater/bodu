@@ -41,6 +41,29 @@ The CFB container reader and writer - the storage hierarchy, the stream cursor, 
 
 </div>
 
+## Bodu.IO.Biff guides
+
+The BIFF5 and BIFF8 record codec beneath the `.xls` reader - writing a workbook stream record by record, and reading one in blocks.
+
+<div class="bodu-cards">
+
+<div class="bodu-card">
+  <h3><a href="../io-biff/index.md">Overview</a></h3>
+  <p>The full guide index for <code>Bodu.IO.Biff</code> - how the reader and writer work, the namespace map, and which guide covers each concern.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="../io-biff/authoring-records.md">Authoring a workbook stream</a></h3>
+  <p>Assemble the globals and sheet substreams, patch the <code>BOUNDSHEET</code> offsets, write a shared string table across <code>CONTINUE</code> records, and store the result in a compound file.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="../io-biff/resumable-reading.md">Reading a stream a block at a time</a></h3>
+  <p>Carry <code>BiffReaderState</code> and <code>BytesConsumed</code> from block to block over any stream, keeping the shared string table whole.</p>
+</div>
+
+</div>
+
 ## Bodu.Formats.Excel.Binary guides
 
 The BIFF5 and BIFF8 `.xls` reader built on `Bodu.IO.Compound` and `Bodu.IO.Biff` surfaces raw worksheet cell values - strings, numbers, booleans, and errors - without formula evaluation, styling, or higher-level interpretation.
@@ -69,15 +92,38 @@ The BIFF5 and BIFF8 `.xls` reader built on `Bodu.IO.Compound` and `Bodu.IO.Biff`
 
 </div>
 
+## Bodu.IO.Pst guides
+
+The read-only container layer for Outlook personal-folders files (Unicode and ANSI): the node database, the property-context and table-context views with wire-typed values, and the validation levels. No MAPI semantics; the `.pst` mail-store reader below builds on it.
+
+<div class="bodu-cards">
+
+<div class="bodu-card">
+  <h3><a href="../io-pst/index.md">Overview</a></h3>
+  <p>The full guide index for <code>Bodu.IO.Pst</code> - how a PST file is a B-tree-indexed database of nodes, the namespace map, and which guide covers each concern.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="../io-pst/reading-nodes-and-tables.md">Reading nodes and tables</a></h3>
+  <p>Open a file, walk the node B-tree, and read a node's property context and table context.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="../io-pst/streaming-and-validation.md">Streaming and validation</a></h3>
+  <p>Stream large payloads, the decoded-block cache, and the strict, compatible, and minimal validation levels.</p>
+</div>
+
+</div>
+
 ## Bodu.Formats.Outlook guides
 
-The Outlook format readers - the shared MAPI value model in `Bodu.Formats.Outlook`, and the read-only `.msg` reader `Bodu.Formats.Outlook.Msg` built on `Bodu.IO.Compound`. (The `.pst` mail-store reader, `Bodu.Formats.Outlook.Pst`, is introduced with its container in the [Bodu.IO.Pst introduction](../../docs/io-pst/index.md).)
+The Outlook format readers - the shared MAPI value model in `Bodu.Formats.Outlook`, the read-only `.msg` reader `Bodu.Formats.Outlook.Msg` built on `Bodu.IO.Compound`, and the read-only `.pst` mail-store reader `Bodu.Formats.Outlook.Pst` built on `Bodu.IO.Pst`.
 
 <div class="bodu-cards">
 
 <div class="bodu-card">
   <h3><a href="../outlook/index.md">Overview</a></h3>
-  <p>The full guide index for the Outlook readers - how a <code>.msg</code> file sits inside the CFB container, the namespace map, and which guide covers each concern.</p>
+  <p>The full guide index for the Outlook readers - how a <code>.msg</code> file sits inside the CFB container and a <code>.pst</code> store inside the PST node database, the namespace map, and which guide covers each concern.</p>
 </div>
 
 <div class="bodu-card">
@@ -86,8 +132,18 @@ The Outlook format readers - the shared MAPI value model in `Bodu.Formats.Outloo
 </div>
 
 <div class="bodu-card">
+  <h3><a href="../outlook/reading-pst-mail-stores.md">Reading .pst mail stores</a></h3>
+  <p>Open a mail store, walk the folder hierarchy, stream its messages, and read their recipients, attachments, and embedded messages.</p>
+</div>
+
+<div class="bodu-card">
   <h3><a href="../outlook/properties-and-named-properties.md">Properties and named properties</a></h3>
   <p>The raw property surface, typed accessors, tags and wire types, and resolving named properties.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="../outlook/reader-options-and-limits.md">Reader options and resource limits</a></h3>
+  <p>The options both readers take, the limits that bound a crafted file, and omitting unresolvable values instead of failing.</p>
 </div>
 
 </div>
@@ -104,6 +160,6 @@ The Outlook format readers - the shared MAPI value model in `Bodu.Formats.Outloo
 
 - **[Binary Formats & I/O overview](../../docs/topics/binary-formats.md)** - the topic landing page on the docs side.
 - **[Binary Formats & I/O concepts](../../docs/topics/binary-formats-concepts.md)** - the cross-package vocabulary.
-- **Member introductions:** [Bodu.IO.Compound](../../docs/io-compound/index.md) · [Bodu.IO.Biff](../../docs/io-biff/index.md) · [Bodu.Formats.Excel.Binary](../../docs/excel/index.md) · [Bodu.IO.Pst](../../docs/io-pst/index.md).
+- **Member introductions:** [Bodu.IO.Compound](../../docs/io-compound/index.md) · [Bodu.IO.Biff](../../docs/io-biff/index.md) · [Bodu.Formats.Excel.Binary](../../docs/excel/index.md) · [Bodu.IO.Pst](../../docs/io-pst/index.md) · [Bodu.Formats.Outlook](../../docs/outlook/index.md).
 - **Complete guide indexes** (this page shows the highlights; each index lists every guide for its package): [Bodu.IO.Compound](../io-compound/index.md) · [Bodu.Formats.Excel.Binary](../excel/index.md) · [Bodu.IO.Pst](../io-pst/index.md) · [Bodu.Formats.Outlook](../outlook/index.md).
 - **API reference:** [Bodu.IO.Compound](xref:Bodu.IO.Compound) · [Bodu.IO.Biff](xref:Bodu.IO.Biff) · [Bodu.Formats.Excel](xref:Bodu.Formats.Excel) · [Bodu.IO.Pst](xref:Bodu.IO.Pst) · [Bodu.Formats.Outlook](xref:Bodu.Formats.Outlook).

@@ -1,6 +1,6 @@
 # Bodu.Globalization.Calendar.DependencyInjection
 
-> **API stability - Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
+> **API stability - Stable.** The public API surface is committed: breaking changes are reserved for a major-version bump per [SemVer](https://semver.org), except a deliberate break that is recorded in the release notes and in the package's `CompatibilitySuppressions.xml`. See [versioning and support](https://bslater.github.io/bodu/docs/versioning-and-support.html).
 
 `Microsoft.Extensions.DependencyInjection` integration for `Bodu.Globalization.Calendar`. Registers an `INotableDateService` over a supplied `NotableDateResource` so the calendar engine can be injected into application services.
 
@@ -30,11 +30,9 @@ services.AddNotableDateService(sp => /* resolve a NotableDateResource */);
 
 Because the resource is immutable and the resolver is stateless, all registrations use the singleton lifetime.
 
-## Testing
+## Building and testing
 
-```bash
-dotnet test Bodu.Globalization.Calendar.DependencyInjection/test/Bodu.Globalization.Calendar.DependencyInjection.Test.csproj --settings bvt.runsettings
-```
+To build this package from source and run its tests, see [CONTRIBUTING.md](https://github.com/bslater/bodu/blob/master/CONTRIBUTING.md).
 
 ## License
 

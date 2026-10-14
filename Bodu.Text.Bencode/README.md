@@ -1,6 +1,6 @@
 # Bodu.Text.Bencode
 
-> **API stability - Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
+> **API stability - Stable.** The public API surface is committed: breaking changes are reserved for a major-version bump per [SemVer](https://semver.org), except a deliberate break that is recorded in the release notes and in the package's `CompatibilitySuppressions.xml`. See [versioning and support](https://bslater.github.io/bodu/docs/versioning-and-support.html).
 
 A Bencode (BEP 3) serializer for .NET 8 and .NET 10. It maps plain CLR objects to and from Bencode through a configurable converter model, over a low-level, forward-only token reader and writer.
 
@@ -64,14 +64,9 @@ BitTorrent metainfo file read, verified, and re-authored end to end (DOM inspect
 canonical byte-exact round trips, the raw-slice info-hash, typed POCO mapping) - under
 [`samples/Text.Bencode/`](https://github.com/bslater/bodu/tree/master/samples/Text.Bencode).
 
-## Testing
+## Building and testing
 
-Tests live in `test/` as MSTest classes mirroring `src/`. Run tiers via the runsettings files at the solution root:
-
-```bash
-dotnet test Bodu.Text.Bencode/test/Bodu.Text.Bencode.Test.csproj --settings bvt.runsettings
-dotnet test Bodu.Text.Bencode/test/Bodu.Text.Bencode.Test.csproj --settings regression.runsettings
-```
+To build this package from source and run its tests, see [CONTRIBUTING.md](https://github.com/bslater/bodu/blob/master/CONTRIBUTING.md).
 
 ## License
 

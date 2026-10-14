@@ -1,6 +1,6 @@
 # Bodu.Financial.ExchangeRates.ExchangeRateHost
 
-> **API stability - Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
+> **API stability - Stable.** The public API surface is committed: breaking changes are reserved for a major-version bump per [SemVer](https://semver.org), except a deliberate break that is recorded in the release notes and in the package's `CompatibilitySuppressions.xml`. See [versioning and support](https://bslater.github.io/bodu/docs/versioning-and-support.html).
 
 A [Bodu.Financial](../Bodu.Financial) exchange-rate provider backed by the **exchangerate.host**
 (`api.exchangerate.host`) foreign-exchange REST service.

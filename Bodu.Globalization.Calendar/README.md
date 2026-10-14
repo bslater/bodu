@@ -1,6 +1,6 @@
 # Bodu.Globalization.Calendar
 
-> **API stability - Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
+> **API stability - Stable.** The public API surface is committed: breaking changes are reserved for a major-version bump per [SemVer](https://semver.org), except a deliberate break that is recorded in the release notes and in the package's `CompatibilitySuppressions.xml`. See [versioning and support](https://bslater.github.io/bodu/docs/versioning-and-support.html).
 
 A resource-driven notable-date (holiday / observance) engine for .NET 8 and .NET 10. Calendars are described as declarative, importable documents - concepts, rules, calculation strategies, adjustment policies, and resolution policies - that the engine resolves into concrete occurrences for a territory and date range. The package ships the calculation strategies, astronomical algorithms, range-resolution machinery, and working-day extensions; the regional holiday data ships in the companion `Bodu.Globalization.Calendar.<Region>` data packages.
 
@@ -57,16 +57,9 @@ Members include `IsWorkingDay`, `IsWeekend`, `AddWorkingDays`, `NextWorkingDay` 
 | `Bodu.Globalization.Calendar.Plugins` | Trust-gated loading of external algorithm plugins |
 | `Bodu.Globalization.Calendar.DependencyInjection` | `IServiceCollection` registration |
 
-## Testing
+## Building and testing
 
-Tests live in `test/` as MSTest classes. Run tiers via the runsettings files at the solution root:
-
-```bash
-dotnet test Bodu.Globalization.Calendar/test/Bodu.Globalization.Calendar.Test.csproj --settings bvt.runsettings
-dotnet test Bodu.Globalization.Calendar/test/Bodu.Globalization.Calendar.Test.csproj --settings regression.runsettings
-```
-
-The suite uses self-contained `*KnownAnswerTests` classes that pin Easter offsets, lunar/solar-term, and strategy-resolution results against published dates, with shared XML fixtures under `test/Globalization.Calendar/Fixtures/`.
+To build this package from source and run its tests, see [CONTRIBUTING.md](https://github.com/bslater/bodu/blob/master/CONTRIBUTING.md). The published vectors and corpora the tests hold it to are listed under [conformance and test vectors](https://bslater.github.io/bodu/docs/topics/conformance.html).
 
 ## Runnable samples
 

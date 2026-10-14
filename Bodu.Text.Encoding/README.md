@@ -1,6 +1,6 @@
 # Bodu.Text.Encoding
 
-> **API stability - Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
+> **API stability - Stable.** The public API surface is committed: breaking changes are reserved for a major-version bump per [SemVer](https://semver.org), except a deliberate break that is recorded in the release notes and in the package's `CompatibilitySuppressions.xml`. See [versioning and support](https://bslater.github.io/bodu/docs/versioning-and-support.html).
 
 Binary-to-text encodings for .NET 8 and .NET 10 - Base16, Base32, Base45, Base58, Base62, Base64, Base85, and Bech32, plus Base58Check, Base64Url, percent-encoding, and quoted-printable - with a uniform static API, variant selection, encode-time formatting options, and decode-time leniency styles. The five core encodings (Base16, Base32, Base58, Base64, Base85) expose span, string, UTF-8, and `IBufferWriter<>` surfaces with `Try*` and length-calculation overloads for allocation-free use.
 
@@ -57,16 +57,9 @@ Bech32 corruption detection, the `BinaryEncodings` registry, and a custom Base36
 by the shipped contract-test base - under
 [`samples/Text.Encoding/`](https://github.com/bslater/bodu/tree/master/samples/Text.Encoding).
 
-## Testing
+## Building and testing
 
-Tests live in `test/` as MSTest partial classes mirroring `src/`. Run tiers via the runsettings files at the solution root:
-
-```bash
-dotnet test Bodu.Text.Encoding/test/Bodu.Text.Encoding.Test.csproj --settings bvt.runsettings
-dotnet test Bodu.Text.Encoding/test/Bodu.Text.Encoding.Test.csproj --settings regression.runsettings
-```
-
-Every encoding is held to the shared `BinaryEncodingContractTests<TEncoding>` base and driven by published `BinaryEncodingKat` vectors, with invalid-input handling pinned by `InvalidEncodedTextKat` rows.
+To build this package from source and run its tests, see [CONTRIBUTING.md](https://github.com/bslater/bodu/blob/master/CONTRIBUTING.md). The published vectors and corpora the tests hold it to are listed under [conformance and test vectors](https://bslater.github.io/bodu/docs/topics/conformance.html).
 
 ## License
 

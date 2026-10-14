@@ -11,8 +11,8 @@ using Microsoft.CodeAnalysis.CSharp;
 namespace Bodu.Formats.Excel;
 
 /// <summary>
-/// Compiles the Excel binary documentation guide examples that are explicitly opted in, so a code sample cannot
-/// silently drift from the public API it documents - the class of error (a renamed or removed member in a shown
+/// Compiles the Excel binary and BIFF codec documentation guide examples that are explicitly opted in, so a code sample
+/// cannot silently drift from the public API it documents - the class of error (a renamed or removed member in a shown
 /// snippet) that prose review misses.
 /// </summary>
 /// <remarks>
@@ -35,9 +35,30 @@ public sealed class DocumentationSnippetCompileTests
     /// </summary>
     [TestMethod]
     [TestCategory("Regression")]
-    public void ExcelGuideSnippets_WhenMarkedForCompile_ShouldCompile()
+    public void ExcelGuideSnippets_WhenMarkedForCompile_ShouldCompile() =>
+        AssertMarkedSnippetsCompile("excel");
+
+    /// <summary>
+    /// Verifies that every opted-in <c>Bodu.IO.Biff</c> guide snippet compiles against the current public API, with
+    /// at least one snippet marked so the guard is demonstrably wired.
+    /// </summary>
+    /// <remarks>
+    /// The BIFF codec's guides live beside the Excel guides and their examples use the compound-file container and the
+    /// Excel reader as well as the codec, so they are compiled here, where all three assemblies are referenced.
+    /// </remarks>
+    [TestMethod]
+    [TestCategory("Regression")]
+    public void BiffGuideSnippets_WhenMarkedForCompile_ShouldCompile() =>
+        AssertMarkedSnippetsCompile("io-biff");
+
+    /// <summary>
+    /// Compiles every opted-in snippet in one guides folder and asserts that at least one is marked and that none
+    /// fails to compile.
+    /// </summary>
+    /// <param name="guideFolder">The folder under <c>docs/guides</c> whose pages are scanned.</param>
+    private static void AssertMarkedSnippetsCompile(string guideFolder)
     {
-        string? guidesDirectory = FindGuidesDirectory();
+        string? guidesDirectory = FindGuidesDirectory(guideFolder);
         if (guidesDirectory is null)
         {
             Assert.Inconclusive("The documentation guides directory was not found from the test base directory.");
@@ -69,16 +90,17 @@ public sealed class DocumentationSnippetCompileTests
 
     /// <summary>
     /// Walks up from the test base directory to the repository root (identified by <c>bodu.slnx</c>) and returns the
-    /// Excel binary guides directory beneath it.
+    /// named guides directory beneath it.
     /// </summary>
+    /// <param name="guideFolder">The folder under <c>docs/guides</c> to return.</param>
     /// <returns>The guides directory, or <see langword="null" /> when the repository root cannot be located.</returns>
-    private static string? FindGuidesDirectory()
+    private static string? FindGuidesDirectory(string guideFolder)
     {
         for (DirectoryInfo? dir = new(AppContext.BaseDirectory); dir is not null; dir = dir.Parent)
         {
             if (File.Exists(Path.Combine(dir.FullName, "bodu.slnx")))
             {
-                string guides = Path.Combine(dir.FullName, "docs", "guides", "excel");
+                string guides = Path.Combine(dir.FullName, "docs", "guides", guideFolder);
                 return Directory.Exists(guides) ? guides : null;
             }
         }
@@ -134,7 +156,12 @@ public sealed class DocumentationSnippetCompileTests
             "using System.Threading;" +
             "using System.Threading.Tasks;" +
             "using System.Text;" +
+            "using System.Buffers;" +
+            "using System.Buffers.Binary;" +
             "using Bodu.Formats.Excel;" +
+            "using Bodu.IO.Biff;" +
+            "using Bodu.IO.Compound;" +
+            "using Bodu.IO.Compound.Builders;" +
             "namespace Bodu.DocSnippets { internal static class Snippet { internal static async Task RunAsync() {" +
             Environment.NewLine + snippet + Environment.NewLine +
             "} } }";

@@ -38,10 +38,8 @@ The Bodu libraries are intentionally light on external runtime dependencies. The
 
 | Package | External runtime dependency | License |
 |---|---|---|
-| `Bodu.IO.Hashing` | `System.IO.Hashing` (BCL) | MIT |
-| `Bodu.Security.Cryptography` | `System.Security.Cryptography` (BCL) | MIT |
+| `Bodu.IO.Hashing` | `System.IO.Hashing` - a Microsoft NuGet package, not part of the shared framework | MIT |
 | `Bodu.Numerics.Serialization.Json`, `Bodu.Financial.Serialization.Json` | `System.Text.Json`; the Financial companion also `Microsoft.Extensions.DependencyInjection.Abstractions` | MIT |
-| `Bodu.Formats.Outlook.Msg`, `Bodu.Formats.Outlook.Pst` | `System.Text.Encoding.CodePages` (legacy Windows code pages for MAPI string properties) | MIT |
 | `Bodu.Extensions.Configuration.Text` | `Microsoft.Extensions.Configuration` (+ `.Binder`, `.FileExtensions`), `Microsoft.Extensions.FileProviders.Physical`, `Microsoft.Extensions.Options.ConfigurationExtensions`, `Microsoft.Extensions.DependencyInjection.Abstractions`, `Microsoft.Extensions.Primitives` | MIT |
 | `Bodu.Globalization.Calendar`, `Bodu.Globalization.Calendar.Plugins`, `Bodu.Financial.ExchangeRates` | `Microsoft.Extensions.Logging.Abstractions` | MIT |
 | `Bodu.Globalization.Calendar.DependencyInjection`, `Bodu.Financial.DependencyInjection`, `Bodu.Globalization.Calendar.Caching`, `Bodu.Financial.ExchangeRates.Caching`, and the `Bodu.Financial.ExchangeRates.<Source>` provider packages | `Microsoft.Extensions.DependencyInjection.Abstractions`, `Microsoft.Extensions.Options` (+ `.ConfigurationExtensions`), `Microsoft.Extensions.Configuration.Abstractions` / `.Binder`, `Microsoft.Extensions.Logging.Abstractions`; the two caching cores also `Microsoft.Extensions.Hosting.Abstractions` | MIT |
@@ -49,7 +47,7 @@ The Bodu libraries are intentionally light on external runtime dependencies. The
 | `Bodu.Globalization.Calendar.Caching.Sqlite`, `Bodu.Financial.ExchangeRates.Caching.Sqlite` | `Microsoft.Data.Sqlite` (which brings in the `SQLitePCLRaw` bundle and the native SQLite engine) | MIT; SQLitePCLRaw Apache 2.0; SQLite public domain |
 | `Bodu.Globalization.Calendar.Caching.Distributed`, `Bodu.Financial.ExchangeRates.Caching.Distributed` | `Microsoft.Extensions.Caching.Abstractions`, `Microsoft.Extensions.Caching.StackExchangeRedis` (which brings in `StackExchange.Redis`) | MIT |
 
-Every other package depends only on other Bodu packages and the .NET BCL - several layer on a sibling (`Bodu.Financial` on `Bodu.Numerics`, `Bodu.Formats.Excel.Binary` on `Bodu.IO.Compound`, `Bodu.IO.Pst` on `Bodu.Collections`, the serializers on `Bodu.Text.Serialization`), but those are all MIT-licensed Bodu code. The [package matrix](package-matrix.md) lists each package's dependencies.
+Every other package depends only on other Bodu packages and the .NET shared framework. `Bodu.Security.Cryptography` uses the framework's `System.Security.Cryptography`, and the legacy Windows code pages that `Bodu.IO.Biff` and the Outlook readers decode come from the framework's `CodePagesEncodingProvider`, so none of them takes a package for these. Several layer on a sibling (`Bodu.Financial` on `Bodu.Numerics`, `Bodu.Formats.Excel.Binary` on `Bodu.IO.Compound`, `Bodu.IO.Pst` on `Bodu.Collections`, the serializers on `Bodu.Text.Serialization`), but those are all MIT-licensed Bodu code. The [package matrix](package-matrix.md) lists each package's dependencies.
 
 ## Contributing
 

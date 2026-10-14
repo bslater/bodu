@@ -1703,8 +1703,8 @@ baseline needed is deleted.
 **Achieved.** Every packable package - the 60 rows of
 `bld/docs-checks/package-docs-map.txt` - has a landing page under
 `docs/docs/`, guides under `docs/guides/`, and a samples page, apart
-from two recorded absences (no guides for `Bodu.IO.Biff`, no samples
-page for `Bodu.Text.Serialization`), and
+from one recorded absence (no samples page for
+`Bodu.Text.Serialization`), and
 `bld/check-docs.py` (`packages`) fails a pull request that loses one. The
 API reference is generated per framework from the compiled Release
 assemblies and merged into one page per API that names the frameworks it

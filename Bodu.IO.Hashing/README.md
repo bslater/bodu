@@ -1,6 +1,6 @@
 # Bodu.IO.Hashing
 
-> **API stability - Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
+> **API stability - Stable.** The public API surface is committed: breaking changes are reserved for a major-version bump per [SemVer](https://semver.org), except a deliberate break that is recorded in the release notes and in the package's `CompatibilitySuppressions.xml`. See [versioning and support](https://bslater.github.io/bodu/docs/versioning-and-support.html).
 
 Non-cryptographic hashing, checksums, and check-digit algorithms for .NET 8 and .NET 10. Hash algorithms derive from `System.IO.Hashing.NonCryptographicHashAlgorithm`, so they expose the standard `Append` / `GetCurrentHash` / `GetHashAndReset` streaming surface and slot into existing pipelines. This package covers data-integrity and identifier-validation use cases - **not** security. For keyed/cryptographic hashing use the sibling `Bodu.Security.Cryptography` package or the platform `System.Security.Cryptography` types.
 
@@ -79,17 +79,9 @@ catalogue and checksum families, streaming and resumable digests, identifier che
 across domains, and a custom check-digit scheme proven by the shared contract-test base -
 under [`samples/IO.Hashing/`](https://github.com/bslater/bodu/tree/master/samples/IO.Hashing).
 
-## Testing
+## Building and testing
 
-Tests live in `test/` as MSTest partial classes mirroring `src/`. Run tiers via the runsettings files at the solution root:
-
-```bash
-dotnet test Bodu.IO.Hashing/test/Bodu.IO.Hashing.Test.csproj --settings smoke.runsettings
-dotnet test Bodu.IO.Hashing/test/Bodu.IO.Hashing.Test.csproj --settings bvt.runsettings
-dotnet test Bodu.IO.Hashing/test/Bodu.IO.Hashing.Test.csproj --settings regression.runsettings
-```
-
-Algorithms are validated against published known-answer vectors through the shared `NonCryptographicHashAlgorithmContractTests<TAlgorithm>`, `CheckDigitContractTests<TAlgorithm>`, and `MultiCharCheckDigitContractTests<TAlgorithm>` bases, with the full CRC catalogue exercised in the Regression tier.
+To build this package from source and run its tests, see [CONTRIBUTING.md](https://github.com/bslater/bodu/blob/master/CONTRIBUTING.md). The published vectors and corpora the tests hold it to are listed under [conformance and test vectors](https://bslater.github.io/bodu/docs/topics/conformance.html).
 
 ## License
 

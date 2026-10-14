@@ -24,6 +24,12 @@ using Bodu.Text.Yaml;
 
 string yaml = YamlSerializer.Serialize(new ServerConfig { Host = "localhost", Port = 8080 });
 ServerConfig config = YamlSerializer.Deserialize<ServerConfig>(yaml)!;
+
+public sealed class ServerConfig
+{
+    public string Host { get; set; } = "";
+    public int Port { get; set; }
+}
 ```
 
 ## Options
@@ -43,7 +49,7 @@ ServerConfig config = YamlSerializer.Deserialize<ServerConfig>(yaml)!;
 | `MergeKeyBehavior` | <xref:Bodu.Text.Yaml.YamlMergeKeyBehavior> - `Expand` (default), `Disabled`, or `PreserveAsNormalKey`. |
 | `UnmappedMemberHandling` | <xref:Bodu.Text.Serialization.UnmappedMemberHandling> - `Skip` (default) or `Disallow`. |
 | `PreferredObjectCreationHandling` | <xref:Bodu.Text.Serialization.ObjectCreationHandling> - `Replace` (default) or `Populate`. |
-| `MaxDepth` | Maximum nesting depth; default 64. |
+| `MaxDepth` | Maximum nesting depth; default 64. A larger value is clamped to the hard ceiling, also 64, so setting it can only lower the limit. |
 | `Converters` | The ordered list of custom <xref:Bodu.Text.Yaml.Serialization.YamlConverter> instances. |
 
 Options can also be constructed from a <xref:Bodu.Text.Yaml.YamlSerializerDefaults> scenario preset: `General` (the plain defaults) or `Web` (camel-case naming with case-insensitive matching).
@@ -57,8 +63,20 @@ An options instance becomes read-only the first time it is used - or eagerly via
 A <xref:Bodu.Text.Yaml.Serialization.YamlConverter`1> converts one type. It reads through the <xref:Bodu.Text.Yaml.Reader.Utf8YamlReader> token cursor (aliases and merge keys already resolved) and writes through the <xref:Bodu.Text.Yaml.Writer.Utf8YamlWriter>:
 
 ```csharp
-public abstract T Read(ref Utf8YamlReader reader, Type typeToConvert, YamlSerializerOptions options);
-public abstract void Write(Utf8YamlWriter writer, T value, YamlSerializerOptions options);
+using Bodu.Text.Yaml;
+using Bodu.Text.Yaml.Reader;
+using Bodu.Text.Yaml.Serialization;
+using Bodu.Text.Yaml.Writer;
+
+// The two members every YamlConverter<T> overrides, on a converter that upper-cases strings.
+public sealed class UpperCaseStringConverter : YamlConverter<string>
+{
+    public override string Read(ref Utf8YamlReader reader, Type typeToConvert, YamlSerializerOptions options) =>
+        reader.GetString().ToUpperInvariant();
+
+    public override void Write(Utf8YamlWriter writer, string value, YamlSerializerOptions options) =>
+        writer.WriteString(value.ToUpperInvariant());
+}
 ```
 
 For a given type the serializer resolves a converter by checking, in order: a member-level `[Converter(...)]` attribute, a type-level one, the first matching converter in `options.Converters`, and finally the built-ins. On the write path it looks up the value's **runtime** type first and then the declared type, so a converter registered for a concrete type still fires for a value held in an `object` or interface member. `CanConvert` on a <xref:Bodu.Text.Yaml.Serialization.YamlConverter`1> defaults to an **exact** type match (`typeof(T) == typeToConvert`), so a converter does not apply to subclasses unless you override `CanConvert` - or derive <xref:Bodu.Text.Yaml.Serialization.YamlConverterFactory> to serve a family of types, the pattern the built-in nullable/enum/collection/dictionary converters and the public <xref:Bodu.Text.Yaml.Serialization.YamlStringEnumConverter> use.
@@ -78,7 +96,7 @@ Typed access on a `YamlElement` goes through `GetString` / `GetInt64` / `GetDoub
 
 <xref:Bodu.Text.Yaml.Reader.Utf8YamlReader> and <xref:Bodu.Text.Yaml.Writer.Utf8YamlWriter> are forward-only `ref struct` token machines, and the surface every converter receives. Two YAML-specific points:
 
-- **The reader is buffered**, not a single-pass streaming scanner. Because YAML's anchors, aliases, merge keys, and indentation context require a resolved tree, the constructor copies the source and parses it fully into an in-memory node store; `Read()` then walks that store in document order. It exposes the current token through `TokenType` (a <xref:Bodu.Text.Yaml.YamlTokenType>), the typed getters `GetString()` / `GetInt64()` / `GetDouble()` / `GetBoolean()` (each throwing on a kind mismatch, with `GetDouble()` accepting an integer token too), `CurrentDepth`, and `ValueTextEquals(ReadOnlySpan<byte>)` for an allocation-free key comparison. <xref:Bodu.Text.Yaml.Reader.YamlReaderOptions> mirrors the relevant options (`SpecVersion`, `DuplicateKeyBehavior`, `MergeKeyBehavior`, `MaxDepth`). In this respect the reader is the analogue of the buffered Toml document cursor rather than the streaming `Utf8TomlReader`.
+- **The reader is buffered**, not a single-pass streaming scanner. Because YAML's anchors, aliases, merge keys, and indentation context require a resolved tree, the constructor copies the source and parses it fully into an in-memory node store; `Read()` then walks that store in document order. It exposes the current token through `TokenType` (a <xref:Bodu.Text.Yaml.YamlTokenType>), the typed getters `GetString()` / `GetInt64()` / `GetDouble()` / `GetBoolean()` (each throwing on a kind mismatch, with `GetDouble()` accepting an integer token too), `CurrentDepth`, and `ValueTextEquals(ReadOnlySpan<byte>)` for an allocation-free key comparison. <xref:Bodu.Text.Yaml.Reader.YamlReaderOptions> mirrors the relevant options (`SpecVersion`, `DuplicateKeyBehavior`, `MergeKeyBehavior`, `MaxDepth`). In this respect the reader is the analogue of the buffered Toml document cursor rather than the streaming `Utf8TomlReader`. Because every consumer expands each alias into a full copy of its target, the parse also rejects a document whose aliases would expand past 10,000,000 nodes - the "billion laughs" shape - with a <xref:Bodu.Text.Yaml.YamlFormatException>, before any consumer can exhaust memory. That ceiling is fixed; no option raises it.
 - **The writer emits block-style YAML.** Collections are always written in block form for readability; only an empty container falls back to flow `[]` / `{}` so it round-trips as empty rather than null. A string is emitted plain when that is unambiguous and double-quoted (with escapes) otherwise - there is no public scalar-style control on the write path. The writer enforces a well-formed call sequence: a value without a pending key, a mismatched `WriteEnd…`, or a second document root each throw `InvalidOperationException`. <xref:Bodu.Text.Yaml.Writer.YamlWriterOptions> sets `IndentSize` (default 2; a value above 16 throws `ArgumentOutOfRangeException` when the writer is created), `MaxDepth`, and `NewLine` (only `"\n"` or `"\r\n"`).
 
 ## Value mapping

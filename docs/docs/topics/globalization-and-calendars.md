@@ -6,7 +6,7 @@ title: Globalization & Calendars - Overview
 
 The **Globalization & Calendars** topic groups the packages that resolve authored calendar rules into concrete notable dates - public holidays, observances, religious festivals, and regional events - and that make those dates usable for filtering, querying, and working-day-aware date arithmetic. At its center is a single resource-driven engine: rules are authored on the notable-date schema, loaded into an immutable, validated <xref:Bodu.Globalization.Calendar.NotableDateResource>, and queried through <xref:Bodu.Globalization.Calendar.NotableDateService> by year, date, or range and territory.
 
-The runtime is intentionally small. Everything beyond the resolution engine - fluent rule authoring, dependency-injection registration, trust-gated plugin loading, resolved-date caching, build-time rule-pack compilation, and the curated per-region holiday data - ships as opt-in companion packages that release on their own cadence. The topic also holds `Bodu.Globalization.Recurrence`, an independent sibling for RFC 5545 / cron / interval schedules that shares no dependency with the calendar engine. Consumers pull in only the pieces they need: most applications reference the runtime plus one or two regional data packs and never touch the rest.
+The runtime is intentionally small. Everything beyond the resolution engine - fluent rule authoring, dependency-injection registration, trust-gated plugin loading, resolved-date caching, build-time rule-pack compilation, and the curated per-region holiday data - ships as opt-in companion packages, which version with the runtime (see [Versioning, stability, and support](../versioning-and-support.md)). The topic also holds `Bodu.Globalization.Recurrence`, an independent sibling for RFC 5545 / cron / interval schedules that shares no dependency with the calendar engine. Consumers pull in only the pieces they need: most applications reference the runtime plus one or two regional data packs and never touch the rest.
 
 ## Packages in this topic
 
@@ -19,7 +19,7 @@ The runtime is intentionally small. Everything beyond the resolution engine - fl
 | `Bodu.Globalization.Calendar.Caching` | Stable | `CachingNotableDateService`, a decorator over any `INotableDateService` serving computed dates from a per-territory, per-civil-year cache (in-memory or one TOML / JSON file per territory), with its own DI registration. | [Caching guide](../../guides/calendar/caching/notable-date-caching.md) |
 | `Bodu.Globalization.Calendar.Caching.Sqlite` | Stable | SQLite backend for the notable-date cache (`SqliteNotableDateCache` / `AddSqliteNotableDateCache`). | [Caching guide](../../guides/calendar/caching/notable-date-caching.md) |
 | `Bodu.Globalization.Calendar.Caching.Distributed` | Stable | `IDistributedCache` / Redis backend for the notable-date cache (`DistributedNotableDateCache` / `AddDistributedNotableDateCache` / `AddRedisNotableDateCache`). | [Caching guide](../../guides/calendar/caching/notable-date-caching.md) |
-| `Bodu.Globalization.Calendar.Tool` | Preview | The `bodu-calendar` command-line tool (`dotnet tool install`): lints notable-date documents with the stable `BODU-CAL-*` diagnostics, compiles them to sealed `.bcal` binary packs, and inspects compiled packs. | [Binary rule packs](../../guides/calendar/binary-rule-packs.md) |
+| `Bodu.Globalization.Calendar.Tool` | Preview | The `bodu-calendar` command-line tool, not published to nuget.org (pack it from a clone and `dotnet tool install` it from that local feed - see the [package matrix](../package-matrix.md#not-published-to-nugetorg)): lints notable-date documents with the stable `BODU-CAL-*` diagnostics, compiles them to sealed `.bcal` binary packs, and inspects compiled packs. | [Binary rule packs](../../guides/calendar/binary-rule-packs.md) |
 | `Bodu.Globalization.Calendar.Build` | Preview | MSBuild integration - the `CompileNotableDatePack` task and `NotableDatePack` items compile documents to `.bcal` packs incrementally during build via the bundled tool; a development dependency only. | [Binary rule packs](../../guides/calendar/binary-rule-packs.md) |
 | `Bodu.Globalization.Recurrence` | Stable | RFC 5545 recurrence rules (`RecurrenceRule` / `RecurrenceRuleBuilder` / `RecurrenceSet`), `CronExpression`, and `AnchoredInterval` - parsing, formatting, and next / previous occurrence queries; depends only on `Bodu.Core`. | [Recurrence guide](../../guides/recurrence/index.md) |
 | `Bodu.Globalization.Calendar.Americas` | Stable | Curated public-holiday rules for the Americas bundle (e.g. `US`, `CA`). | [Data packs guide](../../guides/calendar/data-packs.md) |
@@ -120,9 +120,10 @@ The companions follow the same grain. Hosting the service in a DI container is o
 using Bodu.Globalization.Calendar;
 using Microsoft.Extensions.DependencyInjection;
 
-builder.Services.AddNotableDateService(AsiaPacificCalendarData.LoadResource("AU"));
+var services = new ServiceCollection();   // builder.Services in a hosted application
+services.AddNotableDateService(AsiaPacificCalendarData.LoadResource("AU"));
 // or reloadable, for runtime rule swaps:
-// builder.Services.AddReloadableNotableDateService(AsiaPacificCalendarData.LoadResource("AU"));
+// services.AddReloadableNotableDateService(AsiaPacificCalendarData.LoadResource("AU"));
 ```
 
 And authoring a custom date with the Builder produces the same kind of document the data packs embed - see the [builder guide](../../guides/calendar/notable-date-builder.md) for the fluent surface and its XML / JSON round-trip.

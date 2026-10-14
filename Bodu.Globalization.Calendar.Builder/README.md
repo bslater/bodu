@@ -1,6 +1,6 @@
 # Bodu.Globalization.Calendar.Builder
 
-> **API stability - Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
+> **API stability - Stable.** The public API surface is committed: breaking changes are reserved for a major-version bump per [SemVer](https://semver.org), except a deliberate break that is recorded in the release notes and in the package's `CompatibilitySuppressions.xml`. See [versioning and support](https://bslater.github.io/bodu/docs/versioning-and-support.html).
 
 A fluent authoring API for `Bodu.Globalization.Calendar` notable-date documents. `NotableDateDocumentBuilder` constructs a calendar document in code - concepts, rules, adjustment and resolution policies, imports, and overrides - then serializes it to XML or a JSON subset, or materializes a live `NotableDateResource` for immediate use.
 
@@ -52,13 +52,9 @@ The fluent entry points - `WithResourceId`, `WithSchemaVersion`, `WithMetadata`,
 | `Load(path)` | Reconstruct a builder from a saved `.xml` or `.json` document (a `.bcal` pack cannot be reopened) |
 | `ToProvider()` | Wrap the result as an `INotableDateResourceProvider` |
 
-## Testing
+## Building and testing
 
-```bash
-dotnet test Bodu.Globalization.Calendar.Builder/test/Bodu.Globalization.Calendar.Builder.Test.csproj --settings bvt.runsettings
-```
-
-Tests build documents end-to-end, serialize to XML/JSON, and assert against the real `NotableDateResourceLoader` / `NotableDateService` to confirm round-trip fidelity. The precise contract - byte-stable canonical XML, identity within the JSON subset, semantic parity across formats, and the XML → JSON lossiness boundary - is documented in the [builder round-trip guarantees guide](../docs/guides/calendar/round-trip-guarantees.md).
+To build this package from source and run its tests, see [CONTRIBUTING.md](https://github.com/bslater/bodu/blob/master/CONTRIBUTING.md).
 
 ## License
 

@@ -4,7 +4,7 @@ title: Introduction
 
 # Introduction
 
-**Bodu** is a solution that ships a family of independent .NET NuGet packages, each focused on a narrow, well-defined problem domain. Every package is versioned and released on its own - and most are self-contained, with the few cross-package dependencies listed below - but they share a single set of source and documentation conventions, a single analyzer and test configuration, and a single quality bar.
+**Bodu** is a solution that ships a family of .NET NuGet packages, each focused on a narrow, well-defined problem domain. Each package installs on its own - and most are self-contained, with the few cross-package dependencies listed below - but they version together: the Stable packages ship at one version (1.3.0) and the Preview and Experimental packages at another (0.7.2), so keep your `Bodu.*` references on matching versions (see [Versioning, stability, and support](versioning-and-support.md)). They share a single set of source and documentation conventions, a single analyzer and test configuration, and a single quality bar.
 
 The suite is organized into **seven topics**. Each topic groups the packages that solve related problems, and each has a dedicated overview page explaining the collective purpose of its members and how they fit together. If you are new to Bodu, start with the topic that matches your problem, then drill into the member library's introduction.
 
@@ -18,7 +18,7 @@ The foundation every other package builds on - collections, buffers, extensions,
 |---|---|---|
 | **[Bodu.Core](core/index.md)** | The foundation package - the calendar value sets (`DayOfWeekSet` and its siblings), pooled buffers, async coordination primitives, railway outcomes (`Option<T>` / `Result<T>` / `Either<TLeft,TRight>`), and a comprehensive set of date, numeric, span, and text extensions sitting on a centralized `ThrowHelper`. | `net8.0`, `net10.0` |
 | **[Bodu.Collections](collections/index.md)** | The specialized collection catalogue (depends on `Bodu.Core`; namespaces unchanged) - fixed-capacity rings (`CircularBuffer<T>`, `Deque<T>`), policy-driven caches (`EvictingDictionary<TKey,TValue>` with TTL expiry), navigable sets/dictionaries with rank/select, range-keyed lookups and overlap-storing interval trees, graphs, tries and multi-pattern text search, and the probabilistic sketches. | `net8.0`, `net10.0` |
-| **[Bodu.Collections.Concurrent](collections-concurrent/index.md)** | The thread-safe collection companion (depends on `Bodu.Collections`) - the lock-free `ConcurrentCircularBuffer<T>` (Vyukov MPMC, `IProducerConsumerCollection<T>`), the lock-free split-ordered `ConcurrentHashSet<T>` with snapshot enumeration, and the lock-striped `ConcurrentEvictingDictionary<TKey,TValue>` bounded cache (all six eviction policies, optional TTL, single-flight `GetOrAdd`). | `net8.0`, `net10.0` |
+| **[Bodu.Collections.Concurrent](collections-concurrent/index.md)** | The thread-safe collection companion (depends on `Bodu.Collections`) - the lock-free `ConcurrentCircularBuffer<T>` (Vyukov MPMC, `IProducerConsumerCollection<T>`), the lock-free split-ordered `ConcurrentHashSet<T>` with weakly consistent enumeration, the lock-striped `ConcurrentEvictingDictionary<TKey,TValue>` bounded cache (all six eviction policies, optional TTL, single-flight `GetOrAdd`), and the read-optimized `ConcurrentLruCache<TKey,TValue>` (lock-free reads, approximate LRU). | `net8.0`, `net10.0` |
 | **[Bodu.Text](text/index.md)** *(namespace in Bodu.Core)* | Encoding-detection and text / byte conversion helpers over `System.Text.Encoding` - BOM-based `EncodingDetection`, plus `EncodingExtensions` and `StringEncodingExtensions` for span-, UTF-8-, and pooled-buffer-friendly transcoding, preamble handling, and validation. | `net8.0`, `net10.0` |
 
 ### [Hashing & Cryptography](topics/hashing-and-cryptography.md)
@@ -28,7 +28,7 @@ Two packages split by a single question - *is there an adversary?* Non-cryptogra
 | Package | What it provides | Target frameworks |
 |---|---|---|
 | **[Bodu.IO.Hashing](io-hashing/index.md)** | Non-cryptographic hashing on the BCL <xref:System.IO.Hashing.NonCryptographicHashAlgorithm?displayProperty=nameWithType> contract - fingerprints (FNV, CityHash, MurmurHash3, Pearson, Bernstein and the classic string hashes), checksums (CRC, Fletcher, Adler), and check digits (Luhn, Damm, Verhoeff, IBAN, ISBN, …). Nothing here is safe against an adversary; everything is fast and portable. | `net8.0`, `net10.0` |
-| **[Bodu.Security.Cryptography](cryptography/index.md)** | Cryptographic primitives on the BCL <xref:System.Security.Cryptography.SymmetricAlgorithm?displayProperty=nameWithType> and <xref:System.Security.Cryptography.HashAlgorithm?displayProperty=nameWithType> contracts - managed block ciphers (Threefish, Serpent, Camellia, Twofish, Blowfish, Skipjack), AES paired with six AEAD mode transforms (GCM, CCM, OCB, EAX, SIV, GCM-SIV), keyed hashes (SipHash, Poly1305), cryptographic digests (Tiger, CubeHash, Snefru, Whirlpool, BLAKE2/3, Skein, Shake), the RFC 6962 Merkle tree with inclusion and consistency proofs, and the full ASCON family. | `net8.0`, `net10.0` |
+| **[Bodu.Security.Cryptography](cryptography/index.md)** | Cryptographic primitives on the BCL <xref:System.Security.Cryptography.SymmetricAlgorithm?displayProperty=nameWithType> and <xref:System.Security.Cryptography.HashAlgorithm?displayProperty=nameWithType> contracts - managed block ciphers (Threefish, Serpent, Camellia, Twofish, Blowfish, Skipjack), stream ciphers (ChaCha20, Salsa20 and their extended-nonce forms, Rabbit, HC-128), AES paired with six AEAD mode transforms (GCM, CCM, OCB, EAX, SIV, GCM-SIV), the Poly1305 stream-cipher AEADs (XChaCha20-Poly1305, XSalsa20-Poly1305), keyed hashes (SipHash, Poly1305), cryptographic digests and XOFs (Tiger, CubeHash, Snefru, Whirlpool, BLAKE2/3, Skein, Shake), the RFC 6962 Merkle tree with inclusion and consistency proofs, the full ASCON family, public-key schemes (X25519, Ed25519, ML-KEM, ML-DSA, HPKE), key derivation (Argon2, scrypt, HKDF), and one-time passwords (HOTP, TOTP). | `net8.0`, `net10.0` |
 
 ### [Globalization & Calendars](topics/globalization-and-calendars.md)
 
@@ -45,7 +45,7 @@ Three different jobs that all sound like "text": binary-to-text codecs, document
 
 | Package | What it provides | Target frameworks |
 |---|---|---|
-| **[Bodu.Text.Encoding](text-encoding/index.md)** | Binary-to-text encoders for Base16, Base32, Base64, Base58, and Base85 with every common variant (RFC 4648 standard / hex-extended / URL-safe / MIME, Crockford, z-base-32, Bitcoin / Ripple / Flickr, Ascii85 / Z85). Each encoding exposes the same modern API shape: span- and UTF-8-friendly overloads, `OperationStatus` streaming, length-prediction helpers, validation predicates, plus a unified `IBinaryEncoding` interface for runtime-pluggable encoding choice. | `net8.0`, `net10.0` |
+| **[Bodu.Text.Encoding](text-encoding/index.md)** | Binary-to-text encoders for Base16, Base32, Base64, Base58, and Base85 with every common variant (RFC 4648 standard / hex-extended / URL-safe / MIME, Crockford, z-base-32, Bitcoin / Ripple / Flickr, Ascii85 / Z85), plus Base45, Base62, and Bech32 / Bech32m, and the percent-encoding and quoted-printable text escapes. Each core encoding exposes the same modern API shape: span- and UTF-8-friendly overloads, `OperationStatus` streaming, length-prediction helpers, validation predicates, plus a unified `IBinaryEncoding` interface for runtime-pluggable encoding choice. | `net8.0`, `net10.0` |
 | **[Bodu.Text.Filtering](text-filtering/index.md)** | A high-performance include/exclude filtering engine for lists of text values. Glob (wildcard, character-class, `{a,b}` alternation) and regex patterns compile once into an immutable `TextFilter` that runs the cheapest matching strategies first; choose Ant / MSBuild-style `AnyMatch` sets or gitignore-style `LastMatchWins` ordered rules, parse raw lines with the gitignore conventions, and observe decisions through built-in statistics and a per-decision observer. | `net8.0`, `net10.0` |
 | **[Bodu.Text.Formats](formats/index.md)** | Self-framing text document formats with strongly-typed value models and span- and stream-friendly codecs. An umbrella over three sibling packages - **Delimited** (CSV / TSV), **DotEnv**, and **Ini** - each shipping a `Utf8…Reader` / `Utf8…Writer` pair, a `…Serializer` POCO mapper, and mutable and read-only DOMs, with strict invariant enforcement. | `net8.0`, `net10.0` |
 | **[Bodu.Text.Bencode](serialization/bencode/index.md)** · **[Bodu.Text.Toml](serialization/toml/index.md)** · **[Bodu.Text.Yaml](serialization/yaml/index.md)** | Three serializers that map your own types to and from a format - a shared architecture over the `Bodu.Text.Serialization` engine and a `System.Text.Json`-aligned shape, each shipping a `…Serializer`, a mutable `…Node` and a read-only `…Document` DOM, and a low-level `Utf8…Reader` / `Utf8…Writer` pair. **Bencode** covers BitTorrent BEP 3; **TOML** covers v1.0.0 / v1.1.0; **YAML** the 1.2 core schema with block / flow collections, anchors, and multi-document streams. See the [shared family introduction](serialization/index.md). | `net8.0`, `net10.0` |
@@ -65,7 +65,7 @@ Exact arithmetic - rational numbers and intervals, and the money, currency, and 
 
 | Package | What it provides | Target frameworks |
 |---|---|---|
-| **[Bodu.Numerics](numerics/index.md)** | Generic-math value primitives - `Fraction<T>` for exact rational arithmetic over any `IBinaryInteger<T>` with canonical-form auto-reduction and `BigInteger`-promoted intermediates, and `Interval<T>` for closed / open / half-open bounded intervals with intersection, union, and adjacency. | `net8.0`, `net10.0` |
+| **[Bodu.Numerics](numerics/index.md)** | Generic-math value primitives - `Fraction<T>` for exact rational arithmetic over any `IBinaryInteger<T>` with canonical-form auto-reduction and `BigInteger`-promoted intermediates; the arbitrary-precision `BigDecimal` and the generic `Complex<T>`; `Interval<T>` for closed / open / half-open bounded intervals with intersection, union, and adjacency, with the integer-domain `DiscreteInterval<T>` and the N-ary `IntervalSet<T>`; and the single-pass statistics aggregates (`RunningStatistics<T>`, `RunningQuantile<T>`, `MovingSum<T>`, `MovingMinMax<T>`). | `net8.0`, `net10.0` |
 | **[Bodu.Financial](financial/index.md)** | Type-safe monetary primitives - `Money<TCurrency>` (currency as type parameter, so cross-currency arithmetic fails the build), `Money` for runtime-tagged scenarios, `MoneyBag` for multi-currency portfolios, the ISO 4217 currency catalogue, exchange-rate providers, allocation, and cash rounding. | `net8.0`, `net10.0` |
 
 ### [Binary Formats & I/O](topics/binary-formats.md)
@@ -80,7 +80,7 @@ Legacy binary container and document formats - a general-purpose compound-file c
 | **[Bodu.IO.Pst](io-pst/index.md)** | A low-level, read-only container reader for the Outlook personal-folders format (PST / MS-PST, Unicode and ANSI) - the node database (header, node and block B-trees, block data with the permute and cyclic encodings decoded and checksums verified, data and subnode trees) and the LTP layer over it, exposing each `PstNode`'s property-context and table-context views with wire-typed values. The substrate beneath the `.pst` mail-store reader; no MAPI semantics, no writing. | `net8.0`, `net10.0` |
 | **[Bodu.Formats.Outlook](outlook/index.md)** | The Outlook format readers over the shared MAPI value model - property tags and types, the tag-addressed `MapiPropertyCollection`, and named-property identities in `Bodu.Formats.Outlook`; `Bodu.Formats.Outlook.Msg` opens a `.msg` message over `Bodu.IO.Compound`, and `Bodu.Formats.Outlook.Pst` opens a `.pst` mail store over `Bodu.IO.Pst` - folders, messages, recipients, attachments, embedded messages, and the text / HTML / compressed-RTF bodies. Read-only; no MAPI session emulation. | `net8.0`, `net10.0` |
 
-Each package is versioned and released independently - take the one you need and ignore the others. `Bodu.Core` sits under the whole suite: its `ThrowHelper` supplies the shared argument validation, and every runtime package references it directly or transitively. The remaining cross-package dependencies run one way: `Bodu.Collections` builds on `Bodu.Core`, and `Bodu.Collections.Concurrent` builds on `Bodu.Collections`; `Bodu.Text.Formats` is an umbrella over `Bodu.Text.Delimited`, `Bodu.Text.DotEnv`, and `Bodu.Text.Ini`, and those three - like `Bodu.Text.Bencode`, `Bodu.Text.Toml`, and `Bodu.Text.Yaml` - build on the shared `Bodu.Text.Serialization` engine; `Bodu.Text.Configuration` references only `Bodu.Core`; `Bodu.Extensions.Configuration.Text` builds on `Bodu.Text.Configuration`, `Bodu.Text.Toml`, and `Bodu.Text.Bencode` plus `Microsoft.Extensions.Configuration`; `Bodu.Financial` builds on `Bodu.Numerics` for its `Fraction<BigInteger>` precision escape hatch; `Bodu.Formats.Excel.Binary` builds on `Bodu.IO.Compound` and `Bodu.IO.Biff` to read BIFF5 and BIFF8 `.xls` workbooks; `Bodu.IO.Pst` builds on `Bodu.Collections`; `Bodu.Formats.Outlook` is container-free and is consumed by `Bodu.Formats.Outlook.Msg` (over `Bodu.IO.Compound`) and `Bodu.Formats.Outlook.Pst` (over `Bodu.IO.Pst`); and `Bodu.Globalization.Recurrence` references only `Bodu.Core` - it is a sibling of the calendar engine, not a dependant. The [package matrix](package-matrix.md) lists every package's dependencies.
+Each package installs independently - take the one you need and ignore the others - while the packages version together in two streams. `Bodu.Core` sits under the whole suite: its `ThrowHelper` supplies the shared argument validation, and every runtime package references it directly or transitively. The remaining cross-package dependencies run one way: `Bodu.Collections` builds on `Bodu.Core`, and `Bodu.Collections.Concurrent` builds on `Bodu.Collections`; `Bodu.Text.Formats` is an umbrella over `Bodu.Text.Delimited`, `Bodu.Text.DotEnv`, and `Bodu.Text.Ini`, and those three - like `Bodu.Text.Bencode`, `Bodu.Text.Toml`, and `Bodu.Text.Yaml` - build on the shared `Bodu.Text.Serialization` engine; `Bodu.Text.Configuration` references only `Bodu.Core`; `Bodu.Extensions.Configuration.Text` builds on `Bodu.Text.Configuration`, `Bodu.Text.Toml`, and `Bodu.Text.Bencode` plus `Microsoft.Extensions.Configuration`; `Bodu.Financial` builds on `Bodu.Numerics` for its `Fraction<BigInteger>` precision escape hatch; `Bodu.Formats.Excel.Binary` builds on `Bodu.IO.Compound` and `Bodu.IO.Biff` to read BIFF5 and BIFF8 `.xls` workbooks; `Bodu.IO.Pst` builds on `Bodu.Collections`; `Bodu.Formats.Outlook` is container-free and is consumed by `Bodu.Formats.Outlook.Msg` (over `Bodu.IO.Compound`) and `Bodu.Formats.Outlook.Pst` (over `Bodu.IO.Pst`); and `Bodu.Globalization.Recurrence` references only `Bodu.Core` - it is a sibling of the calendar engine, not a dependant. The [package matrix](package-matrix.md) lists every package's dependencies.
 
 ## Library introductions
 
@@ -114,7 +114,7 @@ Each library has a dedicated introduction page that explains its namespaces, the
 
 <div class="bodu-card">
   <h3><a href="collections-concurrent/index.md">Bodu.Collections.Concurrent</a></h3>
-  <p>The thread-safe collection companion - a lock-free MPMC <code>ConcurrentCircularBuffer&lt;T&gt;</code>, a lock-free split-ordered <code>ConcurrentHashSet&lt;T&gt;</code>, both with snapshot enumeration, and the lock-striped <code>ConcurrentEvictingDictionary&lt;TKey,TValue&gt;</code> bounded cache. Depends on <code>Bodu.Collections</code>.</p>
+  <p>The thread-safe collection companion - a lock-free MPMC <code>ConcurrentCircularBuffer&lt;T&gt;</code>, a lock-free split-ordered <code>ConcurrentHashSet&lt;T&gt;</code>, the lock-striped <code>ConcurrentEvictingDictionary&lt;TKey,TValue&gt;</code> bounded cache, and the read-optimized <code>ConcurrentLruCache&lt;TKey,TValue&gt;</code>. Depends on <code>Bodu.Collections</code>.</p>
   <div class="bodu-card-links">
     <a href="collections-concurrent/index.md">Introduction</a>
     <a href="collections-concurrent/getting-started.md">Getting started</a>
@@ -128,6 +128,7 @@ Each library has a dedicated introduction page that explains its namespaces, the
   <p>Encoding detection and ergonomic text / byte conversion over <code>System.Text.Encoding</code> - BOM-based <code>EncodingDetection</code>, plus span-, UTF-8-, and pooled-buffer-friendly <code>EncodingExtensions</code> and <code>StringEncodingExtensions</code>.</p>
   <div class="bodu-card-links">
     <a href="text/index.md">Introduction</a>
+    <a href="../guides/core/encoding-helpers.md">Guides</a>
     <a href="xref:Bodu.Text">API reference</a>
   </div>
 </div>
@@ -196,7 +197,7 @@ Each library has a dedicated introduction page that explains its namespaces, the
 
 <div class="bodu-card">
   <h3><a href="text-encoding/index.md">Bodu.Text.Encoding</a></h3>
-  <p>Binary-to-text encoders for Base16, Base32, Base64, Base58, and Base85 with every common variant. Span-, UTF-8-, and <code>OperationStatus</code>-friendly; unified <code>IBinaryEncoding</code> interface for runtime-pluggable choice.</p>
+  <p>Binary-to-text encoders for Base16, Base32, Base64, Base58, and Base85 with every common variant, plus Base45, Base62, Bech32, and the percent-encoding and quoted-printable escapes. Span-, UTF-8-, and <code>OperationStatus</code>-friendly; unified <code>IBinaryEncoding</code> interface for runtime-pluggable choice.</p>
   <div class="bodu-card-links">
     <a href="text-encoding/index.md">Introduction</a>
     <a href="text-encoding/getting-started.md">Getting started</a>
@@ -272,7 +273,7 @@ Each library has a dedicated introduction page that explains its namespaces, the
 
 <div class="bodu-card">
   <h3><a href="numerics/index.md">Bodu.Numerics</a></h3>
-  <p>Generic-math value primitives - <code>Fraction&lt;T&gt;</code> for exact rational arithmetic and <code>Interval&lt;T&gt;</code> for closed / open / half-open bounded intervals, both over the <code>INumber&lt;T&gt;</code> abstractions.</p>
+  <p>Generic-math value primitives - <code>Fraction&lt;T&gt;</code> for exact rational arithmetic, <code>BigDecimal</code>, <code>Complex&lt;T&gt;</code>, the interval algebra (<code>Interval&lt;T&gt;</code>, <code>DiscreteInterval&lt;T&gt;</code>, <code>IntervalSet&lt;T&gt;</code>), and single-pass statistics aggregates.</p>
   <div class="bodu-card-links">
     <a href="numerics/index.md">Introduction</a>
     <a href="numerics/getting-started.md">Getting started</a>
@@ -315,6 +316,7 @@ Each library has a dedicated introduction page that explains its namespaces, the
   <div class="bodu-card-links">
     <a href="io-biff/index.md">Introduction</a>
     <a href="io-biff/getting-started.md">Getting started</a>
+    <a href="../guides/io-biff/index.md">Guides</a>
     <a href="xref:Bodu.IO.Biff">API reference</a>
   </div>
 </div>
@@ -361,7 +363,7 @@ Each library has a dedicated introduction page that explains its namespaces, the
 - **Analyzer-clean.** StyleCop.Analyzers, Roslynator, the .NET analyzers, AsyncFixer, and the Visual Studio Threading analyzers run at build time. Doc-comment warnings - including `CS1591` - are treated as errors.
 - **Deterministic builds** produce reproducible package outputs.
 - **Documentation-first.** Every public type and member carries XML documentation in US English, and that documentation is the source of truth for this site. The API reference you see here is generated directly from the source.
-- **MIT licensed**, with minimal external runtime dependencies - the core libraries depend only on the BCL; the dependency-injection, caching, JSON, and Outlook packages pull in a few permissively licensed Microsoft packages (see [Licensing](licensing.md)).
+- **MIT licensed**, with minimal external runtime dependencies - most libraries depend only on Bodu packages and the shared framework; `Bodu.IO.Hashing` takes the `System.IO.Hashing` package, the calendar runtime, its plugin loader, and the exchange-rate infrastructure take `Microsoft.Extensions.Logging.Abstractions`, and the dependency-injection, configuration, caching, HTTP, and JSON companions pull in a few permissively licensed Microsoft packages (see [Licensing](licensing.md)).
 
 ## Testing and conventions
 

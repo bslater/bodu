@@ -96,7 +96,7 @@ Money with the currency in the type system, the ISO 4217 catalogue, and dated FX
 
 <div class="bodu-card">
   <h3><a href="../financial/exchange-rate-providers.md">Built-in exchange-rate providers</a></h3>
-  <p>The eleven live-feed packages (BoE, ECB, RBA, Yahoo, OFX, XE, OANDA, Fixer, exchangerate.host, FRED, IMF) - construction, warming, dependency injection, and composing with caching.</p>
+  <p>The eleven live-feed packages (BoE, ECB, RBA, Yahoo, OFX, XE, OANDA, Fixer, exchangerate.host, FRED, IMF), nine of them on nuget.org and XE and OANDA built from source only - construction, warming, dependency injection, and composing with caching.</p>
 </div>
 
 <div class="bodu-card">

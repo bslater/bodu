@@ -10,7 +10,7 @@ A binary rule pack (`.bcal`) is the compiled form of a notable-date document: a 
 
 - **Trimmed / native-AOT deployments.** Loading a pack touches no XML/JSON machinery and no reflection; every strategy is reconstructed through a closed table of one-byte discriminators. This is the data-driven alternative the plugin loader's `[RequiresUnreferencedCode]` annotations point at.
 - **Startup cost.** A pack skips the parse → import-resolution → validation pipeline entirely; only bounds checks and an integrity digest run at load.
-- **Sealed deployment artifacts.** A pack cannot carry anything the shipped engine does not already implement, and any corruption or tampering fails the payload digest.
+- **Sealed deployment artifacts.** A pack cannot carry anything the shipped engine does not already implement, and corruption or truncation fails the payload digest. The digest is an unkeyed SHA-256 kept in the pack's own header, not a signature: someone who edits a pack can recompute it, and a pack is not revalidated as a document is when it loads. Load packs only from your own build or deployment, as the [untrusted input topic](../../docs/topics/untrusted-input.md) explains.
 
 ## Producing and loading packs
 

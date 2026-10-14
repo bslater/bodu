@@ -1,6 +1,6 @@
 # Bodu.Security.Cryptography
 
-> **API stability - Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
+> **API stability - Stable.** The public API surface is committed: breaking changes are reserved for a major-version bump per [SemVer](https://semver.org), except a deliberate break that is recorded in the release notes and in the package's `CompatibilitySuppressions.xml`. See [versioning and support](https://bslater.github.io/bodu/docs/versioning-and-support.html).
 
 Managed implementations of modern and legacy cryptographic primitives for .NET 8 and later. The library provides block ciphers, AEAD modes, hash and MAC functions, padding schemes, asymmetric key agreement and signatures (including the FIPS 203/204 post-quantum algorithms), and the supporting transform infrastructure to compose them. Most algorithms are exposed through the standard `SymmetricAlgorithm` / `HashAlgorithm` / `AsymmetricAlgorithm` contracts so they slot into existing BCL pipelines (including `CryptoStream`); the keyed hashes are `HashAlgorithm`s with a `Key` property, through Bodu's `KeyedBlockHashAlgorithm` and `KeyedDeferredFinalBlockHashAlgorithm` rather than the BCL `KeyedHashAlgorithm`, and the stream ciphers, AEAD transforms, ASCON XOFs, KDFs, and Merkle tree have their own shapes.
 
@@ -227,14 +227,6 @@ Four types can spread a single operation across threads. Each takes a `maxDegree
 | `IBlockCipher` / `IPaddingStrategy` | Extension points for supplying a custom primitive or padding scheme |
 | `IStreamCipher` / `IStreamAeadTransform` | Common surfaces for the stream-cipher and stream-AEAD families |
 
-## Testing
+## Building and testing
 
-Tests live in `test/` and are organised as MSTest partial classes mirroring `src/`. Run tiers via the runsettings files at the solution root:
-
-```bash
-dotnet test Bodu.Security.Cryptography/test/Bodu.Security.Cryptography.Test.csproj --settings smoke.runsettings
-dotnet test Bodu.Security.Cryptography/test/Bodu.Security.Cryptography.Test.csproj --settings bvt.runsettings
-dotnet test Bodu.Security.Cryptography/test/Bodu.Security.Cryptography.Test.csproj --settings regression.runsettings
-```
-
-The shared `AeadBlockCipherModeTests<TTest, TTransform>` base contains the lifecycle / reuse / failed-tag-poisoning suite that every AEAD mode inherits. The `HashAlgorithmTests<TTest, TAlgorithm, TVariant>` base (and its `BlockHashAlgorithmTests` / `KeyedBlockHashAlgorithmTests` specialisations) provides spec-driven KAT, boundary, and disposal coverage for every hash and MAC. Block ciphers extend `BlockCipherTests<TTest, TCipher, TVariant>`, and every stream cipher inherits `SymmetricStreamAlgorithmTests<TTest, TAlgorithm>` for key/nonce sizing, lifecycle, transform-reuse, overlap, and disposal coverage. The asymmetric families inherit a parallel contract hierarchy: `AsymmetricAlgorithmTests<TTest, TAlgorithm>` carries the shared construction, key-size, raw import/export, and disposal contract, and its operation bases `KeyAgreementAlgorithmTests` (X25519), `SignatureAlgorithmTests` (Ed25519 and, via `MLDsaContractTests`, ML-DSA), and `KemAlgorithmTests` (via `MLKemContractTests`, ML-KEM) add the derive/sign/encapsulate contracts. The asymmetric known-answer corpora (RFC 7748/8032 vectors as in-memory KAT rows, plus curated Wycheproof x25519/ed25519 subsets and NIST ACVP ML-KEM / ML-DSA vectors embedded with provenance headers) run in the BVT and Regression tiers.
+To build this package from source and run its tests, see [CONTRIBUTING.md](https://github.com/bslater/bodu/blob/master/CONTRIBUTING.md). The published vectors and corpora the tests hold it to are listed under [conformance and test vectors](https://bslater.github.io/bodu/docs/topics/conformance.html).

@@ -1,6 +1,6 @@
 # Bodu.Text.Serialization
 
-> **API stability - Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
+> **API stability - Stable.** The public API surface is committed: breaking changes are reserved for a major-version bump per [SemVer](https://semver.org), except a deliberate break that is recorded in the release notes and in the package's `CompatibilitySuppressions.xml`. See [versioning and support](https://bslater.github.io/bodu/docs/versioning-and-support.html).
 
 The shared serialization core for the Bodu `System.Text.Json`-shaped text serializers ([Bencode](https://www.nuget.org/packages/Bodu.Text.Bencode), [TOML](https://www.nuget.org/packages/Bodu.Text.Toml), [YAML](https://www.nuget.org/packages/Bodu.Text.Yaml), [Delimited](https://www.nuget.org/packages/Bodu.Text.Delimited), [DotEnv](https://www.nuget.org/packages/Bodu.Text.DotEnv), [INI](https://www.nuget.org/packages/Bodu.Text.Ini)). It carries the format-agnostic pieces those libraries have in common: the declarative attribute family, the shaping enums, the serialization callback interfaces, and the property naming policies - all in the single `Bodu.Text.Serialization` namespace, so one `[PropertyName]` or `NamingPolicy.CamelCase` works identically across every format.
 
@@ -44,9 +44,9 @@ Beyond the compiled assembly, the package's repository folder also hosts the `sh
 
 The line formats ([Delimited](https://www.nuget.org/packages/Bodu.Text.Delimited), [DotEnv](https://www.nuget.org/packages/Bodu.Text.DotEnv), [INI](https://www.nuget.org/packages/Bodu.Text.Ini)) wire every value as a string, so they share a smaller body of source instead, kept apart from `shared/**` in `flat/src/`: the member discovery and descriptors, the scalar classification and invariant scalar text (`InvariantScalarCodec`), the binder helpers DotEnv and INI share, the UTF-8 line cursor the three readers scan line endings and the byte-order mark with, and the output sink the three writers write through. Each line format compiles every file in it; the tests for it live once in `flat/test/`, compiled into each line format's test project.
 
-## Testing
+## Building and testing
 
-The package has no test project of its own: every public type is exercised end to end by the consumer test suites (`Bodu.Text.Bencode.Test`, `Bodu.Text.Toml.Test`, `Bodu.Text.Yaml.Test`, `Bodu.Text.Delimited.Test`, `Bodu.Text.DotEnv.Test`, `Bodu.Text.Ini.Test`), which validate the attribute family, callbacks, and naming policies against each format's wire form.
+To build this package from source and run its tests, see [CONTRIBUTING.md](https://github.com/bslater/bodu/blob/master/CONTRIBUTING.md).
 
 ## License
 

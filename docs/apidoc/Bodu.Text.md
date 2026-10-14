@@ -14,7 +14,7 @@ It is also the namespace root that the separately packaged text libraries extend
 
 ## Static documentation
 
-- **[Encoding helpers and BOM detection](~/guides/text-encoding/encoding-helpers.md)** - the `System.Text.Encoding` convenience surface.
+- **[Encoding helpers and BOM detection](~/guides/core/encoding-helpers.md)** - the `System.Text.Encoding` convenience surface.
 - **[Bodu.Text.Formats overview](~/guides/formats/index.md)** - the document-format codecs and their shared pipeline.
 
 ## Key types
@@ -32,7 +32,7 @@ using System.Text;
 using Bodu.Text;
 
 // Sniff a byte-order mark, then decode without the preamble bytes leaking into the text.
-byte[] bytes = File.ReadAllBytes(path);
+byte[] bytes = File.ReadAllBytes("input.txt");
 Encoding encoding = EncodingDetection.TryDetectByPreamble(bytes, out Encoding? detected)
     ? detected
     : Encoding.UTF8;
@@ -48,4 +48,4 @@ int   byteCount = "héllo".GetUtf8ByteCount();
 
 - **No extra package.** These helpers arrive with `Bodu.Core`; the radix codecs (`Base16` … `Base85`) are the separate `Bodu.Text.Encoding` package.
 - **Span-first.** Every conversion has a span, `IBufferWriter<byte>`, or pooled-buffer overload, so the common cases avoid intermediate allocations.
-- **See also:** the [encoding helpers guide](~/guides/text-encoding/encoding-helpers.md), the [Bodu.Text introduction](~/docs/text/index.md), and the [Bodu.Core introduction](~/docs/core/index.md).
+- **See also:** the [encoding helpers guide](~/guides/core/encoding-helpers.md), the [Bodu.Text introduction](~/docs/text/index.md), and the [Bodu.Core introduction](~/docs/core/index.md).

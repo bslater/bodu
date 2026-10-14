@@ -6,7 +6,7 @@ title: Bodu.Text - Introduction
 
 ![Bodu.Text](../../images/hero-text.svg)
 
-**Bodu.Text** is the text-encoding helpers namespace of the Bodu suite. It is not a package of its own - the namespace ships inside the **`Bodu.Core`** package and is part of the **[Core Foundations](../topics/core-foundations.md)** topic, alongside the collections, pooled buffers, and guard helpers it shares an assembly with. It sits directly on top of the BCL <xref:System.Text.Encoding?displayProperty=nameWithType> contract and adds the ergonomic, allocation-aware surface the BCL leaves out: byte-order-mark detection, span- and UTF-8-friendly transcoding, preamble handling, pooled-buffer conversions, and validation.
+**Bodu.Text** is the text-encoding helpers namespace of the Bodu suite. It is not a package of its own - the namespace ships inside the **`Bodu.Core`** package and is part of the **[Core Foundations](../topics/core-foundations.md)** topic, alongside the pooled buffers, extensions, and guard helpers it shares an assembly with. It sits directly on top of the BCL <xref:System.Text.Encoding?displayProperty=nameWithType> contract and adds the ergonomic, allocation-aware surface the BCL leaves out: byte-order-mark detection, span- and UTF-8-friendly transcoding, preamble handling, pooled-buffer conversions, and validation.
 
 Unlike [Bodu.Text.Encoding](../text-encoding/index.md) - which implements binary-to-text codecs such as Base16/32/64/85 - `Bodu.Text` is concerned with character encodings: turning bytes into text and back through `System.Text.Encoding`, correctly and efficiently.
 
@@ -89,10 +89,10 @@ If you are deciding between this namespace, the binary codecs, and the document 
 
 ## Where to go next
 
-- **[Bodu.Core introduction](../core/index.md)** - the host package: collections, pooled buffers, `ThrowHelper`, and the rest of the assembly this namespace ships in.
+- **[Bodu.Core introduction](../core/index.md)** - the host package: pooled buffers, extensions, `ThrowHelper`, and the rest of the assembly this namespace ships in.
 - **[Core Foundations topic overview](../topics/core-foundations.md)** - where `Bodu.Text` sits in the foundation layer.
 - **[Core Foundations concepts](../topics/core-foundations-concepts.md)** - topic-level vocabulary, including a dedicated character-encoding section (preamble, transcoding, validation, span-first surfaces).
-- **[Encoding helpers and BOM detection guide](../../guides/text-encoding/encoding-helpers.md)** - worked patterns for every surface above.
+- **[Encoding helpers and BOM detection guide](../../guides/core/encoding-helpers.md)** - worked patterns for every surface above.
 - **[Bodu.Text.Encoding introduction](../text-encoding/index.md)** - the sibling package for binary-to-text codecs (Base16/32/58/64/85).
-- **[Cross-library getting started](../getting-started.md)** - install commands across the suite; the `Bodu.Text` walk-through itself is the [encoding helpers guide](../../guides/text-encoding/encoding-helpers.md) above.
+- **[Cross-library getting started](../getting-started.md)** - install commands across the suite; the `Bodu.Text` walk-through itself is the [encoding helpers guide](../../guides/core/encoding-helpers.md) above.
 - **[Bodu.Text API reference](xref:Bodu.Text)** - full type-by-type docs.

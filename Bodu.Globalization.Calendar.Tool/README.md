@@ -37,11 +37,9 @@ trim/AOT-friendly. See the [binary rule packs guide](../docs/guides/calendar/bin
 for the format contract and the [validation diagnostics guide](../docs/guides/calendar/validation-diagnostics.md)
 for the complete code catalogue.
 
-## Testing
+## Building and testing
 
-```bash
-dotnet test Bodu.Globalization.Calendar.Tool/test/Bodu.Globalization.Calendar.Tool.Test.csproj --settings bvt.runsettings
-```
+To build this package from source and run its tests, see [CONTRIBUTING.md](https://github.com/bslater/bodu/blob/master/CONTRIBUTING.md).
 
 ## License
 

@@ -44,7 +44,7 @@ A family of focused primary libraries organized into **seven topics** - alongsid
 <div class="bodu-card">
   <img src="images/hero-collections-concurrent.svg" alt="Bodu.Collections.Concurrent" />
   <h3>Bodu.Collections.Concurrent</h3>
-  <p>The thread-safe collection companion - a lock-free Vyukov MPMC <code>ConcurrentCircularBuffer&lt;T&gt;</code> implementing <code>IProducerConsumerCollection&lt;T&gt;</code>, a lock-free split-ordered <code>ConcurrentHashSet&lt;T&gt;</code> with snapshot enumeration, and the lock-striped <code>ConcurrentEvictingDictionary&lt;TKey,TValue&gt;</code> bounded cache (all six eviction policies, optional TTL, single-flight <code>GetOrAdd</code>). Depends on <code>Bodu.Collections</code>.</p>
+  <p>The thread-safe collection companion - a lock-free Vyukov MPMC <code>ConcurrentCircularBuffer&lt;T&gt;</code> implementing <code>IProducerConsumerCollection&lt;T&gt;</code>, a lock-free split-ordered <code>ConcurrentHashSet&lt;T&gt;</code> with weakly consistent enumeration, the lock-striped <code>ConcurrentEvictingDictionary&lt;TKey,TValue&gt;</code> bounded cache (all six eviction policies, optional TTL, single-flight <code>GetOrAdd</code>), and the read-optimized <code>ConcurrentLruCache&lt;TKey,TValue&gt;</code> (lock-free reads, approximate LRU). Depends on <code>Bodu.Collections</code>.</p>
   <div class="bodu-card-links">
     <a href="docs/collections-concurrent/index.md">Introduction</a>
     <a href="guides/core/concurrent-collections.md">Guides</a>
@@ -58,6 +58,7 @@ A family of focused primary libraries organized into **seven topics** - alongsid
   <p>Encoding detection and ergonomic text / byte conversion helpers over <code>System.Text.Encoding</code> - BOM-based <code>EncodingDetection</code>, plus <code>EncodingExtensions</code> and <code>StringEncodingExtensions</code> for span-, UTF-8-, and pooled-buffer-friendly transcoding, preamble handling, and validation. Ships in the <code>Bodu.Core</code> package.</p>
   <div class="bodu-card-links">
     <a href="docs/text/index.md">Introduction</a>
+    <a href="guides/core/encoding-helpers.md">Guides</a>
     <a href="xref:Bodu.Text">API reference</a>
   </div>
 </div>
@@ -75,7 +76,7 @@ A family of focused primary libraries organized into **seven topics** - alongsid
 <div class="bodu-card">
   <img src="images/hero-io.svg" alt="Bodu.IO.Hashing" />
   <h3>Bodu.IO.Hashing</h3>
-  <p>Non-cryptographic hashes on <code>System.IO.Hashing.NonCryptographicHashAlgorithm</code> - the full CRC RevEng catalogue (1-64 bits), Fletcher 16 / 32 / 64, Adler-32 / 32C / 64, FNV, CityHash, MurmurHash3, Pearson, classic string hashes - plus single- and multi-character check digits (Luhn, EAN, IBAN, ISBN, …).</p>
+  <p>Non-cryptographic hashes on <code>System.IO.Hashing.NonCryptographicHashAlgorithm</code> - the full RevEng CRC catalogue (112 named standards, CRC-3 to CRC-64), Fletcher 16 / 32 / 64, Adler-32 / 32C / 64, FNV, CityHash, MurmurHash3, Pearson, classic string hashes - plus single- and multi-character check digits (Luhn, EAN, IBAN, ISBN, …).</p>
   <div class="bodu-card-links">
     <a href="docs/io-hashing/index.md">Introduction</a>
     <a href="guides/io-hashing/index.md">Guides</a>
@@ -86,7 +87,7 @@ A family of focused primary libraries organized into **seven topics** - alongsid
 <div class="bodu-card">
   <img src="images/hero-crypto.svg" alt="Bodu.Security.Cryptography" />
   <h3>Bodu.Security.Cryptography</h3>
-  <p>Managed block ciphers (Threefish 256 / 512 / 1024, Serpent 128 / 256 / 512 / 1024, Camellia, Twofish, Blowfish, Skipjack), an AES adapter paired with six AEAD mode transforms (GCM, CCM, OCB, EAX, SIV, GCM-SIV), keyed hashes (SipHash, Poly1305), cryptographic digests (Tiger, CubeHash, Snefru, Whirlpool, BLAKE2/3, Skein, Shake, ASCON), and Merkle-tree hashing.</p>
+  <p>Managed block ciphers (Threefish 256 / 512 / 1024, Serpent 128 / 256 / 512 / 1024, Camellia, Twofish, Blowfish, Skipjack), stream ciphers (ChaCha20, Salsa20 and their extended-nonce forms, Rabbit, HC-128), an AES adapter paired with six AEAD mode transforms (GCM, CCM, OCB, EAX, SIV, GCM-SIV), the Poly1305 stream-cipher AEADs (XChaCha20-Poly1305, XSalsa20-Poly1305), keyed hashes (SipHash, Poly1305), cryptographic digests and XOFs (Tiger, CubeHash, Snefru, Whirlpool, BLAKE2/3, Skein, Shake, ASCON), Merkle trees, public-key schemes (X25519, Ed25519, ML-KEM, ML-DSA, HPKE), key derivation (Argon2, scrypt, HKDF), and one-time passwords (HOTP, TOTP).</p>
   <div class="bodu-card-links">
     <a href="docs/cryptography/index.md">Introduction</a>
     <a href="guides/cryptography/index.md">Guides</a>
@@ -107,7 +108,7 @@ A family of focused primary libraries organized into **seven topics** - alongsid
 <div class="bodu-card">
   <img src="images/hero-calendar.svg" alt="Bodu.Globalization.Calendar" />
   <h3>Bodu.Globalization.Calendar</h3>
-  <p>Rule-driven notable-date resolution with fixed, day-of-week-in-month, offset, and algorithm strategies - including Gregorian and Orthodox Easter, Hindu Lunar dates, Losar, Vesak, Asalha Puja, and Qingming - driven from pluggable XML or JSON rule sources and an observance-adjustment pipeline. Region-specific public-holiday rules ship in independent <code>Bodu.Globalization.Calendar.Americas</code>, <code>.AsiaPacific</code>, <code>.Europe</code>, <code>.Africa</code>, and <code>.MiddleEast</code> data packs that release on their own cadence.</p>
+  <p>Rule-driven notable-date resolution with fixed, day-of-week-in-month, offset, and algorithm strategies - including Gregorian and Orthodox Easter, Hindu Lunar dates, Losar, Vesak, Asalha Puja, and Qingming - driven from pluggable XML or JSON rule sources and an observance-adjustment pipeline. Region-specific public-holiday rules ship in separate <code>Bodu.Globalization.Calendar.Americas</code>, <code>.AsiaPacific</code>, <code>.Europe</code>, <code>.Africa</code>, and <code>.MiddleEast</code> data packs, so you install only the regions you need.</p>
   <div class="bodu-card-links">
     <a href="docs/calendar/index.md">Introduction</a>
     <a href="guides/calendar/index.md">Guides</a>
@@ -227,7 +228,7 @@ A family of focused primary libraries organized into **seven topics** - alongsid
 <div class="bodu-card">
   <img src="images/hero-numerics.svg" alt="Bodu.Numerics" />
   <h3>Bodu.Numerics</h3>
-  <p>Exact rational arithmetic (<code>Fraction&lt;T&gt;</code>) over any <code>IBinaryInteger&lt;T&gt;</code> backing type with canonical-form auto-reduction, <code>BigInteger</code>-promoted intermediates, the full <code>INumber&lt;T&gt;</code> / <code>ISignedNumber&lt;T&gt;</code> surface, mixed-number and Unicode-vulgar-fraction formatting, continued-fraction expansion, and best rational approximation - plus <code>Interval&lt;T&gt;</code> for closed / open / half-open bounded numeric intervals with intersection, union, and adjacency operations.</p>
+  <p>Exact rational arithmetic (<code>Fraction&lt;T&gt;</code>) over any <code>IBinaryInteger&lt;T&gt;</code> backing type with canonical-form auto-reduction, <code>BigInteger</code>-promoted intermediates, the full <code>INumber&lt;T&gt;</code> / <code>ISignedNumber&lt;T&gt;</code> surface, mixed-number and Unicode-vulgar-fraction formatting, continued-fraction expansion, and best rational approximation; the arbitrary-precision <code>BigDecimal</code> and the generic <code>Complex&lt;T&gt;</code>; the interval algebra - <code>Interval&lt;T&gt;</code>, the integer-domain <code>DiscreteInterval&lt;T&gt;</code>, and the N-ary <code>IntervalSet&lt;T&gt;</code>; and the single-pass statistics aggregates (<code>RunningStatistics&lt;T&gt;</code>, <code>RunningQuantile&lt;T&gt;</code>, <code>MovingSum&lt;T&gt;</code>, <code>MovingMinMax&lt;T&gt;</code>).</p>
   <div class="bodu-card-links">
     <a href="docs/numerics/index.md">Introduction</a>
     <a href="guides/numerics/index.md">Guides</a>
@@ -273,6 +274,7 @@ A family of focused primary libraries organized into **seven topics** - alongsid
   <p>A low-level codec for the Excel Binary Interchange File Format (BIFF5 and BIFF8) record streams found inside legacy <code>.xls</code> workbooks - the substrate beneath <code>Bodu.Formats.Excel.Binary</code>, in the same relation <code>Bodu.IO.Pst</code> has to <code>Bodu.Formats.Outlook.Pst</code>. The forward-only, allocation-free <code>BiffReader</code> frames each record, establishes the version from BOF and the code page from CODEPAGE, and exposes typed accessors for cell, sheet, and workbook-globals records; <code>BiffSstReader</code> walks the BIFF8 shared string table across its CONTINUE records; and <code>BiffWriter</code> emits BIFF5 or BIFF8 records. No compound-file dependency, no workbook or cell model, no formula evaluation.</p>
   <div class="bodu-card-links">
     <a href="docs/io-biff/index.md">Introduction</a>
+    <a href="guides/io-biff/index.md">Guides</a>
     <a href="xref:Bodu.IO.Biff">API reference</a>
   </div>
 </div>
@@ -294,6 +296,7 @@ A family of focused primary libraries organized into **seven topics** - alongsid
   <p>A low-level, read-only container reader for the Outlook personal-folders format (PST / MS-PST, Unicode and ANSI). Reads the node database - header, node and block B-trees, block data with the permute and cyclic encodings decoded and checksums verified, data and subnode trees - and the LTP layer over it, exposing each <code>PstNode</code>'s property-context and table-context views with wire-typed values. No MAPI semantics and no writing; the substrate the <code>.pst</code> mail-store reader is built on.</p>
   <div class="bodu-card-links">
     <a href="docs/io-pst/index.md">Introduction</a>
+    <a href="guides/io-pst/index.md">Guides</a>
     <a href="xref:Bodu.IO.Pst">API reference</a>
   </div>
 </div>
@@ -314,13 +317,13 @@ A family of focused primary libraries organized into **seven topics** - alongsid
 ## Companion packages
 
 <div class="bodu-topic">
-<p class="bodu-topic-lede">The cards above are the headline libraries. Four of them head a family of opt-in companions - serialization bridges, dependency-injection registrations, caching backends, data packs, and tooling - that ship as separate packages so the core library stays dependency-free. The <a href="docs/package-matrix.md">package matrix</a> lists every one of the 60 packages with its dependencies and install command.</p>
+<p class="bodu-topic-lede">The cards above are the headline libraries. Four of them head a family of opt-in companions - serialization bridges, dependency-injection registrations, caching backends, data packs, and tooling - that ship as separate packages so the core library stays dependency-free. The <a href="docs/package-matrix.md">package matrix</a> lists every package with its version, its dependencies, and its install command: the 56 on nuget.org, and the five that are not.</p>
 </div>
 
 | Headline package | Its companions |
 |---|---|
 | `Bodu.Numerics` | [`Bodu.Numerics.Serialization.Json`](docs/numerics-serialization-json/index.md) - the `System.Text.Json` bridge. |
-| `Bodu.Financial` | [`Bodu.Financial.Serialization.Json`](docs/financial-serialization-json/index.md), [`Bodu.Financial.ExchangeRates`](docs/exchange-rates/index.md) with its eleven per-source provider packages and three caching backends, and `Bodu.Financial.DependencyInjection`. |
+| `Bodu.Financial` | [`Bodu.Financial.Serialization.Json`](docs/financial-serialization-json/index.md), [`Bodu.Financial.ExchangeRates`](docs/exchange-rates/index.md) with its nine published per-source provider packages (plus XE and OANDA, [built from source only](docs/package-matrix.md#not-published-to-nugetorg)) and three caching backends, and `Bodu.Financial.DependencyInjection`. |
 | `Bodu.Globalization.Calendar` | [Builder](docs/calendar-builder/index.md), [Caching](docs/calendar-caching/index.md) (with SQLite and distributed backends), [dependency injection](docs/calendar-di/index.md), [Plugins](docs/calendar-plugins/index.md), [five regional data packs](docs/calendar-data/index.md), and the [rule-pack toolchain](docs/calendar-tooling/index.md). |
 | The serializers | [`Bodu.Text.Serialization`](docs/serialization/core/index.md) - the shared engine all six compile against - and [the source generator](docs/formats/generators.md) for reflection-free binding. |
 
@@ -328,12 +331,13 @@ A family of focused primary libraries organized into **seven topics** - alongsid
 
 <div class="bodu-install">
 
-Every package ships on NuGet. The
+56 packages ship on NuGet. The
 [package matrix](docs/package-matrix.md#install-commands) carries the full
-`dotnet add package` list - all 60 packages, grouped by family, including the
-regional calendar data packs, the exchange-rate providers, the caching and
-dependency-injection companions, and the `dotnet tool install` command for the
-rule-pack toolchain.
+`dotnet add package` list, grouped by family, including the regional calendar
+data packs, the exchange-rate providers, and the caching and
+dependency-injection companions. Four packages - the XE and OANDA providers and
+the rule-pack toolchain - are
+[built from source](docs/package-matrix.md#not-published-to-nugetorg) instead.
 
 </div>
 
@@ -343,7 +347,7 @@ rule-pack toolchain.
 - **Analyzer-clean**: StyleCop, Roslynator, .NET analyzers, AsyncFixer, and Threading analyzers run at build time; doc-comment warnings are treated as errors.
 - **Deterministic builds** for reproducible package outputs.
 - **Documentation-first**: every public type and member carries XML documentation in US English, which drives this API reference.
-- **Minimal external runtime dependencies.** Core libraries depend only on the BCL. Extension packages (`Bodu.Extensions.Configuration.Text`, `Bodu.Globalization.Calendar.DependencyInjection`) intentionally bridge to the Microsoft.Extensions ecosystem.
+- **Minimal external runtime dependencies.** Most libraries depend only on Bodu packages and the shared framework. `Bodu.IO.Hashing` takes the `System.IO.Hashing` package, the calendar runtime, its plugin loader, and the exchange-rate infrastructure take `Microsoft.Extensions.Logging.Abstractions`, and the dependency-injection, configuration, caching, and HTTP companions intentionally bridge to the Microsoft.Extensions ecosystem; the [package matrix](docs/package-matrix.md) names each package's dependencies.
 - **MIT licensed.**
 
 ## Where to go next
@@ -353,6 +357,5 @@ rule-pack toolchain.
   <a href="docs/package-matrix.md">Package matrix</a>
   <a href="docs/getting-started.md">Getting started</a>
   <a href="guides/index.md">Guides</a>
-  <a href="articles/index.md">Articles</a>
   <a href="xref:Bodu">API reference</a>
 </div>

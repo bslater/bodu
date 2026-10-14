@@ -39,7 +39,7 @@ If you are new to the family, start with the [topic overview](../../docs/topics/
 
 <div class="bodu-card">
   <h3><a href="../calendar/algorithms.md">Date calculation algorithms</a></h3>
-  <p>The six resolution strategies and the built-in <code>&lt;Algorithm key="…"&gt;</code> keys - Easter, equinoxes, Qingming, Vesak, Losar, Matariki, Hindu festivals - plus a custom-algorithm walk-through.</p>
+  <p>The strategy kinds and the built-in <code>&lt;Algorithm key="…"&gt;</code> keys - Easter, equinoxes, Qingming, Vesak, Losar, Matariki, Hindu festivals - plus a custom-algorithm walk-through.</p>
 </div>
 
 </div>

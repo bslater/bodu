@@ -1,6 +1,6 @@
 # Bodu.Collections.Concurrent
 
-> **API stability - Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
+> **API stability - Stable.** The public API surface is committed: breaking changes are reserved for a major-version bump per [SemVer](https://semver.org), except a deliberate break that is recorded in the release notes and in the package's `CompatibilitySuppressions.xml`. See [versioning and support](https://bslater.github.io/bodu/docs/versioning-and-support.html).
 
 The thread-safe collection variants of the Bodu collection catalogue: a lock-free bounded MPMC ring buffer, a lock-free split-ordered concurrent set, a lock-striped bounded cache, and a read-optimized bounded cache with lock-free reads. The original two types were split out of `Bodu.Collections` with the namespace unchanged - code written against `Bodu.Collections.Generic.Concurrent` keeps compiling; only the package reference changes. All collections implement the standard BCL interfaces and ship struct enumerators over best-effort snapshots. The package references `Bodu.Collections` (and transitively `Bodu.Core`).
 
@@ -23,9 +23,9 @@ Targets `net8.0` and `net10.0`. Depends on `Bodu.Collections`.
 
 For the single-threaded counterparts (`CircularBuffer<T>`, `EvictingDictionary<TKey,TValue>`, `Deque<T>`, and the wider catalogue), see the `Bodu.Collections` package.
 
-## Testing
+## Building and testing
 
-The types are verified through the shared contract-test bases in `Bodu.Test` (collection, set, read-only-collection, enumerator, non-generic, and debug-view contracts) plus concurrency-specific suites: multi-producer/multi-consumer stress runs, overwrite contention, slot-layout and snapshot-stability checks, and - for the evicting dictionary - a differential suite that replays scripted workloads against the non-concurrent `EvictingDictionary` oracle to pin per-segment eviction parity.
+To build this package from source and run its tests, see [CONTRIBUTING.md](https://github.com/bslater/bodu/blob/master/CONTRIBUTING.md).
 
 ## License
 

@@ -18,7 +18,7 @@ dotnet --version
 
 ## Install
 
-Each package is versioned and released independently; install only the ones you need. `Bodu.Core` is the common foundation and is pulled in automatically. A few packages layer on other Bodu packages - `Bodu.Financial` on `Bodu.Numerics`, `Bodu.Formats.Excel.Binary` on `Bodu.IO.Compound` and `Bodu.IO.Biff`, `Bodu.IO.Pst` on `Bodu.Collections`, every serializer on `Bodu.Text.Serialization` - and NuGet resolves those transitively too; the [package matrix](package-matrix.md) lists each package's dependencies.
+Each package installs independently; install only the ones you need. The packages version together, though: every Stable package ships at 1.3.0 and every Preview or Experimental package at 0.7.2, so keep your `Bodu.*` references on matching versions - [Versioning, stability, and support](versioning-and-support.md) explains the two streams. `Bodu.Core` is the common foundation and is pulled in automatically. A few packages layer on other Bodu packages - `Bodu.Financial` on `Bodu.Numerics`, `Bodu.Formats.Excel.Binary` on `Bodu.IO.Compound` and `Bodu.IO.Biff`, `Bodu.IO.Pst` on `Bodu.Collections`, every serializer on `Bodu.Text.Serialization` - and NuGet resolves those transitively too; the [package matrix](package-matrix.md) lists each package's dependencies.
 
 ```bash
 # Core Foundations
@@ -115,21 +115,22 @@ int oldest = buffer.Dequeue(); // 2
 
 ### Bodu.Collections.Concurrent
 
-**Bodu.Collections.Concurrent** ships the thread-safe members of the catalogue (it depends on `Bodu.Collections`) - the lock-free `ConcurrentCircularBuffer<T>` and the lock-free split-ordered `ConcurrentHashSet<T>`, both with snapshot enumeration that never throws on concurrent modification, and the lock-striped `ConcurrentEvictingDictionary<TKey,TValue>` bounded cache with all six eviction policies, optional TTL, and single-flight `GetOrAdd`.
+**Bodu.Collections.Concurrent** ships the thread-safe members of the catalogue (it depends on `Bodu.Collections`) - the lock-free `ConcurrentCircularBuffer<T>`, which enumerates a snapshot, the lock-free split-ordered `ConcurrentHashSet<T>`, which enumerates weakly consistently (neither throws on concurrent modification), the lock-striped `ConcurrentEvictingDictionary<TKey,TValue>` bounded cache with all six eviction policies, optional TTL, and single-flight `GetOrAdd`, and the read-optimized `ConcurrentLruCache<TKey,TValue>`, whose reads take no lock.
 
 ```csharp
 using Bodu.Collections.Generic.Concurrent;
 
 var seen = new ConcurrentHashSet<string>(StringComparer.OrdinalIgnoreCase);
+string[] correlationIds = ["order-1", "order-2", "ORDER-1"];
 
-Parallel.ForEach(events, e =>
+Parallel.ForEach(correlationIds, id =>
 {
-    if (seen.Add(e.CorrelationId))   // true only for the first arrival
-        ProcessFirstOccurrence(e);
+    if (seen.Add(id))   // true only for the first arrival of each id
+        Console.WriteLine($"first: {id}");
 });
 ```
 
-`Contains` is lock-free - readers never block writers - and disjoint writers proceed in parallel across independently locked bucket regions.
+Every operation on the set is lock-free: `Add`, `Remove`, and `Contains` never take a lock or wait for another thread. Its enumeration is weakly consistent rather than a snapshot - it sees every element present for the whole walk, may or may not see one added or removed during it, and never throws.
 
 → **[Introduction](collections-concurrent/index.md)** · **[Getting started](collections-concurrent/getting-started.md)** · **[Guides](../guides/core/concurrent-collections.md)**
 
@@ -175,12 +176,12 @@ using Bodu.IO.Hashing.Checksums;
 
 byte[] data = Encoding.UTF8.GetBytes("the quick brown fox");
 
-using var crc = new Crc(CrcStandard.CRC32_ISOHDLC);
+var crc = new Crc(CrcStandard.CRC32_ISOHDLC);   // not IDisposable: nothing to release
 crc.Append(data);
 string hex = Convert.ToHexString(crc.GetCurrentHash());
 ```
 
-Swap `CRC32_ISOHDLC` for any of the 113 entries in the [CRC catalogue](../guides/io-hashing/crc-catalogue.md), or pick a fingerprint (`Fnv1a64`, `CityHash64`, `MurmurHash3_128`) for hash-table use.
+Swap `CRC32_ISOHDLC` for any of the 112 named standards in the [CRC catalogue](../guides/io-hashing/crc-catalogue.md), or pick a fingerprint (`Fnv1a64`, `CityHash64`, `MurmurHash3_128`) for hash-table use.
 
 → **[Introduction](io-hashing/index.md)** · **[Getting started](io-hashing/getting-started.md)** · **[Guides](../guides/io-hashing/index.md)**
 
@@ -256,9 +257,10 @@ Three different jobs that all sound like "text" - see the **[Text & Serializatio
 
 ### Bodu.Text.Encoding
 
-**Bodu.Text.Encoding** is a library of binary-to-text encoders - Base16, Base32, Base64, Base58, and Base85 - each with span- and UTF-8-friendly overloads, `OperationStatus` streaming, and a unified `IBinaryEncoding` interface for runtime-pluggable selection.
+**Bodu.Text.Encoding** is a library of binary-to-text encoders - Base16, Base32, Base64, Base58, and Base85, plus Base45, Base62, and Bech32 - with span- and UTF-8-friendly overloads, `OperationStatus` streaming, and a unified `IBinaryEncoding` interface for runtime-pluggable selection, alongside the percent-encoding and quoted-printable text escapes.
 
 ```csharp
+using System.Security.Cryptography;
 using Bodu.Text.Encoding;
 
 byte[] digest = SHA256.HashData("hello"u8.ToArray());
@@ -273,6 +275,9 @@ string urlSafe  = Base64.Encode(digest, Base64Variant.UrlSafe);             // R
 Pick the encoding from configuration at runtime via the unified interface:
 
 ```csharp
+using Bodu.Text.Encoding;
+
+byte[] rawBytes = [0xFB, 0xFF, 0x01];
 IBinaryEncoding encoding = BinaryEncodings.Get("base64-urlsafe");
 string token = encoding.Encode(rawBytes);
 byte[] back  = encoding.Decode(token);
@@ -296,6 +301,7 @@ var filter = TextFilter.Parse(
     "!*debug*",     // '!' flips the pattern to an exclude
 ]);
 
+string[] lines = ["error: disk full", "warn: retrying", "info: started", "error-debug: trace"];
 var kept = filter.FilterToList(lines);       // bulk filtering, source order preserved
 var why  = filter.Evaluate("error-debug");   // → Excluded, decided by "!*debug*"
 ```
@@ -307,7 +313,7 @@ var why  = filter.Evaluate("error-debug");   // → Excluded, decided by "!*debu
 **Bodu.Text.Formats** parses and emits self-framing serialization formats - Delimited (CSV / TSV), DotEnv, and Ini - each through a strongly-typed value model and a span- and stream-friendly codec with `Try*` overloads.
 
 ```csharp
-using Bodu.Text.Ini;
+using Bodu.Text.Ini.Nodes;
 
 IniObject config = IniNode.Parse("""
     ; connection settings
@@ -318,10 +324,10 @@ IniObject config = IniNode.Parse("""
 
 config["database"].AsObject()["port"].AsValue().Value = "5433";
 
-string text = config.ToString();   // comments and ordering preserved
+string text = config.ToString();   // the comment line and the entry order survive
 ```
 
-The parsed model retains comments, ordering, and whitespace, so a `Parse` → mutate → `Format` cycle round-trips the source. The Delimited and DotEnv namespaces follow the same `Parse` / `Format` shape.
+The INI tree keeps comment lines and the order of sections and entries, so a `Parse` → mutate → `ToString` cycle preserves the document's shape. It does not keep inline comments or the source's spacing: the writer emits `key=value`, so `host = localhost` comes back as `host=localhost`. The Delimited and DotEnv trees share the same `Parse` / `ToString` (or `ToUtf8Bytes`) shape but carry no comments.
 
 → **[Introduction](formats/index.md)** · **[Getting started](formats/getting-started.md)** · **[Guides](../guides/formats/index.md)**
 
@@ -332,14 +338,14 @@ The parsed model retains comments, ordering, and whitespace, so a `Parse` → mu
 ```csharp
 using Bodu.Text.Toml;
 
+string toml = TomlSerializer.Serialize(new ServerConfig { Host = "localhost", Port = 8080 });
+ServerConfig config = TomlSerializer.Deserialize<ServerConfig>(toml);
+
 public sealed class ServerConfig
 {
     public string Host { get; set; } = "";
     public int Port { get; set; }
 }
-
-string toml = TomlSerializer.Serialize(new ServerConfig { Host = "localhost", Port = 8080 });
-ServerConfig config = TomlSerializer.Deserialize<ServerConfig>(toml);
 ```
 
 Swap `Toml` for `Bencode` (and `string` for `byte[]`) for the Bencode equivalent, or for `Yaml` for a YAML document. Bencode (BEP 3) object mapping lives here, not in `Bodu.Text.Formats`.
@@ -403,7 +409,7 @@ Exact arithmetic and the monetary primitives built on it - see the **[Numerics &
 
 ### Bodu.Numerics
 
-**Bodu.Numerics** ships two generic-math value types - `Fraction<T>` for exact rational arithmetic and `Interval<T>` for bounded intervals - both built on `INumber<T>` so they compose with any generic-math algorithm.
+**Bodu.Numerics** ships generic-math value types - `Fraction<T>` for exact rational arithmetic, `BigDecimal` for arbitrary-precision decimals, `Complex<T>` for complex numbers over any IEEE 754 type, and `Interval<T>` (with `DiscreteInterval<T>` and `IntervalSet<T>`) for bounded intervals - plus single-pass statistics aggregates such as `RunningStatistics<T>`. The value types implement the generic-math interfaces, so they compose with any generic-math algorithm.
 
 ```csharp
 using Bodu.Numerics;
@@ -439,7 +445,9 @@ Mixing currencies on the typed form is a compile error; on the runtime form it t
 
 ```csharp
 using Bodu.Financial;
+using Microsoft.Extensions.DependencyInjection;
 
+var services = new ServiceCollection();
 services.AddFinancialService();
 ```
 
@@ -491,7 +499,7 @@ while (reader.Read())
 
 `BiffReaderState` resumes framing across buffers, `BiffSstReader` walks the shared string table over its `CONTINUE` records, and `BiffWriter` emits BIFF5 or BIFF8 records. There is no container dependency and no workbook model - that is the next package up.
 
-→ **[Introduction](io-biff/index.md)** · **[Getting started](io-biff/getting-started.md)**
+→ **[Introduction](io-biff/index.md)** · **[Getting started](io-biff/getting-started.md)** · **[Guides](../guides/io-biff/index.md)**
 
 ### Bodu.Formats.Excel.Binary
 
@@ -530,7 +538,7 @@ foreach (PstPropertyValue value in store.ReadPropertyContext())
 
 ### Bodu.Formats.Outlook
 
-**Bodu.Formats.Outlook** is the shared MAPI value model; **Bodu.Formats.Outlook.Msg** reads a `.msg` message over `Bodu.IO.Compound`, and **Bodu.Formats.Outlook.Pst** reads a `.pst` mail store over `Bodu.IO.Pst`. Both are read-only and both surface the same recipient, attachment, and body types.
+**Bodu.Formats.Outlook** is the shared MAPI value model; **Bodu.Formats.Outlook.Msg** reads a `.msg` message over `Bodu.IO.Compound`, and **Bodu.Formats.Outlook.Pst** reads a `.pst` mail store over `Bodu.IO.Pst`. Both are read-only. They share the MAPI value model and the `OutlookRecipient` type, and expose similar attachment and body members: the `.msg` reader's attachments are `OutlookAttachment`, the `.pst` reader's `OutlookMailAttachment`, and each message type carries its own `BodyText` / `BodyHtml` / `BodyRtf`.
 
 ```csharp
 using Bodu.Formats.Outlook;

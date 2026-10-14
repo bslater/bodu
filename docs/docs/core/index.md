@@ -95,7 +95,7 @@ Culture-aware date / calendar helpers built on top of <xref:System.Globalization
 | <xref:Bodu.Globalization.Extensions.DateTimeFormatInfoExtensions> | A single helper, `LastDayOfWeek()` - the day that closes a culture's week, derived from the BCL `DateTimeFormatInfo.FirstDayOfWeek`. |
 
 ### `Bodu.Text` and `Bodu.Xml.Linq`
-Character-encoding helpers over `System.Text.Encoding` and an XML namespace helper, public for when you need them. See the [Bodu.Text introduction](../text/index.md) and the [encoding helpers guide](../../guides/text-encoding/encoding-helpers.md).
+Character-encoding helpers over `System.Text.Encoding` and an XML namespace helper, public for when you need them. See the [Bodu.Text introduction](../text/index.md) and the [encoding helpers guide](../../guides/core/encoding-helpers.md).
 
 | Type | Purpose |
 |---|---|

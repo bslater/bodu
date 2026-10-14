@@ -4,7 +4,7 @@ title: Text & Serialization - Guides
 
 # Text & Serialization - Guides
 
-Recipe-style walk-throughs for the text family - the `Bodu.Text.Encoding` binary-to-text codecs, the `Bodu.Text.Filtering` include/exclude filtering engine, the `Bodu.Text.Formats` document formats, and the `Bodu.Text.Bencode` / `Bodu.Text.Toml` object serializers. Four different jobs, four guide sections; this page is the topic-level map.
+Recipe-style walk-throughs for the text family - the `Bodu.Text.Encoding` binary-to-text codecs, the `Bodu.Text.Filtering` include/exclude filtering engine, the `Bodu.Text.Formats` document formats, and the `Bodu.Text.Bencode` / `Bodu.Text.Toml` / `Bodu.Text.Yaml` object serializers. Four different jobs, four guide sections; this page is the topic-level map.
 
 If you are unsure which package does the job you have, start with the [topic overview](../../docs/topics/text-and-serialization.md) - it leads with the codec / format / serializer disambiguation - and the [topic concepts](../../docs/topics/text-and-serialization-concepts.md) for the shared vocabulary.
 

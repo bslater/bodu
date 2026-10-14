@@ -3,6 +3,8 @@
   href: introduction.md
 - name: Package matrix
   href: package-matrix.md
+- name: Versioning, stability, and support
+  href: versioning-and-support.md
 - name: Getting Started
   href: getting-started.md
 - name: Licensing
@@ -245,7 +247,7 @@
           href: financial-serialization-json/concepts.md
         - name: Getting started
           href: financial-serialization-json/getting-started.md
-    - name: Bodu.Financial.ExchangeRates
+    - name: Bodu.Financial.ExchangeRates (with .DependencyInjection and the providers)
       items:
         - name: Introduction
           href: exchange-rates/index.md
@@ -253,6 +255,18 @@
           href: exchange-rates/concepts.md
         - name: Getting started
           href: exchange-rates/getting-started.md
+        - name: Built-in providers (guide)
+          href: ../guides/financial/exchange-rate-providers.md
+    - name: Bodu.Financial.ExchangeRates.Caching (.Sqlite, .Distributed)
+      items:
+        - name: Caching and aggregating exchange rates (guide)
+          href: ../guides/financial/exchange-rate-caching.md
+        - name: Configuring rate caching from appsettings (guide)
+          href: ../guides/financial/caching-configuration.md
+    - name: Bodu.Financial.DependencyInjection
+      items:
+        - name: Dependency injection (guide)
+          href: ../guides/financial/dependency-injection.md
 - name: Binary Formats & I/O
   href: topics/binary-formats.md
   items:
@@ -292,7 +306,7 @@
           href: io-pst/concepts.md
         - name: Getting started
           href: io-pst/getting-started.md
-    - name: Bodu.Formats.Outlook
+    - name: Bodu.Formats.Outlook (.Msg, .Pst)
       items:
         - name: Introduction
           href: outlook/index.md
@@ -300,3 +314,17 @@
           href: outlook/concepts.md
         - name: Getting started
           href: outlook/getting-started.md
+- name: Cross-cutting
+  items:
+    - name: Trimming and native AOT
+      href: topics/trimming-and-native-aot.md
+    - name: Thread safety
+      href: topics/thread-safety.md
+    - name: Errors and exceptions
+      href: topics/errors-and-exceptions.md
+    - name: Reading untrusted input
+      href: topics/untrusted-input.md
+    - name: Conformance and test vectors
+      href: topics/conformance.md
+    - name: Dependency injection and configuration
+      href: topics/hosting.md
