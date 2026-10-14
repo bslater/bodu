@@ -53,14 +53,9 @@ The repository ships offline, `dotnet run`-able sample projects for this package
 knobs) and the layers beneath it (both DOMs, the token reader/writer, streaming reads) -
 under [`samples/Text.Toml/`](https://github.com/bslater/bodu/tree/master/samples/Text.Toml).
 
-## Testing
+## Building and testing
 
-Tests live in `test/` as MSTest classes mirroring `src/`. Run tiers via the runsettings files at the solution root:
-
-```bash
-dotnet test Bodu.Text.Toml/test/Bodu.Text.Toml.Test.csproj --settings bvt.runsettings
-dotnet test Bodu.Text.Toml/test/Bodu.Text.Toml.Test.csproj --settings regression.runsettings
-```
+To build this package from source and run its tests, see [CONTRIBUTING.md](https://github.com/bslater/bodu/blob/master/CONTRIBUTING.md).
 
 ## License
 

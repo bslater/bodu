@@ -23,9 +23,9 @@ Targets `net8.0` and `net10.0`. Depends on `Bodu.Collections`.
 
 For the single-threaded counterparts (`CircularBuffer<T>`, `EvictingDictionary<TKey,TValue>`, `Deque<T>`, and the wider catalogue), see the `Bodu.Collections` package.
 
-## Testing
+## Building and testing
 
-The types are verified through the shared contract-test bases in `Bodu.Test` (collection, set, read-only-collection, enumerator, non-generic, and debug-view contracts) plus concurrency-specific suites: multi-producer/multi-consumer stress runs, overwrite contention, slot-layout and snapshot-stability checks, and - for the evicting dictionary - a differential suite that replays scripted workloads against the non-concurrent `EvictingDictionary` oracle to pin per-segment eviction parity.
+To build this package from source and run its tests, see [CONTRIBUTING.md](https://github.com/bslater/bodu/blob/master/CONTRIBUTING.md).
 
 ## License
 

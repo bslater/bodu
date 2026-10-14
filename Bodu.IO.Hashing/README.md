@@ -79,17 +79,9 @@ catalogue and checksum families, streaming and resumable digests, identifier che
 across domains, and a custom check-digit scheme proven by the shared contract-test base -
 under [`samples/IO.Hashing/`](https://github.com/bslater/bodu/tree/master/samples/IO.Hashing).
 
-## Testing
+## Building and testing
 
-Tests live in `test/` as MSTest partial classes mirroring `src/`. Run tiers via the runsettings files at the solution root:
-
-```bash
-dotnet test Bodu.IO.Hashing/test/Bodu.IO.Hashing.Test.csproj --settings smoke.runsettings
-dotnet test Bodu.IO.Hashing/test/Bodu.IO.Hashing.Test.csproj --settings bvt.runsettings
-dotnet test Bodu.IO.Hashing/test/Bodu.IO.Hashing.Test.csproj --settings regression.runsettings
-```
-
-Algorithms are validated against published known-answer vectors through the shared `NonCryptographicHashAlgorithmContractTests<TAlgorithm>`, `CheckDigitContractTests<TAlgorithm>`, and `MultiCharCheckDigitContractTests<TAlgorithm>` bases, with the full CRC catalogue exercised in the Regression tier.
+To build this package from source and run its tests, see [CONTRIBUTING.md](https://github.com/bslater/bodu/blob/master/CONTRIBUTING.md). The published vectors and corpora the tests hold it to are listed under [conformance and test vectors](https://bslater.github.io/bodu/docs/topics/conformance.html).
 
 ## License
 

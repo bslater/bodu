@@ -97,14 +97,9 @@ string back = node.ToYamlString();
 - The full serializer feature surface is present: converters and factories, the shared attribute family (`PropertyName`/`Ignore`/`Converter`/`PropertyOrder`/`Constructor`/`Required`/`Include`/`ExtensionData`/`NamingPolicy`/`UnmappedMemberHandling`/`ObjectCreationHandling`/`StringEnumMemberName`), the serialization callbacks, naming policies and `YamlSerializerDefaults.Web`, the string/number enum converters, and the DOM bridges (`Deserialize<YamlNode>` / `<YamlElement>` / `<YamlDocument>`).
 - Failures surface through `YamlFormatException` (malformed input, with line/column/offset) and `YamlSerializationException` (binding failures, with the member path).
 
-## Testing
+## Building and testing
 
-Tests live in `test/` as MSTest classes mirroring `src/`. The Regression tier runs the vendored `yaml/yaml-test-suite` conformance corpus, classified in code by `YamlTestCorpusReader`. Run tiers via the runsettings files at the solution root:
-
-```bash
-dotnet test Bodu.Text.Yaml/test/Bodu.Text.Yaml.Test.csproj --settings bvt.runsettings
-dotnet test Bodu.Text.Yaml/test/Bodu.Text.Yaml.Test.csproj --settings regression.runsettings
-```
+To build this package from source and run its tests, see [CONTRIBUTING.md](https://github.com/bslater/bodu/blob/master/CONTRIBUTING.md). The published vectors and corpora the tests hold it to are listed under [conformance and test vectors](https://bslater.github.io/bodu/docs/topics/conformance.html).
 
 ## License
 

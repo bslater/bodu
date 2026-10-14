@@ -32,11 +32,9 @@ A plugin assembly declares its entry point with `NotableDatePluginAttribute` and
 
 Construct a policy (for untrusted input, a `CompositePluginTrustPolicy` combining the file-hash pin with the strong-name label) and pass it to `NotableDatePluginLoader` with the plugin's file path; untrusted assemblies are rejected before any plugin type is instantiated. `LoadFromFile` additionally returns a disposable `NotableDatePluginHandle` owning the plugin's collectible load context, so the plugin can later be unloaded.
 
-## Testing
+## Building and testing
 
-```bash
-dotnet test Bodu.Globalization.Calendar.Plugins/test/Bodu.Globalization.Calendar.Plugins.Test.csproj --settings bvt.runsettings
-```
+To build this package from source and run its tests, see [CONTRIBUTING.md](https://github.com/bslater/bodu/blob/master/CONTRIBUTING.md).
 
 ## License
 

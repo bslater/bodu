@@ -35,13 +35,9 @@ The `AfricaCalendarData` factory exposes:
 
 Each country's working-week definition (and any weekend-substitution rules) is encoded in its pack and applied automatically by the working-day extensions.
 
-## Testing
+## Building and testing
 
-```bash
-dotnet test Bodu.Globalization.Calendar.Data/Bodu.Globalization.Calendar.Africa/test/Bodu.Globalization.Calendar.Africa.Test.csproj --settings bvt.runsettings
-```
-
-`AfricaCalendarDataTests` pins every floating or computed holiday (Western and Orthodox Easter offsets, Hijri festivals, the Ethiopian calendar, weekend-substitution shifts) to confirmed published dates - exact where deterministic, with a ±2-day tolerance for moon-sighting festivals - plus a `CreateService_ForEverySupportedCountry_LoadsAndResolves` smoke test.
+To build this package from source and run its tests, see [CONTRIBUTING.md](https://github.com/bslater/bodu/blob/master/CONTRIBUTING.md). The published vectors and corpora the tests hold it to are listed under [conformance and test vectors](https://bslater.github.io/bodu/docs/topics/conformance.html).
 
 ## License
 

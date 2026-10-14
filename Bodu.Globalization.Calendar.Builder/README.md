@@ -52,13 +52,9 @@ The fluent entry points - `WithResourceId`, `WithSchemaVersion`, `WithMetadata`,
 | `Load(path)` | Reconstruct a builder from a saved `.xml` or `.json` document (a `.bcal` pack cannot be reopened) |
 | `ToProvider()` | Wrap the result as an `INotableDateResourceProvider` |
 
-## Testing
+## Building and testing
 
-```bash
-dotnet test Bodu.Globalization.Calendar.Builder/test/Bodu.Globalization.Calendar.Builder.Test.csproj --settings bvt.runsettings
-```
-
-Tests build documents end-to-end, serialize to XML/JSON, and assert against the real `NotableDateResourceLoader` / `NotableDateService` to confirm round-trip fidelity. The precise contract - byte-stable canonical XML, identity within the JSON subset, semantic parity across formats, and the XML → JSON lossiness boundary - is documented in the [builder round-trip guarantees guide](../docs/guides/calendar/round-trip-guarantees.md).
+To build this package from source and run its tests, see [CONTRIBUTING.md](https://github.com/bslater/bodu/blob/master/CONTRIBUTING.md).
 
 ## License
 

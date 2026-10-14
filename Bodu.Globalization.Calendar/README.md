@@ -57,16 +57,9 @@ Members include `IsWorkingDay`, `IsWeekend`, `AddWorkingDays`, `NextWorkingDay` 
 | `Bodu.Globalization.Calendar.Plugins` | Trust-gated loading of external algorithm plugins |
 | `Bodu.Globalization.Calendar.DependencyInjection` | `IServiceCollection` registration |
 
-## Testing
+## Building and testing
 
-Tests live in `test/` as MSTest classes. Run tiers via the runsettings files at the solution root:
-
-```bash
-dotnet test Bodu.Globalization.Calendar/test/Bodu.Globalization.Calendar.Test.csproj --settings bvt.runsettings
-dotnet test Bodu.Globalization.Calendar/test/Bodu.Globalization.Calendar.Test.csproj --settings regression.runsettings
-```
-
-The suite uses self-contained `*KnownAnswerTests` classes that pin Easter offsets, lunar/solar-term, and strategy-resolution results against published dates, with shared XML fixtures under `test/Globalization.Calendar/Fixtures/`.
+To build this package from source and run its tests, see [CONTRIBUTING.md](https://github.com/bslater/bodu/blob/master/CONTRIBUTING.md). The published vectors and corpora the tests hold it to are listed under [conformance and test vectors](https://bslater.github.io/bodu/docs/topics/conformance.html).
 
 ## Runnable samples
 

@@ -35,13 +35,9 @@ The `AsiaPacificCalendarData` factory exposes:
 
 Subdivision rules (state / provincial holidays) resolve automatically when a territory code carries an ISO 3166-2 subdivision.
 
-## Testing
+## Building and testing
 
-```bash
-dotnet test Bodu.Globalization.Calendar.Data/Bodu.Globalization.Calendar.AsiaPacific/test/Bodu.Globalization.Calendar.AsiaPacific.Test.csproj --settings bvt.runsettings
-```
-
-`AsiaPacificCalendarDataTests` pins every floating or computed holiday (lunar-calendar festivals, Hijri / Hindu / Buddhist dates, nth-weekday rules, weekend-substitution shifts) to confirmed published dates - exact where deterministic, with a ±2-day tolerance for moon-sighting / astronomical festivals - plus a `CreateService_ForEverySupportedCountry_LoadsAndResolves` smoke test.
+To build this package from source and run its tests, see [CONTRIBUTING.md](https://github.com/bslater/bodu/blob/master/CONTRIBUTING.md). The published vectors and corpora the tests hold it to are listed under [conformance and test vectors](https://bslater.github.io/bodu/docs/topics/conformance.html).
 
 ## License
 

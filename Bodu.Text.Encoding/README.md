@@ -57,16 +57,9 @@ Bech32 corruption detection, the `BinaryEncodings` registry, and a custom Base36
 by the shipped contract-test base - under
 [`samples/Text.Encoding/`](https://github.com/bslater/bodu/tree/master/samples/Text.Encoding).
 
-## Testing
+## Building and testing
 
-Tests live in `test/` as MSTest partial classes mirroring `src/`. Run tiers via the runsettings files at the solution root:
-
-```bash
-dotnet test Bodu.Text.Encoding/test/Bodu.Text.Encoding.Test.csproj --settings bvt.runsettings
-dotnet test Bodu.Text.Encoding/test/Bodu.Text.Encoding.Test.csproj --settings regression.runsettings
-```
-
-Every encoding is held to the shared `BinaryEncodingContractTests<TEncoding>` base and driven by published `BinaryEncodingKat` vectors, with invalid-input handling pinned by `InvalidEncodedTextKat` rows.
+To build this package from source and run its tests, see [CONTRIBUTING.md](https://github.com/bslater/bodu/blob/master/CONTRIBUTING.md). The published vectors and corpora the tests hold it to are listed under [conformance and test vectors](https://bslater.github.io/bodu/docs/topics/conformance.html).
 
 ## License
 

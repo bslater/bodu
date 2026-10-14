@@ -40,13 +40,9 @@ The package ships as build tooling only (`DevelopmentDependency`): the task asse
 See the [binary rule packs guide](../docs/guides/calendar/binary-rule-packs.md) for the format
 contract.
 
-## Testing
+## Building and testing
 
-```bash
-dotnet test Bodu.Globalization.Calendar.Build/test/Bodu.Globalization.Calendar.Build.Test.csproj --settings regression.runsettings
-```
-
-The tests drive real `dotnet build` invocations over a fixture project consuming the `.targets`.
+To build this package from source and run its tests, see [CONTRIBUTING.md](https://github.com/bslater/bodu/blob/master/CONTRIBUTING.md).
 
 ## License
 

@@ -35,13 +35,9 @@ The `EuropeCalendarData` factory exposes:
 
 Subdivision rules (the German *Länder*, the UK nations, and the Alsace-Moselle *départements*) resolve automatically when a territory code carries an ISO 3166-2 subdivision.
 
-## Testing
+## Building and testing
 
-```bash
-dotnet test Bodu.Globalization.Calendar.Data/Bodu.Globalization.Calendar.Europe/test/Bodu.Globalization.Calendar.Europe.Test.csproj --settings bvt.runsettings
-```
-
-`EuropeCalendarDataTests` pins every floating or computed holiday (Western and Orthodox Easter offsets, nth-weekday rules) to confirmed published dates, plus a `CreateService_ForEverySupportedCountry_LoadsAndResolves` smoke test.
+To build this package from source and run its tests, see [CONTRIBUTING.md](https://github.com/bslater/bodu/blob/master/CONTRIBUTING.md). The published vectors and corpora the tests hold it to are listed under [conformance and test vectors](https://bslater.github.io/bodu/docs/topics/conformance.html).
 
 ## License
 

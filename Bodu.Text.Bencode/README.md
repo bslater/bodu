@@ -64,14 +64,9 @@ BitTorrent metainfo file read, verified, and re-authored end to end (DOM inspect
 canonical byte-exact round trips, the raw-slice info-hash, typed POCO mapping) - under
 [`samples/Text.Bencode/`](https://github.com/bslater/bodu/tree/master/samples/Text.Bencode).
 
-## Testing
+## Building and testing
 
-Tests live in `test/` as MSTest classes mirroring `src/`. Run tiers via the runsettings files at the solution root:
-
-```bash
-dotnet test Bodu.Text.Bencode/test/Bodu.Text.Bencode.Test.csproj --settings bvt.runsettings
-dotnet test Bodu.Text.Bencode/test/Bodu.Text.Bencode.Test.csproj --settings regression.runsettings
-```
+To build this package from source and run its tests, see [CONTRIBUTING.md](https://github.com/bslater/bodu/blob/master/CONTRIBUTING.md).
 
 ## License
 
