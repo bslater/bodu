@@ -106,4 +106,38 @@ public sealed partial class NthWeekdayFromRuleStrategyTests
         Assert.AreEqual(notableDateRef, strategy.NotableDateRef);
         Assert.AreEqual(ruleRef, strategy.RuleRef);
     }
+
+    /// <summary>
+    /// Verifies that an ordinal outside -366 to 366, which the loader rejects with <c>BODU-CAL-SCHEMA</c>, throws
+    /// <see cref="ArgumentOutOfRangeException" /> naming the <c>ordinal</c> parameter.
+    /// </summary>
+    /// <param name="ordinal">The ordinal.</param>
+    [TestMethod]
+    [DataRow(int.MinValue)]
+    [DataRow(-367)]
+    [DataRow(367)]
+    [DataRow(int.MaxValue)]
+    public void Ctor_WhenOrdinalIsOutsideTheLoadersRange_ShouldThrowArgumentOutOfRangeException(int ordinal)
+    {
+        var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = new NthWeekdayFromRuleStrategy("anchor", null, DayOfWeek.Monday, ordinal);
+        });
+
+        Assert.AreEqual("ordinal", ex.ParamName);
+    }
+
+    /// <summary>
+    /// Verifies that an ordinal at either end of the range the loader accepts is kept as given.
+    /// </summary>
+    /// <param name="ordinal">The ordinal.</param>
+    [TestMethod]
+    [DataRow(-366)]
+    [DataRow(366)]
+    public void Ctor_WhenOrdinalIsAtTheLoadersBounds_ShouldKeepIt(int ordinal)
+    {
+        var strategy = new NthWeekdayFromRuleStrategy("anchor", null, DayOfWeek.Monday, ordinal);
+
+        Assert.AreEqual(ordinal, strategy.Ordinal);
+    }
 }
