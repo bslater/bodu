@@ -80,7 +80,7 @@ Each option type controls one stage of the pipeline.
 | `DuplicateSectionMode` | Preserve (default) / Merge / MergeAdjacent / Disallowed (from <xref:Bodu.Text.Configuration.IniDuplicateSectionBehavior>). |
 | `SectionHeaderMode` | Lenient (default) / Strict / AllowTrailingInlineComment - how trailing content after `]` is treated. |
 | `DiagnosticMode` | Throw (default) / Collect / Ignore. |
-| `MaxLineLength` / `MaxKeyLength` | DoS-resistant caps; defaults 8192 / 1024 characters. Over-length input emits `LineTooLong` / `KeyTooLong`. |
+| `MaxLineLength` / `MaxKeyLength` | The longest line and key accepted; defaults 8192 / 1024 characters. Over-length input emits `LineTooLong` / `KeyTooLong`. Each line is read whole before it is measured, so these limits do not bound memory: limit the input itself first, as [reading untrusted input](../topics/untrusted-input.md) explains. |
 | `TrimKeysAndValues` | EditorConfig-compatible trimming of leading/trailing whitespace; default `true`. |
 | `AllowKeyOnlyProperties` | Whether lines without `=` are accepted (the value becomes the empty string); default `false`. |
 | `KeyOptions` | The <xref:Bodu.Text.Configuration.ConfigurationKeyOptions> applied while reading raw keys. |
