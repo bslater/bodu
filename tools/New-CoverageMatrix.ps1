@@ -44,7 +44,8 @@
     drift from parallel execution. Default: 0.5.
 
 .PARAMETER Check
-    Compare against the ratchet floors and exit non-zero on a regression. Writes no matrix.
+    Compare against the ratchet floors and exit non-zero on a regression, or when a collected package has no
+    floor in the threshold file. Writes no matrix.
 
 .EXAMPLE
     pwsh tools/New-CoverageMatrix.ps1
@@ -452,8 +453,15 @@ if ($Check) {
     foreach ($row in $rows) {
         if (-not $row.Collected) { continue }
 
+        # A collected package without a floor is ungated: it could lose all of its coverage and still pass. That is a
+        # failure in its own right, so a new package is gated from its first collection. Its floor is its measured
+        # rate less the grace band, as tools/Update-CoverageThresholds.ps1 records it.
         $floor = $thresholds.PSObject.Properties[$row.Package]
-        if (-not $floor) { continue }
+        if (-not $floor) {
+            $failures.Add(("{0}: collected (line {1}%, branch {2}%) but has no floor in {3}" -f
+                $row.Package, $row.LineRate, $row.BranchRate, $ThresholdPath))
+            continue
+        }
 
         foreach ($metric in @('line', 'branch')) {
             $expected = $floor.Value.PSObject.Properties[$metric]
@@ -482,7 +490,7 @@ if ($Check) {
     }
 
     if ($failures.Count -gt 0) {
-        Write-Host "Coverage regression detected:" -ForegroundColor Red
+        Write-Host "Coverage ratchet failed:" -ForegroundColor Red
         foreach ($f in $failures) { Write-Host "  $f" -ForegroundColor Red }
         exit 1
     }
