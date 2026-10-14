@@ -90,6 +90,70 @@ public partial class RbaServiceRegistrationTests
     }
 
     /// <summary>
+    /// Verifies that the shared <see cref="WebRateProviderOptions" /> keys - <c>BaseAddress</c>, <c>HttpTimeout</c>,
+    /// <c>UserAgent</c>, <c>MaxResponseContentBufferSize</c>, <c>DefaultLookback</c>, <c>RefreshInterval</c>,
+    /// <c>SynchronousNetworkFetchLogLevel</c> and <c>CurrencyAliases</c> - bind directly under the provider's section.
+    /// </summary>
+    [TestMethod]
+    public void AddRbaExchangeRates_WhenSharedKeysConfigured_ShouldBindTheInheritedMembers()
+    {
+        IConfiguration configuration = new ConfigurationBuilder()
+            .AddInMemoryCollection(new Dictionary<string, string?>
+            {
+                ["Financial:Rba:BaseAddress"] = "https://mirror.example/fx/",
+                ["Financial:Rba:HttpTimeout"] = "00:00:12",
+                ["Financial:Rba:UserAgent"] = "test-agent",
+                ["Financial:Rba:MaxResponseContentBufferSize"] = "1048576",
+                ["Financial:Rba:DefaultLookback"] = "5.00:00:00",
+                ["Financial:Rba:RefreshInterval"] = "06:00:00",
+                ["Financial:Rba:SynchronousNetworkFetchLogLevel"] = "Information",
+                ["Financial:Rba:CurrencyAliases:CNH"] = "CNY",
+            })
+            .Build();
+
+        ServiceCollection services = new();
+        services.AddFinancialService(configuration).AddRbaExchangeRates(configuration);
+        using ServiceProvider provider = services.BuildServiceProvider();
+
+        WebRateProviderOptions options = SharedOptions.Of(provider.GetRequiredService<IOptions<RbaRateProviderOptions>>().Value);
+
+        Assert.AreEqual(new Uri("https://mirror.example/fx/"), options.BaseAddress);
+        Assert.AreEqual(TimeSpan.FromSeconds(12), options.HttpTimeout);
+        Assert.AreEqual("test-agent", options.UserAgent);
+        Assert.AreEqual(1_048_576L, options.MaxResponseContentBufferSize);
+        Assert.AreEqual(TimeSpan.FromDays(5), options.DefaultLookback);
+        Assert.AreEqual(TimeSpan.FromHours(6), options.RefreshInterval);
+        Assert.AreEqual(Microsoft.Extensions.Logging.LogLevel.Information, options.SynchronousNetworkFetchLogLevel);
+        Assert.AreEqual("CNY", options.CurrencyAliases["CNH"]);
+    }
+
+    /// <summary>
+    /// Verifies that the retired keys - <c>BaseUrl</c> and <c>CurrentEraRefreshInterval</c> - no longer bind, so the shared members keep their defaults.
+    /// </summary>
+    [TestMethod]
+    public void AddRbaExchangeRates_WhenRetiredKeysConfigured_ShouldNotBindThem()
+    {
+        IConfiguration configuration = new ConfigurationBuilder()
+            .AddInMemoryCollection(new Dictionary<string, string?>
+            {
+                ["Financial:Rba:BaseUrl"] = "https://mirror.example/fx/",
+                ["Financial:Rba:CurrentEraRefreshInterval"] = "06:00:00",
+            })
+            .Build();
+
+        ServiceCollection services = new();
+        services.AddFinancialService(configuration).AddRbaExchangeRates(configuration);
+        using ServiceProvider provider = services.BuildServiceProvider();
+
+        WebRateProviderOptions options = SharedOptions.Of(provider.GetRequiredService<IOptions<RbaRateProviderOptions>>().Value);
+
+        Assert.AreEqual(new Uri("https://www.rba.gov.au/statistics/tables/xls-hist/"), options.BaseAddress);
+        Assert.AreEqual(TimeSpan.FromSeconds(30), options.HttpTimeout);
+        Assert.AreEqual("Bodu.Financial.ExchangeRates.Rba", options.UserAgent);
+        Assert.AreEqual(TimeSpan.FromHours(12), options.RefreshInterval);
+    }
+
+    /// <summary>
     /// Verifies that the configure callback is applied to the bound options.
     /// </summary>
     [TestMethod]

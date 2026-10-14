@@ -94,6 +94,71 @@ public partial class EcbServiceRegistrationTests
     }
 
     /// <summary>
+    /// Verifies that the shared <see cref="WebRateProviderOptions" /> keys - <c>BaseAddress</c>, <c>HttpTimeout</c>,
+    /// <c>UserAgent</c>, <c>MaxResponseContentBufferSize</c>, <c>DefaultLookback</c>, <c>RefreshInterval</c>,
+    /// <c>SynchronousNetworkFetchLogLevel</c> and <c>CurrencyAliases</c> - bind directly under the provider's section.
+    /// </summary>
+    [TestMethod]
+    public void AddEcbExchangeRates_WhenSharedKeysConfigured_ShouldBindTheInheritedMembers()
+    {
+        IConfiguration configuration = new ConfigurationBuilder()
+            .AddInMemoryCollection(new Dictionary<string, string?>
+            {
+                ["Financial:Ecb:BaseAddress"] = "https://mirror.example/fx/",
+                ["Financial:Ecb:HttpTimeout"] = "00:00:12",
+                ["Financial:Ecb:UserAgent"] = "test-agent",
+                ["Financial:Ecb:MaxResponseContentBufferSize"] = "1048576",
+                ["Financial:Ecb:DefaultLookback"] = "5.00:00:00",
+                ["Financial:Ecb:RefreshInterval"] = "06:00:00",
+                ["Financial:Ecb:SynchronousNetworkFetchLogLevel"] = "Information",
+                ["Financial:Ecb:CurrencyAliases:CNH"] = "CNY",
+            })
+            .Build();
+
+        ServiceCollection services = new();
+        services.AddFinancialService(configuration).AddEcbExchangeRates(configuration);
+        using ServiceProvider provider = services.BuildServiceProvider();
+
+        WebRateProviderOptions options = SharedOptions.Of(provider.GetRequiredService<IOptions<EcbRateProviderOptions>>().Value);
+
+        Assert.AreEqual(new Uri("https://mirror.example/fx/"), options.BaseAddress);
+        Assert.AreEqual(TimeSpan.FromSeconds(12), options.HttpTimeout);
+        Assert.AreEqual("test-agent", options.UserAgent);
+        Assert.AreEqual(1_048_576L, options.MaxResponseContentBufferSize);
+        Assert.AreEqual(TimeSpan.FromDays(5), options.DefaultLookback);
+        Assert.AreEqual(TimeSpan.FromHours(6), options.RefreshInterval);
+        Assert.AreEqual(Microsoft.Extensions.Logging.LogLevel.Information, options.SynchronousNetworkFetchLogLevel);
+        Assert.AreEqual("CNY", options.CurrencyAliases["CNH"]);
+    }
+
+    /// <summary>
+    /// Verifies that the retired keys - the nested <c>Endpoint</c> section - no longer bind, so the shared members keep their defaults.
+    /// </summary>
+    [TestMethod]
+    public void AddEcbExchangeRates_WhenRetiredKeysConfigured_ShouldNotBindThem()
+    {
+        IConfiguration configuration = new ConfigurationBuilder()
+            .AddInMemoryCollection(new Dictionary<string, string?>
+            {
+                ["Financial:Ecb:Endpoint:BaseUrl"] = "https://mirror.example/fx/",
+                ["Financial:Ecb:Endpoint:HttpTimeout"] = "00:00:12",
+                ["Financial:Ecb:Endpoint:UserAgent"] = "test-agent",
+            })
+            .Build();
+
+        ServiceCollection services = new();
+        services.AddFinancialService(configuration).AddEcbExchangeRates(configuration);
+        using ServiceProvider provider = services.BuildServiceProvider();
+
+        WebRateProviderOptions options = SharedOptions.Of(provider.GetRequiredService<IOptions<EcbRateProviderOptions>>().Value);
+
+        Assert.AreEqual(new Uri("https://www.ecb.europa.eu/stats/eurofxref/"), options.BaseAddress);
+        Assert.AreEqual(TimeSpan.FromSeconds(30), options.HttpTimeout);
+        Assert.AreEqual("Bodu.Financial.ExchangeRates.Ecb", options.UserAgent);
+        Assert.AreEqual(TimeSpan.FromHours(12), options.RefreshInterval);
+    }
+
+    /// <summary>
     /// Verifies that the configure callback is applied to the bound options.
     /// </summary>
     [TestMethod]

@@ -19,6 +19,9 @@ internal sealed class FixtureEcbRateTableSource
     /// <summary>The embedded fixture file name to parse.</summary>
     private readonly string _fileName;
 
+    /// <summary>The names of the feeds requested so far, in request order, guarded by its own lock.</summary>
+    private readonly List<string> _requestedFeeds = [];
+
     /// <summary>
     /// Initializes a new instance of the <see cref="FixtureEcbRateTableSource" /> class.
     /// </summary>
@@ -43,10 +46,29 @@ internal sealed class FixtureEcbRateTableSource
     /// <value>The invocation count.</value>
     public int GetTableCallCount { get; private set; }
 
+    /// <summary>
+    /// Gets a snapshot of the names of the feeds requested so far, in request order.
+    /// </summary>
+    /// <value>The requested feed names.</value>
+    public IReadOnlyList<string> RequestedFeeds
+    {
+        get
+        {
+            lock (_requestedFeeds)
+            {
+                return [.. _requestedFeeds];
+            }
+        }
+    }
+
     /// <inheritdoc />
     public ValueTask<EcbRateTable> GetTableAsync(EcbRateFeed feed, CancellationToken cancellationToken = default)
     {
         GetTableCallCount++;
+        lock (_requestedFeeds)
+        {
+            _requestedFeeds.Add(feed.Name);
+        }
 
         using MemoryStream stream = EcbFixtures.OpenStream(_fileName);
         EcbRateTable table = EcbRateXmlParser.Parse(stream, _options);
