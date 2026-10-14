@@ -228,6 +228,12 @@
   <data name="Arg_OutOfRange_OrdinalZero" xml:space="preserve">
     <value>The ordinal must not be zero.</value>
   </data>
+  <data name="Arg_Invalid_MonthAliasCalendar" xml:space="preserve">
+    <value>A month alias applies only to the Hebrew calendar, not to the {0} calendar.</value>
+  </data>
+  <data name="Arg_Invalid_MonthAlias" xml:space="preserve">
+    <value>'{0}' is not a Hebrew month alias. Expected AdarII, LastAdar, Nisan, Iyar, Sivan, Tammuz, Av or Elul.</value>
+  </data>
   <data name="Validation_DurationConflict" xml:space="preserve">
     <value>Notable date '{0}', rule '{1}': a rule must not declare both durationDays and a calculated end-date duration.</value>
   </data>

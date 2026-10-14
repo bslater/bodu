@@ -150,8 +150,9 @@ internal static class NotableDateDocumentParseHelpers
     /// </returns>
     /// <remarks>
     /// A Gregorian month is a full English month name or an integer from 1 to 12. In another calendar it is an integer
-    /// from 1 to the number <see cref="GetFixedMonthCount" /> gives for the calendar, and, in the Hebrew calendar
-    /// alone, a Hebrew month name. Any other value records <c>BODU-CAL-MONTH</c>, worded for the calendar.
+    /// from 1 to the number <see cref="CalendarSystems.GetFixedMonthCount" /> gives for the calendar, and, in the
+    /// Hebrew calendar alone, a Hebrew month name. Any other value records <c>BODU-CAL-MONTH</c>, worded for the
+    /// calendar.
     /// </remarks>
     public static (int Month, string? Alias) ParseFixedMonth(
         string? value,
@@ -164,7 +165,7 @@ internal static class NotableDateDocumentParseHelpers
         if (calendar == CalendarSystem.Gregorian)
             return (ParseMonth(value, notableDateId, ruleId, diagnostics), null);
 
-        int months = GetFixedMonthCount(calendar, skipLeapMonth);
+        int months = CalendarSystems.GetFixedMonthCount(calendar, skipLeapMonth);
         if (value is not null)
         {
             if (int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out int numeric) && numeric >= 1 && numeric <= months)
@@ -203,28 +204,6 @@ internal static class NotableDateDocumentParseHelpers
         diagnostics.Add(new NotableDateValidationDiagnostic(NotableDateValidationSeverity.Error, "BODU-CAL-MONTH", message));
         return (1, null);
     }
-
-    /// <summary>
-    /// Returns the number of months a fixed strategy's numeric month can name in a calendar other than the Gregorian:
-    /// the most months the calendar's year can have.
-    /// </summary>
-    /// <param name="calendar">The calendar system the month is expressed in.</param>
-    /// <param name="skipLeapMonth">A value indicating whether the month skips a Chinese leap month.</param>
-    /// <returns>
-    /// 13 for the Hebrew calendar, and for the Chinese lunisolar calendar when the month counts its leap month; 12
-    /// otherwise.
-    /// </returns>
-    /// <remarks>
-    /// A Chinese lunisolar month that skips the leap month is the conventional month, of which there are twelve; one
-    /// that does not is the position in the year, which in a leap year has thirteen.
-    /// </remarks>
-    public static int GetFixedMonthCount(CalendarSystem calendar, bool skipLeapMonth) =>
-        calendar switch
-        {
-            CalendarSystem.Hebrew => 13,
-            CalendarSystem.ChineseLunisolar when !skipLeapMonth => 13,
-            _ => 12,
-        };
 
     /// <summary>
     /// Parses an enumeration value by member name, ignoring case, falling back to a default when the value is absent

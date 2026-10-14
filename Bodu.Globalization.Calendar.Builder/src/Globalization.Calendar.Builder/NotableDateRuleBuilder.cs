@@ -490,7 +490,7 @@ public sealed class NotableDateRuleBuilder
     public NotableDateRuleBuilder Fixed(int month, int day, bool skipLeapMonth = false, bool sweepCalendarYears = false)
     {
         ThrowHelper.ThrowIfLessThan(month, 1);
-        ThrowHelper.ThrowIfGreaterThan(month, IsGregorian ? 12 : NotableDateDocumentParseHelpers.GetFixedMonthCount(Calendar!.Value, skipLeapMonth));
+        ThrowHelper.ThrowIfGreaterThan(month, IsGregorian ? 12 : CalendarSystems.GetFixedMonthCount(Calendar!.Value, skipLeapMonth));
         ThrowHelper.ThrowIfLessThan(day, 1);
         ThrowHelper.ThrowIfGreaterThan(day, 31);
 

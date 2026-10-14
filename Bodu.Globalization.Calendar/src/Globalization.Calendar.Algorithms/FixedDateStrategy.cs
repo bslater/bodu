@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Globalization;
+
 namespace Bodu.Globalization.Calendar.Algorithms;
 
 /// <summary>
@@ -52,7 +54,10 @@ public sealed class FixedDateStrategy
     /// <summary>
     /// Initializes a new instance of the <see cref="FixedDateStrategy" /> class for a specified calendar system.
     /// </summary>
-    /// <param name="month">The one-based month of the occurrence within the calendar system.</param>
+    /// <param name="month">
+    /// The one-based month of the occurrence within the calendar system; ignored when <paramref name="monthAlias" />
+    /// supplies the month.
+    /// </param>
     /// <param name="day">The one-based day of the occurrence.</param>
     /// <param name="calendar">The calendar system the month and day are expressed in.</param>
     /// <param name="sweepCalendarYears">
@@ -63,16 +68,31 @@ public sealed class FixedDateStrategy
     /// A Hebrew month alias whose number shifts in leap years, or <see langword="null" />.
     /// </param>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="day" /> is not between 1 and 31; or, for the Gregorian calendar, <paramref name="month" /> is
-    /// not between 1 and 12; or, for another calendar with no alias, <paramref name="month" /> is not between 1 and 13.
+    /// <paramref name="day" /> is not between 1 and 31; <paramref name="calendar" /> is not a defined
+    /// <see cref="CalendarSystem" />; or, with no alias, <paramref name="month" /> is not between 1 and the months the
+    /// calendar can name: 13 in the Hebrew calendar, and in the Chinese lunisolar calendar unless
+    /// <paramref name="skipLeapMonth" /> is <see langword="true" />, and 12 otherwise.
     /// </exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="monthAlias" /> is set and <paramref name="calendar" /> is not
+    /// <see cref="CalendarSystem.Hebrew" />, or <paramref name="monthAlias" /> is not one of the Hebrew month aliases
+    /// <c>AdarII</c>, <c>LastAdar</c>, <c>Nisan</c>, <c>Iyar</c>, <c>Sivan</c>, <c>Tammuz</c>, <c>Av</c> and
+    /// <c>Elul</c>, in that spelling.
+    /// </exception>
+    /// <remarks>
+    /// The constructor holds a strategy to the rules the loader reads a fixed rule with, so a strategy built directly,
+    /// or read from a binary rule pack, is one a document could declare.
+    /// </remarks>
     public FixedDateStrategy(int month, int day, CalendarSystem calendar, bool sweepCalendarYears, bool skipLeapMonth, string? monthAlias)
     {
         ThrowHelper.ThrowIfOutOfRange(day, 1, 31);
-        if (calendar == CalendarSystem.Gregorian)
-            ThrowHelper.ThrowIfOutOfRange(month, 1, 12);
-        else if (monthAlias is null)
-            ThrowHelper.ThrowIfOutOfRange(month, 1, 13);
+        ThrowHelper.ThrowIfEnumValueIsUndefined(calendar);
+        if (monthAlias is null)
+            ThrowHelper.ThrowIfOutOfRange(month, 1, CalendarSystems.GetFixedMonthCount(calendar, skipLeapMonth));
+        else if (calendar != CalendarSystem.Hebrew)
+            throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, CalendarResourceStrings.Arg_Invalid_MonthAliasCalendar, calendar), nameof(monthAlias));
+        else if (!CalendarSystems.IsHebrewMonthAlias(monthAlias))
+            throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, CalendarResourceStrings.Arg_Invalid_MonthAlias, monthAlias), nameof(monthAlias));
 
         Month = month;
         Day = day;
