@@ -4,6 +4,9 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Globalization;
+using System.Text;
+
 using Bodu.Test.Kat;
 
 namespace Bodu.Text.DotEnv;
@@ -317,5 +320,86 @@ public partial class DotEnvSerializerTests
         CollectionAssert.AreEqual(new[] { "B", "A" }, map.Keys.ToArray());
         Assert.AreEqual(2, map["B"]);
         Assert.AreEqual(1, map["A"]);
+    }
+
+    /// <summary>
+    /// Verifies that a type with a member whose type is not a scalar throws <see cref="DotEnvSerializationException" />
+    /// when read, with the message <c>Serialize</c> gives for it, even though the document has no key for the member,
+    /// as INI rejects such a member in both directions.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenAMemberIsNotAScalar_ShouldThrowDotEnvSerializationException()
+    {
+        var ex = Assert.ThrowsExactly<DotEnvSerializationException>(() =>
+        {
+            _ = DotEnvSerializer.Deserialize<DictionaryMemberConfig>("Name=a\n");
+        });
+
+        Assert.AreEqual(string.Format(CultureInfo.CurrentCulture, DotEnvResourceStrings.Op_Invalid_DotEnvValueNotScalar, "Counts", typeof(Dictionary<string, int>)), ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that a type with a member whose type is not a scalar is rejected by the member's type when the document
+    /// has a key for it too, with the message <c>Serialize</c> gives rather than a conversion failure.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenAMemberThatIsNotAScalarHasAKey_ShouldThrowTheMessageSerializeGives()
+    {
+        var ex = Assert.ThrowsExactly<DotEnvSerializationException>(() =>
+        {
+            _ = DotEnvSerializer.Deserialize<DictionaryMemberConfig>("Counts=x\n");
+        });
+
+        Assert.AreEqual(string.Format(CultureInfo.CurrentCulture, DotEnvResourceStrings.Op_Invalid_DotEnvValueNotScalar, "Counts", typeof(Dictionary<string, int>)), ex.Message);
+        Assert.IsNull(ex.InnerException);
+    }
+
+    /// <summary>
+    /// Verifies that a type with a member whose type is not a scalar is rejected before the document is read, so that
+    /// malformed text throws <see cref="DotEnvSerializationException" /> for the type rather than
+    /// <see cref="DotEnvFormatException" /> for the text.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenAMemberIsNotAScalarAndTheTextIsMalformed_ShouldThrowDotEnvSerializationException()
+    {
+        var ex = Assert.ThrowsExactly<DotEnvSerializationException>(() =>
+        {
+            _ = DotEnvSerializer.Deserialize<DictionaryMemberConfig>("Name=\"open\n");
+        });
+
+        Assert.AreEqual(string.Format(CultureInfo.CurrentCulture, DotEnvResourceStrings.Op_Invalid_DotEnvValueNotScalar, "Counts", typeof(Dictionary<string, int>)), ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that a type with a get-only member whose type is not a scalar, which <c>Serialize</c> rejects, throws
+    /// <see cref="DotEnvSerializationException" /> when read too, although reading never sets the member.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenAReadOnlyMemberIsNotAScalar_ShouldThrowDotEnvSerializationException()
+    {
+        var ex = Assert.ThrowsExactly<DotEnvSerializationException>(() =>
+        {
+            _ = DotEnvSerializer.Deserialize<ReadOnlyDictionaryMemberConfig>("Name=a\n");
+        });
+
+        Assert.AreEqual(string.Format(CultureInfo.CurrentCulture, DotEnvResourceStrings.Op_Invalid_DotEnvValueNotScalar, "Counts", typeof(Dictionary<string, int>)), ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that the stream overload rejects a type with a member whose type is not a scalar before it reads the
+    /// stream, which it leaves at its start.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenAMemberIsNotAScalar_ForAStream_ShouldThrowBeforeReadingTheStream()
+    {
+        using var stream = new MemoryStream(Encoding.UTF8.GetBytes("Name=a\n"));
+
+        var ex = Assert.ThrowsExactly<DotEnvSerializationException>(() =>
+        {
+            _ = DotEnvSerializer.Deserialize<DictionaryMemberConfig>(stream);
+        });
+
+        Assert.AreEqual(string.Format(CultureInfo.CurrentCulture, DotEnvResourceStrings.Op_Invalid_DotEnvValueNotScalar, "Counts", typeof(Dictionary<string, int>)), ex.Message);
+        Assert.AreEqual(0, stream.Position);
     }
 }

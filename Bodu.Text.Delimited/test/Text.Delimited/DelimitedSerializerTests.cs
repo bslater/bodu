@@ -453,6 +453,44 @@ public partial class DelimitedSerializerTests
     }
 
     /// <summary>
+    /// A record POCO with a get-only member whose type is a dictionary, which is not a scalar.
+    /// </summary>
+    public sealed class ReadOnlyDictionaryMemberRecord
+    {
+        /// <summary>Gets or sets the name.</summary>
+        /// <value>The name.</value>
+        public string? Name { get; set; }
+
+        /// <summary>Gets the counts.</summary>
+        /// <value>The counts.</value>
+        public Dictionary<string, int> Counts { get; } = [];
+    }
+
+    /// <summary>
+    /// A record POCO with a set-only member whose type is a dictionary, which is not a scalar.
+    /// </summary>
+    public sealed class WriteOnlyDictionaryMemberRecord
+    {
+        /// <summary>The counts the set-only member holds.</summary>
+        private Dictionary<string, int>? _counts;
+
+        /// <summary>Gets or sets the name.</summary>
+        /// <value>The name.</value>
+        public string? Name { get; set; }
+
+        /// <summary>Sets the counts.</summary>
+        /// <value>The counts, or <see langword="null" />.</value>
+        public Dictionary<string, int>? Counts
+        {
+            set => _counts = value;
+        }
+
+        /// <summary>Gets the counts the set-only member holds.</summary>
+        /// <returns>The counts, or <see langword="null" />.</returns>
+        public Dictionary<string, int>? GetCounts() => _counts;
+    }
+
+    /// <summary>
     /// A record POCO of ten number columns, which the allocation tests write and read in thousands.
     /// </summary>
     public sealed class TenNumberRecord

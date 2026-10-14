@@ -132,12 +132,15 @@ public static partial class DotEnvSerializer
     /// <param name="value">The object to write.</param>
     /// <param name="options">The serializer options.</param>
     /// <exception cref="DotEnvSerializationException">
-    /// Thrown when two members map to one key, or a member that is written holds a value that is not a scalar or has a
-    /// name the reader would not read back.
+    /// Thrown when two members map to one key, when a member's type is not a scalar, or when a member that is written
+    /// holds a value that is not a scalar or has a name the reader would not read back.
     /// </exception>
     [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
     private static void WritePoco(ref Utf8DotEnvWriter writer, object value, DotEnvSerializerOptions options)
     {
+        // The type is checked whole before any member is written, whatever the members hold, as reading checks it.
+        ThrowIfAnyMemberIsNotScalar(value.GetType(), options);
+
         foreach (FlatMemberDescriptor member in GetMembers(value.GetType(), options))
         {
             if (!member.CanRead)
@@ -153,6 +156,52 @@ public static partial class DotEnvSerializer
             WriteKey(ref writer, member.Name);
             writer.WriteString(ValueToString(memberValue, member.ScalarKind));
         }
+    }
+
+    /// <summary>
+    /// Checks, before any input is read, that a type can hold a DotEnv document: that it is a string-keyed dictionary,
+    /// or an object every member of which is a scalar or <see cref="object" />.
+    /// </summary>
+    /// <param name="targetType">The type to read the document into.</param>
+    /// <param name="options">The read-only serializer options.</param>
+    /// <exception cref="DotEnvSerializationException">
+    /// Thrown when <paramref name="targetType" /> is a scalar or a collection, when two of its members map to one key,
+    /// or when a member's type is neither a scalar nor <see cref="object" />.
+    /// </exception>
+    [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
+    private static void ThrowIfNotReadable(Type targetType, DotEnvSerializerOptions options)
+    {
+        if (FlatBinding.TryGetStringKeyedDictionary(targetType, out _))
+            return;
+
+        if (IsScalarOrEnumerable(targetType))
+            throw new DotEnvSerializationException(string.Format(CultureInfo.CurrentCulture, DotEnvResourceStrings.Op_Invalid_DotEnvRootType, targetType));
+
+        ThrowIfAnyMemberIsNotScalar(targetType, options);
+    }
+
+    /// <summary>
+    /// Throws when a member of a type, readable, writable or both, is of a type that is neither a scalar nor
+    /// <see cref="object" />, so that the type is rejected whole, by <c>Serialize</c> and <c>Deserialize</c> alike,
+    /// whatever its members hold and whatever the ignore condition.
+    /// </summary>
+    /// <param name="type">The object type.</param>
+    /// <param name="options">The read-only serializer options.</param>
+    /// <exception cref="DotEnvSerializationException">
+    /// Thrown when two members of <paramref name="type" /> map to one key, or a member's type is neither a scalar nor
+    /// <see cref="object" />.
+    /// </exception>
+    /// <remarks>
+    /// Such a member has no DotEnv value that reads back as it, so writing it would give the value's
+    /// <see cref="object.ToString" /> text and reading its key would fail, as INI rejects such a member, and as
+    /// <c>System.Text.Json</c> rejects a member type it cannot convert, in both directions. A member declared as
+    /// <see cref="object" /> passes here and is tested on its value as it is written.
+    /// </remarks>
+    [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
+    private static void ThrowIfAnyMemberIsNotScalar(Type type, DotEnvSerializerOptions options)
+    {
+        foreach (FlatMemberDescriptor member in GetMembers(type, options))
+            ThrowIfNotScalar(null, member.MemberType, member.ScalarKind, member.Name);
     }
 
     /// <summary>

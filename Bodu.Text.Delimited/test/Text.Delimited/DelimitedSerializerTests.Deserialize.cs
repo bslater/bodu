@@ -4,6 +4,11 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Globalization;
+using System.Text;
+
+using Bodu.Text.Serialization;
+
 namespace Bodu.Text.Delimited;
 
 /// <summary>
@@ -667,5 +672,155 @@ public partial class DelimitedSerializerTests
         Assert.AreEqual(1, people.Count);
         Assert.AreEqual("Ada", people[0].Name);
         Assert.AreEqual(0, people[0].Age);
+    }
+
+    /// <summary>
+    /// Verifies that a record type with a member whose type is not a scalar throws
+    /// <see cref="DelimitedSerializationException" /> when read, with the message <c>Serialize</c> gives for it, even
+    /// though the document has no column for the member.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenARecordMemberIsNotAScalar_ShouldThrowDelimitedSerializationException()
+    {
+        var ex = Assert.ThrowsExactly<DelimitedSerializationException>(() =>
+        {
+            _ = DelimitedSerializer.Deserialize<DictionaryMemberRecord>("Name\na\n");
+        });
+
+        Assert.AreEqual(string.Format(CultureInfo.CurrentCulture, DelimitedResourceStrings.Op_Invalid_DelimitedValueNotScalar, "Counts", typeof(Dictionary<string, int>)), ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that a record type with a member whose type is not a scalar is rejected before the document is read, so
+    /// that malformed text throws <see cref="DelimitedSerializationException" /> for the type rather than
+    /// <see cref="DelimitedFormatException" /> for the text.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenARecordMemberIsNotAScalarAndTheTextIsMalformed_ShouldThrowDelimitedSerializationException()
+    {
+        var ex = Assert.ThrowsExactly<DelimitedSerializationException>(() =>
+        {
+            _ = DelimitedSerializer.Deserialize<DictionaryMemberRecord>("Name\n\"open\n");
+        });
+
+        Assert.AreEqual(string.Format(CultureInfo.CurrentCulture, DelimitedResourceStrings.Op_Invalid_DelimitedValueNotScalar, "Counts", typeof(Dictionary<string, int>)), ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that a record type with a get-only member whose type is not a scalar, which <c>Serialize</c> rejects,
+    /// throws <see cref="DelimitedSerializationException" /> when read too, although reading never sets the member.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenAReadOnlyRecordMemberIsNotAScalar_ShouldThrowDelimitedSerializationException()
+    {
+        var ex = Assert.ThrowsExactly<DelimitedSerializationException>(() =>
+        {
+            _ = DelimitedSerializer.Deserialize<ReadOnlyDictionaryMemberRecord>("Name\na\n");
+        });
+
+        Assert.AreEqual(string.Format(CultureInfo.CurrentCulture, DelimitedResourceStrings.Op_Invalid_DelimitedValueNotScalar, "Counts", typeof(Dictionary<string, int>)), ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that the stream overload rejects a record type with a member whose type is not a scalar before it reads
+    /// the stream, which it leaves at its start.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenARecordMemberIsNotAScalar_ForAStream_ShouldThrowBeforeReadingTheStream()
+    {
+        using var stream = new MemoryStream(Encoding.UTF8.GetBytes("Name\na\n"));
+
+        var ex = Assert.ThrowsExactly<DelimitedSerializationException>(() =>
+        {
+            _ = DelimitedSerializer.Deserialize<DictionaryMemberRecord>(stream);
+        });
+
+        Assert.AreEqual(string.Format(CultureInfo.CurrentCulture, DelimitedResourceStrings.Op_Invalid_DelimitedValueNotScalar, "Counts", typeof(Dictionary<string, int>)), ex.Message);
+        Assert.AreEqual(0, stream.Position);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="KeyValuePair{TKey, TValue}" /> records bind their <c>Key</c> and <c>Value</c> columns
+    /// by header name, whatever the order of the columns, although both members are get-only.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenRecordsAreKeyValuePairs_ShouldBindKeyAndValueByHeader()
+    {
+        List<KeyValuePair<string, int>> result = DelimitedSerializer.Deserialize<KeyValuePair<string, int>>("Value,Key\n1,a\n2,b\n");
+
+        CollectionAssert.AreEqual(new[] { new KeyValuePair<string, int>("a", 1), new KeyValuePair<string, int>("b", 2) }, result);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="KeyValuePair{TKey, TValue}" /> records bind the column names the options' naming policy
+    /// gives <c>Key</c> and <c>Value</c>, the names <c>Serialize</c> writes under the same options.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenRecordsAreKeyValuePairsAndANamingPolicyIsSet_ShouldBindThePolicysColumnNames()
+    {
+        var options = new DelimitedSerializerOptions { PropertyNamingPolicy = NamingPolicy.CamelCase };
+
+        List<KeyValuePair<string, int>> result = DelimitedSerializer.Deserialize<KeyValuePair<string, int>>("key,value\na,1\n", options);
+
+        CollectionAssert.AreEqual(new[] { new KeyValuePair<string, int>("a", 1) }, result);
+    }
+
+    /// <summary>
+    /// Verifies that, without a header, <see cref="KeyValuePair{TKey, TValue}" /> records bind their fields by
+    /// position, in the order <c>Serialize</c> writes the <c>Key</c> and <c>Value</c> columns.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenRecordsAreKeyValuePairsWithNoHeader_ShouldBindByPosition()
+    {
+        var options = new DelimitedSerializerOptions { NoHeader = true };
+
+        List<KeyValuePair<string, int>> result = DelimitedSerializer.Deserialize<KeyValuePair<string, int>>("a,1\nb,2\n", options);
+
+        CollectionAssert.AreEqual(new[] { new KeyValuePair<string, int>("a", 1), new KeyValuePair<string, int>("b", 2) }, result);
+    }
+
+    /// <summary>
+    /// Verifies that a <see cref="KeyValuePair{TKey, TValue}" /> record whose document lacks the <c>Key</c> or the
+    /// <c>Value</c> column binds the column it has and leaves the other half at its default, as a missing column leaves
+    /// any member.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenAKeyValuePairColumnIsMissing_ShouldLeaveItsHalfAtTheDefault()
+    {
+        List<KeyValuePair<string, int>> keyOnly = DelimitedSerializer.Deserialize<KeyValuePair<string, int>>("Key\na\n");
+        List<KeyValuePair<string, int>> valueOnly = DelimitedSerializer.Deserialize<KeyValuePair<string, int>>("Value\n1\n");
+
+        CollectionAssert.AreEqual(new[] { new KeyValuePair<string, int>("a", 0) }, keyOnly);
+        CollectionAssert.AreEqual(new[] { new KeyValuePair<string, int>(null!, 1) }, valueOnly);
+    }
+
+    /// <summary>
+    /// Verifies that a <see cref="KeyValuePair{TKey, TValue}" /> field that does not convert to its half's type throws
+    /// <see cref="DelimitedSerializationException" /> naming the column, as a field of any other member does.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenAKeyValuePairFieldCannotBeConverted_ShouldThrowDelimitedSerializationException()
+    {
+        var ex = Assert.ThrowsExactly<DelimitedSerializationException>(() =>
+        {
+            _ = DelimitedSerializer.Deserialize<KeyValuePair<string, int>>("Key,Value\na,x\n");
+        });
+
+        Assert.IsTrue(ex.Message.Contains("'Value'", StringComparison.Ordinal), ex.Message);
+        Assert.IsInstanceOfType<FormatException>(ex.InnerException);
+    }
+
+    /// <summary>
+    /// Verifies that the stream overload binds <see cref="KeyValuePair{TKey, TValue}" /> records by header name, as the
+    /// text overload does.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenRecordsAreKeyValuePairs_ForAStream_ShouldBindKeyAndValue()
+    {
+        using var stream = new MemoryStream(Encoding.UTF8.GetBytes("Key,Value\na,1\n"));
+
+        List<KeyValuePair<string, int>> result = DelimitedSerializer.Deserialize<KeyValuePair<string, int>>(stream);
+
+        CollectionAssert.AreEqual(new[] { new KeyValuePair<string, int>("a", 1) }, result);
     }
 }

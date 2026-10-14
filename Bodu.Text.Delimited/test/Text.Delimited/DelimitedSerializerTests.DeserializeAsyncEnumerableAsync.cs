@@ -812,4 +812,39 @@ public partial class DelimitedSerializerTests
         CollectionAssert.AreEqual(new[] { "first", "third" }, people.Select(static person => person.Name).ToArray());
         Assert.IsTrue(people.All(static person => person.Age == 0));
     }
+
+    /// <summary>
+    /// Verifies that the streaming reader rejects a record type with a member whose type is not a scalar when it is
+    /// called, before the sequence is enumerated or the stream read, with the message <c>Serialize</c> gives.
+    /// </summary>
+    [TestMethod]
+    public void DeserializeAsyncEnumerableAsync_WhenARecordMemberIsNotAScalar_ShouldThrowWhenCalled()
+    {
+        using var stream = new MemoryStream(Encoding.UTF8.GetBytes("Name\na\n"));
+
+        var ex = Assert.ThrowsExactly<DelimitedSerializationException>(() =>
+        {
+            _ = DelimitedSerializer.DeserializeAsyncEnumerableAsync<DictionaryMemberRecord>(stream);
+        });
+
+        Assert.AreEqual(string.Format(CultureInfo.CurrentCulture, DelimitedResourceStrings.Op_Invalid_DelimitedValueNotScalar, "Counts", typeof(Dictionary<string, int>)), ex.Message);
+        Assert.AreEqual(0, stream.Position);
+    }
+
+    /// <summary>
+    /// Verifies that the streaming reader binds <see cref="KeyValuePair{TKey, TValue}" /> records by header name, as
+    /// the buffered overloads do.
+    /// </summary>
+    /// <returns>A task representing the asynchronous test.</returns>
+    [TestMethod]
+    public async Task DeserializeAsyncEnumerableAsync_WhenRecordsAreKeyValuePairs_ShouldBindKeyAndValue()
+    {
+        using var stream = new MemoryStream(Encoding.UTF8.GetBytes("Value,Key\n1,a\n2,b\n"));
+        var result = new List<KeyValuePair<string, int>>();
+
+        await foreach (KeyValuePair<string, int> pair in DelimitedSerializer.DeserializeAsyncEnumerableAsync<KeyValuePair<string, int>>(stream))
+            result.Add(pair);
+
+        CollectionAssert.AreEqual(new[] { new KeyValuePair<string, int>("a", 1), new KeyValuePair<string, int>("b", 2) }, result);
+    }
 }

@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Globalization;
+
 using Bodu.Test.Kat;
 using Bodu.Text.Serialization;
 
@@ -306,20 +308,6 @@ public partial class DotEnvSerializerTests
     }
 
     /// <summary>
-    /// Verifies that a <see langword="null" /> member whose type is not a scalar is left out, rather than rejected, when
-    /// the options' default ignore condition leaves out null values, since nothing is written for it.
-    /// </summary>
-    [TestMethod]
-    public void Serialize_WhenAMemberThatIsNotAScalarIsNullAndNullsAreIgnored_ShouldLeaveItOut()
-    {
-        var options = new DotEnvSerializerOptions { DefaultIgnoreCondition = IgnoreCondition.WhenWritingNull };
-
-        string text = DotEnvSerializer.Serialize(new DictionaryMemberConfig { Name = "a" }, options);
-
-        Assert.AreEqual("Name=a\n", text);
-    }
-
-    /// <summary>
     /// Verifies that a member declared as <see cref="object" /> whose value is not a scalar throws
     /// <see cref="DotEnvSerializationException" /> naming the key and the value's type, rather than writing the value's
     /// <see cref="object.ToString" /> text.
@@ -418,5 +406,41 @@ public partial class DotEnvSerializerTests
         });
 
         Assert.IsTrue(ex.Message.Contains("'A'", StringComparison.Ordinal), ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that a <see langword="null" /> member whose type is not a scalar throws
+    /// <see cref="DotEnvSerializationException" /> by the member's type even when the ignore condition leaves it out,
+    /// so that <c>Serialize</c> and <c>Deserialize</c> reject the same types.
+    /// </summary>
+    /// <param name="condition">The options' default ignore condition, which leaves out <see langword="null" /> values.</param>
+    [TestMethod]
+    [DataRow(IgnoreCondition.WhenWritingNull)]
+    [DataRow(IgnoreCondition.WhenWritingDefault)]
+    public void Serialize_WhenAMemberThatIsNotAScalarIsNullAndLeftOut_ShouldThrowDotEnvSerializationException(IgnoreCondition condition)
+    {
+        var options = new DotEnvSerializerOptions { DefaultIgnoreCondition = condition };
+
+        var ex = Assert.ThrowsExactly<DotEnvSerializationException>(() =>
+        {
+            _ = DotEnvSerializer.Serialize(new DictionaryMemberConfig { Name = "a" }, options);
+        });
+
+        Assert.AreEqual(string.Format(CultureInfo.CurrentCulture, DotEnvResourceStrings.Op_Invalid_DotEnvValueNotScalar, "Counts", typeof(Dictionary<string, int>)), ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that a set-only member whose type is not a scalar, which <c>Deserialize</c> would bind, throws
+    /// <see cref="DotEnvSerializationException" /> when written too, although writing never reads the member.
+    /// </summary>
+    [TestMethod]
+    public void Serialize_WhenAWriteOnlyMemberIsNotAScalar_ShouldThrowDotEnvSerializationException()
+    {
+        var ex = Assert.ThrowsExactly<DotEnvSerializationException>(() =>
+        {
+            _ = DotEnvSerializer.Serialize(new WriteOnlyDictionaryMemberConfig { Name = "a" });
+        });
+
+        Assert.AreEqual(string.Format(CultureInfo.CurrentCulture, DotEnvResourceStrings.Op_Invalid_DotEnvValueNotScalar, "Counts", typeof(Dictionary<string, int>)), ex.Message);
     }
 }

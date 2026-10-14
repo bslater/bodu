@@ -200,7 +200,7 @@ public sealed class Trade { … }          // BTFG001: … is not declared parti
 
 A nested type must have *every* containing type marked `partial` too.
 
-**`BTFG002` (warning) - a member type is not a supported scalar.** The factory is still generated; the flagged member is left out of `Headers` / `Keys` and never written or read. Either move the value to a supported scalar (for example, join a list into a delimited `string`), or drop the member with `[Ignore]` to silence the warning deliberately.
+**`BTFG002` (warning) - a member type is not a supported scalar.** The factory is still generated; the flagged member is left out of `Headers` / `Keys` and never written or read. The reflection binder rejects such a type whole, when it writes it and when it reads it, so this is one place where the factory and the reflection path differ. Either move the value to a supported scalar (for example, join a list into a delimited `string`), or drop the member with `[Ignore]` to silence the warning deliberately.
 
 ```csharp
 [DelimitedRecord]

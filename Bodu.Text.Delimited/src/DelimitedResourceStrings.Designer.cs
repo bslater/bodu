@@ -174,7 +174,7 @@ namespace Bodu {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to The delimited column '{0}' cannot be written: the type '{1}' is not a scalar, so no field reads back as it..
+        ///   Looks up a localized string similar to The delimited column '{0}' has the type '{1}', which is not a scalar, so no field maps to it..
         /// </summary>
         internal static string Op_Invalid_DelimitedValueNotScalar {
             get {
