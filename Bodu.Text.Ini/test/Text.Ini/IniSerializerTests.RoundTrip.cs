@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Text.Serialization;
+
 namespace Bodu.Text.Ini;
 
 /// <summary>
@@ -161,5 +163,207 @@ public partial class IniSerializerTests
         Assert.AreEqual(DateTimeKind.Utc, restored.MaybeAt!.Value.Kind, text);
         Assert.AreEqual(original.MaybeAtOffset, restored.MaybeAtOffset, text);
         Assert.AreEqual(original.MaybeAtOffset!.Value.Offset, restored.MaybeAtOffset!.Value.Offset, text);
+    }
+
+    /// <summary>
+    /// Verifies that a dictionary root holding a <see langword="null" /> section entry, serialized under
+    /// <see cref="IgnoreCondition.Never" />, reads back with that entry as an empty section and every other section
+    /// unchanged.
+    /// </summary>
+    [TestMethod]
+    public void SerializeDeserialize_WhenANullRootEntryIsASectionUnderNever_ShouldReadBackAnEmptySection()
+    {
+        var options = new IniSerializerOptions { DefaultIgnoreCondition = IgnoreCondition.Never };
+        var root = new Dictionary<string, Dictionary<string, string>?> { ["db"] = null, ["x"] = new() { ["k"] = "v" } };
+
+        Dictionary<string, Dictionary<string, string>?> result =
+            IniSerializer.Deserialize<Dictionary<string, Dictionary<string, string>?>>(IniSerializer.Serialize(root, options), options)!;
+
+        CollectionAssert.AreEqual(new[] { "db", "x" }, result.Keys.ToArray());
+        Assert.IsNotNull(result["db"]);
+        Assert.AreEqual(0, result["db"]!.Count);
+        Assert.AreEqual("v", result["x"]!["k"]);
+    }
+
+    /// <summary>
+    /// Verifies that a <see langword="null" /> entry of a section whose dictionary value type is a nullable scalar,
+    /// serialized under <see cref="IgnoreCondition.Never" /> as an empty key, reads back as <see langword="null" />.
+    /// </summary>
+    [TestMethod]
+    public void SerializeDeserialize_WhenANullSectionEntryIsAScalarUnderNever_ShouldReadBackAsNull()
+    {
+        var options = new IniSerializerOptions { DefaultIgnoreCondition = IgnoreCondition.Never };
+        var root = new Dictionary<string, Dictionary<string, int?>> { ["s"] = new() { ["a"] = null, ["b"] = 1 } };
+
+        Dictionary<string, Dictionary<string, int?>> result =
+            IniSerializer.Deserialize<Dictionary<string, Dictionary<string, int?>>>(IniSerializer.Serialize(root, options), options)!;
+
+        Assert.IsNull(result["s"]["a"]);
+        Assert.AreEqual(1, result["s"]["b"]);
+    }
+
+    /// <summary>
+    /// Verifies that root scalar members holding <see langword="null" /> or their defaults read back, under every
+    /// default ignore condition, as the values written: a number, a flag and a nullable number unchanged, and a
+    /// <see langword="null" /> text as itself when it is left out or as the empty text it is written as otherwise.
+    /// </summary>
+    /// <param name="condition">The options' default ignore condition.</param>
+    /// <param name="expectedText">The text the <see langword="null" /> text member reads back as.</param>
+    [TestMethod]
+    [DataRow(IgnoreCondition.Never, "")]
+    [DataRow(IgnoreCondition.WhenWritingNull, null)]
+    [DataRow(IgnoreCondition.WhenWritingDefault, null)]
+    public void SerializeDeserialize_WhenRootScalarMembersAreNullOrDefault_ShouldReadBackEachValue(IgnoreCondition condition, string? expectedText)
+    {
+        var options = new IniSerializerOptions { DefaultIgnoreCondition = condition };
+
+        ConditionalConfig result = IniSerializer.Deserialize<ConditionalConfig>(IniSerializer.Serialize(new ConditionalConfig(), options), options);
+
+        Assert.AreEqual(expectedText, result.Text);
+        Assert.AreEqual(0, result.Zero);
+        Assert.AreEqual(1, result.One);
+        Assert.IsFalse(result.Flag);
+        Assert.IsNull(result.Maybe);
+        Assert.AreEqual(0, result.ZeroByMember);
+        Assert.AreEqual(string.Empty, result.NullByMember);
+    }
+
+    /// <summary>
+    /// Verifies that <see langword="null" /> root section members, a section POCO and a section dictionary, read back
+    /// under every default ignore condition: as empty sections where the condition writes them and as
+    /// <see langword="null" /> where it leaves them out.
+    /// </summary>
+    /// <param name="condition">The options' default ignore condition.</param>
+    /// <param name="written">Whether the condition writes the <see langword="null" /> sections.</param>
+    [TestMethod]
+    [DataRow(IgnoreCondition.Never, true)]
+    [DataRow(IgnoreCondition.WhenWritingNull, false)]
+    [DataRow(IgnoreCondition.WhenWritingDefault, false)]
+    public void SerializeDeserialize_WhenRootSectionMembersAreNull_ShouldReadBackUnderEveryCondition(IgnoreCondition condition, bool written)
+    {
+        var options = new IniSerializerOptions { DefaultIgnoreCondition = condition };
+
+        ServerConfig result = IniSerializer.Deserialize<ServerConfig>(IniSerializer.Serialize(new ServerConfig { Name = "app" }, options), options);
+
+        Assert.AreEqual("app", result.Name);
+        Assert.AreEqual(written, result.Database is not null);
+        Assert.AreEqual(written, result.Logging is not null);
+        Assert.IsNull(result.Database?.Host);
+        Assert.AreEqual(0, result.Logging?.Count ?? 0);
+    }
+
+    /// <summary>
+    /// Verifies that a <see langword="null" /> reserved global-section member, which nothing is written for, reads back
+    /// under every default ignore condition as a section of the global keys' default values.
+    /// </summary>
+    /// <param name="condition">The options' default ignore condition.</param>
+    [TestMethod]
+    [DataRow(IgnoreCondition.Never)]
+    [DataRow(IgnoreCondition.WhenWritingNull)]
+    [DataRow(IgnoreCondition.WhenWritingDefault)]
+    public void SerializeDeserialize_WhenTheGlobalSectionMemberIsNull_ShouldReadBackUnderEveryCondition(IgnoreCondition condition)
+    {
+        var options = new IniSerializerOptions { DefaultIgnoreCondition = condition, GlobalSectionName = "Database" };
+
+        ServerConfig result = IniSerializer.Deserialize<ServerConfig>(IniSerializer.Serialize(new ServerConfig { Name = "app" }, options), options);
+
+        Assert.AreEqual("app", result.Name);
+        Assert.IsNotNull(result.Database);
+        Assert.IsNull(result.Database.Host);
+        Assert.AreEqual(0, result.Database.Port);
+    }
+
+    /// <summary>
+    /// Verifies that a <see langword="null" /> root dictionary entry whose value type is a nullable scalar reads back
+    /// under every default ignore condition: as <see langword="null" /> where the condition writes it, and as an absent
+    /// key where it leaves it out.
+    /// </summary>
+    /// <param name="condition">The options' default ignore condition.</param>
+    /// <param name="written">Whether the condition writes the <see langword="null" /> entry.</param>
+    [TestMethod]
+    [DataRow(IgnoreCondition.Never, true)]
+    [DataRow(IgnoreCondition.WhenWritingNull, false)]
+    [DataRow(IgnoreCondition.WhenWritingDefault, false)]
+    public void SerializeDeserialize_WhenARootEntryIsANullScalar_ShouldReadBackUnderEveryCondition(IgnoreCondition condition, bool written)
+    {
+        var options = new IniSerializerOptions { DefaultIgnoreCondition = condition };
+        var root = new Dictionary<string, int?> { ["a"] = null, ["b"] = 1 };
+
+        Dictionary<string, int?> result = IniSerializer.Deserialize<Dictionary<string, int?>>(IniSerializer.Serialize(root, options), options)!;
+
+        Assert.AreEqual(written, result.ContainsKey("a"));
+        Assert.IsNull(result.GetValueOrDefault("a"));
+        Assert.AreEqual(1, result["b"]);
+    }
+
+    /// <summary>
+    /// Verifies that a <see langword="null" /> root dictionary entry whose value type is a section type reads back under
+    /// every default ignore condition: as an empty section where the condition writes it, and as an absent key where it
+    /// leaves it out.
+    /// </summary>
+    /// <param name="condition">The options' default ignore condition.</param>
+    /// <param name="written">Whether the condition writes the <see langword="null" /> entry.</param>
+    [TestMethod]
+    [DataRow(IgnoreCondition.Never, true)]
+    [DataRow(IgnoreCondition.WhenWritingNull, false)]
+    [DataRow(IgnoreCondition.WhenWritingDefault, false)]
+    public void SerializeDeserialize_WhenARootEntryIsANullSection_ShouldReadBackUnderEveryCondition(IgnoreCondition condition, bool written)
+    {
+        var options = new IniSerializerOptions { DefaultIgnoreCondition = condition };
+        var root = new Dictionary<string, Dictionary<string, string>?> { ["db"] = null, ["x"] = new() { ["k"] = "v" } };
+
+        Dictionary<string, Dictionary<string, string>?> result =
+            IniSerializer.Deserialize<Dictionary<string, Dictionary<string, string>?>>(IniSerializer.Serialize(root, options), options)!;
+
+        Assert.AreEqual(written, result.ContainsKey("db"));
+        Assert.AreEqual(0, result.GetValueOrDefault("db")?.Count ?? 0);
+        Assert.AreEqual("v", result["x"]!["k"]);
+    }
+
+    /// <summary>
+    /// Verifies that a <see langword="null" /> section dictionary entry whose value type is a nullable scalar reads back
+    /// under every default ignore condition: as <see langword="null" /> where the condition writes it, and as an absent
+    /// key where it leaves it out.
+    /// </summary>
+    /// <param name="condition">The options' default ignore condition.</param>
+    /// <param name="written">Whether the condition writes the <see langword="null" /> entry.</param>
+    [TestMethod]
+    [DataRow(IgnoreCondition.Never, true)]
+    [DataRow(IgnoreCondition.WhenWritingNull, false)]
+    [DataRow(IgnoreCondition.WhenWritingDefault, false)]
+    public void SerializeDeserialize_WhenASectionEntryIsANullScalar_ShouldReadBackUnderEveryCondition(IgnoreCondition condition, bool written)
+    {
+        var options = new IniSerializerOptions { DefaultIgnoreCondition = condition };
+        var root = new Dictionary<string, Dictionary<string, int?>> { ["s"] = new() { ["a"] = null, ["b"] = 1 } };
+
+        Dictionary<string, Dictionary<string, int?>> result =
+            IniSerializer.Deserialize<Dictionary<string, Dictionary<string, int?>>>(IniSerializer.Serialize(root, options), options)!;
+
+        Assert.AreEqual(written, result["s"].ContainsKey("a"));
+        Assert.IsNull(result["s"].GetValueOrDefault("a"));
+        Assert.AreEqual(1, result["s"]["b"]);
+    }
+
+    /// <summary>
+    /// Verifies that a section POCO whose members hold <see langword="null" /> or their defaults reads back under every
+    /// default ignore condition, its number unchanged and its <see langword="null" /> text as itself when it is left out
+    /// or as the empty text it is written as otherwise.
+    /// </summary>
+    /// <param name="condition">The options' default ignore condition.</param>
+    /// <param name="expectedHost">The text the <see langword="null" /> host reads back as.</param>
+    [TestMethod]
+    [DataRow(IgnoreCondition.Never, "")]
+    [DataRow(IgnoreCondition.WhenWritingNull, null)]
+    [DataRow(IgnoreCondition.WhenWritingDefault, null)]
+    public void SerializeDeserialize_WhenASectionMemberHasNullOrDefaultScalars_ShouldReadBackUnderEveryCondition(IgnoreCondition condition, string? expectedHost)
+    {
+        var options = new IniSerializerOptions { DefaultIgnoreCondition = condition };
+        var config = new ServerConfig { Name = "app", Database = new DatabaseSection() };
+
+        ServerConfig result = IniSerializer.Deserialize<ServerConfig>(IniSerializer.Serialize(config, options), options);
+
+        Assert.IsNotNull(result.Database);
+        Assert.AreEqual(expectedHost, result.Database.Host);
+        Assert.AreEqual(0, result.Database.Port);
     }
 }

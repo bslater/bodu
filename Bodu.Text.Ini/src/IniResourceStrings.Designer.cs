@@ -298,5 +298,23 @@ namespace Bodu {
                 return ResourceManager.GetString("Op_Invalid_IniUnwritableSectionName", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The INI section '{0}' has a value for the key '{1}' of type '{2}', which is not a scalar and cannot be written so that it reads back..
+        /// </summary>
+        internal static string Op_Invalid_IniValueNotScalar {
+            get {
+                return ResourceManager.GetString("Op_Invalid_IniValueNotScalar", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The INI member '{0}' is declared as object, which maps to neither a key nor a section..
+        /// </summary>
+        internal static string Op_Invalid_IniObjectMember {
+            get {
+                return ResourceManager.GetString("Op_Invalid_IniObjectMember", resourceCulture);
+            }
+        }
     }
 }

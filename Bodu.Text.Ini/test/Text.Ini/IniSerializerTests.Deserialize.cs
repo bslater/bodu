@@ -522,4 +522,51 @@ public partial class IniSerializerTests
         Assert.AreEqual("info", config.Logging["level"]);
         Assert.AreEqual("console", config.Logging["sink"]);
     }
+
+    /// <summary>
+    /// Verifies that a root member declared as <see cref="object" /> throws <see cref="IniSerializationException" />
+    /// naming the member, rather than binding a bare <see cref="object" /> and dropping its section's keys.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenARootMemberIsDeclaredAsObject_ShouldThrowIniSerializationException()
+    {
+        var ex = Assert.ThrowsExactly<IniSerializationException>(() =>
+        {
+            _ = IniSerializer.Deserialize<ObjectMemberConfig>("Name=app\n[O]\nk=v\n");
+        });
+
+        Assert.IsTrue(ex.Message.Contains("'O'", StringComparison.Ordinal), ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that a root member declared as <see cref="object" /> is rejected by its declared type, so that a
+    /// document without a section for it still throws <see cref="IniSerializationException" /> naming the member.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenARootMemberIsDeclaredAsObjectAndHasNoSection_ShouldThrowIniSerializationException()
+    {
+        var ex = Assert.ThrowsExactly<IniSerializationException>(() =>
+        {
+            _ = IniSerializer.Deserialize<ObjectMemberConfig>("Name=app\n");
+        });
+
+        Assert.IsTrue(ex.Message.Contains("'O'", StringComparison.Ordinal), ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that the reserved global-section member, when it is declared as <see cref="object" />, throws
+    /// <see cref="IniSerializationException" /> naming the member, rather than binding a bare <see cref="object" />.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenTheGlobalSectionMemberIsDeclaredAsObject_ShouldThrowIniSerializationException()
+    {
+        var options = new IniSerializerOptions { GlobalSectionName = "O" };
+
+        var ex = Assert.ThrowsExactly<IniSerializationException>(() =>
+        {
+            _ = IniSerializer.Deserialize<ObjectMemberConfig>("k=v\n", options);
+        });
+
+        Assert.IsTrue(ex.Message.Contains("'O'", StringComparison.Ordinal), ex.Message);
+    }
 }

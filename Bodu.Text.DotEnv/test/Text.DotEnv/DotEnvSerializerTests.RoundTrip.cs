@@ -6,6 +6,8 @@
 
 using System.Text;
 
+using Bodu.Text.Serialization;
+
 namespace Bodu.Text.DotEnv;
 
 /// <summary>
@@ -179,5 +181,88 @@ public partial class DotEnvSerializerTests
         GenericOnlyDictionary<string> restored = DotEnvSerializer.Deserialize<GenericOnlyDictionary<string>>(text);
 
         CollectionAssert.AreEqual(original.ToArray(), restored.ToArray(), text);
+    }
+
+    /// <summary>
+    /// Verifies that scalar members holding <see langword="null" /> or their defaults read back, under every default
+    /// ignore condition, as the values written: a number, a flag and a nullable number unchanged, and a
+    /// <see langword="null" /> text as itself when it is left out or as the empty text it is written as otherwise.
+    /// </summary>
+    /// <param name="condition">The options' default ignore condition.</param>
+    /// <param name="expectedText">The text the <see langword="null" /> text member reads back as.</param>
+    [TestMethod]
+    [DataRow(IgnoreCondition.Never, "")]
+    [DataRow(IgnoreCondition.WhenWritingNull, null)]
+    [DataRow(IgnoreCondition.WhenWritingDefault, null)]
+    public void SerializeDeserialize_WhenScalarMembersAreNullOrDefault_ShouldReadBackEachValue(IgnoreCondition condition, string? expectedText)
+    {
+        var options = new DotEnvSerializerOptions { DefaultIgnoreCondition = condition };
+
+        ConditionalConfig result = DotEnvSerializer.Deserialize<ConditionalConfig>(DotEnvSerializer.Serialize(new ConditionalConfig(), options), options);
+
+        Assert.AreEqual(expectedText, result.Text);
+        Assert.AreEqual(0, result.Zero);
+        Assert.AreEqual(1, result.One);
+        Assert.IsFalse(result.Flag);
+        Assert.IsNull(result.Maybe);
+        Assert.AreEqual(0, result.ZeroByMember);
+        Assert.AreEqual(string.Empty, result.NullByMember);
+    }
+
+    /// <summary>
+    /// Verifies that a <see langword="null" /> dictionary entry whose value type is a nullable scalar reads back under
+    /// every default ignore condition: as <see langword="null" /> where the condition writes it, and as an absent key
+    /// where it leaves it out.
+    /// </summary>
+    /// <param name="condition">The options' default ignore condition.</param>
+    /// <param name="written">Whether the condition writes the <see langword="null" /> entry.</param>
+    [TestMethod]
+    [DataRow(IgnoreCondition.Never, true)]
+    [DataRow(IgnoreCondition.WhenWritingNull, false)]
+    [DataRow(IgnoreCondition.WhenWritingDefault, false)]
+    public void SerializeDeserialize_WhenADictionaryEntryIsANullScalar_ShouldReadBackUnderEveryCondition(IgnoreCondition condition, bool written)
+    {
+        var options = new DotEnvSerializerOptions { DefaultIgnoreCondition = condition };
+        var map = new Dictionary<string, int?> { ["A"] = null, ["B"] = 1 };
+
+        Dictionary<string, int?> result = DotEnvSerializer.Deserialize<Dictionary<string, int?>>(DotEnvSerializer.Serialize(map, options), options)!;
+
+        Assert.AreEqual(written, result.ContainsKey("A"));
+        Assert.IsNull(result.GetValueOrDefault("A"));
+        Assert.AreEqual(1, result["B"]);
+    }
+
+    /// <summary>
+    /// Verifies that a <see langword="null" /> member whose type is not a scalar, which a condition that leaves out
+    /// <see langword="null" /> values does not write, reads back as <see langword="null" />.
+    /// </summary>
+    /// <param name="condition">The options' default ignore condition.</param>
+    [TestMethod]
+    [DataRow(IgnoreCondition.WhenWritingNull)]
+    [DataRow(IgnoreCondition.WhenWritingDefault)]
+    public void SerializeDeserialize_WhenAMemberThatIsNotAScalarIsNullAndLeftOut_ShouldReadBackNull(IgnoreCondition condition)
+    {
+        var options = new DotEnvSerializerOptions { DefaultIgnoreCondition = condition };
+
+        DictionaryMemberConfig result = DotEnvSerializer.Deserialize<DictionaryMemberConfig>(
+            DotEnvSerializer.Serialize(new DictionaryMemberConfig { Name = "a" }, options), options);
+
+        Assert.AreEqual("a", result.Name);
+        Assert.IsNull(result.Counts);
+    }
+
+    /// <summary>
+    /// Verifies that a <see langword="null" /> member declared as <see cref="object" />, written as an empty value
+    /// under <see cref="IgnoreCondition.Never" />, reads back as the empty text, since a member declared as
+    /// <see cref="object" /> reads its value as text.
+    /// </summary>
+    [TestMethod]
+    public void SerializeDeserialize_WhenAnObjectMemberIsNullUnderNever_ShouldReadBackTheEmptyText()
+    {
+        var options = new DotEnvSerializerOptions { DefaultIgnoreCondition = IgnoreCondition.Never };
+
+        ObjectValueConfig result = DotEnvSerializer.Deserialize<ObjectValueConfig>(DotEnvSerializer.Serialize(new ObjectValueConfig(), options), options);
+
+        Assert.AreEqual(string.Empty, result.Value);
     }
 }

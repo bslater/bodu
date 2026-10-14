@@ -464,6 +464,102 @@ public partial class IniSerializerTests
     }
 
     /// <summary>
+    /// A root model whose section member is a dictionary of lists, a value type that is not a scalar.
+    /// </summary>
+    private sealed class ListValuedSectionConfig
+    {
+        /// <summary>Gets or sets the codes section.</summary>
+        public Dictionary<string, List<int>?>? Codes { get; set; }
+    }
+
+    /// <summary>
+    /// A root model with a global scalar member and a member declared as <see cref="object" />, which maps to neither a
+    /// key nor a section.
+    /// </summary>
+    private sealed class ObjectMemberConfig
+    {
+        /// <summary>Gets or sets the application name (a global key).</summary>
+        public string? Name { get; set; }
+
+        /// <summary>Gets or sets a value of any type.</summary>
+        public object? O { get; set; }
+    }
+
+    /// <summary>
+    /// A dictionary keyed by <see cref="int" /> that implements the generic <see cref="IDictionary{TKey, TValue}" />
+    /// interface but not the non-generic <see cref="IDictionary" />, so that it is neither a string-keyed dictionary nor
+    /// one the serializer recognizes as a dictionary through the non-generic interface.
+    /// </summary>
+    private sealed class GenericOnlyIntKeyedDictionary : IDictionary<int, string>
+    {
+        /// <summary>The entries, which enumerate in the order they were added.</summary>
+        private readonly Dictionary<int, string> _entries = [];
+
+        /// <inheritdoc />
+        public ICollection<int> Keys => _entries.Keys;
+
+        /// <inheritdoc />
+        public ICollection<string> Values => _entries.Values;
+
+        /// <inheritdoc />
+        public int Count => _entries.Count;
+
+        /// <inheritdoc />
+        public bool IsReadOnly => false;
+
+        /// <inheritdoc />
+        public string this[int key]
+        {
+            get => _entries[key];
+            set => _entries[key] = value;
+        }
+
+        /// <inheritdoc />
+        public void Add(int key, string value) =>
+            _entries.Add(key, value);
+
+        /// <inheritdoc />
+        public void Add(KeyValuePair<int, string> item) =>
+            _entries.Add(item.Key, item.Value);
+
+        /// <inheritdoc />
+        public void Clear() =>
+            _entries.Clear();
+
+        /// <inheritdoc />
+        public bool Contains(KeyValuePair<int, string> item) =>
+            ((ICollection<KeyValuePair<int, string>>)_entries).Contains(item);
+
+        /// <inheritdoc />
+        public bool ContainsKey(int key) =>
+            _entries.ContainsKey(key);
+
+        /// <inheritdoc />
+        public void CopyTo(KeyValuePair<int, string>[] array, int arrayIndex) =>
+            ((ICollection<KeyValuePair<int, string>>)_entries).CopyTo(array, arrayIndex);
+
+        /// <inheritdoc />
+        public IEnumerator<KeyValuePair<int, string>> GetEnumerator() =>
+            _entries.GetEnumerator();
+
+        /// <inheritdoc />
+        public bool Remove(int key) =>
+            _entries.Remove(key);
+
+        /// <inheritdoc />
+        public bool Remove(KeyValuePair<int, string> item) =>
+            ((ICollection<KeyValuePair<int, string>>)_entries).Remove(item);
+
+        /// <inheritdoc />
+        public bool TryGetValue(int key, [MaybeNullWhen(false)] out string value) =>
+            _entries.TryGetValue(key, out value);
+
+        /// <inheritdoc />
+        IEnumerator IEnumerable.GetEnumerator() =>
+            GetEnumerator();
+    }
+
+    /// <summary>
     /// A hand-written <see cref="IIniSectionFactory{TSection}" /> for <see cref="DatabaseSection" />, standing in for
     /// the generated factory in the reflection-free section-overload tests.
     /// </summary>

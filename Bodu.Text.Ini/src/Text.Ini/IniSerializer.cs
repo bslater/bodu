@@ -27,8 +27,19 @@ namespace Bodu.Text.Ini;
 /// <see cref="Dictionary{TKey, TValue}" /> is. A dictionary whose type is not keyed by <see cref="string" />, such as a
 /// <see cref="System.Collections.Hashtable" /> or a <see cref="Dictionary{TKey, TValue}" /> keyed by <see cref="int" />,
 /// is a collection rather than an object or a section, and is rejected with <see cref="IniSerializationException" />,
-/// as the root or as a section, when written and when read. A member nested beyond the second level is rejected.
-/// Property names honor <see cref="IniSerializerOptions.PropertyNamingPolicy" /> and the
+/// as the root or as a section, when written and when read. A dictionary entry that is not a section is one key, so its
+/// value must be <see langword="null" /> or a scalar, whatever the dictionary's value type: any other value, such as a
+/// list or a class with members of its own, is rejected with <see cref="IniSerializationException" /> naming the
+/// section and the key, rather than written as its <see cref="object.ToString" /> text, which does not read back. A
+/// <see langword="null" /> entry of a dictionary root, which the ignore condition writes only when it is
+/// <see cref="Bodu.Text.Serialization.IgnoreCondition.Never" />, has no value to decide by, so the dictionary's value
+/// type decides: a string-keyed dictionary type writes it as an empty section, a scalar or <see cref="object" /> as an
+/// empty key, and any other type, which no empty key reads back as, is rejected. A <see langword="null" /> entry of a
+/// dictionary written as a section, the reserved global section included, is decided in the same way, except that a
+/// string-keyed dictionary type, a third level, is rejected. A root member declared as <see cref="object" />, which
+/// could be a key or a section, is rejected with <see cref="IniSerializationException" /> naming the member, when
+/// written and when read, whatever its value. A member nested beyond the second level is rejected. Property names honor
+/// <see cref="IniSerializerOptions.PropertyNamingPolicy" /> and the
 /// <see cref="Bodu.Text.Serialization.PropertyNameAttribute" /> family; the callback interfaces (<see cref="Bodu.Text.Serialization.IOnSerializing" />
 /// and its siblings) fire around the mapping. Each member name maps to one key or section, its most derived
 /// declaration: a property or field hidden with the <see langword="new" /> modifier is neither written nor read. A type
@@ -52,10 +63,11 @@ public static partial class IniSerializer
     /// <param name="options">The serializer options, or <see langword="null" /> to use the defaults.</param>
     /// <returns>The INI text.</returns>
     /// <exception cref="IniSerializationException">
-    /// Thrown when <typeparamref name="T" /> cannot be mapped to an INI document, or when <paramref name="value" />
-    /// maps to a key, section name or value that <see cref="Utf8IniWriter" /> refuses because it would not read back
-    /// unchanged; the message then names the section and key, and the writer's <see cref="ArgumentException" /> is the
-    /// inner exception.
+    /// Thrown when <typeparamref name="T" /> cannot be mapped to an INI document, including when a dictionary entry
+    /// that is not a section holds a value that is not a scalar, or when <paramref name="value" /> maps to a key,
+    /// section name or value that <see cref="Utf8IniWriter" /> refuses because it would not read back unchanged; the
+    /// message then names the section and key, and the writer's <see cref="ArgumentException" /> is the inner
+    /// exception.
     /// </exception>
     [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
     [RequiresDynamicCode(RequiresDynamicCodeMessage)]
@@ -78,10 +90,11 @@ public static partial class IniSerializer
     /// Thrown when <paramref name="destination" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="IniSerializationException">
-    /// Thrown when <typeparamref name="T" /> cannot be mapped to an INI document, or when <paramref name="value" />
-    /// maps to a key, section name or value that <see cref="Utf8IniWriter" /> refuses because it would not read back
-    /// unchanged; the message then names the section and key, and the writer's <see cref="ArgumentException" /> is the
-    /// inner exception.
+    /// Thrown when <typeparamref name="T" /> cannot be mapped to an INI document, including when a dictionary entry
+    /// that is not a section holds a value that is not a scalar, or when <paramref name="value" /> maps to a key,
+    /// section name or value that <see cref="Utf8IniWriter" /> refuses because it would not read back unchanged; the
+    /// message then names the section and key, and the writer's <see cref="ArgumentException" /> is the inner
+    /// exception.
     /// </exception>
     [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
     [RequiresDynamicCode(RequiresDynamicCodeMessage)]
@@ -110,10 +123,11 @@ public static partial class IniSerializer
     /// Thrown when <paramref name="destination" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="IniSerializationException">
-    /// Thrown when <typeparamref name="T" /> cannot be mapped to an INI document, or when <paramref name="value" />
-    /// maps to a key, section name or value that <see cref="Utf8IniWriter" /> refuses because it would not read back
-    /// unchanged; the message then names the section and key, and the writer's <see cref="ArgumentException" /> is the
-    /// inner exception.
+    /// Thrown when <typeparamref name="T" /> cannot be mapped to an INI document, including when a dictionary entry
+    /// that is not a section holds a value that is not a scalar, or when <paramref name="value" /> maps to a key,
+    /// section name or value that <see cref="Utf8IniWriter" /> refuses because it would not read back unchanged; the
+    /// message then names the section and key, and the writer's <see cref="ArgumentException" /> is the inner
+    /// exception.
     /// </exception>
     [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
     [RequiresDynamicCode(RequiresDynamicCodeMessage)]
