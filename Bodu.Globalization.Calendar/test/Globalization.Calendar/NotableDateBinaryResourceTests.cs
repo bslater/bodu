@@ -150,9 +150,9 @@ public sealed partial class NotableDateBinaryResourceTests
             Rule("rule-relative", new RelativeWeekdayInMonthStrategy(5, DayOfWeek.Friday, WeekOrdinal.Last, DayOfWeek.Tuesday, WeekdayProximity.After)),
             Rule("rule-near-date", new WeekdayNearDateStrategy(6, 15, DayOfWeek.Wednesday, WeekdayProximity.Nearest)),
             Rule("rule-near-rule", new WeekdayNearRuleStrategy("nd-fixed", "rule-fixed", DayOfWeek.Thursday, WeekdayProximity.OnOrAfter, referenceYearOffset: -1)),
-            Rule("rule-offset", new OffsetFromRuleStrategy("nd-fixed", null, offsetDays: -49)),
+            Rule("rule-offset", new OffsetFromRuleStrategy("nd-anchor", null, offsetDays: -49)),
             Rule("rule-nth", new NthWeekdayFromRuleStrategy("nd-fixed", "rule-fixed", DayOfWeek.Sunday, ordinal: 3, referenceYearOffset: 1)),
-            Rule("rule-working-offset", new WorkingDayOffsetFromRuleStrategy("nd-fixed", null, offsetWorkingDays: 5, referenceYearOffset: 0)),
+            Rule("rule-working-offset", new WorkingDayOffsetFromRuleStrategy("nd-anchor", null, offsetWorkingDays: 5, referenceYearOffset: 0)),
             Rule("rule-working-month", new WorkingDayInMonthStrategy(3, 1)),
             Rule("rule-ordinal-day", new OrdinalDayOfMonthStrategy(11, 30)),
             Rule("rule-iso-week", new IsoWeekDateStrategy(52, DayOfWeek.Friday)),
@@ -175,8 +175,11 @@ public sealed partial class NotableDateBinaryResourceTests
             new("rec-monthly-weekday", 4, null, null, null, defaultApplicability, new MonthlyWeekdayRecurrenceStrategy(DayOfWeek.Friday, WeekOrdinal.Third, intervalMonths: 3, anchorDate: new DateOnly(2024, 2, 16)), [], []),
         ];
 
+        // A reference with no rule identifier names a concept's sole rule, so the two strategies written with one refer to
+        // a concept that has a single rule, as a resource the loader accepts must.
         List<NotableDateDefinition> definitions =
         [
+            new("nd-anchor", "Anchor", NotableDateCategory.Observance, defaultNonWorkingDay: false, defaultDurationDays: 1, [], [Rule("rule-anchor", new FixedDateStrategy(3, 1))]),
             new("nd-fixed", "Every Strategy", NotableDateCategory.PublicHoliday, defaultNonWorkingDay: true, defaultDurationDays: 2, ["concept-tag"], strategyRules),
             new("nd-recurring", "Every Recurrence", NotableDateCategory.Observance, defaultNonWorkingDay: false, defaultDurationDays: 1, [], recurrenceRules),
         ];
