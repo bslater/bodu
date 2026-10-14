@@ -8,7 +8,7 @@ namespace Bodu.Globalization.Calendar.Samples.Caching;
 
 /// <summary>
 /// The console layout every scenario prints through: a titled banner carrying what the scenario does, why the
-/// behaviour matters, and what a reader should expect to see, followed by the scenario's own labelled values.
+/// behavior matters, and what a reader should expect to see, followed by the scenario's own labeled values.
 /// </summary>
 /// <remarks>
 /// The banner exists so the transcript stands on its own. A reader who runs the sample should be able to tell a
@@ -27,8 +27,8 @@ public static class SampleConsole
     /// </summary>
     /// <param name="title">The scenario title, shown between rule markers.</param>
     /// <param name="what">What the scenario computes, in one or two sentences.</param>
-    /// <param name="why">Why the behaviour matters to a consumer of the API.</param>
-    /// <param name="expect">The result a correct run prints, so a broken run is recognisable.</param>
+    /// <param name="why">Why the behavior matters to a consumer of the API.</param>
+    /// <param name="expect">The result a correct run prints, so a broken run is recognizable.</param>
     public static void Scenario(string title, string what, string why, string expect)
     {
         Console.WriteLine($"--- {title} ---");
@@ -39,7 +39,7 @@ public static class SampleConsole
     }
 
     /// <summary>
-    /// Writes one labelled narration paragraph, wrapped and hanging-indented under its label.
+    /// Writes one labeled narration paragraph, wrapped and hanging-indented under its label.
     /// </summary>
     /// <param name="label">The narration label.</param>
     /// <param name="text">The paragraph to wrap.</param>

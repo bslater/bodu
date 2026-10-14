@@ -10,7 +10,7 @@ using Bodu.Globalization.Calendar.RangeResolution;
 namespace Bodu.Globalization.Calendar.Caching;
 
 /// <summary>
-/// Verifies the resolution behaviour of <see cref="CachingNotableDateService" />: cache hits, range assembly, window
+/// Verifies the resolution behavior of <see cref="CachingNotableDateService" />: cache hits, range assembly, window
 /// clipping, filter post-application, and cache population.
 /// </summary>
 public sealed partial class CachingNotableDateServiceTests
@@ -204,7 +204,7 @@ public sealed partial class CachingNotableDateServiceTests
     }
 
     /// <summary>
-    /// Verifies that an inverted range preserves the wrapped service's argument behaviour rather than returning empty.
+    /// Verifies that an inverted range preserves the wrapped service's argument behavior rather than returning empty.
     /// </summary>
     [TestMethod]
     public void Resolve_WhenRangeInverted_ShouldDelegateToInner()

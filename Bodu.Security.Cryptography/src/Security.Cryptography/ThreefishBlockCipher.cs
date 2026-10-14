@@ -218,7 +218,7 @@ public abstract partial class ThreefishBlockCipher
     /// <returns>The 64-bit unsigned integer read from the source, with little-endian semantics.</returns>
     /// <remarks>
     /// On little-endian hosts (the common case for .NET 8 targets) the byte-swap branch folds away and the call
-    /// compiles to a single unaligned 64-bit load. Used by the Threefish variants to materialise block words directly
+    /// compiles to a single unaligned 64-bit load. Used by the Threefish variants to materialize block words directly
     /// into stack-local registers, eliminating the intermediate <c>stackalloc</c> + <c>CopyTo</c> staging buffer in the
     /// per-block hot path.
     /// </remarks>

@@ -50,7 +50,7 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
     }
 
     /// <summary>
-    /// Verifies that the synchronous append-and-finalise path produces the correct hash value for
+    /// Verifies that the synchronous append-and-finalize path produces the correct hash value for
     /// incrementally growing inputs from empty input through one byte past the spec's coverage threshold.
     /// </summary>
     /// <param name="variant">The variant identifier supplied by the dynamic data source.</param>

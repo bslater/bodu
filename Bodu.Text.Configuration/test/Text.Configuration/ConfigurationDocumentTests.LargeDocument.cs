@@ -20,7 +20,7 @@ public partial class ConfigurationDocumentTests
     /// </summary>
     /// <remarks>
     /// The 10-second threshold is generous - typical CI machines complete this in well under one second.
-    /// The intent is to catch a regression to quadratic behaviour, not to benchmark precisely.
+    /// The intent is to catch a regression to quadratic behavior, not to benchmark precisely.
     /// </remarks>
     [TestMethod]
     [TestCategory(TestCategories.Stress)]

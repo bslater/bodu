@@ -7,7 +7,7 @@
 namespace Bodu.Test.Contracts;
 
 /// <summary>
-/// Reusable behavioural contract test base for the <see cref="IEnumerator{T}" /> surface of a collection.
+/// Reusable behavioral contract test base for the <see cref="IEnumerator{T}" /> surface of a collection.
 /// Concrete subclasses override <see cref="Create(TItem[])" /> and <see cref="CreateItem" /> to plug their
 /// type into the inherited tests.
 /// </summary>

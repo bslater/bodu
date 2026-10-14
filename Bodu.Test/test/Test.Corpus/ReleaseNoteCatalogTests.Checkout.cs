@@ -13,19 +13,19 @@ namespace Bodu.Test.Corpus;
 public sealed partial class ReleaseNoteCatalogTests
 {
     /// <summary>
-    /// The git pathspecs that select every release-note catalogue under <c>corpus/</c> and every copy a test project
+    /// The git pathspecs that select every release-note catalog under <c>corpus/</c> and every copy a test project
     /// embeds.
     /// </summary>
     private static readonly string[] s_catalogPathspecs =
         ["corpus/*/fixes/*-fixes.csv", "*/test/Fixtures/ReleaseNotes/*-fixes.csv"];
 
     /// <summary>
-    /// Verifies that every release-note catalogue in the repository loads with no problems as git checks it out where
-    /// line endings are converted (<c>core.autocrlf=true</c>, the default of Git for Windows), so that a catalogue
+    /// Verifies that every release-note catalog in the repository loads with no problems as git checks it out where
+    /// line endings are converted (<c>core.autocrlf=true</c>, the default of Git for Windows), so that a catalog
     /// keeps the line feeds <see cref="ReleaseNoteCatalog.Load(string, ReadOnlySpan{byte})" /> requires on every
     /// platform.
     /// </summary>
-    /// <returns>A task that completes when the catalogues have been checked.</returns>
+    /// <returns>A task that completes when the catalogs have been checked.</returns>
     [TestMethod]
     public async Task Load_WhenRepositoryCatalogIsCheckedOutWithLineEndingConversion_ShouldReportNoProblems()
     {

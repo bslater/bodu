@@ -41,7 +41,7 @@ key = value
 
     /// <summary>
     /// Verifies that a missing file with <c>optional: true</c> yields an empty configuration view without
-    /// throwing, matching the standard provider behaviour.
+    /// throwing, matching the standard provider behavior.
     /// </summary>
     [TestMethod]
     public void Build_WhenMissingFileAndOptional_ShouldYieldEmptyConfiguration()
@@ -78,7 +78,7 @@ key = value
 
     /// <summary>
     /// Verifies that a malformed *optional* file still throws by default - optional means "may be absent",
-    /// not "may be corrupt". This matches the JSON provider behaviour and protects against silent data loss.
+    /// not "may be corrupt". This matches the JSON provider behavior and protects against silent data loss.
     /// </summary>
     [TestMethod]
     public void Build_WhenMalformedOptionalFile_ShouldStillThrow()

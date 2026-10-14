@@ -24,7 +24,7 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// <para>
 /// Freshness is a strict less-than comparison - a row or window exactly one duration old is stale - and validity allows
 /// a one-minute clock-skew tolerance so a row stamped marginally ahead of the evaluating clock is not discarded. These
-/// are the same thresholds the cache surface has always applied; centralising them here keeps every backend identical,
+/// are the same thresholds the cache surface has always applied; centralizing them here keeps every backend identical,
 /// which the shared cache contract tests assert.
 /// </para>
 /// </remarks>
@@ -347,7 +347,7 @@ public static class RateCacheRules
     /// fresh window remains.
     /// </returns>
     /// <remarks>
-    /// Behaviourally identical to the public tuple overload; kept <see langword="internal" /> because
+    /// Behaviorally identical to the public tuple overload; kept <see langword="internal" /> because
     /// <see cref="CoverageWindow" /> is an internal storage type.
     /// </remarks>
     internal static DateRangeCoverage BuildCoverage(
@@ -383,7 +383,7 @@ public static class RateCacheRules
     /// Thrown when <paramref name="start" /> is later than <paramref name="end" />.
     /// </exception>
     /// <remarks>
-    /// Behaviourally identical to the public tuple overload, including the supersede rule that drops a still-fresh
+    /// Behaviorally identical to the public tuple overload, including the supersede rule that drops a still-fresh
     /// window fully contained in the newly fetched range; kept <see langword="internal" /> because
     /// <see cref="CoverageWindow" /> is an internal storage type.
     /// </remarks>

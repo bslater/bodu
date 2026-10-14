@@ -7,7 +7,7 @@
 namespace Bodu.Globalization.Calendar;
 
 /// <summary>
-/// Verifies the floating Protestant observances authored in the bundled <c>christian-protestant</c> catalogue:
+/// Verifies the floating Protestant observances authored in the bundled <c>christian-protestant</c> catalog:
 /// Transfiguration Sunday (the Last Sunday after Epiphany, authored as <see cref="OffsetFromRuleStrategy" /> 49 days
 /// before the imported Western Easter anchor) and the two weekday-near Sundays, Reformation Sunday (the Sunday on or
 /// before 31 October) and All Saints' Sunday (the first Sunday on or after 1 November). All three are deterministic;
@@ -17,9 +17,9 @@ namespace Bodu.Globalization.Calendar;
 public sealed class ChristianProtestantKnownAnswerTests
 {
     /// <summary>
-    /// Builds a service over the bundled <c>christian-protestant</c> catalogue.
+    /// Builds a service over the bundled <c>christian-protestant</c> catalog.
     /// </summary>
-    /// <returns>A service for the catalogue.</returns>
+    /// <returns>A service for the catalog.</returns>
     private static NotableDateService CreateService() =>
         CommonCatalogues.Service("christian-protestant");
 

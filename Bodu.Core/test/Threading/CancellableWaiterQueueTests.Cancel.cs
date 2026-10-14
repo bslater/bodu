@@ -9,7 +9,7 @@ namespace Bodu.Threading;
 public sealed partial class CancellableWaiterQueueTests
 {
     /// <summary>
-    /// Verifies that cancelling a queued waiter unlinks it and cancels its task with the supplied token.
+    /// Verifies that canceling a queued waiter unlinks it and cancels its task with the supplied token.
     /// </summary>
     [TestMethod]
     public void Cancel_WhenWaiterQueued_ShouldUnlinkAndCancelIt()
@@ -36,7 +36,7 @@ public sealed partial class CancellableWaiterQueueTests
     }
 
     /// <summary>
-    /// Verifies that cancelling a waiter that has already been granted leaves the grant in place.
+    /// Verifies that canceling a waiter that has already been granted leaves the grant in place.
     /// </summary>
     [TestMethod]
     public void Cancel_WhenWaiterAlreadyGranted_ShouldKeepTheGrant()
@@ -83,8 +83,8 @@ public sealed partial class CancellableWaiterQueueTests
     }
 
     /// <summary>
-    /// Verifies that the waiter's task is cancelled only after the owner's gate has been released, so its
-    /// continuations can never observe the gate held by the cancelling thread.
+    /// Verifies that the waiter's task is canceled only after the owner's gate has been released, so its
+    /// continuations can never observe the gate held by the canceling thread.
     /// </summary>
     [TestMethod]
     public void Cancel_WhenCalled_ShouldCompleteTheTaskOutsideTheGate()

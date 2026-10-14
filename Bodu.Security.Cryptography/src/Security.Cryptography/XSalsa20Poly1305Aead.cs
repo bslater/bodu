@@ -13,7 +13,7 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 /// <remarks>
 /// <para>
-/// <strong>Bodu-defined construction.</strong> This is <em>not</em> an IETF-standardised AEAD: there is no RFC, no IETF
+/// <strong>Bodu-defined construction.</strong> This is <em>not</em> an IETF-standardized AEAD: there is no RFC, no IETF
 /// registry assignment, and no published interoperability vector for XSalsa20 combined with the RFC 8439 Poly1305
 /// framing. It is also <em>not</em> wire-compatible with NaCl / libsodium <c>crypto_secretbox</c>. Use it only when
 /// both peers are Bodu, or when a protocol explicitly specifies this hybrid. For interoperable choices use

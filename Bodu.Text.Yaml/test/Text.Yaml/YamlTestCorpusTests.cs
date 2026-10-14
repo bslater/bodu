@@ -20,7 +20,7 @@ namespace Bodu.Text.Yaml;
 /// <remarks>
 /// <para>
 /// The YAML conformance corpus is vendored as a Git submodule and is not populated by a normal source checkout unless
-/// submodules are explicitly initialised.
+/// submodules are explicitly initialized.
 /// </para>
 /// <para>
 /// From the repository root, run:

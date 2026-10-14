@@ -46,7 +46,7 @@ public partial class IntervalTreeTests
     }
 
     /// <summary>
-    /// Materialises the intervals of <paramref name="tree" /> using the public struct enumerator.
+    /// Materializes the intervals of <paramref name="tree" /> using the public struct enumerator.
     /// </summary>
     /// <typeparam name="T">The endpoint type of the tree.</typeparam>
     /// <param name="tree">The tree to snapshot.</param>

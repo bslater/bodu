@@ -42,7 +42,7 @@ logging.level.default = Warning
     }
 
     /// <summary>
-    /// Verifies that the <see cref="IniDocument" /> overload honours a supplied target path during resolution.
+    /// Verifies that the <see cref="IniDocument" /> overload honors a supplied target path during resolution.
     /// </summary>
     [TestMethod]
     public void AddConfiguration_WithIniDocument_WhenTargetPathProvided_ShouldApplyMatchingSection()

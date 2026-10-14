@@ -10,7 +10,7 @@ namespace Bodu.Extensions;
 
 public static partial class StringExtensions
 {
-    /// <summary>The platform's invalid file-name characters as a vectorised search set, computed once per process (<see cref="Path.GetInvalidFileNameChars" /> allocates a fresh array on every call).</summary>
+    /// <summary>The platform's invalid file-name characters as a vectorized search set, computed once per process (<see cref="Path.GetInvalidFileNameChars" /> allocates a fresh array on every call).</summary>
     private static readonly System.Buffers.SearchValues<char> s_invalidFileNameChars =
         System.Buffers.SearchValues.Create(Path.GetInvalidFileNameChars());
 
@@ -18,7 +18,7 @@ public static partial class StringExtensions
     /// Returns <paramref name="value" /> with every character that <see cref="Path.GetInvalidFileNameChars" /> reports
     /// as invalid for a file name replaced by an underscore.
     /// </summary>
-    /// <param name="value">The candidate file name to sanitise.</param>
+    /// <param name="value">The candidate file name to sanitize.</param>
     /// <returns>
     /// A string in which each invalid character has been replaced by <c>'_'</c> - the original instance when nothing
     /// required replacement. Returns <c>"_"</c> when the input is empty so that the result is never itself an empty

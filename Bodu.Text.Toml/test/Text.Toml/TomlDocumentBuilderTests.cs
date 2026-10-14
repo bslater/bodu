@@ -11,7 +11,7 @@ using Bodu.Text.Toml.Reader;
 namespace Bodu.Text.Toml;
 
 /// <summary>
-/// Verifies the behaviour of <see cref="TomlDocumentBuilder" />, the structural TOML parser, with particular focus on
+/// Verifies the behavior of <see cref="TomlDocumentBuilder" />, the structural TOML parser, with particular focus on
 /// the lexical/structural validation split: every rule enforced by the builder's flag-and-link row store must be
 /// rejected by the builder even though the same input lexes cleanly.
 /// </summary>

@@ -105,7 +105,7 @@ public partial class IntervalTests
     }
 
     /// <summary>
-    /// Verifies that Overlaps over <see cref="double" /> agrees with point membership for every pair of catalogue
+    /// Verifies that Overlaps over <see cref="double" /> agrees with point membership for every pair of catalog
     /// intervals, so an unbounded side shares no value with a bounded infinite endpoint.
     /// </summary>
     [TestMethod]
@@ -113,7 +113,7 @@ public partial class IntervalTests
         AssertOverlapsAgreesWithMembership<double>();
 
     /// <summary>
-    /// Verifies that Overlaps over <see cref="float" /> agrees with point membership for every pair of catalogue
+    /// Verifies that Overlaps over <see cref="float" /> agrees with point membership for every pair of catalog
     /// intervals, so an unbounded side shares no value with a bounded infinite endpoint.
     /// </summary>
     [TestMethod]
@@ -121,7 +121,7 @@ public partial class IntervalTests
         AssertOverlapsAgreesWithMembership<float>();
 
     /// <summary>
-    /// Verifies that Overlaps over <see cref="Half" /> agrees with point membership for every pair of catalogue
+    /// Verifies that Overlaps over <see cref="Half" /> agrees with point membership for every pair of catalog
     /// intervals, so an unbounded side shares no value with a bounded infinite endpoint.
     /// </summary>
     [TestMethod]
@@ -130,7 +130,7 @@ public partial class IntervalTests
 
     /// <summary>
     /// Verifies that Intersect over <see cref="double" /> returns exactly the values both operands hold, for every pair
-    /// of catalogue intervals, so an unbounded side does not reach a bounded infinite endpoint.
+    /// of catalog intervals, so an unbounded side does not reach a bounded infinite endpoint.
     /// </summary>
     [TestMethod]
     public void Intersect_WhenOperandsReachInfinity_ForDouble_ShouldAgreeWithPointMembership() =>
@@ -138,7 +138,7 @@ public partial class IntervalTests
 
     /// <summary>
     /// Verifies that Intersect over <see cref="float" /> returns exactly the values both operands hold, for every pair
-    /// of catalogue intervals, so an unbounded side does not reach a bounded infinite endpoint.
+    /// of catalog intervals, so an unbounded side does not reach a bounded infinite endpoint.
     /// </summary>
     [TestMethod]
     public void Intersect_WhenOperandsReachInfinity_ForSingle_ShouldAgreeWithPointMembership() =>
@@ -146,14 +146,14 @@ public partial class IntervalTests
 
     /// <summary>
     /// Verifies that Intersect over <see cref="Half" /> returns exactly the values both operands hold, for every pair
-    /// of catalogue intervals, so an unbounded side does not reach a bounded infinite endpoint.
+    /// of catalog intervals, so an unbounded side does not reach a bounded infinite endpoint.
     /// </summary>
     [TestMethod]
     public void Intersect_WhenOperandsReachInfinity_ForHalf_ShouldAgreeWithPointMembership() =>
         AssertIntersectAgreesWithMembership<Half>();
 
     /// <summary>
-    /// Asserts that <see cref="Interval{T}.Overlaps(Interval{T})" /> reports every pair of catalogue intervals that
+    /// Asserts that <see cref="Interval{T}.Overlaps(Interval{T})" /> reports every pair of catalog intervals that
     /// share a value, and only those.
     /// </summary>
     /// <typeparam name="T">The floating-point endpoint type.</typeparam>
@@ -178,7 +178,7 @@ public partial class IntervalTests
     }
 
     /// <summary>
-    /// Asserts that <see cref="Interval{T}.Intersect(Interval{T})" /> holds exactly the values both catalogue operands
+    /// Asserts that <see cref="Interval{T}.Intersect(Interval{T})" /> holds exactly the values both catalog operands
     /// hold, and is <see cref="Interval{T}.Empty" /> when they share none.
     /// </summary>
     /// <typeparam name="T">The floating-point endpoint type.</typeparam>
@@ -204,7 +204,7 @@ public partial class IntervalTests
     }
 
     /// <summary>
-    /// Verifies that intersecting two catalogue intervals over <see cref="double" />, <see cref="float" /> and
+    /// Verifies that intersecting two catalog intervals over <see cref="double" />, <see cref="float" /> and
     /// <see cref="Half" /> gives an equal result in either operand order, including where an unbounded side meets an
     /// open endpoint at the same infinity.
     /// </summary>
@@ -232,7 +232,7 @@ public partial class IntervalTests
 
     /// <summary>
     /// Asserts that <see cref="Interval{T}.Intersect(Interval{T})" /> returns equal intervals for every pair of
-    /// catalogue intervals in either order.
+    /// catalog intervals in either order.
     /// </summary>
     /// <typeparam name="T">The floating-point endpoint type.</typeparam>
     private static void AssertIntersectIsCommutative<T>()

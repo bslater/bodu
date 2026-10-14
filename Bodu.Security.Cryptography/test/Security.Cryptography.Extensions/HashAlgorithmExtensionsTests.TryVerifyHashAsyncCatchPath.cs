@@ -48,7 +48,7 @@ public partial class HashAlgorithmExtensionsTests
 
     /// <summary>
     /// Verifies that <see cref="HashAlgorithmExtensions.TryVerifyHashAsync(HashAlgorithm, byte[], byte[], CancellationToken)" />
-    /// resolves to <see langword="false" /> when the cancellation token is already cancelled, taking the early-return path
+    /// resolves to <see langword="false" /> when the cancellation token is already canceled, taking the early-return path
     /// without invoking the synchronous delegate.
     /// </summary>
     [TestMethod]
@@ -65,7 +65,7 @@ public partial class HashAlgorithmExtensionsTests
 
     /// <summary>
     /// Verifies that <see cref="HashAlgorithmExtensions.TryVerifyHashAsync(HashAlgorithm, byte[], string, CancellationToken)" />
-    /// resolves to <see langword="false" /> when the cancellation token is already cancelled, taking the early-return path
+    /// resolves to <see langword="false" /> when the cancellation token is already canceled, taking the early-return path
     /// without invoking the synchronous delegate.
     /// </summary>
     [TestMethod]
@@ -82,7 +82,7 @@ public partial class HashAlgorithmExtensionsTests
 
     /// <summary>
     /// Verifies that <see cref="HashAlgorithmExtensions.TryVerifyHashAsync(HashAlgorithm, string, System.Text.Encoding, byte[], CancellationToken)" />
-    /// resolves to <see langword="false" /> when the cancellation token is already cancelled.
+    /// resolves to <see langword="false" /> when the cancellation token is already canceled.
     /// </summary>
     [TestMethod]
     public async Task TryVerifyHashAsync_StringEncoded_WhenAlreadyCancelled_ShouldReturnFalse()

@@ -28,7 +28,7 @@ public sealed class FixedChunkStream
     : System.IO.MemoryStream
 {
     /// <summary>
-    /// Initialises a new instance of <see cref="FixedChunkStream" /> backed by <paramref name="data" /> with the given
+    /// Initializes a new instance of <see cref="FixedChunkStream" /> backed by <paramref name="data" /> with the given
     /// maximum read chunk size.
     /// </summary>
     /// <param name="data">The byte array to expose as a stream.</param>

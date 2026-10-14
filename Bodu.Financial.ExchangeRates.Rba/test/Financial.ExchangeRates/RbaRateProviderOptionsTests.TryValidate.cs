@@ -39,7 +39,7 @@ public partial class RbaRateProviderOptionsTests
     }
 
     /// <summary>
-    /// Verifies that an empty era catalogue is rejected.
+    /// Verifies that an empty era catalog is rejected.
     /// </summary>
     [TestMethod]
     public void TryValidate_WhenErasEmpty_ShouldReturnFalse()

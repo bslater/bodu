@@ -120,7 +120,7 @@ public static class XmlDocProseText
     /// <summary>
     /// Collapses every run of whitespace in the given text to a single space and trims a trailing space.
     /// </summary>
-    /// <param name="text">The text to normalise.</param>
+    /// <param name="text">The text to normalize.</param>
     /// <returns>The text with whitespace runs collapsed to single spaces.</returns>
     private static string CollapseWhitespace(string text)
     {

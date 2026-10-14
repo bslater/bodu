@@ -8,7 +8,7 @@ namespace Bodu.Test.IO;
 
 /// <summary>
 /// A writable <see cref="Stream" /> wrapper that records whether write and disposal operations were performed
-/// synchronously or asynchronously. Use in tests that assert async extension methods honour the correct async I/O and
+/// synchronously or asynchronously. Use in tests that assert async extension methods honor the correct async I/O and
 /// disposal contracts.
 /// </summary>
 /// <remarks>
@@ -47,7 +47,7 @@ public sealed class DisposalTrackingStream
     private readonly Stream _inner;
 
     /// <summary>
-    /// Initialises a new instance of <see cref="DisposalTrackingStream" /> wrapping the supplied
+    /// Initializes a new instance of <see cref="DisposalTrackingStream" /> wrapping the supplied
     /// <paramref name="inner" /> stream.
     /// </summary>
     /// <param name="inner">The backing stream all I/O is delegated to. Must not be <see langword="null" />.</param>

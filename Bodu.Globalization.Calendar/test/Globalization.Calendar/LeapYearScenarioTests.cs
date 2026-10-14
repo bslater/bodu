@@ -8,7 +8,7 @@ namespace Bodu.Globalization.Calendar;
 
 /// <summary>
 /// Ports the v1 leap-year scenarios to the v2 <see cref="NotableDateService.Resolve(DateRange, string)" /> surface:
-/// 29 February fixed anchors that materialise only in leap years, offset rules projecting from a leap-day anchor,
+/// 29 February fixed anchors that materialize only in leap years, offset rules projecting from a leap-day anchor,
 /// last-Monday-of-February resolution across the leap cycle, multi-day spans straddling 29 February, the
 /// <see cref="AdjustmentTrigger.IfLeapYear" /> trigger, the <see cref="AdjustmentTrigger.IfBeforeFixedDate" />
 /// comparison-date clamp at 29 February, and weekend roll-forward on a Saturday 29 February.

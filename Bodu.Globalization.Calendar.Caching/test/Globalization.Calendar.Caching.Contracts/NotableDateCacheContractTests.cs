@@ -9,7 +9,7 @@ using Bodu.Globalization.Calendar.Caching;
 namespace Bodu.Globalization.Calendar.Caching.Contracts;
 
 /// <summary>
-/// Defines the backend-agnostic behavioural contract every <see cref="INotableDateCache" /> implementation must satisfy,
+/// Defines the backend-agnostic behavioral contract every <see cref="INotableDateCache" /> implementation must satisfy,
 /// so the in-memory, file, SQLite, and distributed backends are all exercised against one authoritative specification.
 /// </summary>
 /// <remarks>

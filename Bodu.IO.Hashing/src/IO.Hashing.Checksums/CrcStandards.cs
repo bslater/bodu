@@ -11,7 +11,7 @@
 namespace Bodu.IO.Hashing.Checksums
 {
     /// <summary>
-    /// Identifies a CRC parameter set defined in the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm">CRC RevEng catalogue</a>.
+    /// Identifies a CRC parameter set defined in the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm">CRC RevEng catalog</a>.
     /// Pass to <see cref="CrcStandard.Get(CrcStandards)" /> to materialize the corresponding <see cref="CrcStandard" /> on demand.
     /// </summary>
     /// <remarks>
@@ -23,7 +23,7 @@ namespace Bodu.IO.Hashing.Checksums
     {
         /// <summary>Represents the <c>CRC-3/GSM</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-3/GSM</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-3-gsm">CRC RevEng catalogue</a> (Created: 17 February 2017; Updated: 4 August 2023), with the following definition.</para>
+        /// <para>The <c>CRC-3/GSM</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-3-gsm">CRC RevEng catalog</a> (Created: 17 February 2017; Updated: 4 August 2023), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>3</c></description></item>
@@ -39,7 +39,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-3/ROHC</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-3/ROHC</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-3-rohc">CRC RevEng catalogue</a> (Created: 14 December 2009; Updated: 4 August 2023), with the following definition.</para>
+        /// <para>The <c>CRC-3/ROHC</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-3-rohc">CRC RevEng catalog</a> (Created: 14 December 2009; Updated: 4 August 2023), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>3</c></description></item>
@@ -55,7 +55,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-4/G-704</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-4/G-704</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-4-g-704">CRC RevEng catalogue</a> (Created: 7 October 2008; Updated: 21 November 2018), with the following definition.</para>
+        /// <para>The <c>CRC-4/G-704</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-4-g-704">CRC RevEng catalog</a> (Created: 7 October 2008; Updated: 21 November 2018), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>4</c></description></item>
@@ -72,7 +72,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-4/INTERLAKEN</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-4/INTERLAKEN</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-4-interlaken">CRC RevEng catalogue</a> (Created: 10 February 2016; Updated: 4 August 2023), with the following definition.</para>
+        /// <para>The <c>CRC-4/INTERLAKEN</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-4-interlaken">CRC RevEng catalog</a> (Created: 10 February 2016; Updated: 4 August 2023), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>4</c></description></item>
@@ -88,7 +88,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-5/EPC-C1G2</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-5/EPC-C1G2</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-5-epc-c1g2">CRC RevEng catalogue</a> (Created: 20 May 2009; Updated: 28 December 2019), with the following definition.</para>
+        /// <para>The <c>CRC-5/EPC-C1G2</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-5-epc-c1g2">CRC RevEng catalog</a> (Created: 20 May 2009; Updated: 28 December 2019), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>5</c></description></item>
@@ -105,7 +105,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-5/G-704</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-5/G-704</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-5-g-704">CRC RevEng catalogue</a> (Created: 7 October 2008; Updated: 21 November 2018), with the following definition.</para>
+        /// <para>The <c>CRC-5/G-704</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-5-g-704">CRC RevEng catalog</a> (Created: 7 October 2008; Updated: 21 November 2018), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>5</c></description></item>
@@ -122,7 +122,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-5/USB</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-5/USB</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-5-usb">CRC RevEng catalogue</a> (Created: 1 December 2007; Updated: 12 July 2024), with the following definition.</para>
+        /// <para>The <c>CRC-5/USB</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-5-usb">CRC RevEng catalog</a> (Created: 1 December 2007; Updated: 12 July 2024), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>5</c></description></item>
@@ -138,7 +138,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-6/CDMA2000-A</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-6/CDMA2000-A</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-6-cdma2000-a">CRC RevEng catalogue</a> (Created: 14 October 2013; Updated: 28 July 2023), with the following definition.</para>
+        /// <para>The <c>CRC-6/CDMA2000-A</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-6-cdma2000-a">CRC RevEng catalog</a> (Created: 14 October 2013; Updated: 28 July 2023), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>6</c></description></item>
@@ -154,7 +154,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-6/CDMA2000-B</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-6/CDMA2000-B</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-6-cdma2000-b">CRC RevEng catalogue</a> (Created: 14 October 2013; Updated: 28 July 2023), with the following definition.</para>
+        /// <para>The <c>CRC-6/CDMA2000-B</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-6-cdma2000-b">CRC RevEng catalog</a> (Created: 14 October 2013; Updated: 28 July 2023), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>6</c></description></item>
@@ -170,7 +170,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-6/DARC</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-6/DARC</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-6-darc">CRC RevEng catalogue</a> (Created: 14 December 2009; Updated: 20 November 2018), with the following definition.</para>
+        /// <para>The <c>CRC-6/DARC</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-6-darc">CRC RevEng catalog</a> (Created: 14 December 2009; Updated: 20 November 2018), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>6</c></description></item>
@@ -186,7 +186,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-6/G-704</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-6/G-704</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-6-g-704">CRC RevEng catalogue</a> (Created: 7 October 2008; Updated: 21 November 2018), with the following definition.</para>
+        /// <para>The <c>CRC-6/G-704</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-6-g-704">CRC RevEng catalog</a> (Created: 7 October 2008; Updated: 21 November 2018), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>6</c></description></item>
@@ -203,7 +203,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-6/GSM</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-6/GSM</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-6-gsm">CRC RevEng catalogue</a> (Created: 17 February 2017; Updated: 11 January 2022), with the following definition.</para>
+        /// <para>The <c>CRC-6/GSM</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-6-gsm">CRC RevEng catalog</a> (Created: 17 February 2017; Updated: 11 January 2022), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>6</c></description></item>
@@ -219,7 +219,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-7/MMC</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-7/MMC</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-7-mmc">CRC RevEng catalogue</a> (Created: 7 October 2008; Updated: 11 January 2022), with the following definition.</para>
+        /// <para>The <c>CRC-7/MMC</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-7-mmc">CRC RevEng catalog</a> (Created: 7 October 2008; Updated: 11 January 2022), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>7</c></description></item>
@@ -236,7 +236,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-7/ROHC</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-7/ROHC</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-7-rohc">CRC RevEng catalogue</a> (Created: 14 December 2009; Updated: 4 August 2023), with the following definition.</para>
+        /// <para>The <c>CRC-7/ROHC</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-7-rohc">CRC RevEng catalog</a> (Created: 14 December 2009; Updated: 4 August 2023), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>7</c></description></item>
@@ -252,7 +252,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-7/UMTS</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-7/UMTS</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-7-umts">CRC RevEng catalogue</a> (Created: 8 February 2016; Updated: 7 May 2022), with the following definition.</para>
+        /// <para>The <c>CRC-7/UMTS</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-7-umts">CRC RevEng catalog</a> (Created: 8 February 2016; Updated: 7 May 2022), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>7</c></description></item>
@@ -268,7 +268,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-8/AUTOSAR</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-8/AUTOSAR</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-autosar">CRC RevEng catalogue</a> (Created: 24 July 2016; Updated: 28 July 2023), with the following definition.</para>
+        /// <para>The <c>CRC-8/AUTOSAR</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-autosar">CRC RevEng catalog</a> (Created: 24 July 2016; Updated: 28 July 2023), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>8</c></description></item>
@@ -284,7 +284,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-8/BLUETOOTH</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-8/BLUETOOTH</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-bluetooth">CRC RevEng catalogue</a> (Created: 20 June 2017; Updated: 29 July 2023), with the following definition.</para>
+        /// <para>The <c>CRC-8/BLUETOOTH</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-bluetooth">CRC RevEng catalog</a> (Created: 20 June 2017; Updated: 29 July 2023), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>8</c></description></item>
@@ -300,7 +300,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-8/CDMA2000</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-8/CDMA2000</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-cdma2000">CRC RevEng catalogue</a> (Created: 14 October 2013; Updated: 28 July 2023), with the following definition.</para>
+        /// <para>The <c>CRC-8/CDMA2000</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-cdma2000">CRC RevEng catalog</a> (Created: 14 October 2013; Updated: 28 July 2023), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>8</c></description></item>
@@ -316,7 +316,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-8/DARC</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-8/DARC</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-darc">CRC RevEng catalogue</a> (Created: 14 December 2009; Updated: 29 November 2018), with the following definition.</para>
+        /// <para>The <c>CRC-8/DARC</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-darc">CRC RevEng catalog</a> (Created: 14 December 2009; Updated: 29 November 2018), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>8</c></description></item>
@@ -332,7 +332,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-8/DVB-S2</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-8/DVB-S2</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-dvb-s2">CRC RevEng catalogue</a> (Created: 10 January 2014; Updated: 29 July 2023), with the following definition.</para>
+        /// <para>The <c>CRC-8/DVB-S2</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-dvb-s2">CRC RevEng catalog</a> (Created: 10 January 2014; Updated: 29 July 2023), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>8</c></description></item>
@@ -348,7 +348,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-8/GSM-A</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-8/GSM-A</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-gsm-a">CRC RevEng catalogue</a> (Created: 17 February 2017; Updated: 8 August 2024), with the following definition.</para>
+        /// <para>The <c>CRC-8/GSM-A</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-gsm-a">CRC RevEng catalog</a> (Created: 17 February 2017; Updated: 8 August 2024), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>8</c></description></item>
@@ -364,7 +364,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-8/GSM-B</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-8/GSM-B</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-gsm-b">CRC RevEng catalogue</a> (Created: 17 February 2017; Updated: 4 August 2023), with the following definition.</para>
+        /// <para>The <c>CRC-8/GSM-B</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-gsm-b">CRC RevEng catalog</a> (Created: 17 February 2017; Updated: 4 August 2023), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>8</c></description></item>
@@ -380,7 +380,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-8/HITAG</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-8/HITAG</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-hitag">CRC RevEng catalogue</a> (Created: 23 December 2021; Updated: 4 August 2023), with the following definition.</para>
+        /// <para>The <c>CRC-8/HITAG</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-hitag">CRC RevEng catalog</a> (Created: 23 December 2021; Updated: 4 August 2023), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>8</c></description></item>
@@ -396,7 +396,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-8/I-432-1</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-8/I-432-1</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-i-432-1">CRC RevEng catalogue</a> (Created: 19 April 2009; Updated: 2 August 2023), with the following definition.</para>
+        /// <para>The <c>CRC-8/I-432-1</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-i-432-1">CRC RevEng catalog</a> (Created: 19 April 2009; Updated: 2 August 2023), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>8</c></description></item>
@@ -413,7 +413,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-8/I-CODE</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-8/I-CODE</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-i-code">CRC RevEng catalogue</a> (Created: 3 November 2007; Updated: 6 February 2017), with the following definition.</para>
+        /// <para>The <c>CRC-8/I-CODE</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-i-code">CRC RevEng catalog</a> (Created: 3 November 2007; Updated: 6 February 2017), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>8</c></description></item>
@@ -429,7 +429,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-8/LTE</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-8/LTE</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-lte">CRC RevEng catalogue</a> (Created: 13 February 2016; Updated: 5 August 2023), with the following definition.</para>
+        /// <para>The <c>CRC-8/LTE</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-lte">CRC RevEng catalog</a> (Created: 13 February 2016; Updated: 5 August 2023), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>8</c></description></item>
@@ -445,7 +445,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-8/MAXIM-DOW</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-8/MAXIM-DOW</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-maxim-dow">CRC RevEng catalogue</a> (Created: 26 April 2009; Updated: 2 January 2021), with the following definition.</para>
+        /// <para>The <c>CRC-8/MAXIM-DOW</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-maxim-dow">CRC RevEng catalog</a> (Created: 26 April 2009; Updated: 2 January 2021), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>8</c></description></item>
@@ -462,7 +462,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-8/MIFARE-MAD</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-8/MIFARE-MAD</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-mifare-mad">CRC RevEng catalogue</a> (Created: 21 February 2019; Updated: 20 March 2019), with the following definition.</para>
+        /// <para>The <c>CRC-8/MIFARE-MAD</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-mifare-mad">CRC RevEng catalog</a> (Created: 21 February 2019; Updated: 20 March 2019), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>8</c></description></item>
@@ -478,7 +478,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-8/NRSC-5</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-8/NRSC-5</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-nrsc-5">CRC RevEng catalogue</a> (Created: 16 November 2018; Updated: 20 March 2019), with the following definition.</para>
+        /// <para>The <c>CRC-8/NRSC-5</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-nrsc-5">CRC RevEng catalog</a> (Created: 16 November 2018; Updated: 20 March 2019), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>8</c></description></item>
@@ -494,7 +494,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-8/OPENSAFETY</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-8/OPENSAFETY</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-opensafety">CRC RevEng catalogue</a> (Created: 22 July 2016; Updated: 7 May 2022), with the following definition.</para>
+        /// <para>The <c>CRC-8/OPENSAFETY</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-opensafety">CRC RevEng catalog</a> (Created: 22 July 2016; Updated: 7 May 2022), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>8</c></description></item>
@@ -510,7 +510,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-8/ROHC</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-8/ROHC</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-rohc">CRC RevEng catalogue</a> (Created: 14 December 2009; Updated: 4 August 2023), with the following definition.</para>
+        /// <para>The <c>CRC-8/ROHC</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-rohc">CRC RevEng catalog</a> (Created: 14 December 2009; Updated: 4 August 2023), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>8</c></description></item>
@@ -526,7 +526,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-8/SAE-J1850</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-8/SAE-J1850</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-sae-j1850">CRC RevEng catalogue</a> (Created: 17 February 2016; Updated: 3 August 2023), with the following definition.</para>
+        /// <para>The <c>CRC-8/SAE-J1850</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-sae-j1850">CRC RevEng catalog</a> (Created: 17 February 2016; Updated: 3 August 2023), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>8</c></description></item>
@@ -542,7 +542,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-8/SMBUS</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-8/SMBUS</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-smbus">CRC RevEng catalogue</a> (Created: 30 March 2005; Updated: 8 August 2024), with the following definition.</para>
+        /// <para>The <c>CRC-8/SMBUS</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-smbus">CRC RevEng catalog</a> (Created: 30 March 2005; Updated: 8 August 2024), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>8</c></description></item>
@@ -559,7 +559,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-8/TECH-3250</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-8/TECH-3250</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-tech-3250">CRC RevEng catalogue</a> (Created: 19 July 2012; Updated: 21 November 2018), with the following definition.</para>
+        /// <para>The <c>CRC-8/TECH-3250</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-tech-3250">CRC RevEng catalog</a> (Created: 19 July 2012; Updated: 21 November 2018), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>8</c></description></item>
@@ -576,7 +576,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-8/WCDMA</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-8/WCDMA</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-wcdma">CRC RevEng catalogue</a> (Created: 8 November 2009; Updated: 28 December 2019), with the following definition.</para>
+        /// <para>The <c>CRC-8/WCDMA</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-8-wcdma">CRC RevEng catalog</a> (Created: 8 November 2009; Updated: 28 December 2019), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>8</c></description></item>
@@ -592,7 +592,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-10/ATM</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-10/ATM</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-10-atm">CRC RevEng catalogue</a> (Created: 19 April 2009; Updated: 7 May 2022), with the following definition.</para>
+        /// <para>The <c>CRC-10/ATM</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-10-atm">CRC RevEng catalog</a> (Created: 19 April 2009; Updated: 7 May 2022), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>10</c></description></item>
@@ -609,7 +609,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-10/CDMA2000</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-10/CDMA2000</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-10-cdma2000">CRC RevEng catalogue</a> (Created: 14 October 2013; Updated: 28 July 2023), with the following definition.</para>
+        /// <para>The <c>CRC-10/CDMA2000</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-10-cdma2000">CRC RevEng catalog</a> (Created: 14 October 2013; Updated: 28 July 2023), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>10</c></description></item>
@@ -625,7 +625,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-10/GSM</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-10/GSM</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-10-gsm">CRC RevEng catalogue</a> (Created: 17 February 2017; Updated: 7 May 2022), with the following definition.</para>
+        /// <para>The <c>CRC-10/GSM</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-10-gsm">CRC RevEng catalog</a> (Created: 17 February 2017; Updated: 7 May 2022), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>10</c></description></item>
@@ -641,7 +641,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-11/FLEXRAY</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-11/FLEXRAY</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-11-flexray">CRC RevEng catalogue</a> (Created: 3 November 2007; Updated: 7 May 2022), with the following definition.</para>
+        /// <para>The <c>CRC-11/FLEXRAY</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-11-flexray">CRC RevEng catalog</a> (Created: 3 November 2007; Updated: 7 May 2022), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>11</c></description></item>
@@ -658,7 +658,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-11/UMTS</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-11/UMTS</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-11-umts">CRC RevEng catalogue</a> (Created: 8 February 2016; Updated: 7 May 2022), with the following definition.</para>
+        /// <para>The <c>CRC-11/UMTS</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-11-umts">CRC RevEng catalog</a> (Created: 8 February 2016; Updated: 7 May 2022), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>11</c></description></item>
@@ -674,7 +674,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-12/CDMA2000</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-12/CDMA2000</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-12-cdma2000">CRC RevEng catalogue</a> (Created: 14 October 2013; Updated: 28 July 2023), with the following definition.</para>
+        /// <para>The <c>CRC-12/CDMA2000</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-12-cdma2000">CRC RevEng catalog</a> (Created: 14 October 2013; Updated: 28 July 2023), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>12</c></description></item>
@@ -690,7 +690,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-12/DECT</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-12/DECT</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-12-dect">CRC RevEng catalogue</a> (Created: 29 July 2010; Updated: 15 February 2017), with the following definition.</para>
+        /// <para>The <c>CRC-12/DECT</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-12-dect">CRC RevEng catalog</a> (Created: 29 July 2010; Updated: 15 February 2017), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>12</c></description></item>
@@ -707,7 +707,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-12/GSM</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-12/GSM</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-12-gsm">CRC RevEng catalogue</a> (Created: 17 February 2017; Updated: 5 August 2023), with the following definition.</para>
+        /// <para>The <c>CRC-12/GSM</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-12-gsm">CRC RevEng catalog</a> (Created: 17 February 2017; Updated: 5 August 2023), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>12</c></description></item>
@@ -723,7 +723,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-12/UMTS</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-12/UMTS</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-12-umts">CRC RevEng catalogue</a> (Created: 10 December 2009; Updated: 5 August 2023), with the following definition.</para>
+        /// <para>The <c>CRC-12/UMTS</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-12-umts">CRC RevEng catalog</a> (Created: 10 December 2009; Updated: 5 August 2023), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>12</c></description></item>
@@ -740,7 +740,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-13/BBC</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-13/BBC</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-13-bbc">CRC RevEng catalogue</a> (Created: 14 October 2013; Updated: 6 February 2017), with the following definition.</para>
+        /// <para>The <c>CRC-13/BBC</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-13-bbc">CRC RevEng catalog</a> (Created: 14 October 2013; Updated: 6 February 2017), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>13</c></description></item>
@@ -756,7 +756,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-14/DARC</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-14/DARC</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-14-darc">CRC RevEng catalogue</a> (Created: 14 December 2009; Updated: 20 November 2018), with the following definition.</para>
+        /// <para>The <c>CRC-14/DARC</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-14-darc">CRC RevEng catalog</a> (Created: 14 December 2009; Updated: 20 November 2018), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>14</c></description></item>
@@ -772,7 +772,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-14/GSM</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-14/GSM</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-14-gsm">CRC RevEng catalogue</a> (Created: 17 February 2017; Updated: 7 May 2022), with the following definition.</para>
+        /// <para>The <c>CRC-14/GSM</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-14-gsm">CRC RevEng catalog</a> (Created: 17 February 2017; Updated: 7 May 2022), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>14</c></description></item>
@@ -788,7 +788,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-15/CAN</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-15/CAN</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-15-can">CRC RevEng catalogue</a> (Created: 2 November 2007; Updated: 7 May 2022), with the following definition.</para>
+        /// <para>The <c>CRC-15/CAN</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-15-can">CRC RevEng catalog</a> (Created: 2 November 2007; Updated: 7 May 2022), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>15</c></description></item>
@@ -805,7 +805,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-15/MPT1327</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-15/MPT1327</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-15-mpt1327">CRC RevEng catalogue</a> (Created: 16 July 2012; Updated: 2 August 2023), with the following definition.</para>
+        /// <para>The <c>CRC-15/MPT1327</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-15-mpt1327">CRC RevEng catalog</a> (Created: 16 July 2012; Updated: 2 August 2023), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>15</c></description></item>
@@ -821,7 +821,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-16/ARC</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-16/ARC</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-arc">CRC RevEng catalogue</a> (Created: 30 March 2005; Updated: 2 August 2023), with the following definition.</para>
+        /// <para>The <c>CRC-16/ARC</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-arc">CRC RevEng catalog</a> (Created: 30 March 2005; Updated: 2 August 2023), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>16</c></description></item>
@@ -838,7 +838,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-16/CDMA2000</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-16/CDMA2000</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-cdma2000">CRC RevEng catalogue</a> (Created: 14 October 2013; Updated: 28 July 2023), with the following definition.</para>
+        /// <para>The <c>CRC-16/CDMA2000</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-cdma2000">CRC RevEng catalog</a> (Created: 14 October 2013; Updated: 28 July 2023), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>16</c></description></item>
@@ -854,7 +854,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-16/CMS</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-16/CMS</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-cms">CRC RevEng catalogue</a> (Created: 13 July 2016; Updated: 2 August 2023), with the following definition.</para>
+        /// <para>The <c>CRC-16/CMS</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-cms">CRC RevEng catalog</a> (Created: 13 July 2016; Updated: 2 August 2023), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>16</c></description></item>
@@ -870,7 +870,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-16/DDS-110</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-16/DDS-110</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-dds-110">CRC RevEng catalogue</a> (Created: 30 November 2009; Updated: 28 December 2019), with the following definition.</para>
+        /// <para>The <c>CRC-16/DDS-110</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-dds-110">CRC RevEng catalog</a> (Created: 30 November 2009; Updated: 28 December 2019), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>16</c></description></item>
@@ -886,7 +886,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-16/DECT-R</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-16/DECT-R</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-dect-r">CRC RevEng catalogue</a> (Created: 7 December 2009; Updated: 3 August 2023), with the following definition.</para>
+        /// <para>The <c>CRC-16/DECT-R</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-dect-r">CRC RevEng catalog</a> (Created: 7 December 2009; Updated: 3 August 2023), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>16</c></description></item>
@@ -903,7 +903,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-16/DECT-X</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-16/DECT-X</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-dect-x">CRC RevEng catalogue</a> (Created: 30 July 2010; Updated: 2 January 2021), with the following definition.</para>
+        /// <para>The <c>CRC-16/DECT-X</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-dect-x">CRC RevEng catalog</a> (Created: 30 July 2010; Updated: 2 January 2021), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>16</c></description></item>
@@ -920,7 +920,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-16/DNP</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-16/DNP</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-dnp">CRC RevEng catalogue</a> (Created: 2 November 2007; Updated: 28 December 2019), with the following definition.</para>
+        /// <para>The <c>CRC-16/DNP</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-dnp">CRC RevEng catalog</a> (Created: 2 November 2007; Updated: 28 December 2019), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>16</c></description></item>
@@ -936,7 +936,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-16/EN-13757</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-16/EN-13757</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-en-13757">CRC RevEng catalogue</a> (Created: 1 October 2008; Updated: 28 December 2019), with the following definition.</para>
+        /// <para>The <c>CRC-16/EN-13757</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-en-13757">CRC RevEng catalog</a> (Created: 1 October 2008; Updated: 28 December 2019), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>16</c></description></item>
@@ -952,7 +952,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-16/GENIBUS</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-16/GENIBUS</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-genibus">CRC RevEng catalogue</a> (Created: 2 November 2007; Updated: 3 January 2021), with the following definition.</para>
+        /// <para>The <c>CRC-16/GENIBUS</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-genibus">CRC RevEng catalog</a> (Created: 2 November 2007; Updated: 3 January 2021), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>16</c></description></item>
@@ -969,7 +969,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-16/GSM</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-16/GSM</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-gsm">CRC RevEng catalogue</a> (Created: 17 February 2017; Updated: 4 August 2023), with the following definition.</para>
+        /// <para>The <c>CRC-16/GSM</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-gsm">CRC RevEng catalog</a> (Created: 17 February 2017; Updated: 4 August 2023), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>16</c></description></item>
@@ -985,7 +985,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-16/IBM-3740</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-16/IBM-3740</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-ibm-3740">CRC RevEng catalogue</a> (Created: 30 March 2005; Updated: 3 August 2023), with the following definition.</para>
+        /// <para>The <c>CRC-16/IBM-3740</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-ibm-3740">CRC RevEng catalog</a> (Created: 30 March 2005; Updated: 3 August 2023), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>16</c></description></item>
@@ -1002,7 +1002,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-16/IBM-SDLC</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-16/IBM-SDLC</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-ibm-sdlc">CRC RevEng catalogue</a> (Created: 10 September 2005; Updated: 4 August 2023), with the following definition.</para>
+        /// <para>The <c>CRC-16/IBM-SDLC</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-ibm-sdlc">CRC RevEng catalog</a> (Created: 10 September 2005; Updated: 4 August 2023), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>16</c></description></item>
@@ -1019,7 +1019,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-16/ISO-IEC-14443-3-A</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-16/ISO-IEC-14443-3-A</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-iso-iec-14443-3-a">CRC RevEng catalogue</a> (Created: 30 April 2011; Updated: 3 August 2023), with the following definition.</para>
+        /// <para>The <c>CRC-16/ISO-IEC-14443-3-A</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-iso-iec-14443-3-a">CRC RevEng catalog</a> (Created: 30 April 2011; Updated: 3 August 2023), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>16</c></description></item>
@@ -1036,7 +1036,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-16/KERMIT</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-16/KERMIT</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-kermit">CRC RevEng catalogue</a> (Created: 10 September 2005; Updated: 4 August 2023), with the following definition.</para>
+        /// <para>The <c>CRC-16/KERMIT</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-kermit">CRC RevEng catalog</a> (Created: 10 September 2005; Updated: 4 August 2023), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>16</c></description></item>
@@ -1053,7 +1053,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-16/LJ1200</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-16/LJ1200</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-lj1200">CRC RevEng catalogue</a> (Created: 20 February 2016; Updated: 6 June 2018), with the following definition.</para>
+        /// <para>The <c>CRC-16/LJ1200</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-lj1200">CRC RevEng catalog</a> (Created: 20 February 2016; Updated: 6 June 2018), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>16</c></description></item>
@@ -1069,7 +1069,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-16/M17</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-16/M17</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-m17">CRC RevEng catalogue</a> (Created: 7 May 2022; Updated: 8 August 2024), with the following definition.</para>
+        /// <para>The <c>CRC-16/M17</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-m17">CRC RevEng catalog</a> (Created: 7 May 2022; Updated: 8 August 2024), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>16</c></description></item>
@@ -1085,7 +1085,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-16/MAXIM-DOW</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-16/MAXIM-DOW</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-maxim-dow">CRC RevEng catalogue</a> (Created: 26 April 2009; Updated: 28 December 2019), with the following definition.</para>
+        /// <para>The <c>CRC-16/MAXIM-DOW</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-maxim-dow">CRC RevEng catalog</a> (Created: 26 April 2009; Updated: 28 December 2019), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>16</c></description></item>
@@ -1102,7 +1102,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-16/MCRF4XX</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-16/MCRF4XX</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-mcrf4xx">CRC RevEng catalogue</a> (Created: 18 January 2008; Updated: 4 August 2023), with the following definition.</para>
+        /// <para>The <c>CRC-16/MCRF4XX</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-mcrf4xx">CRC RevEng catalog</a> (Created: 18 January 2008; Updated: 4 August 2023), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>16</c></description></item>
@@ -1118,7 +1118,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-16/MODBUS</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-16/MODBUS</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-modbus">CRC RevEng catalogue</a> (Created: 27 February 2007; Updated: 2 January 2021), with the following definition.</para>
+        /// <para>The <c>CRC-16/MODBUS</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-modbus">CRC RevEng catalog</a> (Created: 27 February 2007; Updated: 2 January 2021), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>16</c></description></item>
@@ -1135,7 +1135,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-16/NRSC-5</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-16/NRSC-5</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-nrsc-5">CRC RevEng catalogue</a> (Created: 16 November 2018; Updated: 20 March 2019), with the following definition.</para>
+        /// <para>The <c>CRC-16/NRSC-5</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-nrsc-5">CRC RevEng catalog</a> (Created: 16 November 2018; Updated: 20 March 2019), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>16</c></description></item>
@@ -1151,7 +1151,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-16/OPENSAFETY-A</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-16/OPENSAFETY-A</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-opensafety-a">CRC RevEng catalogue</a> (Created: 22 July 2016; Updated: 7 May 2022), with the following definition.</para>
+        /// <para>The <c>CRC-16/OPENSAFETY-A</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-opensafety-a">CRC RevEng catalog</a> (Created: 22 July 2016; Updated: 7 May 2022), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>16</c></description></item>
@@ -1167,7 +1167,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-16/OPENSAFETY-B</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-16/OPENSAFETY-B</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-opensafety-b">CRC RevEng catalogue</a> (Created: 22 July 2016; Updated: 7 May 2022), with the following definition.</para>
+        /// <para>The <c>CRC-16/OPENSAFETY-B</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-opensafety-b">CRC RevEng catalog</a> (Created: 22 July 2016; Updated: 7 May 2022), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>16</c></description></item>
@@ -1183,7 +1183,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-16/PROFIBUS</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-16/PROFIBUS</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-profibus">CRC RevEng catalogue</a> (Created: 5 July 2016; Updated: 7 May 2022), with the following definition.</para>
+        /// <para>The <c>CRC-16/PROFIBUS</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-profibus">CRC RevEng catalog</a> (Created: 5 July 2016; Updated: 7 May 2022), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>16</c></description></item>
@@ -1200,7 +1200,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-16/RIELLO</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-16/RIELLO</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-riello">CRC RevEng catalogue</a> (Created: 18 April 2009; Updated: 28 December 2019), with the following definition.</para>
+        /// <para>The <c>CRC-16/RIELLO</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-riello">CRC RevEng catalog</a> (Created: 18 April 2009; Updated: 28 December 2019), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>16</c></description></item>
@@ -1216,7 +1216,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-16/SPI-FUJITSU</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-16/SPI-FUJITSU</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-spi-fujitsu">CRC RevEng catalogue</a> (Created: 30 October 2007; Updated: 4 August 2023), with the following definition.</para>
+        /// <para>The <c>CRC-16/SPI-FUJITSU</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-spi-fujitsu">CRC RevEng catalog</a> (Created: 30 October 2007; Updated: 4 August 2023), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>16</c></description></item>
@@ -1233,7 +1233,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-16/T10-DIF</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-16/T10-DIF</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-t10-dif">CRC RevEng catalogue</a> (Created: 29 September 2009; Updated: 2 January 2021), with the following definition.</para>
+        /// <para>The <c>CRC-16/T10-DIF</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-t10-dif">CRC RevEng catalog</a> (Created: 29 September 2009; Updated: 2 January 2021), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>16</c></description></item>
@@ -1249,7 +1249,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-16/TELEDISK</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-16/TELEDISK</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-teledisk">CRC RevEng catalogue</a> (Created: 10 December 2009; Updated: 4 August 2023), with the following definition.</para>
+        /// <para>The <c>CRC-16/TELEDISK</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-teledisk">CRC RevEng catalog</a> (Created: 10 December 2009; Updated: 4 August 2023), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>16</c></description></item>
@@ -1265,7 +1265,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-16/TMS37157</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-16/TMS37157</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-tms37157">CRC RevEng catalogue</a> (Created: 17 April 2011; Updated: 28 December 2019), with the following definition.</para>
+        /// <para>The <c>CRC-16/TMS37157</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-tms37157">CRC RevEng catalog</a> (Created: 17 April 2011; Updated: 28 December 2019), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>16</c></description></item>
@@ -1281,7 +1281,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-16/UMTS</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-16/UMTS</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-umts">CRC RevEng catalogue</a> (Created: 4 June 2008; Updated: 8 August 2024), with the following definition.</para>
+        /// <para>The <c>CRC-16/UMTS</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-umts">CRC RevEng catalog</a> (Created: 4 June 2008; Updated: 8 August 2024), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>16</c></description></item>
@@ -1298,7 +1298,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-16/USB</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-16/USB</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-usb">CRC RevEng catalogue</a> (Created: 1 December 2007; Updated: 12 July 2024), with the following definition.</para>
+        /// <para>The <c>CRC-16/USB</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-usb">CRC RevEng catalog</a> (Created: 1 December 2007; Updated: 12 July 2024), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>16</c></description></item>
@@ -1314,7 +1314,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-16/XMODEM</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-16/XMODEM</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-xmodem">CRC RevEng catalogue</a> (Created: 30 March 2005; Updated: 5 August 2023), with the following definition.</para>
+        /// <para>The <c>CRC-16/XMODEM</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-16-xmodem">CRC RevEng catalog</a> (Created: 30 March 2005; Updated: 5 August 2023), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>16</c></description></item>
@@ -1331,7 +1331,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-17/CAN-FD</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-17/CAN-FD</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-17-can-fd">CRC RevEng catalogue</a> (Created: 20 June 2017; Updated: 3 January 2021), with the following definition.</para>
+        /// <para>The <c>CRC-17/CAN-FD</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-17-can-fd">CRC RevEng catalog</a> (Created: 20 June 2017; Updated: 3 January 2021), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>17</c></description></item>
@@ -1347,7 +1347,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-21/CAN-FD</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-21/CAN-FD</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-21-can-fd">CRC RevEng catalogue</a> (Created: 20 June 2017; Updated: 3 January 2021), with the following definition.</para>
+        /// <para>The <c>CRC-21/CAN-FD</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-21-can-fd">CRC RevEng catalog</a> (Created: 20 June 2017; Updated: 3 January 2021), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>21</c></description></item>
@@ -1363,7 +1363,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-24/BLE</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-24/BLE</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-24-ble">CRC RevEng catalogue</a> (Created: 7 February 2016; Updated: 4 August 2023), with the following definition.</para>
+        /// <para>The <c>CRC-24/BLE</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-24-ble">CRC RevEng catalog</a> (Created: 7 February 2016; Updated: 4 August 2023), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>24</c></description></item>
@@ -1379,7 +1379,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-24/FLEXRAY-A</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-24/FLEXRAY-A</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-24-flexray-a">CRC RevEng catalogue</a> (Created: 3 November 2007; Updated: 6 February 2017), with the following definition.</para>
+        /// <para>The <c>CRC-24/FLEXRAY-A</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-24-flexray-a">CRC RevEng catalog</a> (Created: 3 November 2007; Updated: 6 February 2017), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>24</c></description></item>
@@ -1395,7 +1395,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-24/FLEXRAY-B</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-24/FLEXRAY-B</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-24-flexray-b">CRC RevEng catalogue</a> (Created: 3 November 2007; Updated: 6 February 2017), with the following definition.</para>
+        /// <para>The <c>CRC-24/FLEXRAY-B</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-24-flexray-b">CRC RevEng catalog</a> (Created: 3 November 2007; Updated: 6 February 2017), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>24</c></description></item>
@@ -1411,7 +1411,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-24/INTERLAKEN</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-24/INTERLAKEN</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-24-interlaken">CRC RevEng catalogue</a> (Created: 10 February 2016; Updated: 4 August 2023), with the following definition.</para>
+        /// <para>The <c>CRC-24/INTERLAKEN</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-24-interlaken">CRC RevEng catalog</a> (Created: 10 February 2016; Updated: 4 August 2023), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>24</c></description></item>
@@ -1427,7 +1427,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-24/LTE-A</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-24/LTE-A</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-24-lte-a">CRC RevEng catalogue</a> (Created: 13 February 2016; Updated: 5 August 2023), with the following definition.</para>
+        /// <para>The <c>CRC-24/LTE-A</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-24-lte-a">CRC RevEng catalog</a> (Created: 13 February 2016; Updated: 5 August 2023), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>24</c></description></item>
@@ -1443,7 +1443,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-24/LTE-B</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-24/LTE-B</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-24-lte-b">CRC RevEng catalogue</a> (Created: 13 February 2016; Updated: 5 August 2023), with the following definition.</para>
+        /// <para>The <c>CRC-24/LTE-B</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-24-lte-b">CRC RevEng catalog</a> (Created: 13 February 2016; Updated: 5 August 2023), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>24</c></description></item>
@@ -1459,7 +1459,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-24/OPENPGP</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-24/OPENPGP</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-24-openpgp">CRC RevEng catalogue</a> (Created: 2 November 2007; Updated: 4 August 2023), with the following definition.</para>
+        /// <para>The <c>CRC-24/OPENPGP</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-24-openpgp">CRC RevEng catalog</a> (Created: 2 November 2007; Updated: 4 August 2023), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>24</c></description></item>
@@ -1476,7 +1476,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-24/OS-9</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-24/OS-9</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-24-os-9">CRC RevEng catalogue</a> (Created: 25 July 2018; Updated: 4 August 2023), with the following definition.</para>
+        /// <para>The <c>CRC-24/OS-9</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-24-os-9">CRC RevEng catalog</a> (Created: 25 July 2018; Updated: 4 August 2023), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>24</c></description></item>
@@ -1492,7 +1492,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-30/CDMA</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-30/CDMA</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-30-cdma">CRC RevEng catalogue</a> (Created: 20 February 2016; Updated: 4 August 2023), with the following definition.</para>
+        /// <para>The <c>CRC-30/CDMA</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-30-cdma">CRC RevEng catalog</a> (Created: 20 February 2016; Updated: 4 August 2023), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>30</c></description></item>
@@ -1508,7 +1508,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-31/PHILIPS</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-31/PHILIPS</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-31-philips">CRC RevEng catalogue</a> (Created: 12 April 2012; Updated: 28 December 2019), with the following definition.</para>
+        /// <para>The <c>CRC-31/PHILIPS</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-31-philips">CRC RevEng catalog</a> (Created: 12 April 2012; Updated: 28 December 2019), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>31</c></description></item>
@@ -1524,7 +1524,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-32/AIXM</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-32/AIXM</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-32-aixm">CRC RevEng catalogue</a> (Created: 29 April 2009; Updated: 2 January 2021), with the following definition.</para>
+        /// <para>The <c>CRC-32/AIXM</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-32-aixm">CRC RevEng catalog</a> (Created: 29 April 2009; Updated: 2 January 2021), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>32</c></description></item>
@@ -1541,7 +1541,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-32/AUTOSAR</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-32/AUTOSAR</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-32-autosar">CRC RevEng catalogue</a> (Created: 24 July 2016; Updated: 28 July 2023), with the following definition.</para>
+        /// <para>The <c>CRC-32/AUTOSAR</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-32-autosar">CRC RevEng catalog</a> (Created: 24 July 2016; Updated: 28 July 2023), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>32</c></description></item>
@@ -1557,7 +1557,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-32/BASE91-D</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-32/BASE91-D</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-32-base91-d">CRC RevEng catalogue</a> (Created: 28 November 2008; Updated: 8 August 2024), with the following definition.</para>
+        /// <para>The <c>CRC-32/BASE91-D</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-32-base91-d">CRC RevEng catalog</a> (Created: 28 November 2008; Updated: 8 August 2024), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>32</c></description></item>
@@ -1574,7 +1574,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-32/BZIP2</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-32/BZIP2</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-32-bzip2">CRC RevEng catalogue</a> (Created: 8 October 2008; Updated: 22 August 2022), with the following definition.</para>
+        /// <para>The <c>CRC-32/BZIP2</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-32-bzip2">CRC RevEng catalog</a> (Created: 8 October 2008; Updated: 22 August 2022), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>32</c></description></item>
@@ -1591,7 +1591,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-32/CD-ROM-EDC</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-32/CD-ROM-EDC</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-32-cd-rom-edc">CRC RevEng catalogue</a> (Created: 19 April 2019; Updated: 4 August 2023), with the following definition.</para>
+        /// <para>The <c>CRC-32/CD-ROM-EDC</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-32-cd-rom-edc">CRC RevEng catalog</a> (Created: 19 April 2019; Updated: 4 August 2023), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>32</c></description></item>
@@ -1607,7 +1607,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-32/CKSUM</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-32/CKSUM</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-32-cksum">CRC RevEng catalogue</a> (Created: 30 March 2005; Updated: 8 August 2024), with the following definition.</para>
+        /// <para>The <c>CRC-32/CKSUM</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-32-cksum">CRC RevEng catalog</a> (Created: 30 March 2005; Updated: 8 August 2024), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>32</c></description></item>
@@ -1624,7 +1624,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-32/ISCSI</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-32/ISCSI</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-32-iscsi">CRC RevEng catalogue</a> (Created: 10 September 2005; Updated: 8 August 2024), with the following definition.</para>
+        /// <para>The <c>CRC-32/ISCSI</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-32-iscsi">CRC RevEng catalog</a> (Created: 10 September 2005; Updated: 8 August 2024), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>32</c></description></item>
@@ -1641,7 +1641,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-32/ISO-HDLC</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-32/ISO-HDLC</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-32-iso-hdlc">CRC RevEng catalogue</a> (Created: 30 March 2005; Updated: 11 December 2024), with the following definition.</para>
+        /// <para>The <c>CRC-32/ISO-HDLC</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-32-iso-hdlc">CRC RevEng catalog</a> (Created: 30 March 2005; Updated: 11 December 2024), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>32</c></description></item>
@@ -1658,7 +1658,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-32/JAMCRC</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-32/JAMCRC</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-32-jamcrc">CRC RevEng catalogue</a> (Created: 30 March 2005; Updated: 21 November 2018), with the following definition.</para>
+        /// <para>The <c>CRC-32/JAMCRC</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-32-jamcrc">CRC RevEng catalog</a> (Created: 30 March 2005; Updated: 21 November 2018), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>32</c></description></item>
@@ -1675,7 +1675,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-32/MEF</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-32/MEF</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-32-mef">CRC RevEng catalogue</a> (Created: 10 January 2022; Updated: 4 August 2023), with the following definition.</para>
+        /// <para>The <c>CRC-32/MEF</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-32-mef">CRC RevEng catalog</a> (Created: 10 January 2022; Updated: 4 August 2023), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>32</c></description></item>
@@ -1691,7 +1691,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-32/MPEG-2</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-32/MPEG-2</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-32-mpeg-2">CRC RevEng catalogue</a> (Created: 8 October 2008; Updated: 4 August 2023), with the following definition.</para>
+        /// <para>The <c>CRC-32/MPEG-2</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-32-mpeg-2">CRC RevEng catalog</a> (Created: 8 October 2008; Updated: 4 August 2023), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>32</c></description></item>
@@ -1707,7 +1707,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-32/XFER</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-32/XFER</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-32-xfer">CRC RevEng catalogue</a> (Created: 30 March 2005; Updated: 2 January 2021), with the following definition.</para>
+        /// <para>The <c>CRC-32/XFER</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-32-xfer">CRC RevEng catalog</a> (Created: 30 March 2005; Updated: 2 January 2021), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>32</c></description></item>
@@ -1724,7 +1724,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-40/GSM</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-40/GSM</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-40-gsm">CRC RevEng catalogue</a> (Created: 10 December 2009; Updated: 25 March 2019), with the following definition.</para>
+        /// <para>The <c>CRC-40/GSM</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-40-gsm">CRC RevEng catalog</a> (Created: 10 December 2009; Updated: 25 March 2019), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>40</c></description></item>
@@ -1740,7 +1740,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-64/ECMA-182</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-64/ECMA-182</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-64-ecma-182">CRC RevEng catalogue</a> (Created: 6 April 2009; Updated: 7 May 2022), with the following definition.</para>
+        /// <para>The <c>CRC-64/ECMA-182</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-64-ecma-182">CRC RevEng catalog</a> (Created: 6 April 2009; Updated: 7 May 2022), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>64</c></description></item>
@@ -1757,7 +1757,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-64/GO-ISO</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-64/GO-ISO</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-64-go-iso">CRC RevEng catalogue</a> (Created: 28 January 2017; Updated: 29 August 2024), with the following definition.</para>
+        /// <para>The <c>CRC-64/GO-ISO</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-64-go-iso">CRC RevEng catalog</a> (Created: 28 January 2017; Updated: 29 August 2024), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>64</c></description></item>
@@ -1773,7 +1773,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-64/MS</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-64/MS</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-64-ms">CRC RevEng catalogue</a> (Created: 7 January 2022; Updated: 28 December 2019), with the following definition.</para>
+        /// <para>The <c>CRC-64/MS</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-64-ms">CRC RevEng catalog</a> (Created: 7 January 2022; Updated: 28 December 2019), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>64</c></description></item>
@@ -1789,7 +1789,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-64/NVME</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-64/NVME</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-64-nvme">CRC RevEng catalogue</a> (Created: 8 August 2024; Updated: 28 December 2019), with the following definition.</para>
+        /// <para>The <c>CRC-64/NVME</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-64-nvme">CRC RevEng catalog</a> (Created: 8 August 2024; Updated: 28 December 2019), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>64</c></description></item>
@@ -1805,7 +1805,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-64/REDIS</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-64/REDIS</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-64-redis">CRC RevEng catalogue</a> (Created: 24 August 2022; Updated: 28 December 2019), with the following definition.</para>
+        /// <para>The <c>CRC-64/REDIS</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-64-redis">CRC RevEng catalog</a> (Created: 24 August 2022; Updated: 28 December 2019), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>64</c></description></item>
@@ -1821,7 +1821,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-64/WE</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-64/WE</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-64-we">CRC RevEng catalogue</a> (Created: 8 November 2009; Updated: 28 December 2019), with the following definition.</para>
+        /// <para>The <c>CRC-64/WE</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-64-we">CRC RevEng catalog</a> (Created: 8 November 2009; Updated: 28 December 2019), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>64</c></description></item>
@@ -1837,7 +1837,7 @@ namespace Bodu.IO.Hashing.Checksums
 
         /// <summary>Represents the <c>CRC-64/XZ</c> CRC standard.</summary>
         /// <remarks>
-        /// <para>The <c>CRC-64/XZ</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-64-xz">CRC RevEng catalogue</a> (Created: 4 July 2011; Updated: 29 August 2024), with the following definition.</para>
+        /// <para>The <c>CRC-64/XZ</c> standard is taken from the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm#crc.cat.crc-64-xz">CRC RevEng catalog</a> (Created: 4 July 2011; Updated: 29 August 2024), with the following definition.</para>
         /// <para>
         /// <list type="bullet">
         /// <item><description>Width: <c>64</c></description></item>

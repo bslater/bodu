@@ -10,7 +10,7 @@ namespace Bodu.Collections.Samples.CollectionCatalogue.Scenarios;
 
 /// <summary>
 /// Demonstrates the two fixed-capacity sequential buffers: <see cref="CircularBuffer{T}" /> as an
-/// overwrite-on-full FIFO ring, and <see cref="Deque{T}" /> as a double-ended queue whose overflow behaviour
+/// overwrite-on-full FIFO ring, and <see cref="Deque{T}" /> as a double-ended queue whose overflow behavior
 /// is governed by a <see cref="DequeOverflowPolicy" />.
 /// </summary>
 /// <remarks>

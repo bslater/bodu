@@ -641,7 +641,13 @@ This convention is the dotted-flat reading of `dotnet_style_namespace_match_fold
 
 ### XML Documentation
 
-**All documentation must be in US English.**
+**All documentation must be in US English.** Write `behavior`, `initialize`, `catalog` and `canceled` (as the BCL spells
+`IsCanceled`), not their British forms; `cancellation` keeps its double l in US English too. **BODU-P017**
+(`bld/check-docs.py spelling`, run by the docs workflow through `check-docs.py all`) fails on a British spelling in the
+prose of a `///` comment under a project's `src/` or `test/` folder or a `shared/` source folder, reading the words
+from `bld/docs-checks/us-spelling.txt` (one inflection per line, so an ending such as `-ise` never flags a word by
+itself). Code, tags, URLs and generated files are not read. A proper name or a verbatim third-party quotation that
+must keep a British spelling goes in `bld/docs-checks/us-spelling-allowlist.txt` with its reason.
 
 **All documentation must align to BCL standards.**
 

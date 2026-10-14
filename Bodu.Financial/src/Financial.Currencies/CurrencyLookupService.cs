@@ -14,11 +14,11 @@ namespace Bodu.Financial.Currencies;
 /// </summary>
 /// <remarks>
 /// <para>
-/// The registry is a closed catalogue with no registration seam, so the indexes never change after they are built. On a
+/// The registry is a closed catalog with no registration seam, so the indexes never change after they are built. On a
 /// numeric-code collision, the active currency wins over a historic one.
 /// </para>
 /// <para>
-/// The shipped catalogue carries no symbol or region data, so <see cref="TryBySymbol" /> and <see cref="TryByRegion" />
+/// The shipped catalog carries no symbol or region data, so <see cref="TryBySymbol" /> and <see cref="TryByRegion" />
 /// resolve nothing with this lookup. Implement <see cref="ICurrencyLookup" /> over <see cref="CurrencyInfo" /> records
 /// that carry that data when symbol or region resolution is needed, for example for
 /// <see cref="MoneyParseMode.CultureAware" /> parsing.

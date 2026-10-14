@@ -16,7 +16,7 @@ namespace Bodu.Text.Yaml;
 /// <c>yaml-test-suite</c>, applying the JSON-compatible value mapping of the library's YAML profile.
 /// </summary>
 /// <remarks>
-/// The release-note fix catalogues under <c>corpus/yaml/fixes/</c> write their expectations in the same convention,
+/// The release-note fix catalogs under <c>corpus/yaml/fixes/</c> write their expectations in the same convention,
 /// with two refinements that <see cref="Matches(JsonElement, YamlElement, bool)" /> and
 /// <see cref="MarkNonFiniteFloats" /> support: a number written without a fraction or an exponent expects an integer,
 /// and the non-finite floats, which JSON cannot hold, are written as the bare tokens <c>.inf</c>, <c>-.inf</c> and
@@ -27,7 +27,7 @@ internal static class CorpusCompare
     /// <summary>
     /// The character that opens a JSON string standing for a non-finite float, as <see cref="MarkNonFiniteFloats" />
     /// writes it. U+FFFF is a noncharacter outside the YAML printable set, and no expectation in the yaml-test-suite or
-    /// the release-note catalogues holds a string that begins with it.
+    /// the release-note catalogs holds a string that begins with it.
     /// </summary>
     public const char NonFiniteFloatMark = '\uFFFF';
 
@@ -234,7 +234,7 @@ internal static class CorpusCompare
     }
 
     /// <summary>
-    /// Rewrites the bare tokens <c>.inf</c>, <c>-.inf</c> and <c>.nan</c> that a release-note catalogue expectation
+    /// Rewrites the bare tokens <c>.inf</c>, <c>-.inf</c> and <c>.nan</c> that a release-note catalog expectation
     /// writes where a number may stand into JSON strings that open with <see cref="NonFiniteFloatMark" />, which
     /// <see cref="Matches(JsonElement, YamlElement, bool)" /> compares with a float scalar.
     /// </summary>

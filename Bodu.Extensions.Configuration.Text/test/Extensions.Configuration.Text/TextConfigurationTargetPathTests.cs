@@ -11,7 +11,7 @@ using Microsoft.Extensions.Configuration;
 namespace Bodu.Extensions.Configuration.Text;
 
 /// <summary>
-/// Pins the <see cref="TextConfigurationSource.TargetPath" /> behaviour for the bridge providers. When
+/// Pins the <see cref="TextConfigurationSource.TargetPath" /> behavior for the bridge providers. When
 /// <c>TargetPath</c> is <see langword="null" /> only preamble (global section) keys flow into the
 /// configuration view - section-anchored values are not surfaced, because there is no path against which the
 /// section globs can be evaluated.
@@ -83,7 +83,7 @@ format.indent.size = 2
 
     /// <summary>
     /// Verifies that a target path with no matching sections still exposes preamble values, mirroring the
-    /// <c>Resolve_WhenNoSectionMatches_ShouldStillApplyPreamble</c> behaviour of the document resolver.
+    /// <c>Resolve_WhenNoSectionMatches_ShouldStillApplyPreamble</c> behavior of the document resolver.
     /// </summary>
     [TestMethod]
     public void Build_WhenTargetPathHasNoMatch_ShouldStillExposePreamble()

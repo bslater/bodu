@@ -14,7 +14,7 @@ namespace Bodu.Formats.Outlook;
 public sealed partial class PstReleaseNoteCorpusTests
 {
     /// <summary>
-    /// Represents the options a catalogue row runs with, and maps them onto the mail-store and container reader
+    /// Represents the options a catalog row runs with, and maps them onto the mail-store and container reader
     /// options.
     /// </summary>
     /// <remarks>

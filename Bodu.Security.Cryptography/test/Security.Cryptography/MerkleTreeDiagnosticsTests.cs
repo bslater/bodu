@@ -304,7 +304,7 @@ public sealed class MerkleTreeDiagnosticsTests
     /// <summary>
     /// Verifies <see cref="MerkleTreeDiagnostics.Node" /> record equality: two records with the same
     /// fields are equal even though <see cref="byte" />[] uses reference equality by default. This
-    /// is the documented record-with-init behaviour for value-equality.
+    /// is the documented record-with-init behavior for value-equality.
     /// </summary>
     [TestMethod]
     public void DiagnosticNode_RecordsWithIdenticalFields_ShouldNotBeReferenceEqualByByteArray()

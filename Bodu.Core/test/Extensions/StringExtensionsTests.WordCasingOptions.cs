@@ -34,7 +34,7 @@ public partial class StringExtensionsTests
     public void WordCasingOptions_Default_ShouldReturnSharedInstance() => Assert.AreSame(WordCasingOptions.Default, WordCasingOptions.Default);
 
     /// <summary>
-    /// Verifies that an object initialiser on <see cref="WordCasingOptions" /> overrides the targeted
+    /// Verifies that an object initializer on <see cref="WordCasingOptions" /> overrides the targeted
     /// properties while leaving the remaining defaults intact.
     /// </summary>
     [TestMethod]

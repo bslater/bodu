@@ -76,7 +76,7 @@ public partial class ICryptoTransformExtensionsTests
     /// <c>throwIfZero == true</c>, so this call surfaced a
     /// <see cref="CryptographicException" />. PRs #200 and the consolidation in #202 switched both
     /// validators to <c>throwIfZero: false</c> to comply with the framework contract; this test
-    /// pins the new behaviour.
+    /// pins the new behavior.
     /// </remarks>
     [TestMethod]
     public void TransformBlock_WhenArrayIsEmpty_ShouldReturnZero()

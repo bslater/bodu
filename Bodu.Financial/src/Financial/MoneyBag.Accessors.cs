@@ -16,7 +16,7 @@ public sealed partial class MoneyBag
     /// <param name="balances">The starting balances.</param>
     /// <returns>The constructed bag.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="balances" /> is <see langword="null" />.</exception>
-    /// <exception cref="ArgumentException">A balance carries no ISO code (default-initialised).</exception>
+    /// <exception cref="ArgumentException">A balance carries no ISO code (default-initialized).</exception>
     public static MoneyBag Of(params Money[] balances)
     {
         ThrowHelper.ThrowIfNull(balances);
@@ -29,7 +29,7 @@ public sealed partial class MoneyBag
     /// <param name="balances">The starting balances.</param>
     /// <returns>The constructed bag.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="balances" /> is <see langword="null" />.</exception>
-    /// <exception cref="ArgumentException">A balance carries no ISO code (default-initialised).</exception>
+    /// <exception cref="ArgumentException">A balance carries no ISO code (default-initialized).</exception>
     public static MoneyBag FromBalances(IEnumerable<Money> balances) =>
         new(balances);
 

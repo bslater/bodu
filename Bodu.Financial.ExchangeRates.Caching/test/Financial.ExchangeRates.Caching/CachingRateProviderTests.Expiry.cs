@@ -43,7 +43,7 @@ public sealed partial class CachingRateProviderTests
     }
 
     /// <summary>
-    /// Verifies that a per-provider expiry override is honoured: the provider re-fetches once its cached rate ages past
+    /// Verifies that a per-provider expiry override is honored: the provider re-fetches once its cached rate ages past
     /// the override, even though the default expiry has not elapsed.
     /// </summary>
     [TestMethod]

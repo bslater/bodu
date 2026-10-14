@@ -83,7 +83,7 @@ public partial class MoneyTests
     }
 
     /// <summary>
-    /// Verifies that ratio allocation honours a zero-minor-unit currency, distributing whole major units by largest
+    /// Verifies that ratio allocation honors a zero-minor-unit currency, distributing whole major units by largest
     /// remainder.
     /// </summary>
     [TestMethod]
@@ -97,7 +97,7 @@ public partial class MoneyTests
     }
 
     /// <summary>
-    /// Verifies that ratio allocation honours a three-minor-unit currency, distributing the residual fils by largest
+    /// Verifies that ratio allocation honors a three-minor-unit currency, distributing the residual fils by largest
     /// remainder.
     /// </summary>
     [TestMethod]

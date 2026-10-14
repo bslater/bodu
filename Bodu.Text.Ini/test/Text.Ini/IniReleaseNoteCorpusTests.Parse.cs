@@ -12,10 +12,10 @@ namespace Bodu.Text.Ini;
 public sealed partial class IniReleaseNoteCorpusTests
 {
     /// <summary>
-    /// Verifies that each catalogued input a fix established as readable is read into the expected rendering of the
+    /// Verifies that each cataloged input a fix established as readable is read into the expected rendering of the
     /// view the row selects.
     /// </summary>
-    /// <param name="fix">The catalogue row.</param>
+    /// <param name="fix">The catalog row.</param>
     [TestMethod]
     [TestCategory("Regression")]
     [DynamicData(

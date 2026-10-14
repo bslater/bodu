@@ -15,7 +15,7 @@ namespace Bodu.Text.Bencode;
 
 /// <summary>
 /// Verifies the <see cref="BencodeReaderOptions" />, <see cref="BencodeWriterOptions" />,
-/// <see cref="BencodeDocumentOptions" />, and <see cref="BencodeNodeOptions" /> carrier structs and the behaviour they
+/// <see cref="BencodeDocumentOptions" />, and <see cref="BencodeNodeOptions" /> carrier structs and the behavior they
 /// drive in their respective consumers.
 /// </summary>
 [TestClass]
@@ -143,7 +143,7 @@ public class BencodeOptionsTests
 
     /// <summary>
     /// Verifies that <see cref="BencodeNode.Parse(ReadOnlySpan{byte})" /> with default options performs case-sensitive
-    /// property lookups, matching the serializer's behaviour.
+    /// property lookups, matching the serializer's behavior.
     /// </summary>
     [TestMethod]
     public void NodeOptions_WhenDefault_ShouldResolvePropertyCaseSensitively()

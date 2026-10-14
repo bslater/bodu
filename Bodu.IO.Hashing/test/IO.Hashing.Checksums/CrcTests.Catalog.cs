@@ -17,13 +17,13 @@ using System.Text;
 public partial class CrcTests
 {
     /// <summary>
-    /// The ASCII bytes of <c>"123456789"</c>, the input whose CRC each catalogue entry publishes as its <c>check</c> value.
+    /// The ASCII bytes of <c>"123456789"</c>, the input whose CRC each catalog entry publishes as its <c>check</c> value.
     /// </summary>
     private static readonly byte[] CatalogCheckInput = Encoding.ASCII.GetBytes("123456789");
 
     /// <summary>
-    /// Yields one test row per catalogue CRC standard: the <see cref="CrcStandards" /> enum value and the expected
-    /// <c>check</c> value from the RevEng catalogue (the CRC of the ASCII bytes <c>"123456789"</c>).
+    /// Yields one test row per catalog CRC standard: the <see cref="CrcStandards" /> enum value and the expected
+    /// <c>check</c> value from the RevEng catalog (the CRC of the ASCII bytes <c>"123456789"</c>).
     /// </summary>
     /// <returns>Test data rows for use with <c>[DynamicData]</c>.</returns>
     public static IEnumerable<object[]> CatalogCheckVectors()
@@ -155,12 +155,12 @@ public partial class CrcTests
     }
 
     /// <summary>
-    /// Verifies that every catalogue CRC standard hashes the reference input <c>"123456789"</c> to the
-    /// <c>check</c> value published in the RevEng catalogue. The standard is materialized on demand via
+    /// Verifies that every catalog CRC standard hashes the reference input <c>"123456789"</c> to the
+    /// <c>check</c> value published in the RevEng catalog. The standard is materialized on demand via
     /// <see cref="CrcStandard.Get(CrcStandards)" />.
     /// </summary>
-    /// <param name="displayName">The canonical name of the catalogue entry, which labels the row.</param>
-    /// <param name="standardId">The catalogue entry under test, identified by <see cref="CrcStandards" />.</param>
+    /// <param name="displayName">The canonical name of the catalog entry, which labels the row.</param>
+    /// <param name="standardId">The catalog entry under test, identified by <see cref="CrcStandards" />.</param>
     /// <param name="expectedCheck">The expected CRC value, packed little-endian from the CRC width.</param>
     [DataTestMethod]
     [DynamicData(nameof(CatalogCheckVectors), DynamicDataDisplayName = nameof(GetCatalogCheckDisplayName))]

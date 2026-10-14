@@ -12,10 +12,10 @@ namespace Bodu.Text.Delimited;
 public sealed partial class DelimitedReleaseNoteCorpusTests
 {
     /// <summary>
-    /// Verifies that writing back the records read from each catalogued input, with the row's dialect, writes bytes
+    /// Verifies that writing back the records read from each cataloged input, with the row's dialect, writes bytes
     /// that read back to the same records, and the expected bytes when the row gives them.
     /// </summary>
-    /// <param name="fix">The catalogue row.</param>
+    /// <param name="fix">The catalog row.</param>
     [TestMethod]
     [TestCategory("Regression")]
     [DynamicData(

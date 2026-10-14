@@ -10,7 +10,7 @@ namespace Bodu.IO.Hashing;
 
 /// <summary>
 /// Describes the expected observable properties of a single <see cref="NonCryptographicHashAlgorithm" /> variant for
-/// use in constructor and behavioural tests.
+/// use in constructor and behavioral tests.
 /// </summary>
 /// <remarks>
 /// Instances are supplied by derived test classes via
@@ -58,7 +58,7 @@ public record NonCryptographicHashAlgorithmSpecification
 
     /// <summary>
     /// Gets a value indicating whether the algorithm implements <see cref="IResumableHashAlgorithm" /> and supports
-    /// continuing a previous finalised hash with additional input data.
+    /// continuing a previous finalized hash with additional input data.
     /// </summary>
     /// <value>
     /// <see langword="true" /> if the algorithm exposes resume semantics; otherwise, <see langword="false" />. Defaults

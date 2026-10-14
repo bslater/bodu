@@ -10,7 +10,7 @@ namespace Bodu.Globalization.Calendar;
 
 /// <summary>
 /// Verifies the ported Australian static notable-date definitions against the known answers from the v1 territory
-/// catalogue: fixed holidays with weekend substitution, nth-weekday and weekday-near rules, Easter-derived dates,
+/// catalog: fixed holidays with weekend substitution, nth-weekday and weekday-near rules, Easter-derived dates,
 /// per-subdivision rules, year-bound applicability, and the Christmas/Boxing Day conflict-avoiding substitution.
 /// </summary>
 [TestClass]

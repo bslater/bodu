@@ -19,7 +19,7 @@ public readonly partial struct Either<TLeft, TRight>
     /// <remarks>
     /// <para>
     /// The factory rejects <see langword="null" /> because a side that is present must carry a usable value; absence is
-    /// modelled by <see cref="Option{T}" />, not by a null side.
+    /// modeled by <see cref="Option{T}" />, not by a null side.
     /// </para>
     /// </remarks>
     /// <example>
@@ -48,7 +48,7 @@ public readonly partial struct Either<TLeft, TRight>
     /// <remarks>
     /// <para>
     /// The factory rejects <see langword="null" /> because a side that is present must carry a usable value; absence is
-    /// modelled by <see cref="Option{T}" />, not by a null side.
+    /// modeled by <see cref="Option{T}" />, not by a null side.
     /// </para>
     /// </remarks>
     public static Either<TLeft, TRight> Right(TRight value)

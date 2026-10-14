@@ -16,7 +16,7 @@ public sealed partial class CompoundReleaseNoteCorpusTests
     private sealed record Step(string Name, IReadOnlyList<string> Args)
     {
         /// <summary>
-        /// Returns the step as it is written in a catalogue row.
+        /// Returns the step as it is written in a catalog row.
         /// </summary>
         /// <returns>The name, followed by the arguments in parentheses when there are any.</returns>
         public override string ToString() =>

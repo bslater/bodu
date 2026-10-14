@@ -12,7 +12,7 @@ public partial class DateTimeExtensionsTests
 {
 
     /// <summary>
-    /// Verifies that <see cref="DateTimeExtensions.DayName(DateTime)" /> returns the localised day name under the current culture.
+    /// Verifies that <see cref="DateTimeExtensions.DayName(DateTime)" /> returns the localized day name under the current culture.
     /// </summary>
     [TestMethod]
     public void DayName_NoCulture_ShouldReturnCurrentCultureDayName()
@@ -42,7 +42,7 @@ public partial class DateTimeExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="DateTimeExtensions.GetMonthName(int)" /> returns the localised month name for the supplied 1-based month
+    /// Verifies that <see cref="DateTimeExtensions.GetMonthName(int)" /> returns the localized month name for the supplied 1-based month
     /// index using the current culture.
     /// </summary>
     [TestMethod]
@@ -67,7 +67,7 @@ public partial class DateTimeExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="DateTimeExtensions.GetMonthName(int, CultureInfo)" /> returns the localised month name for the supplied
+    /// Verifies that <see cref="DateTimeExtensions.GetMonthName(int, CultureInfo)" /> returns the localized month name for the supplied
     /// culture.
     /// </summary>
     [TestMethod]
@@ -103,7 +103,7 @@ public partial class DateTimeExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="DateTimeExtensions.MonthName(DateTime)" /> returns the localised month name under the current culture.
+    /// Verifies that <see cref="DateTimeExtensions.MonthName(DateTime)" /> returns the localized month name under the current culture.
     /// </summary>
     [TestMethod]
     public void MonthName_NoCulture_ShouldReturnCurrentCultureMonthName()

@@ -17,7 +17,7 @@ namespace Bodu.IO.Hashing;
 public sealed class ResumableHashAlgorithmTests
 {
     /// <summary>
-    /// Supplies one instance of every <see cref="IResumableHashAlgorithm" /> implementer, labelled for display.
+    /// Supplies one instance of every <see cref="IResumableHashAlgorithm" /> implementer, labeled for display.
     /// </summary>
     private static IEnumerable<object[]> Implementations =>
     [

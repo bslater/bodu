@@ -9,7 +9,7 @@ using System.Collections;
 namespace Bodu.Test.Contracts;
 
 /// <summary>
-/// Reusable behavioural contract test base for the non-generic <see cref="ICollection" /> surface that
+/// Reusable behavioral contract test base for the non-generic <see cref="ICollection" /> surface that
 /// most BCL-compatible collections implement implicitly. Concrete subclasses override
 /// <see cref="CreateEmpty" /> and <see cref="Create" /> to plug their type into the inherited tests.
 /// </summary>
@@ -36,7 +36,7 @@ public abstract class NonGenericCollectionContractTests<TCollection>
 
     /// <summary>
     /// Creates a representative non-empty collection of the type under test. The contents are opaque to
-    /// the base; the inherited tests inspect <see cref="ICollection.Count" /> and <c>CopyTo</c> behaviour.
+    /// the base; the inherited tests inspect <see cref="ICollection.Count" /> and <c>CopyTo</c> behavior.
     /// </summary>
     /// <returns>A new non-empty collection instance.</returns>
     protected abstract TCollection Create();

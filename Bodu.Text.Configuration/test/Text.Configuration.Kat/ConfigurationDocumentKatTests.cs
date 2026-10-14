@@ -10,7 +10,7 @@ namespace Bodu.Text.Configuration.Kat;
 /// Drives <see cref="ConfigurationDocumentKat" />, <see cref="ConfigurationResolverKat" />, and
 /// <see cref="ConfigurationViewGetterKat{T}" /> rows against the public Bodu configuration surface.
 /// Each KAT row asserts one observable outcome - parse + resolve + lookup - and surfaces the row's
-/// <c>Name</c> in failure diagnostics. Bespoke parser coverage (profiles, duplicate-key behaviour,
+/// <c>Name</c> in failure diagnostics. Bespoke parser coverage (profiles, duplicate-key behavior,
 /// diagnostic modes) remains in the existing <c>ConfigurationDocumentTests.*</c> and
 /// <c>ConfigurationKatRunnerTests.*</c> partials.
 /// </summary>

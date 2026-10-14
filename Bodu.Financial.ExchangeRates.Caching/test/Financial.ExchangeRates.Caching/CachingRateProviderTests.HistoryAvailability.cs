@@ -139,7 +139,7 @@ public partial class CachingRateProviderTests
 
     /// <summary>
     /// Verifies that disabling <see cref="CachingRateOptions.RespectHistoryAvailability" /> forwards a
-    /// declared-unavailable date to the inner provider unchanged, restoring the unclamped behaviour.
+    /// declared-unavailable date to the inner provider unchanged, restoring the unclamped behavior.
     /// </summary>
     [TestMethod]
     public void TryGetRate_WhenRespectHistoryAvailabilityDisabled_ShouldDelegateToInner()

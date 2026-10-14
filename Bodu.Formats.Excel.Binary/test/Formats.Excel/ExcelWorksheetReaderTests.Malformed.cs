@@ -24,7 +24,7 @@ public partial class ExcelWorksheetReaderTests
         }
     }
 
-    /// <summary>The immutable catalogue of malformed-record rows.</summary>
+    /// <summary>The immutable catalog of malformed-record rows.</summary>
     private static IReadOnlyList<MalformedRecordKat> MalformedCatalogue { get; } =
     [
         new("truncated NUMBER record", [Biff8TestWorkbook.Record(0x0203, new byte[8])]),

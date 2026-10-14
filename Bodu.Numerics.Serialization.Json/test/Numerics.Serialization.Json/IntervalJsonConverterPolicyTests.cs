@@ -10,7 +10,7 @@ using System.Text.Json.Serialization;
 namespace Bodu.Numerics.Serialization.Json;
 
 /// <summary>
-/// Verifies that <see cref="IntervalJsonConverter{T}" /> honours each <see cref="NumericsJsonPolicy" /> on both the
+/// Verifies that <see cref="IntervalJsonConverter{T}" /> honors each <see cref="NumericsJsonPolicy" /> on both the
 /// read and write paths.
 /// </summary>
 [TestClass]

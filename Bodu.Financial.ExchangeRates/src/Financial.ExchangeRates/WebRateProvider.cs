@@ -543,7 +543,7 @@ public abstract class WebRateProvider
     /// Thrown when <paramref name="key" /> or <paramref name="load" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="OperationCanceledException">
-    /// Thrown when <paramref name="cancellationToken" /> is signalled before the shared fetch completes; the shared
+    /// Thrown when <paramref name="cancellationToken" /> is signaled before the shared fetch completes; the shared
     /// fetch continues to completion for any other joiner.
     /// </exception>
     /// <remarks>

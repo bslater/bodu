@@ -14,7 +14,7 @@ namespace Bodu.Financial.ExchangeRates;
 /// The type is a reference type so that <see langword="default" /><c>(RateLookupOptions)</c> evaluates to
 /// <see langword="null" /> rather than a partially populated value. All public surfaces that accept lookup options
 /// allow <see langword="null" /> and substitute <see cref="Exact" /> when no options are supplied, ensuring the
-/// out-of-the-box behaviour matches the documented safe default.
+/// out-of-the-box behavior matches the documented safe default.
 /// </para>
 /// <para>
 /// Use the static factory members (<see cref="Exact" />, <see cref="PreviousWithin(int)" />,

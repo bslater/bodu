@@ -12,7 +12,7 @@ using static Bodu.Security.Cryptography.Infrastructure.KatBytes;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Locks the public stream-cipher AEAD constructions against provenance-labelled known-answer vectors:
+/// Locks the public stream-cipher AEAD constructions against provenance-labeled known-answer vectors:
 /// <see cref="XChaCha20Poly1305" /> against the draft-irtf-cfrg-xchacha Internet-Draft vector, and
 /// <see cref="XSalsa20Poly1305" /> against the libsodium <c>crypto_secretbox</c> reference vector (including its native
 /// <c>tag ‖ ciphertext</c> layout). The Bodu-defined <see cref="XSalsa20Poly1305Aead" /> construction has no published
@@ -277,7 +277,7 @@ public class StreamAeadKnownAnswerTests
     /// </summary>
     /// <param name="vector">The vector whose <see cref="AeadKnownAnswer.Algorithm" /> selects the type.</param>
     /// <returns>A transform bound to the vector's key and nonce.</returns>
-    /// <exception cref="NotSupportedException">The vector names an unrecognised algorithm.</exception>
+    /// <exception cref="NotSupportedException">The vector names an unrecognized algorithm.</exception>
     private static IStreamAeadTransform CreateTransform(AeadKnownAnswer vector) =>
         vector.Algorithm switch
         {

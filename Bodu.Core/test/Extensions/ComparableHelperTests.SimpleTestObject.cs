@@ -17,7 +17,7 @@ public partial class ComparableHelperTests
     {
 
         /// <summary>
-        /// Initialises a new instance of the <see cref="SimpleTestObject" /> class.
+        /// Initializes a new instance of the <see cref="SimpleTestObject" /> class.
         /// </summary>
         /// <param name="value">The value to assign for comparison purposes.</param>
         public SimpleTestObject(int value)

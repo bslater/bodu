@@ -13,19 +13,19 @@ namespace Bodu.Text.Toml;
 
 /// <summary>
 /// Verifies that <see cref="TomlDocument.Parse(string)" /> and its overloads accept exactly the TOML grammar -
-/// rejecting malformed input and over-deep nesting with <see cref="TomlFormatException" /> - and honour the
+/// rejecting malformed input and over-deep nesting with <see cref="TomlFormatException" /> - and honor the
 /// specification version and depth limit selected through <see cref="TomlDocumentOptions" />.
 /// </summary>
 public partial class TomlDocumentTests
 {
     /// <summary>
-    /// Yields a broad catalogue of malformed TOML documents that <see cref="TomlDocument.Parse(string)" /> must reject
+    /// Yields a broad catalog of malformed TOML documents that <see cref="TomlDocument.Parse(string)" /> must reject
     /// with <see cref="TomlFormatException" />.
     /// </summary>
     /// <returns>One <c>[DynamicData]</c> row per malformed-input scenario.</returns>
     /// <remarks>
     /// The rows sweep the grammar dimensions - key/value structure, strings and escapes, numbers, date-times, tables,
-    /// arrays, and inline tables - mirroring the reader-level malformed catalogue at the document layer.
+    /// arrays, and inline tables - mirroring the reader-level malformed catalog at the document layer.
     /// </remarks>
     public static IEnumerable<object[]> MalformedDocuments()
     {
@@ -72,7 +72,7 @@ public partial class TomlDocumentTests
     }
 
     /// <summary>
-    /// Verifies that each malformed TOML document in the catalogue is rejected by
+    /// Verifies that each malformed TOML document in the catalog is rejected by
     /// <see cref="TomlDocument.Parse(string)" /> with <see cref="TomlFormatException" /> whose source location is
     /// populated.
     /// </summary>

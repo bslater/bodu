@@ -12,10 +12,10 @@ namespace Bodu.Formats.Outlook;
 public sealed partial class MsgReleaseNoteCorpusTests
 {
     /// <summary>
-    /// Verifies that each catalogued input a fix established as malformed is rejected by the selected surface with
+    /// Verifies that each cataloged input a fix established as malformed is rejected by the selected surface with
     /// <see cref="OutlookMsgFormatException" />, the exception the row names.
     /// </summary>
-    /// <param name="fix">The catalogue row.</param>
+    /// <param name="fix">The catalog row.</param>
     [TestMethod]
     [TestCategory("Regression")]
     [DynamicData(

@@ -208,7 +208,7 @@ internal static class DocLayout
     }
 
     /// <summary>
-    /// Locates the matching block-end token for an opening block token, honouring nesting of identically named tags.
+    /// Locates the matching block-end token for an opening block token, honoring nesting of identically named tags.
     /// </summary>
     /// <param name="tokens">The token stream being scanned.</param>
     /// <param name="openIndex">The index of the opening block-start token.</param>

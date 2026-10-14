@@ -44,14 +44,14 @@ public abstract partial class CipherModeTestsBase<TTransform>
     protected virtual int ExpectedBlockSize => 8;
 
     /// <summary>
-    /// Gets the name of the constructor parameter that receives the initialisation vector (or
+    /// Gets the name of the constructor parameter that receives the initialization vector (or
     /// equivalent seed). Defaults to <c>"iv"</c>. Override when a specific mode uses a different
     /// name - for example CTR uses <c>"initialCounter"</c>.
     /// </summary>
     protected virtual string IvParameterName => "iv";
 
     /// <summary>
-    /// Gets a value indicating whether this mode accepts a caller-supplied initialisation vector
+    /// Gets a value indicating whether this mode accepts a caller-supplied initialization vector
     /// and validates its length against the cipher block size at construction time. ECB overrides
     /// this to <see langword="false" />; all other modes accept an IV.
     /// </summary>

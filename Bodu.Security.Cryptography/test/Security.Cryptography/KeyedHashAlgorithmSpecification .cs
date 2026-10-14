@@ -26,7 +26,7 @@ public record KeyedAlgorithmSpecification
     public IReadOnlyList<int> ValidKeyLengths { get; init; } = [];
 
     /// <summary>
-    /// Gets a valid test key used to initialise the algorithm during fixture setup. Should be a well-known,
+    /// Gets a valid test key used to initialize the algorithm during fixture setup. Should be a well-known,
     /// deterministic value of <see cref="MaxKeyLength" /> bytes so all code paths are exercised.
     /// </summary>
     public required byte[] TestKey { get; init; }

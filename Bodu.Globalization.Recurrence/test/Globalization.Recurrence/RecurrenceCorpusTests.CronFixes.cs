@@ -12,11 +12,11 @@ namespace Bodu.Globalization.Recurrence;
 public sealed partial class RecurrenceCorpusTests
 {
     /// <summary>
-    /// The cron libraries whose release-note fixes are catalogued, each in
+    /// The cron libraries whose release-note fixes are cataloged, each in
     /// <c>corpus/recurrence/cron-fixes/&lt;library&gt;-fixes.csv</c>.
     /// </summary>
     /// <remarks>
-    /// Each catalogue records every fix its library's release notes list, one row per fix, or one per case where a fix
+    /// Each catalog records every fix its library's release notes list, one row per fix, or one per case where a fix
     /// needs several. The <c>applies</c> and <c>dialect</c> rows carry a scenario and run through the reconciliation
     /// tests in <c>RecurrenceCorpusTests.CronLibraries.cs</c> beside the library tables; the <c>n/a</c> and
     /// <c>unknown</c> rows carry only the reason they do not run.
@@ -29,11 +29,11 @@ public sealed partial class RecurrenceCorpusTests
     ];
 
     /// <summary>
-    /// Verifies that each library's fix catalogue loads and holds the number of rows in each class the corpus README
+    /// Verifies that each library's fix catalog loads and holds the number of rows in each class the corpus README
     /// records, and reports the totals.
     /// </summary>
     /// <remarks>
-    /// A catalogue that silently lost rows, or moved a fix from <c>applies</c> to <c>n/a</c>, would quietly shrink the
+    /// A catalog that silently lost rows, or moved a fix from <c>applies</c> to <c>n/a</c>, would quietly shrink the
     /// fixes this suite claims to hold Bodu to.
     /// </remarks>
     [TestMethod]
@@ -92,8 +92,8 @@ public sealed partial class RecurrenceCorpusTests
     }
 
     /// <summary>
-    /// Verifies that every fix the catalogues do not run as written says why: each <c>dialect</c> row names the Bodu
-    /// behaviour it asserts instead, and each <c>n/a</c> or <c>unknown</c> row the reason it has no scenario.
+    /// Verifies that every fix the catalogs do not run as written says why: each <c>dialect</c> row names the Bodu
+    /// behavior it asserts instead, and each <c>n/a</c> or <c>unknown</c> row the reason it has no scenario.
     /// </summary>
     [TestMethod]
     public void CronFixCatalogues_ShouldGiveAReasonForEveryFixNotRunAsWritten()
@@ -108,7 +108,7 @@ public sealed partial class RecurrenceCorpusTests
     }
 
     /// <summary>
-    /// Reads the runnable scenarios of every library's fix catalogue from the embedded corpus.
+    /// Reads the runnable scenarios of every library's fix catalog from the embedded corpus.
     /// </summary>
     /// <returns>
     /// The <c>applies</c> and <c>dialect</c> rows, library by library in file order, each named after the library,

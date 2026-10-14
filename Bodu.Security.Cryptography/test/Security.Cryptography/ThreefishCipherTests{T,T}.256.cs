@@ -10,7 +10,7 @@ namespace Bodu.Security.Cryptography;
 
 /// <summary>
 /// Concrete test class exercising <see cref="Threefish256Cipher" /> at the block-cipher tier through the shared
-/// <see cref="ThreefishCipherTests{TTest, TCipher}" /> harness, parameterised over
+/// <see cref="ThreefishCipherTests{TTest, TCipher}" /> harness, parameterized over
 /// <see cref="TweakableBlockCipherVariant" />.
 /// </summary>
 [TestClass]

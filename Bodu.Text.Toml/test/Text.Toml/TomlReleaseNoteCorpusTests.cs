@@ -17,7 +17,7 @@ using Bodu.Text.Toml.Writer;
 namespace Bodu.Text.Toml;
 
 /// <summary>
-/// Holds Bodu.Text.Toml to the defect fixes other TOML libraries list in their release notes, as catalogued in
+/// Holds Bodu.Text.Toml to the defect fixes other TOML libraries list in their release notes, as cataloged in
 /// <c>corpus/toml/fixes/</c> and embedded under <c>Fixtures/ReleaseNotes/</c>.
 /// </summary>
 /// <remarks>
@@ -43,13 +43,13 @@ namespace Bodu.Text.Toml;
 [TestClass]
 public sealed partial class TomlReleaseNoteCorpusTests
 {
-    /// <summary>The corpus area whose catalogues this class runs.</summary>
+    /// <summary>The corpus area whose catalogs this class runs.</summary>
     private const string Area = "toml";
 
     /// <summary>The time, in milliseconds, that one row may run before it fails.</summary>
     private const int RowTimeout = 10_000;
 
-    /// <summary>The option names a catalogue row may use, each mapped by <see cref="RowOptions.Parse" />.</summary>
+    /// <summary>The option names a catalog row may use, each mapped by <see cref="RowOptions.Parse" />.</summary>
     private static readonly string[] s_optionNames = ["SpecVersion", "MaxDepth"];
 
     /// <summary>The type tags a tagged-JSON scalar may carry, as toml-test spells them.</summary>
@@ -58,10 +58,10 @@ public sealed partial class TomlReleaseNoteCorpusTests
         "string", "integer", "float", "bool", "datetime", "datetime-local", "date-local", "time-local",
     ];
 
-    /// <summary>The JSON reader options for tagged-JSON fields, deep enough for the catalogue's nesting-limit rows.</summary>
+    /// <summary>The JSON reader options for tagged-JSON fields, deep enough for the catalog's nesting-limit rows.</summary>
     private static readonly JsonDocumentOptions s_jsonOptions = new() { MaxDepth = 4096 };
 
-    /// <summary>The catalogues embedded in this test assembly, loaded once.</summary>
+    /// <summary>The catalogs embedded in this test assembly, loaded once.</summary>
     private static readonly Lazy<IReadOnlyList<ReleaseNoteCatalog>> s_catalogs =
         new(() => ReleaseNoteCatalog.LoadEmbedded(typeof(TomlReleaseNoteCorpusTests).Assembly));
 
@@ -101,9 +101,9 @@ public sealed partial class TomlReleaseNoteCorpusTests
         RunnableRows("roundtrip");
 
     /// <summary>
-    /// Gets every row of every embedded catalogue.
+    /// Gets every row of every embedded catalog.
     /// </summary>
-    /// <value>The rows, catalogue by catalogue in file order.</value>
+    /// <value>The rows, catalog by catalog in file order.</value>
     private static IEnumerable<ReleaseNoteFix> AllRows =>
         s_catalogs.Value.SelectMany(catalog => catalog.Rows);
 

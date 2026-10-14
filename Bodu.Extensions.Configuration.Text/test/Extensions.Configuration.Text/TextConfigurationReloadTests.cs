@@ -11,7 +11,7 @@ using Microsoft.Extensions.FileProviders;
 namespace Bodu.Extensions.Configuration.Text;
 
 /// <summary>
-/// Verifies that <c>reloadOnChange</c> behaviour propagates through the bridge, including reload-token signal
+/// Verifies that <c>reloadOnChange</c> behavior propagates through the bridge, including reload-token signal
 /// delivery when the underlying configuration file is replaced on disk.
 /// </summary>
 [TestClass]

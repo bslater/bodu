@@ -248,7 +248,7 @@ public partial class XorShiftRandomTests
     /// <summary>
     /// Verifies that <see cref="XorShiftRandom.Next(int, int)" /> returns
     /// <paramref name="value" /> when invoked with an empty range
-    /// (<c>minValue == maxValue</c>), matching the documented behaviour of
+    /// (<c>minValue == maxValue</c>), matching the documented behavior of
     /// <see cref="System.Random.Next(int, int)" />.
     /// </summary>
     [TestMethod]

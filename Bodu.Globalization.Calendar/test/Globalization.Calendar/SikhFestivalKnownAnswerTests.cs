@@ -7,7 +7,7 @@
 namespace Bodu.Globalization.Calendar;
 
 /// <summary>
-/// Verifies the bundled <c>global-sikh</c> catalogue: the fixed Nanakshahi-style observances resolve to their authored
+/// Verifies the bundled <c>global-sikh</c> catalog: the fixed Nanakshahi-style observances resolve to their authored
 /// Gregorian dates, and the lunisolar-linked observances (Hola Mohalla, Bandi Chhor Divas, Guru Nanak Gurpurab), which
 /// are derived from the engine's Hindu lunar algorithm, resolve to within two days of their published dates.
 /// </summary>
@@ -28,9 +28,9 @@ public sealed class SikhFestivalKnownAnswerTests
     private const int ToleranceDays = 2;
 
     /// <summary>
-    /// Builds a service over the bundled <c>global-sikh</c> catalogue.
+    /// Builds a service over the bundled <c>global-sikh</c> catalog.
     /// </summary>
-    /// <returns>A service for the catalogue.</returns>
+    /// <returns>A service for the catalog.</returns>
     private static NotableDateService CreateService() =>
         CommonCatalogues.Service("global-sikh");
 
@@ -87,7 +87,7 @@ public sealed class SikhFestivalKnownAnswerTests
     }
 
     /// <summary>
-    /// Verifies that Hola Mohalla resolves to the day immediately after the catalogue's Holi anchor, the defining
+    /// Verifies that Hola Mohalla resolves to the day immediately after the catalog's Holi anchor, the defining
     /// relationship of the observance, and preserves its authored three-day span.
     /// </summary>
     /// <param name="year">The Gregorian year.</param>

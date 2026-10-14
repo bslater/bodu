@@ -75,7 +75,7 @@ public partial class MoneyExchangeRateExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that the rounding-rule override is honoured at the target currency's minor-unit boundary.
+    /// Verifies that the rounding-rule override is honored at the target currency's minor-unit boundary.
     /// </summary>
     [TestMethod]
     public void ConvertTo_WhenAwayFromZeroRequested_ShouldRoundMidpointAway()

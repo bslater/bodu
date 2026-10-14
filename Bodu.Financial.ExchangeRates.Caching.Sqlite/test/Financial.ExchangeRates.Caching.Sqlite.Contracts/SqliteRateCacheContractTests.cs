@@ -10,7 +10,7 @@ namespace Bodu.Financial.ExchangeRates.Caching.Sqlite.Contracts;
 
 /// <summary>
 /// Runs the shared <see cref="IRateCache" /> contract against the SQLite cache, each test using an isolated
-/// temporary database file that is removed on cleanup. Confirms the SQLite backend is behaviourally identical to the
+/// temporary database file that is removed on cleanup. Confirms the SQLite backend is behaviorally identical to the
 /// in-memory and TOML caches.
 /// </summary>
 [TestClass]

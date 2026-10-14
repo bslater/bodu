@@ -22,7 +22,7 @@ public enum ConversionRoundingPolicy
 
     /// <summary>
     /// Reserved for deferring rounding, preserving the full-precision converted amount for further calculation. No
-    /// conversion honours it yet.
+    /// conversion honors it yet.
     /// </summary>
     Defer = 1,
 }

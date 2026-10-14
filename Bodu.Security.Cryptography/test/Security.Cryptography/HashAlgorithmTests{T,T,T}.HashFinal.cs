@@ -14,7 +14,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     /// Verifies that the implementation-specific "unsupported hash size" diagnostic message
     /// used by <see cref="HashAlgorithm.HashFinal" /> (when it throws for an out-of-range
     /// <see cref="HashAlgorithm.HashSize" /> configuration) contains no rename-refactor
-    /// artefacts such as stray <c>this.</c> tokens. The throw path is generally unreachable
+    /// artifacts such as stray <c>this.</c> tokens. The throw path is generally unreachable
     /// from the public API, so this is a literal-level guard implemented via an overridable
     /// expected-fragment property.
     /// </summary>

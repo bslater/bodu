@@ -9,7 +9,7 @@ namespace Bodu.IO.Hashing.Checksums;
 /// <summary>
 /// Identifies the representative subset of <see cref="CrcStandard" /> values exercised by the common
 /// <see cref="NonCryptographicHashAlgorithmTests{TTest, TAlgorithm, TVariant}" /> harness. The full RevEng
-/// catalogue remains covered by <c>CrcTests.Catalog.cs</c>.
+/// catalog remains covered by <c>CrcTests.Catalog.cs</c>.
 /// </summary>
 public enum CrcTestVariant
 {

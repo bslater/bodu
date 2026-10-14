@@ -11,7 +11,7 @@ public partial class EcbRateProviderOptionsTests
     /// <summary>
     /// Verifies that the constructor gives the shared members the ECB's defaults: the <c>eurofxref</c> base address and
     /// the Bodu user agent, with the base's timeout, response-size cap, seven-day look-back, refresh interval, empty
-    /// alias map, and unbounded history availability, which leaves the advertised depth to the feed catalogue.
+    /// alias map, and unbounded history availability, which leaves the advertised depth to the feed catalog.
     /// </summary>
     [TestMethod]
     public void Ctor_ShouldSetTheEcbDefaultsOnTheSharedMembers()

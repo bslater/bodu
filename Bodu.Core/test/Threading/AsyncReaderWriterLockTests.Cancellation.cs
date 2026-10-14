@@ -218,7 +218,7 @@ public sealed partial class AsyncReaderWriterLockTests
     }
 
     /// <summary>
-    /// Verifies that cancelling one token shared by many readers queued behind a writer cancels every one of them,
+    /// Verifies that canceling one token shared by many readers queued behind a writer cancels every one of them,
     /// empties the reader queue, and leaves the lock usable.
     /// </summary>
     [TestMethod]
@@ -303,7 +303,7 @@ public sealed partial class AsyncReaderWriterLockTests
     }
 
     /// <summary>
-    /// Verifies that a reader queued with a non-cancellable token behind a writer is admitted when the writer releases.
+    /// Verifies that a reader queued with a non-cancelable token behind a writer is admitted when the writer releases.
     /// </summary>
     [TestMethod]
     public async Task ReaderAsync_WhenQueuedWithoutCancellationToken_ShouldBeAdmittedWhenTheWriterReleases()

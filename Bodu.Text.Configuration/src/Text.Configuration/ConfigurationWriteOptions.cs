@@ -48,7 +48,7 @@ public sealed partial class ConfigurationWriteOptions
     /// <summary>
     /// Gets the profile this option set was created from. The default is <see cref="ConfigurationProfile.Bodu" />.
     /// </summary>
-    /// <value>The profile the option set is labelled with.</value>
+    /// <value>The profile the option set is labeled with.</value>
     /// <remarks>
     /// The property is informational: the writer does not read it, and setting it changes no other property. Use
     /// <see cref="For(ConfigurationProfile)" /> or a preset to select a profile's formatting choices.

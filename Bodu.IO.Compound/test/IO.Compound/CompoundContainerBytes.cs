@@ -58,7 +58,7 @@ internal static class CompoundContainerBytes
     internal const int SizeOffset = 120;
 
     /// <summary>
-    /// Returns the catalogue pattern, whose byte at offset <c>i</c> is <c>(i * 31 + 7) mod 256</c>.
+    /// Returns the catalog pattern, whose byte at offset <c>i</c> is <c>(i * 31 + 7) mod 256</c>.
     /// </summary>
     /// <param name="length">The number of bytes to return.</param>
     /// <param name="start">The offset of the first byte within the pattern.</param>
@@ -73,7 +73,7 @@ internal static class CompoundContainerBytes
     }
 
     /// <summary>
-    /// Returns the byte of the catalogue pattern at the specified offset.
+    /// Returns the byte of the catalog pattern at the specified offset.
     /// </summary>
     /// <param name="offset">The offset within the pattern.</param>
     /// <returns><c>(offset * 31 + 7) mod 256</c>.</returns>

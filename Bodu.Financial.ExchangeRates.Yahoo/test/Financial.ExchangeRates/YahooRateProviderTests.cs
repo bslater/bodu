@@ -10,7 +10,7 @@ using Bodu.Test;
 namespace Bodu.Financial.ExchangeRates;
 
 /// <summary>
-/// Verifies the behaviour of <see cref="YahooRateProvider" /> against fixture-backed chart data.
+/// Verifies the behavior of <see cref="YahooRateProvider" /> against fixture-backed chart data.
 /// </summary>
 [TestClass]
 public partial class YahooRateProviderTests

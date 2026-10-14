@@ -10,7 +10,7 @@ namespace Bodu.Financial.Currencies;
 using global::System.Collections.Generic;
 
 /// <summary>
-/// Source-generated registration list of the shipped currency catalogue, consumed by
+/// Source-generated registration list of the shipped currency catalog, consumed by
 /// <see cref="Bodu.Financial.Currencies.CurrencyRegistry" /> at static-constructor time.
 /// </summary>
 internal static class GeneratedCurrencyRegistration

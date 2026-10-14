@@ -11,18 +11,18 @@ namespace Bodu.IO.Hashing.Checksums;
 
 /// <summary>
 /// Drives <see cref="CrcCatalogKat" /> rows against the public <see cref="Crc" /> +
-/// <see cref="CrcStandard" /> surface. Each KAT row carries the full RevEng-catalogue parameter set
+/// <see cref="CrcStandard" /> surface. Each KAT row carries the full RevEng-catalog parameter set
 /// (width, polynomial, initial value, reflect-in / reflect-out, XOR-out, and the published check)
 /// and asserts that a custom <see cref="CrcStandard" /> constructed from those parameters hashes the
 /// canonical input <c>"123456789"</c> to the documented check value.
 ///
 /// <para>
 /// The auto-generated <see cref="CrcTests.CatalogCheckVectors" /> data source remains the source of
-/// truth for the catalogue: one check vector for each of the 112 standards <see cref="CrcStandards" />
+/// truth for the catalog: one check vector for each of the 112 standards <see cref="CrcStandards" />
 /// covers, by canonical name. The published aliases resolve to those standards and are tested separately,
 /// through <see cref="CrcStandard.FromName(string)" />. This KAT-driven test sits alongside it and exercises
 /// a small representative subset through the parameter-based <see cref="CrcStandard" /> constructor,
-/// proving that the standalone parameter API stays in sync with the named-standard catalogue.
+/// proving that the standalone parameter API stays in sync with the named-standard catalog.
 /// </para>
 /// </summary>
 [TestClass]

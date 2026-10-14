@@ -12,7 +12,7 @@ namespace Bodu.Formats.Excel;
 public sealed partial class ExcelBinaryReleaseNoteCorpusTests
 {
     /// <summary>
-    /// Represents the options a catalogue row runs with, and maps them onto the surfaces and the generators.
+    /// Represents the options a catalog row runs with, and maps them onto the surfaces and the generators.
     /// </summary>
     /// <param name="ReadsRecords">
     /// <see langword="true" /> to render the record stream (the Records surface); <see langword="false" /> to render

@@ -47,7 +47,7 @@ public partial class NavigableSetTests
     }
 
     /// <summary>
-    /// Materialises the elements of <paramref name="set" /> using the public struct enumerator.
+    /// Materializes the elements of <paramref name="set" /> using the public struct enumerator.
     /// </summary>
     /// <typeparam name="T">The element type of the set.</typeparam>
     /// <param name="set">The set to snapshot.</param>

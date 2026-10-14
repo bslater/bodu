@@ -12,10 +12,10 @@ namespace Bodu.Formats.Excel;
 public sealed partial class ExcelBinaryReleaseNoteCorpusTests
 {
     /// <summary>
-    /// Verifies that writing each catalogued record stream back through <c>BiffWriter</c> writes a stream whose record
+    /// Verifies that writing each cataloged record stream back through <c>BiffWriter</c> writes a stream whose record
     /// listing equals the input's, and the expected bytes when the row gives them.
     /// </summary>
-    /// <param name="fix">The catalogue row.</param>
+    /// <param name="fix">The catalog row.</param>
     [TestMethod]
     [TestCategory("Regression")]
     [Timeout(RowTimeout)]

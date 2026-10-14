@@ -9,7 +9,7 @@ using Bodu.Test.Kat;
 namespace Bodu.Globalization.Calendar;
 
 /// <summary>
-/// Verifies the floating Baha'i holy days authored in the bundled <c>global-bahai</c> catalogue. Naw-Ruz is computed by
+/// Verifies the floating Baha'i holy days authored in the bundled <c>global-bahai</c> catalog. Naw-Ruz is computed by
 /// the engine's vernal-equinox algorithm (in Universal Time) and the solar holy days are authored as
 /// <see cref="OffsetFromRuleStrategy" /> day-offsets from it, reproducing the Badi-calendar structure.
 /// </summary>
@@ -30,13 +30,13 @@ public sealed class BahaiHolyDayKnownAnswerTests
     /// </summary>
     private const int ToleranceDays = 2;
 
-    /// <summary>The shared catalogue service, built once for the fifty-year vector sweep.</summary>
+    /// <summary>The shared catalog service, built once for the fifty-year vector sweep.</summary>
     private static readonly Lazy<NotableDateService> s_sweepService = new(CreateService);
 
     /// <summary>
-    /// Builds a service over the bundled <c>global-bahai</c> catalogue.
+    /// Builds a service over the bundled <c>global-bahai</c> catalog.
     /// </summary>
-    /// <returns>A service for the catalogue.</returns>
+    /// <returns>A service for the catalog.</returns>
     private static NotableDateService CreateService() =>
         CommonCatalogues.Service("global-bahai");
 
@@ -109,7 +109,7 @@ public sealed class BahaiHolyDayKnownAnswerTests
     /// anchors it to 20 March. The engine therefore resolves every offset holy day uniformly one day before the
     /// official date, which this anchor pins at a one-day tolerance (tighter than the general two-day window above).
     /// The official table's two Twin Birthday dates (Birth of the Bab 10 November, Birth of Baha'u'llah
-    /// 11 November 2026) are intentionally not asserted: the catalogue omits those concepts until the dedicated
+    /// 11 November 2026) are intentionally not asserted: the catalog omits those concepts until the dedicated
     /// eighth-new-moon-after-Naw-Ruz algorithm exists.
     /// </para>
     /// </remarks>

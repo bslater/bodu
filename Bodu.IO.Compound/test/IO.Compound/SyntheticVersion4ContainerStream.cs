@@ -18,7 +18,7 @@ namespace Bodu.IO.Compound;
 /// <para>
 /// The container is conformant to [MS-CFB]: its sectors are the FAT sectors, then the DIFAT sectors, the single
 /// directory sector and the stream's data, which skips the range lock sector (0x7FFFE) that section 2.8 reserves once a
-/// file passes 2 GB. Byte <c>i</c> of the stream is the catalogue pattern, <c>(i * 31 + 7) mod 256</c>.
+/// file passes 2 GB. Byte <c>i</c> of the stream is the catalog pattern, <c>(i * 31 + 7) mod 256</c>.
 /// </para>
 /// <para>
 /// Reading is computed per sector, so a reader that buffers the whole stream allocates the container's full length; a

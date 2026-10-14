@@ -15,7 +15,7 @@ namespace Bodu.Extensions.Configuration.Text;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Inherits the standard reload-on-change, file-provider, and optional-file behaviours from
+/// Inherits the standard reload-on-change, file-provider, and optional-file behaviors from
 /// <see cref="FileConfigurationSource" />, matching the conventions used by the JSON, INI, and XML providers shipped by
 /// Microsoft. Three Bodu-specific properties extend the base contract: <see cref="TargetPath" /> drives glob-anchored
 /// section matching during resolution, <see cref="ParseOptions" /> controls how the document is read, and

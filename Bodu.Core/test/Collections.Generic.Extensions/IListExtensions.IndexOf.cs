@@ -279,7 +279,7 @@ public sealed class IListExtensionsTests_IndexOf
     }
 
     /// <summary>
-    /// Verifies that the ranged overload of <c>IndexOf</c> honours <paramref name="count" /> by ignoring matches
+    /// Verifies that the ranged overload of <c>IndexOf</c> honors <paramref name="count" /> by ignoring matches
     /// outside the window.
     /// </summary>
     [TestMethod]

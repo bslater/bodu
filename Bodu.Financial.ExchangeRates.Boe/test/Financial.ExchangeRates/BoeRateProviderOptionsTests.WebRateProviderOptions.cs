@@ -21,7 +21,7 @@ public partial class BoeRateProviderOptionsTests
     }
 
     /// <summary>
-    /// Verifies that the options declare only the Bank of England-specific members - the series catalogue, the IADB
+    /// Verifies that the options declare only the Bank of England-specific members - the series catalog, the IADB
     /// query path and the on-disk cache settings - and neither redeclare a shared member nor keep the nested
     /// <c>Endpoint</c> or the <c>OnDemandWindowDays</c> count.
     /// </summary>

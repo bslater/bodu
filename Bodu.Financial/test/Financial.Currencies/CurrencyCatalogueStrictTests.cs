@@ -10,7 +10,7 @@ using System.Text.Json;
 namespace Bodu.Financial.Currencies;
 
 /// <summary>
-/// Verifies the shipped currency catalogue against <c>currencies.json</c> entry-by-entry. Generates the
+/// Verifies the shipped currency catalog against <c>currencies.json</c> entry-by-entry. Generates the
 /// expected case set from the JSON so a missing or extra type, a metadata mismatch, or a stale class name is
 /// caught at test time rather than slipping into a release.
 /// </summary>
@@ -31,7 +31,7 @@ public class CurrencyCatalogueStrictTests
     /// Verifies that every entry in <c>currencies.json</c> has a corresponding generated tag type with matching
     /// metadata.
     /// </summary>
-    /// <param name="entry">The catalogue entry under test.</param>
+    /// <param name="entry">The catalog entry under test.</param>
     [TestMethod]
     [DynamicData(nameof(CurrencyEntries))]
     public void Catalogue_WhenComparingShippedTagAgainstSource_ShouldMatch(CatalogueEntry entry)
@@ -112,7 +112,7 @@ public class CurrencyCatalogueStrictTests
     }
 
     /// <summary>
-    /// Verifies that the catalogue has no duplicate ISO codes - a structural invariant the generator should
+    /// Verifies that the catalog has no duplicate ISO codes - a structural invariant the generator should
     /// preserve.
     /// </summary>
     [TestMethod]
@@ -130,9 +130,9 @@ public class CurrencyCatalogueStrictTests
     }
 
     /// <summary>
-    /// Loads the catalogue JSON from the repository (resolved relative to this assembly's source path).
+    /// Loads the catalog JSON from the repository (resolved relative to this assembly's source path).
     /// </summary>
-    /// <returns>The parsed catalogue entries.</returns>
+    /// <returns>The parsed catalog entries.</returns>
     private static List<CatalogueEntry> LoadCatalogue()
     {
         string path = ResolveCataloguePath();
@@ -168,7 +168,7 @@ public class CurrencyCatalogueStrictTests
     }
 
     /// <summary>
-    /// Root of the catalogue JSON document.
+    /// Root of the catalog JSON document.
     /// </summary>
     private sealed class CatalogueRoot
     {
@@ -176,7 +176,7 @@ public class CurrencyCatalogueStrictTests
     }
 
     /// <summary>
-    /// One row of the catalogue JSON.
+    /// One row of the catalog JSON.
     /// </summary>
     public sealed class CatalogueEntry
     {

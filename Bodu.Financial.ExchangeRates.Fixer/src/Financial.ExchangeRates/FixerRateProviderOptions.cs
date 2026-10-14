@@ -13,8 +13,8 @@ namespace Bodu.Financial.ExchangeRates;
 /// <remarks>
 /// <para>
 /// This type derives from <see cref="WebRateProviderOptions" />, which supplies the endpoint base address, the HTTP
-/// contract, the synchronous-access and look-back behaviour, the currency-alias map, and the per-concern log levels.
-/// The members declared here are Fixer-specific: the required <see cref="ApiKey" /> presented as the <c>access_key</c>
+/// contract, the synchronous-access and look-back behavior, the currency-alias map, and the per-concern log levels. The
+/// members declared here are Fixer-specific: the required <see cref="ApiKey" /> presented as the <c>access_key</c>
 /// query parameter, and the <see cref="TimeSeriesPath" /> and <see cref="HistoricalPath" /> templates. A pair request
 /// spanning more than a single day is served from the time-series endpoint; a single-day request is served from the
 /// historical (single-date) endpoint.

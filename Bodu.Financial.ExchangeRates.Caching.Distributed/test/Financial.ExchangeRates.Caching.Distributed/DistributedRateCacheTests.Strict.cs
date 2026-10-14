@@ -7,7 +7,7 @@
 namespace Bodu.Financial.ExchangeRates.Caching.Distributed;
 
 /// <summary>
-/// Verifies the opt-in strict-failure behaviour of <see cref="DistributedRateCache" />: when
+/// Verifies the opt-in strict-failure behavior of <see cref="DistributedRateCache" />: when
 /// <see cref="RateCacheOptions.ThrowOnStorageFailure" /> or
 /// <see cref="RateCacheOptions.ValidateStorageOnStart" /> is set, a backing-store fault is surfaced rather than
 /// degraded, so a deployment can fail fast instead of running with a silently broken cache.

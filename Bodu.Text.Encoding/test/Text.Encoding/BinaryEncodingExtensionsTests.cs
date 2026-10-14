@@ -7,7 +7,7 @@
 namespace Bodu.Text.Encoding;
 
 /// <summary>
-/// Behavioural tests for <see cref="BinaryEncodingExtensions" />.
+/// Behavioral tests for <see cref="BinaryEncodingExtensions" />.
 /// </summary>
 [TestClass]
 public sealed partial class BinaryEncodingExtensionsTests

@@ -8,7 +8,7 @@
 namespace Bodu.Financial.Currencies;
 
 /// <summary>
-/// Verifies that <see cref="CurrencyInfo.TryGetCurrencyCode(string, out CurrencyCode)" /> honours the ISO 4217
+/// Verifies that <see cref="CurrencyInfo.TryGetCurrencyCode(string, out CurrencyCode)" /> honors the ISO 4217
 /// alphabetic-shape contract and does not resolve the numeric underlying-value form.
 /// </summary>
 public partial class CurrencyInfoTests

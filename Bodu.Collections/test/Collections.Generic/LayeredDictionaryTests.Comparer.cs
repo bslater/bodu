@@ -9,7 +9,7 @@ namespace Bodu.Collections.Generic;
 public partial class LayeredDictionaryTests
 {
     /// <summary>
-    /// Verifies the documented comparer-mismatch behaviour: lookups honour each layer's own comparer while the view's
+    /// Verifies the documented comparer-mismatch behavior: lookups honor each layer's own comparer while the view's
     /// comparer governs only deduplication, so a key the view considers "the same" can still resolve per-casing
     /// through the layers.
     /// </summary>

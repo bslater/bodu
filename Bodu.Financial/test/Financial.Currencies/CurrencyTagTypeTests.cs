@@ -9,7 +9,7 @@ using System.Reflection;
 namespace Bodu.Financial.Currencies;
 
 /// <summary>
-/// Verifies the source-generated <see cref="ICurrency" /> tag-type catalogue under
+/// Verifies the source-generated <see cref="ICurrency" /> tag-type catalog under
 /// <c>Bodu.Financial.Currencies</c>: every shipped currency exposes self-consistent metadata that matches its
 /// <see cref="CurrencyRegistry" /> entry, and every tag type follows the non-instantiable sealed design.
 /// </summary>
@@ -17,7 +17,7 @@ namespace Bodu.Financial.Currencies;
 public class CurrencyTagTypeTests
 {
     /// <summary>
-    /// Enumerates every shipped <see cref="ICurrency" /> tag type in the catalogue assembly.
+    /// Enumerates every shipped <see cref="ICurrency" /> tag type in the catalog assembly.
     /// </summary>
     /// <returns>The sealed currency tag types declared under <c>Bodu.Financial.Currencies</c>.</returns>
     private static IEnumerable<Type> CurrencyTagTypes() =>

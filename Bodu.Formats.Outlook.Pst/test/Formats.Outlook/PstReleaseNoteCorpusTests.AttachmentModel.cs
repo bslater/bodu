@@ -9,7 +9,7 @@ namespace Bodu.Formats.Outlook;
 public sealed partial class PstReleaseNoteCorpusTests
 {
     /// <summary>
-    /// Represents one attachment of a modelled message: a row of its attachment table and, unless left out, an
+    /// Represents one attachment of a modeled message: a row of its attachment table and, unless left out, an
     /// attachment object subnode.
     /// </summary>
     private sealed class AttachmentModel

@@ -58,7 +58,7 @@ public sealed class HinduReferenceCorpusReconciliationTests
         ("holi", 12, 15),
     ];
 
-    /// <summary>The shared engine service over the bundled catalogue.</summary>
+    /// <summary>The shared engine service over the bundled catalog.</summary>
     private static readonly Lazy<NotableDateService> s_service = new(() => CommonCatalogues.Service("global-hindu"));
 
     /// <summary>

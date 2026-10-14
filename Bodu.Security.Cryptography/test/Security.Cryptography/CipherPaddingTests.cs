@@ -9,7 +9,7 @@ using System.Security.Cryptography;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Verifies the bidirectional synchronisation between the extended <see cref="PaddingModeKind" /> and the
+/// Verifies the bidirectional synchronization between the extended <see cref="PaddingModeKind" /> and the
 /// inherited <see cref="System.Security.Cryptography.SymmetricAlgorithm.Padding" /> on cipher classes that
 /// expose both surfaces.
 /// </summary>
@@ -23,7 +23,7 @@ public sealed class CipherPaddingTests
 {
     /// <summary>
     /// Verifies that setting <see cref="Blowfish.BlockPadding" /> to a value with a matching
-    /// <see cref="PaddingMode" /> synchronises the inherited
+    /// <see cref="PaddingMode" /> synchronizes the inherited
     /// <see cref="System.Security.Cryptography.SymmetricAlgorithm.Padding" /> getter, and that reading
     /// <see cref="Blowfish.Padding" /> reflects the new value.
     /// </summary>
@@ -57,7 +57,7 @@ public sealed class CipherPaddingTests
 
     /// <summary>
     /// Verifies that setting <see cref="Blowfish.Padding" /> to a value with a matching
-    /// <see cref="PaddingModeKind" /> synchronises <see cref="Blowfish.BlockPadding" />.
+    /// <see cref="PaddingModeKind" /> synchronizes <see cref="Blowfish.BlockPadding" />.
     /// </summary>
     [TestMethod]
     public void Blowfish_Padding_WhenSetToMappedValue_ShouldSyncBlockPadding()
@@ -71,7 +71,7 @@ public sealed class CipherPaddingTests
     }
 
     /// <summary>
-    /// Verifies the same getter/setter sync behaviour on <see cref="Camellia" /> as on <see cref="Blowfish" />.
+    /// Verifies the same getter/setter sync behavior on <see cref="Camellia" /> as on <see cref="Blowfish" />.
     /// </summary>
     [TestMethod]
     public void Camellia_BlockPadding_WhenSetToMappedValue_ShouldSyncPaddingAndAllowRead()
@@ -114,7 +114,7 @@ public sealed class CipherPaddingTests
     }
 
     /// <summary>
-    /// Verifies the same getter/setter sync behaviour on <see cref="Skipjack" /> as on <see cref="Blowfish" />.
+    /// Verifies the same getter/setter sync behavior on <see cref="Skipjack" /> as on <see cref="Blowfish" />.
     /// </summary>
     [TestMethod]
     public void Skipjack_BlockPadding_WhenSetToMappedValue_ShouldSyncPaddingAndAllowRead()
@@ -157,7 +157,7 @@ public sealed class CipherPaddingTests
     }
 
     /// <summary>
-    /// Verifies the same getter/setter sync behaviour on <see cref="Twofish" /> as on <see cref="Blowfish" />.
+    /// Verifies the same getter/setter sync behavior on <see cref="Twofish" /> as on <see cref="Blowfish" />.
     /// </summary>
     [TestMethod]
     public void Twofish_BlockPadding_WhenSetToMappedValue_ShouldSyncPaddingAndAllowRead()
@@ -187,7 +187,7 @@ public sealed class CipherPaddingTests
     }
 
     /// <summary>
-    /// Verifies the same getter/setter sync behaviour on <see cref="Serpent128" /> as on <see cref="Blowfish" />.
+    /// Verifies the same getter/setter sync behavior on <see cref="Serpent128" /> as on <see cref="Blowfish" />.
     /// </summary>
     [TestMethod]
     public void Serpent128_Padding_WhenSetToMappedValue_ShouldSyncBlockPadding()

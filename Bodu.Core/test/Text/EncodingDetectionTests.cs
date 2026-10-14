@@ -7,7 +7,7 @@
 namespace Bodu.Text;
 
 /// <summary>
-/// Behavioural tests for <see cref="EncodingDetection" />. Validates BOM-based detection of UTF-8, UTF-16
+/// Behavioral tests for <see cref="EncodingDetection" />. Validates BOM-based detection of UTF-8, UTF-16
 /// little- and big-endian, and UTF-32 little- and big-endian preambles.
 /// </summary>
 [TestClass]

@@ -10,7 +10,7 @@ public partial class MonetaryContextTests
 {
 
     /// <summary>
-    /// Verifies that the rounding strategy honours the configured midpoint mode.
+    /// Verifies that the rounding strategy honors the configured midpoint mode.
     /// </summary>
     [TestMethod]
     public void Round_WhenAwayFromZeroStrategy_ShouldRoundMidpointAway()

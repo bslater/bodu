@@ -86,7 +86,7 @@ public sealed partial class IEnumerableExtensionsTests_ContainsAny
     }
 
     /// <summary>
-    /// Verifies the smaller-source optimisation branch: when <paramref name="source" /> is a known
+    /// Verifies the smaller-source optimization branch: when <paramref name="source" /> is a known
     /// <see cref="ICollection{T}" /> with fewer elements than <paramref name="items" />, the set is built from the
     /// source and query items are probed against it.
     /// </summary>

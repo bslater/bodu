@@ -7,7 +7,7 @@
 namespace Bodu.Text.Configuration;
 
 /// <summary>
-/// Pins the literal-character behaviour of <see cref="ConfigurationKey" /> parsing. The key splitter does not
+/// Pins the literal-character behavior of <see cref="ConfigurationKey" /> parsing. The key splitter does not
 /// currently support backslash escapes for separator characters - a <c>\.</c> sequence is treated as the two
 /// characters <c>\</c> and <c>.</c>, and the <c>.</c> still separates segments. These tests document that
 /// contract so any future addition of escape support is a deliberate, observable change.

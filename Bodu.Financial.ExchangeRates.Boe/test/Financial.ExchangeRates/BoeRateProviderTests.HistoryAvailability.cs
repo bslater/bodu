@@ -22,7 +22,7 @@ public partial class BoeRateProviderTests
     }
 
     /// <summary>
-    /// Verifies that the provider forwards a customized options availability, so a catalogue restricted to
+    /// Verifies that the provider forwards a customized options availability, so a catalog restricted to
     /// later-inception series can narrow the advertised floor.
     /// </summary>
     [TestMethod]

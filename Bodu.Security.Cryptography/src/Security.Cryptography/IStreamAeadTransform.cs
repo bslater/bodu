@@ -15,7 +15,7 @@ namespace Bodu.Security.Cryptography;
 /// <remarks>
 /// This interface distinguishes stream-cipher AEADs from block-cipher AEAD modes (
 /// <see cref="IAeadBlockCipherModeTransform" />) so the two families can share <see cref="IAeadTransform" /> without
-/// the stream constructions being modelled as block-cipher modes.
+/// the stream constructions being modeled as block-cipher modes.
 /// </remarks>
 public interface IStreamAeadTransform
     : IAeadTransform

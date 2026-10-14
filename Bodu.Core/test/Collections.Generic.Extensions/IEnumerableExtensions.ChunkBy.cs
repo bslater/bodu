@@ -65,7 +65,7 @@ public sealed partial class IEnumerableExtensionsTests_ChunkBy
     }
 
     /// <summary>
-    /// Verifies that <c>ChunkBy</c> honours a supplied comparer when comparing keys.
+    /// Verifies that <c>ChunkBy</c> honors a supplied comparer when comparing keys.
     /// </summary>
     [TestMethod]
     public void ChunkBy_WhenComparerSupplied_ShouldUseComparerForKeys()

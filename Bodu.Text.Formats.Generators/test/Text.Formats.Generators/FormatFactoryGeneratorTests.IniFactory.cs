@@ -16,7 +16,7 @@ namespace Bodu.Text.Formats.Generators;
 public partial class FormatFactoryGeneratorTests
 {
     /// <summary>
-    /// Verifies that the generated factory resolves keys in declaration order, honouring <c>[PropertyName]</c>.
+    /// Verifies that the generated factory resolves keys in declaration order, honoring <c>[PropertyName]</c>.
     /// </summary>
     [TestMethod]
     public void IniFactory_WhenGenerated_ShouldExposeResolvedKeys()

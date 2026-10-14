@@ -330,7 +330,7 @@ public sealed class DuplicatePolicyTests
     }
 
     /// <summary>
-    /// Verifies that an imported document keeps today's behaviour whatever either document's policy: of its concepts
+    /// Verifies that an imported document keeps today's behavior whatever either document's policy: of its concepts
     /// that share an identifier, the first is composed.
     /// </summary>
     /// <param name="rootPolicy">The loaded document's duplicate policy token.</param>

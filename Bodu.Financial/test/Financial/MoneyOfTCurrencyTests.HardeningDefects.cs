@@ -87,7 +87,7 @@ public partial class MoneyOfTCurrencyTests
     }
 
     /// <summary>
-    /// Verifies the same fail-fast behaviour for an empty ISO code.
+    /// Verifies the same fail-fast behavior for an empty ISO code.
     /// </summary>
     [TestMethod]
     public void Constructor_WhenCurrencyIsoCodeIsEmpty_ShouldThrowInvalidOperationException()
@@ -249,9 +249,9 @@ public partial class MoneyOfTCurrencyTests
 
     /// <summary>
     /// Verifies that <see cref="Money{TCurrency}.FromFraction" /> rounds a fraction <i>just above</i> the minor-unit
-    /// midpoint directly to the upper neighbour rather than double-rounding through <see cref="decimal" /> at
-    /// 28-digit precision. The risk: ToDecimal of a sub-28-digit rational at the midpoint can quantise to the
-    /// midpoint itself, and the subsequent banker's rounding then snaps it to the wrong (even) neighbour.
+    /// midpoint directly to the upper neighbor rather than double-rounding through <see cref="decimal" /> at
+    /// 28-digit precision. The risk: ToDecimal of a sub-28-digit rational at the midpoint can quantize to the
+    /// midpoint itself, and the subsequent banker's rounding then snaps it to the wrong (even) neighbor.
     /// </summary>
     /// <remarks>
     /// Construction: numerator = 1225 × 10^25 + 1, denominator = 10^28. That equals
@@ -291,7 +291,7 @@ public partial class MoneyOfTCurrencyTests
     }
 
     /// <summary>
-    /// Verifies that the exact midpoint between two minor units rounds to the even neighbour under banker's
+    /// Verifies that the exact midpoint between two minor units rounds to the even neighbor under banker's
     /// rounding, even when expressed as an arbitrarily-precise rational.
     /// </summary>
     [TestMethod]

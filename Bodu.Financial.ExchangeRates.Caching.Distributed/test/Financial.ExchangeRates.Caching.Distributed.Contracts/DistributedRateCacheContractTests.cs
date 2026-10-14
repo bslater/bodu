@@ -14,7 +14,7 @@ namespace Bodu.Financial.ExchangeRates.Caching.Distributed.Contracts;
 /// <summary>
 /// Runs the shared <see cref="IRateCache" /> contract against the distributed cache, each test backed by a
 /// fresh in-memory <see cref="MemoryDistributedCache" /> (an in-process <see cref="IDistributedCache" />; no Redis
-/// server is used). Confirms the distributed backend is behaviourally identical to the in-memory, TOML, and SQLite
+/// server is used). Confirms the distributed backend is behaviorally identical to the in-memory, TOML, and SQLite
 /// caches.
 /// </summary>
 [TestClass]

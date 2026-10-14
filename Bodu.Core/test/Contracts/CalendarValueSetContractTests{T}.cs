@@ -10,7 +10,7 @@ using Bodu.Test.Kat;
 namespace Bodu.Contracts;
 
 /// <summary>
-/// Provides the behavioural contract of the numeric calendar value sets, whose values are the integers from a minimum
+/// Provides the behavioral contract of the numeric calendar value sets, whose values are the integers from a minimum
 /// to a maximum and whose text form is a comma-separated list of values and inclusive ranges.
 /// </summary>
 /// <typeparam name="TSet">The set type under test.</typeparam>

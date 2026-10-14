@@ -14,7 +14,7 @@ namespace Bodu.Security.Cryptography;
 /// <summary>
 /// Locks the <see cref="Hc128" /> stream cipher against the official Appendix A test vectors from Hongjun Wu's
 /// specification paper <c>The Stream Cipher HC-128</c> (the eSTREAM-author vectors; HC-128 has no RFC), and inherits the
-/// shared <see cref="SymmetricStreamAlgorithmTests{TTest, TAlgorithm}" /> behavioural contract.
+/// shared <see cref="SymmetricStreamAlgorithmTests{TTest, TAlgorithm}" /> behavioral contract.
 /// </summary>
 /// <remarks>
 /// HC-128 serializes each 32-bit output word least-significant-byte first, so a printed word such as <c>73150082</c>

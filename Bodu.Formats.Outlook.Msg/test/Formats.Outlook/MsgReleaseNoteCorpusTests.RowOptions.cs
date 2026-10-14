@@ -14,7 +14,7 @@ namespace Bodu.Formats.Outlook;
 public sealed partial class MsgReleaseNoteCorpusTests
 {
     /// <summary>
-    /// Represents the options a catalogue row runs with: the surface that renders it, and the reader options it is read
+    /// Represents the options a catalog row runs with: the surface that renders it, and the reader options it is read
     /// with.
     /// </summary>
     /// <param name="Surface">What renders the input: <c>Message</c>, <c>Conveniences</c> or <c>CompressedRtf</c>.</param>

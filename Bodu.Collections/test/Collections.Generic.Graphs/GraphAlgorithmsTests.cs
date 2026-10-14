@@ -9,7 +9,7 @@ using Bodu.Test.Kat;
 namespace Bodu.Collections.Generic.Graphs;
 
 /// <summary>
-/// Contains unit tests for the <see cref="GraphAlgorithms" /> catalogue.
+/// Contains unit tests for the <see cref="GraphAlgorithms" /> catalog.
 /// </summary>
 [TestClass]
 public sealed class GraphAlgorithmsTests

@@ -7,7 +7,7 @@
 namespace Bodu.Text.Encoding;
 
 /// <summary>
-/// Behavioural tests for the <see cref="Base85Variant" /> enum.
+/// Behavioral tests for the <see cref="Base85Variant" /> enum.
 /// </summary>
 [TestClass]
 public sealed class Base85VariantTests

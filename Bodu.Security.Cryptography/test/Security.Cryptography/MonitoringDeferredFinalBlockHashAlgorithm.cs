@@ -8,7 +8,7 @@ namespace Bodu.Security.Cryptography;
 
 /// <summary>
 /// Test-oriented derivation of <see cref="DeferredFinalBlockHashAlgorithm{T}" /> that captures a copy of every
-/// <see cref="ProcessBlock(ReadOnlySpan{byte}, ulong, bool)" /> invocation along with its counter and finalisation
+/// <see cref="ProcessBlock(ReadOnlySpan{byte}, ulong, bool)" /> invocation along with its counter and finalization
 /// flag. Used to verify the deferred-final-block buffering contract in isolation.
 /// </summary>
 public sealed class MonitoringDeferredFinalBlockHashAlgorithm
@@ -30,7 +30,7 @@ public sealed class MonitoringDeferredFinalBlockHashAlgorithm
     public override string AlgorithmName => nameof(MonitoringDeferredFinalBlockHashAlgorithm);
 
     /// <summary>
-    /// Initialises a new instance with the default 8-byte block size and an 8-bit digest.
+    /// Initializes a new instance with the default 8-byte block size and an 8-bit digest.
     /// </summary>
     public MonitoringDeferredFinalBlockHashAlgorithm()
         : this(8)
@@ -38,7 +38,7 @@ public sealed class MonitoringDeferredFinalBlockHashAlgorithm
     }
 
     /// <summary>
-    /// Initialises a new instance with the specified block size and an 8-bit digest size (so that the
+    /// Initializes a new instance with the specified block size and an 8-bit digest size (so that the
     /// <see cref="System.Security.Cryptography.HashAlgorithm" /> infrastructure has a non-zero <c>HashSize</c> when
     /// <c>ComputeHash</c> is invoked).
     /// </summary>

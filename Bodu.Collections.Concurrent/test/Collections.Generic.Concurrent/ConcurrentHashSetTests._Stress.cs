@@ -521,7 +521,7 @@ public partial class ConcurrentHashSetTests
     }
 
     /// <summary>
-    /// Verifies that when every key hashes to the same bucket - funnelling all writers into a single equal-key run
+    /// Verifies that when every key hashes to the same bucket - funneling all writers into a single equal-key run
     /// of the split-ordered list - every privately-owned key is still added exactly once and retained.
     /// </summary>
     [TestMethod]

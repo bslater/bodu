@@ -14,7 +14,7 @@ namespace Bodu.Security.Cryptography;
 /// Serpent AES candidate submission.
 /// </summary>
 /// <remarks>
-/// Serpent-128 is the standardised, non-tweakable Serpent variant - distinct from the experimental wide-block
+/// Serpent-128 is the standardized, non-tweakable Serpent variant - distinct from the experimental wide-block
 /// Serpent-256 / 512 / 1024 constructions which are tweakable. It therefore plugs into
 /// <see cref="BlockCipherTests{TTest, TCipher, TVariant}" /> with <see cref="SingleTestVariant" /> rather than
 /// <see cref="TweakableBlockCipherVariant" />.

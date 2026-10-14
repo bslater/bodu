@@ -17,7 +17,7 @@ namespace Bodu.Text.Encoding;
 /// </para>
 /// <para>
 /// Bech32 is not a plain binary-to-text encoding: every encoded string carries an HRP prefix and a checksum, so the
-/// type is modelled on <see cref="Base58Check" /> rather than the <see cref="IBinaryEncoding" /> family. The core
+/// type is modeled on <see cref="Base58Check" /> rather than the <see cref="IBinaryEncoding" /> family. The core
 /// surface operates on 5-bit data groups (each value <c>0</c>-<c>31</c>); use <see cref="ConvertBits" /> - or the
 /// <c>FromBytes</c> / <c>ToBytes</c> convenience members - to translate between 8-bit bytes and 5-bit groups.
 /// </para>

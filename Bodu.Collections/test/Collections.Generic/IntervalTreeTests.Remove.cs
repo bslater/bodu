@@ -89,7 +89,7 @@ public partial class IntervalTreeTests
     /// <summary>
     /// Verifies the targeted node-delete shapes - leaf, node with one child, and interior node with two children
     /// (reduced via its in-order successor) - by removing from a tree covering all shapes and checking the
-    /// survivors' order and query behaviour.
+    /// survivors' order and query behavior.
     /// </summary>
     [TestMethod]
     public void Remove_WhenNodeShapesVary_ShouldPreserveOrderAndQueries()

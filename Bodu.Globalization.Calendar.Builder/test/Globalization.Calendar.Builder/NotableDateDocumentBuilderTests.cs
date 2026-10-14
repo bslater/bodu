@@ -8,7 +8,7 @@ namespace Bodu.Globalization.Calendar.Builder;
 
 /// <summary>
 /// Contains unit tests for <see cref="NotableDateDocumentBuilder" />. The partial class is split across files by the
-/// behaviour under test (build, serialization, round-trip, save/load, clone).
+/// behavior under test (build, serialization, round-trip, save/load, clone).
 /// </summary>
 [TestClass]
 public partial class NotableDateDocumentBuilderTests

@@ -92,7 +92,7 @@ public sealed partial class RateCachingExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that a per-pair route configured through the builder is honoured, overriding the child order.
+    /// Verifies that a per-pair route configured through the builder is honored, overriding the child order.
     /// </summary>
     [TestMethod]
     public void AddAggregatedRateProvider_WhenRouteConfigured_ShouldHonourRoute()

@@ -7,7 +7,7 @@
 namespace Bodu.Globalization.Calendar.Caching;
 
 /// <summary>
-/// Verifies the ordering behaviour of <see cref="CachingNotableDateService" />: the zero-copy whole-year fast path,
+/// Verifies the ordering behavior of <see cref="CachingNotableDateService" />: the zero-copy whole-year fast path,
 /// order preservation across assembled ranges, and the sort fallback for a cache backend that violates the ordering
 /// contract.
 /// </summary>

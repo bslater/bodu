@@ -196,7 +196,7 @@ public readonly partial struct Money<TCurrency>
     /// <exception cref="ArgumentNullException"><paramref name="context" /> is <see langword="null" />.</exception>
     /// <exception cref="OverflowException">The product falls outside the range of <see cref="decimal" />.</exception>
     /// <remarks>
-    /// Because <see cref="Money{TCurrency}" /> is a settlement value, only the context's rounding strategy is honoured;
+    /// Because <see cref="Money{TCurrency}" /> is a settlement value, only the context's rounding strategy is honored;
     /// the scale is fixed to the currency's minor units. For deferred-rounding chains use a high-precision calculation
     /// value and round once at the end.
     /// </remarks>

@@ -9,7 +9,7 @@ using Bodu.Test.Kat;
 namespace Bodu.Globalization.Calendar;
 
 /// <summary>
-/// Verifies the bundled <c>global-hindu</c> catalogue: the solar harvest festivals added in the latest pass (Makar
+/// Verifies the bundled <c>global-hindu</c> catalog: the solar harvest festivals added in the latest pass (Makar
 /// Sankranti and Pongal, fixed at 14 January by civil convention), that Saraswati Puja shares the Vasant Panchami
 /// computation, and that the solar-anchored lunar festivals resolve to within two days of their published dates. The
 /// underlying Hindu lunar algorithm is documented as accurate to within a day or two of regional panchanga reckoning.
@@ -26,15 +26,15 @@ public sealed class GlobalHinduCatalogueKnownAnswerTests
     private static readonly Lazy<NotableDateService> s_sweepService = new(CreateService);
 
     /// <summary>
-    /// Builds a service over the bundled <c>global-hindu</c> catalogue.
+    /// Builds a service over the bundled <c>global-hindu</c> catalog.
     /// </summary>
-    /// <returns>A service for the catalogue.</returns>
+    /// <returns>A service for the catalog.</returns>
     private static NotableDateService CreateService() =>
         CommonCatalogues.Service("global-hindu");
 
     /// <summary>
     /// Verifies that each Hindu observance resolves to the engine-pinned vector date across the full fifty-year sweep
-    /// (Gregorian 1990-2039). The vectors freeze the catalogue's current output as a regression baseline - braced by
+    /// (Gregorian 1990-2039). The vectors freeze the catalog's current output as a regression baseline - braced by
     /// the independent tithi-proximity and seasonal-window checks recorded in the vector file's provenance header and
     /// by the published-panchanga rows in this class - so an unintended change to the lunisolar model surfaces as a
     /// diff rather than passing silently.
@@ -75,7 +75,7 @@ public sealed class GlobalHinduCatalogueKnownAnswerTests
     }
 
     /// <summary>
-    /// Verifies that Saraswati Puja resolves to the same date as Vasant Panchami, since the catalogue computes both from
+    /// Verifies that Saraswati Puja resolves to the same date as Vasant Panchami, since the catalog computes both from
     /// the <c>vasant-panchami</c> algorithm.
     /// </summary>
     /// <param name="year">The Gregorian year.</param>
@@ -96,7 +96,7 @@ public sealed class GlobalHinduCatalogueKnownAnswerTests
 
     /// <summary>
     /// Verifies that representative solar-anchored lunar festivals resolve to within two days of their published dates,
-    /// confirming the catalogue wires each algorithm key correctly.
+    /// confirming the catalog wires each algorithm key correctly.
     /// </summary>
     /// <param name="year">The Gregorian year.</param>
     /// <param name="notableDateId">The notable-date id to resolve.</param>

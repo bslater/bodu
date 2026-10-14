@@ -17,7 +17,7 @@ namespace Bodu.Financial.ExchangeRates;
 /// The table itself adds only the multi-series indexing, lazy creation, and bulk snapshot operations.
 /// </para>
 /// <para>
-/// Instances are not thread-safe; concurrent mutation requires external synchronisation.
+/// Instances are not thread-safe; concurrent mutation requires external synchronization.
 /// </para>
 /// <example>
 /// The builder → book → provider chain is the offline-first pattern: pour any rate data you already hold (a file, a

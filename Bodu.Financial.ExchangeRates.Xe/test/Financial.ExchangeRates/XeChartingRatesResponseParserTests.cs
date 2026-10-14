@@ -143,7 +143,7 @@ public class XeChartingRatesResponseParserTests
 
     /// <summary>
     /// Verifies that when several intraday points fall on the same calendar day, the last point of that day is the one
-    /// retained after accumulation, matching the upsert-by-date behaviour of the in-memory store.
+    /// retained after accumulation, matching the upsert-by-date behavior of the in-memory store.
     /// </summary>
     [TestMethod]
     public void Parse_WhenSubDailyGranularity_ShouldEmitChronologicalPointsPerDay()

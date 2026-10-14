@@ -81,7 +81,7 @@ public sealed partial class XtsModeTransformTests
     }
 
     /// <summary>
-    /// Verifies that encrypting does not mutate the caller-supplied initialisation vector.
+    /// Verifies that encrypting does not mutate the caller-supplied initialization vector.
     /// </summary>
     [TestMethod]
     public void Transform_WhenEncrypting_ShouldNotMutateIv()

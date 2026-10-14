@@ -25,8 +25,8 @@ namespace Bodu.Financial.ExchangeRates;
 /// column's currency per one pound sterling.
 /// </para>
 /// <para>
-/// Each column's currency is the quote label of its series in the configured catalogue, mapped through the options'
-/// currency aliases. Columns whose series code is not in the catalogue are ignored, and cells that are empty,
+/// Each column's currency is the quote label of its series in the configured catalog, mapped through the options'
+/// currency aliases. Columns whose series code is not in the catalog are ignored, and cells that are empty,
 /// non-numeric, or not strictly positive are skipped, because the IADB leaves a cell blank when a currency was not
 /// quoted on a given day. A response that lacks the <c>DATE</c> header - for example, an HTML error page returned in
 /// place of the CSV - is reported as a format failure.
@@ -47,7 +47,7 @@ internal static class BoeRateCsvParser
     /// Parses the response content from a stream.
     /// </summary>
     /// <param name="stream">The stream positioned at the start of the CSV.</param>
-    /// <param name="options">The provider options supplying the series catalogue.</param>
+    /// <param name="options">The provider options supplying the series catalog.</param>
     /// <returns>The parsed, normalized table.</returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="stream" /> or <paramref name="options" /> is <see langword="null" />.
@@ -90,7 +90,7 @@ internal static class BoeRateCsvParser
     /// Parses the response content from a string.
     /// </summary>
     /// <param name="content">The CSV content.</param>
-    /// <param name="options">The provider options supplying the series catalogue.</param>
+    /// <param name="options">The provider options supplying the series catalog.</param>
     /// <returns>The parsed, normalized table.</returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="content" /> or <paramref name="options" /> is <see langword="null" />.
@@ -188,7 +188,7 @@ internal static class BoeRateCsvParser
     /// <summary>
     /// Builds a lookup from IADB series code to its descriptor, comparing codes without case sensitivity.
     /// </summary>
-    /// <param name="options">The provider options supplying the series catalogue.</param>
+    /// <param name="options">The provider options supplying the series catalog.</param>
     /// <returns>The series index keyed by code.</returns>
     private static Dictionary<string, BoeSeries> BuildSeriesIndex(BoeRateProviderOptions options)
     {

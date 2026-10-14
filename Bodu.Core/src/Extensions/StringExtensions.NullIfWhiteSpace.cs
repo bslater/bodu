@@ -18,7 +18,7 @@ public static partial class StringExtensions
     /// otherwise the original <paramref name="value" />.
     /// </returns>
     /// <remarks>
-    /// Useful for input sanitisation pipelines where whitespace-only entries should be treated as missing data.
+    /// Useful for input sanitization pipelines where whitespace-only entries should be treated as missing data.
     /// </remarks>
     public static string? NullIfWhiteSpace(this string? value) =>
         string.IsNullOrWhiteSpace(value) ? null : value;

@@ -9,14 +9,14 @@ using Bodu.Test.Kat;
 namespace Bodu.IO.Hashing.Checksums;
 
 /// <summary>
-/// Verifies <see cref="CrcStandard.TryFromName(string, out CrcStandard)" /> over the aliases the CRC RevEng catalogue
+/// Verifies <see cref="CrcStandard.TryFromName(string, out CrcStandard)" /> over the aliases the CRC RevEng catalog
 /// publishes.
 /// </summary>
 public partial class CrcStandardTests
 {
     /// <summary>
     /// Verifies that <see cref="CrcStandard.TryFromName(string, out CrcStandard)" /> resolves every alias the CRC RevEng
-    /// catalogue publishes to the shared instance of the standard it names.
+    /// catalog publishes to the shared instance of the standard it names.
     /// </summary>
     /// <param name="kat">The alias and the standard it names.</param>
     [TestMethod]

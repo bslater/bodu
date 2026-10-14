@@ -17,14 +17,14 @@ using Bodu.Text.Bencode.Writer;
 namespace Bodu.Text.Bencode;
 
 /// <summary>
-/// Holds Bodu.Text.Bencode to the defect fixes other bencode libraries list in their release notes, as catalogued in
+/// Holds Bodu.Text.Bencode to the defect fixes other bencode libraries list in their release notes, as cataloged in
 /// <c>corpus/bencode/fixes/</c> and embedded under <c>Fixtures/ReleaseNotes/</c>.
 /// </summary>
 /// <remarks>
 /// <para>
 /// A read is rendered as a token transcript: the tokens in order, separated by single spaces. <c>[</c> and <c>]</c>
 /// start and end a list, <c>{</c> and <c>}</c> a dictionary, <c>k:</c> introduces a key, <c>s:</c> a byte string and
-/// <c>i:</c> an integer's text. Each token's bytes use the catalogue escapes, with a space written <c>\x20</c>, and
+/// <c>i:</c> an integer's text. Each token's bytes use the catalog escapes, with a space written <c>\x20</c>, and
 /// transcripts are compared after each token is decoded and encoded again, so equivalent escapes compare equal.
 /// </para>
 /// <para>
@@ -37,10 +37,10 @@ namespace Bodu.Text.Bencode;
 [TestClass]
 public sealed partial class BencodeReleaseNoteCorpusTests
 {
-    /// <summary>The corpus area whose catalogues this class runs.</summary>
+    /// <summary>The corpus area whose catalogs this class runs.</summary>
     private const string Area = "bencode";
 
-    /// <summary>The option names a catalogue row may use, each mapped by <see cref="RowOptions.Parse" />.</summary>
+    /// <summary>The option names a catalog row may use, each mapped by <see cref="RowOptions.Parse" />.</summary>
     private static readonly string[] s_optionNames =
     [
         "Surface", "MaxDepth", "AllowUnsortedKeys", "AllowDuplicateKeys", "AllowMultipleRootValues",
@@ -50,7 +50,7 @@ public sealed partial class BencodeReleaseNoteCorpusTests
     private static readonly Comparer<byte[]> s_bytewise =
         Comparer<byte[]>.Create((left, right) => left.AsSpan().SequenceCompareTo(right));
 
-    /// <summary>The catalogues embedded in this test assembly, loaded once.</summary>
+    /// <summary>The catalogs embedded in this test assembly, loaded once.</summary>
     private static readonly Lazy<IReadOnlyList<ReleaseNoteCatalog>> s_catalogs =
         new(() => ReleaseNoteCatalog.LoadEmbedded(typeof(BencodeReleaseNoteCorpusTests).Assembly));
 
@@ -90,9 +90,9 @@ public sealed partial class BencodeReleaseNoteCorpusTests
         RunnableRows("roundtrip");
 
     /// <summary>
-    /// Gets every row of every embedded catalogue.
+    /// Gets every row of every embedded catalog.
     /// </summary>
-    /// <value>The rows, catalogue by catalogue in file order.</value>
+    /// <value>The rows, catalog by catalog in file order.</value>
     private static IEnumerable<ReleaseNoteFix> AllRows =>
         s_catalogs.Value.SelectMany(catalog => catalog.Rows);
 
@@ -442,7 +442,7 @@ public sealed partial class BencodeReleaseNoteCorpusTests
         transcript.Length == 0 ? [] : transcript.Split(' ');
 
     /// <summary>
-    /// Writes a token's bytes in the catalogue escapes, with a space written <c>\x20</c> so that a transcript splits on
+    /// Writes a token's bytes in the catalog escapes, with a space written <c>\x20</c> so that a transcript splits on
     /// spaces.
     /// </summary>
     /// <param name="bytes">The token's bytes.</param>

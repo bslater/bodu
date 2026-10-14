@@ -13,7 +13,7 @@ namespace Bodu.Text;
 /// <remarks>
 /// <para>
 /// The overloads forward to the BCL <see cref="System.Text.Encoding" /> APIs or to the span- and encoding-receiver
-/// implementations in <see cref="EncodingExtensions" />, so behaviour and performance match the rest of the encoding
+/// implementations in <see cref="EncodingExtensions" />, so behavior and performance match the rest of the encoding
 /// surface.
 /// </para>
 /// </remarks>

@@ -12,7 +12,7 @@ namespace Bodu.IO.Hashing.Checksums;
 
 /// <summary>
 /// Immutable parameter bundle that fully describes a CRC variant - width, polynomial, initial value, input/output bit
-/// reflection, and final XOR - and serves as the lookup key into the RevEng catalogue used by <see cref="Crc" />.
+/// reflection, and final XOR - and serves as the lookup key into the RevEng catalog used by <see cref="Crc" />.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -28,7 +28,7 @@ namespace Bodu.IO.Hashing.Checksums;
 /// </para>
 /// <list type="bullet">
 /// <item>
-/// <term>Catalogue properties</term>
+/// <term>Catalog properties</term>
 /// <description>
 /// <see cref="CRC32_ISOHDLC" />, <see cref="CRC32_ISCSI" />, <see cref="CRC16_MODBUS" />, <see cref="CRC16_KERMIT" />,
 /// <see cref="CRC64_XZ" />, … - direct named accessors for the common entries that return the canonical, cached
@@ -38,15 +38,15 @@ namespace Bodu.IO.Hashing.Checksums;
 /// <item>
 /// <term><see cref="Get(CrcStandards)" /></term>
 /// <description>
-/// Materializes any catalogue entry from its <see cref="CrcStandards" /> enum value - useful when the choice is
+/// Materializes any catalog entry from its <see cref="CrcStandards" /> enum value - useful when the choice is
 /// data-driven (e.g. read from configuration).
 /// </description>
 /// </item>
 /// <item>
 /// <term><see cref="FromName(string)" /></term>
 /// <description>
-/// Resolves a canonical RevEng name or any alias the catalogue publishes - <c>"CRC-32/ISO-HDLC"</c>, <c>"CRC-32"</c>,
-/// and <c>"PKZIP"</c> all return the same instance as <see cref="CRC32_ISOHDLC" />. The comparison is ordinal and
+/// Resolves a canonical RevEng name or any alias the catalog publishes - <c>"CRC-32/ISO-HDLC"</c>, <c>"CRC-32"</c>, and
+/// <c>"PKZIP"</c> all return the same instance as <see cref="CRC32_ISOHDLC" />. The comparison is ordinal and
 /// case-sensitive.
 /// </description>
 /// </item>
@@ -54,7 +54,7 @@ namespace Bodu.IO.Hashing.Checksums;
 /// <term>Direct construction</term>
 /// <description>
 /// The <see cref="CrcStandard(string, int, ulong, ulong, bool, bool, ulong)" /> constructor accepts custom parameters
-/// for variants that are not in the RevEng catalogue. Width must lie within <see cref="MinSize" />..
+/// for variants that are not in the RevEng catalog. Width must lie within <see cref="MinSize" />..
 /// <see cref="MaxSize" />.
 /// </description>
 /// </item>
@@ -75,8 +75,8 @@ namespace Bodu.IO.Hashing.Checksums;
 /// </para>
 /// <para>
 /// <strong>Coverage and limits.</strong> Sizes are constrained to <see cref="MinSize" />..<see cref="MaxSize" /> bits;
-/// any wider variant in the RevEng catalogue (currently only <c>CRC-82/DARC</c>) is intentionally omitted because it
-/// will not fit in the <see cref="ulong" />-backed register. Instances are immutable and therefore safe to share across
+/// any wider variant in the RevEng catalog (currently only <c>CRC-82/DARC</c>) is intentionally omitted because it will
+/// not fit in the <see cref="ulong" />-backed register. Instances are immutable and therefore safe to share across
 /// threads.
 /// </para>
 /// </remarks>

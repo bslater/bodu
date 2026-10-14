@@ -78,7 +78,7 @@ internal sealed class RateCacheWarmupService
     /// <summary>
     /// Runs the one-shot warm-up: resolves the window and targets, warms each target, and reports the outcome.
     /// </summary>
-    /// <param name="stoppingToken">Signalled when the host shuts down, aborting the warm-up quietly.</param>
+    /// <param name="stoppingToken">Signaled when the host shuts down, aborting the warm-up quietly.</param>
     /// <returns>A task representing the warm-up run.</returns>
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {

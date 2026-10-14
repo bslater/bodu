@@ -14,7 +14,7 @@ namespace Bodu.Extensions.Configuration.Text;
 /// </summary>
 /// <remarks>
 /// <para>
-/// The provider inherits change-token, reload-on-change, optional-file, and exception-wrapping behaviour from
+/// The provider inherits change-token, reload-on-change, optional-file, and exception-wrapping behavior from
 /// <see cref="FileConfigurationProvider" />. Override <see cref="Load(Stream)" /> only. The Parse → Resolve → flatten
 /// pipeline is shared with <see cref="TextStreamConfigurationProvider" /> via <see cref="TextConfigurationLoader" />.
 /// </para>

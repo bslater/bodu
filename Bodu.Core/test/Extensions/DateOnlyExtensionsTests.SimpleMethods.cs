@@ -52,7 +52,7 @@ public partial class DateOnlyExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="DateOnlyExtensions.DayName(DateOnly)" /> returns the localised day name for the date's
+    /// Verifies that <see cref="DateOnlyExtensions.DayName(DateOnly)" /> returns the localized day name for the date's
     /// <see cref="DayOfWeek" /> using the current culture.
     /// </summary>
     [TestMethod]
@@ -248,7 +248,7 @@ public partial class DateOnlyExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="DateOnlyExtensions.MonthName(DateOnly)" /> returns the localised month name for the date's month using
+    /// Verifies that <see cref="DateOnlyExtensions.MonthName(DateOnly)" /> returns the localized month name for the date's month using
     /// the current culture.
     /// </summary>
     [TestMethod]

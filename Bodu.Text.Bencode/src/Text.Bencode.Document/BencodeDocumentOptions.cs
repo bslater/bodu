@@ -12,7 +12,7 @@ namespace Bodu.Text.Bencode.Document;
 /// <remarks>
 /// Bencode has no comment syntax and no trailing-comma concept; the options relax the two dictionary-key rules that
 /// older real-world encoders are known to violate: <see cref="AllowUnsortedKeys" /> and
-/// <see cref="AllowDuplicateKeys" />. Both default to the strict canonical behaviour.
+/// <see cref="AllowDuplicateKeys" />. Both default to the strict canonical behavior.
 /// </remarks>
 public struct BencodeDocumentOptions
 {

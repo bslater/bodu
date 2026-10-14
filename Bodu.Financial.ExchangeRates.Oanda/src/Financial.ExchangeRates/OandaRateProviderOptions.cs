@@ -16,8 +16,8 @@ namespace Bodu.Financial.ExchangeRates;
 /// <remarks>
 /// <para>
 /// This type derives from <see cref="WebRateProviderOptions" />, which supplies the endpoint base address, the HTTP
-/// contract, the synchronous-access and look-back behaviour, the currency-alias map, and the per-concern log levels.
-/// The members declared here are OANDA-specific: the data and priming paths, the rate source, the price basis, the
+/// contract, the synchronous-access and look-back behavior, the currency-alias map, and the per-concern log levels. The
+/// members declared here are OANDA-specific: the data and priming paths, the rate source, the price basis, the
 /// reporting period, and the rate adjustment. The anonymous endpoint serves only a rolling recent window, so the
 /// constructor sets <see cref="WebRateProviderOptions.HistoryAvailability" /> to a 180-day rolling window and the
 /// response is range-filtered to the requested dates.

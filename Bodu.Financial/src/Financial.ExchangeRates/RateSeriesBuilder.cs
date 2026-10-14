@@ -20,7 +20,7 @@ namespace Bodu.Financial.ExchangeRates;
 /// previously produced snapshots, and vice versa.
 /// </para>
 /// <para>
-/// Instances are not thread-safe; concurrent mutation requires external synchronisation.
+/// Instances are not thread-safe; concurrent mutation requires external synchronization.
 /// </para>
 /// <example>
 /// <code language="csharp">

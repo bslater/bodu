@@ -12,7 +12,7 @@ using System.Runtime.Intrinsics.X86;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// AVX-512 vectorised implementation of <see cref="Threefish512Cipher" />. The eight 64-bit state words are split
+/// AVX-512 vectorized implementation of <see cref="Threefish512Cipher" />. The eight 64-bit state words are split
 /// across two <see cref="Vector256{T}" /> registers - <c>lo</c> holds the even-position words <c>(x0, x2, x4, x6)</c>
 /// and <c>hi</c> the odd-position words <c>(x1, x3, x5, x7)</c> - and each round applies a vector add, a per-lane
 /// variable rotate (<c>VPROLVQ</c>), an XOR, and a pair of lane shuffles that realign the registers for the next
@@ -80,7 +80,7 @@ public sealed partial class Threefish512Cipher
     private static readonly Vector256<ulong> s_rotVec7 = Vector256.Create((ulong)R28, R29, R30, R31);
 
     /// <summary>
-    /// Encrypts a single 64-byte block using the AVX-512 vectorised Threefish-512 implementation.
+    /// Encrypts a single 64-byte block using the AVX-512 vectorized Threefish-512 implementation.
     /// </summary>
     /// <param name="input">The 64-byte plaintext block. Caller is responsible for length validation.</param>
     /// <param name="output">The 64-byte buffer that receives the ciphertext block.</param>
@@ -158,7 +158,7 @@ public sealed partial class Threefish512Cipher
     }
 
     /// <summary>
-    /// Decrypts a single 64-byte block using the AVX-512 vectorised Threefish-512 implementation.
+    /// Decrypts a single 64-byte block using the AVX-512 vectorized Threefish-512 implementation.
     /// </summary>
     /// <param name="input">The 64-byte ciphertext block. Caller is responsible for length validation.</param>
     /// <param name="output">The 64-byte buffer that receives the plaintext block.</param>
@@ -236,7 +236,7 @@ public sealed partial class Threefish512Cipher
     }
 
     /// <summary>
-    /// Executes one forward Threefish-512 round on the vectorised state and applies the inter-round shuffle that
+    /// Executes one forward Threefish-512 round on the vectorized state and applies the inter-round shuffle that
     /// realigns the registers for the next round's MIX pairing.
     /// </summary>
     /// <param name="lo">The even-position state register, updated in place.</param>
@@ -252,7 +252,7 @@ public sealed partial class Threefish512Cipher
     }
 
     /// <summary>
-    /// Executes one inverse Threefish-512 round on the vectorised state. The inverse shuffle is applied before the
+    /// Executes one inverse Threefish-512 round on the vectorized state. The inverse shuffle is applied before the
     /// UNMIX so it undoes the previous forward shuffle, restoring the layout that the original MIX operated on.
     /// </summary>
     /// <param name="lo">The even-position state register, updated in place.</param>
@@ -269,7 +269,7 @@ public sealed partial class Threefish512Cipher
     }
 
     /// <summary>
-    /// Reinterleaves the <c>(lo, hi)</c> vectorised state back into the canonical eight-word byte order and writes it
+    /// Reinterleaves the <c>(lo, hi)</c> vectorized state back into the canonical eight-word byte order and writes it
     /// to the destination buffer as two unaligned 256-bit stores.
     /// </summary>
     /// <param name="destination">A reference to the first byte of the destination buffer.</param>

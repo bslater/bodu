@@ -11,7 +11,7 @@ namespace Bodu.Security.Cryptography.Samples.HashingMacAndKdf.Scenarios;
 /// <summary>
 /// Demonstrates the hash families not covered by <see cref="CryptographicHashes" />: the 32-bit BLAKE2 variant, the
 /// tunable CubeHash, the two Snefru digests, the Ascon hash and customizable-XOF family, and the algorithms whose
-/// behaviour is selected by a variant property rather than a separate type.
+/// behavior is selected by a variant property rather than a separate type.
 /// </summary>
 public static class MoreHashFamilies
 {
@@ -19,7 +19,7 @@ public static class MoreHashFamilies
     private static readonly byte[] Message = System.Text.Encoding.ASCII.GetBytes("The quick brown fox jumps over the lazy dog");
 
     /// <summary>
-    /// Prints a digest from each family, then shows the variant- and parameter-selected behaviours.
+    /// Prints a digest from each family, then shows the variant- and parameter-selected behaviors.
     /// </summary>
     public static void Run()
     {
@@ -107,7 +107,7 @@ public static class MoreHashFamilies
     }
 
     /// <summary>
-    /// Shows the algorithms whose behaviour is selected by a property rather than a distinct type.
+    /// Shows the algorithms whose behavior is selected by a property rather than a distinct type.
     /// </summary>
     private static void RunVariantSelected()
     {

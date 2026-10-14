@@ -7,7 +7,7 @@
 namespace Bodu.Text.Encoding;
 
 /// <summary>
-/// Behavioural tests for <see cref="Bech32" /> (BIP-173) and Bech32m (BIP-350). Partial files split coverage by member
+/// Behavioral tests for <see cref="Bech32" /> (BIP-173) and Bech32m (BIP-350). Partial files split coverage by member
 /// or subject contract per the repository test convention.
 /// </summary>
 [TestClass]

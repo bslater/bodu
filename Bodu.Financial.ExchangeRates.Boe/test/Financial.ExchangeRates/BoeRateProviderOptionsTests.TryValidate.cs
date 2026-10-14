@@ -67,7 +67,7 @@ public partial class BoeRateProviderOptionsTests
     }
 
     /// <summary>
-    /// Verifies that an empty series catalogue is rejected.
+    /// Verifies that an empty series catalog is rejected.
     /// </summary>
     [TestMethod]
     public void TryValidate_WhenSeriesEmpty_ShouldReturnFalse()

@@ -24,7 +24,7 @@ public partial class ConcurrentHashSetTests
 
     /// <summary>
     /// An <see cref="int" /> equality comparer whose <see cref="GetHashCode" /> throws an
-    /// <see cref="InvalidOperationException" /> for one designated value, modelling a user comparer that faults while
+    /// <see cref="InvalidOperationException" /> for one designated value, modeling a user comparer that faults while
     /// hashing an element.
     /// </summary>
     private sealed class ThrowingHashCodeComparer
@@ -52,7 +52,7 @@ public partial class ConcurrentHashSetTests
     /// <summary>
     /// An <see cref="int" /> equality comparer that funnels every element into one bucket and, once
     /// <see cref="FaultArmed" /> is set, throws an <see cref="InvalidOperationException" /> from <see cref="Equals" />,
-    /// modelling a user comparer that faults while comparing two elements during a bucket-chain walk.
+    /// modeling a user comparer that faults while comparing two elements during a bucket-chain walk.
     /// </summary>
     private sealed class ThrowingEqualsComparer
         : IEqualityComparer<int>

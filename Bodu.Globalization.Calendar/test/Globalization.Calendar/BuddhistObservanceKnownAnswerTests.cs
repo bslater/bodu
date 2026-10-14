@@ -7,7 +7,7 @@
 namespace Bodu.Globalization.Calendar;
 
 /// <summary>
-/// Verifies the bundled <c>global-buddhist</c> catalogue. The fixed observances (Parinirvana Day, Bodhi Day) resolve to
+/// Verifies the bundled <c>global-buddhist</c> catalog. The fixed observances (Parinirvana Day, Bodhi Day) resolve to
 /// their authored dates; Vesak, the East Asian Buddha's Birthday, Tibetan Losar and Asalha Puja resolve to within two
 /// days of their published dates, and Vassa follows Asalha Puja by a day.
 /// </summary>
@@ -30,9 +30,9 @@ public sealed class BuddhistObservanceKnownAnswerTests
     private const int ToleranceDays = 2;
 
     /// <summary>
-    /// Builds a service over the bundled <c>global-buddhist</c> catalogue.
+    /// Builds a service over the bundled <c>global-buddhist</c> catalog.
     /// </summary>
-    /// <returns>A service for the catalogue.</returns>
+    /// <returns>A service for the catalog.</returns>
     private static NotableDateService CreateService() =>
         CommonCatalogues.Service("global-buddhist");
 

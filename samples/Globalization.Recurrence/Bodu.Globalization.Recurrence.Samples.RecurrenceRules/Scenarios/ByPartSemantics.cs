@@ -9,7 +9,7 @@ using System.Globalization;
 namespace Bodu.Globalization.Recurrence.Samples.RecurrenceRules.Scenarios;
 
 /// <summary>
-/// Demonstrates the four <c>BY*</c> behaviours that recurrence implementations most often disagree
+/// Demonstrates the four <c>BY*</c> behaviors that recurrence implementations most often disagree
 /// on: invalid dates are skipped rather than clamped, the occurrence set is a genuine set,
 /// <c>BYSETPOS</c> indexes the whole frequency period, and a <c>BY</c> filter never re-anchors the
 /// interval it is applied to.

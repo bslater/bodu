@@ -12,11 +12,11 @@ namespace Bodu.Text.Configuration;
 public sealed partial class ConfigurationReleaseNoteCorpusTests
 {
     /// <summary>
-    /// Verifies that each catalogued input a row expects Bodu to refuse is rejected, while it is parsed under the row's
+    /// Verifies that each cataloged input a row expects Bodu to refuse is rejected, while it is parsed under the row's
     /// profile or resolved for the row's target path, with <see cref="ConfigurationParseException" />, the exception
     /// the row names.
     /// </summary>
-    /// <param name="fix">The catalogue row.</param>
+    /// <param name="fix">The catalog row.</param>
     [TestMethod]
     [TestCategory("Regression")]
     [DynamicData(

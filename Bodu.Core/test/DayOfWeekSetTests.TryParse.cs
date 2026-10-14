@@ -54,7 +54,7 @@ public partial class DayOfWeekSetTests
 
     /// <summary>
     /// Verifies that <see cref="DayOfWeekSet.TryParse" /> returns <see langword="false" /> and sets the
-    /// result to <see cref="DayOfWeekSet.Empty" /> when the input contains an unrecognised character.
+    /// result to <see cref="DayOfWeekSet.Empty" /> when the input contains an unrecognized character.
     /// </summary>
     [TestMethod]
     public void TryParse_WhenInputContainsInvalidCharacter_ShouldReturnFalseAndSetEmpty()

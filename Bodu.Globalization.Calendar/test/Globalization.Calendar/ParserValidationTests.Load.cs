@@ -447,7 +447,7 @@ public sealed partial class ParserValidationTests
     }
 
     /// <summary>
-    /// Verifies that an algorithm strategy with an unrecognised key is rejected with the <c>BODU-CAL-ALGORITHM</c>
+    /// Verifies that an algorithm strategy with an unrecognized key is rejected with the <c>BODU-CAL-ALGORITHM</c>
     /// diagnostic.
     /// </summary>
     [TestMethod]

@@ -10,7 +10,7 @@ namespace Bodu.Text.Encoding;
 /// Coverage-focused tests for the Span&lt;char&gt; overloads of <see cref="Base85.Encode" /> and
 /// <see cref="Base85.TryEncode" /> - specifically the delimiter-aware fast path (destination ≥ worst-case bound), the
 /// rented-scratch slow path (destination smaller than the worst-case bound but large enough for the actual output),
-/// and the empty-input + delimiter behaviour.
+/// and the empty-input + delimiter behavior.
 /// </summary>
 public sealed partial class Base85Tests
 {

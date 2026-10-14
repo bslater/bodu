@@ -62,7 +62,7 @@ public partial class MoneyTests
         Assert.ThrowsExactly<InvalidOperationException>(() => _ = 3m * default(Money));
 
     /// <summary>
-    /// Verifies that the named multiply and divide methods agree with the operators and honour an explicit midpoint
+    /// Verifies that the named multiply and divide methods agree with the operators and honor an explicit midpoint
     /// rule.
     /// </summary>
     [TestMethod]

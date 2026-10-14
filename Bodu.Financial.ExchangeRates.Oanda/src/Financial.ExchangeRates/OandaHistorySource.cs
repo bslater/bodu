@@ -19,7 +19,7 @@ namespace Bodu.Financial.ExchangeRates;
 /// carry the cookie onto the data request, and re-primes once if a later request is challenged.
 /// </para>
 /// <para>
-/// The endpoint serves a server-determined recent window rather than honouring an arbitrary historical range, so the
+/// The endpoint serves a server-determined recent window rather than honoring an arbitrary historical range, so the
 /// parser restricts the parsed observations to the request's inclusive range. The <c>User-Agent</c> the endpoint
 /// requires is configured on the <see cref="HttpClient" /> (by the provider when it owns the client, or by the caller
 /// when the client is supplied), not per request.

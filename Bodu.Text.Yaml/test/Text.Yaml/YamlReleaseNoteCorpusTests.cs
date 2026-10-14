@@ -16,7 +16,7 @@ using Bodu.Text.Yaml.Writer;
 namespace Bodu.Text.Yaml;
 
 /// <summary>
-/// Holds Bodu.Text.Yaml to the defect fixes other YAML libraries list in their release notes, as catalogued in
+/// Holds Bodu.Text.Yaml to the defect fixes other YAML libraries list in their release notes, as cataloged in
 /// <c>corpus/yaml/fixes/</c> and embedded under <c>Fixtures/ReleaseNotes/</c>.
 /// </summary>
 /// <remarks>
@@ -37,13 +37,13 @@ namespace Bodu.Text.Yaml;
 [TestClass]
 public sealed partial class YamlReleaseNoteCorpusTests
 {
-    /// <summary>The corpus area whose catalogues this class runs.</summary>
+    /// <summary>The corpus area whose catalogs this class runs.</summary>
     private const string Area = "yaml";
 
-    /// <summary>The option names a catalogue row may use, each mapped by <see cref="RowOptions.Parse" />.</summary>
+    /// <summary>The option names a catalog row may use, each mapped by <see cref="RowOptions.Parse" />.</summary>
     private static readonly string[] s_optionNames = ["SpecVersion", "DuplicateKeyBehavior", "MaxDepth"];
 
-    /// <summary>The catalogues embedded in this test assembly, loaded once.</summary>
+    /// <summary>The catalogs embedded in this test assembly, loaded once.</summary>
     private static readonly Lazy<IReadOnlyList<ReleaseNoteCatalog>> s_catalogs =
         new(() => ReleaseNoteCatalog.LoadEmbedded(typeof(YamlReleaseNoteCorpusTests).Assembly));
 
@@ -76,9 +76,9 @@ public sealed partial class YamlReleaseNoteCorpusTests
         RunnableRows("roundtrip");
 
     /// <summary>
-    /// Gets every row of every embedded catalogue.
+    /// Gets every row of every embedded catalog.
     /// </summary>
-    /// <value>The rows, catalogue by catalogue in file order.</value>
+    /// <value>The rows, catalog by catalog in file order.</value>
     private static IEnumerable<ReleaseNoteFix> AllRows =>
         s_catalogs.Value.SelectMany(catalog => catalog.Rows);
 
@@ -136,20 +136,20 @@ public sealed partial class YamlReleaseNoteCorpusTests
     /// <param name="expected">The row's escaped <c>expected</c> field.</param>
     /// <returns>One JSON value per expected document, in order; none for an empty field.</returns>
     /// <exception cref="FormatException">The field holds an escape that is not valid.</exception>
-    /// <exception cref="JsonException">The field does not hold JSON values in the catalogue's notation.</exception>
+    /// <exception cref="JsonException">The field does not hold JSON values in the catalog's notation.</exception>
     private static List<JsonElement> ReadExpectedDocuments(string expected) =>
         CorpusCompare.SplitJsonValues(CorpusCompare.MarkNonFiniteFloats(CorpusEscapes.Decode(expected)));
 
     /// <summary>
     /// Renders documents in the notation a <c>parse</c> row's <c>expected</c> field uses: one compact JSON value per
-    /// document, separated by line feeds, written with the catalogue escapes.
+    /// document, separated by line feeds, written with the catalog escapes.
     /// </summary>
     /// <param name="documents">The documents.</param>
     /// <returns>The rendering.</returns>
     /// <remarks>
     /// Mappings keep their stored order. A float renders in round-trip form, with <c>.0</c> added to an integral one,
     /// and the non-finite floats render as the bare tokens <c>.inf</c>, <c>-.inf</c> and <c>.nan</c>. A string escapes
-    /// every character outside printable ASCII, so the JSON is ASCII and its escapes survive the catalogue escapes.
+    /// every character outside printable ASCII, so the JSON is ASCII and its escapes survive the catalog escapes.
     /// </remarks>
     private static string Render(IReadOnlyList<YamlDocument> documents)
     {

@@ -137,7 +137,7 @@ public static class CalendarTool
     }
 
     /// <summary>
-    /// Builds the import resolver: files in the resolver directory first, then the bundled common catalogues.
+    /// Builds the import resolver: files in the resolver directory first, then the bundled common catalogs.
     /// </summary>
     /// <param name="resolverDir">The optional directory whose files satisfy imports.</param>
     /// <returns>The composed resolver.</returns>

@@ -97,7 +97,7 @@ public partial class CurrencyInfoTests
     }
 
     /// <summary>
-    /// Verifies that every entry in the shipped ISO 4217 catalogue passes the constructor's minor-unit and
+    /// Verifies that every entry in the shipped ISO 4217 catalog passes the constructor's minor-unit and
     /// cash-rounding checks when rebuilt from its own values.
     /// </summary>
     [TestMethod]

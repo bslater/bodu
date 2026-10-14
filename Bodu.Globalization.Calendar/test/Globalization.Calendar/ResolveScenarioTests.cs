@@ -15,7 +15,7 @@ namespace Bodu.Globalization.Calendar;
 /// <remarks>
 /// <para>
 /// Day-of-week pairings used in the assertions are real Gregorian calendar dates so reviewers can verify them with any
-/// almanac. Each scenario authors the smallest resource that exercises the behaviour under examination, either via a
+/// almanac. Each scenario authors the smallest resource that exercises the behavior under examination, either via a
 /// dedicated embedded fixture or an inline document.
 /// </para>
 /// </remarks>

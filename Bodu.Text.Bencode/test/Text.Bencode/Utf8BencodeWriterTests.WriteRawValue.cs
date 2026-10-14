@@ -11,7 +11,7 @@ using Bodu.Text.Bencode.Writer;
 namespace Bodu.Text.Bencode;
 
 /// <summary>
-/// Verifies the <see cref="Utf8BencodeWriter.WriteRawValue" /> behaviour: verbatim emission of pre-encoded values at
+/// Verifies the <see cref="Utf8BencodeWriter.WriteRawValue" /> behavior: verbatim emission of pre-encoded values at
 /// the root and inside containers, validation of the supplied bytes, and participation in the writer's call-sequence
 /// rules.
 /// </summary>

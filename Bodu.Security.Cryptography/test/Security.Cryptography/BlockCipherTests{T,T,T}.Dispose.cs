@@ -19,7 +19,7 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
     /// <param name="property">The property to test for post-disposal access.</param>
     /// <remarks>
     /// This test uses reflection to reassign the property's current hashValue after calling <see cref="HashAlgorithm.Dispose" />. This
-    /// ensures concrete <see cref="HashAlgorithm" /> implementations enforce correct disposal behaviour.
+    /// ensures concrete <see cref="HashAlgorithm" /> implementations enforce correct disposal behavior.
     /// </remarks>
     [TestMethod(UnfoldingStrategy = TestDataSourceUnfoldingStrategy.Unfold)]
     [DynamicData(nameof(GetAlgorithmWritableProperties), DynamicDataDisplayName = nameof(TestHelpers.GetTypePropertyDisplayName), DynamicDataDisplayNameDeclaringType = typeof(TestHelpers))]

@@ -7,7 +7,7 @@
 namespace Bodu.Text.Encoding;
 
 /// <summary>
-/// Behavioural tests for <see cref="Base45" /> (RFC 9285). Partial files split coverage by member or subject contract
+/// Behavioral tests for <see cref="Base45" /> (RFC 9285). Partial files split coverage by member or subject contract
 /// per the repository test convention. The cross-encoding round-trip and known-answer surface is exercised by
 /// <see cref="Bodu.Text.Encoding.Contracts.Base45ContractTests" />.
 /// </summary>

@@ -29,7 +29,7 @@ public class RateCacheOptions
     /// </summary>
     /// <value>
     /// <see langword="true" /> to rethrow the underlying storage failure; <see langword="false" /> (the default) to
-    /// keep the best-effort behaviour the <see cref="IRateCache" /> contract describes.
+    /// keep the best-effort behavior the <see cref="IRateCache" /> contract describes.
     /// </value>
     /// <remarks>
     /// The default keeps a cache fault from breaking rate retrieval, which suits most consumers. Set it for a

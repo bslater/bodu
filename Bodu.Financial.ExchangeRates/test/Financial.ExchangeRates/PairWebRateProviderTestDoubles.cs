@@ -135,7 +135,7 @@ internal sealed class ThrowingPairSource
 
 /// <summary>
 /// A minimal <see cref="PairWebRateProvider{TSeries}" /> over a <see cref="StubPairSource" /> for exercising the
-/// shared base behaviour directly.
+/// shared base behavior directly.
 /// </summary>
 internal sealed class TestPairWebRateProvider
     : PairWebRateProvider<string>

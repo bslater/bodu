@@ -9,7 +9,7 @@ using System.Security.Cryptography;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Provides unit tests for symmetric algorithms to verify encryption, decryption, and property behaviours.
+/// Provides unit tests for symmetric algorithms to verify encryption, decryption, and property behaviors.
 /// </summary>
 /// <typeparam name="TTest">The concrete test class, used to resolve specification data for <see cref="DynamicDataAttribute" /> sources.</typeparam>
 /// <typeparam name="TAlgorithm">The type of symmetric algorithm under test.</typeparam>
@@ -59,7 +59,7 @@ public abstract partial class SymmetricAlgorithmTests<TTest, TAlgorithm>
 
     /// <summary>
     /// Returns one row per entry in <see cref="SymmetricAlgorithmSpecification.LegalKeySizesBits" /> for use as a
-    /// <see cref="DynamicDataAttribute" /> source in parameterised tests.
+    /// <see cref="DynamicDataAttribute" /> source in parameterized tests.
     /// </summary>
     /// <returns>A sequence of single-element arrays, each containing a key size in bits.</returns>
     public static IEnumerable<object[]> LegalKeySizeBitsData() =>

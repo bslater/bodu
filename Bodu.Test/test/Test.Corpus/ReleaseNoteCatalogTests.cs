@@ -9,13 +9,13 @@ using System.Text;
 namespace Bodu.Test.Corpus;
 
 /// <summary>
-/// Verifies <see cref="ReleaseNoteCatalog" />: reading a catalogue's header and rows, and reporting every problem in a
+/// Verifies <see cref="ReleaseNoteCatalog" />: reading a catalog's header and rows, and reporting every problem in a
 /// malformed one.
 /// </summary>
 [TestClass]
 public sealed partial class ReleaseNoteCatalogTests
 {
-    /// <summary>The three required header lines of a catalogue for the <c>sample</c> library.</summary>
+    /// <summary>The three required header lines of a catalog for the <c>sample</c> library.</summary>
     private const string Header =
         "# library: sample -- https://example.invalid/sample\n# releases: synthetic\n# licence: MIT\n";
 
@@ -24,17 +24,17 @@ public sealed partial class ReleaseNoteCatalogTests
         "sample,1.0.0,#1,Reject a truncated document,applies,,reject,,abc,FormatException,upstream,a reason";
 
     /// <summary>
-    /// Builds a catalogue for the <c>sample</c> library from rows, after the required header and the column line.
+    /// Builds a catalog for the <c>sample</c> library from rows, after the required header and the column line.
     /// </summary>
     /// <param name="rows">The rows, each without its line feed.</param>
-    /// <returns>The catalogue's bytes.</returns>
+    /// <returns>The catalog's bytes.</returns>
     private static byte[] Catalog(params string[] rows) =>
         Encoding.ASCII.GetBytes(Header + ReleaseNoteCatalog.ColumnLine + "\n" + string.Concat(rows.Select(row => row + "\n")));
 
     /// <summary>
-    /// Asserts that a catalogue reports exactly one problem, mentioning the given text.
+    /// Asserts that a catalog reports exactly one problem, mentioning the given text.
     /// </summary>
-    /// <param name="catalog">The loaded catalogue.</param>
+    /// <param name="catalog">The loaded catalog.</param>
     /// <param name="fragment">Text the problem must contain.</param>
     private static void AssertSingleProblem(ReleaseNoteCatalog catalog, string fragment)
     {

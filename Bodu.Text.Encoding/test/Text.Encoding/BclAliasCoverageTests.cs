@@ -11,7 +11,7 @@ namespace Bodu.Text.Encoding;
 /// <summary>
 /// Coverage-focused tests for the BCL-shaped alias methods across every encoding family
 /// (<c>ToBase*String</c>, <c>FromBase*String</c>, <c>TryTo*String</c>). These wrappers delegate to the canonical
-/// static API; the goal is to assert exact delegation behaviour and exercise the success / failure branches that
+/// static API; the goal is to assert exact delegation behavior and exercise the success / failure branches that
 /// the coverage report flagged at 0% to 70%.
 /// </summary>
 [TestClass]

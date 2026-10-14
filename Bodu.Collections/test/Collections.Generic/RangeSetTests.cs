@@ -50,7 +50,7 @@ public partial class RangeSetTests
     }
 
     /// <summary>
-    /// Materialises the contents of <paramref name="set" /> as a sequence of <c>(start, end)</c> tuples in
+    /// Materializes the contents of <paramref name="set" /> as a sequence of <c>(start, end)</c> tuples in
     /// ascending insertion order.
     /// </summary>
     /// <param name="set">The set to snapshot.</param>

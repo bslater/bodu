@@ -110,7 +110,7 @@ public partial class ConcurrentCircularBufferTests
     /// <summary>
     /// Verifies that the indexer returns a stable value for every reachable position after the buffer has wrapped. Indirectly
     /// exercises <c>TryReadStableSlot</c>'s success path on slots that have been re-published (their sequence reflects a later
-    /// generation than the original initialisation value).
+    /// generation than the original initialization value).
     /// </summary>
     [TestMethod]
     public void Indexer_WhenSlotsHaveBeenRepublishedAfterWrap_ShouldReturnStableValuesForEachPosition()

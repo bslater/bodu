@@ -12,10 +12,10 @@ namespace Bodu.Text.Toml;
 public sealed partial class TomlReleaseNoteCorpusTests
 {
     /// <summary>
-    /// Verifies that writing the value each catalogued tagged JSON describes, where a fix established that the value
+    /// Verifies that writing the value each cataloged tagged JSON describes, where a fix established that the value
     /// cannot be written, throws <see cref="TomlSerializationException" />, the exception the row names.
     /// </summary>
-    /// <param name="fix">The catalogue row.</param>
+    /// <param name="fix">The catalog row.</param>
     [TestMethod]
     [TestCategory("Regression")]
     [Timeout(RowTimeout)]

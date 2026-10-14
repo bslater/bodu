@@ -12,7 +12,7 @@ public static partial class StringExtensions
 {
     /// <summary>
     /// Converts <paramref name="value" /> to a URL-friendly slug: lower-cased words joined by hyphens with diacritics
-    /// normalised and punctuation removed.
+    /// normalized and punctuation removed.
     /// </summary>
     /// <param name="value">The string to convert. Must not be <see langword="null" />.</param>
     /// <returns>The slug form of <paramref name="value" />.</returns>
@@ -40,7 +40,7 @@ public static partial class StringExtensions
     /// <para>
     /// When <see cref="SlugOptions.NormalizeDiacritics" /> is set the input is first transliterated: the German sharp-s
     /// (<c>ß</c>) becomes <c>ss</c> and combining diacritic marks are stripped via
-    /// <see cref="RemoveDiacritics(string)" />. The result is then tokenised, optionally lower-cased, and joined with
+    /// <see cref="RemoveDiacritics(string)" />. The result is then tokenized, optionally lower-cased, and joined with
     /// <see cref="SlugOptions.Separator" />.
     /// </para>
     /// <para>

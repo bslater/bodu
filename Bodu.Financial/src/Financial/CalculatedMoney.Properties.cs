@@ -21,13 +21,13 @@ public readonly partial struct CalculatedMoney
     /// Gets the currency identifying this value.
     /// </summary>
     /// <value>
-    /// The stored <see cref="CurrencyCode" />, or <see cref="CurrencyCode.None" /> for a default-initialised value.
+    /// The stored <see cref="CurrencyCode" />, or <see cref="CurrencyCode.None" /> for a default-initialized value.
     /// </value>
     public CurrencyCode Code =>
         _code;
 
     /// <summary>
-    /// Gets the ISO 4217 alphabetic code identifying the currency, or an empty string for a default-initialised value.
+    /// Gets the ISO 4217 alphabetic code identifying the currency, or an empty string for a default-initialized value.
     /// </summary>
     /// <value>The currency's ISO code, used by the settlement and diagnostic paths that need its string form.</value>
     internal string IsoCodeOrEmpty =>

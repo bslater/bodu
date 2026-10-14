@@ -10,7 +10,7 @@ public partial class DayOfWeekSetTests
 {
 
     /// <summary>
-    /// Verifies that all recognised binary format specifiers (<c>'0'</c>, <c>'1'</c>, <c>'B'</c>,
+    /// Verifies that all recognized binary format specifiers (<c>'0'</c>, <c>'1'</c>, <c>'B'</c>,
     /// <c>"01"</c>) return identical strings for the same instance.
     /// </summary>
     [TestMethod]
@@ -203,7 +203,7 @@ public partial class DayOfWeekSetTests
 
     /// <summary>
     /// Verifies that <see cref="DayOfWeekSet.ToString(string)" /> throws <see cref="FormatException" />
-    /// when the format string is unrecognised.
+    /// when the format string is unrecognized.
     /// </summary>
     [TestMethod]
     public void ToString_WhenFormatIsUnrecognised_ShouldThrowExactly()
@@ -243,7 +243,7 @@ public partial class DayOfWeekSetTests
 
     /// <summary>
     /// Verifies that <see cref="DayOfWeekSet.ToString(string)" /> throws <see cref="FormatException" />, naming the
-    /// format, when an unrecognised format specifier is provided.
+    /// format, when an unrecognized format specifier is provided.
     /// </summary>
     [TestMethod]
     public void ToString_WhenInvalidFormat_ShouldThrowExactly()
@@ -286,7 +286,7 @@ public partial class DayOfWeekSetTests
 
     /// <summary>
     /// Verifies that <see cref="DayOfWeekSet.ToString(string)" /> produces the correct output for each
-    /// recognised format specifier.
+    /// recognized format specifier.
     /// </summary>
     [TestMethod]
     [DataRow("S", "SM____S")] // Sunday-first

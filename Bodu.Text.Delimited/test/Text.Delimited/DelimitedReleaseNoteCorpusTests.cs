@@ -16,7 +16,7 @@ using Bodu.Text.Delimited.Writer;
 namespace Bodu.Text.Delimited;
 
 /// <summary>
-/// Holds Bodu.Text.Delimited to the defect fixes other CSV libraries list in their release notes, as catalogued in
+/// Holds Bodu.Text.Delimited to the defect fixes other CSV libraries list in their release notes, as cataloged in
 /// <c>corpus/delimited/fixes/</c> and embedded under <c>Fixtures/ReleaseNotes/</c>.
 /// </summary>
 /// <remarks>
@@ -36,24 +36,24 @@ namespace Bodu.Text.Delimited;
 /// row reads its input, writes the records it read back with the row's dialect, and reads the written bytes again.
 /// </para>
 /// <para>
-/// Expected and actual results are compared in the catalogue's escape notation, each well-formed UTF-8 sequence written
-/// <c>\u{H...}</c>, so that a failure shows both sides as a catalogue row writes them.
+/// Expected and actual results are compared in the catalog's escape notation, each well-formed UTF-8 sequence written
+/// <c>\u{H...}</c>, so that a failure shows both sides as a catalog row writes them.
 /// </para>
 /// </remarks>
 [TestClass]
 public sealed partial class DelimitedReleaseNoteCorpusTests
 {
-    /// <summary>The corpus area whose catalogues this class runs.</summary>
+    /// <summary>The corpus area whose catalogs this class runs.</summary>
     private const string Area = "delimited";
 
-    /// <summary>The option names a catalogue row may use, each mapped by <see cref="RowOptions.Parse" />.</summary>
+    /// <summary>The option names a catalog row may use, each mapped by <see cref="RowOptions.Parse" />.</summary>
     private static readonly string[] s_optionNames =
     [
         "Delimiter", "Quote", "CommentChar", "NoHeader", "TrimFields", "AllowComments",
         "FieldCountBehavior", "MalformedRecordBehavior", "DuplicateHeaderBehavior", "View",
     ];
 
-    /// <summary>The catalogues embedded in this test assembly, loaded once.</summary>
+    /// <summary>The catalogs embedded in this test assembly, loaded once.</summary>
     private static readonly Lazy<IReadOnlyList<ReleaseNoteCatalog>> s_catalogs =
         new(() => ReleaseNoteCatalog.LoadEmbedded(typeof(DelimitedReleaseNoteCorpusTests).Assembly));
 
@@ -93,9 +93,9 @@ public sealed partial class DelimitedReleaseNoteCorpusTests
         RunnableRows("roundtrip");
 
     /// <summary>
-    /// Gets every row of every embedded catalogue.
+    /// Gets every row of every embedded catalog.
     /// </summary>
-    /// <value>The rows, catalogue by catalogue in file order.</value>
+    /// <value>The rows, catalog by catalog in file order.</value>
     private static IEnumerable<ReleaseNoteFix> AllRows =>
         s_catalogs.Value.SelectMany(catalog => catalog.Rows);
 
@@ -413,7 +413,7 @@ public sealed partial class DelimitedReleaseNoteCorpusTests
     }
 
     /// <summary>
-    /// Writes bytes in the catalogue's escape notation: printable ASCII as itself, a backslash, a line feed, a carriage
+    /// Writes bytes in the catalog's escape notation: printable ASCII as itself, a backslash, a line feed, a carriage
     /// return, a tab and a NUL by their short escapes, each well-formed UTF-8 sequence as <c>\u{H...}</c>, and any
     /// other byte as <c>\xHH</c>.
     /// </summary>
@@ -478,7 +478,7 @@ public sealed partial class DelimitedReleaseNoteCorpusTests
     }
 
     /// <summary>
-    /// Writes text in the catalogue's escape notation, as <see cref="Escape(ReadOnlySpan{byte})" /> writes its UTF-8
+    /// Writes text in the catalog's escape notation, as <see cref="Escape(ReadOnlySpan{byte})" /> writes its UTF-8
     /// encoding.
     /// </summary>
     /// <param name="text">The text.</param>

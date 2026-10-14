@@ -22,7 +22,7 @@ namespace Bodu.Security.Cryptography;
 /// CTR is self-inverse: the same <see cref="Transform" /> operation is applied for both encryption and decryption. The
 /// cipher's <em>encrypt</em> primitive is always used; the decrypt primitive is never called. See <b>panel 5</b> of the
 /// diagram above: each cell has its own counter block <c>CTRᵢ</c> and no arrows connect one cell to the next - meaning
-/// the keystream is trivially parallelisable and supports random-access seeking into the middle of a message.
+/// the keystream is trivially parallelizable and supports random-access seeking into the middle of a message.
 /// </para>
 /// <para>
 /// That independence is also where the sharpest pitfall lives. To protect against keystream reuse, the transform tracks
@@ -33,14 +33,14 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <para>
 /// <strong>When to use CTR.</strong> The right confidentiality-only mode for new code that needs random access,
-/// parallelisable encryption, or a stream-cipher shape - disk encryption layers without authentication, network
+/// parallelizable encryption, or a stream-cipher shape - disk encryption layers without authentication, network
 /// protocols where authentication is provided separately, and anywhere a precomputed keystream is useful. CTR is also
 /// the keystream layer of the major AEAD modes; if you need authentication as well, reach for
 /// <see cref="GcmModeTransform" /> (CTR + GHASH) or <see cref="EaxModeTransform" /> (CTR + OMAC) directly rather than
 /// building it on top of bare CTR.
 /// </para>
 /// <para>
-/// The counter increment is parallelisable: every block's keystream can be produced independently, so throughput scales
+/// The counter increment is parallelizable: every block's keystream can be produced independently, so throughput scales
 /// with available cores or SIMD width.
 /// </para>
 /// </remarks>

@@ -656,7 +656,7 @@ public sealed partial class ExcelBinaryReleaseNoteCorpusTests
         /// Parses a text argument.
         /// </summary>
         /// <param name="text">The argument: <c>'...'</c>, <c>w'...'</c> or <c>cpN'...'</c>.</param>
-        /// <returns>The text argument, its catalogue escapes decoded.</returns>
+        /// <returns>The text argument, its catalog escapes decoded.</returns>
         /// <exception cref="FormatException"><paramref name="text" /> is not a quoted text argument.</exception>
         private static TextArgument ParseText(string text)
         {

@@ -9,7 +9,7 @@ namespace Bodu.Formats.Outlook;
 public sealed partial class PstReleaseNoteCorpusTests
 {
     /// <summary>
-    /// Represents the modelled name-to-id map, node 0x61: its GUID, entry and string streams.
+    /// Represents the modeled name-to-id map, node 0x61: its GUID, entry and string streams.
     /// </summary>
     private sealed class NameMapModel
     {

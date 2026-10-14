@@ -11,7 +11,7 @@ namespace Bodu.Security.Cryptography;
 
 /// <summary>
 /// Defines the common <see cref="IStreamAeadTransform" /> contract shared by every extended-nonce Poly1305 AEAD -
-/// constructor validation, round-trip across length boundaries, output sizing, authentication-failure behaviour
+/// constructor validation, round-trip across length boundaries, output sizing, authentication-failure behavior
 /// (tag / ciphertext / wrong key / wrong nonce / wrong associated data), single-use lifecycle, in-place operation, and
 /// buffer-overlap rules. Concrete fixtures supply the construction under test and whether it authenticates associated
 /// data; construction-specific known-answer vectors live alongside their fixtures.
@@ -239,7 +239,7 @@ public abstract class StreamAeadTransformContractTests<TAead>
     /// </summary>
     /// <remarks>
     /// The output buffer is pre-filled with a non-zero sentinel so the assertion actually proves the transform's
-    /// behaviour - a zero-initialised buffer would pass even if the transform wrote plaintext and then zeroed it, or
+    /// behavior - a zero-initialized buffer would pass even if the transform wrote plaintext and then zeroed it, or
     /// never touched it at all, without distinguishing the two acceptable contracts from a leak.
     /// </remarks>
     [TestMethod]

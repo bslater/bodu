@@ -85,7 +85,7 @@ public sealed partial class MerkleTree
     /// <para>
     /// This is <see href="https://www.rfc-editor.org/rfc/rfc6962#section-2.1.2">RFC 6962 §2.1.2</see>. Unlike inclusion
     /// verification, both sizes and both roots are inputs, and the proof must reconstruct <em>both</em> - so there is
-    /// no analogue here of the tree-size ambiguity that the bound root exists to close.
+    /// no analog here of the tree-size ambiguity that the bound root exists to close.
     /// </para>
     /// <para>
     /// Three degenerate cases are decided before the walk. A <paramref name="secondSize" /> below

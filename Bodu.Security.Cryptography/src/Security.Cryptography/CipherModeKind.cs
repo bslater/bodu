@@ -90,7 +90,7 @@ public enum CipherModeKind
     /// </summary>
     /// <remarks>
     /// <para>
-    /// ECB is trivially parallelisable but leaks structural information: identical plaintext blocks always produce
+    /// ECB is trivially parallelizable but leaks structural information: identical plaintext blocks always produce
     /// identical ciphertext blocks. It is insecure for virtually all real-world messages and should only be used as a
     /// primitive inside a higher-level construction.
     /// </para>
@@ -155,7 +155,7 @@ public enum CipherModeKind
     /// </summary>
     /// <remarks>
     /// <para>
-    /// CTR transforms a block cipher into a parallelisable stream cipher with random access. It requires a nonce, or
+    /// CTR transforms a block cipher into a parallelizable stream cipher with random access. It requires a nonce, or
     /// initial counter value, equal in length to the cipher block size.
     /// </para>
     /// <para>

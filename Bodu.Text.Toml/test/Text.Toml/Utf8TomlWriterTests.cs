@@ -12,7 +12,7 @@ using Bodu.Text.Toml.Writer;
 namespace Bodu.Text.Toml;
 
 /// <summary>
-/// Verifies the behaviour of <see cref="Utf8TomlWriter" />, the forward-only canonical TOML writer.
+/// Verifies the behavior of <see cref="Utf8TomlWriter" />, the forward-only canonical TOML writer.
 /// </summary>
 [TestClass]
 public sealed partial class Utf8TomlWriterTests

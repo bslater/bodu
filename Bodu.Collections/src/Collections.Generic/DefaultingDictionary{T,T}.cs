@@ -16,10 +16,10 @@ namespace Bodu.Collections.Generic;
 /// <typeparam name="TValue">Specifies the type of values in the dictionary.</typeparam>
 /// <remarks>
 /// <para>
-/// <see cref="DefaultingDictionary{TKey, TValue}" /> is the .NET analogue of Python's <c>collections.defaultdict</c>:
-/// the <see cref="ValueFactory" /> delegate fixed at construction plays the role of <c>default_factory</c>, and -
-/// exactly as in Python, where <c>__missing__</c> fires only for <c>d[key]</c> - <i>only the indexer getter</i>
-/// materializes defaults. <see cref="TryGetValue(TKey, out TValue)" />, <see cref="ContainsKey(TKey)" />,
+/// <see cref="DefaultingDictionary{TKey, TValue}" /> is the .NET analog of Python's <c>collections.defaultdict</c>: the
+/// <see cref="ValueFactory" /> delegate fixed at construction plays the role of <c>default_factory</c>, and - exactly
+/// as in Python, where <c>__missing__</c> fires only for <c>d[key]</c> - <i>only the indexer getter</i> materializes
+/// defaults. <see cref="TryGetValue(TKey, out TValue)" />, <see cref="ContainsKey(TKey)" />,
 /// <see cref="Remove(TKey)" />, <see cref="Count" />, and enumeration observe only entries that have actually been
 /// stored; none of them invoke the factory.
 /// </para>

@@ -96,7 +96,7 @@ public sealed partial class IEnumerableExtensionsTests_RecursiveSelectInternal
     }
 
     /// <summary>
-    /// Verifies that <see cref="IEnumerableExtensions.RecursiveSelectInternal{TSource,TResult}" /> initialises a fresh
+    /// Verifies that <see cref="IEnumerableExtensions.RecursiveSelectInternal{TSource,TResult}" /> initializes a fresh
     /// <see cref="IEnumerableExtensions.RecursionState" /> when one is not supplied, so two independent enumerations of
     /// the same source produce identical output.
     /// </summary>

@@ -7,7 +7,7 @@
 namespace Bodu.Globalization.Calendar;
 
 /// <summary>
-/// Loads the embedded minimal notable-date document fixtures used by the first-version test catalogue.
+/// Loads the embedded minimal notable-date document fixtures used by the first-version test catalog.
 /// </summary>
 internal static class MinimalNotableDates
 {

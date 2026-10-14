@@ -10,13 +10,13 @@ using Bodu.Test.Kat;
 namespace Bodu.IO.Hashing.Checksums;
 
 /// <summary>
-/// Verifies <see cref="CrcStandard.FromName(string)" /> over the aliases the CRC RevEng catalogue publishes, and the
+/// Verifies <see cref="CrcStandard.FromName(string)" /> over the aliases the CRC RevEng catalog publishes, and the
 /// exception it reports for an unknown name.
 /// </summary>
 public partial class CrcStandardTests
 {
     /// <summary>
-    /// Verifies that <see cref="CrcStandard.FromName(string)" /> resolves every alias the CRC RevEng catalogue
+    /// Verifies that <see cref="CrcStandard.FromName(string)" /> resolves every alias the CRC RevEng catalog
     /// publishes to the shared instance of the standard it names.
     /// </summary>
     /// <param name="kat">The alias and the standard it names.</param>

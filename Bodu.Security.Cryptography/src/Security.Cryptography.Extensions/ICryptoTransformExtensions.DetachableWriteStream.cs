@@ -17,7 +17,7 @@ public static partial class ICryptoTransformExtensions
     /// <remarks>
     /// The stream overloads of <see cref="Transform(ICryptoTransform, Stream, Stream, int)" /> and
     /// <see cref="TransformAsync(ICryptoTransform, Stream, Stream, int, CancellationToken)" /> write their
-    /// <see cref="CryptoStream" /> through this wrapper. When the operation fails or is cancelled they detach it before
+    /// <see cref="CryptoStream" /> through this wrapper. When the operation fails or is canceled they detach it before
     /// disposing the <see cref="CryptoStream" />: disposal still clears the <see cref="CryptoStream" />'s internal
     /// buffers, but the final block it flushes is discarded, so a partial output never ends in a padded block that
     /// could pass for a complete ciphertext.

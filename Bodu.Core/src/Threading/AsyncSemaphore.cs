@@ -14,7 +14,7 @@ namespace Bodu.Threading;
 /// </summary>
 /// <remarks>
 /// <para>
-/// <see cref="AsyncSemaphore" /> is a queue-based asynchronous analogue of <see cref="SemaphoreSlim" />. Callers await
+/// <see cref="AsyncSemaphore" /> is a queue-based asynchronous analog of <see cref="SemaphoreSlim" />. Callers await
 /// <see cref="WaitAsync()" /> to consume a permit and call <see cref="Release()" /> to return one. The convenience
 /// method <see cref="LockAsync()" /> pairs a wait with a disposable <see cref="Releaser" /> so a permit can be scoped
 /// with a <c>using</c> statement.

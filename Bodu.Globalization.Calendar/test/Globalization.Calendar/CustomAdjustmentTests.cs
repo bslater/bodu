@@ -8,7 +8,7 @@ namespace Bodu.Globalization.Calendar;
 
 /// <summary>
 /// Verifies the <see cref="AdjustmentAction.ReplaceWithRule" /> reference action and the
-/// <see cref="AdjustmentAction.Custom" /> handler action, including their validation and runtime behaviour.
+/// <see cref="AdjustmentAction.Custom" /> handler action, including their validation and runtime behavior.
 /// </summary>
 [TestClass]
 public sealed partial class CustomAdjustmentTests

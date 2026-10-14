@@ -10,7 +10,7 @@ using Bodu.Financial.ExchangeRates;
 namespace Bodu.Financial;
 
 /// <summary>
-/// Verifies the behaviour of the <see cref="Bodu.Financial.Extensions.DatedRateProviderExtensions" />
+/// Verifies the behavior of the <see cref="Bodu.Financial.Extensions.DatedRateProviderExtensions" />
 /// materializers.
 /// </summary>
 [TestClass]

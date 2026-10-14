@@ -7,7 +7,7 @@
 namespace Bodu.Financial.ExchangeRates;
 
 /// <summary>
-/// Verifies the validation behaviour of <see cref="RbaRateProviderOptions" />.
+/// Verifies the validation behavior of <see cref="RbaRateProviderOptions" />.
 /// </summary>
 [TestClass]
 public partial class RbaRateProviderOptionsTests

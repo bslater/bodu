@@ -127,7 +127,7 @@ public partial class IniSerializerTests
     }
 
     /// <summary>
-    /// Verifies that key and section matching honours <see cref="IniSerializerOptions.PropertyNameCaseInsensitive" />.
+    /// Verifies that key and section matching honors <see cref="IniSerializerOptions.PropertyNameCaseInsensitive" />.
     /// </summary>
     [TestMethod]
     public void Deserialize_WhenPropertyNameCaseInsensitive_ShouldMatchDifferentCase()

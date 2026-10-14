@@ -82,7 +82,7 @@ public partial class MerkleTreeTests
     }
 
     /// <summary>
-    /// Verifies that a pre-cancelled token surfaces as a plain <see cref="OperationCanceledException" /> at every
+    /// Verifies that a pre-canceled token surfaces as a plain <see cref="OperationCanceledException" /> at every
     /// degree, whatever the stream would have thrown.
     /// </summary>
     /// <returns>A task representing the asynchronous test.</returns>
@@ -107,7 +107,7 @@ public partial class MerkleTreeTests
     }
 
     /// <summary>
-    /// Verifies that a token cancelled part-way through the stream surfaces as a plain
+    /// Verifies that a token canceled part-way through the stream surfaces as a plain
     /// <see cref="OperationCanceledException" /> carrying that token, rather than the stream's own subtype.
     /// </summary>
     /// <returns>A task representing the asynchronous test.</returns>

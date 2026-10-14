@@ -85,7 +85,7 @@ public partial class IntervalTreeTests
     /// <param name="sut">The tree under test.</param>
     /// <param name="oracle">The mirrored brute-force interval list.</param>
     /// <param name="random">The seeded probe source.</param>
-    /// <param name="op">The operation ordinal, for failure labelling.</param>
+    /// <param name="op">The operation ordinal, for failure labeling.</param>
     private static void AssertMatchesOracle(
         IntervalTree<int> sut, List<(int Low, int High)> oracle, Random random, int op)
     {

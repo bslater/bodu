@@ -63,7 +63,7 @@ public partial class ConfigurationPatternTests
     /// Verifies that a deeply-but-narrowly nested pattern (depth 8, two alternatives at each level) still
     /// compiles within a reasonable time bound. The recursion depth is bounded by pattern length and the
     /// existing line-length cap, but this pinning ensures the compiler does not regress to pathological
-    /// O(2^n) behaviour.
+    /// O(2^n) behavior.
     /// </summary>
     [TestMethod]
     public void Compile_WhenAlternationIsDeeplyNested_ShouldCompileWithinReasonableBound()

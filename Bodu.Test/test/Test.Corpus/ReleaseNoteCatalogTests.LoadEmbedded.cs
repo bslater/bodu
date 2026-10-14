@@ -9,7 +9,7 @@ namespace Bodu.Test.Corpus;
 public sealed partial class ReleaseNoteCatalogTests
 {
     /// <summary>
-    /// Verifies that the catalogue this assembly embeds under <c>Fixtures/ReleaseNotes/</c> is found, named by its file
+    /// Verifies that the catalog this assembly embeds under <c>Fixtures/ReleaseNotes/</c> is found, named by its file
     /// name, and read with no problems.
     /// </summary>
     [TestMethod]

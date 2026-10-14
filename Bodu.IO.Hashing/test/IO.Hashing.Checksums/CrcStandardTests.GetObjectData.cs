@@ -32,7 +32,7 @@ public partial class CrcStandardTests
     /// <summary>
     /// Verifies that <see cref="ISerializable.GetObjectData" /> populates the
     /// <see cref="SerializationInfo" /> with the expected field set, and that a round-trip through the
-    /// private deserialisation constructor reproduces an equal instance.
+    /// private deserialization constructor reproduces an equal instance.
     /// </summary>
     [TestMethod]
     public void GetObjectData_WhenRoundTripped_ShouldProduceEqualInstance()

@@ -9,7 +9,7 @@ using System.Security.Cryptography;
 namespace Bodu.Security.Cryptography.Samples.MerkleTrees.Scenarios;
 
 /// <summary>
-/// Demonstrates the two constructor knobs: <see cref="MerkleTree.MaxDegreeOfParallelism" />, which is an optimisation
+/// Demonstrates the two constructor knobs: <see cref="MerkleTree.MaxDegreeOfParallelism" />, which is an optimization
 /// that must never change the answer, and <see cref="MerkleTree.FanOut" />, which does - a wider fan-out is an explicit
 /// non-RFC mode on which every proof member throws.
 /// </summary>

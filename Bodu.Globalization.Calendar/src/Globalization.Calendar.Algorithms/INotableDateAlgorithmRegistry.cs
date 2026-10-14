@@ -8,12 +8,12 @@ namespace Bodu.Globalization.Calendar.Algorithms;
 
 /// <summary>
 /// Provides lookup of custom <see cref="INotableDateAlgorithm" /> implementations by key, supplementing the engine's
-/// built-in algorithm catalogue.
+/// built-in algorithm catalog.
 /// </summary>
 /// <remarks>
 /// <para>
-/// <see cref="AlgorithmDateStrategy" /> consults the custom registry first and falls back to the built-in catalogue, so
-/// a key registered here overrides a built-in algorithm of the same name.
+/// <see cref="AlgorithmDateStrategy" /> consults the custom registry first and falls back to the built-in catalog, so a
+/// key registered here overrides a built-in algorithm of the same name.
 /// </para>
 /// </remarks>
 public interface INotableDateAlgorithmRegistry

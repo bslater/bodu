@@ -134,7 +134,7 @@ public sealed class SqliteNotableDateCacheExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that a non-default section name is honoured.
+    /// Verifies that a non-default section name is honored.
     /// </summary>
     [TestMethod]
     public void AddSqliteNotableDateCache_WhenSectionNameProvided_ShouldBindFromThatSection()

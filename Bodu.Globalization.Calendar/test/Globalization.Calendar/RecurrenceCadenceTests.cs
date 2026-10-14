@@ -8,7 +8,7 @@ namespace Bodu.Globalization.Calendar;
 
 /// <summary>
 /// Verifies the periodic recurrence cadence (<c>everyYears</c>/<c>anchorYear</c>) on <see cref="RuleApplicability" />,
-/// which restores v1's <c>OccurrenceYears</c> modulo behaviour so a rule can recur every N years from an anchor without
+/// which restores v1's <c>OccurrenceYears</c> modulo behavior so a rule can recur every N years from an anchor without
 /// enumerating each year.
 /// </summary>
 [TestClass]

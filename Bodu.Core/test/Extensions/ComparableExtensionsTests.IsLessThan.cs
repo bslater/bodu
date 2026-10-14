@@ -74,7 +74,7 @@ public partial class ComparableExtensionsTests
     // =========================================================================
 
     /// <summary>
-    /// Verifies that the comparer overload of <c>IsLessThan</c> honours the supplied comparer's ordering.
+    /// Verifies that the comparer overload of <c>IsLessThan</c> honors the supplied comparer's ordering.
     /// Under a reverse comparer, numerically greater values are treated as less.
     /// </summary>
     [TestMethod]

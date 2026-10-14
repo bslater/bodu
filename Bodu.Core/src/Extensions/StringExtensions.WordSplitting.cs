@@ -11,10 +11,10 @@ namespace Bodu.Extensions;
 public static partial class StringExtensions
 {
     /// <summary>
-    /// Splits <paramref name="value" /> into word tokens using acronym-aware tokenisation driven by
+    /// Splits <paramref name="value" /> into word tokens using acronym-aware tokenization driven by
     /// <paramref name="options" />.
     /// </summary>
-    /// <param name="value">The string to tokenise.</param>
+    /// <param name="value">The string to tokenize.</param>
     /// <param name="options">The acronym, mixed-case, and culture configuration.</param>
     /// <returns>The detected words in source order, with separators discarded.</returns>
     /// <remarks>
@@ -23,7 +23,7 @@ public static partial class StringExtensions
     /// Each chunk is then resolved in the following order:
     /// </para>
     /// <para>
-    /// 1. A chunk that case-insensitively equals a known acronym is emitted as a single token using the catalogue's
+    /// 1. A chunk that case-insensitively equals a known acronym is emitted as a single token using the catalog's
     /// canonical spelling.
     /// </para>
     /// <para>

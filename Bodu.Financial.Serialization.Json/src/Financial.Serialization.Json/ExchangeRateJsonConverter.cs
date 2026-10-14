@@ -29,7 +29,7 @@ namespace Bodu.Financial.Serialization.Json;
 /// </item>
 /// <item>
 /// <description>
-/// <see cref="FinancialJsonPolicy.Lenient" /> shares the Strict shape but normalises lowercase ISO codes to uppercase
+/// <see cref="FinancialJsonPolicy.Lenient" /> shares the Strict shape but normalizes lowercase ISO codes to uppercase
 /// and trims surrounding whitespace before validation. Intended for ingesting external feeds.
 /// </description>
 /// </item>

@@ -7,7 +7,7 @@
 namespace Bodu.Text.Encoding;
 
 /// <summary>
-/// Behavioural tests for <see cref="Base64Url" /> - the first-class URL-safe Base64 wrapper.
+/// Behavioral tests for <see cref="Base64Url" /> - the first-class URL-safe Base64 wrapper.
 /// </summary>
 [TestClass]
 public sealed class Base64UrlTests

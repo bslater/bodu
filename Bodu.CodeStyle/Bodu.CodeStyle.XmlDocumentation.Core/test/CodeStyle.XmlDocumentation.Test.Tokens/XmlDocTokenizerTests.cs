@@ -134,7 +134,7 @@ public sealed class XmlDocTokenizerTests
 
     /// <summary>
     /// Verifies that a single-line CDATA section is preserved verbatim as a single <see cref="XmlDocTokenKind.CData" />
-    /// token so the layout pass can recognise it and bypass prose normalisation for its body.
+    /// token so the layout pass can recognize it and bypass prose normalization for its body.
     /// </summary>
     [TestMethod]
     public void Tokenize_WhenCDataSection_ShouldEmitCDataTokenVerbatim()
@@ -238,7 +238,7 @@ public sealed class XmlDocTokenizerTests
     }
 
     /// <summary>
-    /// Verifies that a tag whose name begins with an invalid start character (a digit) is not recognised as a
+    /// Verifies that a tag whose name begins with an invalid start character (a digit) is not recognized as a
     /// tag and is preserved as literal text.
     /// </summary>
     [TestMethod]

@@ -23,7 +23,7 @@ public sealed class ThrowingNonCryptographicHashAlgorithm
 {
 
     /// <summary>
-    /// Initialises a new instance of <see cref="ThrowingNonCryptographicHashAlgorithm" /> with a 4-byte output matching
+    /// Initializes a new instance of <see cref="ThrowingNonCryptographicHashAlgorithm" /> with a 4-byte output matching
     /// <see cref="MonitoringNonCryptographicHashAlgorithm" />.
     /// </summary>
     public ThrowingNonCryptographicHashAlgorithm()

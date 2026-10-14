@@ -11,7 +11,7 @@ namespace Bodu.IO.Compound;
 public sealed partial class CompoundReleaseNoteCorpusTests
 {
     /// <summary>
-    /// Represents the options a catalogue row reads with, and maps them onto <see cref="CompoundFileOptions" />.
+    /// Represents the options a catalog row reads with, and maps them onto <see cref="CompoundFileOptions" />.
     /// </summary>
     /// <param name="ValidationLevel">The validation level every read of the row uses.</param>
     /// <param name="ReadStrategy">The read strategy every read of the row uses.</param>

@@ -161,7 +161,7 @@ public sealed class XmlDocFormatterCDataTests
     /// Verifies that a <c>&lt;para&gt;</c> block whose prose is followed by a <c>&lt;code&gt;</c> element on
     /// its own line - the pattern that triggered BODU1002 - is considered canonical and round-trips unchanged.
     /// Before the fix, the formatter packed <c>&lt;code&gt;</c> inline onto the preceding prose line, causing
-    /// the analyser to report a difference and the code-fix provider to produce incorrect output.
+    /// the analyzer to report a difference and the code-fix provider to produce incorrect output.
     /// </summary>
     [TestMethod]
     public void Format_WhenParaHasProseThenCodeBlockWithMultiLineCData_ShouldLeaveCodeTagOnOwnLine()

@@ -9,7 +9,7 @@ using System.Text.Json;
 namespace Bodu.Numerics.Serialization.Json;
 
 /// <summary>
-/// Verifies converter-construction and malformed-payload behaviour for <see cref="IntervalJsonConverter{T}" /> that is
+/// Verifies converter-construction and malformed-payload behavior for <see cref="IntervalJsonConverter{T}" /> that is
 /// not already covered by the policy-matrix suite.
 /// </summary>
 [TestClass]

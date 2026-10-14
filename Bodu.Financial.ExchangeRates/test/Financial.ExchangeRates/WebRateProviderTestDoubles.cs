@@ -7,7 +7,7 @@
 namespace Bodu.Financial.ExchangeRates;
 
 /// <summary>
-/// A minimal single-base <see cref="WebRateProvider" /> that loads its whole catalogue in one shot, modelling a
+/// A minimal single-base <see cref="WebRateProvider" /> that loads its whole catalog in one shot, modeling a
 /// bulk feed (such as RBA, ECB, or Bank of England) so the base warm-up surface can be exercised directly against a
 /// provider that is not built on <see cref="PairWebRateProvider{TSeries}" />.
 /// </summary>
@@ -17,10 +17,10 @@ internal sealed class TestBulkWebRateProvider
     /// <summary>The ISO code of the currency this feed quotes against; a request must involve it.</summary>
     public const string BaseIsoCode = "AUD";
 
-    /// <summary>The catalogue this feed serves, loaded as a single unit.</summary>
+    /// <summary>The catalog this feed serves, loaded as a single unit.</summary>
     private readonly IReadOnlyList<ExchangeRate> _catalogue;
 
-    /// <summary>Tracks whether the catalogue has been loaded.</summary>
+    /// <summary>Tracks whether the catalog has been loaded.</summary>
     private bool _loaded;
 
     /// <summary>
@@ -34,7 +34,7 @@ internal sealed class TestBulkWebRateProvider
     }
 
     /// <summary>
-    /// Gets the number of times the catalogue has been fetched.
+    /// Gets the number of times the catalog has been fetched.
     /// </summary>
     /// <value>The fetch count.</value>
     public int LoadCount { get; private set; }

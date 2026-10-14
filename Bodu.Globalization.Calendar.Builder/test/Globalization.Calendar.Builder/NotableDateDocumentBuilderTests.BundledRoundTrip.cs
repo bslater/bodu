@@ -9,10 +9,10 @@ namespace Bodu.Globalization.Calendar.Builder;
 public partial class NotableDateDocumentBuilderTests
 {
     /// <summary>
-    /// The bundled common notable-date catalogues shipped by <c>Bodu.Globalization.Calendar</c>. Round-tripping every
+    /// The bundled common notable-date catalogs shipped by <c>Bodu.Globalization.Calendar</c>. Round-tripping every
     /// one through the builder proves it can express every notable-date definition and resource feature in production.
     /// </summary>
-    /// <returns>One single-element object array per catalogue name, for <c>[DynamicData]</c>.</returns>
+    /// <returns>One single-element object array per catalog name, for <c>[DynamicData]</c>.</returns>
     public static IEnumerable<object[]> BundledCatalogues()
     {
         string[] names =
@@ -53,11 +53,11 @@ public partial class NotableDateDocumentBuilderTests
     }
 
     /// <summary>
-    /// Verifies that every bundled common catalogue round-trips through the builder - parsing it with
+    /// Verifies that every bundled common catalog round-trips through the builder - parsing it with
     /// <see cref="NotableDateDocumentBuilder.FromXml(string)" /> and rebuilding it reproduces a resource with the same
     /// identity, definition count, rule count, adjustment-policy count, and resolved occurrences as a direct load.
     /// </summary>
-    /// <param name="catalogue">The bundled catalogue name under test.</param>
+    /// <param name="catalogue">The bundled catalog name under test.</param>
     [TestMethod]
     [DynamicData(nameof(BundledCatalogues))]
     public void FromXml_WhenBundledCatalogue_ShouldRoundTripToEquivalentResource(string catalogue)

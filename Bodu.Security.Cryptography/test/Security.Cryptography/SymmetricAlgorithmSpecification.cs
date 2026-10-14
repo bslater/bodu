@@ -10,7 +10,7 @@ namespace Bodu.Security.Cryptography;
 
 /// <summary>
 /// Describes the expected observable properties of a single <typeparamref name="TAlgorithm" /> implementation for use
-/// in constructor and behavioural tests.
+/// in constructor and behavioral tests.
 /// </summary>
 public record SymmetricAlgorithmSpecification
 {
@@ -25,7 +25,7 @@ public record SymmetricAlgorithmSpecification
     public required int DefaultKeySizeBits { get; init; }
 
     /// <summary>
-    /// Gets the set of key sizes in bits to exercise in parameterised encryptor and decryptor tests. For algorithms
+    /// Gets the set of key sizes in bits to exercise in parameterized encryptor and decryptor tests. For algorithms
     /// with a fixed key size, this should list each discrete legal size. For algorithms with a broad key-size range, a
     /// representative subset covering the minimum, maximum, and at least one intermediate size is sufficient.
     /// </summary>

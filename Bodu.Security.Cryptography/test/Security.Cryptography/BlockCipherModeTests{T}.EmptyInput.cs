@@ -31,14 +31,14 @@ namespace Bodu.Security.Cryptography;
 /// "block length must be a positive multiple" message - incompatible with the
 /// <see cref="System.Security.Cryptography.CryptoStream.FlushFinalBlock" /> path which always
 /// invokes the transform at end-of-stream regardless of whether data was written. This test
-/// keeps the post-#200 behaviour locked in.
+/// keeps the post-#200 behavior locked in.
 /// </remarks>
 public abstract partial class BlockCipherModeTests<TMode>
 {
     /// <summary>
     /// Gets a value indicating whether this mode transform accepts a zero-length input as a no-op.
     /// CBC and CTR document this contract; CFB / OFB / ECB / XTS currently reject it but should
-    /// match the CBC behaviour for consistency. <see cref="CtsModeTransform" /> requires at least
+    /// match the CBC behavior for consistency. <see cref="CtsModeTransform" /> requires at least
     /// one full block by design and therefore overrides this to <see langword="false" />.
     /// </summary>
     protected virtual bool AcceptsEmptyInput => true;
@@ -46,10 +46,10 @@ public abstract partial class BlockCipherModeTests<TMode>
     /// <summary>
     /// Verifies that <see cref="IBlockCipherModeTransform.Transform" /> with a zero-length input
     /// span is a no-op rather than throwing - the consistency contract that
-    /// <see cref="CbcModeTransform" /> already honours via <c>throwIfZero: false</c>. The other
+    /// <see cref="CbcModeTransform" /> already honors via <c>throwIfZero: false</c>. The other
     /// confidentiality-only modes currently throw <see cref="System.Security.Cryptography.CryptographicException" />
     /// here; this test fails until they are aligned with CBC.
-    /// span is a no-op rather than throwing - the consistency contract every mode honours via
+    /// span is a no-op rather than throwing - the consistency contract every mode honors via
     /// <c>throwIfZero: false</c> as of #200.
     /// </summary>
     [TestMethod]

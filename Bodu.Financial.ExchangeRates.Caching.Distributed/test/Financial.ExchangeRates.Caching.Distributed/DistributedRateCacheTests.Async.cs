@@ -54,7 +54,7 @@ public sealed partial class DistributedRateCacheTests
     }
 
     /// <summary>
-    /// Verifies that a cancelled token surfaces as <see cref="OperationCanceledException" /> from the asynchronous
+    /// Verifies that a canceled token surfaces as <see cref="OperationCanceledException" /> from the asynchronous
     /// surface rather than being swallowed as a failed cache operation.
     /// </summary>
     [TestMethod]

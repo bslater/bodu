@@ -13,7 +13,7 @@ namespace Bodu.Extensions;
 /// <remarks>
 /// The detected words follow the same boundary rules as the other casing helpers (camelCase / PascalCase transitions,
 /// digit transitions, and the standard separator set). Selecting <see cref="Preserve" /> keeps each word's existing
-/// casing and joins them with no separator, which is the behaviour required when the source already obeys an identifier
+/// casing and joins them with no separator, which is the behavior required when the source already obeys an identifier
 /// convention and only invalid characters need to be removed.
 /// </remarks>
 public enum IdentifierCase
@@ -24,12 +24,12 @@ public enum IdentifierCase
     Preserve = 0,
 
     /// <summary>
-    /// Lower-cases the first word and capitalises subsequent words (<c>userAccountId</c>).
+    /// Lower-cases the first word and capitalizes subsequent words (<c>userAccountId</c>).
     /// </summary>
     Camel = 1,
 
     /// <summary>
-    /// Capitalises every word (<c>UserAccountId</c>).
+    /// Capitalizes every word (<c>UserAccountId</c>).
     /// </summary>
     Pascal = 2,
 

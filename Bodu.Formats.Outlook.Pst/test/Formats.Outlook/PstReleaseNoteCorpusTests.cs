@@ -15,7 +15,7 @@ namespace Bodu.Formats.Outlook;
 
 /// <summary>
 /// Holds Bodu.IO.Pst and Bodu.Formats.Outlook.Pst to the defect fixes other PST readers list in their release notes and
-/// commit histories, as catalogued in <c>corpus/pst/fixes/</c> and embedded under <c>Fixtures/ReleaseNotes/</c>.
+/// commit histories, as cataloged in <c>corpus/pst/fixes/</c> and embedded under <c>Fixtures/ReleaseNotes/</c>.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -35,7 +35,7 @@ namespace Bodu.Formats.Outlook;
 [TestClass]
 public sealed partial class PstReleaseNoteCorpusTests
 {
-    /// <summary>The corpus area whose catalogues this class runs.</summary>
+    /// <summary>The corpus area whose catalogs this class runs.</summary>
     private const string Area = "pst";
 
     /// <summary>The folder depth past which the store walk reports a cycle instead of descending further.</summary>
@@ -47,7 +47,7 @@ public sealed partial class PstReleaseNoteCorpusTests
     /// <summary>The longest body, in UTF-8 bytes, a rendering writes as text; a longer one is a digest.</summary>
     private const int MaxBodyBytes = 256;
 
-    /// <summary>The option names a catalogue row may use, each mapped by <see cref="RowOptions.Parse" />.</summary>
+    /// <summary>The option names a catalog row may use, each mapped by <see cref="RowOptions.Parse" />.</summary>
     private static readonly string[] s_optionNames =
     [
         "Surface", "ValidationLevel", "OmitUnresolvableValues", "DecompressRtf", "BlockCacheSize", "MaxNodeDataLength", "MaxDataTreeLeaves",
@@ -55,7 +55,7 @@ public sealed partial class PstReleaseNoteCorpusTests
         "Subnode", "View", "Row", "Data",
     ];
 
-    /// <summary>The catalogues embedded in this test assembly, loaded once.</summary>
+    /// <summary>The catalogs embedded in this test assembly, loaded once.</summary>
     private static readonly Lazy<IReadOnlyList<ReleaseNoteCatalog>> s_catalogs =
         new(() => ReleaseNoteCatalog.LoadEmbedded(typeof(PstReleaseNoteCorpusTests).Assembly));
 
@@ -110,20 +110,20 @@ public sealed partial class PstReleaseNoteCorpusTests
         RejectRows(nameof(OutlookPstFormatException));
 
     /// <summary>
-    /// Gets every row of every embedded catalogue.
+    /// Gets every row of every embedded catalog.
     /// </summary>
-    /// <value>The rows, catalogue by catalogue in file order.</value>
+    /// <value>The rows, catalog by catalog in file order.</value>
     private static IEnumerable<ReleaseNoteFix> AllRows =>
         s_catalogs.Value.SelectMany(catalog => catalog.Rows);
 
     /// <summary>
-    /// Builds the PST bytes a catalogue input describes.
+    /// Builds the PST bytes a catalog input describes.
     /// </summary>
     /// <param name="input">The decoded input: <c>gen:</c> followed by a generator pipeline.</param>
     /// <returns>The file bytes.</returns>
     /// <exception cref="FormatException">The input is not a well-formed pipeline of known generators.</exception>
     /// <remarks>
-    /// The catalogue's <c>unit</c> tests build their models with this method, so that they read the same files the rows
+    /// The catalog's <c>unit</c> tests build their models with this method, so that they read the same files the rows
     /// describe.
     /// </remarks>
     internal static byte[] GenerateInput(string input) =>
@@ -134,12 +134,12 @@ public sealed partial class PstReleaseNoteCorpusTests
     /// </summary>
     /// <param name="store">The open store.</param>
     /// <param name="options">
-    /// The row options, in the catalogue's <c>options</c> notation; empty for the defaults.
+    /// The row options, in the catalog's <c>options</c> notation; empty for the defaults.
     /// </param>
     /// <returns>The rendering.</returns>
     /// <exception cref="FormatException">The options are malformed or name the Nodes surface.</exception>
     /// <remarks>
-    /// The catalogue's <c>unit</c> tests compare stores opened in different ways through this method; the options that
+    /// The catalog's <c>unit</c> tests compare stores opened in different ways through this method; the options that
     /// select reader settings do not apply, because the store is already open.
     /// </remarks>
     internal static string RenderStore(OutlookMailStore store, string options)
@@ -177,7 +177,7 @@ public sealed partial class PstReleaseNoteCorpusTests
     /// <summary>
     /// Builds a row's input and renders it on the surface its options select.
     /// </summary>
-    /// <param name="fix">The catalogue row.</param>
+    /// <param name="fix">The catalog row.</param>
     /// <returns>The rendering.</returns>
     /// <exception cref="FormatException">The row's options or input are malformed.</exception>
     private static string RenderRow(ReleaseNoteFix fix)

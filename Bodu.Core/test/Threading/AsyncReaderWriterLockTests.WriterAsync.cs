@@ -117,7 +117,7 @@ public sealed partial class AsyncReaderWriterLockTests
     }
 
     /// <summary>
-    /// Verifies that a write acquisition that must queue with a cancellable token does not allocate a new delegate for
+    /// Verifies that a write acquisition that must queue with a cancelable token does not allocate a new delegate for
     /// the lock's after-cancellation callback on every call.
     /// </summary>
     [TestMethod]

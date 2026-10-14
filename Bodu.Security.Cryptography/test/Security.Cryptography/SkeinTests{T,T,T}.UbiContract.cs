@@ -12,7 +12,7 @@ namespace Bodu.Security.Cryptography;
 /// <c>SkeinTests.InitialChainingValues.cs</c> verifies that the IV matches the Skein 1.3
 /// Appendix B constants for the unkeyed configurations; this file pins down the surrounding
 /// contract - caching, defensive copies, key-driven invalidation, and disposed-state
-/// behaviour. Together they give the UBI compression path direct, parallel-pipeline-independent
+/// behavior. Together they give the UBI compression path direct, parallel-pipeline-independent
 /// regression coverage.
 /// </summary>
 public abstract partial class SkeinTests<TTest, TAlgorithm, TVariant>

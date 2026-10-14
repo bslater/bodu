@@ -12,19 +12,19 @@ namespace Bodu.Globalization.Calendar;
 
 /// <summary>
 /// Provides the shared, reusable notable-date resources bundled with the library - the civil, Christian, and other
-/// thematic catalogues that define common observances (New Year's Day, Easter, Christmas, and the like) once for
+/// thematic catalogs that define common observances (New Year's Day, Easter, Christmas, and the like) once for
 /// territory packs to import rather than redefine.
 /// </summary>
 /// <remarks>
 /// <para>
-/// A territory resource imports a common catalogue by name through an <c>Import</c> directive, then cherry-picks the
+/// A territory resource imports a common catalog by name through an <c>Import</c> directive, then cherry-picks the
 /// concepts it observes and supplies its own territory and adjustment overrides. The <see cref="Resolver" /> delegate
 /// is the bridge: pass it to
 /// <see cref="NotableDateResourceLoader.Load(System.IO.Stream, System.Func{string, string}, Microsoft.Extensions.Logging.ILogger)" />
-/// so those imports resolve against the embedded catalogues.
+/// so those imports resolve against the embedded catalogs.
 /// </para>
 /// <para>
-/// Resource names are the bare catalogue identifiers (for example <c>global-core</c> or <c>christian-western</c>),
+/// Resource names are the bare catalog identifiers (for example <c>global-core</c> or <c>christian-western</c>),
 /// matching the file names without their extension. Lookups are case-insensitive and the resolved content is cached.
 /// </para>
 /// <example>
@@ -46,29 +46,29 @@ namespace Bodu.Globalization.Calendar;
 /// </remarks>
 public static class CommonNotableDateResources
 {
-    /// <summary>The manifest-resource-name prefix shared by the embedded common catalogues.</summary>
+    /// <summary>The manifest-resource-name prefix shared by the embedded common catalogs.</summary>
     private const string ResourcePrefix = "Bodu.Globalization.Calendar.Resources.";
 
-    /// <summary>The cache of resolved catalogue content, keyed by case-insensitive resource name.</summary>
+    /// <summary>The cache of resolved catalog content, keyed by case-insensitive resource name.</summary>
     private static readonly ConcurrentDictionary<string, string?> s_cache = new(StringComparer.OrdinalIgnoreCase);
 
-    /// <summary>The cache of materialized catalogue resources, single-flighted per catalogue so concurrent first loads parse and validate the document once.</summary>
+    /// <summary>The cache of materialized catalog resources, single-flighted per catalog so concurrent first loads parse and validate the document once.</summary>
     private static readonly ConcurrentDictionary<CommonNotableDateCatalog, Lazy<NotableDateResource>> s_resourceCache = new();
 
     /// <summary>
-    /// Gets a resolver delegate that maps a common-catalogue name to its embedded XML content, suitable for passing to
+    /// Gets a resolver delegate that maps a common-catalog name to its embedded XML content, suitable for passing to
     /// the import-aware <see cref="NotableDateResourceLoader" /> overloads.
     /// </summary>
     /// <value>
-    /// A resolver over the embedded common catalogues that returns <see langword="null" /> for unknown names.
+    /// A resolver over the embedded common catalogs that returns <see langword="null" /> for unknown names.
     /// </value>
     public static Func<string, string?> Resolver { get; } = Resolve;
 
     /// <summary>
-    /// Resolves a common-catalogue name to its embedded XML content.
+    /// Resolves a common-catalog name to its embedded XML content.
     /// </summary>
-    /// <param name="resourceName">The catalogue name, without extension (for example <c>christian-western</c>).</param>
-    /// <returns>The catalogue XML, or <see langword="null" /> when no catalogue of that name is bundled.</returns>
+    /// <param name="resourceName">The catalog name, without extension (for example <c>christian-western</c>).</param>
+    /// <returns>The catalog XML, or <see langword="null" /> when no catalog of that name is bundled.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="resourceName" /> is <see langword="null" />.</exception>
     public static string? Resolve(string resourceName)
     {
@@ -87,11 +87,11 @@ public static class CommonNotableDateResources
     }
 
     /// <summary>
-    /// Resolves a bundled catalogue to its embedded XML content by its strongly-typed name.
+    /// Resolves a bundled catalog to its embedded XML content by its strongly-typed name.
     /// </summary>
-    /// <param name="catalog">The catalogue to resolve.</param>
+    /// <param name="catalog">The catalog to resolve.</param>
     /// <returns>
-    /// The catalogue XML, or <see langword="null" /> when the catalogue is not bundled with this assembly.
+    /// The catalog XML, or <see langword="null" /> when the catalog is not bundled with this assembly.
     /// </returns>
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="catalog" /> is not a defined <see cref="CommonNotableDateCatalog" /> value.
@@ -104,27 +104,25 @@ public static class CommonNotableDateResources
     }
 
     /// <summary>
-    /// Loads and validates a bundled catalogue into a <see cref="NotableDateResource" /> by its strongly-typed name,
-    /// resolving any nested imports against the other bundled catalogues.
+    /// Loads and validates a bundled catalog into a <see cref="NotableDateResource" /> by its strongly-typed name,
+    /// resolving any nested imports against the other bundled catalogs.
     /// </summary>
-    /// <param name="catalog">The catalogue to load.</param>
-    /// <returns>The materialized <see cref="NotableDateResource" /> for the requested catalogue.</returns>
+    /// <param name="catalog">The catalog to load.</param>
+    /// <returns>The materialized <see cref="NotableDateResource" /> for the requested catalog.</returns>
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="catalog" /> is not a defined <see cref="CommonNotableDateCatalog" /> value.
     /// </exception>
-    /// <exception cref="InvalidOperationException">
-    /// The catalogue's content is not bundled with this assembly.
-    /// </exception>
+    /// <exception cref="InvalidOperationException">The catalog's content is not bundled with this assembly.</exception>
     /// <remarks>
     /// <para>
     /// This is the direct path from a strongly-typed name to a usable resource - for example
     /// <c>CommonNotableDateResources.Load(CommonNotableDateCatalog.GlobalAll)</c> materializes the entire bundled
-    /// <c>global-all</c> catalogue ready to hand to a <see cref="NotableDateService" />.
+    /// <c>global-all</c> catalog ready to hand to a <see cref="NotableDateService" />.
     /// </para>
     /// <para>
-    /// The materialized resource is cached per catalogue: a <see cref="NotableDateResource" /> is immutable, so
-    /// repeated loads of the same catalogue return the same instance and the parse-and-validate cost is paid once per
-    /// process rather than once per call.
+    /// The materialized resource is cached per catalog: a <see cref="NotableDateResource" /> is immutable, so repeated
+    /// loads of the same catalog return the same instance and the parse-and-validate cost is paid once per process
+    /// rather than once per call.
     /// </para>
     /// </remarks>
     public static NotableDateResource Load(CommonNotableDateCatalog catalog)
@@ -137,13 +135,11 @@ public static class CommonNotableDateResources
     }
 
     /// <summary>
-    /// Parses and validates a bundled catalogue into a fresh <see cref="NotableDateResource" />.
+    /// Parses and validates a bundled catalog into a fresh <see cref="NotableDateResource" />.
     /// </summary>
-    /// <param name="catalog">The catalogue to load.</param>
+    /// <param name="catalog">The catalog to load.</param>
     /// <returns>The materialized resource.</returns>
-    /// <exception cref="InvalidOperationException">
-    /// The catalogue's content is not bundled with this assembly.
-    /// </exception>
+    /// <exception cref="InvalidOperationException">The catalog's content is not bundled with this assembly.</exception>
     private static NotableDateResource LoadCore(CommonNotableDateCatalog catalog)
     {
         string name = GetResourceName(catalog);
@@ -155,11 +151,11 @@ public static class CommonNotableDateResources
     }
 
     /// <summary>
-    /// Gets the bare resource name (for example <c>christian-western</c>) for a strongly-typed catalogue, suitable for
-    /// an <c>Import</c> directive or a direct <see cref="Resolve(string)" /> call.
+    /// Gets the bare resource name (for example <c>christian-western</c>) for a strongly-typed catalog, suitable for an
+    /// <c>Import</c> directive or a direct <see cref="Resolve(string)" /> call.
     /// </summary>
-    /// <param name="catalog">The catalogue whose resource name to return.</param>
-    /// <returns>The bare, kebab-case resource name that identifies the catalogue.</returns>
+    /// <param name="catalog">The catalog whose resource name to return.</param>
+    /// <returns>The bare, kebab-case resource name that identifies the catalog.</returns>
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="catalog" /> is not a defined <see cref="CommonNotableDateCatalog" /> value.
     /// </exception>

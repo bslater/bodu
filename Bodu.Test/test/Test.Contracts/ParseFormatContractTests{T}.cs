@@ -9,7 +9,7 @@ using Bodu.Test.Kat;
 namespace Bodu.Test.Contracts;
 
 /// <summary>
-/// Reusable behavioural contract test base for a value-object type with a parse/format pair driven by a
+/// Reusable behavioral contract test base for a value-object type with a parse/format pair driven by a
 /// format string and an <see cref="IFormatProvider" /> (the standard .NET text-conversion shape used by
 /// <see cref="System.IParsable{TSelf}" /> / <see cref="System.IFormattable" /> types). Concrete subclasses
 /// plug their type in by overriding the four parse/format adapter methods plus <see cref="ValidCases" />

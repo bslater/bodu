@@ -10,7 +10,7 @@ namespace Bodu.Security.Cryptography;
 /// Tests for <see cref="Poly1305AeadCore" />, grouped into member-named partial files. The RFC 8439 framing is anchored
 /// to the gold-standard ChaCha20-Poly1305 known-answer vector from RFC 8439 Section 2.8.2. Because the extended-nonce
 /// constructions reuse this exact framing on top of an HChaCha20 / HSalsa20 subkey, locking the framing here verifies
-/// the pad16 + length block, the counter-0 Poly1305 key derivation, and the encrypt-from-counter-1 behaviour
+/// the pad16 + length block, the counter-0 Poly1305 key derivation, and the encrypt-from-counter-1 behavior
 /// independently of the subkey-derivation layer. Each framing is also held, over every message length to past the
 /// widest kernel's run, to the same framing drawn from an engine one block at a time and from a keystream value.
 /// </summary>

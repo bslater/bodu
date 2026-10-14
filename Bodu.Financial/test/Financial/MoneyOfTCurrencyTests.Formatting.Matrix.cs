@@ -527,7 +527,7 @@ public partial class MoneyOfTCurrencyTests
     // ---------------------------------------------------------------------------------------------------------------
 
     /// <summary>
-    /// Resolves a currency tag type from its ISO 4217 alphabetic code by reflecting into the shipped catalogue.
+    /// Resolves a currency tag type from its ISO 4217 alphabetic code by reflecting into the shipped catalog.
     /// </summary>
     /// <param name="iso">The three-letter ISO code.</param>
     /// <returns>The matching <see cref="ICurrency" /> tag type.</returns>

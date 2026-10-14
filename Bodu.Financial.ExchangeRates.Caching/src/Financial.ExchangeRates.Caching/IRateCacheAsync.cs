@@ -21,7 +21,7 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// </para>
 /// <para>
 /// Every member applies exactly the same freshness, merge, and coverage policy as its synchronous counterpart; the
-/// decorator's two surfaces must never diverge in behaviour, only in how they wait.
+/// decorator's two surfaces must never diverge in behavior, only in how they wait.
 /// </para>
 /// </remarks>
 internal interface IRateCacheAsync

@@ -80,9 +80,7 @@ internal sealed class NotableDateCacheWarmupService
     /// Runs the one-shot warm-up: resolves the caching service and the span, warms each territory, and reports the
     /// outcome.
     /// </summary>
-    /// <param name="stoppingToken">
-    /// Signalled when the host shuts down, aborting the warm-up between territories.
-    /// </param>
+    /// <param name="stoppingToken">Signaled when the host shuts down, aborting the warm-up between territories.</param>
     /// <returns>A task representing the warm-up run.</returns>
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {

@@ -7,7 +7,7 @@
 namespace Bodu.Text.Configuration;
 
 /// <summary>
-/// Selects one of the predefined behaviour profiles that govern how a configuration document is parsed, resolved, and
+/// Selects one of the predefined behavior profiles that govern how a configuration document is parsed, resolved, and
 /// re-emitted.
 /// </summary>
 /// <remarks>
@@ -18,11 +18,11 @@ namespace Bodu.Text.Configuration;
 /// </para>
 /// <para>
 /// Profiles encode opinionated combinations of orthogonal switches. Mixing them is supported - start from the closest
-/// preset and override the few properties that differ. The behavioural matrix is:
+/// preset and override the few properties that differ. The behavioral matrix is:
 /// </para>
 /// <list type="table">
 /// <listheader>
-/// <term>Behaviour</term>
+/// <term>Behavior</term>
 /// <description>Bodu | EditorConfigCompatible | Strict | Relaxed</description>
 /// </listheader>
 /// <item>

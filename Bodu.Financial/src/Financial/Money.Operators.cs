@@ -58,7 +58,7 @@ public readonly partial struct Money
     /// <param name="value">The amount to negate.</param>
     /// <returns>A <see cref="Money" /> with the same ISO code and negated amount.</returns>
     /// <exception cref="InvalidOperationException">
-    /// <paramref name="value" /> is a default-initialised, currency-less <see cref="Money" />.
+    /// <paramref name="value" /> is a default-initialized, currency-less <see cref="Money" />.
     /// </exception>
     public static Money operator -(Money value)
     {
@@ -84,7 +84,7 @@ public readonly partial struct Money
     /// <param name="right">The scalar.</param>
     /// <returns>The product, rounded to the currency's minor units using banker's rounding.</returns>
     /// <exception cref="InvalidOperationException">
-    /// <paramref name="left" /> is a default-initialised, currency-less <see cref="Money" />.
+    /// <paramref name="left" /> is a default-initialized, currency-less <see cref="Money" />.
     /// </exception>
     /// <exception cref="OverflowException">The product falls outside the range of <see cref="decimal" />.</exception>
     /// <remarks>
@@ -105,7 +105,7 @@ public readonly partial struct Money
     /// <param name="right">The amount.</param>
     /// <returns>The product, rounded to the currency's minor units using banker's rounding.</returns>
     /// <exception cref="InvalidOperationException">
-    /// <paramref name="right" /> is a default-initialised, currency-less <see cref="Money" />.
+    /// <paramref name="right" /> is a default-initialized, currency-less <see cref="Money" />.
     /// </exception>
     /// <exception cref="OverflowException">The product falls outside the range of <see cref="decimal" />.</exception>
     /// <remarks>
@@ -126,7 +126,7 @@ public readonly partial struct Money
     /// <param name="right">The scalar divisor.</param>
     /// <returns>The quotient, rounded to the currency's minor units using banker's rounding.</returns>
     /// <exception cref="InvalidOperationException">
-    /// <paramref name="left" /> is a default-initialised, currency-less <see cref="Money" />.
+    /// <paramref name="left" /> is a default-initialized, currency-less <see cref="Money" />.
     /// </exception>
     /// <exception cref="DivideByZeroException"><paramref name="right" /> is zero.</exception>
     /// <exception cref="OverflowException">The quotient falls outside the range of <see cref="decimal" />.</exception>
@@ -147,7 +147,7 @@ public readonly partial struct Money
     /// <param name="multiplier">The scalar multiplier.</param>
     /// <returns>The product, rounded to the currency's minor units using banker's rounding.</returns>
     /// <exception cref="InvalidOperationException">
-    /// This value is a default-initialised, currency-less <see cref="Money" />.
+    /// This value is a default-initialized, currency-less <see cref="Money" />.
     /// </exception>
     /// <exception cref="OverflowException">The product falls outside the range of <see cref="decimal" />.</exception>
     public Money Multiply(decimal multiplier)
@@ -164,7 +164,7 @@ public readonly partial struct Money
     /// <param name="rounding">The midpoint-rounding rule applied to the product.</param>
     /// <returns>The product, rounded to the currency's minor units using <paramref name="rounding" />.</returns>
     /// <exception cref="InvalidOperationException">
-    /// This value is a default-initialised, currency-less <see cref="Money" />.
+    /// This value is a default-initialized, currency-less <see cref="Money" />.
     /// </exception>
     /// <exception cref="OverflowException">The product falls outside the range of <see cref="decimal" />.</exception>
     /// <remarks>
@@ -184,7 +184,7 @@ public readonly partial struct Money
     /// <param name="divisor">The scalar divisor.</param>
     /// <returns>The quotient, rounded to the currency's minor units using banker's rounding.</returns>
     /// <exception cref="InvalidOperationException">
-    /// This value is a default-initialised, currency-less <see cref="Money" />.
+    /// This value is a default-initialized, currency-less <see cref="Money" />.
     /// </exception>
     /// <exception cref="DivideByZeroException"><paramref name="divisor" /> is zero.</exception>
     /// <exception cref="OverflowException">The quotient falls outside the range of <see cref="decimal" />.</exception>
@@ -202,7 +202,7 @@ public readonly partial struct Money
     /// <param name="rounding">The midpoint-rounding rule applied to the quotient.</param>
     /// <returns>The quotient, rounded to the currency's minor units using <paramref name="rounding" />.</returns>
     /// <exception cref="InvalidOperationException">
-    /// This value is a default-initialised, currency-less <see cref="Money" />.
+    /// This value is a default-initialized, currency-less <see cref="Money" />.
     /// </exception>
     /// <exception cref="DivideByZeroException"><paramref name="divisor" /> is zero.</exception>
     /// <exception cref="OverflowException">The quotient falls outside the range of <see cref="decimal" />.</exception>
@@ -296,13 +296,13 @@ public readonly partial struct Money
     }
 
     /// <summary>
-    /// Asserts that both operands carry a currency (i.e. neither is a default-initialised value) and that the two
+    /// Asserts that both operands carry a currency (i.e. neither is a default-initialized value) and that the two
     /// currencies match.
     /// </summary>
     /// <param name="left">The first operand.</param>
     /// <param name="right">The second operand.</param>
     /// <exception cref="InvalidOperationException">
-    /// Either operand carries no currency (a default-initialised <see cref="Money" />), or the two currencies differ.
+    /// Either operand carries no currency (a default-initialized <see cref="Money" />), or the two currencies differ.
     /// </exception>
     private static void EnsureSameCurrency(Money left, Money right)
     {

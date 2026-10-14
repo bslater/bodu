@@ -12,10 +12,10 @@ namespace Bodu.IO.Compound;
 public sealed partial class CompoundReleaseNoteCorpusTests
 {
     /// <summary>
-    /// Verifies that each catalogued container a fix established as readable opens, reads every stream, and renders the
+    /// Verifies that each cataloged container a fix established as readable opens, reads every stream, and renders the
     /// expected listing.
     /// </summary>
-    /// <param name="fix">The catalogue row.</param>
+    /// <param name="fix">The catalog row.</param>
     [TestMethod]
     [TestCategory("Regression")]
     [DynamicData(

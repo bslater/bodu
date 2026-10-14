@@ -7,7 +7,7 @@
 namespace Bodu.Globalization.Calendar;
 
 /// <summary>
-/// Verifies the bundled common notable-date catalogues and their resolver: that the embedded catalogues are
+/// Verifies the bundled common notable-date catalogs and their resolver: that the embedded catalogs are
 /// discoverable and that a territory resource can import the shared concepts and specialize them with its own
 /// territory scope, category, non-working flag, and weekend adjustments.
 /// </summary>
@@ -15,10 +15,10 @@ namespace Bodu.Globalization.Calendar;
 public sealed class CommonResourcesTests
 {
     /// <summary>
-    /// Verifies that the resolver returns content for a bundled catalogue and <see langword="null" /> for an unknown
+    /// Verifies that the resolver returns content for a bundled catalog and <see langword="null" /> for an unknown
     /// name.
     /// </summary>
-    /// <param name="name">The catalogue name to resolve.</param>
+    /// <param name="name">The catalog name to resolve.</param>
     /// <param name="expectContent">Whether the resolver is expected to return content.</param>
     [TestMethod]
     [DataRow("global-core", true)]         // bundled catalogue
@@ -30,7 +30,7 @@ public sealed class CommonResourcesTests
     }
 
     /// <summary>
-    /// Verifies that a strongly-typed catalogue resolves to the same content as its raw resource name, so the enum
+    /// Verifies that a strongly-typed catalog resolves to the same content as its raw resource name, so the enum
     /// overload is a faithful alias for the string overload.
     /// </summary>
     [TestMethod]
@@ -57,8 +57,8 @@ public sealed class CommonResourcesTests
     }
 
     /// <summary>
-    /// Verifies that loading the bundled <c>global-all</c> catalogue by its strongly-typed name materializes a populated
-    /// <see cref="NotableDateResource" /> whose nested imports resolve against the other bundled catalogues.
+    /// Verifies that loading the bundled <c>global-all</c> catalog by its strongly-typed name materializes a populated
+    /// <see cref="NotableDateResource" /> whose nested imports resolve against the other bundled catalogs.
     /// </summary>
     [TestMethod]
     public void Load_ForGlobalAllCatalog_ReturnsPopulatedResource()
@@ -84,7 +84,7 @@ public sealed class CommonResourcesTests
     }
 
     /// <summary>
-    /// Verifies that every <see cref="CommonNotableDateCatalog" /> member maps to a bundled catalogue that resolves to
+    /// Verifies that every <see cref="CommonNotableDateCatalog" /> member maps to a bundled catalog that resolves to
     /// content, so the enum and the embedded resources stay in lock-step.
     /// </summary>
     [TestMethod]
@@ -101,7 +101,7 @@ public sealed class CommonResourcesTests
     }
 
     /// <summary>
-    /// A territory resource importing the bundled common catalogues and specializing several shared concepts with the
+    /// A territory resource importing the bundled common catalogs and specializing several shared concepts with the
     /// territory's own scope, category, non-working flag, and weekend adjustments.
     /// </summary>
     private const string Region = """
@@ -138,14 +138,14 @@ public sealed class CommonResourcesTests
     """;
 
     /// <summary>
-    /// Builds a service over the territory <see cref="Region" /> resource resolved against the bundled common catalogues.
+    /// Builds a service over the territory <see cref="Region" /> resource resolved against the bundled common catalogs.
     /// </summary>
     /// <returns>A service for the region resource.</returns>
     private static NotableDateService RegionService() =>
         new(NotableDateResourceLoader.Load(Region, CommonNotableDateResources.Resolver));
 
     /// <summary>
-    /// Verifies that a territory resource importing the bundled catalogues computes the Easter-anchored offset. Easter
+    /// Verifies that a territory resource importing the bundled catalogs computes the Easter-anchored offset. Easter
     /// Sunday 2024 resolves to 31 March.
     /// </summary>
     [TestMethod]
@@ -157,7 +157,7 @@ public sealed class CommonResourcesTests
     }
 
     /// <summary>
-    /// Verifies that a territory resource importing the bundled catalogues applies its category and non-working overrides.
+    /// Verifies that a territory resource importing the bundled catalogs applies its category and non-working overrides.
     /// The imported Good Friday (29 March 2024) carries the territory's Religious category and working-day override.
     /// </summary>
     [TestMethod]
@@ -172,7 +172,7 @@ public sealed class CommonResourcesTests
     }
 
     /// <summary>
-    /// Verifies that a territory resource importing the bundled catalogues applies its own weekend adjustment. New Year's
+    /// Verifies that a territory resource importing the bundled catalogs applies its own weekend adjustment. New Year's
     /// Day 2023 (a Sunday) is observed on Monday 2 January, carrying the actual date.
     /// </summary>
     [TestMethod]
@@ -186,8 +186,8 @@ public sealed class CommonResourcesTests
     }
 
     /// <summary>
-    /// Verifies that every bundled common catalogue parses and passes semantic validation when loaded through the
-    /// shared resolver, so an authoring error in any catalogue fails the build.
+    /// Verifies that every bundled common catalog parses and passes semantic validation when loaded through the
+    /// shared resolver, so an authoring error in any catalog fails the build.
     /// </summary>
     [TestMethod]
     public void AllBundledCatalogues_LoadAndValidate()

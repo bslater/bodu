@@ -7,7 +7,7 @@
 namespace Bodu.IO.Hashing.Contracts;
 
 /// <summary>
-/// Reusable behavioural contract test base for a single-character check-digit algorithm (Luhn, Damm,
+/// Reusable behavioral contract test base for a single-character check-digit algorithm (Luhn, Damm,
 /// ABA, EAN, GTIN, ISBN, …). Concrete subclasses override <see cref="Compute" />,
 /// <see cref="IsValid" />, and <see cref="KnownAnswers" /> to plug their algorithm into the inherited
 /// tests.

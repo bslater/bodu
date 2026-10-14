@@ -9,7 +9,7 @@ namespace Bodu.Security.Cryptography;
 public partial class AsconCxof128Tests
 {
     /// <summary>
-    /// Verifies that <see cref="AsconXof{T}.Initialize" /> resets the customisation state so that
+    /// Verifies that <see cref="AsconXof{T}.Initialize" /> resets the customization state so that
     /// <see cref="AsconCxof128.Customize" /> can be called again on the same instance.
     /// </summary>
     [TestMethod]

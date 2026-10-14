@@ -103,9 +103,9 @@ public partial class StringExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that a single leading upper-case letter that precedes a capitalised word is split at the case boundary,
-    /// matching the tokeniser now shared with the casing converters. The former identifier tokeniser merged the leading
-    /// letter (for example <c>"IParser"</c> yielded <c>"Iparser"</c>); the shared tokeniser splits <c>["I", "Parser"]</c>.
+    /// Verifies that a single leading upper-case letter that precedes a capitalized word is split at the case boundary,
+    /// matching the tokenizer now shared with the casing converters. The former identifier tokenizer merged the leading
+    /// letter (for example <c>"IParser"</c> yielded <c>"Iparser"</c>); the shared tokenizer splits <c>["I", "Parser"]</c>.
     /// </summary>
     /// <param name="value">The input string.</param>
     /// <param name="identifierCase">The target identifier casing.</param>
@@ -119,9 +119,9 @@ public partial class StringExtensionsTests
 
     /// <summary>
     /// Verifies that non-separator punctuation that sits between letters is treated as a word boundary, matching the
-    /// tokeniser now shared with the casing converters. The former identifier tokeniser kept such punctuation inside a
+    /// tokenizer now shared with the casing converters. The former identifier tokenizer kept such punctuation inside a
     /// single word and stripped it during filtering (for example <c>"foo!bar"</c> yielded <c>"Foobar"</c>); the shared
-    /// tokeniser splits <c>["foo", "bar"]</c>.
+    /// tokenizer splits <c>["foo", "bar"]</c>.
     /// </summary>
     /// <param name="value">The input string.</param>
     /// <param name="identifierCase">The target identifier casing.</param>
@@ -135,8 +135,8 @@ public partial class StringExtensionsTests
 
     /// <summary>
     /// Verifies that <see cref="StringExtensions.ToIdentifier(string, IdentifierCase)" /> agrees with the corresponding
-    /// casing converter on inputs that contain no catalogue acronyms, confirming that both now detect word boundaries
-    /// through the single shared tokeniser.
+    /// casing converter on inputs that contain no catalog acronyms, confirming that both now detect word boundaries
+    /// through the single shared tokenizer.
     /// </summary>
     /// <param name="value">The input string.</param>
     [TestMethod]

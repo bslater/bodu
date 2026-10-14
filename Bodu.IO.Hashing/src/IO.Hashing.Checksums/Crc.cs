@@ -13,7 +13,7 @@ namespace Bodu.IO.Hashing.Checksums;
 
 /// <summary>
 /// General-purpose CRC (Cyclic Redundancy Check) engine driven by a <see cref="CrcStandard" /> parameter set - supports
-/// any catalogue width from 1 to 64 bits, snapshot-style intermediate digests, and resumption of a previous digest with
+/// any catalog width from 1 to 64 bits, snapshot-style intermediate digests, and resumption of a previous digest with
 /// additional input.
 /// </summary>
 /// <remarks>
@@ -23,10 +23,10 @@ namespace Bodu.IO.Hashing.Checksums;
 /// polynomial, initial value, input/output bit reflection, final XOR - and the same byte sequence can produce a
 /// different digest under <c>CRC-16/ARC</c>, <c>CRC-16/MODBUS</c>, or <c>CRC-32/ISO-HDLC</c>. Rather than ship a class
 /// per variant, <see cref="Crc" /> consumes the parameters from a <see cref="CrcStandard" /> and the same engine
-/// computes the right answer for every catalogue entry.
+/// computes the right answer for every catalog entry.
 /// </para>
 /// <para>
-/// <strong>Picking a standard.</strong> The full RevEng catalogue is exposed two ways:
+/// <strong>Picking a standard.</strong> The full RevEng catalog is exposed two ways:
 /// </para>
 /// <list type="bullet">
 /// <item>
@@ -39,13 +39,13 @@ namespace Bodu.IO.Hashing.Checksums;
 /// <item>
 /// <term><see cref="CrcStandard.Get(CrcStandards)" /> with a <see cref="CrcStandards" /> enum value</term>
 /// <description>
-/// For programmatic look-up across the full catalogue (e.g. when reading a configuration value).
+/// For programmatic look-up across the full catalog (e.g. when reading a configuration value).
 /// </description>
 /// </item>
 /// <item>
 /// <term><see cref="CrcStandard.FromName(string)" /></term>
 /// <description>
-/// Resolves the canonical RevEng names and the aliases the catalogue publishes - <c>"CRC-32/ISO-HDLC"</c>,
+/// Resolves the canonical RevEng names and the aliases the catalog publishes - <c>"CRC-32/ISO-HDLC"</c>,
 /// <c>"CRC-32"</c>, and <c>"PKZIP"</c> all return the same instance as <see cref="CrcStandard.CRC32_ISOHDLC" />.
 /// </description>
 /// </item>

@@ -13,7 +13,7 @@ namespace Bodu.Financial.ExchangeRates;
 /// <remarks>
 /// The Bank of England publishes each currency's daily spot rate as a separate IADB series - for example,
 /// <c>XUDLUSS</c> is the US dollar into Sterling rate. Each series value is the number of units of the quote currency
-/// per one pound, so the provider treats it as a <c>GBP</c>-based rate. The default catalogue is exposed through
+/// per one pound, so the provider treats it as a <c>GBP</c>-based rate. The default catalog is exposed through
 /// <see cref="Default" /> and can be overridden or extended through the provider options.
 /// </remarks>
 public sealed class BoeSeries
@@ -58,9 +58,9 @@ public sealed class BoeSeries
     public string Description { get; }
 
     /// <summary>
-    /// Gets the default catalogue of Bank of England daily spot series, each quoting a currency against the pound.
+    /// Gets the default catalog of Bank of England daily spot series, each quoting a currency against the pound.
     /// </summary>
-    /// <value>The ordered, immutable default series catalogue.</value>
+    /// <value>The ordered, immutable default series catalog.</value>
     public static IReadOnlyList<BoeSeries> Default { get; } =
     [
         new("USD", "XUDLUSS", "US dollar into Sterling"),

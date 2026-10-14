@@ -20,7 +20,7 @@ public static partial class DateTimeExtensions
     /// </returns>
     /// <remarks>
     /// This predicate is the complement of <see cref="IsInWorkingWeek(DateTime, DayOfWeekSet)" /> and considers only
-    /// the day-of-week dimension. It does not consult any holiday catalogue.
+    /// the day-of-week dimension. It does not consult any holiday catalog.
     /// </remarks>
     public static bool IsRestDay(this DateTime dateTime, DayOfWeekSet workingWeek) =>
         !workingWeek.Contains(dateTime.DayOfWeek);

@@ -39,7 +39,7 @@ public partial class PublicApiTests
     /// of <see cref="FinancialJsonSerializerOptionsExtensions" /> and
     /// <see cref="FinancialJsonServiceCollectionExtensions" />.
     /// </summary>
-    /// <returns>The entry-point rows, each labelled with the entry point's signature.</returns>
+    /// <returns>The entry-point rows, each labeled with the entry point's signature.</returns>
     public static IEnumerable<object[]> DynamicCodeEntryPointCases()
     {
         const BindingFlags PublicStatic = BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly;

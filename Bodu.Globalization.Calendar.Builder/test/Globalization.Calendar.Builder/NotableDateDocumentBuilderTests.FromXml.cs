@@ -149,7 +149,7 @@ public partial class NotableDateDocumentBuilderTests
 
     /// <summary>
     /// Verifies that a resolution policy whose <c>workingDays</c> is not a seven-character working-week pattern is
-    /// rejected with a <see cref="FormatException" />, as the loader rejects it, rather than dropped in favour of the
+    /// rejected with a <see cref="FormatException" />, as the loader rejects it, rather than dropped in favor of the
     /// default working week.
     /// </summary>
     /// <param name="workingDays">The malformed working-week pattern.</param>

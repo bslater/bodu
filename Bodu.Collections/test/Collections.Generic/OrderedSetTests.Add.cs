@@ -14,7 +14,7 @@ public partial class OrderedSetTests
     // --------------------------------------------------------
 
     /// <summary>
-    /// Verifies that a custom comparer is honoured when detecting duplicates on <see cref="OrderedSet{T}.Add(T)" />.
+    /// Verifies that a custom comparer is honored when detecting duplicates on <see cref="OrderedSet{T}.Add(T)" />.
     /// </summary>
     [TestMethod]
     public void Add_WhenCustomComparerProvided_ShouldDeduplicateAccordingly()

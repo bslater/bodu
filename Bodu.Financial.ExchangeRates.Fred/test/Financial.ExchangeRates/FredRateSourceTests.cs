@@ -79,7 +79,7 @@ public sealed class FredRateSourceTests
     }
 
     /// <summary>
-    /// Verifies that a pair added to the series map is honoured, confirming the map rather than a hard-coded table
+    /// Verifies that a pair added to the series map is honored, confirming the map rather than a hard-coded table
     /// drives series resolution.
     /// </summary>
     [TestMethod]

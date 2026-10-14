@@ -58,7 +58,7 @@ public partial class MoneyOfTCurrencyJsonConverterPolicyTests
     }
 
     /// <summary>
-    /// Verifies that the JPY compact write emits zero fractional digits, honouring the currency's minor-unit
+    /// Verifies that the JPY compact write emits zero fractional digits, honoring the currency's minor-unit
     /// precision.
     /// </summary>
     [TestMethod]

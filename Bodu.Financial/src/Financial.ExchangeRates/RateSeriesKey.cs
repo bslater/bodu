@@ -12,7 +12,7 @@ namespace Bodu.Financial.ExchangeRates;
 /// <remarks>
 /// <para>
 /// Provider equality is intentionally <see cref="StringComparer.Ordinal" /> - two keys whose providers differ only in
-/// letter case are considered distinct. Callers that need case-insensitive grouping should normalise the provider
+/// letter case are considered distinct. Callers that need case-insensitive grouping should normalize the provider
 /// identifier before constructing the key.
 /// </para>
 /// </remarks>

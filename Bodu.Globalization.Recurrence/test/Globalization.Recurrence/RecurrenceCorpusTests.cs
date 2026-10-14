@@ -31,7 +31,7 @@ namespace Bodu.Globalization.Recurrence;
 [TestClass]
 public sealed partial class RecurrenceCorpusTests
 {
-    /// <summary>The flags that place a corpus row outside the modelled surface.</summary>
+    /// <summary>The flags that place a corpus row outside the modeled surface.</summary>
     /// <remarks>
     /// A UTC-valued <c>UNTIL</c> against a zoned start is deliberately <b>not</b> excluded. This library compares
     /// the bound as a wall-clock instant rather than resolving the start's zone, and for every such row in both
@@ -43,7 +43,7 @@ public sealed partial class RecurrenceCorpusTests
         ["time-expansion", "elided", "exrule"];
 
     /// <summary>
-    /// The embedded corpus tables other than the cron library tables and fix catalogues, each with the directory under
+    /// The embedded corpus tables other than the cron library tables and fix catalogs, each with the directory under
     /// <c>corpus/recurrence</c> it copies.
     /// </summary>
     private static readonly (string Directory, string FileName)[] s_corpusSources =
@@ -251,7 +251,7 @@ public sealed partial class RecurrenceCorpusTests
     /// <summary>
     /// Returns every embedded corpus table, each with the directory under <c>corpus/recurrence</c> it copies.
     /// </summary>
-    /// <returns>The recurrence and Cronos tables, then the cron library tables, then the fix catalogues.</returns>
+    /// <returns>The recurrence and Cronos tables, then the cron library tables, then the fix catalogs.</returns>
     /// <remarks>
     /// The lists live in three partial files, and C# leaves the order in which static fields declared in different
     /// partial files are initialized unspecified, so they are combined here rather than in a field initializer.
@@ -406,7 +406,7 @@ public sealed partial class RecurrenceCorpusTests
     }
 
     /// <summary>
-    /// Determines whether a corpus row's flags place it inside the modelled surface.
+    /// Determines whether a corpus row's flags place it inside the modeled surface.
     /// </summary>
     /// <param name="flags">The space-separated flag list.</param>
     /// <returns><see langword="true" /> when no excluding flag is present; otherwise <see langword="false" />.</returns>
@@ -414,7 +414,7 @@ public sealed partial class RecurrenceCorpusTests
         ExcludingFlags(flags).Length == 0;
 
     /// <summary>
-    /// Returns the flags of a corpus row that place it outside the modelled surface.
+    /// Returns the flags of a corpus row that place it outside the modeled surface.
     /// </summary>
     /// <param name="flags">The space-separated flag list.</param>
     /// <returns>The excluding flags, space-separated, or an empty string when there are none.</returns>

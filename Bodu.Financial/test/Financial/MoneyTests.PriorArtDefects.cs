@@ -13,7 +13,7 @@ namespace Bodu.Financial;
 /// Cross-cutting defect-parity contract: each test reproduces the input of a documented defect, gotcha, or
 /// known-limitation in a reference money library (dinero.js, Joda-Money, or the <c>java.math.BigDecimal</c> engine
 /// Joda wraps) and asserts that <see cref="Money" /> produces the correct result instead. The upstream defect class is
-/// named in each test's summary so the guarded behaviour survives refactoring.
+/// named in each test's summary so the guarded behavior survives refactoring.
 /// </summary>
 public partial class MoneyTests
 {

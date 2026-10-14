@@ -82,7 +82,7 @@ public partial class NavigableDictionaryTests
     /// </summary>
     /// <param name="sut">The dictionary under test.</param>
     /// <param name="mirror">The mirrored <see cref="SortedDictionary{TKey, TValue}" />.</param>
-    /// <param name="op">The operation ordinal, for failure labelling.</param>
+    /// <param name="op">The operation ordinal, for failure labeling.</param>
     private static void AssertMatchesOracles(NavigableDictionary<int, int> sut, SortedDictionary<int, int> mirror, int op)
     {
         KeyValuePair<int, int>[] oracleEntries = mirror.ToArray();
@@ -130,7 +130,7 @@ public partial class NavigableDictionaryTests
     /// <param name="oracleEntries">The key-sorted oracle entries.</param>
     /// <param name="oracle">The sorted, distinct oracle key array.</param>
     /// <param name="probe">The probe key.</param>
-    /// <param name="op">The operation ordinal, for failure labelling.</param>
+    /// <param name="op">The operation ordinal, for failure labeling.</param>
     private static void AssertNavigationMatchesOracle(NavigableDictionary<int, int> sut, KeyValuePair<int, int>[] oracleEntries, int[] oracle, int probe, int op)
     {
         int position = Array.BinarySearch(oracle, probe);

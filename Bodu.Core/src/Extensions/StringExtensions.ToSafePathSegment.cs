@@ -10,7 +10,7 @@ namespace Bodu.Extensions;
 
 public static partial class StringExtensions
 {
-    /// <summary>The platform's invalid file-name characters plus both the forward slash and the backslash as a vectorised search set, computed once per process.</summary>
+    /// <summary>The platform's invalid file-name characters plus both the forward slash and the backslash as a vectorized search set, computed once per process.</summary>
     /// <remarks>
     /// Both slashes are listed explicitly rather than through <see cref="Path.DirectorySeparatorChar" /> and
     /// <see cref="Path.AltDirectorySeparatorChar" />, which are both <c>'/'</c> on Linux and macOS, so a segment
@@ -23,7 +23,7 @@ public static partial class StringExtensions
     /// Returns <paramref name="value" /> with every character that <see cref="Path.GetInvalidFileNameChars" /> reports
     /// as invalid for a single path segment, plus the forward slash and the backslash, replaced by an underscore.
     /// </summary>
-    /// <param name="value">The candidate path segment to sanitise.</param>
+    /// <param name="value">The candidate path segment to sanitize.</param>
     /// <returns>
     /// A string in which each invalid character, and every <c>'/'</c> and <c>'\'</c> on every platform, has been
     /// replaced by <c>'_'</c>; the original instance when nothing required replacement. Returns <c>"_"</c> when the

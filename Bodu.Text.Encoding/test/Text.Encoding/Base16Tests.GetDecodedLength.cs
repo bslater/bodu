@@ -95,7 +95,7 @@ public sealed partial class Base16Tests
 
     /// <summary>
     /// Regression: verifies that <see cref="Base16.TryGetDecodedLength(ReadOnlySpan{char}, out int, BaseFormatStyles)" />
-    /// returns <see langword="false" /> for inputs that contain non-hex characters - matching the behaviour of
+    /// returns <see langword="false" /> for inputs that contain non-hex characters - matching the behavior of
     /// <see cref="Base16.Decode(string, BaseFormatStyles)" /> rather than silently reporting a length the decoder
     /// would reject.
     /// </summary>

@@ -123,14 +123,14 @@ public sealed class ImfRateProviderOptions
     /// </summary>
     /// <value>The currency-name map; seeded in the constructor with the currencies the report commonly quotes.</value>
     /// <remarks>
-    /// A label absent from this map is resolved directly against the ISO 4217 catalogue, and a label that resolves
+    /// A label absent from this map is resolved directly against the ISO 4217 catalog, and a label that resolves
     /// neither way is skipped. Extend the map to add labels the IMF publishes that are not seeded here.
     /// </remarks>
     public IDictionary<string, string> CurrencyNames { get; set; }
 
     /// <summary>
     /// Attempts to resolve an IMF currency label to its ISO 4217 code, consulting <see cref="CurrencyNames" /> first
-    /// and then the ISO 4217 catalogue.
+    /// and then the ISO 4217 catalog.
     /// </summary>
     /// <param name="label">The footnote-stripped, trimmed currency label.</param>
     /// <param name="code">

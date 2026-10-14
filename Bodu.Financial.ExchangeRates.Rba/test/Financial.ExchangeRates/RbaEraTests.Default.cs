@@ -9,7 +9,7 @@ namespace Bodu.Financial.ExchangeRates;
 public partial class RbaEraTests
 {
     /// <summary>
-    /// Verifies that the default catalogue contains the eleven published era files.
+    /// Verifies that the default catalog contains the eleven published era files.
     /// </summary>
     [TestMethod]
     public void Default_ShouldContainElevenEras()

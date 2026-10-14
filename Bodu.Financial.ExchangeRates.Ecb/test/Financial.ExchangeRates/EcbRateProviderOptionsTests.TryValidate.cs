@@ -53,7 +53,7 @@ public partial class EcbRateProviderOptionsTests
     }
 
     /// <summary>
-    /// Verifies that an empty feed catalogue is rejected.
+    /// Verifies that an empty feed catalog is rejected.
     /// </summary>
     [TestMethod]
     public void TryValidate_WhenFeedsEmpty_ShouldReturnFalse()

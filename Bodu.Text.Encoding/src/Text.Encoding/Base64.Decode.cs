@@ -72,7 +72,7 @@ public static partial class Base64
     }
 
     /// <summary>
-    /// Decodes <paramref name="chars" /> using the supplied <paramref name="scratch" /> buffer for normalisation.
+    /// Decodes <paramref name="chars" /> using the supplied <paramref name="scratch" /> buffer for normalization.
     /// </summary>
     /// <param name="chars">The encoded character span.</param>
     /// <param name="scratch">
@@ -111,10 +111,10 @@ public static partial class Base64
     }
 
     /// <summary>
-    /// Returns the exact number of decoded bytes that a normalised, padded Base64 character span will produce - the
-    /// normalised length divided by four times three, less one byte per trailing <c>=</c> padding character.
+    /// Returns the exact number of decoded bytes that a normalized, padded Base64 character span will produce - the
+    /// normalized length divided by four times three, less one byte per trailing <c>=</c> padding character.
     /// </summary>
-    /// <param name="normalized">A normalised Base64 character span whose length is a multiple of four.</param>
+    /// <param name="normalized">A normalized Base64 character span whose length is a multiple of four.</param>
     /// <returns>The exact decoded byte count, never negative.</returns>
     private static int GetExactDecodedLength(ReadOnlySpan<char> normalized)
     {
@@ -212,7 +212,7 @@ public static partial class Base64
     /// <paramref name="decodedBytes" />. Re-encodes the bytes using the standard alphabet and compares the result.
     /// </summary>
     /// <param name="decodedBytes">The bytes that <paramref name="normalisedInput" /> decoded to.</param>
-    /// <param name="normalisedInput">The post-normalisation Base64 input (standard alphabet, fully padded).</param>
+    /// <param name="normalisedInput">The post-normalization Base64 input (standard alphabet, fully padded).</param>
     /// <returns>
     /// <see langword="true" /> when the input matches the canonical re-encoding; <see langword="false" /> when the
     /// input has non-zero unused bits in its final partial group.
@@ -234,10 +234,10 @@ public static partial class Base64
     /// whitespace stripping, and re-padding to align the resulting length to a multiple of four characters.
     /// </summary>
     /// <param name="source">The input characters.</param>
-    /// <param name="scratch">The scratch buffer that receives the normalised characters.</param>
+    /// <param name="scratch">The scratch buffer that receives the normalized characters.</param>
     /// <param name="variant">The variant in use.</param>
     /// <param name="style">The parsing styles.</param>
-    /// <returns>The length of the normalised buffer, or <c>-1</c> if the input contains an illegal character.</returns>
+    /// <returns>The length of the normalized buffer, or <c>-1</c> if the input contains an illegal character.</returns>
     private static int NormalizeForDecode(ReadOnlySpan<char> source, Span<char> scratch, Base64Variant variant, BaseFormatStyles style)
     {
         bool ignoreWhitespace = style.HasFlag(BaseFormatStyles.IgnoreWhitespace) || variant == Base64Variant.Mime;

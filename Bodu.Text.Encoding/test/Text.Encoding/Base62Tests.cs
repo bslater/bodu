@@ -7,7 +7,7 @@
 namespace Bodu.Text.Encoding;
 
 /// <summary>
-/// Behavioural tests for <see cref="Base62" /> (GMP-style <c>0-9 A-Z a-z</c> alphabet). Partial files split coverage by
+/// Behavioral tests for <see cref="Base62" /> (GMP-style <c>0-9 A-Z a-z</c> alphabet). Partial files split coverage by
 /// member or subject contract per the repository test convention. The cross-encoding round-trip and known-answer
 /// surface is exercised by <see cref="Bodu.Text.Encoding.Contracts.Base62ContractTests" />.
 /// </summary>

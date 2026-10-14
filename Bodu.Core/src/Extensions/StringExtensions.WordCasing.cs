@@ -12,14 +12,14 @@ namespace Bodu.Extensions;
 public static partial class StringExtensions
 {
     /// <summary>
-    /// Capitalises a single word: the first letter is upper-cased, the first letter after any apostrophe is
+    /// Capitalizes a single word: the first letter is upper-cased, the first letter after any apostrophe is
     /// upper-cased, and every other letter is lower-cased.
     /// </summary>
-    /// <param name="word">The word to capitalise. Must not be empty.</param>
+    /// <param name="word">The word to capitalize. Must not be empty.</param>
     /// <param name="culture">The culture whose casing rules are applied.</param>
-    /// <returns>The capitalised word.</returns>
+    /// <returns>The capitalized word.</returns>
     /// <remarks>
-    /// Capitalising after an apostrophe handles personal names such as <c>o'connor</c> becoming <c>O'Connor</c>.
+    /// Capitalizing after an apostrophe handles personal names such as <c>o'connor</c> becoming <c>O'Connor</c>.
     /// </remarks>
     private static string CapitalizeWord(string word, CultureInfo culture)
     {

@@ -7,7 +7,7 @@
 namespace Bodu.Financial.ExchangeRates;
 
 /// <summary>
-/// Verifies the validation behaviour of <see cref="XeRateProviderOptions" />.
+/// Verifies the validation behavior of <see cref="XeRateProviderOptions" />.
 /// </summary>
 [TestClass]
 public partial class XeRateProviderOptionsTests

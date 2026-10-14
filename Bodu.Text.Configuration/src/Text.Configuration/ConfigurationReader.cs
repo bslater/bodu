@@ -229,7 +229,7 @@ internal sealed partial class ConfigurationReader
     }
 
     /// <summary>
-    /// Resolves the section that a header names, honoring the configured duplicate-section behaviour.
+    /// Resolves the section that a header names, honoring the configured duplicate-section behavior.
     /// </summary>
     /// <param name="document">The document being populated.</param>
     /// <param name="name">The section name parsed from the header.</param>
@@ -359,7 +359,7 @@ internal sealed partial class ConfigurationReader
 
     /// <summary>
     /// Appends a property entry to <paramref name="section" />, validating the key and honoring the configured
-    /// duplicate-key behaviour.
+    /// duplicate-key behavior.
     /// </summary>
     /// <param name="section">The section the entry is added to.</param>
     /// <param name="rawKey">The raw property key.</param>

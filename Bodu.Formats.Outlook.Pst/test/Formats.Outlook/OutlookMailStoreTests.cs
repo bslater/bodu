@@ -38,7 +38,7 @@ public partial class OutlookMailStoreTests
     /// Builds a store from a generator pipeline and inverts the heap signature of one of its nodes, so that reading that
     /// node's heap fails in the container at every validation level.
     /// </summary>
-    /// <param name="input">The generator pipeline, <c>gen:</c> included, in the release-note catalogue's notation.</param>
+    /// <param name="input">The generator pipeline, <c>gen:</c> included, in the release-note catalog's notation.</param>
     /// <param name="nodePath">
     /// The node whose heap is corrupted: a node identifier, followed by the identifiers of the subnodes to descend
     /// through.

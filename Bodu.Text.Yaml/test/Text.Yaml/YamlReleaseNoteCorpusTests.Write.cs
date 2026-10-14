@@ -12,10 +12,10 @@ namespace Bodu.Text.Yaml;
 public sealed partial class YamlReleaseNoteCorpusTests
 {
     /// <summary>
-    /// Verifies that writing the JSON value each catalogued write scenario holds through <c>Utf8YamlWriter</c> emits
+    /// Verifies that writing the JSON value each cataloged write scenario holds through <c>Utf8YamlWriter</c> emits
     /// exactly the YAML text the row expects.
     /// </summary>
-    /// <param name="fix">The catalogue row.</param>
+    /// <param name="fix">The catalog row.</param>
     [TestMethod]
     [TestCategory("Regression")]
     [DynamicData(

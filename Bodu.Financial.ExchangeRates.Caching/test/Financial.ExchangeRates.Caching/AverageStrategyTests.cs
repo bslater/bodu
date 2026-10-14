@@ -9,7 +9,7 @@ using Bodu.Financial.Currencies;
 namespace Bodu.Financial.ExchangeRates.Caching;
 
 /// <summary>
-/// Verifies the mean-of-contributors behaviour of <see cref="AverageStrategy" />.
+/// Verifies the mean-of-contributors behavior of <see cref="AverageStrategy" />.
 /// </summary>
 [TestClass]
 public sealed partial class AverageStrategyTests

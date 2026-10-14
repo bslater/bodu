@@ -12,7 +12,7 @@ public static partial class StringExtensions
     /// Returns <paramref name="value" /> wrapped in round-bracket characters (<c>(…)</c>).
     /// </summary>
     /// <param name="value">The string to wrap. Must not be <see langword="null" />.</param>
-    /// <returns>The parenthesised string.</returns>
+    /// <returns>The parenthesized string.</returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="value" /> is <see langword="null" />.
     /// </exception>

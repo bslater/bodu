@@ -20,7 +20,7 @@ public static partial class StringExtensions
     /// be <see langword="null" />.
     /// </param>
     /// <returns>
-    /// A new string in which every recognised line ending in <paramref name="value" /> has been replaced by
+    /// A new string in which every recognized line ending in <paramref name="value" /> has been replaced by
     /// <paramref name="newline" />. When <paramref name="value" /> contains no line endings, the original instance is
     /// returned unchanged.
     /// </returns>

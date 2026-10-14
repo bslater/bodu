@@ -77,7 +77,7 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
     /// <remarks>
     /// This method drives variant-specific tests. Each variant may represent a change in output size, internal round configuration, or
     /// other block cipher-specific mode flags. The default implementation returns every member of <typeparamref name="TVariant" /> via
-    /// <see cref="Enum.GetValues(Type)" />, which is the right behaviour for every cipher family in the suite - override only when a
+    /// <see cref="Enum.GetValues(Type)" />, which is the right behavior for every cipher family in the suite - override only when a
     /// cipher needs to deliberately exclude an enumeration member from its test matrix.
     /// </remarks>
     public virtual IEnumerable<TVariant> GetBlockCipherVariants() =>
@@ -167,7 +167,7 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
     /// <summary>
     /// Creates a new instance of the block cipher engine under test using the default variant.
     /// </summary>
-    /// <returns>A fully initialised instance of <typeparamref name="TCipher" /> configured with <see cref="DefaultVariant" />.</returns>
+    /// <returns>A fully initialized instance of <typeparamref name="TCipher" /> configured with <see cref="DefaultVariant" />.</returns>
     protected virtual TCipher CreateBlockCipher() =>
         CreateBlockCipher(DefaultVariant);
 
@@ -233,7 +233,7 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
     /// applying its <see cref="BlockCipherKnownAnswer.Key" /> and (where applicable) <see cref="BlockCipherKnownAnswer.Tweak" />.</param>
     /// <returns>A lazily-evaluated sequence of <see cref="KnownAnswerTest" /> rows wrapping each supplied vector.</returns>
     /// <remarks>
-    /// Acts as the bridge between the externalised KAT data files (modelled on the Skein hash refactor) and the
+    /// Acts as the bridge between the externalized KAT data files (modeled on the Skein hash refactor) and the
     /// existing <c>EncryptTestData</c> / <c>DecryptTestData</c> pipelines. Each emitted row carries a per-vector
     /// <see cref="KnownAnswerTest.CipherFactory" /> that defers cipher construction until the test executes.
     /// </remarks>

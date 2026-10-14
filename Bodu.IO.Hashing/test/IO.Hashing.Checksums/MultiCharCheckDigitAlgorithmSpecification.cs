@@ -10,7 +10,7 @@ namespace Bodu.IO.Hashing.Checksums;
 
 /// <summary>
 /// Describes the expected observable properties of a <see cref="MultiCharCheckDigitAlgorithm" /> implementation for use
-/// in behavioural and known-answer tests.
+/// in behavioral and known-answer tests.
 /// </summary>
 /// <remarks>
 /// Instances are supplied by derived test classes via

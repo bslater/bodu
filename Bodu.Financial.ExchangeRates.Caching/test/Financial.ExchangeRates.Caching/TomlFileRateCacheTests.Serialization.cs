@@ -214,7 +214,7 @@ public sealed partial class TomlFileRateCacheTests
     /// <summary>
     /// Verifies that a legacy file written before the upstream fetch instant was tracked - one whose <c>[[Entries]]</c>
     /// table has no <c>ObservedAtUtc</c> key - still deserializes its rows with a <see langword="null" />
-    /// <see cref="CachedRate.ObservedAtUtc" /> and no error, mirroring the missing-<c>[[Coverage]]</c> behaviour.
+    /// <see cref="CachedRate.ObservedAtUtc" /> and no error, mirroring the missing-<c>[[Coverage]]</c> behavior.
     /// </summary>
     [TestMethod]
     public void GetRates_WhenFileHasNoObservedAtUtcKey_ShouldReadEntriesWithNullObservedAtUtc()

@@ -40,7 +40,7 @@ public partial class MoneyTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="Money.Rescale(int, MidpointRounding)" /> honours an explicit midpoint rule when
+    /// Verifies that <see cref="Money.Rescale(int, MidpointRounding)" /> honors an explicit midpoint rule when
     /// rounding to the coarser scale, diverging from banker's rounding on a midpoint digit.
     /// </summary>
     [TestMethod]
@@ -66,7 +66,7 @@ public partial class MoneyTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="Money.Rescale(int, MidpointRounding)" /> on a default-initialised, currency-less value
+    /// Verifies that <see cref="Money.Rescale(int, MidpointRounding)" /> on a default-initialized, currency-less value
     /// throws <see cref="InvalidOperationException" />.
     /// </summary>
     [TestMethod]

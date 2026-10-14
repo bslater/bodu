@@ -18,7 +18,7 @@ namespace Bodu.Text.Toml;
 /// </summary>
 /// <remarks>
 /// <para>
-/// The corpus lives under <c>TomlTestCorpus/</c> (copied to the test output) together with its upstream MIT licence.
+/// The corpus lives under <c>TomlTestCorpus/</c> (copied to the test output) together with its upstream MIT license.
 /// The per-version case lists (<c>files-toml-1.0.0</c> / <c>files-toml-1.1.0</c>) published by the corpus select which
 /// cases apply to each specification profile, so v1.1.0-only grammar appears as valid in the v1.1 run and as invalid
 /// in the v1.0 run.

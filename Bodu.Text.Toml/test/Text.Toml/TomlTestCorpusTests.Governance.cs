@@ -164,7 +164,7 @@ public sealed partial class TomlTestCorpusTests
 
     /// <summary>
     /// Gets the corpus subdirectories that hold case files, used to scope the completeness sweep to vendored cases and
-    /// exclude top-level files such as the licence and provenance.
+    /// exclude top-level files such as the license and provenance.
     /// </summary>
     /// <value>The case subdirectory names.</value>
     private static string[] CaseDirectoryNames =>

@@ -12,7 +12,7 @@ namespace Bodu.Security.Cryptography.Infrastructure;
 /// Parses Skein 1.3 <c>skein_golden_kat</c> reference files into hash known-answer records. Each record is introduced
 /// by a header such as <c>:Skein-256:   256-bit hash, msgLen =   256 bits</c>, followed by a <c>Message data:</c> hex
 /// block and a <c>Result:</c> hex block, and terminated by a dashed separator. Only plain hash records (no key / MAC /
-/// tree) are recognised; other record kinds are skipped.
+/// tree) are recognized; other record kinds are skipped.
 /// </summary>
 public static partial class SkeinGoldenKatReader
 {

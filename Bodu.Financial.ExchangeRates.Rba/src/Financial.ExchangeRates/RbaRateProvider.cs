@@ -181,7 +181,7 @@ public sealed class RbaRateProvider
     /// The options' <see cref="WebRateProviderOptions.HistoryAvailability" /> when it is set to anything other than
     /// <see cref="RateHistoryAvailability.Unbounded" />, its default. Otherwise the depth is computed from the
     /// configured <see cref="RbaRateProviderOptions.Eras" />: the earliest era start bounds how far back the historical
-    /// workbook catalogue reaches - 1 January 1983 for the default <see cref="RbaEraWorkbook.Default" /> catalogue.
+    /// workbook catalog reaches - 1 January 1983 for the default <see cref="RbaEraWorkbook.Default" /> catalog.
     /// </remarks>
     public override RateHistoryAvailability HistoryAvailability
     {
@@ -207,7 +207,7 @@ public sealed class RbaRateProvider
     protected override TimeSpan DefaultLookback => _options.DefaultLookback;
 
     /// <summary>
-    /// Downloads and loads every era in the configured catalogue.
+    /// Downloads and loads every era in the configured catalog.
     /// </summary>
     /// <param name="cancellationToken">A token to observe while awaiting the loads.</param>
     /// <returns>A task that completes when every era has been loaded.</returns>

@@ -74,7 +74,7 @@ public partial class MerkleTreeTests
     }
 
     /// <summary>
-    /// Verifies that a computation cancelled mid-stream disposes every algorithm it created, on both instances.
+    /// Verifies that a computation canceled mid-stream disposes every algorithm it created, on both instances.
     /// </summary>
     /// <param name="maxDegreeOfParallelism">The degree of parallelism.</param>
     /// <returns>A task representing the asynchronous test.</returns>

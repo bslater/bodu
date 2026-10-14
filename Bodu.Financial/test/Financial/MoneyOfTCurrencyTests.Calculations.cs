@@ -78,7 +78,7 @@ public partial class MoneyOfTCurrencyTests
 
     /// <summary>
     /// Verifies banker's rounding in both directions: midpoint values round down to even and up to even depending
-    /// on which neighbour is even.
+    /// on which neighbor is even.
     /// </summary>
     [TestMethod]
     [DataRow(1.225, 1.22)]   // .225 midpoint → down to even (2)
@@ -116,7 +116,7 @@ public partial class MoneyOfTCurrencyTests
     // ---------------------------------------------------------------------------------------------------------------
 
     /// <summary>
-    /// Verifies that an additive chain of itemised same-currency amounts produces the expected ledger total.
+    /// Verifies that an additive chain of itemized same-currency amounts produces the expected ledger total.
     /// </summary>
     [TestMethod]
     [DynamicData(nameof(InvoiceTotalCases))]

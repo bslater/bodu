@@ -16,7 +16,7 @@ public sealed class GuidEncodingTests
 {
 
     /// <summary>
-    /// A fixed, recognisable test <see cref="Guid" />.
+    /// A fixed, recognizable test <see cref="Guid" />.
     /// </summary>
     private static readonly Guid TestGuid = new("01020304-0506-0708-090A-0B0C0D0E0F10");
 

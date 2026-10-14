@@ -113,7 +113,7 @@ public abstract class BufferedBlockHashAlgorithm
     /// <value>A string identifying the algorithm and its current configuration.</value>
     /// <remarks>
     /// Derived classes implement this property to expose a stable, consumer-facing identifier suitable for logging,
-    /// telemetry, registry keys, or interop with hash-name catalogues. Implementations should be pure and
+    /// telemetry, registry keys, or interop with hash-name catalogs. Implementations should be pure and
     /// side-effect-free - the value may be queried before any input has been consumed. The library's implementations
     /// throw <see cref="ObjectDisposedException" /> once the instance has been disposed.
     /// </remarks>

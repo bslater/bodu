@@ -13,7 +13,7 @@ namespace Bodu.Text.Encoding;
 /// <remarks>
 /// <para>
 /// These options can be combined to control character casing, spacing, prefix inclusion, and line formatting. The
-/// effect of each option may vary by encoding; not every encoding honours every flag. Refer to the documentation of the
+/// effect of each option may vary by encoding; not every encoding honors every flag. Refer to the documentation of the
 /// specific encoder for the supported subset.
 /// </para>
 /// <para>

@@ -10,7 +10,7 @@ public sealed partial class ScopedRemovalTests
 {
     /// <summary>
     /// Verifies that a PatchRule override excluding 2025 removes the 1 January occurrence for that year alone while
-    /// leaving neighbouring years intact.
+    /// leaving neighboring years intact.
     /// </summary>
     /// <param name="year">The civil year under test.</param>
     /// <param name="expectedCount">The expected number of emitted occurrences on 1 January of that year.</param>

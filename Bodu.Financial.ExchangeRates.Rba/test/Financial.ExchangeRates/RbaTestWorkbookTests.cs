@@ -21,14 +21,14 @@ public partial class RbaTestWorkbookTests
     private const int DataSubstream = 1;
 
     /// <summary>
-    /// Gets the label of each era of the default catalogue, as dynamic-data rows.
+    /// Gets the label of each era of the default catalog, as dynamic-data rows.
     /// </summary>
     /// <value>One object array holding an era label per era.</value>
     public static IEnumerable<object[]> Eras =>
         RbaEraWorkbook.Default.Select(static era => new object[] { era.Label });
 
     /// <summary>
-    /// Returns the era of the default catalogue that has a label.
+    /// Returns the era of the default catalog that has a label.
     /// </summary>
     /// <param name="label">The era label.</param>
     /// <returns>The era.</returns>

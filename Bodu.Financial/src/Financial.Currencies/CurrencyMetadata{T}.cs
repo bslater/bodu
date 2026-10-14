@@ -16,13 +16,13 @@ namespace Bodu.Financial.Currencies;
 /// <remarks>
 /// Every <see cref="Money{TCurrency}" /> code path that needs <see cref="ICurrency.MinorUnits" />,
 /// <see cref="ICurrency.IsoCode" />, or <see cref="ICurrency.CashRoundingIncrement" /> reads it from
-/// <see cref="Value" /> rather than the raw interface members. That keeps validation centralised - a single
+/// <see cref="Value" /> rather than the raw interface members. That keeps validation centralized - a single
 /// failing-fast boundary - and prevents the type from half-existing with broken metadata.
 /// </remarks>
 internal static class CurrencyMetadata<TCurrency>
     where TCurrency : ICurrency
 {
-    /// <summary>Lazy-initialised descriptor. Using <see cref="Lazy{T}" /> with the default <see cref="System.Threading.LazyThreadSafetyMode.ExecutionAndPublication" /> mode means a validation failure surfaces as the original <see cref="InvalidOperationException" /> rather than being wrapped in a <see cref="TypeInitializationException" /> by the runtime's static-field initialiser, and the cached exception is rethrown directly on every subsequent access.</summary>
+    /// <summary>Lazy-initialized descriptor. Using <see cref="Lazy{T}" /> with the default <see cref="System.Threading.LazyThreadSafetyMode.ExecutionAndPublication" /> mode means a validation failure surfaces as the original <see cref="InvalidOperationException" /> rather than being wrapped in a <see cref="TypeInitializationException" /> by the runtime's static-field initializer, and the cached exception is rethrown directly on every subsequent access.</summary>
     private static readonly Lazy<CurrencyMetadataDescriptor> s_value = new(Validate);
 
     /// <summary>

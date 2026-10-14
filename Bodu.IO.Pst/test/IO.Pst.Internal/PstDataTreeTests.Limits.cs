@@ -57,7 +57,7 @@ public partial class PstDataTreeTests
     }
 
     /// <summary>
-    /// Verifies that a caller-supplied materialization limit is honoured: a node above it is refused, one below it
+    /// Verifies that a caller-supplied materialization limit is honored: a node above it is refused, one below it
     /// reads normally.
     /// </summary>
     [TestMethod]

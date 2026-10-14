@@ -38,7 +38,7 @@ public partial class StringExtensionsTests
 
     /// <summary>
     /// Verifies that <see cref="StringExtensions.IsOneOf(string, IEqualityComparer{string}, string[])" />
-    /// honours a case-insensitive comparer when supplied.
+    /// honors a case-insensitive comparer when supplied.
     /// </summary>
     [TestMethod]
     public void IsOneOf_WhenCaseInsensitiveComparerSupplied_ShouldIgnoreCase() => Assert.IsTrue("BETA".IsOneOf(StringComparer.OrdinalIgnoreCase, "alpha", "beta", "gamma"));

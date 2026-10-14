@@ -13,7 +13,7 @@ namespace Bodu.Extensions.Configuration.Text;
 /// <summary>
 /// Pins how the bridge handles duplicate keys and duplicate sections under the Bodu default profile and
 /// under the strict profile. The Bodu provider defaults to last-wins (consistent with EditorConfig-style
-/// layering) but callers can opt into fail-fast behaviour through <see cref="ConfigurationParseOptions" />.
+/// layering) but callers can opt into fail-fast behavior through <see cref="ConfigurationParseOptions" />.
 /// </summary>
 [TestClass]
 public class TextConfigurationDuplicateKeyTests

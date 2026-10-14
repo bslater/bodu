@@ -171,7 +171,7 @@ public class AsconStateTests
     /// <remarks>
     /// This test exercises the full permutation path indirectly by confirming that the shared
     /// <see cref="AsconState" /> permutation, when used via <see cref="AsconHash256" />, produces
-    /// the correct NIST-standardised output. A failure here indicates a regression in the
+    /// the correct NIST-standardized output. A failure here indicates a regression in the
     /// permutation, IV loading, or rate-absorption helpers.
     /// </remarks>
     [TestMethod]

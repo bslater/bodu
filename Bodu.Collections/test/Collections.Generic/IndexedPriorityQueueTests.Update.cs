@@ -36,7 +36,7 @@ public partial class IndexedPriorityQueueTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="IndexedPriorityQueue{TElement, TPriority}.TryUpdate" /> returns <see langword="true" /> and re-prioritises an existing element.
+    /// Verifies that <see cref="IndexedPriorityQueue{TElement, TPriority}.TryUpdate" /> returns <see langword="true" /> and re-prioritizes an existing element.
     /// </summary>
     [TestMethod]
     public void TryUpdate_WhenElementExists_ShouldReturnTrueAndUpdate()
@@ -76,7 +76,7 @@ public partial class IndexedPriorityQueueTests
 
     /// <summary>
     /// Verifies that <see cref="IndexedPriorityQueue{TElement, TPriority}.Update" /> respects a reversed
-    /// priority comparer so the queue continues to behave as a max-heap after re-prioritisation.
+    /// priority comparer so the queue continues to behave as a max-heap after re-prioritization.
     /// </summary>
     [TestMethod]
     public void Update_WhenComparerIsReversed_ShouldPreserveMaxHeapBehaviour()

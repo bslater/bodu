@@ -18,7 +18,7 @@ namespace Bodu.Financial.ExchangeRates.Testing;
 /// The contract is asserted against whatever data the subclass seeds, not a dataset this base imposes, so it applies
 /// equally to providers with a fixed base currency (for example RBA quoting AUD) and to providers that serve arbitrary
 /// pairs. Each subclass exposes the pair it is seeded for, a date that resolves, a date that does not, and the range to
-/// exercise; behaviour that not every provider offers (inverse fallback, same-currency identity) is gated behind a
+/// exercise; behavior that not every provider offers (inverse fallback, same-currency identity) is gated behind a
 /// capability flag.
 /// </para>
 /// <para>

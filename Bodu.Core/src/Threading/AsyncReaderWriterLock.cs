@@ -85,7 +85,7 @@ public sealed partial class AsyncReaderWriterLock
     /// <summary>The writers waiting to acquire exclusive access, granted in first-in, first-out order.</summary>
     private readonly CancellableWaiterQueue<Releaser> _waitingWriters;
 
-    /// <summary>The callback a cancelled writer runs under the gate, created once so a cancellable write wait does not allocate a delegate for it.</summary>
+    /// <summary>The callback a canceled writer runs under the gate, created once so a cancelable write wait does not allocate a delegate for it.</summary>
     private readonly Action _onWriterCanceledUnderLock;
 
     /// <summary>The number of readers currently holding shared access.</summary>

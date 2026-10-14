@@ -41,7 +41,7 @@ public partial class HyperLogLogTests
     }
 
     /// <summary>
-    /// Verifies loose growth behaviour on a coarse sketch: at precision 4 (16 registers) the estimate still increases
+    /// Verifies loose growth behavior on a coarse sketch: at precision 4 (16 registers) the estimate still increases
     /// through the harmonic-mean path as the distinct count grows by orders of magnitude.
     /// </summary>
     [TestMethod]

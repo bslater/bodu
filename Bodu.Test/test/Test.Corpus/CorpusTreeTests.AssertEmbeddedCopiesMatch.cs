@@ -9,7 +9,7 @@ namespace Bodu.Test.Corpus;
 public sealed partial class CorpusTreeTests
 {
     /// <summary>
-    /// Verifies that the check passes when the corpus holds exactly the embedded catalogues, byte for byte.
+    /// Verifies that the check passes when the corpus holds exactly the embedded catalogs, byte for byte.
     /// </summary>
     [TestMethod]
     public void AssertEmbeddedCopiesMatch_WhenCorpusHoldsTheSameFiles_ShouldPass()
@@ -54,7 +54,7 @@ public sealed partial class CorpusTreeTests
     }
 
     /// <summary>
-    /// Verifies that the check fails when the corpus holds a catalogue the assembly does not embed.
+    /// Verifies that the check fails when the corpus holds a catalog the assembly does not embed.
     /// </summary>
     [TestMethod]
     public void AssertEmbeddedCopiesMatch_WhenCorpusHoldsAFileNotEmbedded_ShouldFail()
@@ -78,7 +78,7 @@ public sealed partial class CorpusTreeTests
     }
 
     /// <summary>
-    /// Verifies that the check fails when the assembly embeds a catalogue the corpus does not hold.
+    /// Verifies that the check fails when the assembly embeds a catalog the corpus does not hold.
     /// </summary>
     [TestMethod]
     public void AssertEmbeddedCopiesMatch_WhenAnEmbeddedCopyHasNoSource_ShouldFail()

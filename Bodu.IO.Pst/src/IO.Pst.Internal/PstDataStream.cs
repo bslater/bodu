@@ -54,7 +54,7 @@ internal sealed class PstDataStream : Stream
     /// <inheritdoc />
     /// <remarks>
     /// Completes synchronously: the leaf blocks come from the session's decoded-block cache or from an already-open
-    /// source stream, so there is no asynchronous work to await. A cancelled token cancels before any byte is read.
+    /// source stream, so there is no asynchronous work to await. A canceled token cancels before any byte is read.
     /// </remarks>
     public override Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
     {

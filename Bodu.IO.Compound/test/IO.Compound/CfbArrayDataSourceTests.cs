@@ -97,8 +97,8 @@ public class CfbArrayDataSourceTests
     }
 
     /// <summary>
-    /// Verifies that a pre-canceled token cancels the read rather than copying, so a cancelled streaming read and a
-    /// cancelled in-memory read behave alike from the caller's side.
+    /// Verifies that a pre-canceled token cancels the read rather than copying, so a canceled streaming read and a
+    /// canceled in-memory read behave alike from the caller's side.
     /// </summary>
     /// <returns>A task that completes when the assertion has run.</returns>
     [TestMethod]

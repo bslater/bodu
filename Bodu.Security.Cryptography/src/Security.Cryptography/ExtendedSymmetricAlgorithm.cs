@@ -10,7 +10,7 @@ namespace Bodu.Security.Cryptography;
 
 /// <summary>
 /// Serves as the base class for the library's <see cref="SymmetricAlgorithm" /> implementations that support the
-/// extended cipher-mode and padding catalogues (<see cref="CipherModeKind" /> / <see cref="PaddingModeKind" />) beyond
+/// extended cipher-mode and padding catalogs (<see cref="CipherModeKind" /> / <see cref="PaddingModeKind" />) beyond
 /// the framework <see cref="CipherMode" /> / <see cref="PaddingMode" /> enumerations.
 /// </summary>
 /// <remarks>
@@ -18,14 +18,14 @@ namespace Bodu.Security.Cryptography;
 /// The framework <see cref="SymmetricAlgorithm.Mode" /> and <see cref="SymmetricAlgorithm.Padding" /> properties can
 /// only express the members of <see cref="CipherMode" /> and <see cref="PaddingMode" />. This base adds the
 /// <see cref="BlockMode" /> and <see cref="BlockPadding" /> counterparts over the extended
-/// <see cref="CipherModeKind" /> / <see cref="PaddingModeKind" /> catalogues (which include, for example,
+/// <see cref="CipherModeKind" /> / <see cref="PaddingModeKind" /> catalogs (which include, for example,
 /// <see cref="CipherModeKind.CTR" /> and <see cref="PaddingModeKind.ISO7816_4" />) and keeps each pair bidirectionally
 /// synchronized: assigning either member of a pair updates the other whenever an equivalent value exists, so consumers
 /// inspecting the framework property always observe a consistent configuration.
 /// </para>
 /// <para>
 /// Transform creation in derived classes reads <see cref="BlockMode" /> and <see cref="BlockPadding" />, so both the
-/// framework properties and the extended properties are honoured regardless of which surface the caller configures.
+/// framework properties and the extended properties are honored regardless of which surface the caller configures.
 /// </para>
 /// </remarks>
 /// <seealso cref="CipherModeKind"/> <seealso cref="PaddingModeKind"/> <seealso cref="BlockCipherTransform"/>
@@ -124,7 +124,7 @@ public abstract class ExtendedSymmetricAlgorithm
     /// <inheritdoc />
     /// <remarks>
     /// Also synchronizes <see cref="BlockMode" /> so that encryptor and decryptor creation, which read
-    /// <see cref="BlockMode" />, honour the assigned value. The inherited <see cref="SymmetricAlgorithm.Mode" /> setter
+    /// <see cref="BlockMode" />, honor the assigned value. The inherited <see cref="SymmetricAlgorithm.Mode" /> setter
     /// accepts only <see cref="CipherMode.CBC" />, <see cref="CipherMode.ECB" />, and <see cref="CipherMode.CFB" />,
     /// and throws <see cref="CryptographicException" /> for any other value, <see cref="CipherMode.OFB" /> and
     /// <see cref="CipherMode.CTS" /> included. Select OFB and CTR through <see cref="BlockMode" /> instead; assigning

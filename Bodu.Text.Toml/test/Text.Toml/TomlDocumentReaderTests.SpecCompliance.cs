@@ -51,7 +51,7 @@ public sealed partial class TomlDocumentReaderTests
     }
 
     /// <summary>
-    /// Verifies that each spec-valid document in the catalogue is accepted by the reader constructor.
+    /// Verifies that each spec-valid document in the catalog is accepted by the reader constructor.
     /// </summary>
     /// <param name="kat">The spec-valid scenario under test.</param>
     [TestMethod]
@@ -120,7 +120,7 @@ public sealed partial class TomlDocumentReaderTests
     }
 
     /// <summary>
-    /// Verifies that each spec-invalid document in the catalogue is rejected by the constructor with
+    /// Verifies that each spec-invalid document in the catalog is rejected by the constructor with
     /// <see cref="TomlFormatException" />.
     /// </summary>
     /// <param name="kat">The spec-invalid scenario under test.</param>

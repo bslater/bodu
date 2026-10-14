@@ -9,7 +9,7 @@ using System.Collections;
 namespace Bodu.Infrastructure;
 
 /// <summary>
-/// A test utility that wraps an <see cref="IEnumerable{T}" /> and tracks enumeration behaviour.
+/// A test utility that wraps an <see cref="IEnumerable{T}" /> and tracks enumeration behavior.
 /// </summary>
 /// <typeparam name="T">The element type.</typeparam>
 public sealed class TrackingEnumerable<T>

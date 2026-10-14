@@ -16,7 +16,7 @@ namespace Bodu.Numerics.Samples.Intervals.Scenarios;
 public static class IntervalBasics
 {
     /// <summary>
-    /// Builds intervals of each inclusivity and probes their membership and overlap behaviour.
+    /// Builds intervals of each inclusivity and probes their membership and overlap behavior.
     /// </summary>
     public static void Run()
     {

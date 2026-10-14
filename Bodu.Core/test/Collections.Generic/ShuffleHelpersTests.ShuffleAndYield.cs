@@ -186,7 +186,7 @@ public partial class ShuffleHelpersTests
 
     /// <summary>
     /// Verifies that <see cref="ShuffleHelpers.ShuffleAndYield" /> produces the same output sequence when called with an identically
-    /// seeded <see cref="XorShiftRandom" />, confirming deterministic behaviour.
+    /// seeded <see cref="XorShiftRandom" />, confirming deterministic behavior.
     /// </summary>
     [TestMethod]
     public void ShuffleAndYield_WithFixedSeed_ShouldProduceDeterministicOutput()

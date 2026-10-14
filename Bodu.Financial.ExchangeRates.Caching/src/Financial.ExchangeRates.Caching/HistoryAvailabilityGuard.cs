@@ -7,7 +7,7 @@
 namespace Bodu.Financial.ExchangeRates.Caching;
 
 /// <summary>
-/// Provides the shared date arithmetic the caching and aggregating decorators use when honouring a source's advertised
+/// Provides the shared date arithmetic the caching and aggregating decorators use when honoring a source's advertised
 /// <see cref="RateHistoryAvailability" />.
 /// </summary>
 internal static class HistoryAvailabilityGuard

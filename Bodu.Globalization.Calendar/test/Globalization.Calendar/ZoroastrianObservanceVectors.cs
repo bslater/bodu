@@ -11,7 +11,7 @@ namespace Bodu.Globalization.Calendar;
 
 /// <summary>
 /// Loads the embedded Zoroastrian observance vector table - fifty Gregorian years of independently computed dates for
-/// every <c>global-zoroastrian</c> catalogue observance - as KAT rows for <c>[DynamicData]</c> binding.
+/// every <c>global-zoroastrian</c> catalog observance - as KAT rows for <c>[DynamicData]</c> binding.
 /// </summary>
 /// <remarks>
 /// <para>

@@ -14,10 +14,10 @@ namespace Bodu.Text.Toml;
 public sealed partial class TomlReleaseNoteCorpusTests
 {
     /// <summary>
-    /// Verifies that each catalogued input a fix established as readable is read by <c>TomlDocumentReader</c> into the
+    /// Verifies that each cataloged input a fix established as readable is read by <c>TomlDocumentReader</c> into the
     /// values its expected tagged JSON describes.
     /// </summary>
-    /// <param name="fix">The catalogue row.</param>
+    /// <param name="fix">The catalog row.</param>
     [TestMethod]
     [TestCategory("Regression")]
     [Timeout(RowTimeout)]

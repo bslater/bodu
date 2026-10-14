@@ -21,7 +21,7 @@ namespace Bodu.Extensions.Configuration.Text;
 /// <para>
 /// The document root must be a dictionary; an integer, byte-string, or list root is rejected because it cannot
 /// contribute named configuration keys. Nested dictionaries contribute a <see cref="ConfigurationPath.KeyDelimiter" />
-/// segment per level; list elements contribute their zero-based index as a segment, mirroring the behaviour of the
+/// segment per level; list elements contribute their zero-based index as a segment, mirroring the behavior of the
 /// framework JSON configuration provider. Keys are compared case-insensitively, so two Bencode keys that differ only in
 /// case map to the same configuration key and are rejected as a duplicate.
 /// </para>

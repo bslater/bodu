@@ -153,7 +153,7 @@ public partial class ICryptoTransformExtensionsTests
 
     /// <summary>
     /// Verifies that <see cref="ICryptoTransformExtensions.TransformAsync(ICryptoTransform,Stream,Stream,int,CancellationToken)" />
-    /// throws <see cref="TaskCanceledException" /> when the cancellation token is signalled while
+    /// throws <see cref="TaskCanceledException" /> when the cancellation token is signaled while
     /// <c>ReadAsync</c> is blocked. The implementation catches the <see cref="OperationCanceledException" />
     /// raised by the stream and converts it to a fresh <see cref="TaskCanceledException" />, so the exact
     /// subtype is contractually significant.
@@ -177,8 +177,8 @@ public partial class ICryptoTransformExtensionsTests
 
     /// <summary>
     /// Verifies that <see cref="ICryptoTransformExtensions.TransformAsync(ICryptoTransform,Stream,Stream,int,CancellationToken)" />
-    /// throws <see cref="TaskCanceledException" /> when the cancellation token is already cancelled before
-    /// the call. The cancelled <c>ReadAsync</c> raises <see cref="OperationCanceledException" />, which the
+    /// throws <see cref="TaskCanceledException" /> when the cancellation token is already canceled before
+    /// the call. The canceled <c>ReadAsync</c> raises <see cref="OperationCanceledException" />, which the
     /// implementation converts to a fresh <see cref="TaskCanceledException" />.
     /// </summary>
     [TestMethod]
@@ -226,7 +226,7 @@ public partial class ICryptoTransformExtensionsTests
 
     /// <summary>
     /// Verifies that <see cref="ICryptoTransformExtensions.TransformAsync(ICryptoTransform,Stream,Stream,int,CancellationToken)" />
-    /// writes nothing to the target when the cancellation token is already cancelled, rather than a finalized padding
+    /// writes nothing to the target when the cancellation token is already canceled, rather than a finalized padding
     /// block that decrypts to an empty message - the defect reported in issue #740.
     /// </summary>
     [TestMethod]
@@ -405,7 +405,7 @@ public partial class ICryptoTransformExtensionsTests
 
     /// <summary>
     /// Verifies that <see cref="ICryptoTransformExtensions.TransformAsync(ICryptoTransform,ReadOnlyMemory{byte},Memory{byte},CancellationToken)" />
-    /// throws <see cref="TaskCanceledException" /> when the token is already cancelled before the operation begins.
+    /// throws <see cref="TaskCanceledException" /> when the token is already canceled before the operation begins.
     /// </summary>
     [TestMethod]
     [DynamicData(nameof(GetValidTransformTestData))]

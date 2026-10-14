@@ -38,8 +38,8 @@ public partial class MoneyTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="Money.FromExplicitScale(decimal, CurrencyCode, int, MidpointRounding)" /> honours an
-    /// explicit midpoint-rounding rule when normalising to the supplied scale.
+    /// Verifies that <see cref="Money.FromExplicitScale(decimal, CurrencyCode, int, MidpointRounding)" /> honors an
+    /// explicit midpoint-rounding rule when normalizing to the supplied scale.
     /// </summary>
     [TestMethod]
     public void FromExplicitScale_WhenRoundingIsAwayFromZero_ShouldApplySuppliedRule()
@@ -64,7 +64,7 @@ public partial class MoneyTests
     }
 
     /// <summary>
-    /// Verifies that a scale below the currency's registered precision is honoured, so a coarser-grained value (for
+    /// Verifies that a scale below the currency's registered precision is honored, so a coarser-grained value (for
     /// example whole-dollar pricing) reports the reduced scale.
     /// </summary>
     [TestMethod]

@@ -12,28 +12,28 @@ using System.Text;
 namespace Bodu.Test.Corpus;
 
 /// <summary>
-/// Reads and checks one release-note fix catalogue, <c>corpus/&lt;area&gt;/fixes/&lt;library&gt;-fixes.csv</c>: the
+/// Reads and checks one release-note fix catalog, <c>corpus/&lt;area&gt;/fixes/&lt;library&gt;-fixes.csv</c>: the
 /// fixes another library's release notes list, each classified against Bodu and, where it runs, carrying a scenario.
 /// </summary>
 /// <remarks>
 /// <para>
-/// A catalogue is UTF-8 holding only printable ASCII and line feeds, and ends with a line feed. It opens with the
+/// A catalog is UTF-8 holding only printable ASCII and line feeds, and ends with a line feed. It opens with the
 /// header lines <c># library: &lt;library&gt; -- &lt;repository&gt;</c>, <c># releases: ...</c> and
 /// <c># licence: ...</c>, in that order, then any number of <c># note: ...</c> lines, then <see cref="ColumnLine" />,
 /// then one row per line in RFC 4180 quoting.
 /// </para>
 /// <para>
-/// <see cref="Load" /> never throws for a malformed catalogue: it reads what it can and lists every problem it finds in
+/// <see cref="Load" /> never throws for a malformed catalog: it reads what it can and lists every problem it finds in
 /// <see cref="Problems" />, so a governance test can report them all at once. The checks cover the file's bytes, the
 /// header, the columns, and each row's class, kind, case, options, escapes, expectation and reason.
 /// </para>
 /// </remarks>
 public sealed class ReleaseNoteCatalog
 {
-    /// <summary>The column line every catalogue carries after its header.</summary>
+    /// <summary>The column line every catalog carries after its header.</summary>
     public const string ColumnLine = "library,version,reference,summary,class,case,kind,options,input,expected,expectation,reason";
 
-    /// <summary>The suffix every catalogue's file name carries after its library name.</summary>
+    /// <summary>The suffix every catalog's file name carries after its library name.</summary>
     public const string FileNameSuffix = "-fixes.csv";
 
     /// <summary>The number of columns in a row.</summary>
@@ -42,16 +42,16 @@ public sealed class ReleaseNoteCatalog
     /// <summary>The prefix of the optional header lines that follow the required ones.</summary>
     private const string NoteHeader = "# note: ";
 
-    /// <summary>The part of an embedded resource name that marks a catalogue copied into a test project.</summary>
+    /// <summary>The part of an embedded resource name that marks a catalog copied into a test project.</summary>
     private const string ResourceMarker = ".Fixtures.ReleaseNotes.";
 
-    /// <summary>The prefixes of the header lines every catalogue opens with, in order.</summary>
+    /// <summary>The prefixes of the header lines every catalog opens with, in order.</summary>
     private static readonly string[] s_requiredHeaders = ["# library: ", "# releases: ", "# licence: "];
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ReleaseNoteCatalog" /> class.
     /// </summary>
-    /// <param name="fileName">The catalogue's file name.</param>
+    /// <param name="fileName">The catalog's file name.</param>
     /// <param name="library">The library the file name names.</param>
     /// <param name="headerLines">The header lines, in order.</param>
     /// <param name="rows">The rows that could be read, in order.</param>
@@ -83,13 +83,13 @@ public sealed class ReleaseNoteCatalog
     public static IReadOnlyList<string> Kinds { get; } = ["parse", "reject", "write", "write-reject", "roundtrip", "unit"];
 
     /// <summary>
-    /// Gets the catalogue's file name.
+    /// Gets the catalog's file name.
     /// </summary>
     /// <value>A name such as <c>tomli-fixes.csv</c>.</value>
     public string FileName { get; }
 
     /// <summary>
-    /// Gets the library the catalogue covers, as its file name gives it.
+    /// Gets the library the catalog covers, as its file name gives it.
     /// </summary>
     /// <value>The file name without <see cref="FileNameSuffix" />, or the empty string when the name lacks it.</value>
     public string Library { get; }
@@ -107,17 +107,17 @@ public sealed class ReleaseNoteCatalog
     public IReadOnlyList<ReleaseNoteFix> Rows { get; }
 
     /// <summary>
-    /// Gets every problem found in the catalogue.
+    /// Gets every problem found in the catalog.
     /// </summary>
     /// <value>One message per problem, each starting with the file name and, where it has one, the line number.</value>
     public IReadOnlyList<string> Problems { get; }
 
     /// <summary>
-    /// Reads and checks a catalogue.
+    /// Reads and checks a catalog.
     /// </summary>
-    /// <param name="fileName">The catalogue's file name, such as <c>tomli-fixes.csv</c>.</param>
-    /// <param name="content">The catalogue's bytes.</param>
-    /// <returns>The catalogue, with every problem found listed in <see cref="Problems" />.</returns>
+    /// <param name="fileName">The catalog's file name, such as <c>tomli-fixes.csv</c>.</param>
+    /// <param name="content">The catalog's bytes.</param>
+    /// <returns>The catalog, with every problem found listed in <see cref="Problems" />.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="fileName" /> is <see langword="null" />.</exception>
     public static ReleaseNoteCatalog Load(string fileName, ReadOnlySpan<byte> content)
     {
@@ -211,13 +211,13 @@ public sealed class ReleaseNoteCatalog
     }
 
     /// <summary>
-    /// Reads and checks every catalogue embedded in an assembly under a <c>Fixtures/ReleaseNotes</c> folder.
+    /// Reads and checks every catalog embedded in an assembly under a <c>Fixtures/ReleaseNotes</c> folder.
     /// </summary>
-    /// <param name="assembly">The test assembly that embeds the catalogues.</param>
-    /// <returns>The catalogues, ordered by file name.</returns>
+    /// <param name="assembly">The test assembly that embeds the catalogs.</param>
+    /// <returns>The catalogs, ordered by file name.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="assembly" /> is <see langword="null" />.</exception>
     /// <remarks>
-    /// A catalogue is any manifest resource whose name contains <c>.Fixtures.ReleaseNotes.</c> and ends with
+    /// A catalog is any manifest resource whose name contains <c>.Fixtures.ReleaseNotes.</c> and ends with
     /// <see cref="FileNameSuffix" />; its file name is the part after that marker.
     /// </remarks>
     public static IReadOnlyList<ReleaseNoteCatalog> LoadEmbedded(Assembly assembly)
@@ -242,7 +242,7 @@ public sealed class ReleaseNoteCatalog
     }
 
     /// <summary>
-    /// Counts the catalogue's rows in each class.
+    /// Counts the catalog's rows in each class.
     /// </summary>
     /// <returns>
     /// The number of rows in each of <see cref="Classes" />, in that order; a class with no rows counts zero.
@@ -257,10 +257,10 @@ public sealed class ReleaseNoteCatalog
     }
 
     /// <summary>
-    /// Checks that a catalogue's bytes are printable ASCII and line feeds, and end with a line feed.
+    /// Checks that a catalog's bytes are printable ASCII and line feeds, and end with a line feed.
     /// </summary>
-    /// <param name="fileName">The catalogue's file name, for messages.</param>
-    /// <param name="content">The catalogue's bytes.</param>
+    /// <param name="fileName">The catalog's file name, for messages.</param>
+    /// <param name="content">The catalog's bytes.</param>
     /// <param name="problems">Receives one message per problem found.</param>
     private static void CheckBytes(string fileName, ReadOnlySpan<byte> content, List<string> problems)
     {
@@ -289,7 +289,7 @@ public sealed class ReleaseNoteCatalog
     /// Checks one row's library, version, summary, reason, class, case, kind, options, escapes and expectation.
     /// </summary>
     /// <param name="row">The row to check.</param>
-    /// <param name="library">The library the catalogue's file name names.</param>
+    /// <param name="library">The library the catalog's file name names.</param>
     /// <param name="problems">Receives one message per problem found.</param>
     private static void CheckRow(ReleaseNoteFix row, string library, List<string> problems)
     {
@@ -413,7 +413,7 @@ public sealed class ReleaseNoteCatalog
     }
 
     /// <summary>
-    /// Splits one catalogue line into fields under RFC 4180 quoting.
+    /// Splits one catalog line into fields under RFC 4180 quoting.
     /// </summary>
     /// <param name="line">The line, without its line feed.</param>
     /// <param name="fields">Receives the unquoted fields.</param>

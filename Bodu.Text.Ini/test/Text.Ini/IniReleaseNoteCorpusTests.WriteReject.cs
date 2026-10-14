@@ -12,11 +12,11 @@ namespace Bodu.Text.Ini;
 public sealed partial class IniReleaseNoteCorpusTests
 {
     /// <summary>
-    /// Verifies that writing each catalogued set of triples a fix established as unwritable throws
+    /// Verifies that writing each cataloged set of triples a fix established as unwritable throws
     /// <see cref="ArgumentException" />, the exception the row names, rather than writing text that reads back as
     /// something else.
     /// </summary>
-    /// <param name="fix">The catalogue row.</param>
+    /// <param name="fix">The catalog row.</param>
     [TestMethod]
     [TestCategory("Regression")]
     [DynamicData(

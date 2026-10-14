@@ -23,7 +23,7 @@ public partial class StringExtensionsTests
     ];
 
     /// <summary>
-    /// Verifies that <see cref="StringExtensions.ToTitleCase(string)" /> capitalises the first character of
+    /// Verifies that <see cref="StringExtensions.ToTitleCase(string)" /> capitalizes the first character of
     /// every word.
     /// </summary>
     /// <param name="value">The candidate string.</param>

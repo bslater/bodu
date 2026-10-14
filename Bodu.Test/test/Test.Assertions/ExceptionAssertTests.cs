@@ -9,7 +9,7 @@ using Bodu.Test.Kat;
 namespace Bodu.Test.Assertions;
 
 /// <summary>
-/// Verifies the behaviour of <see cref="ExceptionAssert" />: the <c>ParamName</c> assertion helper, the
+/// Verifies the behavior of <see cref="ExceptionAssert" />: the <c>ParamName</c> assertion helper, the
 /// guard-contract matrix helper, and the KAT-typed overloads used by guard contract test bases.
 /// </summary>
 [TestClass]

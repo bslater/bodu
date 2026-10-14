@@ -321,7 +321,7 @@ public sealed partial class Threefish1024Cipher
     /// Thrown if <paramref name="input" /> or <paramref name="output" /> is not 128 bytes.
     /// </exception>
     /// <remarks>
-    /// Dispatches to an AVX-512F vectorised implementation when supported by the host, falling back to a scalar
+    /// Dispatches to an AVX-512F vectorized implementation when supported by the host, falling back to a scalar
     /// register-resident implementation otherwise. Dispatch is gated by <see cref="SimdCapabilities.Avx512F" />, which
     /// combines the hardware intrinsic with the process-wide SIMD opt-out; on hosts without AVX-512 it still folds to a
     /// compile-time constant that removes the branch, otherwise it reduces to a single cached-boolean load.
@@ -540,7 +540,7 @@ public sealed partial class Threefish1024Cipher
     /// Thrown if <paramref name="input" /> or <paramref name="output" /> is not 128 bytes.
     /// </exception>
     /// <remarks>
-    /// Dispatches to an AVX-512F vectorised implementation when supported by the host, falling back to a scalar
+    /// Dispatches to an AVX-512F vectorized implementation when supported by the host, falling back to a scalar
     /// register-resident implementation otherwise. Dispatch is gated by <see cref="SimdCapabilities.Avx512F" />, which
     /// combines the hardware intrinsic with the process-wide SIMD opt-out; on hosts without AVX-512 it still folds to a
     /// compile-time constant that removes the branch, otherwise it reduces to a single cached-boolean load.

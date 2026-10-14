@@ -14,7 +14,7 @@ namespace Bodu.Text.Configuration;
 /// In <see cref="ConfigurationProfile.EditorConfigCompatible" /> mode the resolver follows the EditorConfig rule and
 /// removes the effective value. In <see cref="ConfigurationProfile.Bodu" /> mode the literal is preserved by default so
 /// users who wish to store the string <c>unset</c> are not surprised. Set this mode explicitly when you want
-/// EditorConfig-style behaviour under the Bodu profile.
+/// EditorConfig-style behavior under the Bodu profile.
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[

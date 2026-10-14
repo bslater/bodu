@@ -65,7 +65,7 @@ public static class NotableDateServiceAsyncExtensions
     /// <paramref name="range" /> has a start date later than its end date.
     /// </exception>
     /// <exception cref="OperationCanceledException">
-    /// <paramref name="cancellationToken" /> (or a token supplied via <c>WithCancellation</c>) is cancelled while the
+    /// <paramref name="cancellationToken" /> (or a token supplied via <c>WithCancellation</c>) is canceled while the
     /// stream is being enumerated.
     /// </exception>
     /// <remarks>

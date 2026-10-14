@@ -49,7 +49,7 @@ public partial class BencodeSerializerTests
     /// Supplies one row for each public <see cref="BencodeSerializer" /> entry point that reflects over the type it
     /// maps: every generic method, and every method that receives the type as a <see cref="Type" /> argument.
     /// </summary>
-    /// <returns>The entry-point rows, each labelled with the entry point's signature.</returns>
+    /// <returns>The entry-point rows, each labeled with the entry point's signature.</returns>
     public static IEnumerable<object[]> ReflectingEntryPointCases() =>
         typeof(BencodeSerializer)
             .GetMethods(BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly)

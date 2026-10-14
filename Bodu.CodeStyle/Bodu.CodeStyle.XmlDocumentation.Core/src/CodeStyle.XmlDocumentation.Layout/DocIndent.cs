@@ -21,7 +21,7 @@ internal static class DocIndent
     /// </summary>
     /// <param name="triviaText">The raw documentation comment trivia text.</param>
     /// <param name="baseIndent">The base indent reported by the caller for non-first lines.</param>
-    /// <param name="documentationPrefix">The documentation prefix to recognise; typically <c>"/// "</c>.</param>
+    /// <param name="documentationPrefix">The documentation prefix to recognize; typically <c>"/// "</c>.</param>
     /// <returns>The prose content with the prefix and indent removed from every line, joined by <c>'\n'</c>.</returns>
     /// <exception cref="ArgumentNullException">Thrown when any argument is <see langword="null" />.</exception>
     public static string Strip(string triviaText, string baseIndent, string documentationPrefix)

@@ -42,7 +42,7 @@ public partial class CalculatedMoneyTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="CalculatedMoney.RoundToMoney(MidpointRounding)" /> honours the supplied midpoint rule.
+    /// Verifies that <see cref="CalculatedMoney.RoundToMoney(MidpointRounding)" /> honors the supplied midpoint rule.
     /// </summary>
     [TestMethod]
     public void RoundToMoney_WhenAwayFromZero_ShouldRoundMidpointAway()

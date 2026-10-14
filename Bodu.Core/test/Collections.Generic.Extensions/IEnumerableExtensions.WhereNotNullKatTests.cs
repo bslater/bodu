@@ -12,7 +12,7 @@ namespace Bodu.Collections.Generic.Extensions;
 /// <see cref="IEnumerableExtensions.WhereNotNull{TSource}(IEnumerable{TSource})" /> for reference
 /// types and nullable value types. Deferred-execution and null-source coverage stays in
 /// <see cref="IEnumerableExtensionsTests_WhereNotNull" /> - this class layers KAT-driven coverage on
-/// top without duplicating the binary-test behaviour those partials already capture.
+/// top without duplicating the binary-test behavior those partials already capture.
 /// </summary>
 [TestClass]
 public sealed class IEnumerableExtensionsWhereNotNullKatTests

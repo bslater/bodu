@@ -60,7 +60,7 @@ public sealed class StrategyResolutionContext
     }
 
     /// <summary>
-    /// Gets the custom algorithm registry consulted before the built-in catalogue, so a key registered here overrides a
+    /// Gets the custom algorithm registry consulted before the built-in catalog, so a key registered here overrides a
     /// built-in algorithm of the same name.
     /// </summary>
     /// <value>The registry, or <see langword="null" /> when only built-in algorithms are available.</value>

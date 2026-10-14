@@ -16,7 +16,7 @@ namespace Bodu.Collections.Generic;
 /// <typeparam name="TValue">Specifies the type of values in the dictionary.</typeparam>
 /// <remarks>
 /// <para>
-/// <see cref="SequencedDictionary{TKey, TValue}" /> is the .NET analogue of Java's <c>LinkedHashMap</c>: a hash-based
+/// <see cref="SequencedDictionary{TKey, TValue}" /> is the .NET analog of Java's <c>LinkedHashMap</c>: a hash-based
 /// dictionary that additionally maintains a doubly linked list across its entries so that enumeration follows a stable,
 /// predictable order. It realizes the same <i>sequenced</i> (encounter-order) contract that Java's <c>SequencedMap</c>
 /// defines: a well-defined first and last entry with constant-time access to each.

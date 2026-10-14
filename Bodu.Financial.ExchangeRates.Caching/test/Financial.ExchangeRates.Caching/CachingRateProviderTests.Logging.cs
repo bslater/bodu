@@ -46,7 +46,7 @@ public sealed partial class CachingRateProviderTests
     }
 
     /// <summary>
-    /// Verifies that a configured non-default <see cref="CachingRateOptions.CacheHitLogLevel" /> is honoured, so a
+    /// Verifies that a configured non-default <see cref="CachingRateOptions.CacheHitLogLevel" /> is honored, so a
     /// cache hit is emitted at the configured level rather than the <see cref="LogLevel.Trace" /> default.
     /// </summary>
     [TestMethod]

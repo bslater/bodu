@@ -13,10 +13,10 @@ namespace Bodu.Financial.ExchangeRates;
 /// <remarks>
 /// <para>
 /// This type derives from <see cref="WebRateProviderOptions" />, which supplies the endpoint base address, the HTTP
-/// contract, the synchronous-access and look-back behaviour, the currency-alias map, and the per-concern log levels.
-/// The members declared here are FRED-specific: the required <see cref="ApiKey" /> presented as the <c>api_key</c>
-/// query parameter, the <see cref="ObservationsPath" /> template, and the <see cref="SeriesMap" /> that maps each
-/// currency pair to a single FRED series identifier.
+/// contract, the synchronous-access and look-back behavior, the currency-alias map, and the per-concern log levels. The
+/// members declared here are FRED-specific: the required <see cref="ApiKey" /> presented as the <c>api_key</c> query
+/// parameter, the <see cref="ObservationsPath" /> template, and the <see cref="SeriesMap" /> that maps each currency
+/// pair to a single FRED series identifier.
 /// </para>
 /// <para>
 /// FRED publishes each foreign-exchange rate as an independent time series quoted in a fixed direction (for example

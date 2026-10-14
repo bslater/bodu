@@ -90,7 +90,7 @@ public partial class BigDecimalTests
     }
 
     /// <summary>
-    /// Verifies that division to an explicit scale honours the requested rounding mode.
+    /// Verifies that division to an explicit scale honors the requested rounding mode.
     /// </summary>
     [TestMethod]
     public void Divide_WhenGivenScaleAndMode_ShouldRoundAccordingly()

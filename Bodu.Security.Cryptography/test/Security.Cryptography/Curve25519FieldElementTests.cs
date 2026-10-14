@@ -212,7 +212,7 @@ public partial class Curve25519FieldElementTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="Curve25519FieldElement.IsZeroConstantTime" /> recognises both the trivial zero and
+    /// Verifies that <see cref="Curve25519FieldElement.IsZeroConstantTime" /> recognizes both the trivial zero and
     /// the non-canonical encoding of p as zero, and rejects a non-zero element.
     /// </summary>
     [TestMethod]

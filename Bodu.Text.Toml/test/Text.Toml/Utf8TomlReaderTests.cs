@@ -12,7 +12,7 @@ using Bodu.Text.Toml.Reader;
 namespace Bodu.Text.Toml;
 
 /// <summary>
-/// Verifies the behaviour of <see cref="Utf8TomlReader" />, the source-order UTF-8 TOML lexer: its token vocabulary,
+/// Verifies the behavior of <see cref="Utf8TomlReader" />, the source-order UTF-8 TOML lexer: its token vocabulary,
 /// lexical validation, and lazy decoding.
 /// </summary>
 [TestClass]

@@ -16,7 +16,7 @@ using Bodu.Text.Ini.Writer;
 namespace Bodu.Text.Ini;
 
 /// <summary>
-/// Holds Bodu.Text.Ini to the defect fixes other INI libraries list in their release notes, as catalogued in
+/// Holds Bodu.Text.Ini to the defect fixes other INI libraries list in their release notes, as cataloged in
 /// <c>corpus/ini/fixes/</c> and embedded under <c>Fixtures/ReleaseNotes/</c>.
 /// </summary>
 /// <remarks>
@@ -36,24 +36,24 @@ namespace Bodu.Text.Ini;
 /// the written text again.
 /// </para>
 /// <para>
-/// The catalogue holds no <c>write</c> row, so this class has no data-driven test for that kind: MSTest fails a test
+/// The catalog holds no <c>write</c> row, so this class has no data-driven test for that kind: MSTest fails a test
 /// whose data source is empty. <see cref="FixCatalogues_WhenRunnableRowsAreRead_ShouldHoldWellFormedScenarios" />
-/// reports a <c>write</c> row if one is catalogued, so that its runner is added with it.
+/// reports a <c>write</c> row if one is cataloged, so that its runner is added with it.
 /// </para>
 /// </remarks>
 [TestClass]
 public sealed partial class IniReleaseNoteCorpusTests
 {
-    /// <summary>The corpus area whose catalogues this class runs.</summary>
+    /// <summary>The corpus area whose catalogs this class runs.</summary>
     private const string Area = "ini";
 
-    /// <summary>The option names a catalogue row may use, each mapped by <see cref="RowOptions.Parse" />.</summary>
+    /// <summary>The option names a catalog row may use, each mapped by <see cref="RowOptions.Parse" />.</summary>
     private static readonly string[] s_optionNames =
     [
         "DisallowHashComments", "SkipComments", "DuplicateSectionBehavior", "DuplicateKeyBehavior", "CommentPrefix", "View",
     ];
 
-    /// <summary>The catalogues embedded in this test assembly, loaded once.</summary>
+    /// <summary>The catalogs embedded in this test assembly, loaded once.</summary>
     private static readonly Lazy<IReadOnlyList<ReleaseNoteCatalog>> s_catalogs =
         new(() => ReleaseNoteCatalog.LoadEmbedded(typeof(IniReleaseNoteCorpusTests).Assembly));
 
@@ -86,9 +86,9 @@ public sealed partial class IniReleaseNoteCorpusTests
         RunnableRows("roundtrip");
 
     /// <summary>
-    /// Gets every row of every embedded catalogue.
+    /// Gets every row of every embedded catalog.
     /// </summary>
-    /// <value>The rows, catalogue by catalogue in file order.</value>
+    /// <value>The rows, catalog by catalog in file order.</value>
     private static IEnumerable<ReleaseNoteFix> AllRows =>
         s_catalogs.Value.SelectMany(catalog => catalog.Rows);
 

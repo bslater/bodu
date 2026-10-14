@@ -7,7 +7,7 @@
 namespace Bodu.Text;
 
 /// <summary>
-/// Behavioural tests for <see cref="EncodingExtensions" />. Partial files split coverage by member or subject
+/// Behavioral tests for <see cref="EncodingExtensions" />. Partial files split coverage by member or subject
 /// contract per the repository test convention (see <c>CLAUDE.md</c>).
 /// </summary>
 [TestClass]

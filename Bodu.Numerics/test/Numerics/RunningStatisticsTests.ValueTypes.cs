@@ -80,7 +80,7 @@ public partial class RunningStatisticsTests
         stats.Add(1);
 
     /// <summary>
-    /// Holds the accumulator in a <see langword="readonly" /> field to demonstrate the defensive-copy behaviour.
+    /// Holds the accumulator in a <see langword="readonly" /> field to demonstrate the defensive-copy behavior.
     /// </summary>
     private sealed class ReadonlyFieldHolder
     {
@@ -95,7 +95,7 @@ public partial class RunningStatisticsTests
     }
 
     /// <summary>
-    /// Exposes the accumulator through an auto-property to demonstrate the returned-copy behaviour.
+    /// Exposes the accumulator through an auto-property to demonstrate the returned-copy behavior.
     /// </summary>
     private sealed class PropertyHolder
     {

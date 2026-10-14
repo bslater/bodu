@@ -7,7 +7,7 @@
 namespace Bodu.Financial.ExchangeRates;
 
 /// <summary>
-/// Verifies the construction, resolution, and query behaviour of <see cref="RateHistoryAvailability" />.
+/// Verifies the construction, resolution, and query behavior of <see cref="RateHistoryAvailability" />.
 /// </summary>
 [TestClass]
 public partial class RateHistoryAvailabilityTests

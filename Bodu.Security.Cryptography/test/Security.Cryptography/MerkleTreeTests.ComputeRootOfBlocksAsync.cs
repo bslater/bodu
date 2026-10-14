@@ -71,7 +71,7 @@ public partial class MerkleTreeTests
     }
 
     /// <summary>
-    /// Verifies that a pre-cancelled token surfaces as a plain <see cref="OperationCanceledException" /> at every
+    /// Verifies that a pre-canceled token surfaces as a plain <see cref="OperationCanceledException" /> at every
     /// degree.
     /// </summary>
     /// <returns>A task representing the asynchronous test.</returns>

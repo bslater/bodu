@@ -100,7 +100,7 @@ public partial class ComplexTests
     /// <summary>
     /// Verifies that the reciprocal of an infinite value matches <see cref="System.Numerics.Complex.Reciprocal" />
     /// (which is <c>NaN</c>, since <c>1 / ∞</c> under Smith's algorithm forms <c>∞/∞</c>) - pinning the actual .NET
-    /// behaviour rather than the intuitive zero.
+    /// behavior rather than the intuitive zero.
     /// </summary>
     [TestMethod]
     [TestCategory(Bodu.Test.TestCategories.Regression)]

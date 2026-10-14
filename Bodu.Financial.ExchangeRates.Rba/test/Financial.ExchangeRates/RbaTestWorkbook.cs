@@ -26,7 +26,7 @@ namespace Bodu.Financial.ExchangeRates;
 /// <para>
 /// The cells are encoded as Excel encodes the RBA's own files. Text goes through the shared string table, or is a
 /// formula's cached result when <see cref="RbaTestSheet.HeaderFormulas" /> is set. A number with an exact RK form is an
-/// <c>RK</c> record, or with RK neighbours one <c>MULRK</c> run (a date in column 0 included), and any other number a
+/// <c>RK</c> record, or with RK neighbors one <c>MULRK</c> run (a date in column 0 included), and any other number a
 /// <c>NUMBER</c> record. Adjacent blank cells form <c>MULBLANK</c> runs. The data sheet's <c>DIMENSIONS</c> record
 /// declares a wider range than its cells use, as Excel's record of every formatted cell does.
 /// </para>
@@ -234,7 +234,7 @@ internal static partial class RbaTestWorkbook
     }
 
     /// <summary>
-    /// Writes a labelled header row of text when the sheet carries it: the label in column 0, then each column's text,
+    /// Writes a labeled header row of text when the sheet carries it: the label in column 0, then each column's text,
     /// or a blank where a column has none.
     /// </summary>
     /// <param name="w">The writer.</param>

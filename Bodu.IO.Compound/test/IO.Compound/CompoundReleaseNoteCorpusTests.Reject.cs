@@ -12,11 +12,11 @@ namespace Bodu.IO.Compound;
 public sealed partial class CompoundReleaseNoteCorpusTests
 {
     /// <summary>
-    /// Verifies that opening each catalogued container a fix established as malformed, or reading one of its streams,
+    /// Verifies that opening each cataloged container a fix established as malformed, or reading one of its streams,
     /// throws <see cref="CompoundFileFormatException" />, with the <see cref="CompoundFileError" /> category the row
     /// names when it names one.
     /// </summary>
-    /// <param name="fix">The catalogue row.</param>
+    /// <param name="fix">The catalog row.</param>
     [TestMethod]
     [TestCategory("Regression")]
     [DynamicData(

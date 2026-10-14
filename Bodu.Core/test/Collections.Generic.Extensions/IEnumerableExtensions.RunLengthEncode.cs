@@ -65,7 +65,7 @@ public sealed partial class IEnumerableExtensionsTests_RunLengthEncode
     }
 
     /// <summary>
-    /// Verifies that <c>RunLengthEncode</c> honours a supplied comparer, grouping case-insensitive strings.
+    /// Verifies that <c>RunLengthEncode</c> honors a supplied comparer, grouping case-insensitive strings.
     /// </summary>
     [TestMethod]
     public void RunLengthEncode_WhenComparerSupplied_ShouldUseComparerForRuns()

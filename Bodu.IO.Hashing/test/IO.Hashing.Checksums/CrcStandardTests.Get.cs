@@ -7,7 +7,7 @@
 namespace Bodu.IO.Hashing.Checksums;
 
 /// <summary>
-/// Verifies the exception <see cref="CrcStandard.Get(CrcStandards)" /> reports for a value outside the catalogue.
+/// Verifies the exception <see cref="CrcStandard.Get(CrcStandards)" /> reports for a value outside the catalog.
 /// </summary>
 public partial class CrcStandardTests
 {

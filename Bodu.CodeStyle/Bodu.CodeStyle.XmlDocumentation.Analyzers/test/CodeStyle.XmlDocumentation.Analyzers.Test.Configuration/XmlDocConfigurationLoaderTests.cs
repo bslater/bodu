@@ -240,7 +240,7 @@ public sealed class XmlDocConfigurationLoaderTests
     }
 
     /// <summary>
-    /// Verifies that the resolved line ending honours an explicit LF override.
+    /// Verifies that the resolved line ending honors an explicit LF override.
     /// </summary>
     [TestMethod]
     public void ResolveLineEnding_WhenSpecifiedLf_ShouldReturnLf()
@@ -256,7 +256,7 @@ public sealed class XmlDocConfigurationLoaderTests
     }
 
     /// <summary>
-    /// Verifies that the resolved line ending honours an explicit CRLF override.
+    /// Verifies that the resolved line ending honors an explicit CRLF override.
     /// </summary>
     [TestMethod]
     public void ResolveLineEnding_WhenSpecifiedCrlf_ShouldReturnCrlf()

@@ -17,7 +17,7 @@ namespace Bodu.Security.Cryptography;
 /// <remarks>
 /// <para>
 /// A stream cipher has no cipher block and applies neither a block-cipher mode nor padding. Unlike a block cipher it is
-/// not modelled on <see cref="SymmetricAlgorithm" />: there is no <c>Mode</c>, <c>Padding</c>, <c>BlockSize</c>, or
+/// not modeled on <see cref="SymmetricAlgorithm" />: there is no <c>Mode</c>, <c>Padding</c>, <c>BlockSize</c>, or
 /// <c>IV</c>. Instead the cipher is parameterized by a <see cref="Key" /> and a <see cref="Nonce" />, and produces an
 /// <see cref="ICryptoTransform" /> that XORs data with a key- and nonce-dependent keystream. The transform processes
 /// data one byte at a time and imposes no alignment requirement on callers, so it composes naturally with

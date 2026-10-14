@@ -7,14 +7,14 @@
 namespace Bodu.Extensions;
 
 /// <summary>
-/// Tunes the behaviour of <see cref="StringExtensions.ToTitleCase(string, TitleCaseOptions)" /> beyond the plain
-/// capitalise-each-word default.
+/// Tunes the behavior of <see cref="StringExtensions.ToTitleCase(string, TitleCaseOptions)" /> beyond the plain
+/// capitalize-each-word default.
 /// </summary>
 [Flags]
 public enum TitleCaseOptions
 {
     /// <summary>
-    /// Default behaviour: capitalise the first character of every word and lower-case the rest.
+    /// Default behavior: capitalize the first character of every word and lower-case the rest.
     /// </summary>
     None = 0,
 

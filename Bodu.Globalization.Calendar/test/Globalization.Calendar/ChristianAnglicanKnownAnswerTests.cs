@@ -7,7 +7,7 @@
 namespace Bodu.Globalization.Calendar;
 
 /// <summary>
-/// Verifies the Anglican feasts authored in the bundled <c>christian-anglican</c> catalogue. The single floating concept
+/// Verifies the Anglican feasts authored in the bundled <c>christian-anglican</c> catalog. The single floating concept
 /// is the Baptism of Christ (the first Sunday strictly after Epiphany, 6 January); the remainder are fixed-date apostle,
 /// evangelist and calendar feasts that follow the Book of Common Prayer (1662) calendar.
 /// </summary>
@@ -22,9 +22,9 @@ namespace Bodu.Globalization.Calendar;
 public sealed class ChristianAnglicanKnownAnswerTests
 {
     /// <summary>
-    /// Builds a service over the bundled <c>christian-anglican</c> catalogue.
+    /// Builds a service over the bundled <c>christian-anglican</c> catalog.
     /// </summary>
-    /// <returns>A service for the catalogue.</returns>
+    /// <returns>A service for the catalog.</returns>
     private static NotableDateService CreateService() =>
         CommonCatalogues.Service("christian-anglican");
 

@@ -10,8 +10,8 @@ using System.Text.RegularExpressions;
 namespace Bodu.Security.Cryptography.Infrastructure;
 
 /// <summary>
-/// Parses the labelled <c>m:</c>/<c>h:</c> Tiger reference vector format (Biham's Tiger test results plus the NESSIE
-/// Tiger / Tiger2 sets), honouring the <c>m-format:</c> directive (<c>ascii</c> or <c>hex</c>) and the
+/// Parses the labeled <c>m:</c>/<c>h:</c> Tiger reference vector format (Biham's Tiger test results plus the NESSIE
+/// Tiger / Tiger2 sets), honoring the <c>m-format:</c> directive (<c>ascii</c> or <c>hex</c>) and the
 /// <c>option: variant = tiger2</c> switch. The caller selects which padding variant to yield; rows for the other
 /// variant, and message forms this reader does not model, are skipped.
 /// </summary>
@@ -21,7 +21,7 @@ public static partial class TigerReferenceKatReader
     /// Reads Tiger reference vectors from <paramref name="stream" />, yielding one
     /// <see cref="MessageDigestKnownAnswer" /> per row that matches the requested padding variant.
     /// </summary>
-    /// <param name="stream">A readable stream over the labelled Tiger reference text.</param>
+    /// <param name="stream">A readable stream over the labeled Tiger reference text.</param>
     /// <param name="tiger2">
     /// <see langword="true" /> to yield the Tiger2 (0x80-padding) rows; <see langword="false" /> for the standard Tiger
     /// (0x01-padding) rows.
@@ -104,7 +104,7 @@ public static partial class TigerReferenceKatReader
     private static string Label(bool isTiger2) => isTiger2 ? "Tiger2" : "Tiger";
 
     /// <summary>
-    /// Decodes a hex-format message value: literal hex, a <c>repeat HH x N</c> run, or an unmodelled form (for example
+    /// Decodes a hex-format message value: literal hex, a <c>repeat HH x N</c> run, or an unmodeled form (for example
     /// <c>runlength x N</c>) which sets <paramref name="skip" /> and returns an empty array.
     /// </summary>
     /// <param name="value">The text following <c>m:</c> under an <c>m-format: hex</c> directive.</param>

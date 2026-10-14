@@ -129,7 +129,7 @@ public sealed partial class CachingRateProviderTests
     }
 
     /// <summary>
-    /// Verifies that a backend modelling a swallowed storage write reports <see cref="RateCacheWriteStatus.Failed" />
+    /// Verifies that a backend modeling a swallowed storage write reports <see cref="RateCacheWriteStatus.Failed" />
     /// from <see cref="IRateCache.StoreFetchedRange" />, the contract signal the decorator relies on to refetch
     /// rather than trust coverage that was never persisted.
     /// </summary>

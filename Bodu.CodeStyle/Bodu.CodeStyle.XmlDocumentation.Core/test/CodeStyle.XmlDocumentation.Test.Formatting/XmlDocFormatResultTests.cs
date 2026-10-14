@@ -29,7 +29,7 @@ public sealed class XmlDocFormatResultTests
     }
 
     /// <summary>
-    /// Verifies that the constructor throws when the changes array is default (uninitialised).
+    /// Verifies that the constructor throws when the changes array is default (uninitialized).
     /// </summary>
     [TestMethod]
     public void Ctor_WhenChangesArrayIsDefault_ShouldThrowArgumentException()

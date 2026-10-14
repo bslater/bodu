@@ -12,10 +12,10 @@ namespace Bodu.Text.Bencode;
 public sealed partial class BencodeReleaseNoteCorpusTests
 {
     /// <summary>
-    /// Verifies that replaying each catalogued write transcript on <c>Utf8BencodeWriter</c> closes every container and
+    /// Verifies that replaying each cataloged write transcript on <c>Utf8BencodeWriter</c> closes every container and
     /// writes exactly the expected bytes.
     /// </summary>
-    /// <param name="fix">The catalogue row.</param>
+    /// <param name="fix">The catalog row.</param>
     [TestMethod]
     [TestCategory("Regression")]
     [DynamicData(

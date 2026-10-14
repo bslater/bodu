@@ -144,9 +144,11 @@ jobs:
       # bld/docs-checks/package-docs-map.txt, and the publication check: every
       # packable package accounted for by bld/release-manifest.txt, an install
       # command for each published one, and no nuget.org install command for a
-      # package the manifest deliberately withholds. Allow-lists live in
-      # bld/docs-checks/. The publication check replaced an inline bash step here,
-      # so it can be run locally: python3 bld/check-docs.py publication.
+      # package the manifest deliberately withholds, and British spellings in the
+      # XML documentation of the src/, test/ and shared/ sources (BODU-P017).
+      # Allow-lists live in bld/docs-checks/. The publication check replaced an
+      # inline bash step here, so it can be run locally: python3 bld/check-docs.py
+      # publication.
       run: python3 bld/check-docs.py all
 
     - name: Audit content for stale link patterns

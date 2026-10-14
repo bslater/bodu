@@ -12,12 +12,12 @@ namespace Bodu.Tests.KnownAnswers;
 public enum StringFormattingOperation
 {
     /// <summary>
-    /// Capitalise the first letter of every word.
+    /// Capitalize the first letter of every word.
     /// </summary>
     TitleCase,
 
     /// <summary>
-    /// Capitalise the first letter of every sentence; lower-case everything else.
+    /// Capitalize the first letter of every sentence; lower-case everything else.
     /// </summary>
     SentenceCase,
 

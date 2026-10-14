@@ -644,7 +644,7 @@ public ref struct Utf8DotEnvReader
     }
 
     /// <summary>
-    /// Reads an unquoted value to the end of the line, honouring inline comments and trimming trailing whitespace; the
+    /// Reads an unquoted value to the end of the line, honoring inline comments and trimming trailing whitespace; the
     /// caller has already skipped the whitespace before the value.
     /// </summary>
     /// <param name="rawStart">The source start of the trimmed value.</param>

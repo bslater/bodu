@@ -12,7 +12,7 @@ using Bodu.Text.Configuration.Infrastructure;
 namespace Bodu.Text.Configuration;
 
 /// <summary>
-/// Tests for resolution behaviour exercised via
+/// Tests for resolution behavior exercised via
 /// <see cref="ConfigurationDocument.Resolve(string?, ConfigurationResolveOptions?)" />.
 /// </summary>
 [TestClass]

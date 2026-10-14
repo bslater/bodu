@@ -9,7 +9,7 @@ using System.Globalization;
 namespace Bodu.Financial.Currencies;
 
 /// <summary>
-/// Verifies the ambient <see cref="CurrencyResolution" /> seam: the default resolves the shipped catalogue, a scoped
+/// Verifies the ambient <see cref="CurrencyResolution" /> seam: the default resolves the shipped catalog, a scoped
 /// override redirects runtime <see cref="Money" /> currency resolution, and disposing the scope restores the prior
 /// lookup.
 /// </summary>

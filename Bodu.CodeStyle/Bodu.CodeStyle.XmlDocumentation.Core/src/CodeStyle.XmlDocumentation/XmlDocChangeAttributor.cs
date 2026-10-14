@@ -118,7 +118,7 @@ internal static class XmlDocChangeAttributor
 
     /// <summary>
     /// Locates every inline-tag occurrence in the raw content, returning each tag name together with its original
-    /// (un-normalised) source text so attribute-spacing differences remain observable.
+    /// (un-normalized) source text so attribute-spacing differences remain observable.
     /// </summary>
     /// <param name="content">The prefix-stripped raw content to scan.</param>
     /// <param name="inlineTags">The set of element names treated as inline-atomic tags.</param>
@@ -196,7 +196,7 @@ internal static class XmlDocChangeAttributor
     }
 
     /// <summary>
-    /// Finds the index of the <c>&gt;</c> that closes a tag, honouring quoted attribute values so a <c>&gt;</c> inside
+    /// Finds the index of the <c>&gt;</c> that closes a tag, honoring quoted attribute values so a <c>&gt;</c> inside
     /// an attribute string does not terminate the scan.
     /// </summary>
     /// <param name="content">The content being scanned.</param>

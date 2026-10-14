@@ -171,7 +171,7 @@ public sealed class NotableDateCacheRulesTests
     }
 
     /// <summary>
-    /// Verifies that entries outside the requested span leave their neighbours' slots untouched and cause no error.
+    /// Verifies that entries outside the requested span leave their neighbors' slots untouched and cause no error.
     /// </summary>
     [TestMethod]
     public void SelectFreshInto_WhenEntriesOutsideSpan_ShouldLeaveSlotsNull()

@@ -347,7 +347,7 @@ internal static class NotableDateDocumentReader
     /// </returns>
     /// <remarks>
     /// The schema reports an out-of-range value in an XML document but parsing carries on, and a JSON document has no
-    /// schema at all, so the strategy constructors' range guards are the last line of defence. Their
+    /// schema at all, so the strategy constructors' range guards are the last line of defense. Their
     /// <see cref="ArgumentException" /> becomes a <c>BODU-CAL-STRATEGY</c> diagnostic, as <see cref="ReadRecurrence" />
     /// does for recurrences, so a load fails only with its documented exceptions and a collect-mode load never throws
     /// for bad data.

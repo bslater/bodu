@@ -51,16 +51,16 @@ public sealed record CompoundMalformedKat(
 }
 
 /// <summary>
-/// Catalogues the malformed reference fixtures and the reader's expected handling of each, used to prove that broken
+/// Catalogs the malformed reference fixtures and the reader's expected handling of each, used to prove that broken
 /// input is always handled safely - rejected with a stable category or tolerated, never crashing or hanging.
 /// </summary>
 internal static class CompoundMalformedFixtures
 {
-    /// <summary>The complete malformed-fixture catalogue.</summary>
+    /// <summary>The complete malformed-fixture catalog.</summary>
     /// <remarks>
     /// The header defects are unconditional - a container whose signature, byte order or sector size cannot be
     /// interpreted has no recoverable reading, so every level rejects them alike. The same holds for a root entry that
-    /// is not a root storage: it is checked before the validation level is consulted. Everything else is a judgement
+    /// is not a root storage: it is checked before the validation level is consulted. Everything else is a judgment
     /// call the level decides, which is why the chain-cycle and directory-cycle fixtures recover at Minimal and the
     /// header ones do not, and why a sector past the end of the file, rejected by the stricter levels, reads as zeros
     /// at Minimal.

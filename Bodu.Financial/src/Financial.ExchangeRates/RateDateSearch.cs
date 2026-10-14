@@ -85,8 +85,7 @@ internal static class RateDateSearch
     }
 
     /// <summary>
-    /// Selects the nearest candidate index, honouring the tie-break preference encoded in
-    /// <paramref name="resolution" />.
+    /// Selects the nearest candidate index, honoring the tie-break preference encoded in <paramref name="resolution" />.
     /// </summary>
     /// <param name="dayNumbers">The sorted day numbers of the underlying observations.</param>
     /// <param name="requestedDayNumber">The day number the caller originally requested.</param>

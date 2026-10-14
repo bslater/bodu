@@ -7,14 +7,14 @@
 namespace Bodu.Globalization.Calendar;
 
 /// <summary>
-/// Verifies that the aggregate <c>global-all</c> catalogue imports and resolves a representative concept from every
-/// new and updated catalogue, confirming the import wiring added in the latest pass resolves end to end.
+/// Verifies that the aggregate <c>global-all</c> catalog imports and resolves a representative concept from every
+/// new and updated catalog, confirming the import wiring added in the latest pass resolves end to end.
 /// </summary>
 [TestClass]
 public sealed class GlobalAllAggregateKnownAnswerTests
 {
     /// <summary>
-    /// Verifies that one representative concept from each contributing catalogue resolves through <c>global-all</c> for a
+    /// Verifies that one representative concept from each contributing catalog resolves through <c>global-all</c> for a
     /// representative Gregorian year.
     /// </summary>
     /// <param name="notableDateId">The notable-date id expected to resolve through the aggregate.</param>

@@ -38,7 +38,7 @@ namespace Bodu.Extensions;
 /// </para>
 /// <para>
 /// Instances are stateless and thread-safe. The <see cref="CurrentCulture" /> and
-/// <see cref="CurrentCultureIgnoreCase" /> comparers capture the comparison behaviour, not a culture snapshot: each
+/// <see cref="CurrentCultureIgnoreCase" /> comparers capture the comparison behavior, not a culture snapshot: each
 /// comparison reads <see cref="CultureInfo.CurrentCulture" /> at the time it executes, mirroring
 /// <see cref="StringComparer.CurrentCulture" />. A comparer returned by <see cref="Create(CultureInfo, bool)" />
 /// captures the supplied culture instead.
@@ -77,7 +77,7 @@ public sealed class NaturalStringComparer
 
     /// <summary>
     /// Initializes a new instance of the <see cref="NaturalStringComparer" /> class with the specified comparison
-    /// behaviour.
+    /// behavior.
     /// </summary>
     /// <param name="culture">
     /// The captured culture, or <see langword="null" /> to use ordinal comparison or, when
@@ -121,7 +121,7 @@ public sealed class NaturalStringComparer
     /// A natural comparer whose text comparison follows the culture current when each comparison executes.
     /// </value>
     /// <remarks>
-    /// The returned comparer captures the behaviour, not a culture snapshot: like
+    /// The returned comparer captures the behavior, not a culture snapshot: like
     /// <see cref="StringComparer.CurrentCulture" />, each call reads <see cref="CultureInfo.CurrentCulture" /> when the
     /// comparison is performed. Use <see cref="Create(CultureInfo, bool)" /> to capture a specific culture.
     /// </remarks>
@@ -137,7 +137,7 @@ public sealed class NaturalStringComparer
     /// executes.
     /// </value>
     /// <remarks>
-    /// The returned comparer captures the behaviour, not a culture snapshot: like
+    /// The returned comparer captures the behavior, not a culture snapshot: like
     /// <see cref="StringComparer.CurrentCultureIgnoreCase" />, each call reads
     /// <see cref="CultureInfo.CurrentCulture" /> when the comparison is performed. Use
     /// <see cref="Create(CultureInfo, bool)" /> to capture a specific culture.

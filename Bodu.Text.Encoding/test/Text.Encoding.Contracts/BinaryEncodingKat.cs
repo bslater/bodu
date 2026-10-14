@@ -25,7 +25,7 @@ namespace Bodu.Text.Encoding.Contracts;
 /// </param>
 /// <remarks>
 /// <para>
-/// Lives alongside the contract test base it parameterises. Projects that already ship a domain-specific record (for
+/// Lives alongside the contract test base it parameterizes. Projects that already ship a domain-specific record (for
 /// example <see cref="EncodingKnownAnswerVector" />) may continue to use those - both shapes implement
 /// <see cref="IKat" /> so the choice is one of convenience rather than capability.
 /// </para>

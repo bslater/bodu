@@ -7,14 +7,14 @@
 namespace Bodu.Extensions;
 
 /// <summary>
-/// Tunes the behaviour of <see cref="StringExtensions.ToSentenceCase(string, SentenceCaseOptions)" /> beyond the plain
-/// capitalise-first-letter-of-each-sentence default.
+/// Tunes the behavior of <see cref="StringExtensions.ToSentenceCase(string, SentenceCaseOptions)" /> beyond the plain
+/// capitalize-first-letter-of-each-sentence default.
 /// </summary>
 [Flags]
 public enum SentenceCaseOptions
 {
     /// <summary>
-    /// Default behaviour: capitalise the first letter of each sentence and lower-case every other letter.
+    /// Default behavior: capitalize the first letter of each sentence and lower-case every other letter.
     /// </summary>
     None = 0,
 

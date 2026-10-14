@@ -123,7 +123,7 @@ public sealed class HashAlgorithmHelperTests
     /// <summary>
     /// Verifies that <see cref="HashAlgorithmHelper.HashData{T}(IHashAlgorithmFactory{T}, Stream)" />
     /// produces the same digest as the span overload for the same content - confirms that the
-    /// internal stream pump uses the buffer pool correctly and finalises with an empty
+    /// internal stream pump uses the buffer pool correctly and finalizes with an empty
     /// <c>TransformFinalBlock</c>.
     /// </summary>
     [TestMethod]

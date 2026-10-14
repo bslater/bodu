@@ -9,7 +9,7 @@ using Bodu.IO.Hashing.CheckDigits;
 namespace Bodu.IO.Hashing.Checksums;
 
 /// <summary>
-/// Verifies the length-tolerant streaming behaviour and non-alphanumeric handling of <see cref="Sedol" />.
+/// Verifies the length-tolerant streaming behavior and non-alphanumeric handling of <see cref="Sedol" />.
 /// </summary>
 public sealed partial class SedolTests
 {

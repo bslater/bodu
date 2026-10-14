@@ -36,7 +36,7 @@ public partial class MoneyTests
     }
 
     /// <summary>
-    /// Verifies that lenient-import parsing normalises a lower-case ISO code to upper case.
+    /// Verifies that lenient-import parsing normalizes a lower-case ISO code to upper case.
     /// </summary>
     [TestMethod]
     public void ParseOptions_WhenLenientImport_ShouldNormaliseLowercaseIso()

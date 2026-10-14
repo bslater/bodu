@@ -13,10 +13,10 @@ namespace Bodu.Formats.Outlook;
 public sealed partial class PstReleaseNoteCorpusTests
 {
     /// <summary>
-    /// Verifies that each catalogued file a fix established as structurally malformed, read on the Nodes surface, is
+    /// Verifies that each cataloged file a fix established as structurally malformed, read on the Nodes surface, is
     /// rejected with <see cref="PstFileFormatException" />, the exception the row names.
     /// </summary>
-    /// <param name="fix">The catalogue row.</param>
+    /// <param name="fix">The catalog row.</param>
     [TestMethod]
     [TestCategory("Regression")]
     [DynamicData(
@@ -36,10 +36,10 @@ public sealed partial class PstReleaseNoteCorpusTests
     }
 
     /// <summary>
-    /// Verifies that each catalogued file a fix established as a variant Bodu does not read, read on the Nodes surface,
+    /// Verifies that each cataloged file a fix established as a variant Bodu does not read, read on the Nodes surface,
     /// is rejected with <see cref="PstUnsupportedFormatException" />, the exception the row names.
     /// </summary>
-    /// <param name="fix">The catalogue row.</param>
+    /// <param name="fix">The catalog row.</param>
     [TestMethod]
     [TestCategory("Regression")]
     [DynamicData(
@@ -59,10 +59,10 @@ public sealed partial class PstReleaseNoteCorpusTests
     }
 
     /// <summary>
-    /// Verifies that each catalogued file a fix established as a malformed mail store over a sound container is
+    /// Verifies that each cataloged file a fix established as a malformed mail store over a sound container is
     /// rejected by the store walk with <see cref="OutlookPstFormatException" />, the exception the row names.
     /// </summary>
-    /// <param name="fix">The catalogue row.</param>
+    /// <param name="fix">The catalog row.</param>
     [TestMethod]
     [TestCategory("Regression")]
     [DynamicData(
@@ -82,11 +82,11 @@ public sealed partial class PstReleaseNoteCorpusTests
     }
 
     /// <summary>
-    /// Verifies that each catalogued file a fix established as a container fault, read on the Store surface, is
+    /// Verifies that each cataloged file a fix established as a container fault, read on the Store surface, is
     /// rejected with <see cref="OutlookPstFormatException" />, the mail store's own exception, whose inner exception is
     /// the container exception the row names.
     /// </summary>
-    /// <param name="fix">The catalogue row.</param>
+    /// <param name="fix">The catalog row.</param>
     [TestMethod]
     [TestCategory("Regression")]
     [DynamicData(

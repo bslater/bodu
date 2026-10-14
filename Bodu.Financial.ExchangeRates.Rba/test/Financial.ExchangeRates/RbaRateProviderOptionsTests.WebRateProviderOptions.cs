@@ -21,7 +21,7 @@ public partial class RbaRateProviderOptionsTests
     }
 
     /// <summary>
-    /// Verifies that the options declare only the RBA-specific members - the era catalogue and the on-disk cache
+    /// Verifies that the options declare only the RBA-specific members - the era catalog and the on-disk cache
     /// settings - and neither redeclare a shared member nor keep <c>BaseUrl</c> or
     /// <c>CurrentEraRefreshInterval</c>.
     /// </summary>

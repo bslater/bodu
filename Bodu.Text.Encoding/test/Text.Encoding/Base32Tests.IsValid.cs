@@ -34,7 +34,7 @@ public sealed partial class Base32Tests
     }
 
     /// <summary>
-    /// Verifies that <see cref="Base32.IsBase32Digit" /> recognises a Standard variant symbol.
+    /// Verifies that <see cref="Base32.IsBase32Digit" /> recognizes a Standard variant symbol.
     /// </summary>
     [TestMethod]
     public void IsBase32Digit_WhenStandardSymbol_ShouldReturnTrue()

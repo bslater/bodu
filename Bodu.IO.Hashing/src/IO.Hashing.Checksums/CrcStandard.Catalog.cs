@@ -19,11 +19,11 @@ using System.Threading;
 public sealed partial class CrcStandard
 {
 #pragma warning disable CS8669 // The annotation for nullable reference types should only be used in code within a #nullable annotations context. Auto-generated code requires an explicit #nullable directive in source.
-    /// <summary>Compact value-type row in the packed catalogue data table. Indexed by <see cref="CrcStandards" /> ordinal.</summary>
+    /// <summary>Compact value-type row in the packed catalog data table. Indexed by <see cref="CrcStandards" /> ordinal.</summary>
     private readonly struct CatalogEntry
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="CatalogEntry" /> struct with the parameters of one catalogue standard.
+        /// Initializes a new instance of the <see cref="CatalogEntry" /> struct with the parameters of one catalog standard.
         /// </summary>
         /// <param name="name">The canonical RevEng name of the standard.</param>
         /// <param name="size">The width of the CRC, in bits.</param>
@@ -65,7 +65,7 @@ public sealed partial class CrcStandard
         public readonly bool ReflectOut;
     }
 
-    /// <summary>The packed parameters of every catalogue standard, in <see cref="CrcStandards" /> order.</summary>
+    /// <summary>The packed parameters of every catalog standard, in <see cref="CrcStandards" /> order.</summary>
     private static readonly CatalogEntry[] s_catalog = new CatalogEntry[]
     {
         new CatalogEntry("CRC-3/GSM", 3, 0x3UL, 0x0UL, false, false, 0x7UL),
@@ -188,11 +188,11 @@ public sealed partial class CrcStandard
     /// <summary>Lazy map from canonical name or alias to the enum ordinal. Built on first <see cref="FromName(string)" /> call.</summary>
     private static Dictionary<string, CrcStandards>? s_nameToEnum;
 
-    /// <summary>Lazy snapshot of every catalogue <see cref="CrcStandard" /> instance; materialized on first <see cref="All" /> access.</summary>
+    /// <summary>Lazy snapshot of every catalog <see cref="CrcStandard" /> instance; materialized on first <see cref="All" /> access.</summary>
     private static IReadOnlyList<CrcStandard>? s_all;
 
     /// <summary>
-    /// Gets a snapshot of every supported CRC standard in the catalogue, in declaration order.
+    /// Gets a snapshot of every supported CRC standard in the catalog, in declaration order.
     /// </summary>
     /// <value>A read-only list containing one <see cref="CrcStandard" /> per canonical entry.</value>
     /// <remarks>
@@ -213,11 +213,11 @@ public sealed partial class CrcStandard
     /// <summary>
     /// Materializes - or retrieves from cache - the <see cref="CrcStandard" /> identified by the given enum value.
     /// </summary>
-    /// <param name="standard">The catalogue entry to resolve. Must be a defined <see cref="CrcStandards" /> value.</param>
+    /// <param name="standard">The catalog entry to resolve. Must be a defined <see cref="CrcStandards" /> value.</param>
     /// <returns>The shared <see cref="CrcStandard" /> instance for <paramref name="standard" />.</returns>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="standard" /> is not a defined enum value.</exception>
     /// <remarks>
-    /// <para>The first call for a given value constructs a new <see cref="CrcStandard" /> from the packed catalogue data and races
+    /// <para>The first call for a given value constructs a new <see cref="CrcStandard" /> from the packed catalog data and races
     /// to publish it into the per-entry cache. Subsequent calls - including concurrent calls - return the same instance, so
     /// reference equality is stable.</para>
     /// </remarks>
@@ -246,12 +246,12 @@ public sealed partial class CrcStandard
     }
 
     /// <summary>
-    /// Resolves a catalogue entry by its canonical name or any of its published aliases.
+    /// Resolves a catalog entry by its canonical name or any of its published aliases.
     /// </summary>
     /// <param name="name">The canonical CRC standard name, or an alias. Comparison is ordinal and case-sensitive.</param>
     /// <returns>The shared <see cref="CrcStandard" /> instance for <paramref name="name" />.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="name" /> is <see langword="null" />.</exception>
-    /// <exception cref="KeyNotFoundException">No catalogue entry matching <paramref name="name" /> exists.</exception>
+    /// <exception cref="KeyNotFoundException">No catalog entry matching <paramref name="name" /> exists.</exception>
     public static CrcStandard FromName(string name)
     {
         ThrowHelper.ThrowIfNull(name);
@@ -262,11 +262,11 @@ public sealed partial class CrcStandard
     }
 
     /// <summary>
-    /// Attempts to resolve a catalogue entry by its canonical name or alias without throwing.
+    /// Attempts to resolve a catalog entry by its canonical name or alias without throwing.
     /// </summary>
     /// <param name="name">The canonical CRC standard name or alias to look up.</param>
     /// <param name="standard">When this method returns, contains the matching <see cref="CrcStandard" /> if found; otherwise, <see langword="null" />.</param>
-    /// <returns><see langword="true" /> if a catalogue entry was found; otherwise, <see langword="false" />.</returns>
+    /// <returns><see langword="true" /> if a catalog entry was found; otherwise, <see langword="false" />.</returns>
     public static bool TryFromName(string? name, out CrcStandard? standard)
     {
         if (name is not null && GetNameToEnumMap().TryGetValue(name, out CrcStandards id))
@@ -490,10 +490,10 @@ public sealed partial class CrcStandard
     }
 
     /// <summary>
-    /// Materializes every catalogue standard in declaration order and publishes the read-only snapshot, so that every
+    /// Materializes every catalog standard in declaration order and publishes the read-only snapshot, so that every
     /// caller shares the snapshot that is published first.
     /// </summary>
-    /// <returns>The published snapshot of every catalogue standard.</returns>
+    /// <returns>The published snapshot of every catalog standard.</returns>
     private static IReadOnlyList<CrcStandard> BuildAll()
     {
         var array = new CrcStandard[s_catalog.Length];

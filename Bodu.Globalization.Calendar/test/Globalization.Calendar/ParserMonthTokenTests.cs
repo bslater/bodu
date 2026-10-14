@@ -278,7 +278,7 @@ public sealed class ParserMonthTokenTests
     }
 
     /// <summary>
-    /// Verifies that an unrecognised month name on a Gregorian <c>Fixed</c> rule is rejected with the
+    /// Verifies that an unrecognized month name on a Gregorian <c>Fixed</c> rule is rejected with the
     /// <c>BODU-CAL-MONTH</c> diagnostic when loaded from XML.
     /// </summary>
     [TestMethod]
@@ -293,7 +293,7 @@ public sealed class ParserMonthTokenTests
     }
 
     /// <summary>
-    /// Verifies that an unrecognised month name on a Gregorian <c>Fixed</c> rule is rejected with the
+    /// Verifies that an unrecognized month name on a Gregorian <c>Fixed</c> rule is rejected with the
     /// <c>BODU-CAL-MONTH</c> diagnostic when loaded from JSON.
     /// </summary>
     [TestMethod]
@@ -313,7 +313,7 @@ public sealed class ParserMonthTokenTests
     }
 
     /// <summary>
-    /// Verifies that an unrecognised Hebrew month token on a Hebrew <c>Fixed</c> rule is rejected with the
+    /// Verifies that an unrecognized Hebrew month token on a Hebrew <c>Fixed</c> rule is rejected with the
     /// <c>BODU-CAL-MONTH</c> diagnostic. In v1 an unknown alias deferred to a null occurrence at resolution time; the
     /// v2 parser reports it during load.
     /// </summary>

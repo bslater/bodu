@@ -13,7 +13,7 @@ namespace Bodu.Text.Delimited;
 public sealed partial class DelimitedReleaseNoteCorpusTests
 {
     /// <summary>
-    /// Represents the options a catalogue row runs with, and maps them onto the reader and writer options.
+    /// Represents the options a catalog row runs with, and maps them onto the reader and writer options.
     /// </summary>
     /// <remarks>
     /// Each option starts at the reader's and writer's own default: <c>'\0'</c> for the delimiter, quote and comment

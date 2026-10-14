@@ -122,7 +122,7 @@ public sealed partial class CachingRateProviderTests
     }
 
     /// <summary>
-    /// Verifies that a pre-cancelled token aborts the warm-up with a cancellation exception rather than being
+    /// Verifies that a pre-canceled token aborts the warm-up with a cancellation exception rather than being
     /// swallowed as failed pairs.
     /// </summary>
     [TestMethod]

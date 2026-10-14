@@ -96,10 +96,10 @@ internal static class RateObservationNormalizer
     /// <summary>
     /// Sorts the supplied buffer in place, rejects duplicate day numbers, and applies the empty-input policy.
     /// </summary>
-    /// <param name="buffer">The buffer to normalise.</param>
+    /// <param name="buffer">The buffer to normalize.</param>
     /// <param name="paramName">The caller-side parameter name reported in raised exceptions.</param>
     /// <param name="allowEmpty">Whether an empty buffer is acceptable.</param>
-    /// <returns>The normalised buffer.</returns>
+    /// <returns>The normalized buffer.</returns>
     /// <exception cref="ArgumentException">
     /// Thrown when <paramref name="buffer" /> is empty (and <paramref name="allowEmpty" /> is <see langword="false" />)
     /// or contains duplicate day numbers.

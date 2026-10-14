@@ -7,7 +7,7 @@
 namespace Bodu.Globalization.Calendar;
 
 /// <summary>
-/// Verifies the bundled <c>global-jain</c> catalogue, whose observances are derived from the engine's solar-anchored
+/// Verifies the bundled <c>global-jain</c> catalog, whose observances are derived from the engine's solar-anchored
 /// Hindu lunar algorithm. Mahavir Jayanti, Samvatsari, Jain Diwali and Kartik Purnima resolve to within two days of
 /// their published dates; the festivals authored as exact offsets from those anchors (Paryushana, Das Lakshan) are
 /// verified by their defining relationship and span.
@@ -29,9 +29,9 @@ public sealed class JainFestivalKnownAnswerTests
     private const int ToleranceDays = 2;
 
     /// <summary>
-    /// Builds a service over the bundled <c>global-jain</c> catalogue.
+    /// Builds a service over the bundled <c>global-jain</c> catalog.
     /// </summary>
-    /// <returns>A service for the catalogue.</returns>
+    /// <returns>A service for the catalog.</returns>
     private static NotableDateService CreateService() =>
         CommonCatalogues.Service("global-jain");
 
@@ -73,7 +73,7 @@ public sealed class JainFestivalKnownAnswerTests
     }
 
     /// <summary>
-    /// Verifies the exact offset relationships the catalogue authors around Samvatsari: the eight-day Shvetambara
+    /// Verifies the exact offset relationships the catalog authors around Samvatsari: the eight-day Shvetambara
     /// Paryushana concludes on Samvatsari, and the ten-day Digambara Das Lakshan begins the day after it.
     /// </summary>
     /// <param name="year">The Gregorian year.</param>
@@ -97,7 +97,7 @@ public sealed class JainFestivalKnownAnswerTests
     }
 
     /// <summary>
-    /// Verifies that Mahavir Jayanti resolves to four days after the catalogue's Ram Navami anchor (Chaitra shukla
+    /// Verifies that Mahavir Jayanti resolves to four days after the catalog's Ram Navami anchor (Chaitra shukla
     /// navami to trayodashi), the defining tithi relationship of the festival.
     /// </summary>
     /// <param name="year">The Gregorian year.</param>

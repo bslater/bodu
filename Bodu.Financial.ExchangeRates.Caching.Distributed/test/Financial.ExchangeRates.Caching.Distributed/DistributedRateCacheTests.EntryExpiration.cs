@@ -47,7 +47,7 @@ public sealed partial class DistributedRateCacheTests
     }
 
     /// <summary>
-    /// Verifies that a custom margin is honoured in the stamped lifetime.
+    /// Verifies that a custom margin is honored in the stamped lifetime.
     /// </summary>
     [TestMethod]
     public void Store_WhenCustomMargin_ShouldStampAbsoluteExpirationWithThatMargin()
@@ -65,7 +65,7 @@ public sealed partial class DistributedRateCacheTests
     }
 
     /// <summary>
-    /// Verifies that a <see langword="null" /> margin restores the pre-margin behaviour: the blob is written without
+    /// Verifies that a <see langword="null" /> margin restores the pre-margin behavior: the blob is written without
     /// any server-side expiration.
     /// </summary>
     [TestMethod]

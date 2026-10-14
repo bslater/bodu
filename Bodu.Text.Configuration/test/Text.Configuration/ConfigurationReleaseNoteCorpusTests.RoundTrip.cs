@@ -14,10 +14,10 @@ namespace Bodu.Text.Configuration;
 public sealed partial class ConfigurationReleaseNoteCorpusTests
 {
     /// <summary>
-    /// Verifies that saving each catalogued document with its profile's write options writes the expected text, when
+    /// Verifies that saving each cataloged document with its profile's write options writes the expected text, when
     /// the row gives it, and text that parses and resolves to the same view as the input.
     /// </summary>
-    /// <param name="fix">The catalogue row.</param>
+    /// <param name="fix">The catalog row.</param>
     [TestMethod]
     [TestCategory("Regression")]
     [DynamicData(

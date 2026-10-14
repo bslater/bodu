@@ -113,7 +113,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that a <see cref="CancellationTriggerStream" /> cancelling the token mid-read causes
+    /// Verifies that a <see cref="CancellationTriggerStream" /> canceling the token mid-read causes
     /// <see cref="NonCryptographicHashAlgorithmExtensions.AppendDataAsync" /> to throw
     /// <see cref="OperationCanceledException" />.
     /// </summary>
@@ -234,7 +234,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
 
     /// <summary>
     /// Verifies that <see cref="NonCryptographicHashAlgorithmExtensions.AppendDataAsync" /> throws
-    /// <see cref="OperationCanceledException" /> when the token is already cancelled before the call.
+    /// <see cref="OperationCanceledException" /> when the token is already canceled before the call.
     /// </summary>
     [TestMethod]
     public async Task AppendDataAsync_WhenTokenAlreadyCancelled_ShouldThrowExactly()

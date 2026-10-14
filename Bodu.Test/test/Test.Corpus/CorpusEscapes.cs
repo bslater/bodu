@@ -11,8 +11,8 @@ using System.Text;
 namespace Bodu.Test.Corpus;
 
 /// <summary>
-/// Decodes and encodes the escapes that the release-note fix catalogues under <c>corpus/</c> use in their <c>input</c>,
-/// <c>expected</c> and <c>options</c> fields, which keep every catalogue printable ASCII.
+/// Decodes and encodes the escapes that the release-note fix catalogs under <c>corpus/</c> use in their <c>input</c>,
+/// <c>expected</c> and <c>options</c> fields, which keep every catalog printable ASCII.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -22,7 +22,7 @@ namespace Bodu.Test.Corpus;
 /// </para>
 /// <para>
 /// Any other backslash sequence, and any character outside printable ASCII, is an error. Raw bytes, byte order marks
-/// and non-ASCII text therefore reach a catalogue only through the escapes.
+/// and non-ASCII text therefore reach a catalog only through the escapes.
 /// </para>
 /// </remarks>
 public static class CorpusEscapes
@@ -33,7 +33,7 @@ public static class CorpusEscapes
     /// <summary>
     /// Attempts to decode an escaped field into the bytes it stands for.
     /// </summary>
-    /// <param name="field">The escaped field, as it appears in the catalogue.</param>
+    /// <param name="field">The escaped field, as it appears in the catalog.</param>
     /// <param name="bytes">When the method returns <see langword="true" />, the decoded bytes; otherwise empty.</param>
     /// <param name="error">
     /// When the method returns <see langword="false" />, a description of the first problem.
@@ -133,7 +133,7 @@ public static class CorpusEscapes
     /// <summary>
     /// Decodes an escaped field into the bytes it stands for.
     /// </summary>
-    /// <param name="field">The escaped field, as it appears in the catalogue.</param>
+    /// <param name="field">The escaped field, as it appears in the catalog.</param>
     /// <returns>The decoded bytes.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="field" /> is <see langword="null" />.</exception>
     /// <exception cref="FormatException"><paramref name="field" /> holds a character or escape that is not valid.</exception>
@@ -143,7 +143,7 @@ public static class CorpusEscapes
     /// <summary>
     /// Decodes an escaped field and reads the bytes it stands for as UTF-8 text.
     /// </summary>
-    /// <param name="field">The escaped field, as it appears in the catalogue.</param>
+    /// <param name="field">The escaped field, as it appears in the catalog.</param>
     /// <returns>The decoded text.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="field" /> is <see langword="null" />.</exception>
     /// <exception cref="FormatException">
@@ -165,7 +165,7 @@ public static class CorpusEscapes
     }
 
     /// <summary>
-    /// Writes bytes in the catalogue's escaped notation.
+    /// Writes bytes in the catalog's escaped notation.
     /// </summary>
     /// <param name="bytes">The bytes to escape.</param>
     /// <returns>

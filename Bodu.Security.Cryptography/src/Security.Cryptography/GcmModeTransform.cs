@@ -60,7 +60,7 @@ namespace Bodu.Security.Cryptography;
 /// <c>0xFFFFFFFF</c>.
 /// </para>
 /// <para>
-/// <strong>When to use GCM.</strong> The default modern AEAD mode - single-pass, parallelisable, and
+/// <strong>When to use GCM.</strong> The default modern AEAD mode - single-pass, parallelizable, and
 /// hardware-accelerated on AES-NI / PCLMULQDQ. The cost is fragility under nonce reuse: a single repeated
 /// <c>(key, nonce)</c> pair leaks the GHASH subkey and forfeits authentication forever. For nonce-misuse resistance
 /// prefer <see cref="GcmSivModeTransform" /> or <see cref="SivModeTransform" />; for constrained environments prefer
@@ -69,7 +69,7 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <para>
 /// <strong>When to use GCM.</strong> The default modern AEAD mode - TLS 1.2/1.3, IPsec ESP, SSH, QUIC, and most
-/// file-format AEAD layers all use AES-GCM. Single-pass, parallelisable, hardware-accelerated on AES-NI / PCLMULQDQ,
+/// file-format AEAD layers all use AES-GCM. Single-pass, parallelizable, hardware-accelerated on AES-NI / PCLMULQDQ,
 /// and the fastest AEAD on commodity x86/ARM. The cost is fragility under nonce reuse: a single repeated
 /// <c>(key, nonce)</c> pair leaks the GHASH key and forfeits authentication forever. Use only when the caller can <em>
 /// guarantee</em> nonce uniqueness - usually via a 96-bit counter or a random nonce drawn from a large enough space.

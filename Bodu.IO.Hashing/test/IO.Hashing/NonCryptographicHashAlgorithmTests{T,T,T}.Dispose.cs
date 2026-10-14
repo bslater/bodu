@@ -47,7 +47,7 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
     /// <remarks>
     /// Skipped (inconclusive) when <typeparamref name="TAlgorithm" /> does not implement <see cref="IDisposable" />.
     /// Reads the property value before disposal, then reassigns the same value after disposal - exercising the
-    /// setter without changing observable behaviour.
+    /// setter without changing observable behavior.
     /// </remarks>
     [TestMethod(UnfoldingStrategy = TestDataSourceUnfoldingStrategy.Unfold)]
     [DynamicData(

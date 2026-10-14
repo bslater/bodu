@@ -31,7 +31,7 @@ public partial class SymmetricAlgorithmExtensionTests
 {
     /// <summary>
     /// Provides a set of <see cref="SymmetricAlgorithm" /> instances for data-driven tests that
-    /// need to verify behaviour across multiple concrete algorithms.
+    /// need to verify behavior across multiple concrete algorithms.
     /// </summary>
     /// <returns>
     /// A sequence of single-element object arrays, each containing a fresh

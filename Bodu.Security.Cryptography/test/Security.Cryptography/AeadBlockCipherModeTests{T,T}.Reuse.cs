@@ -14,7 +14,7 @@ namespace Bodu.Security.Cryptography;
 /// (<c>Encrypt_WhenCalledTwice_ShouldThrowInvalidOperationException</c> and the matching
 /// <c>Decrypt_WhenCalledTwice_…</c>) cover Encrypt → Encrypt and Decrypt → Decrypt; this file
 /// adds Encrypt → Decrypt and Decrypt → Encrypt cross-direction reuse plus the post-tag-mismatch
-/// poisoning regression. Together they ensure GCM, GCM-SIV, EAX, OCB and SIV all honour the
+/// poisoning regression. Together they ensure GCM, GCM-SIV, EAX, OCB and SIV all honor the
 /// "fresh instance per (key, nonce, message) tuple" contract that
 /// <see cref="AsconAead128" /> already pins for itself.
 /// </summary>
@@ -77,7 +77,7 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
     /// Uses real AES so the authentication failure cannot be masked by the linearity of
     /// <see cref="MonitoringBlockCipher" />. Mirrors
     /// <c>AsconAead128Tests.EdgeCases.Encrypt_AfterDecryptTagMismatch_ShouldThrowExactly</c> for
-    /// the abstract base, ensuring GCM / GCM-SIV / EAX / OCB / SIV all honour the same poisoned-
+    /// the abstract base, ensuring GCM / GCM-SIV / EAX / OCB / SIV all honor the same poisoned-
     /// state contract.
     /// </remarks>
     [TestMethod]

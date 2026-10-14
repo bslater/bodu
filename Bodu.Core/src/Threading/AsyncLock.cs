@@ -14,8 +14,8 @@ namespace Bodu.Threading;
 /// </summary>
 /// <remarks>
 /// <para>
-/// <see cref="AsyncLock" /> is the asynchronous analogue of the C# <c>lock</c> statement. Because a held lock may need
-/// to span an <c>await</c>, the lock is acquired with <see cref="LockAsync()" /> and released by disposing the
+/// <see cref="AsyncLock" /> is the asynchronous analog of the C# <c>lock</c> statement. Because a held lock may need to
+/// span an <c>await</c>, the lock is acquired with <see cref="LockAsync()" /> and released by disposing the
 /// <see cref="Releaser" /> it returns, typically with a <c>using</c> statement.
 /// </para>
 /// <para>

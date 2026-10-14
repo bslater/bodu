@@ -17,7 +17,7 @@ namespace Bodu.Formats.Excel;
 
 /// <summary>
 /// Holds Bodu.Formats.Excel.Binary and Bodu.IO.Biff to the defect fixes other <c>.xls</c> readers list in their release
-/// notes, as catalogued in <c>corpus/biff/fixes/</c> and embedded under <c>Fixtures/ReleaseNotes/</c>.
+/// notes, as cataloged in <c>corpus/biff/fixes/</c> and embedded under <c>Fixtures/ReleaseNotes/</c>.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -37,13 +37,13 @@ namespace Bodu.Formats.Excel;
 [TestClass]
 public sealed partial class ExcelBinaryReleaseNoteCorpusTests
 {
-    /// <summary>The corpus area whose catalogues this class runs.</summary>
+    /// <summary>The corpus area whose catalogs this class runs.</summary>
     private const string Area = "biff";
 
     /// <summary>The time, in milliseconds, that one row may run before it fails.</summary>
     private const int RowTimeout = 10_000;
 
-    /// <summary>The option names a catalogue row may use, each mapped by <see cref="RowOptions.Parse" />.</summary>
+    /// <summary>The option names a catalog row may use, each mapped by <see cref="RowOptions.Parse" />.</summary>
     private static readonly string[] s_optionNames = ["Surface", "Version", "Book", "Formats", "DetectDates"];
 
     /// <summary>The exceptions a <c>reject</c> row on the Workbook surface may name.</summary>
@@ -59,7 +59,7 @@ public sealed partial class ExcelBinaryReleaseNoteCorpusTests
     /// <summary>The exceptions a <c>reject</c> row on the Records surface may name.</summary>
     private static readonly string[] s_recordsExceptions = [nameof(BiffFormatException), nameof(BiffUnsupportedVersionException)];
 
-    /// <summary>The catalogues embedded in this test assembly, loaded once.</summary>
+    /// <summary>The catalogs embedded in this test assembly, loaded once.</summary>
     private static readonly Lazy<IReadOnlyList<ReleaseNoteCatalog>> s_catalogs =
         new(() => ReleaseNoteCatalog.LoadEmbedded(typeof(ExcelBinaryReleaseNoteCorpusTests).Assembly));
 
@@ -85,9 +85,9 @@ public sealed partial class ExcelBinaryReleaseNoteCorpusTests
         RunnableRows("roundtrip");
 
     /// <summary>
-    /// Gets every row of every embedded catalogue.
+    /// Gets every row of every embedded catalog.
     /// </summary>
-    /// <value>The rows, catalogue by catalogue in file order.</value>
+    /// <value>The rows, catalog by catalog in file order.</value>
     private static IEnumerable<ReleaseNoteFix> AllRows =>
         s_catalogs.Value.SelectMany(catalog => catalog.Rows);
 
@@ -778,7 +778,7 @@ public sealed partial class ExcelBinaryReleaseNoteCorpusTests
     }
 
     /// <summary>
-    /// Writes a rendering in the catalogue's escaped notation, for a failure message.
+    /// Writes a rendering in the catalog's escaped notation, for a failure message.
     /// </summary>
     /// <param name="rendering">The rendering.</param>
     /// <returns>
@@ -791,7 +791,7 @@ public sealed partial class ExcelBinaryReleaseNoteCorpusTests
     /// Asserts that rendering a generated input throws exactly the exception a <c>reject</c> row names.
     /// </summary>
     /// <typeparam name="TException">The exception the row names.</typeparam>
-    /// <param name="fix">The catalogue row.</param>
+    /// <param name="fix">The catalog row.</param>
     /// <param name="input">The generated input.</param>
     /// <param name="options">The row options.</param>
     private static void AssertRejects<TException>(ReleaseNoteFix fix, GeneratedInput input, RowOptions options)

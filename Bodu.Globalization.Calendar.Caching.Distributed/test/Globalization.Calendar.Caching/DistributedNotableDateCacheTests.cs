@@ -12,7 +12,7 @@ using Microsoft.Extensions.Options;
 namespace Bodu.Globalization.Calendar.Caching;
 
 /// <summary>
-/// Verifies the distributed-specific persistence and option behaviour of <see cref="DistributedNotableDateCache" />.
+/// Verifies the distributed-specific persistence and option behavior of <see cref="DistributedNotableDateCache" />.
 /// </summary>
 [TestClass]
 public sealed partial class DistributedNotableDateCacheTests

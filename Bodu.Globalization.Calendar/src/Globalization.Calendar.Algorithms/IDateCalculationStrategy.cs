@@ -16,7 +16,7 @@ namespace Bodu.Globalization.Calendar.Algorithms;
 /// <see cref="DayOfWeekInMonthStrategy" />, <see cref="RelativeWeekdayInMonthStrategy" />,
 /// <see cref="WeekdayNearDateStrategy" />, <see cref="OffsetFromRuleStrategy" />, and
 /// <see cref="AlgorithmDateStrategy" /> (which dispatches to a registered <see cref="INotableDateAlgorithm" />). A
-/// strategy is selected per rule when a document is loaded; consumers extend the catalogue through
+/// strategy is selected per rule when a document is loaded; consumers extend the catalog through
 /// <see cref="INotableDateAlgorithm" /> rather than by implementing this interface directly.
 /// </para>
 /// </remarks>

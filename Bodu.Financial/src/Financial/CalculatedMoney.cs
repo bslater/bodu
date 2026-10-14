@@ -58,7 +58,7 @@ public readonly partial struct CalculatedMoney
     /// <summary>The unrounded amount in the major unit of the currency identified by <see cref="_code" />.</summary>
     private readonly decimal _amount;
 
-    /// <summary>The currency identifying this value, or <see cref="CurrencyCode.None" /> for a default-initialised value.</summary>
+    /// <summary>The currency identifying this value, or <see cref="CurrencyCode.None" /> for a default-initialized value.</summary>
     private readonly CurrencyCode _code;
 
     /// <summary>

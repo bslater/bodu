@@ -16,7 +16,7 @@ namespace Bodu.Formats.Outlook;
 public sealed partial class PstReleaseNoteCorpusTests
 {
     /// <summary>
-    /// Runs the <c>Mail(...)</c> generator: a mail store modelled from the call's keys and written by
+    /// Runs the <c>Mail(...)</c> generator: a mail store modeled from the call's keys and written by
     /// <see cref="StoreModel" />.
     /// </summary>
     /// <remarks>

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Documentation guard rails for the DocFX site under docs/.
 
-Eight checks, each independently runnable, all run by ``all``:
+Nine checks, each independently runnable, all run by ``all``:
 
   orphans      every hand-authored page under docs/ is reachable from a TOC
   namespaces   every public namespace in the generated API metadata has an
@@ -31,6 +31,12 @@ Eight checks, each independently runnable, all run by ``all``:
   sessions     every *.runsettings file at the repository root states its
                session limit in the comment above <TestSessionTimeout>, as
                "N minutes per assembly", and the value is that many minutes
+  spelling     the prose of every /// comment in a C# file under a project's
+               src/ or test/ folder, or a shared/ source folder, uses no
+               British spelling bld/docs-checks/us-spelling.txt lists
+               (BODU-P017); code, tags, URLs and generated files are not read,
+               and bld/docs-checks/us-spelling-allowlist.txt excuses a line
+               that must keep one, with its reason
 
 Allow-lists live in bld/docs-checks/*.txt (one entry per line, ``#`` comments).
 The namespace allow-list is *debt*: entries are namespaces that still lack an
@@ -38,7 +44,7 @@ overview and should be removed as overviews are written, never added to.
 
 Usage:
   python3 bld/check-docs.py all            # after `bash bld/docs/build-api-docs.sh all`
-  python3 bld/check-docs.py orphans identifiers status targets sessions   # no build needed
+  python3 bld/check-docs.py orphans identifiers status targets sessions spelling   # no build needed
 """
 
 from __future__ import annotations
@@ -806,29 +812,281 @@ def check_sessions() -> list[str]:
     return problems
 
 
+# ------------------------------------------------------- spelling (US English documentation)
+
+
+# The folders whose C# the spelling check reads: a project's production and test sources, and the source shared
+# into several projects. Samples are not library documentation, and Bodu.CodeStyle is a separate solution.
+_SPELLING_SOURCE_DIRS = frozenset({"src", "test", "shared"})
+_SPELLING_SKIPPED_DIRS = frozenset({".git", ".vs", "bin", "obj", "node_modules", "archive", "Bodu.CodeStyle"})
+
+# A line of XML documentation. A fourth slash makes an ordinary comment.
+_DOC_LINE = re.compile(r"^[ \t]*///(?!/)(.*)$")
+
+# The parts of a documentation comment that are not prose: code blocks and inline code (to the end of the comment
+# when left open), CDATA sections, XML comments, the tags themselves with their attributes (cref, href, name), and
+# bare URLs.
+_DOC_NOT_PROSE = re.compile(
+    r"<code\b[^>]*>.*?(?:</code\s*>|\Z)"
+    r"|<c(?:\s[^>]*)?(?<!/)>.*?(?:</c\s*>|\Z)"
+    r"|<!\[CDATA\[.*?(?:\]\]>|\Z)"
+    r"|<!--.*?(?:-->|\Z)"
+    r"|<[^>]*>"
+    r"|\bhttps?://[^\s<>\"']+",
+    re.DOTALL)
+
+# A word of prose: letters, which a hyphen or an apostrophe ends, and which a digit or underscore would make part of an
+# identifier.
+_PROSE_WORD = re.compile(r"(?<![A-Za-z0-9_])[A-Za-z]+(?![A-Za-z0-9_])")
+
+# A British -> US pair in bld/docs-checks/us-spelling.txt.
+_SPELLING_PAIR = re.compile(r"([A-Za-z]+)\s*->\s*([A-Za-z]+)")
+
+
+def parse_spelling_pairs(text: str) -> tuple[dict[str, str], list[str]]:
+    """Reads the British -> US word pairs of ``bld/docs-checks/us-spelling.txt``, and what is wrong with its lines.
+
+    Each line is ``british -> american``, lowercase or not, with ``#`` starting a comment. Every inflection is a line
+    of its own, so a word is flagged only when it is listed exactly, never because of its ending.
+    """
+    pairs: dict[str, str] = {}
+    problems = []
+    for line_no, raw in enumerate(text.splitlines(), 1):
+        line = raw.split("#", 1)[0].strip()
+        if not line:
+            continue
+        match = _SPELLING_PAIR.fullmatch(line)
+        if match is None:
+            problems.append(f"us-spelling.txt:{line_no}: expected 'british -> american', found '{line}'")
+            continue
+
+        british, american = match.group(1).lower(), match.group(2).lower()
+        if british == american:
+            problems.append(f"us-spelling.txt:{line_no}: '{british}' maps to itself; remove the line")
+        elif british in pairs:
+            problems.append(f"us-spelling.txt:{line_no}: '{british}' is listed twice")
+        else:
+            pairs[british] = american
+    return pairs, problems
+
+
+def parse_spelling_allowlist(text: str) -> tuple[dict[tuple[str, int | None], str], list[str]]:
+    """Reads ``bld/docs-checks/us-spelling-allowlist.txt``: each entry's reason, keyed by its file and line.
+
+    An entry is ``path[:line]`` and its reason, separated by two spaces or a tab; the path is relative to the
+    repository root, and an entry without a line excuses the whole file. Lines starting with ``#`` are comments.
+    """
+    entries: dict[tuple[str, int | None], str] = {}
+    problems = []
+    for line_no, raw in enumerate(text.splitlines(), 1):
+        line = raw.strip()
+        if not line or line.startswith("#"):
+            continue
+        parts = re.split(r"\s{2,}|\t", line, maxsplit=1)
+        if len(parts) < 2 or not parts[1].strip():
+            problems.append(
+                f"us-spelling-allowlist.txt:{line_no}: '{line}' gives no reason; write 'path[:line]  reason'")
+            continue
+
+        location = re.fullmatch(r"(.+?)(?::(\d+))?", parts[0])
+        path, number = location.group(1), location.group(2)
+        entries[(path.replace("\\", "/"), int(number) if number else None)] = parts[1].strip()
+    return entries, problems
+
+
+def is_generated_source(name: str, text: str) -> bool:
+    """Returns whether the C# file ``name``, holding ``text``, is written by a tool and not by hand.
+
+    The rule is Roslyn's (``GeneratedCodeUtilities.IsGeneratedCode``), which ``bld/check-policy.sh`` follows too: the
+    file name, in any case, begins with ``TemporaryGeneratedFile_`` or ends in ``.designer``, ``.generated``, ``.g`` or
+    ``.g.i`` before its extension, or a comment before the file's first token carries ``<autogenerated`` or
+    ``<auto-generated``.
+    """
+    base = os.path.basename(name).lower()
+    if base.startswith("temporarygeneratedfile_"):
+        return True
+    stem = os.path.splitext(base)[0]
+    if stem.endswith((".designer", ".generated", ".g", ".g.i")):
+        return True
+    return _begins_with_generated_banner(text)
+
+
+# The banner Roslyn looks for, matched in its own case as Roslyn matches it.
+_GENERATED_BANNER = re.compile(r"<auto-?generated")
+
+
+def _begins_with_generated_banner(text: str) -> bool:
+    """Returns whether a ``//`` or ``/* */`` comment before the first token of ``text`` carries the banner.
+
+    Documentation comments (``///`` and ``/** */``) are not comments to Roslyn's test, and a preprocessor directive
+    line is passed over, as in ``BeginsWithAutoGeneratedComment``.
+    """
+    in_block = False
+    block_is_doc = False
+    block: list[str] = []
+    for line in text.lstrip("\ufeff").splitlines():
+        i = 0
+        while i < len(line):
+            if in_block:
+                end = line.find("*/", i)
+                if end < 0:
+                    block.append(line[i:])
+                    break
+                block.append(line[i:end])
+                i = end + 2
+                in_block = False
+                if not block_is_doc and _GENERATED_BANNER.search("\n".join(block)):
+                    return True
+                continue
+            if line[i] in " \t\r\f\v":
+                i += 1
+                continue
+            if line[i] == "#":
+                if line[:i].strip(" \t\f\v"):
+                    return False
+                break
+            if line.startswith("//", i):
+                is_doc = line.startswith("///", i) and not line.startswith("////", i)
+                if not is_doc and _GENERATED_BANNER.search(line, i):
+                    return True
+                break
+            if line.startswith("/*", i):
+                block_is_doc = line.startswith("/**", i) and not line.startswith("/**/", i)
+                in_block = True
+                block = []
+                i += 2
+                continue
+            return False
+    return False
+
+
+def _blank(match: re.Match[str]) -> str:
+    """Blanks out a match, keeping its newlines so that offsets after it keep their lines."""
+    return re.sub(r"[^\n]", " ", match.group(0))
+
+
+def _with_case_of(word: str, replacement: str) -> str:
+    """Writes ``replacement`` in the case of ``word``: all capitals, a leading capital, or lowercase."""
+    if len(word) > 1 and word.isupper():
+        return replacement.upper()
+    if word[0].isupper():
+        return replacement[0].upper() + replacement[1:]
+    return replacement
+
+
+def spelling_findings(text: str, pairs: dict[str, str]) -> list[tuple[int, str, str]]:
+    """Returns each British word in the XML documentation of the C# source ``text``, as (line, word, US word).
+
+    Only ``///`` lines are read, a run of them at a time, and only their prose: code blocks, inline code, tags with
+    their attributes, and URLs are skipped. A word matches when it is listed in ``pairs``, whole and in any case;
+    a hyphen or an apostrophe ends a word, a letter, digit or underscore does not.
+    """
+    findings: list[tuple[int, str, str]] = []
+    block: list[tuple[int, str]] = []
+
+    def flush() -> None:
+        if not block:
+            return
+        prose = _DOC_NOT_PROSE.sub(_blank, "\n".join(body for _, body in block))
+        for match in _PROSE_WORD.finditer(prose):
+            word = match.group(0)
+            replacement = pairs.get(word.lower())
+            if replacement is not None:
+                line_no = block[prose.count("\n", 0, match.start())][0]
+                findings.append((line_no, word, _with_case_of(word, replacement)))
+        block.clear()
+
+    for line_no, line in enumerate(text.splitlines(), 1):
+        doc = _DOC_LINE.match(line)
+        if doc:
+            block.append((line_no, doc.group(1)))
+        else:
+            flush()
+    flush()
+    return findings
+
+
+def spelling_source_files(root: str) -> list[str]:
+    """Returns every C# file under a ``src``, ``test`` or ``shared`` folder below ``root``, in a stable order."""
+    files = []
+    for dirpath, dirnames, filenames in os.walk(root):
+        dirnames[:] = sorted(d for d in dirnames if d not in _SPELLING_SKIPPED_DIRS)
+        if not _SPELLING_SOURCE_DIRS.intersection(os.path.relpath(dirpath, root).split(os.sep)):
+            continue
+        files += [os.path.join(dirpath, name) for name in sorted(filenames) if name.endswith(".cs")]
+    return files
+
+
+def check_spelling(root: str = ROOT, checks: str = CHECKS) -> list[str]:
+    """Holds the XML documentation of the solution's sources to US English.
+
+    CLAUDE.md requires every XML documentation comment to be written in US English, as the .NET base class library
+    is. The British spellings to reject, one inflection per line, are in ``bld/docs-checks/us-spelling.txt``, and the
+    lines that must keep one (a name, or text quoted from a third party) are in
+    ``bld/docs-checks/us-spelling-allowlist.txt``, each with its reason. Generated files are not read: their text
+    comes from the tool that writes them. An allowlist entry that excuses nothing is reported, so that the list
+    cannot outlive the text it was written for.
+    """
+    pairs_path = os.path.join(checks, "us-spelling.txt")
+    if not os.path.exists(pairs_path):
+        return [f"{os.path.relpath(pairs_path, root).replace(os.sep, '/')}: missing; the spelling check needs its word list"]
+
+    pairs, problems = parse_spelling_pairs(read(pairs_path))
+    allow_path = os.path.join(checks, "us-spelling-allowlist.txt")
+    allow, allow_problems = parse_spelling_allowlist(read(allow_path) if os.path.exists(allow_path) else "")
+    problems += allow_problems
+
+    used: set[tuple[str, int | None]] = set()
+    for path in spelling_source_files(root):
+        text = read(path)
+        if is_generated_source(os.path.basename(path), text):
+            continue
+
+        rel = os.path.relpath(path, root).replace(os.sep, "/")
+        for line_no, word, replacement in spelling_findings(text, pairs):
+            excused = next((key for key in ((rel, line_no), (rel, None)) if key in allow), None)
+            if excused is not None:
+                used.add(excused)
+                continue
+            problems.append(
+                f"{rel}:{line_no}: '{word}' is British spelling; write '{replacement}' (XML documentation is in US "
+                f"English), or add the line to bld/docs-checks/us-spelling-allowlist.txt with the reason it must stay")
+
+    for path, line_no in allow:
+        if (path, line_no) not in used:
+            location = f"{path}:{line_no}" if line_no is not None else path
+            problems.append(f"us-spelling-allowlist.txt: {location} excuses no British spelling; remove it")
+    return problems
+
+
 # ------------------------------------------------------------------- main
+
+
+# Every check, in the order ``all`` runs them.
+RUNNERS = {
+    "orphans": check_orphans,
+    "namespaces": check_namespaces,
+    "identifiers": check_identifiers,
+    "status": check_status,
+    "packages": check_packages,
+    "publication": check_publication,
+    "targets": check_targets,
+    "sessions": check_sessions,
+    "spelling": check_spelling,
+}
+CHECK_NAMES = tuple(RUNNERS)
 
 
 def main(argv: list[str]) -> int:
     wanted = [a for a in argv if not a.startswith("-")] or ["all"]
     if "all" in wanted:
-        wanted = ["orphans", "namespaces", "identifiers", "status", "packages", "publication", "targets", "sessions"]
-    runners = {
-        "orphans": check_orphans,
-        "namespaces": check_namespaces,
-        "identifiers": check_identifiers,
-        "status": check_status,
-        "packages": check_packages,
-        "publication": check_publication,
-        "targets": check_targets,
-        "sessions": check_sessions,
-    }
+        wanted = list(CHECK_NAMES)
     failed = 0
     for name in wanted:
-        if name not in runners:
+        if name not in RUNNERS:
             print(f"unknown check '{name}'", file=sys.stderr)
             return 2
-        problems = runners[name]()
+        problems = RUNNERS[name]()
         if problems:
             failed += 1
             print(f"[{name}] {len(problems)} problem(s):")

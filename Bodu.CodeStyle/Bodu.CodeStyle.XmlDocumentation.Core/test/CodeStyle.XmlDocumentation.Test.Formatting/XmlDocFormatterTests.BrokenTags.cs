@@ -109,7 +109,7 @@ public partial class XmlDocFormatterTests
 
     /// <summary>
     /// Verifies that a <c>&lt;param&gt;</c> tag whose attribute name is split mid-token across <c>///</c>
-    /// lines is permissively reassembled onto a single line, normalising the embedded newline to a space. The
+    /// lines is permissively reassembled onto a single line, normalizing the embedded newline to a space. The
     /// resulting attribute structure remains as-written (the formatter does not invent a corrected attribute
     /// name) but the output is line-friendly.
     /// </summary>
@@ -171,7 +171,7 @@ public partial class XmlDocFormatterTests
 
     /// <summary>
     /// Verifies that a misformatted single-line <c>&lt;param&gt;</c> with extra spaces and broken indentation
-    /// is normalised.
+    /// is normalized.
     /// </summary>
     [TestMethod]
     public void Format_WhenParamHasExtraWhitespace_ShouldCollapseToCanonical()

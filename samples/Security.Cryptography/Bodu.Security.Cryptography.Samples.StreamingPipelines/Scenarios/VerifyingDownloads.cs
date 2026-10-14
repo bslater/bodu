@@ -10,14 +10,14 @@ using Bodu.Security.Cryptography.Extensions;
 namespace Bodu.Security.Cryptography.Samples.StreamingPipelines.Scenarios;
 
 /// <summary>
-/// Checks a downloaded artefact against the digests its publisher lists, the way a package manager or an updater
+/// Checks a downloaded artifact against the digests its publisher lists, the way a package manager or an updater
 /// does: <c>VerifyHashAsync</c> over the content stream for BLAKE2b and the BCL's SHA-256, <c>AppendDataAsync</c> to
 /// digest a download that arrives in parts, and <c>TryVerifyHash</c> / <c>TryVerifyHashAsync</c> for manifest
 /// entries that cannot be trusted to be well formed.
 /// </summary>
 public static class VerifyingDownloads
 {
-    /// <summary>The length of the artefact's header part, in bytes.</summary>
+    /// <summary>The length of the artifact's header part, in bytes.</summary>
     private const int HeaderLength = 512;
 
     /// <summary>

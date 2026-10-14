@@ -287,7 +287,7 @@ public sealed partial class EncodingExtensionsTests
 
     /// <summary>
     /// Verifies that <see cref="EncodingExtensions.ToOwnedBytes(ReadOnlySpan{char}, System.Text.Encoding, MemoryPool{byte})" />
-    /// honours a caller-supplied <see cref="MemoryPool{T}" />.
+    /// honors a caller-supplied <see cref="MemoryPool{T}" />.
     /// </summary>
     [TestMethod]
     public void ToOwnedBytes_WhenCustomPoolSupplied_ShouldRentFromIt()

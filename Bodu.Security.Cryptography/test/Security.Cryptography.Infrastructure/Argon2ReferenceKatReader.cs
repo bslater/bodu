@@ -187,7 +187,7 @@ public static partial class Argon2ReferenceKatReader
     }
 
     /// <summary>
-    /// Reads the hex bytes that follow a labelled trace line, such as <c>Salt[16]: 02 02 …</c>.
+    /// Reads the hex bytes that follow a labeled trace line, such as <c>Salt[16]: 02 02 …</c>.
     /// </summary>
     /// <param name="line">The trimmed trace line.</param>
     /// <param name="label">The label the line must start with.</param>

@@ -14,7 +14,7 @@ namespace Bodu.Globalization.Calendar.Caching.Distributed.Contracts;
 
 /// <summary>
 /// Runs the shared <see cref="INotableDateCache" /> contract against the distributed cache over an in-process
-/// <see cref="MemoryDistributedCache" />, confirming the distributed backend is behaviourally identical to the in-memory
+/// <see cref="MemoryDistributedCache" />, confirming the distributed backend is behaviorally identical to the in-memory
 /// and file caches.
 /// </summary>
 [TestClass]

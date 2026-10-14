@@ -9,7 +9,7 @@ namespace Bodu.Security.Cryptography;
 /// <summary>
 /// Base class for testing <see cref="BlockCipherTransform" /> implementations. Extends
 /// <see cref="CryptoTransformTests{TCryptoTransform}" /> with tests specific to block cipher transforms,
-/// including null-argument validation, property invariants, and behavioural contract coverage at the
+/// including null-argument validation, property invariants, and behavioral contract coverage at the
 /// <see cref="System.Security.Cryptography.ICryptoTransform" /> layer.
 /// </summary>
 /// <typeparam name="TTest">The concrete test class, used to resolve specification data for

@@ -14,7 +14,7 @@ namespace Bodu.Text.Yaml;
 public sealed partial class YamlReleaseNoteCorpusTests
 {
     /// <summary>
-    /// Represents the options a catalogue row reads with, and maps them onto <see cref="YamlDocumentOptions" />.
+    /// Represents the options a catalog row reads with, and maps them onto <see cref="YamlDocumentOptions" />.
     /// </summary>
     /// <param name="SpecVersion">The YAML version whose scalar resolution applies.</param>
     /// <param name="DuplicateKeyBehavior">The policy for a key a mapping repeats.</param>

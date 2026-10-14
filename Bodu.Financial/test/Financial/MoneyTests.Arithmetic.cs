@@ -12,7 +12,7 @@ public partial class MoneyTests
 {
     /// <summary>
     /// Verifies that the <c>*</c> operator rounds the product to the currency's minor units using banker's rounding,
-    /// so a midpoint product (<c>0.125</c>) rounds to the even neighbour <c>0.12</c>.
+    /// so a midpoint product (<c>0.125</c>) rounds to the even neighbor <c>0.12</c>.
     /// </summary>
     [TestMethod]
     public void Multiply_WhenUsingOperator_ShouldRoundToEven()
@@ -23,8 +23,8 @@ public partial class MoneyTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="Money.Multiply(decimal, MidpointRounding)" /> honours the supplied rounding rule, so a
-    /// midpoint product rounds away from zero to <c>0.13</c> rather than to the even neighbour produced by the operator.
+    /// Verifies that <see cref="Money.Multiply(decimal, MidpointRounding)" /> honors the supplied rounding rule, so a
+    /// midpoint product rounds away from zero to <c>0.13</c> rather than to the even neighbor produced by the operator.
     /// </summary>
     [TestMethod]
     public void Multiply_WhenRoundingAwayFromZero_ShouldRoundAwayFromZero()
@@ -47,7 +47,7 @@ public partial class MoneyTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="Money.Divide(decimal, MidpointRounding)" /> honours the supplied rounding rule, so a
+    /// Verifies that <see cref="Money.Divide(decimal, MidpointRounding)" /> honors the supplied rounding rule, so a
     /// midpoint quotient rounds away from zero to <c>0.13</c>.
     /// </summary>
     [TestMethod]
@@ -60,7 +60,7 @@ public partial class MoneyTests
 
     /// <summary>
     /// Verifies that the <c>/</c> operator rounds the quotient with banker's rounding, so a midpoint quotient rounds to
-    /// the even neighbour <c>0.12</c>.
+    /// the even neighbor <c>0.12</c>.
     /// </summary>
     [TestMethod]
     public void Divide_WhenUsingOperator_ShouldRoundToEven()

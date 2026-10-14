@@ -17,7 +17,7 @@ namespace Bodu.Financial.ExchangeRates;
 /// <remarks>
 /// The per-source packages each test their own <c>Add&lt;Source&gt;ExchangeRates</c> entry point, which exercises this
 /// machinery transitively. These tests drive <see cref="WebRateProviderExtensions.AddWebRateProvider" /> directly over
-/// a local test provider, so a change in shared behaviour is attributed here rather than surfacing as a diffuse
+/// a local test provider, so a change in shared behavior is attributed here rather than surfacing as a diffuse
 /// failure across eleven provider suites.
 /// </remarks>
 [TestClass]

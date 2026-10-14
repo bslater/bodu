@@ -12,7 +12,7 @@ using Bodu.Test.Kat;
 namespace Bodu.Security.Cryptography;
 /// <summary>
 /// Locks the <see cref="ChaCha20" /> stream cipher against the published RFC 8439 known-answer test vectors, and
-/// inherits the shared <see cref="SymmetricStreamAlgorithmTests{TTest, TAlgorithm}" /> behavioural contract.
+/// inherits the shared <see cref="SymmetricStreamAlgorithmTests{TTest, TAlgorithm}" /> behavioral contract.
 /// </summary>
 [TestClass]
 public sealed partial class ChaCha20Tests

@@ -65,7 +65,7 @@ public sealed partial class AnchoredInterval
     }
 
     /// <summary>
-    /// Returns the first occurrence of the interval that falls after the specified instant, normalising between the
+    /// Returns the first occurrence of the interval that falls after the specified instant, normalizing between the
     /// arguments' offsets.
     /// </summary>
     /// <param name="anchor">The instant the occurrence series is anchored to.</param>
@@ -80,7 +80,7 @@ public sealed partial class AnchoredInterval
     /// </returns>
     /// <remarks>
     /// The arguments are compared as absolute instants, so an anchor supplied in UTC composes correctly with an
-    /// <paramref name="after" /> in any other offset. No offset conversion is performed beyond that normalisation; the
+    /// <paramref name="after" /> in any other offset. No offset conversion is performed beyond that normalization; the
     /// machine time zone is never consulted.
     /// </remarks>
     public DateTimeOffset? GetNextOccurrence(DateTimeOffset anchor, DateTimeOffset after, bool inclusive = false)
@@ -91,7 +91,7 @@ public sealed partial class AnchoredInterval
     }
 
     /// <summary>
-    /// Returns the last occurrence of the interval that falls before the specified instant, normalising between the
+    /// Returns the last occurrence of the interval that falls before the specified instant, normalizing between the
     /// arguments' offsets.
     /// </summary>
     /// <param name="anchor">The instant the occurrence series is anchored to.</param>

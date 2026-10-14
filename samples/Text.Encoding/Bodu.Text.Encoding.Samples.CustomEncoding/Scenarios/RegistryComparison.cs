@@ -10,14 +10,14 @@ namespace Bodu.Samples.Text.Encoding.CustomEncoding.Scenarios;
 
 /// <summary>
 /// Demonstrates the payoff of implementing <see cref="IBinaryEncoding" />: the custom codec is
-/// a drop-in peer of the built-in catalogue. Code written against the interface - here a tiny
+/// a drop-in peer of the built-in catalog. Code written against the interface - here a tiny
 /// comparison harness - drives <see cref="Base36Encoding" /> and the registry's encodings
 /// identically.
 /// </summary>
 public static class RegistryComparison
 {
     /// <summary>
-    /// Runs the custom codec side by side with catalogue encodings through one interface.
+    /// Runs the custom codec side by side with catalog encodings through one interface.
     /// </summary>
     public static void Run()
     {

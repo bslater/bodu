@@ -15,7 +15,7 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 /// <remarks>
 /// These cases supplement the official <c>test_vectors.json</c> known-answer tests by catching tree-merge
-/// bugs that surface only at irregular chunk boundaries. They are categorised as <c>Regression</c> so the
+/// bugs that surface only at irregular chunk boundaries. They are categorized as <c>Regression</c> so the
 /// default BVT tier stays fast.
 /// </remarks>
 public partial class Blake3Tests

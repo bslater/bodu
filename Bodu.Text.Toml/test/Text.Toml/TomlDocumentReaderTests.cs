@@ -10,7 +10,7 @@ using Bodu.Text.Toml.Reader;
 namespace Bodu.Text.Toml;
 
 /// <summary>
-/// Verifies the behaviour of <see cref="TomlDocumentReader" />, the forward-only TOML token reader.
+/// Verifies the behavior of <see cref="TomlDocumentReader" />, the forward-only TOML token reader.
 /// </summary>
 [TestClass]
 public sealed partial class TomlDocumentReaderTests

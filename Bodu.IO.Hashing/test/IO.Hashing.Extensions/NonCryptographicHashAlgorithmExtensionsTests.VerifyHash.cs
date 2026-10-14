@@ -15,7 +15,7 @@ namespace Bodu.IO.Hashing.Extensions;
 /// </summary>
 /// <remarks>
 /// <c>VerifyHash</c> throws on any null argument (algorithm, input, expected hash, encoding) and returns a simple
-/// <see langword="true" />/<see langword="false" /> result for valid inputs. Exception-swallowing behaviour belongs
+/// <see langword="true" />/<see langword="false" /> result for valid inputs. Exception-swallowing behavior belongs
 /// to the <c>TryVerifyHash</c> family instead.
 /// </remarks>
 public partial class NonCryptographicHashAlgorithmExtensionsTests

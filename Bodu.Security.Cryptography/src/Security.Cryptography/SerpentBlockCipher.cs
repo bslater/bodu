@@ -16,7 +16,7 @@ namespace Bodu.Security.Cryptography;
 /// <remarks>
 /// <para>
 /// This type extends <see cref="SerpentBlockCipherBase" /> with a 128-bit tweak schedule expressed as five cycling
-/// 32-bit entries <c>[T0, T1, T2, T3, T0 ^ T1 ^ T2 ^ T3]</c> (the 32-bit analogue of the Threefish
+/// 32-bit entries <c>[T0, T1, T2, T3, T0 ^ T1 ^ T2 ^ T3]</c> (the 32-bit analog of the Threefish
 /// <c>[T0, T1, T0 ^ T1]</c> layout) and with a round-key schedule sized to match the variant's block width. Derived
 /// classes specify the state width (in 32-bit words) and round count; this class builds the expanded round keys and
 /// folds the tweak schedule into them.

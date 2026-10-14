@@ -21,9 +21,9 @@ namespace Bodu.IO.Compound;
 /// 4096 bytes from the mini stream, the cutoff [MS-CFB] fixes, whatever cutoff the header declares. Below
 /// <see cref="Strict" />, a directory entry whose name length is odd or above 64, or whose object type [MS-CFB] does
 /// not define, is malformed and skipped, while a name that lacks its terminating null is read up to its declared
-/// length, and the header's Number of FAT Sectors and Number of DIFAT Sectors are ignored in favour of the DIFAT
-/// itself. At every level a Number of DIFAT Sectors of zero means there is no DIFAT chain, whatever the First DIFAT
-/// Sector Location holds.
+/// length, and the header's Number of FAT Sectors and Number of DIFAT Sectors are ignored in favor of the DIFAT itself.
+/// At every level a Number of DIFAT Sectors of zero means there is no DIFAT chain, whatever the First DIFAT Sector
+/// Location holds.
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[

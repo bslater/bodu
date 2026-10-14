@@ -45,7 +45,7 @@ public partial class AsconAead128Tests
     /// <summary>
     /// Verifies that calling <see cref="AsconAead128.ProcessAssociatedData" /> after a successful
     /// <see cref="AsconAead128.Encrypt" /> throws <see cref="InvalidOperationException" /> rather
-    /// than allowing additional AAD to be folded into a finalised state.
+    /// than allowing additional AAD to be folded into a finalized state.
     /// </summary>
     [TestMethod]
     public void ProcessAssociatedData_WhenCalledAfterEncrypt_ShouldThrowExactly()

@@ -10,7 +10,7 @@ namespace Bodu.Security.Cryptography;
 /// <summary>
 /// Curated <see cref="SkipjackBlockCipher" /> known-answer test vectors. Each vector encrypts an all-zero 64-bit
 /// plaintext under a single-bit-set 80-bit key; the expected ciphertexts are reproduced from the NSA Skipjack
-/// reference implementation declassified in 1998 and standardised in FIPS PUB 185.
+/// reference implementation declassified in 1998 and standardized in FIPS PUB 185.
 /// </summary>
 /// <remarks>
 /// The corpus combines two well-established sources: the three single-bit-key avalanche cases that accompany the

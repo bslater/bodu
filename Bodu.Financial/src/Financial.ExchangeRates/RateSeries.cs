@@ -10,7 +10,7 @@ using System.Runtime.CompilerServices;
 namespace Bodu.Financial.ExchangeRates;
 
 /// <summary>
-/// Stores the ordered set of dated exchange-rate observations for a single provider and currency pair, optimised for
+/// Stores the ordered set of dated exchange-rate observations for a single provider and currency pair, optimized for
 /// read-heavy lookup with allocation-free <c>O(log n)</c> resolution under any <see cref="RateDateResolution" />
 /// policy.
 /// </summary>
@@ -239,7 +239,7 @@ public sealed class RateSeries
     /// Thrown if <paramref name="rate" /> is zero or negative.
     /// </exception>
     /// <remarks>
-    /// Each call materialises a complete new immutable series, so this method is intended for occasional,
+    /// Each call materializes a complete new immutable series, so this method is intended for occasional,
     /// functional-style single updates. For bulk import or repeated mutation, accumulate observations in an
     /// <see cref="RateSeriesBuilder" /> and build the series once rather than calling <see cref="WithRate" /> in a
     /// loop.

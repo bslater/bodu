@@ -77,7 +77,7 @@ public sealed partial class CachingRateProviderTests
     }
 
     /// <summary>
-    /// Verifies that a non-exact date-resolution policy is honoured against cached rows, serving the most recent rate on
+    /// Verifies that a non-exact date-resolution policy is honored against cached rows, serving the most recent rate on
     /// or before the requested date without consulting the inner provider.
     /// </summary>
     [TestMethod]

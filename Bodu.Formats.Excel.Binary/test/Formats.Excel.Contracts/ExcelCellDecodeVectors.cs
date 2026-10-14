@@ -9,7 +9,7 @@ using System.Buffers.Binary;
 namespace Bodu.Formats.Excel.Contracts;
 
 /// <summary>
-/// Supplies the shared catalogue of <see cref="ExcelCellDecodeKat" /> rows that
+/// Supplies the shared catalog of <see cref="ExcelCellDecodeKat" /> rows that
 /// <see cref="ExcelCellDecodeContractTests" /> drives through every cell-decode surface.
 /// </summary>
 /// <remarks>
@@ -35,12 +35,12 @@ internal static class ExcelCellDecodeVectors
     }
 
     /// <summary>
-    /// The immutable catalogue of decode known-answer rows.
+    /// The immutable catalog of decode known-answer rows.
     /// </summary>
     private static IReadOnlyList<ExcelCellDecodeKat> Catalogue { get; } = Build();
 
     /// <summary>
-    /// Builds the decode known-answer catalogue.
+    /// Builds the decode known-answer catalog.
     /// </summary>
     /// <returns>The list of decode rows.</returns>
     private static IReadOnlyList<ExcelCellDecodeKat> Build()

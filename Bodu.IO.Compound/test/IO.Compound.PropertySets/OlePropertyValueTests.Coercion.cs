@@ -67,7 +67,7 @@ public partial class OlePropertyValueTests
 
     /// <summary>
     /// Verifies that <see cref="OlePropertyValue.AsInt32" /> truncates a value too wide for 32 bits while
-    /// <see cref="OlePropertyValue.AsInt64" /> preserves it. This unchecked narrowing is the only behavioural
+    /// <see cref="OlePropertyValue.AsInt64" /> preserves it. This unchecked narrowing is the only behavioral
     /// difference between the two accessors, so it is pinned rather than left to inference.
     /// </summary>
     [TestMethod]

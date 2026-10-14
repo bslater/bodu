@@ -9,7 +9,7 @@ using Bodu.Security.Cryptography.Infrastructure;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Shared test fixture for the <see cref="Skein{T}" /> family of hash algorithms, parameterised by a Skein-specific
+/// Shared test fixture for the <see cref="Skein{T}" /> family of hash algorithms, parameterized by a Skein-specific
 /// variant enum that encodes both the requested output size and the operating mode (plain hash vs Skein-MAC) so a
 /// single test class can drive every (state, output, mode) combination supported by its variant.
 /// </summary>
@@ -62,7 +62,7 @@ public abstract partial class SkeinTests<TTest, TAlgorithm, TVariant>
     /// beyond "non-null". The framework's below-minimum negative test is therefore skipped, even though the Skein
     /// specification still sets <see cref="KeyedAlgorithmSpecification.MinKeyLength" /> to a MAC-friendly size so
     /// that the tests which generate a representative key via <c>GenerateUniqueKey(MinKeyLength)</c> exercise
-    /// meaningful MAC behaviour rather than hashing with a one-byte key.
+    /// meaningful MAC behavior rather than hashing with a one-byte key.
     /// </remarks>
     protected override bool EnforcesMinimumKeyLength => false;
 

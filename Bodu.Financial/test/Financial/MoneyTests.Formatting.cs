@@ -165,7 +165,7 @@ public partial class MoneyTests
 
     /// <summary>
     /// Verifies that the <c>"C"</c> specifier substitutes the ISO code for a negative mismatched-currency amount,
-    /// honouring the locale's negative-currency pattern.
+    /// honoring the locale's negative-currency pattern.
     /// </summary>
     [TestMethod]
     public void ToString_WhenCSpecifierMismatchedAndNegative_ShouldSubstituteIsoCode()

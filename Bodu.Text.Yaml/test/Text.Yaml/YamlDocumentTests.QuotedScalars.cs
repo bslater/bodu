@@ -116,7 +116,7 @@ public partial class YamlDocumentTests
     }
 
     /// <summary>
-    /// Verifies that the ordinary folded continuation line rejects under-indentation, pinning the behaviour the
+    /// Verifies that the ordinary folded continuation line rejects under-indentation, pinning the behavior the
     /// escaped-line-break branch is required to match.
     /// </summary>
     [TestMethod]

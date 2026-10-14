@@ -72,13 +72,13 @@ public static class EncodingDetection
     /// <para>
     /// This method does not allocate. UTF-32 little-endian detection requires inspecting four bytes; when the span is
     /// shorter than four bytes the UTF-16 little-endian preamble is reported instead, matching
-    /// <see cref="System.IO.StreamReader" /> behaviour.
+    /// <see cref="System.IO.StreamReader" /> behavior.
     /// </para>
     /// <para>
     /// The UTF-16 little-endian BOM (<c>FF FE</c>) is a strict prefix of the UTF-32 little-endian BOM (<c>FF FE 00 00</c>),
     /// so the two are inherently ambiguous: a UTF-16 little-endian document whose first character is U+0000 begins with
-    /// the same four bytes. This method resolves the ambiguity in favour of UTF-32 little-endian whenever all four
-    /// bytes match, again matching <see cref="System.IO.StreamReader" />.
+    /// the same four bytes. This method resolves the ambiguity in favor of UTF-32 little-endian whenever all four bytes
+    /// match, again matching <see cref="System.IO.StreamReader" />.
     /// </para>
     /// </remarks>
     public static bool TryDetectByPreamble(

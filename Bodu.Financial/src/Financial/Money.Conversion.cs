@@ -17,7 +17,7 @@ public readonly partial struct Money
     /// calculation chains.
     /// </summary>
     /// <returns>A <see cref="CalculatedMoney" /> carrying this value's amount and currency.</returns>
-    /// <exception cref="InvalidOperationException">This value carries no currency (default-initialised).</exception>
+    /// <exception cref="InvalidOperationException">This value carries no currency (default-initialized).</exception>
     public CalculatedMoney ToCalculated()
     {
         if (_code == CurrencyCode.None)
@@ -83,7 +83,7 @@ public readonly partial struct Money
     /// </exception>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="exchangeRate" /> is zero or negative.</exception>
     /// <exception cref="InvalidOperationException">
-    /// This value is a default-initialised, currency-less <see cref="Money" />.
+    /// This value is a default-initialized, currency-less <see cref="Money" />.
     /// </exception>
     public Money Convert(string targetIsoCode, decimal exchangeRate) =>
         Convert(targetIsoCode, exchangeRate, MidpointRounding.ToEven);
@@ -156,7 +156,7 @@ public readonly partial struct Money
     /// </exception>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="exchangeRate" /> is zero or negative.</exception>
     /// <exception cref="InvalidOperationException">
-    /// This value is a default-initialised, currency-less <see cref="Money" />.
+    /// This value is a default-initialized, currency-less <see cref="Money" />.
     /// </exception>
     public Money Convert(string targetIsoCode, decimal exchangeRate, MidpointRounding rounding)
     {
@@ -174,7 +174,7 @@ public readonly partial struct Money
     /// <returns>The converted typed monetary value.</returns>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="exchangeRate" /> is zero or negative.</exception>
     /// <exception cref="InvalidOperationException">
-    /// This value is a default-initialised, currency-less <see cref="Money" />.
+    /// This value is a default-initialized, currency-less <see cref="Money" />.
     /// </exception>
     public Money<TTarget> Convert<TTarget>(decimal exchangeRate)
         where TTarget : ICurrency =>
@@ -190,7 +190,7 @@ public readonly partial struct Money
     /// <returns>The converted typed monetary value.</returns>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="exchangeRate" /> is zero or negative.</exception>
     /// <exception cref="InvalidOperationException">
-    /// This value is a default-initialised, currency-less <see cref="Money" />.
+    /// This value is a default-initialized, currency-less <see cref="Money" />.
     /// </exception>
     public Money<TTarget> Convert<TTarget>(decimal exchangeRate, MidpointRounding rounding)
         where TTarget : ICurrency

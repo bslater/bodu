@@ -255,7 +255,7 @@ public partial class IntervalTests
 
     /// <summary>
     /// Verifies that Contains(Interval) over <see cref="double" /> agrees with point membership for every pair of
-    /// catalogue intervals, so an unbounded side does not reach a bounded infinite endpoint.
+    /// catalog intervals, so an unbounded side does not reach a bounded infinite endpoint.
     /// </summary>
     [TestMethod]
     public void Contains_WhenOperandsReachInfinity_ForDouble_ShouldAgreeWithPointMembership() =>
@@ -263,7 +263,7 @@ public partial class IntervalTests
 
     /// <summary>
     /// Verifies that Contains(Interval) over <see cref="float" /> agrees with point membership for every pair of
-    /// catalogue intervals, so an unbounded side does not reach a bounded infinite endpoint.
+    /// catalog intervals, so an unbounded side does not reach a bounded infinite endpoint.
     /// </summary>
     [TestMethod]
     public void Contains_WhenOperandsReachInfinity_ForSingle_ShouldAgreeWithPointMembership() =>
@@ -271,14 +271,14 @@ public partial class IntervalTests
 
     /// <summary>
     /// Verifies that Contains(Interval) over <see cref="Half" /> agrees with point membership for every pair of
-    /// catalogue intervals, so an unbounded side does not reach a bounded infinite endpoint.
+    /// catalog intervals, so an unbounded side does not reach a bounded infinite endpoint.
     /// </summary>
     [TestMethod]
     public void Contains_WhenOperandsReachInfinity_ForHalf_ShouldAgreeWithPointMembership() =>
         AssertContainsIntervalAgreesWithMembership<Half>();
 
     /// <summary>
-    /// Asserts that <see cref="Interval{T}.Contains(Interval{T})" /> reports every catalogue interval that is a subset
+    /// Asserts that <see cref="Interval{T}.Contains(Interval{T})" /> reports every catalog interval that is a subset
     /// of another, and only those.
     /// </summary>
     /// <typeparam name="T">The floating-point endpoint type.</typeparam>

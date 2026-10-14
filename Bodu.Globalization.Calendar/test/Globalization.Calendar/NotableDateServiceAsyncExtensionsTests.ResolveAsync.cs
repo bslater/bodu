@@ -137,7 +137,7 @@ public partial class NotableDateServiceAsyncExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that a stream enumerated with an already-cancelled token throws
+    /// Verifies that a stream enumerated with an already-canceled token throws
     /// <see cref="OperationCanceledException" /> before yielding any occurrence.
     /// </summary>
     [TestMethod]
@@ -158,7 +158,7 @@ public partial class NotableDateServiceAsyncExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that cancelling after the first resolved year stops the stream at the next year boundary with
+    /// Verifies that canceling after the first resolved year stops the stream at the next year boundary with
     /// <see cref="OperationCanceledException" />, after having yielded the first year's occurrences.
     /// </summary>
     [TestMethod]

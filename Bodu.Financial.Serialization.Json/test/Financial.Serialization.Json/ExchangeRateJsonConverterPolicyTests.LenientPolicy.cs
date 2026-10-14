@@ -13,7 +13,7 @@ public partial class ExchangeRateJsonConverterPolicyTests
 {
 
     /// <summary>
-    /// Verifies that the lenient policy normalises lowercase ISO codes on read.
+    /// Verifies that the lenient policy normalizes lowercase ISO codes on read.
     /// </summary>
     [TestMethod]
     public void LenientPolicy_WhenReadingLowercaseCurrency_ShouldSucceed()

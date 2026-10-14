@@ -24,7 +24,7 @@ namespace Bodu.Text.Delimited;
 /// <para>
 /// A delimited document is an array of records, so the serializer maps an <see cref="IEnumerable{T}" /> whose element
 /// type is a POCO (mapped column-by-column to the header) or a positional <see cref="string" /> array. Column names
-/// honour <see cref="DelimitedSerializerOptions.PropertyNamingPolicy" /> and the
+/// honor <see cref="DelimitedSerializerOptions.PropertyNamingPolicy" /> and the
 /// <see cref="Bodu.Text.Serialization.PropertyNameAttribute" /> family. Each member name maps to one column, its most
 /// derived declaration: a property or field hidden with the <see langword="new" /> modifier is neither written nor
 /// read. A record type that maps two members to one column is rejected with

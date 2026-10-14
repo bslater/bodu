@@ -34,7 +34,7 @@ public sealed class MonitoringBlockCipher
     private bool disposed;
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="MonitoringBlockCipher" /> class.
+    /// Initializes a new instance of the <see cref="MonitoringBlockCipher" /> class.
     /// </summary>
     /// <param name="blockSize">The size of each block in bytes. Defaults to 4.</param>
     /// <param name="xorMask">An optional XOR mask to apply during transformation.</param>

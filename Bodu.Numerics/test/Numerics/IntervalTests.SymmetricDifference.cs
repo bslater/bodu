@@ -60,7 +60,7 @@ public partial class IntervalTests
     }
 
     /// <summary>
-    /// Verifies that SymmetricDifference over <see cref="double" /> returns exactly the values one catalogue interval
+    /// Verifies that SymmetricDifference over <see cref="double" /> returns exactly the values one catalog interval
     /// holds and the other does not, in ordered pieces that each hold a value.
     /// </summary>
     [TestMethod]
@@ -68,7 +68,7 @@ public partial class IntervalTests
         AssertSymmetricDifferenceAgreesWithMembership<double>();
 
     /// <summary>
-    /// Verifies that SymmetricDifference over <see cref="float" /> returns exactly the values one catalogue interval
+    /// Verifies that SymmetricDifference over <see cref="float" /> returns exactly the values one catalog interval
     /// holds and the other does not, in ordered pieces that each hold a value.
     /// </summary>
     [TestMethod]
@@ -76,7 +76,7 @@ public partial class IntervalTests
         AssertSymmetricDifferenceAgreesWithMembership<float>();
 
     /// <summary>
-    /// Verifies that SymmetricDifference over <see cref="Half" /> returns exactly the values one catalogue interval
+    /// Verifies that SymmetricDifference over <see cref="Half" /> returns exactly the values one catalog interval
     /// holds and the other does not, in ordered pieces that each hold a value.
     /// </summary>
     [TestMethod]
@@ -85,7 +85,7 @@ public partial class IntervalTests
 
     /// <summary>
     /// Asserts that <see cref="Interval{T}.SymmetricDifference(Interval{T})" /> returns exactly the values held by one
-    /// catalogue operand and not the other, as disjoint ordered pieces that each hold a value.
+    /// catalog operand and not the other, as disjoint ordered pieces that each hold a value.
     /// </summary>
     /// <typeparam name="T">The floating-point endpoint type.</typeparam>
     private static void AssertSymmetricDifferenceAgreesWithMembership<T>()

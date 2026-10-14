@@ -11,7 +11,7 @@ namespace Bodu.Globalization.Calendar;
 
 /// <summary>
 /// Loads the embedded tabular-Hijri observance vector table - fifty Gregorian years of dates for every
-/// <c>global-islamic</c> catalogue observance - as KAT rows for <c>[DynamicData]</c> binding.
+/// <c>global-islamic</c> catalog observance - as KAT rows for <c>[DynamicData]</c> binding.
 /// </summary>
 /// <remarks>
 /// <para>

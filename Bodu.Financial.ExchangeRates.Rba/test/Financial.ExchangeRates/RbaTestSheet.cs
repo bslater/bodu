@@ -11,7 +11,7 @@ namespace Bodu.Financial.ExchangeRates;
 /// F11.1, from which <see cref="RbaTestWorkbook" /> builds the workbook.
 /// </summary>
 /// <remarks>
-/// The data sheet holds the <see cref="Banner" /> in row 0, the labelled <see cref="HeaderRows" /> at their F11.1
+/// The data sheet holds the <see cref="Banner" /> in row 0, the labeled <see cref="HeaderRows" /> at their F11.1
 /// positions in rows 1 to 10 (rows 6 and 7 blank), and from <see cref="FirstDataRow" /> one row per entry of
 /// <see cref="Dates" />: the date's serial in column 0 and each column's cell from column 1.
 /// </remarks>
@@ -44,7 +44,7 @@ internal sealed record RbaTestSheet
     public string? Banner { get; init; }
 
     /// <summary>
-    /// Gets the labelled header rows the data sheet carries.
+    /// Gets the labeled header rows the data sheet carries.
     /// </summary>
     /// <value>The header rows; <see cref="RbaTestHeaderRows.All" /> unless set.</value>
     public RbaTestHeaderRows HeaderRows { get; init; } = RbaTestHeaderRows.All;

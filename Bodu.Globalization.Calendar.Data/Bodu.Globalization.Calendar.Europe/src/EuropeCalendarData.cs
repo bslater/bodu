@@ -76,7 +76,7 @@ public static class EuropeCalendarData
 
     /// <summary>
     /// Resolves an imported resource name to its content. The pan-European <c>europe-common</c> hub is served from this
-    /// pack's embedded resources; every other name (the shared catalogues such as <c>christian-western</c> and
+    /// pack's embedded resources; every other name (the shared catalogs such as <c>christian-western</c> and
     /// <c>global-core</c>, including those that <c>europe-common</c> itself imports) is delegated to
     /// <see cref="CommonNotableDateResources" />.
     /// </summary>

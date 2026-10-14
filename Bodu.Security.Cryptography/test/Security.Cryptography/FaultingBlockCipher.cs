@@ -29,7 +29,7 @@ internal sealed class FaultingBlockCipher : IBlockCipher
     private int _callCount;
 
     /// <summary>
-    /// Initialises a new instance wrapping <paramref name="inner" />, faulting on the
+    /// Initializes a new instance wrapping <paramref name="inner" />, faulting on the
     /// <paramref name="faultAfterCalls" />th block operation.
     /// </summary>
     /// <param name="inner">The real cipher to delegate to. Must not be <see langword="null" />.</param>

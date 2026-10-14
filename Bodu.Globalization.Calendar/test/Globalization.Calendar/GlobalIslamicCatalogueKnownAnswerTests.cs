@@ -10,23 +10,23 @@ namespace Bodu.Globalization.Calendar;
 
 /// <summary>
 /// Verifies the year-by-year known-answer tables for the Hijri observances authored in the bundled
-/// <c>global-islamic</c> (tabular) and <c>global-islamic-umm-al-qura</c> catalogues, including the Hajj-season and
+/// <c>global-islamic</c> (tabular) and <c>global-islamic-umm-al-qura</c> catalogs, including the Hajj-season and
 /// Ramadan observances added in the latest pass (Isra and Mi'raj, Laylat al-Qadr, Hajj, Day of Arafah). Each anchor is a
 /// <see cref="FixedDateStrategy" /> in the Hijri calendar with a calendar-year sweep; Laylat al-Qadr is an
 /// <see cref="OffsetFromRuleStrategy" /> offset from Ramadan. Expected dates are produced by the base class library's
 /// <see cref="System.Globalization.HijriCalendar" /> (at the default <c>HijriAdjustment = 0</c>) and
 /// <see cref="System.Globalization.UmAlQuraCalendar" />; both follow arithmetic reckoning and can differ from a
 /// locally moon-sighted observance by up to two days. The fifty-year sweep additionally pins the Umm al-Qura
-/// catalogue against the astronomically cross-checked vector table.
+/// catalog against the astronomically cross-checked vector table.
 /// </summary>
 [TestClass]
 public sealed class GlobalIslamicCatalogueKnownAnswerTests
 {
-    /// <summary>The shared sweep service over the Umm al-Qura catalogue, built once for the fifty-year vector rows.</summary>
+    /// <summary>The shared sweep service over the Umm al-Qura catalog, built once for the fifty-year vector rows.</summary>
     private static readonly Lazy<NotableDateService> s_ummAlQuraSweepService =
         new(() => CommonCatalogues.Service("global-islamic-umm-al-qura"));
 
-    /// <summary>The shared sweep service over the tabular catalogue, built once for the fifty-year vector rows.</summary>
+    /// <summary>The shared sweep service over the tabular catalog, built once for the fifty-year vector rows.</summary>
     private static readonly Lazy<NotableDateService> s_tabularSweepService =
         new(() => CommonCatalogues.Service("global-islamic"));
 
@@ -78,7 +78,7 @@ public sealed class GlobalIslamicCatalogueKnownAnswerTests
 
     /// <summary>
     /// Verifies that each Umm al-Qura observance resolves within one day of the date the High Judiciary Council of
-    /// Saudi Arabia actually announced (Hijri 1422-1448), pinning the computed catalogue against the gazetted civil
+    /// Saudi Arabia actually announced (Hijri 1422-1448), pinning the computed catalog against the gazetted civil
     /// dates. One day is the empirically maximal computed-versus-announced divergence across the range - the
     /// announcements moved seventeen month starts by a single day (in both directions) and never more.
     /// </summary>

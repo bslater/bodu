@@ -31,7 +31,7 @@ public sealed class FaultingStream
     private int _bytesRead;
 
     /// <summary>
-    /// Initialises a new instance of <see cref="FaultingStream" />.
+    /// Initializes a new instance of <see cref="FaultingStream" />.
     /// </summary>
     /// <param name="data">The byte array to expose as a stream.</param>
     /// <param name="throwAfterBytes">

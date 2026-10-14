@@ -57,7 +57,7 @@ public partial class PropertySetWriterTests
 
     /// <summary>
     /// Verifies that a date property accepts a <see cref="DateTime" /> as well as a
-    /// <see cref="DateTimeOffset" />, normalising it to UTC. The reader always decodes a date to
+    /// <see cref="DateTimeOffset" />, normalizing it to UTC. The reader always decodes a date to
     /// <see cref="DateTimeOffset" />, so the round trip is value-identical rather than type-identical.
     /// </summary>
     [TestMethod]

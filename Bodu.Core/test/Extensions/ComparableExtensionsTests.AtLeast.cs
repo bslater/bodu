@@ -50,7 +50,7 @@ public partial class ComparableExtensionsTests
     // =========================================================================
 
     /// <summary>
-    /// Verifies that the comparer overload of <c>AtLeast</c> honours the supplied comparer's ordering.
+    /// Verifies that the comparer overload of <c>AtLeast</c> honors the supplied comparer's ordering.
     /// Under a reverse comparer the numerically smaller value is treated as the floor.
     /// </summary>
     [TestMethod]

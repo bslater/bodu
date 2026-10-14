@@ -33,7 +33,7 @@ namespace Bodu.Financial.ExchangeRates.Caching;
 /// Expiry is by caching duration rather than by storage: stale and semantically invalid rows are filtered on read and
 /// pruned on write, and stale coverage windows are pruned when coverage is recorded, so the database self-cleans over
 /// time. The freshness, validity, merge, and coverage rules are delegated to the shared <see cref="RateCacheRules" />
-/// so this backend stays behaviourally identical to the in-memory, file, and distributed caches; this class contributes
+/// so this backend stays behaviorally identical to the in-memory, file, and distributed caches; this class contributes
 /// only its SQLite storage and locking. The two halves of a pair's state are written independently through
 /// <see cref="Store" /> and <see cref="RecordCoverage" /> - storing rates never drops recorded coverage, and recording
 /// coverage never drops cached rows - while <see cref="StoreFetchedRange" /> writes both halves in one transaction.
@@ -732,7 +732,7 @@ public sealed class SqliteRateCache
     /// The <c>busy_timeout</c> pragma is per-connection, so it is set on every open. Write-ahead logging is
     /// deliberately not re-asserted here: <c>journal_mode = WAL</c> is a persistent database-level property, so it is
     /// applied once to the keep-alive connection at construction (see <see cref="ApplyWriteAheadLogging" />) and every
-    /// later per-operation connection inherits it, saving a PRAGMA round-trip per open. The one behaviour change is
+    /// later per-operation connection inherits it, saving a PRAGMA round-trip per open. The one behavior change is
     /// deliberate: an external process that flips the database's journal mode between operations is no longer corrected
     /// until the next construction - acceptable for a best-effort cache that always treated WAL as advisory.
     /// </remarks>

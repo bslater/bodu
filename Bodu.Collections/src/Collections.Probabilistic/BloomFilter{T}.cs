@@ -408,7 +408,7 @@ public sealed class BloomFilter<T>
     /// <para>
     /// Comparer identity is decided by <see cref="object.Equals(object)" /> (after a reference check). Two distinct
     /// instances of a custom comparer type that does not override <see cref="object.Equals(object)" /> compare unequal
-    /// even when behaviourally identical, and the merge is rejected. Share a single comparer instance between filters
+    /// even when behaviorally identical, and the merge is rejected. Share a single comparer instance between filters
     /// that will be merged, or override <c>Equals</c> (and <c>GetHashCode</c>) on the comparer type.
     /// </para>
     /// </remarks>

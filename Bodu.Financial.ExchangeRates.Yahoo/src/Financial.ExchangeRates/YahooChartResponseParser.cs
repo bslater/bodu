@@ -50,7 +50,7 @@ internal static class YahooChartResponseParser
     /// <param name="symbol">
     /// The <c>{FROM}{TO}=X</c> ticker the chart was requested for, used for error messages and the series metadata.
     /// </param>
-    /// <param name="options">The provider options (reserved for future response-shaping behaviour).</param>
+    /// <param name="options">The provider options (reserved for future response-shaping behavior).</param>
     /// <returns>The parsed, range-restricted observations and series metadata.</returns>
     /// <exception cref="ExchangeRateFormatException">
     /// Thrown when the response is not valid JSON, carries a chart error, or omits the expected chart data.

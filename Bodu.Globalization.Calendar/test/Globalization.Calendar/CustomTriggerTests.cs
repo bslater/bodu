@@ -7,7 +7,7 @@
 namespace Bodu.Globalization.Calendar;
 
 /// <summary>
-/// Verifies the <see cref="AdjustmentTrigger.Custom" /> trigger, including its registry dispatch, lenient behaviour when
+/// Verifies the <see cref="AdjustmentTrigger.Custom" /> trigger, including its registry dispatch, lenient behavior when
 /// no handler is registered, the context exposed to a handler, and its validation.
 /// </summary>
 [TestClass]

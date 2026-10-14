@@ -31,14 +31,14 @@ public abstract partial class CachingRateProviderBase
     /// <paramref name="endDate" /> precedes <paramref name="startDate" />.
     /// </exception>
     /// <exception cref="OperationCanceledException">
-    /// Thrown when <paramref name="cancellationToken" /> is cancelled.
+    /// Thrown when <paramref name="cancellationToken" /> is canceled.
     /// </exception>
     /// <remarks>
     /// <para>
     /// Up to four pairs are fetched concurrently; the shipped origin providers already single-flight their downloads,
     /// so the bounded parallelism only overlaps fetches of <em>different</em> pairs. A pair whose fetch fails is logged
     /// at <see cref="Microsoft.Extensions.Logging.LogLevel.Warning" /> and skipped - the remaining pairs still warm -
-    /// and is excluded from the returned count. Cancellation is the one failure that is not swallowed: a cancelled
+    /// and is excluded from the returned count. Cancellation is the one failure that is not swallowed: a canceled
     /// <paramref name="cancellationToken" /> aborts the warm-up and propagates.
     /// </para>
     /// <para>

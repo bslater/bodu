@@ -10,7 +10,7 @@ namespace Bodu.Text.Bencode;
 
 /// <summary>
 /// Verifies the enumerator semantics of <see cref="BencodeElement.ArrayEnumerator" /> and
-/// <see cref="BencodeElement.ObjectEnumerator" />: independent nested walks, reset behaviour, stable exhaustion, and
+/// <see cref="BencodeElement.ObjectEnumerator" />: independent nested walks, reset behavior, stable exhaustion, and
 /// subtree skipping between siblings.
 /// </summary>
 public partial class BencodeDocumentTests

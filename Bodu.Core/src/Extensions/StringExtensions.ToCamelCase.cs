@@ -39,7 +39,7 @@ public static partial class StringExtensions
     /// Thrown when <paramref name="value" /> or <paramref name="options" /> is <see langword="null" />.
     /// </exception>
     /// <remarks>
-    /// The first word is fully lower-cased. Each subsequent word is capitalised unless it is a recognised mixed-case
+    /// The first word is fully lower-cased. Each subsequent word is capitalized unless it is a recognized mixed-case
     /// word, which is emitted verbatim.
     /// </remarks>
     public static string ToCamelCase(this string value, WordCasingOptions options)

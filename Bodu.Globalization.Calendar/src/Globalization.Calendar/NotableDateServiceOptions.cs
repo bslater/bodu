@@ -13,7 +13,7 @@ namespace Bodu.Globalization.Calendar;
 /// <remarks>
 /// <para>
 /// Every property is independently optional. Where a property is <see langword="null" /> the service uses its built-in
-/// behaviour for that concern. Construct an instance with an object initializer and pass it to
+/// behavior for that concern. Construct an instance with an object initializer and pass it to
 /// <see cref="NotableDateService(NotableDateResource, NotableDateServiceOptions)" />.
 /// </para>
 /// </remarks>
@@ -34,7 +34,7 @@ namespace Bodu.Globalization.Calendar;
 public sealed class NotableDateServiceOptions
 {
     /// <summary>
-    /// Gets the custom algorithm registry consulted before the built-in catalogue, so a key registered here overrides a
+    /// Gets the custom algorithm registry consulted before the built-in catalog, so a key registered here overrides a
     /// built-in algorithm of the same name.
     /// </summary>
     /// <value>

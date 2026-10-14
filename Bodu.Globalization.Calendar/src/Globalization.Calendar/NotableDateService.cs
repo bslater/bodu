@@ -89,7 +89,7 @@ public sealed partial class NotableDateService
 
     /// <summary>
     /// Initializes a new instance of the <see cref="NotableDateService" /> class over a resource using only built-in
-    /// behaviour.
+    /// behavior.
     /// </summary>
     /// <param name="resource">The loaded resource the service draws occurrences from.</param>
     /// <exception cref="ArgumentNullException"><paramref name="resource" /> is <see langword="null" />.</exception>

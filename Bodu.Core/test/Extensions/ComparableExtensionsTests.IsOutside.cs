@@ -55,7 +55,7 @@ public partial class ComparableExtensionsTests
         MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
 
     /// <summary>
-    /// Verifies that the comparer overload of <c>IsOutside</c> honours the supplied comparer's ordering and
+    /// Verifies that the comparer overload of <c>IsOutside</c> honors the supplied comparer's ordering and
     /// yields the logical complement of <c>IsBetween</c>.
     /// </summary>
     [TestMethod]

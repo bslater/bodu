@@ -14,7 +14,7 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 /// <remarks>
 /// <para>
-/// This class centralises every piece of boilerplate that would otherwise be duplicated across
+/// This class centralizes every piece of boilerplate that would otherwise be duplicated across
 /// the two test hierarchies - the algorithm factory, data generators, default configuration
 /// constants, and the reference implementation of the Merkle reduction used to compute
 /// expected root hashes by hand.

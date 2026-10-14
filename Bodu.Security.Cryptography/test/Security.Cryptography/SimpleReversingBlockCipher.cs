@@ -15,7 +15,7 @@ namespace Bodu.Security.Cryptography;
 /// <remarks>
 /// <para>
 /// This class is intended exclusively for use in test harnesses and diagnostic scenarios. It provides a deterministic,
-/// inspectable transform that makes it straightforward to verify block alignment, padding behaviour, mode-of-operation
+/// inspectable transform that makes it straightforward to verify block alignment, padding behavior, mode-of-operation
 /// chaining, tweak propagation, and streaming correctness without cryptographic complexity.
 /// </para>
 /// <para>
@@ -48,7 +48,7 @@ internal sealed class SimpleReversingBlockCipher
     private byte[]? tweak;
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="SimpleReversingBlockCipher" /> class without a tweak.
+    /// Initializes a new instance of the <see cref="SimpleReversingBlockCipher" /> class without a tweak.
     /// </summary>
     /// <param name="key">The key bytes. Must not be <see langword="null" />.</param>
     /// <param name="blockSizeBytes">The block size in bytes. Must be positive.</param>
@@ -67,7 +67,7 @@ internal sealed class SimpleReversingBlockCipher
     }
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="SimpleReversingBlockCipher" /> class with an optional tweak.
+    /// Initializes a new instance of the <see cref="SimpleReversingBlockCipher" /> class with an optional tweak.
     /// </summary>
     /// <param name="key">The key bytes. Must not be <see langword="null" />.</param>
     /// <param name="blockSizeBytes">The block size in bytes. Must be positive.</param>

@@ -10,12 +10,12 @@ namespace Bodu.Financial.Currencies;
 
 /// <summary>
 /// Resolves <see cref="CurrencyInfo" /> metadata by ISO code, numeric code, symbol, region, or culture, providing
-/// NodaMoney-style lookup ergonomics over the runtime currency catalogue without moving currency identity into culture.
+/// NodaMoney-style lookup ergonomics over the runtime currency catalog without moving currency identity into culture.
 /// </summary>
 /// <remarks>
 /// Symbol and region resolution depend on the data an implementation holds. The default
-/// <see cref="CurrencyLookupService" /> is backed by the shipped catalogue, which carries no symbols or regions, so
-/// those lookups find nothing there.
+/// <see cref="CurrencyLookupService" /> is backed by the shipped catalog, which carries no symbols or regions, so those
+/// lookups find nothing there.
 /// </remarks>
 public interface ICurrencyLookup
 {

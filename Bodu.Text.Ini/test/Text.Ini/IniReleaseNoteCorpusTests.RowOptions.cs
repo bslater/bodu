@@ -13,7 +13,7 @@ namespace Bodu.Text.Ini;
 public sealed partial class IniReleaseNoteCorpusTests
 {
     /// <summary>
-    /// Represents the options a catalogue row runs with, and maps them onto the reader, document and writer options.
+    /// Represents the options a catalog row runs with, and maps them onto the reader, document and writer options.
     /// </summary>
     /// <param name="DocumentView">Whether the row renders the <c>Document</c> view rather than the <c>Entries</c> view.</param>
     /// <param name="DisallowHashComments">Whether the reader refuses <c>#</c> as a comment prefix.</param>

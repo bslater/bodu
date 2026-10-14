@@ -12,7 +12,7 @@ public abstract partial class PaddingStrategyTests<TPadding>
 {
     /// <summary>
     /// Verifies that <c>Unpad</c> rejects a block whose padding has been tampered with
-    /// and that the thrown exception message contains no rename-refactor artefacts.
+    /// and that the thrown exception message contains no rename-refactor artifacts.
     /// Strategies that do not validate padding may opt out.
     /// </summary>
     [TestMethod]

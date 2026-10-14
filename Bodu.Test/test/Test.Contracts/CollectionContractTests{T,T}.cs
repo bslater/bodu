@@ -7,7 +7,7 @@
 namespace Bodu.Test.Contracts;
 
 /// <summary>
-/// Reusable behavioural contract test base for types that expose the <see cref="ICollection{T}" /> surface.
+/// Reusable behavioral contract test base for types that expose the <see cref="ICollection{T}" /> surface.
 /// Concrete subclasses override <see cref="CreateEmpty" />, <see cref="Create(TItem[])" />, and
 /// <see cref="CreateItem" /> to plug their type into the inherited <c>[TestMethod]</c>s; MSTest discovers
 /// each inherited test as part of the concrete class.
@@ -17,8 +17,8 @@ namespace Bodu.Test.Contracts;
 /// <remarks>
 /// <para>
 /// The base focuses on the core <see cref="ICollection{T}" /> contract - count, contains, add, remove,
-/// clear, copy-to, enumeration - and does not exercise type-specific or concurrency-specific behaviour.
-/// Subclasses are free to add bespoke tests for behaviour outside the shared contract.
+/// clear, copy-to, enumeration - and does not exercise type-specific or concurrency-specific behavior.
+/// Subclasses are free to add bespoke tests for behavior outside the shared contract.
 /// </para>
 /// </remarks>
 public abstract class CollectionContractTests<TCollection, TItem>

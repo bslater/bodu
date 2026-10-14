@@ -15,7 +15,7 @@ namespace Bodu.Formats.Excel;
 /// <param name="Name">The human-readable scenario label surfaced in test output.</param>
 /// <param name="Records">The framed BIFF8 records that form the malformed worksheet substream body.</param>
 /// <remarks>
-/// Every row in this catalogue rejects with the same exact exception type, so the consuming test asserts
+/// Every row in this catalog rejects with the same exact exception type, so the consuming test asserts
 /// <see cref="ExcelBinaryFormatException" /> directly rather than carrying a per-row exception type.
 /// </remarks>
 public sealed record MalformedRecordKat(string Name, byte[][] Records)

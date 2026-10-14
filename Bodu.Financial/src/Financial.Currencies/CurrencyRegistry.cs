@@ -10,12 +10,12 @@ using System.Globalization;
 namespace Bodu.Financial.Currencies;
 
 /// <summary>
-/// Read-only catalogue of <see cref="CurrencyInfo" /> entries keyed by ISO 4217 alphabetic code. Supports lookup by
-/// code and enumeration of every shipped currency.
+/// Read-only catalog of <see cref="CurrencyInfo" /> entries keyed by ISO 4217 alphabetic code. Supports lookup by code
+/// and enumeration of every shipped currency.
 /// </summary>
 /// <remarks>
 /// <para>
-/// The catalogue is populated from the source-generated <see cref="GeneratedCurrencyRegistration" /> list at first
+/// The catalog is populated from the source-generated <see cref="GeneratedCurrencyRegistration" /> list at first
 /// access - no runtime reflection scans the assembly. It covers the active ISO 4217 currencies, less the fund and
 /// special-purpose codes, plus 29 historic ones; every entry has a corresponding <see cref="CurrencyCode" /> member.
 /// </para>
@@ -25,7 +25,7 @@ namespace Bodu.Financial.Currencies;
 /// </remarks>
 public static class CurrencyRegistry
 {
-    /// <summary>The shipped catalogue, snapshotted into a <see cref="FrozenDictionary{TKey, TValue}" /> at static-ctor time.</summary>
+    /// <summary>The shipped catalog, snapshotted into a <see cref="FrozenDictionary{TKey, TValue}" /> at static-ctor time.</summary>
     private static readonly FrozenDictionary<string, CurrencyInfo> s_shipped = BuildShipped();
 
     /// <summary>
@@ -97,7 +97,7 @@ public static class CurrencyRegistry
         TryGet(isoCode, out _);
 
     /// <summary>
-    /// Builds the frozen shipped catalogue from the source-generated registration list.
+    /// Builds the frozen shipped catalog from the source-generated registration list.
     /// </summary>
     /// <returns>An immutable mapping of ISO code to <see cref="CurrencyInfo" />.</returns>
     private static FrozenDictionary<string, CurrencyInfo> BuildShipped()

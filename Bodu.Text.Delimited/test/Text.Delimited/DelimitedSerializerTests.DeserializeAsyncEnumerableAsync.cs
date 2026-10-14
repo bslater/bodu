@@ -510,7 +510,7 @@ public partial class DelimitedSerializerTests
     }
 
     /// <summary>
-    /// Verifies that records totalling 40 KiB after a header, which straddle the 16 KiB reads of the stream and end
+    /// Verifies that records totaling 40 KiB after a header, which straddle the 16 KiB reads of the stream and end
     /// without a final line ending, are each yielded whole.
     /// </summary>
     /// <returns>A task representing the asynchronous test.</returns>

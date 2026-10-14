@@ -13,12 +13,11 @@ namespace Bodu.Financial.ExchangeRates;
 /// <remarks>
 /// <para>
 /// This type derives from <see cref="WebRateProviderOptions" />, which supplies the endpoint base address, the HTTP
-/// contract, the synchronous-access and look-back behaviour, the currency-alias map, and the per-concern log levels.
-/// The members declared here are XE-specific: the <see cref="ChartingRatesPath" /> queried for a pair, and the two URLs
-/// (<see cref="AuthBootstrapUrl" /> and <see cref="AuthScriptBaseUrl" />) used to discover the
-/// <c>Authorization: Basic</c> token by scanning the script chunks the XE website publishes. XE serves a
-/// server-determined window per request rather than honouring an explicit date range, so the response is range-filtered
-/// to the requested dates.
+/// contract, the synchronous-access and look-back behavior, the currency-alias map, and the per-concern log levels. The
+/// members declared here are XE-specific: the <see cref="ChartingRatesPath" /> queried for a pair, and the two URLs (<see cref="AuthBootstrapUrl" />
+/// and <see cref="AuthScriptBaseUrl" />) used to discover the <c>Authorization: Basic</c> token by scanning the script
+/// chunks the XE website publishes. XE serves a server-determined window per request rather than honoring an explicit
+/// date range, so the response is range-filtered to the requested dates.
 /// </para>
 /// <para>
 /// Every member carries a working default, so the options bind cleanly through <c>Microsoft.Extensions.Options</c> and

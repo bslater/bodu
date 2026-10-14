@@ -43,7 +43,7 @@ public sealed partial class AdjustmentActionMatrixTests
 
     /// <summary>
     /// Builds a single-holiday service whose 1 July 2026 holiday shifts by the supplied signed day delta. The holiday is
-    /// bound to 2026 so an offset that crosses a year boundary does not produce a second occurrence in a neighbouring
+    /// bound to 2026 so an offset that crosses a year boundary does not produce a second occurrence in a neighboring
     /// candidate year.
     /// </summary>
     /// <param name="days">The signed day delta applied by the action.</param>

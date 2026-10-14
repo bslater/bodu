@@ -11,7 +11,7 @@ using Bodu.Financial.Extensions;
 namespace Bodu.Financial;
 
 /// <summary>
-/// Verifies the behaviour of the <see cref="RateBookExtensions" /> provider-wrapping sugar.
+/// Verifies the behavior of the <see cref="RateBookExtensions" /> provider-wrapping sugar.
 /// </summary>
 [TestClass]
 public partial class RateBookExtensionsTests

@@ -12,10 +12,10 @@ namespace Bodu.Text.Delimited;
 public sealed partial class DelimitedReleaseNoteCorpusTests
 {
     /// <summary>
-    /// Verifies that writing each catalogued set of records with <c>Utf8DelimitedWriter</c> emits exactly the expected
+    /// Verifies that writing each cataloged set of records with <c>Utf8DelimitedWriter</c> emits exactly the expected
     /// bytes.
     /// </summary>
-    /// <param name="fix">The catalogue row.</param>
+    /// <param name="fix">The catalog row.</param>
     [TestMethod]
     [TestCategory("Regression")]
     [DynamicData(

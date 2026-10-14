@@ -88,7 +88,7 @@ public sealed partial class Base16Tests
 
     /// <summary>
     /// Verifies that whitespace inside the prefix (e.g. <c>"0 x..."</c>) is treated as a leading <c>0</c> followed by
-    /// data: only the literal two-character <c>0x</c> sequence is recognised as a prefix.
+    /// data: only the literal two-character <c>0x</c> sequence is recognized as a prefix.
     /// </summary>
     [TestMethod]
     public void Decode_WhenAllowPrefixAndWhitespaceBetweenZeroAndX_ShouldNotTreatAsPrefix()

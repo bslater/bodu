@@ -80,7 +80,7 @@ public partial class BencodeSerializerTests
 
     /// <summary>
     /// Verifies that an <see cref="object" />-typed member holding a bare <see cref="object" /> serializes as an empty
-    /// dictionary, the Bencode analogue of the empty JSON object.
+    /// dictionary, the Bencode analog of the empty JSON object.
     /// </summary>
     [TestMethod]
     public void Serialize_WhenObjectMemberHoldsBareObject_ShouldWriteEmptyDictionary()

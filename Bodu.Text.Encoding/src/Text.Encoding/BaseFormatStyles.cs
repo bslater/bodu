@@ -55,7 +55,7 @@ public enum BaseFormatStyles : byte
     /// <summary>
     /// Requires that the input is in canonical form - the unused bits of the final partial symbol must be zero. This
     /// prevents encoding ambiguity where multiple distinct input strings would decode to the same byte sequence (for
-    /// example, RFC 4648 §3.5 explicitly allows decoders to either reject or normalise such inputs).
+    /// example, RFC 4648 §3.5 explicitly allows decoders to either reject or normalize such inputs).
     /// </summary>
     /// <remarks>
     /// Applies to <see cref="Base32" /> and <see cref="Base64" /> only. The flag is a no-op for <see cref="Base16" />

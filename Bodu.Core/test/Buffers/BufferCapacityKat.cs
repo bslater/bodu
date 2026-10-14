@@ -9,7 +9,7 @@ using Bodu.Test.Kat;
 namespace Bodu.Buffers;
 
 /// <summary>
-/// Represents a known-answer test row for pooled-buffer capacity behaviour: a starting capacity, an append size that
+/// Represents a known-answer test row for pooled-buffer capacity behavior: a starting capacity, an append size that
 /// will (or will not) provoke growth, and the expected post-append capacity invariant (<c>&gt;=</c> the requested
 /// element count).
 /// </summary>
