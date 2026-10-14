@@ -38,7 +38,11 @@ public sealed class RelativeWeekdayInMonthStrategy
     /// <param name="weekOrdinal">The occurrence of the anchor weekday in the month.</param>
     /// <param name="relativeDayOfWeek">The weekday to seek relative to the anchor.</param>
     /// <param name="direction">The direction and inclusivity to apply when seeking the relative weekday.</param>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="month" /> is not between 1 and 12.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="month" /> is not between 1 and 12, or <paramref name="dayOfWeek" />,
+    /// <paramref name="weekOrdinal" />, <paramref name="relativeDayOfWeek" /> or <paramref name="direction" /> is not a
+    /// value its enumeration defines.
+    /// </exception>
     public RelativeWeekdayInMonthStrategy(
         int month,
         DayOfWeek dayOfWeek,
@@ -47,6 +51,10 @@ public sealed class RelativeWeekdayInMonthStrategy
         WeekdayProximity direction)
     {
         ThrowHelper.ThrowIfOutOfRange(month, 1, 12);
+        ThrowHelper.ThrowIfEnumValueIsUndefined(dayOfWeek);
+        ThrowHelper.ThrowIfEnumValueIsUndefined(weekOrdinal);
+        ThrowHelper.ThrowIfEnumValueIsUndefined(relativeDayOfWeek);
+        ThrowHelper.ThrowIfEnumValueIsUndefined(direction);
 
         Month = month;
         DayOfWeek = dayOfWeek;

@@ -37,12 +37,15 @@ public sealed class WeekdayNearDateStrategy
     /// <param name="dayOfWeek">The weekday to seek.</param>
     /// <param name="direction">The direction and inclusivity to apply when seeking the weekday.</param>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="month" /> is not between 1 and 12, or <paramref name="day" /> is not between 1 and 31.
+    /// <paramref name="month" /> is not between 1 and 12, <paramref name="day" /> is not between 1 and 31, or
+    /// <paramref name="dayOfWeek" /> or <paramref name="direction" /> is not a value its enumeration defines.
     /// </exception>
     public WeekdayNearDateStrategy(int month, int day, DayOfWeek dayOfWeek, WeekdayProximity direction)
     {
         ThrowHelper.ThrowIfOutOfRange(month, 1, 12);
         ThrowHelper.ThrowIfOutOfRange(day, 1, 31);
+        ThrowHelper.ThrowIfEnumValueIsUndefined(dayOfWeek);
+        ThrowHelper.ThrowIfEnumValueIsUndefined(direction);
 
         Month = month;
         Day = day;
