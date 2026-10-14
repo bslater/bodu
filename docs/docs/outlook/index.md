@@ -49,7 +49,7 @@ For the full glossary, see [Core concepts](concepts.md).
 - **Read-only.** Neither reader writes, and neither emulates a MAPI session: there is no MAPI message object, no property-change notification, and no RTF-to-HTML de-encapsulation.
 - **Every property, curated conveniences.** All decoded properties are reachable through `Properties`; `Subject`, `SenderName`, `SentTime`, and the rest are lazy views that return `null` when the property is absent.
 - **Bounded resources.** Both option types cap embedded-message nesting, decompressed RTF size, and the attachment payload decoded inline; the `.pst` options additionally bound node materialization. See [resource limits](concepts.md#resource-limits).
-- **PST variants.** The mail-store reader opens Unicode and ANSI files; OST files, and content encodings other than none, permute, or cyclic, are rejected by the container with <xref:Bodu.IO.Pst.PstUnsupportedFormatException>. Search folders are excluded from folder enumeration.
+- **PST variants.** The mail-store reader opens Unicode and ANSI files; OST files, and content encodings other than none, permute, or cyclic, are rejected with <xref:Bodu.Formats.Outlook.OutlookPstFormatException>, whose `InnerException` is the container's <xref:Bodu.IO.Pst.PstUnsupportedFormatException>. Search folders are excluded from folder enumeration.
 
 ## Worked example - a message and a mail store
 

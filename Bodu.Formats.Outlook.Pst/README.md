@@ -56,10 +56,23 @@ foreach (OutlookMailFolder folder in store.RootFolder.EnumerateSubfolders())
   `ValueOmittedCallback` reports each value the reader omits, so a salvaged object
   can be told from a clean one.
 
+## Errors
+
+Every failure to read a store surfaces as `OutlookPstFormatException`, part of the
+`OutlookFormatException` family it shares with the `.msg` reader, so one handler
+catches both formats. A container fault - a source that is not a PST file, an
+unsupported variant, or a corrupt page, block, heap, or table met by any read,
+a content stream's included - keeps the `Bodu.IO.Pst` exception as
+`InnerException`: a `PstFileFormatException`, `PstUnsupportedFormatException`, or
+`PstNodeNotFoundException`, whose `Error` names the `PstFileError` category. A
+messaging-level violation (a row that names no valid node under strict validation,
+a malformed name-to-id map, a tripped limit) has no inner exception.
+
 ## Out of scope
 
 - Writing or editing `.pst` files.
-- OST files (recognized and rejected).
+- OST files (recognized and rejected, with `PstUnsupportedFormatException` inside
+  the `OutlookPstFormatException`).
 - MAPI session semantics (`IMsgStore` emulation, search-folder population).
 - RTF→HTML/Text de-encapsulation (MS-OXRTFEX) - consumers receive the RTF verbatim.
 - TNEF (`winmail.dat`), S/MIME decryption, and OLE-attachment rendering.

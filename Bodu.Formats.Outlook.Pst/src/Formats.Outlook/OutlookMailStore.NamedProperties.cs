@@ -18,14 +18,30 @@ public sealed partial class OutlookMailStore
     /// Gets the named-property mapping, parsing the store's name-to-id map node on first use.
     /// </summary>
     /// <value>The mapping; empty when the store carries no name-to-id map node.</value>
-    /// <exception cref="PstFileException">The container is malformed.</exception>
     /// <exception cref="OutlookPstFormatException">
-    /// Under strict validation, the mapping streams are malformed.
+    /// The container is malformed, or, under strict validation, the mapping streams are malformed.
     /// </exception>
-    private PstNamedPropertyMap NamedPropertyMap =>
-        _namedProperties ??= TryGetNode(PstNodeId.NameToIdMap, out PstNode? node)
-            ? LoadNamedPropertyMap(node)
-            : PstNamedPropertyMap.Empty;
+    private PstNamedPropertyMap NamedPropertyMap
+    {
+        get
+        {
+            if (_namedProperties is null)
+            {
+                try
+                {
+                    _namedProperties = TryGetNode(PstNodeId.NameToIdMap, out PstNode? node)
+                        ? LoadNamedPropertyMap(node)
+                        : PstNamedPropertyMap.Empty;
+                }
+                catch (PstFileException ex) when (IsContainerFault(ex))
+                {
+                    throw PstContainer.Wrap(ex);
+                }
+            }
+
+            return _namedProperties;
+        }
+    }
 
     /// <summary>
     /// Parses the name-to-id map node, reporting any mapping stream omitted because its reference does not resolve.
@@ -54,9 +70,8 @@ public sealed partial class OutlookMailStore
     /// </param>
     /// <returns><see langword="true" /> when the store maps the name.</returns>
     /// <exception cref="ObjectDisposedException">The session has been disposed.</exception>
-    /// <exception cref="PstFileException">The container is malformed.</exception>
     /// <exception cref="OutlookPstFormatException">
-    /// Under strict validation, the mapping streams are malformed.
+    /// The container is malformed, or, under strict validation, the mapping streams are malformed.
     /// </exception>
     /// <remarks>
     /// The mapping is store-wide (MS-PST keeps one name-to-id map per file), so a single resolution applies to every
@@ -76,9 +91,8 @@ public sealed partial class OutlookMailStore
     /// <param name="name">When this method returns <see langword="true" />, the identity.</param>
     /// <returns><see langword="true" /> when the store maps the tag's identifier.</returns>
     /// <exception cref="ObjectDisposedException">The session has been disposed.</exception>
-    /// <exception cref="PstFileException">The container is malformed.</exception>
     /// <exception cref="OutlookPstFormatException">
-    /// Under strict validation, the mapping streams are malformed.
+    /// The container is malformed, or, under strict validation, the mapping streams are malformed.
     /// </exception>
     public bool TryGetPropertyName(MapiPropertyTag tag, out MapiNamedProperty name)
     {

@@ -258,7 +258,7 @@ The defaults - `Compatible` validation, 16 levels of nesting, 64 MiB of decompre
 
 ## Handle malformed input
 
-The two readers report failures differently beneath the shared <xref:Bodu.Formats.Outlook.OutlookFormatException> base. The `.msg` reader wraps container corruption - the <xref:Bodu.IO.Compound.CompoundFileFormatException> is the `InnerException` - while the `.pst` reader lets the <xref:Bodu.IO.Pst.PstFileException> family propagate unwrapped and reserves <xref:Bodu.Formats.Outlook.OutlookPstFormatException> for messaging-level violations.
+Both readers report failures beneath the shared <xref:Bodu.Formats.Outlook.OutlookFormatException> base, and both wrap container corruption. The `.msg` reader's <xref:Bodu.Formats.Outlook.OutlookMsgFormatException> carries the <xref:Bodu.IO.Compound.CompoundFileFormatException> as its `InnerException`; the `.pst` reader's <xref:Bodu.Formats.Outlook.OutlookPstFormatException> carries the container's <xref:Bodu.IO.Pst.PstFileException>, whose `Error` names the <xref:Bodu.IO.Pst.PstFileError> category, and has no inner exception for a messaging-level violation.
 
 <!-- compile -->
 ```csharp
@@ -288,13 +288,13 @@ try
     foreach (OutlookMailFolder folder in store.RootFolder.EnumerateSubfolders())
         Console.WriteLine(folder.DisplayName);
 }
-catch (PstUnsupportedFormatException)
+catch (OutlookPstFormatException ex) when (ex.InnerException is PstUnsupportedFormatException)
 {
     Console.WriteLine("A recognized but unsupported variant (an OST file, or an unsupported content encoding).");
 }
-catch (PstFileException ex)
+catch (OutlookPstFormatException ex) when (ex.InnerException is PstFileException container)
 {
-    Console.WriteLine($"Container corruption: {ex.Error} - {ex.Message}");
+    Console.WriteLine($"Container corruption: {container.Error} - {container.Message}");
 }
 catch (OutlookPstFormatException ex)
 {

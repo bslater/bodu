@@ -20,9 +20,9 @@ public sealed partial class OutlookMailMessage
     /// </summary>
     /// <value>The attachment views, built once on first access; empty when the message has no attachment table.</value>
     /// <exception cref="ObjectDisposedException">The owning session has been disposed.</exception>
-    /// <exception cref="PstFileException">The container is malformed.</exception>
     /// <exception cref="OutlookPstFormatException">
-    /// Under strict validation, an attachment-table row does not reference a valid attachment object subnode.
+    /// The container is malformed, or, under strict validation, an attachment-table row does not reference a valid
+    /// attachment object subnode.
     /// </exception>
     /// <remarks>
     /// Each attachment-table row's identifier is the attachment object's subnode identifier; a row that references no
@@ -34,7 +34,19 @@ public sealed partial class OutlookMailMessage
         {
             _store.ThrowIfDisposed();
 
-            return _attachments ??= BuildAttachments();
+            if (_attachments is null)
+            {
+                try
+                {
+                    _attachments = BuildAttachments();
+                }
+                catch (PstFileException ex) when (_store.IsContainerFault(ex))
+                {
+                    throw PstContainer.Wrap(ex);
+                }
+            }
+
+            return _attachments;
         }
     }
 

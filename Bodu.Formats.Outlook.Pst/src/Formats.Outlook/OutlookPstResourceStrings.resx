@@ -109,4 +109,13 @@
   <data name="Format_Invalid_PstAttachmentMethod" xml:space="preserve">
     <value>The attachment declares an undefined method ({0}).</value>
   </data>
+  <data name="Format_Invalid_PstNotPst" xml:space="preserve">
+    <value>The source is not a valid PST file and cannot be an Outlook mail store.</value>
+  </data>
+  <data name="Format_Invalid_PstContainerMalformed" xml:space="preserve">
+    <value>The Outlook mail store's PST container is malformed.</value>
+  </data>
+  <data name="Format_Invalid_PstContainerUnsupported" xml:space="preserve">
+    <value>The source is a PST format variant, or uses a content encoding, that the Outlook mail store reader does not support.</value>
+  </data>
 </root>

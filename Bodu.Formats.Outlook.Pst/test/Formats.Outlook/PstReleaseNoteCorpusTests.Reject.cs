@@ -13,8 +13,8 @@ namespace Bodu.Formats.Outlook;
 public sealed partial class PstReleaseNoteCorpusTests
 {
     /// <summary>
-    /// Verifies that each catalogued file a fix established as structurally malformed is rejected on the selected
-    /// surface with <see cref="PstFileFormatException" />, the exception the row names.
+    /// Verifies that each catalogued file a fix established as structurally malformed, read on the Nodes surface, is
+    /// rejected with <see cref="PstFileFormatException" />, the exception the row names.
     /// </summary>
     /// <param name="fix">The catalogue row.</param>
     [TestMethod]
@@ -36,8 +36,8 @@ public sealed partial class PstReleaseNoteCorpusTests
     }
 
     /// <summary>
-    /// Verifies that each catalogued file a fix established as a variant Bodu does not read is rejected with
-    /// <see cref="PstUnsupportedFormatException" />, the exception the row names.
+    /// Verifies that each catalogued file a fix established as a variant Bodu does not read, read on the Nodes surface,
+    /// is rejected with <see cref="PstUnsupportedFormatException" />, the exception the row names.
     /// </summary>
     /// <param name="fix">The catalogue row.</param>
     [TestMethod]

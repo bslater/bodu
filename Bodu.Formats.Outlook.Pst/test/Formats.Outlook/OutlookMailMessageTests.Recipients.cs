@@ -77,24 +77,6 @@ public partial class OutlookMailMessageTests
     }
 
     /// <summary>
-    /// Verifies that, by default, a recipient cell whose heap reference does not resolve fails the recipient list with
-    /// <see cref="PstFileFormatException" />.
-    /// </summary>
-    [TestMethod]
-    public void Recipients_WhenACellDoesNotResolve_ShouldThrowPstFileFormatException()
-    {
-        using OutlookMailStore store = OpenSynthetic(static b => b.DanglingRecipientEmail = true);
-        OutlookMailMessage message = GetFullMessage(store);
-
-        PstFileFormatException ex = Assert.ThrowsExactly<PstFileFormatException>(() =>
-        {
-            _ = message.Recipients;
-        });
-
-        Assert.AreEqual(PstFileError.InvalidHeap, ex.Error);
-    }
-
-    /// <summary>
     /// Verifies that a store that omits unresolvable values keeps every recipient, leaves out the cell whose heap
     /// reference does not resolve, and reports it with the recipient table's node and the row's identifier.
     /// </summary>

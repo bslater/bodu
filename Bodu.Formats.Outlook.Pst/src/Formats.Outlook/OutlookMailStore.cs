@@ -27,6 +27,13 @@ namespace Bodu.Formats.Outlook;
 /// The session is single-threaded, matching the container's documented contract: its members - and the members of every
 /// view obtained from it - must not be called concurrently.
 /// </para>
+/// <para>
+/// Every failure to read the store surfaces as <see cref="OutlookPstFormatException" />, part of the
+/// <see cref="OutlookFormatException" /> family the <c>.msg</c> reader shares. Container corruption met by the session
+/// or any view - when the store opens, a property collection decodes, a table is enumerated, or a content stream is
+/// read - is wrapped, with the container's <see cref="PstFileException" /> (and its
+/// <see cref="PstFileException.Error" /> category) preserved as the inner exception.
+/// </para>
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
@@ -81,13 +88,12 @@ public sealed partial class OutlookMailStore
     /// </summary>
     /// <value>The tag-addressed property collection, decoded once on first access.</value>
     /// <exception cref="ObjectDisposedException">The session has been disposed.</exception>
-    /// <exception cref="PstFileException">The container is malformed.</exception>
     /// <exception cref="OutlookPstFormatException">
-    /// Under strict validation, a property value cannot be decoded.
+    /// The container is malformed, or, under strict validation, a property value cannot be decoded.
     /// </exception>
     /// <remarks>
     /// An exception thrown by <see cref="OutlookMailStoreReaderOptions.ValueOmittedCallback" /> while the properties
-    /// are decoded propagates from this access.
+    /// are decoded propagates from this access unchanged.
     /// </remarks>
     public MapiPropertyCollection Properties
     {
@@ -97,22 +103,29 @@ public sealed partial class OutlookMailStore
 
             if (_properties is null)
             {
-                // A store without its message-store object still has a readable folder tree; its strings decode
-                // under the default code page.
-                if (_file.TryGetNode(PstNodeId.MessageStore, out PstNode? storeNode))
+                try
                 {
-                    _properties = PstMapiPropertyReader.Read(
-                        storeNode.ReadPropertyContext(),
-                        inheritedEncoding: null,
-                        Strict,
-                        CreateOmissionReporter(storeNode.NodeId),
-                        out Encoding encoding);
-                    _storeEncoding = encoding;
+                    // A store without its message-store object still has a readable folder tree; its strings decode
+                    // under the default code page.
+                    if (_file.TryGetNode(PstNodeId.MessageStore, out PstNode? storeNode))
+                    {
+                        _properties = PstMapiPropertyReader.Read(
+                            storeNode.ReadPropertyContext(),
+                            inheritedEncoding: null,
+                            Strict,
+                            CreateOmissionReporter(storeNode.NodeId),
+                            out Encoding encoding);
+                        _storeEncoding = encoding;
+                    }
+                    else
+                    {
+                        _properties = MapiPropertyCollection.Empty;
+                        _storeEncoding = MapiEncodingResolver.GetEncoding(null, null);
+                    }
                 }
-                else
+                catch (PstFileException ex) when (IsContainerFault(ex))
                 {
-                    _properties = MapiPropertyCollection.Empty;
-                    _storeEncoding = MapiEncodingResolver.GetEncoding(null, null);
+                    throw PstContainer.Wrap(ex);
                 }
             }
 
@@ -125,6 +138,7 @@ public sealed partial class OutlookMailStore
     /// </summary>
     /// <value>The <c>PidTagDisplayName</c> value, or <see langword="null" /> when absent.</value>
     /// <exception cref="ObjectDisposedException">The session has been disposed.</exception>
+    /// <exception cref="OutlookPstFormatException">The container is malformed.</exception>
     public string? DisplayName =>
         Properties.GetString(MapiPropertyIds.DisplayName);
 
@@ -133,7 +147,7 @@ public sealed partial class OutlookMailStore
     /// </summary>
     /// <value>The root folder view, created once on first access.</value>
     /// <exception cref="ObjectDisposedException">The session has been disposed.</exception>
-    /// <exception cref="PstFileException">The container is malformed.</exception>
+    /// <exception cref="OutlookPstFormatException">The container is malformed, or has no root folder node.</exception>
     /// <remarks>
     /// The root folder itself is structural - user folders (the IPM subtree) hang beneath it. Walk
     /// <see cref="OutlookMailFolder.EnumerateSubfolders" /> to reach them.
@@ -144,7 +158,19 @@ public sealed partial class OutlookMailStore
         {
             ThrowIfDisposed();
 
-            return _rootFolder ??= new OutlookMailFolder(this, _file.GetNode(PstNodeId.RootFolder));
+            if (_rootFolder is null)
+            {
+                try
+                {
+                    _rootFolder = new OutlookMailFolder(this, _file.GetNode(PstNodeId.RootFolder));
+                }
+                catch (PstFileException ex) when (IsContainerFault(ex))
+                {
+                    throw PstContainer.Wrap(ex);
+                }
+            }
+
+            return _rootFolder;
         }
     }
 
@@ -162,13 +188,29 @@ public sealed partial class OutlookMailStore
     /// <param name="nodeId">The node whose property context or table holds the object's values.</param>
     /// <param name="rowId">The table row holding the values, or <see langword="null" /> for a property context.</param>
     /// <returns>The reporter, or <see langword="null" /> when no callback is configured.</returns>
+    /// <remarks>
+    /// A <see cref="PstFileException" /> the callback throws is the caller's own, not a fault of this store's
+    /// container, so the reporter records it and the public members, which translate container faults, let it through
+    /// unchanged.
+    /// </remarks>
     internal Action<ushort, OutlookOmittedValueReason>? CreateOmissionReporter(PstNodeId nodeId, uint? rowId = null)
     {
         Action<OutlookOmittedValue>? callback = _options.ValueOmittedCallback;
         if (callback is null)
             return null;
 
-        return (propertyId, reason) => callback(new OutlookOmittedValue(nodeId, rowId, propertyId, reason));
+        return (propertyId, reason) =>
+        {
+            try
+            {
+                callback(new OutlookOmittedValue(nodeId, rowId, propertyId, reason));
+            }
+            catch (PstFileException ex)
+            {
+                _callbackException = ex;
+                throw;
+            }
+        };
     }
 
     /// <summary>
@@ -230,8 +272,11 @@ public sealed partial class OutlookMailStore
     /// <paramref name="path" /> names a directory, or the caller does not have permission to read the file.
     /// </exception>
     /// <exception cref="IOException">The file could not be opened.</exception>
-    /// <exception cref="PstFileFormatException">The file is not a structurally valid PST file.</exception>
-    /// <exception cref="PstUnsupportedFormatException">The file uses a recognized but unsupported variant.</exception>
+    /// <exception cref="OutlookPstFormatException">
+    /// The file is not a structurally valid PST file, or is a format variant or uses a content encoding the reader does
+    /// not support; the container's <see cref="PstFileFormatException" /> or
+    /// <see cref="PstUnsupportedFormatException" /> is the inner exception.
+    /// </exception>
     public static OutlookMailStore OpenRead(string path)
     {
         ThrowHelper.ThrowIfNull(path);
@@ -258,8 +303,11 @@ public sealed partial class OutlookMailStore
     /// Thrown if <paramref name="stream" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="ArgumentException">The stream is not readable and seekable.</exception>
-    /// <exception cref="PstFileFormatException">The stream is not a structurally valid PST file.</exception>
-    /// <exception cref="PstUnsupportedFormatException">The file uses a recognized but unsupported variant.</exception>
+    /// <exception cref="OutlookPstFormatException">
+    /// The stream is not a structurally valid PST file, or is a format variant or uses a content encoding the reader
+    /// does not support; the container's <see cref="PstFileFormatException" /> or
+    /// <see cref="PstUnsupportedFormatException" /> is the inner exception.
+    /// </exception>
     public static OutlookMailStore OpenRead(Stream stream, bool leaveOpen = false) =>
         Open(stream, OutlookMailStoreReaderOptions.Default, leaveOpen);
 
@@ -274,14 +322,27 @@ public sealed partial class OutlookMailStore
     /// Thrown if <paramref name="stream" /> or <paramref name="options" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="ArgumentException">The stream is not readable and seekable.</exception>
-    /// <exception cref="PstFileFormatException">The stream is not a structurally valid PST file.</exception>
-    /// <exception cref="PstUnsupportedFormatException">The file uses a recognized but unsupported variant.</exception>
+    /// <exception cref="OutlookPstFormatException">
+    /// The stream is not a structurally valid PST file, or is a format variant or uses a content encoding the reader
+    /// does not support; the container's <see cref="PstFileFormatException" /> or
+    /// <see cref="PstUnsupportedFormatException" /> is the inner exception.
+    /// </exception>
     public static OutlookMailStore Open(Stream stream, OutlookMailStoreReaderOptions options, bool leaveOpen = false)
     {
         ThrowHelper.ThrowIfNull(stream);
         ThrowHelper.ThrowIfNull(options);
 
-        return new OutlookMailStore(PstFile.Open(stream, options.ToPstFileOptions(), leaveOpen), options);
+        PstFile file;
+        try
+        {
+            file = PstFile.Open(stream, options.ToPstFileOptions(), leaveOpen);
+        }
+        catch (PstFileException ex)
+        {
+            throw PstContainer.Wrap(ex);
+        }
+
+        return new OutlookMailStore(file, options);
     }
 
     /// <summary>
@@ -295,6 +356,10 @@ public sealed partial class OutlookMailStore
     /// <exception cref="ArgumentNullException">
     /// Thrown if <paramref name="stream" /> is <see langword="null" />.
     /// </exception>
+    /// <remarks>
+    /// The check reads only the magic, so it never throws for malformed content; a stream that cannot be read and
+    /// sought answers <see langword="false" />.
+    /// </remarks>
     public static bool IsPstFile(Stream stream) =>
         PstFile.IsPstFile(stream);
 

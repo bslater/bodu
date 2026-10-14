@@ -86,31 +86,6 @@ public partial class OutlookMailMessageTests
     }
 
     /// <summary>
-    /// Verifies that, by default, a message property whose heap reference does not resolve fails the message's
-    /// properties with <see cref="PstFileFormatException" /> at every validation level.
-    /// </summary>
-    /// <param name="testName">The row's display name.</param>
-    /// <param name="level">The validation level.</param>
-    [TestMethod]
-    [DataRow("Compatible", PstValidationLevel.Compatible)]
-    [DataRow("Strict", PstValidationLevel.Strict)]
-    [DataRow("Minimal", PstValidationLevel.Minimal)]
-    public void Properties_WhenAValueDoesNotResolve_ShouldThrowPstFileFormatException(string testName, PstValidationLevel level)
-    {
-        _ = testName;
-        using OutlookMailStore store = OpenSynthetic(static b => b.DanglingMessagePropertyIds.Add(MapiPropertyIds.SenderName), level);
-        OutlookMailMessage message = store.RootFolder.EnumerateSubfolders().Single().EnumerateMessages()
-            .Single(static m => m.Node.NodeId.Value == PstMessagingFixtureBuilder.MessageNodeId);
-
-        PstFileFormatException ex = Assert.ThrowsExactly<PstFileFormatException>(() =>
-        {
-            _ = message.Properties;
-        });
-
-        Assert.AreEqual(PstFileError.InvalidHeap, ex.Error);
-    }
-
-    /// <summary>
     /// Verifies that a store that omits unresolvable values leaves out a message property whose heap reference does not
     /// resolve, keeps the rest of the message readable, and reports the omission, at every validation level.
     /// </summary>

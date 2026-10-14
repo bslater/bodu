@@ -59,7 +59,7 @@ An input is `gen:` followed by a generator pipeline (below); the bytes it builds
 | Kind | Passes when |
 |---|---|
 | `parse` | Opening the input and rendering it (below) succeeds, and the rendering equals `expected` |
-| `reject` | Opening the input or rendering it throws an exception whose type name is `expected`: `PstFileFormatException` or `PstUnsupportedFormatException` from the container, `OutlookPstFormatException` from the mail store |
+| `reject` | Opening the input or rendering it throws an exception whose type name is `expected`: `PstFileFormatException` or `PstUnsupportedFormatException` from the container, `OutlookPstFormatException` from the mail store. The mail store wraps a container exception, so on the Store surface a row expecting a container exception is met by an `OutlookPstFormatException` whose `InnerException` has that type name |
 | `unit` | Not run from the file: `input` names a test to be written (`<TestClass>.<Member>_When<Condition>_Should<Result>`), and `reason` gives its model, input and expected outcome |
 
 **The Store surface** (the default) opens the input with `OutlookMailStore.Open` and walks it depth first. Lines are joined with LF:

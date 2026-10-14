@@ -212,5 +212,32 @@ namespace Bodu.Formats.Outlook {
                 return ResourceManager.GetString("Format_Invalid_PstAttachmentMethod", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The source is not a valid PST file and cannot be an Outlook mail store..
+        /// </summary>
+        internal static string Format_Invalid_PstNotPst {
+            get {
+                return ResourceManager.GetString("Format_Invalid_PstNotPst", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The Outlook mail store&apos;s PST container is malformed..
+        /// </summary>
+        internal static string Format_Invalid_PstContainerMalformed {
+            get {
+                return ResourceManager.GetString("Format_Invalid_PstContainerMalformed", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The source is a PST format variant, or uses a content encoding, that the Outlook mail store reader does not support..
+        /// </summary>
+        internal static string Format_Invalid_PstContainerUnsupported {
+            get {
+                return ResourceManager.GetString("Format_Invalid_PstContainerUnsupported", resourceCulture);
+            }
+        }
     }
 }

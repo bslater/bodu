@@ -67,18 +67,27 @@ public sealed partial class PstReleaseNoteCorpusTests
         RunnableRows("parse");
 
     /// <summary>
-    /// Gets the runnable rows of kind <c>reject</c> that expect <see cref="PstFileFormatException" />.
+    /// Gets the runnable rows of kind <c>reject</c> on the Nodes surface that expect <see cref="PstFileFormatException" />.
     /// </summary>
     /// <value>One single-element argument array per row.</value>
+    /// <remarks>
+    /// The mail store wraps a container exception, so a row on the Store surface is among
+    /// <see cref="StoreSurfaceContainerRows" /> instead.
+    /// </remarks>
     public static IEnumerable<object[]> MalformedContainerRows =>
-        RejectRows(nameof(PstFileFormatException));
+        RejectRows(nameof(PstFileFormatException), "Nodes");
 
     /// <summary>
-    /// Gets the runnable rows of kind <c>reject</c> that expect <see cref="PstUnsupportedFormatException" />.
+    /// Gets the runnable rows of kind <c>reject</c> on the Nodes surface that expect
+    /// <see cref="PstUnsupportedFormatException" />.
     /// </summary>
     /// <value>One single-element argument array per row.</value>
+    /// <remarks>
+    /// The mail store wraps a container exception, so a row on the Store surface is among
+    /// <see cref="StoreSurfaceContainerRows" /> instead.
+    /// </remarks>
     public static IEnumerable<object[]> UnsupportedVariantRows =>
-        RejectRows(nameof(PstUnsupportedFormatException));
+        RejectRows(nameof(PstUnsupportedFormatException), "Nodes");
 
     /// <summary>
     /// Gets the runnable rows of kind <c>reject</c> on the Store surface that expect one of the container's exceptions,
@@ -155,10 +164,14 @@ public sealed partial class PstReleaseNoteCorpusTests
     /// Selects the runnable <c>reject</c> rows that expect one exception as test data.
     /// </summary>
     /// <param name="exceptionName">The exception's type name, as the rows' <c>expected</c> field writes it.</param>
+    /// <param name="surface">The surface the rows read the input on, or <see langword="null" /> for either.</param>
     /// <returns>One single-element argument array per matching row.</returns>
-    private static IEnumerable<object[]> RejectRows(string exceptionName) =>
+    private static IEnumerable<object[]> RejectRows(string exceptionName, string? surface = null) =>
         AllRows
-            .Where(fix => fix.IsRunnable && fix.Kind == "reject" && fix.Expected == exceptionName)
+            .Where(fix => fix.IsRunnable
+                && fix.Kind == "reject"
+                && fix.Expected == exceptionName
+                && (surface is null || RowOptions.Parse(fix.Options).Surface == surface))
             .Select(fix => new object[] { fix });
 
     /// <summary>

@@ -10,8 +10,10 @@ namespace Bodu.Formats.Outlook;
 /// Represents an error raised when Outlook-format content is structurally invalid or cannot be decoded.
 /// </summary>
 /// <remarks>
-/// This is the base exception of the Outlook format readers; format-specific packages derive from it (for example, the
-/// <c>.msg</c> reader's <c>OutlookMsgFormatException</c>) so consumers can catch the family with a single handler.
+/// This is the base exception of the Outlook format readers; format-specific packages derive from it (the <c>.msg</c>
+/// reader's <c>OutlookMsgFormatException</c> and the <c>.pst</c> reader's <c>OutlookPstFormatException</c>), and each
+/// reader wraps the faults of its container in its own exception, so consumers can catch the family with a single
+/// handler.
 /// </remarks>
 public class OutlookFormatException
     : FormatException

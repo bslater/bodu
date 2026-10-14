@@ -12,28 +12,6 @@ namespace Bodu.Formats.Outlook;
 public partial class OutlookMailStoreTests
 {
     /// <summary>
-    /// Verifies that opening a store whose header carries the OST client magic <c>SO</c> propagates the container's
-    /// <see cref="PstUnsupportedFormatException" /> whatever the header's version, as the guides document.
-    /// </summary>
-    /// <param name="testName">The scenario name.</param>
-    /// <param name="version">The header's <c>wVer</c>.</param>
-    [TestMethod]
-    [DataRow("version 23", 23)]
-    [DataRow("version 36", 36)]
-    public void Open_WhenClientMagicIsOst_ShouldThrowPstUnsupportedFormatException(string testName, int version)
-    {
-        Assert.IsNotNull(testName);
-        byte[] input = PstReleaseNoteCorpusTests.GenerateInput($"gen:Mail()|Header(client=0x4F53,version={version})");
-
-        var ex = Assert.ThrowsExactly<PstUnsupportedFormatException>(() =>
-        {
-            using OutlookMailStore store = OutlookMailStore.Open(new MemoryStream(input, writable: false), new OutlookMailStoreReaderOptions());
-        });
-
-        Assert.AreEqual(PstFileError.UnsupportedFormat, ex.Error);
-    }
-
-    /// <summary>
     /// Verifies that opening a store whose header carries the OST client magic <c>SO</c> throws
     /// <see cref="OutlookPstFormatException" />, keeping the container's <see cref="PstUnsupportedFormatException" /> as
     /// the inner exception, whatever the header's version.
