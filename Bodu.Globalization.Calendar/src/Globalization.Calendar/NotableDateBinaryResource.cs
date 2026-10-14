@@ -17,8 +17,8 @@ namespace Bodu.Globalization.Calendar;
 /// </summary>
 /// <remarks>
 /// <para>
-/// <see cref="Write(NotableDateResource, Stream)" /> runs the loader's identifier, duplicate and cross-reference checks
-/// on the resource before it encodes anything, and refuses a resource the loader would reject with the
+/// <see cref="Write(NotableDateResource, Stream)" /> runs the loader's identifier, range, duplicate and cross-reference
+/// checks on the resource before it encodes anything, and refuses a resource the loader would reject with the
 /// <see cref="NotableDateValidationException" /> and diagnostics the loader reports, so a resource assembled in code is
 /// held to the rules a document is. Reading a pack skips parsing and that validation entirely - the trim- and
 /// AOT-friendly load path - so a pack not produced by <see cref="Write(NotableDateResource, Stream)" />, such as one
@@ -52,7 +52,7 @@ public static partial class NotableDateBinaryResource
     /// <paramref name="resource" /> or <paramref name="stream" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="NotableDateValidationException">
-    /// The resource fails one of the loader's identifier, duplicate or cross-reference checks, such as a concept
+    /// The resource fails one of the loader's identifier, range, duplicate or cross-reference checks, such as a concept
     /// identifier that is not an identifier, two concepts sharing one, or an algorithm key that is not built in; the
     /// <see cref="NotableDateValidationException.Diagnostics" /> are those the loader reports, and nothing is written.
     /// </exception>
@@ -82,7 +82,7 @@ public static partial class NotableDateBinaryResource
     /// <paramref name="resource" /> or <paramref name="stream" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="NotableDateValidationException">
-    /// The resource fails one of the loader's identifier, duplicate or cross-reference checks, such as a concept
+    /// The resource fails one of the loader's identifier, range, duplicate or cross-reference checks, such as a concept
     /// identifier that is not an identifier, two concepts sharing one, or an algorithm key that is neither built in nor
     /// declared by <paramref name="algorithms" />; the <see cref="NotableDateValidationException.Diagnostics" /> are
     /// those the loader reports, and nothing is written.
@@ -94,8 +94,9 @@ public static partial class NotableDateBinaryResource
     /// </exception>
     /// <remarks>
     /// The checks are those the loader runs on the resource it assembles: each identifier, reference and territory code
-    /// against the pattern the notable-date schema requires of it (<c>BODU-CAL-SCHEMA</c>), duplicate concept, rule and
-    /// adjustment-policy identifiers, adjustment and strategy references that do not resolve, inverted year bounds,
+    /// against the pattern the notable-date schema requires of it, and each number the schema bounds against its range
+    /// (<c>BODU-CAL-SCHEMA</c>, or <c>BODU-CAL-VALUE</c> for an adjustment trigger's month), duplicate concept, rule
+    /// and adjustment-policy identifiers, adjustment and strategy references that do not resolve, inverted year bounds,
     /// adjustment actions missing their target or handler, and algorithm keys. The registry is not recorded in the
     /// pack; a reader resolves an algorithm key against the registry its service is given.
     /// </remarks>
@@ -131,8 +132,8 @@ public static partial class NotableDateBinaryResource
     }
 
     /// <summary>
-    /// Runs the loader's identifier, duplicate and cross-reference checks on a resource, throwing when any reports an
-    /// error.
+    /// Runs the loader's identifier, range, duplicate and cross-reference checks on a resource, throwing when any
+    /// reports an error.
     /// </summary>
     /// <param name="resource">The resource to check.</param>
     /// <param name="algorithms">
@@ -143,6 +144,7 @@ public static partial class NotableDateBinaryResource
     {
         List<NotableDateValidationDiagnostic> diagnostics = [];
         NotableDateRuleValidator.ValidateIdentifiers(resource, diagnostics);
+        NotableDateRuleValidator.ValidateRanges(resource, diagnostics);
         NotableDateRuleValidator.Validate(resource, diagnostics, algorithms);
 
         int errors = diagnostics.Count(d => d.Severity == NotableDateValidationSeverity.Error);

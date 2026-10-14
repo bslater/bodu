@@ -294,9 +294,9 @@ public static class NotableDateResourceLoader
     /// <remarks>
     /// <para>
     /// <see cref="NotableDateBinaryResource.Write(NotableDateResource, Stream)" /> runs this loader's identifier,
-    /// duplicate and cross-reference checks before it encodes a pack, so loading skips parsing and semantic validation
-    /// entirely - the trim- and AOT-friendly load path. Integrity is still enforced: the payload digest and every
-    /// structural bound are verified. A pack not produced by that method, such as one edited by hand, is not
+    /// range, duplicate and cross-reference checks before it encodes a pack, so loading skips parsing and semantic
+    /// validation entirely - the trim- and AOT-friendly load path. Integrity is still enforced: the payload digest and
+    /// every structural bound are verified. A pack not produced by that method, such as one edited by hand, is not
     /// revalidated.
     /// </para>
     /// </remarks>

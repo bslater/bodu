@@ -25,10 +25,10 @@ public static partial class NotableDateBinaryResource
     /// </exception>
     /// <remarks>
     /// Reading checks the pack's structure, enumeration values, string references and payload digest, and builds each
-    /// value through its model constructor, but does not run the loader's identifier, duplicate or cross-reference
-    /// checks, which <see cref="Write(NotableDateResource, Stream)" /> ran before encoding. A pack not produced by
-    /// <see cref="Write(NotableDateResource, Stream)" />, such as one edited by hand and given a matching digest, is
-    /// therefore not revalidated; load the document it was compiled from to validate it.
+    /// value through its model constructor, but does not run the loader's identifier, range, duplicate or
+    /// cross-reference checks, which <see cref="Write(NotableDateResource, Stream)" /> ran before encoding. A pack not
+    /// produced by <see cref="Write(NotableDateResource, Stream)" />, such as one edited by hand and given a matching
+    /// digest, is therefore not revalidated; load the document it was compiled from to validate it.
     /// </remarks>
     public static NotableDateResource Read(Stream stream)
     {
