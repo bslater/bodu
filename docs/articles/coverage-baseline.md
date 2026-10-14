@@ -31,8 +31,8 @@ Legend: `-` = not part of this collection · `n/a` = excluded by design (see [Co
 | `Bodu.Financial.ExchangeRates.Yahoo` | Preview | 96% | 73.1% | 143 / 149 |
 | `Bodu.Financial.Serialization.Json` | Stable | 95% | 89.4% | 551 / 580 |
 | `Bodu.Formats.Excel.Binary` | Stable | 92.6% | 85.4% | 731 / 789 |
-| `Bodu.Formats.Outlook` | Preview | 95.9% | 88.9% | 71 / 74 |
-| `Bodu.Formats.Outlook.Msg` | Preview | 94.2% | 90.2% | 524 / 556 |
+| `Bodu.Formats.Outlook` | Stable | 95.9% | 88.9% | 71 / 74 |
+| `Bodu.Formats.Outlook.Msg` | Stable | 94.2% | 90.2% | 524 / 556 |
 | `Bodu.Globalization.Calendar` | Stable | 97% | 89.6% | 3370 / 3474 |
 | `Bodu.Globalization.Calendar.Africa` | Stable | 100% | 66.7% | 26 / 26 |
 | `Bodu.Globalization.Calendar.Americas` | Stable | 100% | 83.3% | 29 / 29 |
@@ -51,7 +51,7 @@ Legend: `-` = not part of this collection · `n/a` = excluded by design (see [Co
 | `Bodu.IO.Compound` | Stable | 98.8% | 94.1% | 2220 / 2247 |
 | `Bodu.IO.Hashing` | Stable | 98.7% | 96% | 2518 / 2551 |
 | `Bodu.IO.Hashing (shared source)` | Stable | 100% | 100% | 48 / 48 |
-| `Bodu.IO.Pst` | Preview | 100% | 100% | 408 / 408 |
+| `Bodu.IO.Pst` | Stable | 100% | 100% | 408 / 408 |
 | `Bodu.Numerics` | Stable | 94.2% | 91% | 2090 / 2219 |
 | `Bodu.Numerics.Serialization.Json` | Stable | 92.5% | 83.6% | 494 / 534 |
 | `Bodu.Security.Cryptography` | Stable | 98.4% | 94.1% | 13684 / 13912 |

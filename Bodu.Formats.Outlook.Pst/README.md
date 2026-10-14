@@ -1,6 +1,6 @@
 # Bodu.Formats.Outlook.Pst
 
-> **API stability - Preview.** The public API surface is largely settled but is still being finalized ahead of the 1.0 release and may change; breaking changes can land in a minor version until then.
+> **API stability - Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
 
 A **read-only reader for the Outlook personal-folders format** (`.pst` / MS-PST,
 Unicode and ANSI formats), built on [`Bodu.IO.Pst`](../Bodu.IO.Pst) - the node-database

@@ -1,6 +1,6 @@
 # Bodu.Formats.Outlook
 
-> **API stability - Preview.** The public API surface is largely settled but is still being finalized ahead of the 1.0 release and may change; breaking changes can land in a minor version until then.
+> **API stability - Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
 
 The shared **MAPI value model** for the Bodu Outlook format readers: property tags and
 types, decoded property values with a tag-addressed collection, named-property

@@ -1,6 +1,6 @@
 # Bodu.Formats.Outlook.Msg
 
-> **API stability - Preview.** The public API surface is largely settled but is still being finalized ahead of the 1.0 release and may change; breaking changes can land in a minor version until then.
+> **API stability - Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
 
 A **read-only reader for the Outlook message format** (`.msg` / MS-OXMSG), built on
 [`Bodu.IO.Compound`](../Bodu.IO.Compound) - a `.msg` file *is* an OLE2 compound file -

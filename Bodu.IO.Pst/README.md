@@ -1,6 +1,6 @@
 # Bodu.IO.Pst
 
-> **API stability - Preview.** The public API surface is largely settled but is still being finalized ahead of the 1.0 release and may change; breaking changes can land in a minor version until then.
+> **API stability - Stable.** The public API surface is committed; breaking changes are reserved for a major-version bump per [SemVer](https://semver.org).
 
 A **low-level, read-only container library** for the Outlook personal-folders format
 (PST, [MS-PST]). It reads the **node database (NDB)** layer of a Unicode- or ANSI-format
