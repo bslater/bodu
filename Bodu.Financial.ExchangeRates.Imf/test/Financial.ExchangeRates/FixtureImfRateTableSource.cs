@@ -16,6 +16,9 @@ internal sealed class FixtureImfRateTableSource
     /// <summary>The options used when parsing the report.</summary>
     private readonly ImfRateProviderOptions _options;
 
+    /// <summary>The keys of the report months requested so far, in request order, guarded by its own lock.</summary>
+    private readonly List<string> _requestedMonths = [];
+
     /// <summary>
     /// Initializes a new instance of the <see cref="FixtureImfRateTableSource" /> class.
     /// </summary>
@@ -38,10 +41,29 @@ internal sealed class FixtureImfRateTableSource
     /// <value>The invocation count.</value>
     public int GetTableCallCount { get; private set; }
 
+    /// <summary>
+    /// Gets a snapshot of the keys of the report months requested so far, in request order.
+    /// </summary>
+    /// <value>The requested month keys, for example <c>2026-04</c>.</value>
+    public IReadOnlyList<string> RequestedMonths
+    {
+        get
+        {
+            lock (_requestedMonths)
+            {
+                return [.. _requestedMonths];
+            }
+        }
+    }
+
     /// <inheritdoc />
     public ValueTask<ImfRateTable> GetTableAsync(ImfReportMonth month, CancellationToken cancellationToken = default)
     {
         GetTableCallCount++;
+        lock (_requestedMonths)
+        {
+            _requestedMonths.Add(month.Key);
+        }
 
         if (month.Year == 2026 && month.Month == 4)
         {
