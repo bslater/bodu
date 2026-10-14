@@ -10,7 +10,8 @@ namespace Bodu.Globalization.Calendar;
 
 /// <summary>
 /// Performs the pre-resolution semantic validation that the XSD cannot express: duplicate identities, unresolved
-/// adjustment and strategy references, and inverted year bounds.
+/// adjustment and strategy references, and inverted year bounds; and, for a resource no reader produced, the identifier
+/// patterns the XSD does express.
 /// </summary>
 internal static class NotableDateRuleValidator
 {
@@ -29,6 +30,85 @@ internal static class NotableDateRuleValidator
         ValidateAdjustmentActions(resource, diagnostics);
         ValidateAdjustmentTriggers(resource, diagnostics);
         ValidateNotableDates(resource, diagnostics, algorithms);
+    }
+
+    /// <summary>
+    /// Reports each identifier, reference and territory code of an assembled resource that breaks the pattern the
+    /// notable-date schema requires of it, with the <c>BODU-CAL-SCHEMA</c> error the JSON reader reports for the same
+    /// value.
+    /// </summary>
+    /// <param name="resource">The resource to validate.</param>
+    /// <param name="diagnostics">The collection that receives validation diagnostics.</param>
+    /// <remarks>
+    /// The loader checks these values as it reads a document, so <see cref="Validate" /> does not repeat the check; a
+    /// resource assembled in code, which no reader produced, is held to them before it is written as a binary rule
+    /// pack. A strategy's references need no check here, since the strategy's constructor refuses one that breaks the
+    /// pattern. Each diagnostic names the JSON property the value is written under, as the JSON reader names it.
+    /// </remarks>
+    public static void ValidateIdentifiers(NotableDateResource resource, ICollection<NotableDateValidationDiagnostic> diagnostics)
+    {
+        CheckPattern(resource.ResourceId, NotableDateSchemaPattern.ResourceIdentifier, "resourceId", diagnostics);
+
+        foreach (AdjustmentPolicy policy in resource.AdjustmentPolicies)
+        {
+            CheckPattern(policy.Id, NotableDateSchemaPattern.Identifier, "id", diagnostics);
+            CheckPatterns(policy.Scope.Territories, NotableDateSchemaPattern.TerritoryCode, "territories", diagnostics);
+            CheckPatterns(policy.Scope.NotableDateRefs, NotableDateSchemaPattern.Identifier, "notableDateRefs", diagnostics);
+
+            foreach (string scoped in policy.Scope.RuleRefs)
+            {
+                (string? qualifier, string name) = AdjustmentScope.SplitRuleRef(scoped);
+                if (qualifier is not null)
+                    CheckPattern(qualifier, NotableDateSchemaPattern.Identifier, "ruleRefs", diagnostics);
+
+                CheckPattern(name, NotableDateSchemaPattern.Identifier, "ruleRefs", diagnostics);
+            }
+
+            if (policy.ActionNotableDateRef is not null)
+                CheckPattern(policy.ActionNotableDateRef, NotableDateSchemaPattern.Identifier, "notableDateRef", diagnostics);
+
+            if (policy.ActionRuleRef is not null)
+                CheckPattern(policy.ActionRuleRef, NotableDateSchemaPattern.Identifier, "ruleRef", diagnostics);
+        }
+
+        foreach (NotableDateDefinition definition in resource.NotableDates)
+        {
+            CheckPattern(definition.Id, NotableDateSchemaPattern.Identifier, "id", diagnostics);
+
+            foreach (NotableDateRule rule in definition.Rules)
+            {
+                CheckPattern(rule.Id, NotableDateSchemaPattern.Identifier, "id", diagnostics);
+                CheckPatterns(rule.Applicability.Territories, NotableDateSchemaPattern.TerritoryCode, "territories", diagnostics);
+                CheckPatterns(rule.AdjustmentPolicyRefs, NotableDateSchemaPattern.Identifier, "adjustments", diagnostics);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Records the <c>BODU-CAL-SCHEMA</c> error for a value that breaks the pattern the schema requires of it.
+    /// </summary>
+    /// <param name="value">The value.</param>
+    /// <param name="pattern">The pattern the schema requires of the value.</param>
+    /// <param name="field">The name of the JSON property the value is written under, used in the diagnostic.</param>
+    /// <param name="diagnostics">The collection that receives the diagnostic.</param>
+    private static void CheckPattern(string value, NotableDateSchemaPattern pattern, string field, ICollection<NotableDateValidationDiagnostic> diagnostics)
+    {
+        if (NotableDateSchemaPatterns.Check(value, pattern, field) is NotableDateValidationDiagnostic diagnostic)
+            diagnostics.Add(diagnostic);
+    }
+
+    /// <summary>
+    /// Records the <c>BODU-CAL-SCHEMA</c> error for each value of a list that breaks the pattern the schema requires of
+    /// it.
+    /// </summary>
+    /// <param name="values">The values.</param>
+    /// <param name="pattern">The pattern the schema requires of each value.</param>
+    /// <param name="field">The name of the JSON property the list is written under, used in the diagnostics.</param>
+    /// <param name="diagnostics">The collection that receives the diagnostics.</param>
+    private static void CheckPatterns(IEnumerable<string> values, NotableDateSchemaPattern pattern, string field, ICollection<NotableDateValidationDiagnostic> diagnostics)
+    {
+        foreach (string value in values)
+            CheckPattern(value, pattern, field, diagnostics);
     }
 
     /// <summary>

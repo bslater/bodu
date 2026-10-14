@@ -152,6 +152,25 @@ public sealed partial class NotableDateBinaryResourceTests
     }
 
     /// <summary>
+    /// Verifies that an algorithm key a custom registry declares, which the loader accepts with that registry, is
+    /// accepted by the overload that takes the registry and written as given.
+    /// </summary>
+    [TestMethod]
+    public void Write_WhenRegistryDeclaresAlgorithmKey_ShouldWrite()
+    {
+        NotableDateResource resource = SingleRuleResource(
+            new NotableDateRule("r", 0, null, null, null, GlobalApplicability, new AlgorithmDateStrategy("no-such-algorithm"), [], []));
+        NotableDateAlgorithmRegistry registry = new NotableDateAlgorithmRegistry()
+            .Register("no-such-algorithm", new StubAlgorithm());
+        using MemoryStream stream = new();
+
+        NotableDateBinaryResource.Write(resource, stream, registry);
+        stream.Position = 0;
+
+        Assert.AreEqual("no-such-algorithm", ((AlgorithmDateStrategy)NotableDateBinaryResource.Read(stream).NotableDates[0].Rules[0].Strategy!).Key);
+    }
+
+    /// <summary>
     /// Verifies that a resource the loader would reject is refused before anything is encoded, so the stream is left
     /// empty rather than holding a partial pack.
     /// </summary>
@@ -300,6 +319,15 @@ public sealed partial class NotableDateBinaryResourceTests
         string? format = CalendarResourceStrings.ResourceManager.GetString("Op_NotSupported_BinaryPackType", CultureInfo.CurrentCulture);
 
         return format is null ? null : string.Format(CultureInfo.CurrentCulture, format, typeName);
+    }
+
+    /// <summary>An algorithm a custom registry declares under a key that is not built in.</summary>
+    private sealed class StubAlgorithm
+        : INotableDateAlgorithm
+    {
+        /// <inheritdoc />
+        public DateOnly? Calculate(int year) =>
+            new DateOnly(year, 5, 5);
     }
 
     /// <summary>A calculation strategy outside the sealed set the binary format enumerates.</summary>

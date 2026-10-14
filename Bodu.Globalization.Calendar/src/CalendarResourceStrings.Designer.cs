@@ -115,6 +115,15 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The resource &apos;{0}&apos; cannot be written as a binary rule pack: it fails the loader&apos;s validation with {1} error diagnostic(s). Inspect the Diagnostics collection for details..
+        /// </summary>
+        internal static string Op_Invalid_BinaryPackResourceInvalid {
+            get {
+                return ResourceManager.GetString("Op_Invalid_BinaryPackResourceInvalid", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The binary rule-pack format cannot encode &apos;{0}&apos;; it supports only the built-in calculation strategies, recurrence strategies, and duration definitions..
         /// </summary>
         internal static string Op_NotSupported_BinaryPackType {

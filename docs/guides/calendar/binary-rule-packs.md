@@ -4,7 +4,7 @@ title: Binary rule packs
 
 # Binary rule packs
 
-A binary rule pack (`.bcal`) is the compiled form of a notable-date document: a compact, integrity-checked, sealed encoding of a **validated** <xref:Bodu.Globalization.Calendar.NotableDateResource>. Packs are written at build/authoring time and loaded at run time without parsing or semantic validation - the trim- and AOT-friendly load path for calendar data.
+A binary rule pack (`.bcal`) is the compiled form of a notable-date document: a compact, integrity-checked, sealed encoding of a **validated** <xref:Bodu.Globalization.Calendar.NotableDateResource>. Packs are written at build/authoring time, where the writer runs the loader's checks, and loaded at run time without parsing or semantic validation - the trim- and AOT-friendly load path for calendar data.
 
 ## When to use a pack
 
@@ -31,7 +31,7 @@ NotableDateResource resource = NotableDateResourceLoader.LoadBinary(stream);
 INotableDateService service = new NotableDateService(resource);
 ```
 
-The symmetric low-level surface is <xref:Bodu.Globalization.Calendar.NotableDateBinaryResource> - `Write(resource, stream)` / `Read(stream)` - usable with any already-built resource, including the bundled catalogues.
+The symmetric low-level surface is <xref:Bodu.Globalization.Calendar.NotableDateBinaryResource> - `Write(resource, stream)` / `Read(stream)` - usable with any already-built resource, including the bundled catalogues. `Write` runs the loader's identifier, duplicate and cross-reference checks on the resource before it encodes anything, and refuses one the loader would reject with <xref:Bodu.Globalization.Calendar.NotableDateValidationException>, carrying the diagnostics the loader reports (such as `BODU-CAL-SCHEMA` for a concept id of `New-Year`, or `BODU-CAL-DUP-ND` for two concepts sharing an id), so a resource assembled in code is held to the rules a document is. A resource whose algorithm strategies name keys from a custom registry is written with `Write(resource, stream, algorithms)`, as it was loaded with that registry.
 
 A pack is **compiled output, not an authoring source**: `NotableDateDocumentBuilder.Load` rejects `.bcal` paths with `NotSupportedException`. Keep the XML/JSON document as the editable source of truth and recompile.
 
@@ -39,7 +39,7 @@ A pack is **compiled output, not an authoring source**: `NotableDateDocumentBuil
 
 | Guarantee | Meaning |
 |---|---|
-| **Pre-validated content** | The writer only accepts a built `NotableDateResource`; `SaveBinary` runs `Build()` (the canonical loader) first, so an invalid document can never reach a pack. |
+| **Pre-validated content** | `Write` runs the loader's identifier, duplicate and cross-reference checks on the resource before encoding anything, and `SaveBinary` runs `Build()` (the canonical loader) first, so neither an invalid document nor a resource the loader would reject can reach a pack. Reading does not revalidate: a pack not produced by `Write`, such as one edited by hand and given a matching digest, is checked only as the **Sealed** row describes. |
 | **Byte stability** | The same resource always encodes to the same bytes - dictionary content is key-sorted and string interning follows deterministic traversal - so build systems can rely on pack outputs for up-to-date checks. |
 | **Integrity** | The header carries a SHA-256 digest of the payload; any corruption or modification fails the load before content is interpreted. |
 | **Sealed** | The reader rejects unknown format versions, unknown discriminators, undefined enum values, out-of-range string references, truncation at any byte, trailing bytes, and values outside a model constructor's domain - always as <xref:Bodu.Globalization.Calendar.NotableDateBinaryFormatException> (a `FormatException`), never as an unrelated failure. |

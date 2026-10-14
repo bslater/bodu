@@ -84,6 +84,9 @@
   <data name="Op_Invalid_NoNonWorkingDayFound" xml:space="preserve">
     <value>No non-working day was found within the search limit.</value>
   </data>
+  <data name="Op_Invalid_BinaryPackResourceInvalid" xml:space="preserve">
+    <value>The resource '{0}' cannot be written as a binary rule pack: it fails the loader's validation with {1} error diagnostic(s). Inspect the Diagnostics collection for details.</value>
+  </data>
   <data name="Op_NotSupported_BinaryPackType" xml:space="preserve">
     <value>The binary rule-pack format cannot encode '{0}'; it supports only the built-in calculation strategies, recurrence strategies, and duration definitions.</value>
   </data>
