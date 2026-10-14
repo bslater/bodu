@@ -42,7 +42,7 @@ Each provider ships its own dependency-injection registration in the `Bodu.Finan
 - <xref:Bodu.Financial.ExchangeRates.PairWebRateProvider`1> - the specialisation the pair-serving providers (Yahoo, OFX, XE, OANDA, Fixer, exchangerate.host, FRED) build on. IMF, like the central-bank providers, extends <xref:Bodu.Financial.ExchangeRates.WebRateProvider> directly.
 - <xref:Bodu.Financial.ExchangeRates.IPairRateSource`1>, <xref:Bodu.Financial.ExchangeRates.IPairRateLoader>, <xref:Bodu.Financial.ExchangeRates.CurrencyPairRequest>, <xref:Bodu.Financial.ExchangeRates.PairRateData`1> - the pair-based fetch contracts (`GetPairAsync`), the request struct (pair + inclusive date range), and the result record (pair, observations, source-specific series metadata).
 - <xref:Bodu.Financial.ExchangeRates.SingleFlightCoordinator`1> - keyed single-flight coordinator that coalesces concurrent loads of the same key onto one in-flight operation (`RunAsync` / `RunAsync<TResult>`), used internally by `WebRateProvider` to deduplicate endpoint fetches.
-- <xref:Bodu.Financial.ExchangeRates.FileSystemByteCache`1> - the abstract base for the file-feed providers' on-disk raw-response caches (best-effort `TryGetCore` / `StoreCore` keyed by a download unit); a derived cache supplies only the file name and, optionally, a freshness rule. The BoE / ECB / RBA `FileSystem*Cache` implementations derive from it.
+- <xref:Bodu.Financial.ExchangeRates.IByteCache`1>, <xref:Bodu.Financial.ExchangeRates.FileSystemByteCache`1> - the raw-byte cache seam and the abstract base for the file-feed providers' on-disk raw-response caches (best-effort `TryGetCore` / `StoreCore` keyed by a download unit); a derived cache supplies only the file name and, optionally, a freshness rule. The BoE, ECB and RBA providers' internal on-disk caches derive from it, enabled through their options' `EnableDiskCache` and `CacheDirectory`.
 - <xref:Bodu.Financial.ExchangeRates.RateProviderHttpClientFactory> - builds the owned `HttpClient` for the options-only constructor form.
 - <xref:Bodu.Financial.ExchangeRates.ExchangeRateFormatException> (a `FormatException`) - the feed-parse failure raised by the provider stack.
 
@@ -53,23 +53,20 @@ Each provider ships its own dependency-injection registration in the `Bodu.Finan
 **Bank of England (GBP base; daily spot, CSV export)**
 
 - <xref:Bodu.Financial.ExchangeRates.BoeRateProvider> - the provider; warm it with `LoadRangeAsync`, then resolve through the dated or timeless surface. Registered with `AddBoeExchangeRates`.
-- <xref:Bodu.Financial.ExchangeRates.BoeRateProviderOptions> - the shared <xref:Bodu.Financial.ExchangeRates.WebRateProviderOptions> surface (endpoint, HTTP, look-back, refresh, aliases, log levels) plus the IADB query path, the series catalogue, and the on-disk response cache.
+- <xref:Bodu.Financial.ExchangeRates.BoeRateProviderOptions> - the shared <xref:Bodu.Financial.ExchangeRates.WebRateProviderOptions> surface (endpoint, HTTP, look-back, refresh, aliases, log levels) plus the IADB query path, the series catalogue, and the on-disk response cache (`EnableDiskCache`, `CacheDirectory`).
 - <xref:Bodu.Financial.ExchangeRates.BoeSeriesInfo> - a discovered currency series, surfaced by `GetAvailablePairs`.
-- <xref:Bodu.Financial.ExchangeRates.IByteCache`1>, <xref:Bodu.Financial.ExchangeRates.FileSystemBoeResponseCache> - the shared raw-byte cache seam and its on-disk Bank of England implementation.
 
 **European Central Bank (EUR base; `eurofxref` XML feed)**
 
 - <xref:Bodu.Financial.ExchangeRates.EcbRateProvider> - the provider; warm it with `LoadRangeAsync`. Registered with `AddEcbExchangeRates`.
 - <xref:Bodu.Financial.ExchangeRates.EcbRateProviderOptions>, <xref:Bodu.Financial.ExchangeRates.EcbRateFeed> - the options (the shared <xref:Bodu.Financial.ExchangeRates.WebRateProviderOptions> surface plus the feed catalogue and the on-disk feed cache) and the `eurofxref` feed variant a load fetches.
 - <xref:Bodu.Financial.ExchangeRates.EcbSeriesInfo> - a discovered currency series, surfaced by `GetAvailablePairs`.
-- <xref:Bodu.Financial.ExchangeRates.IByteCache`1>, <xref:Bodu.Financial.ExchangeRates.FileSystemEcbFeedCache> - the shared raw-byte cache seam and its on-disk `eurofxref` feed implementation.
 
 **Reserve Bank of Australia (AUD base; published `.xls` workbooks, split into eras)**
 
 - <xref:Bodu.Financial.ExchangeRates.RbaRateProvider> - the provider; warm it with `PreloadAsync`, `LoadEraAsync`, or `LoadRangeAsync`. Registered with `AddRbaExchangeRates`.
 - <xref:Bodu.Financial.ExchangeRates.RbaRateProviderOptions>, <xref:Bodu.Financial.ExchangeRates.RbaEraWorkbook> - the options (the shared <xref:Bodu.Financial.ExchangeRates.WebRateProviderOptions> surface plus the era list and the on-disk workbook cache) and one published workbook era.
 - <xref:Bodu.Financial.ExchangeRates.RbaSeriesInfo> - a discovered currency series, surfaced by `GetAvailablePairs`.
-- <xref:Bodu.Financial.ExchangeRates.IByteCache`1>, <xref:Bodu.Financial.ExchangeRates.FileSystemRbaWorkbookCache> - the shared raw-byte cache seam and its on-disk workbook implementation.
 
 **Yahoo Finance (arbitrary pairs; chart per ticker)**
 

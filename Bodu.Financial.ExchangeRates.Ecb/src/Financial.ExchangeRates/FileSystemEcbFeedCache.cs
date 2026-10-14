@@ -23,7 +23,7 @@ namespace Bodu.Financial.ExchangeRates;
 /// swallowed, so a cache problem never breaks rate retrieval.
 /// </para>
 /// </remarks>
-public sealed class FileSystemEcbFeedCache
+internal sealed class FileSystemEcbFeedCache
     : FileSystemByteCache<EcbRateFeed>
 {
     /// <summary>

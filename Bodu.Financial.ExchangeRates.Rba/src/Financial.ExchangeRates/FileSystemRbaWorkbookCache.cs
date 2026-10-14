@@ -23,7 +23,7 @@ namespace Bodu.Financial.ExchangeRates;
 /// swallowed, so a cache problem never breaks rate retrieval.
 /// </para>
 /// </remarks>
-public sealed class FileSystemRbaWorkbookCache
+internal sealed class FileSystemRbaWorkbookCache
     : FileSystemByteCache<RbaEraWorkbook>
 {
     /// <summary>
