@@ -25,13 +25,13 @@ internal static class GeneratorDiagnostics
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true);
 
-    /// <summary>BTFG002: a property's type is not a supported scalar, so the generated factory skips the member.</summary>
+    /// <summary>BTFG002: a public instance property's type, declared or inherited, is not a supported scalar, which the reflection binders reject, so no factory is generated for the type.</summary>
     public static readonly DiagnosticDescriptor MemberTypeUnsupported = new(
         id: "BTFG002",
         title: "Member type is not a supported scalar",
-        messageFormat: "The property '{0}' on '{1}' has type '{2}', which is not a supported scalar; the generated factory skips it",
+        messageFormat: "The property '{0}' on '{1}' has type '{2}', which is not a supported scalar, so no factory is generated; leave the property out with [Ignore] or give it a supported scalar type",
         category: Category,
-        defaultSeverity: DiagnosticSeverity.Warning,
+        defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true);
 
     /// <summary>BTFG003: the annotated type is generic, which the generated static factory property cannot represent.</summary>

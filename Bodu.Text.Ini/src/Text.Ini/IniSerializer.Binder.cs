@@ -494,8 +494,13 @@ public static partial class IniSerializer
     /// <returns>The populated value.</returns>
     /// <exception cref="IniSerializationException">
     /// Thrown when the type cannot be created, a required member has no matching key, or a member nests beyond INI's
-    /// two levels.
+    /// two levels, whether or not it can be set.
     /// </exception>
+    /// <remarks>
+    /// A member that is not a scalar is rejected before the section is created, whether or not it can be set, as
+    /// <see cref="WriteSectionBody" /> rejects it when it writes the section, so that no section type is read that
+    /// cannot be written back. A get-only scalar member is written and not read.
+    /// </remarks>
     [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
     [RequiresDynamicCode(RequiresDynamicCodeMessage)]
     private static object ReadSectionBody(List<KeyValuePair<string, string>> entries, Type targetType, IniSerializerOptions options)
@@ -509,18 +514,23 @@ public static partial class IniSerializer
             return dictionary;
         }
 
+        // Every member's type is tested before the members that cannot be set are skipped.
+        FlatMemberDescriptor[] members = GetMembers(targetType, options);
+        foreach (FlatMemberDescriptor member in members)
+        {
+            if (!member.IsScalar)
+                throw new IniSerializationException(string.Format(CultureInfo.CurrentCulture, IniResourceStrings.Op_Invalid_IniDepthExceeded, member.Name));
+        }
+
         object instance = CreateInstance(targetType);
         (instance as IOnDeserializing)?.OnDeserializing();
 
         StringComparison comparison = options.PropertyNameCaseInsensitive ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
 
-        foreach (FlatMemberDescriptor member in GetMembers(targetType, options))
+        foreach (FlatMemberDescriptor member in members)
         {
             if (!member.CanWrite)
                 continue;
-
-            if (!member.IsScalar)
-                throw new IniSerializationException(string.Format(CultureInfo.CurrentCulture, IniResourceStrings.Op_Invalid_IniDepthExceeded, member.Name));
 
             int found = IndexOfEntry(entries, member.Name, comparison);
             if (found >= 0)

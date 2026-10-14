@@ -69,35 +69,217 @@ public partial class FormatFactoryGeneratorTests
     }
 
     /// <summary>
-    /// Verifies that an unsupported member type reports <c>BTFG002</c> while the factory is still generated for the
-    /// remaining members.
+    /// Verifies that a member whose type is not a supported scalar, which the reflection binder would reject, reports
+    /// <c>BTFG002</c> as an error naming the member and the type, and that no factory is emitted for the type, for a
+    /// delimited record and an INI section alike.
     /// </summary>
+    /// <param name="attribute">The marker attribute that requests the factory.</param>
+    /// <param name="memberType">The member's type, as written in source.</param>
     [TestMethod]
-    public void Generator_WhenMemberTypeUnsupported_ShouldReportBtfg002AndSkipMember()
+    [DataRow("DelimitedRecord", "List<int>")]
+    [DataRow("DelimitedRecord", "Dictionary<string, int>")]
+    [DataRow("DelimitedRecord", "object")]
+    [DataRow("IniSection", "List<int>")]
+    [DataRow("IniSection", "Dictionary<string, int>")]
+    [DataRow("IniSection", "object")]
+    public void Generator_WhenMemberTypeUnsupported_ShouldReportBtfg002AsAnErrorAndEmitNoFactory(string attribute, string memberType)
     {
-        const string Source = """
+        string source = $$"""
             using System.Collections.Generic;
             using Bodu.Text.Delimited;
+            using Bodu.Text.Ini;
 
             namespace Sample;
 
-            [DelimitedRecord]
+            [{{attribute}}]
             public sealed partial class HasUnsupported
             {
                 public string Name { get; set; } = string.Empty;
 
+                public {{memberType}} Values { get; set; } = default!;
+            }
+            """;
+
+        GeneratorDriverRunResult result = RunGenerator(source);
+
+        Diagnostic diagnostic = result.Diagnostics.Single(static d => d.Id == "BTFG002");
+        Assert.AreEqual(DiagnosticSeverity.Error, diagnostic.Severity);
+        Assert.IsTrue(diagnostic.GetMessage(CultureInfo.InvariantCulture).Contains("'Values'", StringComparison.Ordinal), diagnostic.GetMessage(CultureInfo.InvariantCulture));
+        Assert.AreEqual(0, result.GeneratedTrees.Length);
+    }
+
+    /// <summary>
+    /// Verifies that a member whose type is not a supported scalar, left out deliberately with <c>[Ignore]</c>, reports
+    /// no diagnostic, and that the factory is emitted for the remaining members and compiles, for a delimited record and
+    /// an INI section alike.
+    /// </summary>
+    /// <param name="attribute">The marker attribute that requests the factory.</param>
+    [TestMethod]
+    [DataRow("DelimitedRecord")]
+    [DataRow("IniSection")]
+    public void Generator_WhenAnUnsupportedMemberIsIgnored_ShouldEmitTheFactoryWithoutADiagnostic(string attribute)
+    {
+        string source = $$"""
+            #nullable enable
+            using System.Collections.Generic;
+            using Bodu.Text.Delimited;
+            using Bodu.Text.Ini;
+            using Bodu.Text.Serialization;
+
+            namespace Sample;
+
+            [{{attribute}}]
+            public sealed partial class HasIgnored
+            {
+                public string Name { get; set; } = string.Empty;
+
+                [Ignore]
                 public List<int> Values { get; set; } = new();
             }
             """;
 
-        GeneratorDriverRunResult result = RunGenerator(Source);
+        (GeneratorDriverRunResult result, IReadOnlyList<Diagnostic> errors) = RunGeneratorAndCompile(source);
 
-        Assert.IsTrue(result.Diagnostics.Any(d => d.Id == "BTFG002"), "expected BTFG002");
+        Assert.AreEqual(0, result.Diagnostics.Length, string.Join(Environment.NewLine, result.Diagnostics));
         Assert.AreEqual(1, result.GeneratedTrees.Length);
+        Assert.IsFalse(result.GeneratedTrees[0].ToString().Contains("Values", StringComparison.Ordinal));
+        Assert.AreEqual(0, errors.Count, string.Join(Environment.NewLine, errors));
+    }
 
-        string generated = result.GeneratedTrees[0].ToString();
-        Assert.IsTrue(generated.Contains("\"Name\"", StringComparison.Ordinal));
-        Assert.IsFalse(generated.Contains("Values", StringComparison.Ordinal));
+    /// <summary>
+    /// Verifies that a public property the factory does not map, because it is get-only, <c>init</c>-only or inherited,
+    /// reports <c>BTFG002</c> as an error naming the member when its type is not a supported scalar, since the
+    /// reflection binders map the member and reject its type, and that no factory is emitted for the type, for a
+    /// delimited record and an INI section alike.
+    /// </summary>
+    /// <param name="attribute">The marker attribute that requests the factory.</param>
+    /// <param name="shape">How the member is declared: <c>get-only</c>, <c>init-only</c> or <c>inherited</c>.</param>
+    [TestMethod]
+    [DataRow("DelimitedRecord", "get-only")]
+    [DataRow("DelimitedRecord", "init-only")]
+    [DataRow("DelimitedRecord", "inherited")]
+    [DataRow("IniSection", "get-only")]
+    [DataRow("IniSection", "init-only")]
+    [DataRow("IniSection", "inherited")]
+    public void Generator_WhenAnUnmappedMemberTypeIsUnsupported_ShouldReportBtfg002AsAnErrorAndEmitNoFactory(string attribute, string shape)
+    {
+        string member = shape switch
+        {
+            "get-only" => "public List<int> Values { get; } = new();",
+            "init-only" => "public List<int> Values { get; init; } = new();",
+            "inherited" => string.Empty,
+            _ => throw new ArgumentOutOfRangeException(nameof(shape), shape, null),
+        };
+        string baseClause = shape == "inherited" ? " : RecordBase" : string.Empty;
+
+        string source = $$"""
+            using System.Collections.Generic;
+            using Bodu.Text.Delimited;
+            using Bodu.Text.Ini;
+
+            namespace Sample;
+
+            public class RecordBase
+            {
+                public List<int> Values { get; set; } = new();
+            }
+
+            [{{attribute}}]
+            public partial class HasUnmapped{{baseClause}}
+            {
+                public string Name { get; set; } = string.Empty;
+
+                {{member}}
+            }
+            """;
+
+        GeneratorDriverRunResult result = RunGenerator(source);
+
+        Diagnostic diagnostic = result.Diagnostics.Single(static d => d.Id == "BTFG002");
+        Assert.AreEqual(DiagnosticSeverity.Error, diagnostic.Severity);
+        Assert.IsTrue(diagnostic.GetMessage(CultureInfo.InvariantCulture).Contains("'Values'", StringComparison.Ordinal), diagnostic.GetMessage(CultureInfo.InvariantCulture));
+        Assert.AreEqual(0, result.GeneratedTrees.Length);
+    }
+
+    /// <summary>
+    /// Verifies that an inherited member whose type is not a supported scalar, left out with <c>[Ignore]</c> where the
+    /// base type declares it, reports no diagnostic, and that the factory is emitted for the remaining members and
+    /// compiles, for a delimited record and an INI section alike.
+    /// </summary>
+    /// <param name="attribute">The marker attribute that requests the factory.</param>
+    [TestMethod]
+    [DataRow("DelimitedRecord")]
+    [DataRow("IniSection")]
+    public void Generator_WhenAnUnsupportedInheritedMemberIsIgnored_ShouldEmitTheFactoryWithoutADiagnostic(string attribute)
+    {
+        string source = $$"""
+            #nullable enable
+            using System.Collections.Generic;
+            using Bodu.Text.Delimited;
+            using Bodu.Text.Ini;
+            using Bodu.Text.Serialization;
+
+            namespace Sample;
+
+            public class RecordBase
+            {
+                [Ignore]
+                public List<int> Values { get; set; } = new();
+            }
+
+            [{{attribute}}]
+            public sealed partial class HasIgnoredBase : RecordBase
+            {
+                public string Name { get; set; } = string.Empty;
+            }
+            """;
+
+        (GeneratorDriverRunResult result, IReadOnlyList<Diagnostic> errors) = RunGeneratorAndCompile(source);
+
+        Assert.AreEqual(0, result.Diagnostics.Length, string.Join(Environment.NewLine, result.Diagnostics));
+        Assert.AreEqual(1, result.GeneratedTrees.Length);
+        Assert.IsFalse(result.GeneratedTrees[0].ToString().Contains("Values", StringComparison.Ordinal));
+        Assert.AreEqual(0, errors.Count, string.Join(Environment.NewLine, errors));
+    }
+
+    /// <summary>
+    /// Verifies that an inherited member whose type is not a supported scalar, hidden with <see langword="new" /> by a
+    /// scalar member of the same name, reports no diagnostic, since the reflection binders map only the most derived
+    /// declaration of a name, and that the factory maps the scalar and compiles, for a delimited record and an INI
+    /// section alike.
+    /// </summary>
+    /// <param name="attribute">The marker attribute that requests the factory.</param>
+    [TestMethod]
+    [DataRow("DelimitedRecord")]
+    [DataRow("IniSection")]
+    public void Generator_WhenAnUnsupportedInheritedMemberIsHiddenByAScalar_ShouldMapTheScalarWithoutADiagnostic(string attribute)
+    {
+        string source = $$"""
+            #nullable enable
+            using System.Collections.Generic;
+            using Bodu.Text.Delimited;
+            using Bodu.Text.Ini;
+
+            namespace Sample;
+
+            public class RecordBase
+            {
+                public List<int> Values { get; set; } = new();
+            }
+
+            [{{attribute}}]
+            public sealed partial class HidesBase : RecordBase
+            {
+                public new string Values { get; set; } = string.Empty;
+            }
+            """;
+
+        (GeneratorDriverRunResult result, IReadOnlyList<Diagnostic> errors) = RunGeneratorAndCompile(source);
+
+        Assert.AreEqual(0, result.Diagnostics.Length, string.Join(Environment.NewLine, result.Diagnostics));
+        Assert.AreEqual(1, result.GeneratedTrees.Length);
+        Assert.IsTrue(result.GeneratedTrees[0].ToString().Contains("\"Values\"", StringComparison.Ordinal));
+        Assert.AreEqual(0, errors.Count, string.Join(Environment.NewLine, errors));
     }
 
     /// <summary>
@@ -169,7 +351,7 @@ public partial class FormatFactoryGeneratorTests
 
     /// <summary>
     /// Verifies that a member of a scalar type the reflection binders convert, alone or in nullable form, is mapped
-    /// rather than skipped with <c>BTFG002</c>, and that the factory generated for it compiles.
+    /// rather than refused with <c>BTFG002</c>, and that the factory generated for it compiles.
     /// </summary>
     /// <param name="attribute">The marker attribute that requests the factory.</param>
     /// <param name="memberType">The member's type, as written in source.</param>
@@ -249,7 +431,7 @@ public partial class FormatFactoryGeneratorTests
 
     /// <summary>
     /// Verifies that every scalar type the reflection binders' codec lists, and an enumeration, alone and in nullable
-    /// form, is mapped by the generator for both formats rather than skipped with <c>BTFG002</c>, so that the
+    /// form, is mapped by the generator for both formats rather than refused with <c>BTFG002</c>, so that the
     /// generator's scalar set cannot drift from the binders' again.
     /// </summary>
     /// <param name="attribute">The marker attribute that requests the factory.</param>

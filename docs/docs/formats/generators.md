@@ -47,7 +47,7 @@ To inspect the emitted source, set `<EmitCompilerGeneratedFiles>true</EmitCompil
 | Not generic, and not nested inside a generic type. | A static factory property cannot be expressed for an open type (`BTFG003` otherwise). |
 | Constructible with `new T()` - a parameterless constructor reachable from inside the type. | `Create` instantiates the type before binding; the nested factory can reach a private constructor. |
 | Mapped members are **public instance properties with a public getter and a public, non-`init` setter**. | Static members, indexers, non-public accessors, `init`-only setters, and fields are not mapped (silently). |
-| Each mapped property's type is a supported scalar or its `Nullable<T>`: `string`, `bool`, `char`, `sbyte`/`byte`/`short`/`ushort`/`int`/`uint`/`long`/`ulong`, `nint`/`nuint`, `float`/`double`/`decimal`, `Int128`/`UInt128`/`Half`/`BigInteger`, `Guid`, `DateTime`, `DateTimeOffset`, `DateOnly`, `TimeOnly`, `TimeSpan`, `Uri`, or any enum - the scalar set the reflection binders convert, which a test holds the generator to. | Anything else - collections, nested objects - is skipped with `BTFG002`; the factory is still generated for the remaining members. |
+| Each public instance property that `[Ignore]` does not leave out, inherited, get-only and `init`-only ones included, has a supported scalar type or its `Nullable<T>`: `string`, `bool`, `char`, `sbyte`/`byte`/`short`/`ushort`/`int`/`uint`/`long`/`ulong`, `nint`/`nuint`, `float`/`double`/`decimal`, `Int128`/`UInt128`/`Half`/`BigInteger`, `Guid`, `DateTime`, `DateTimeOffset`, `DateOnly`, `TimeOnly`, `TimeSpan`, `Uri`, or any enum - the scalar set the reflection binders convert, which a test holds the generator to. | Anything else - collections, nested objects, `object` - fails the build with `BTFG002`, and no factory is generated for the type, as the reflection binders reject such a type rather than leave the member out. They map inherited, get-only and `init`-only properties too, so the generator tests those although the factory does not map them. Leave the member out with `[Ignore]`. |
 | `[Ignore]` with the default condition excludes a member; `[Ignore(Condition = …)]` with any *other* condition leaves it mapped. An INI factory applies that condition when writing, and `WhenWritingNull`, the serializer's default, to a member without one, as `IniSerializer` does; a Delimited factory writes every mapped member, as `DelimitedSerializer` does. | A factory never sees the serializer options, so an INI factory cannot follow a `DefaultIgnoreCondition` other than `WhenWritingNull`, and a delimited record cannot leave out a column. |
 
 ## Differences from the reflection binder
@@ -55,12 +55,12 @@ To inspect the emitted source, set `<EmitCompilerGeneratedFiles>true</EmitCompil
 A factory and the reflection binder agree for a type whose members are all settable properties declared on the type itself, in the order they should be written, with supported scalar types and names pinned with `[PropertyName]` - the shape of the examples on this page. Outside that shape they differ, so switching a type to its factory can change the header or keys written and the values read:
 
 - The options-level `PropertyNamingPolicy` is **not** applied by a factory: its header and key names are fixed at compile time, so pin names with `[PropertyName]`. `IncludeFields` has no effect, since fields are never mapped.
-- Only properties declared on the type itself are mapped; the reflection binders also map the public properties it inherits.
-- Get-only and `init`-only properties are not mapped. The reflection binders write a get-only property as a column or key, and set an `init`-only one when reading.
+- Only properties declared on the type itself are mapped; the reflection binders also map the public properties it inherits. An inherited property whose type is not a supported scalar still fails the build with `BTFG002`, since the reflection binders reject the type for it.
+- Get-only and `init`-only properties are not mapped. The reflection binders write a get-only property as a column or key, and set an `init`-only one when reading. Either kind whose type is not a supported scalar still fails the build with `BTFG002`, as an inherited one does.
 - `[PropertyOrder]` is ignored: a factory writes in declaration order, while the reflection binders order their columns and keys by it.
 - A factory's `Bind` falls back to a case-insensitive match of every name; the reflection binders match names case-sensitively unless `PropertyNameCaseInsensitive` is set.
 - An INI factory does not enforce `[Required]`; `IniSerializer`'s reflection binder throws `IniSerializationException` for a missing required key.
-- A member whose type is not a supported scalar is left out of a factory, with `BTFG002`, and the factory reads and writes the rest of the type; the reflection binders reject the whole type instead, when they write it and when they read it, with `DelimitedSerializationException` or `IniSerializationException` naming the member.
+- A member declared as `object` fails the build with `BTFG002`, so its type gets no factory. `DelimitedSerializer`'s reflection binder accepts one that holds a scalar, writing the value by its own type and reading the field back as its text; `IniSerializer`'s rejects it, as it rejects every member that is not a scalar.
 
 ## Diagnostics
 
@@ -69,10 +69,10 @@ All three diagnostics share the category `Bodu.Text.Formats.Generators` and are 
 | Id | Severity | Message | Cause |
 |---|---|---|---|
 | `BTFG001` | Error | The type '{0}' is annotated with [{1}] but it (or a containing type) is not declared partial, so no factory is generated | The annotated type, or one of the types it is nested in, lacks the `partial` modifier. No source is emitted. |
-| `BTFG002` | Warning | The property '{0}' on '{1}' has type '{2}', which is not a supported scalar; the generated factory skips it | A public read/write property has a type outside the scalar set above. The factory is emitted without that member. |
+| `BTFG002` | Error | The property '{0}' on '{1}' has type '{2}', which is not a supported scalar, so no factory is generated; leave the property out with [Ignore] or give it a supported scalar type | A public instance property that `[Ignore]` does not leave out, declared or inherited, read/write, get-only or `init`-only, has a type outside the scalar set above. No source is emitted for the type. |
 | `BTFG003` | Error | The type '{0}' is annotated with [{1}] but is generic (or nested in a generic type), so no factory is generated | The annotated type has type parameters, or a containing type does. No source is emitted. |
 
-Because `BTFG001` and `BTFG003` are errors, the missing `DelimitedFactory` / `IniFactory` property surfaces as a compile error at the call site as well; fix the declaration rather than suppressing the diagnostic.
+Because all three are errors, the missing `DelimitedFactory` / `IniFactory` property surfaces as a compile error at the call site as well; fix the declaration rather than suppressing the diagnostic.
 
 ## The serializer overloads that consume a factory
 

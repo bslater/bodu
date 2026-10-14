@@ -17,12 +17,22 @@ namespace Bodu.Text.Formats.Generators;
 /// <c>DelimitedFactory</c> / <c>IniFactory</c> properties on the partial type.
 /// </summary>
 /// <remarks>
+/// <para>
 /// The generated factories map the public read/write instance properties declared on the type in declaration order,
-/// honour <c>[PropertyName]</c> for wire names, skip members annotated <c>[Ignore]</c> (with
+/// honor <c>[PropertyName]</c> for wire names, skip members annotated <c>[Ignore]</c> (with
 /// <c>IgnoreCondition.Always</c>), and convert scalars with the invariant culture, mirroring the runtime reflection
 /// binders for the members both map. They differ from those binders where the binders read the options or reflect over
 /// more: the naming policy, inherited, get-only and <c>init</c>-only properties, <c>[PropertyOrder]</c>, case-sensitive
 /// name matching, and <c>[Required]</c>. Their scalar set is the binders'.
+/// </para>
+/// <para>
+/// A public instance property whose type is not a supported scalar reports <c>BTFG002</c>, an error, and no factory is
+/// generated for its type: the reflection binders reject such a type rather than leave the member out. Every property
+/// the binders map is tested, inherited, get-only and <c>init</c>-only ones included, although the factory maps only
+/// the read/write properties declared on the type. A property declared as <see cref="object" /> is refused too,
+/// although the Delimited binder accepts one that holds a scalar, because a factory maps only the scalar set.
+/// <c>[Ignore]</c> leaves such a member out deliberately.
+/// </para>
 /// </remarks>
 [Generator(LanguageNames.CSharp)]
 public sealed class FormatFactoryGenerator : IIncrementalGenerator
@@ -92,7 +102,6 @@ public sealed class FormatFactoryGenerator : IIncrementalGenerator
         }
 
         var members = new List<MemberModel>();
-        var skipped = new List<string>();
 
         foreach (ISymbol candidate in symbol.GetMembers())
         {
@@ -109,10 +118,9 @@ public sealed class FormatFactoryGenerator : IIncrementalGenerator
             if (IsIgnored(property))
                 continue;
 
+            // A property of an unsupported type is not mapped; FindUnsupportedMembers decides whether it refuses the type.
             MemberModel? member = CreateMemberModel(property);
-            if (member is null)
-                skipped.Add($"{property.Name}:{property.Type.ToDisplayString()}");
-            else
+            if (member is not null)
                 members.Add(member);
         }
 
@@ -126,7 +134,44 @@ public sealed class FormatFactoryGenerator : IIncrementalGenerator
             IsPartial: isPartial,
             IsGeneric: isGeneric,
             Members: new EquatableArray<MemberModel>([.. members]),
-            SkippedMembers: new EquatableArray<string>([.. skipped]));
+            UnsupportedMembers: new EquatableArray<string>([.. FindUnsupportedMembers(symbol)]));
+    }
+
+    /// <summary>
+    /// Finds the members the reflection binders map and reject: every public instance property of the type, inherited
+    /// ones included and whatever its accessors, that <c>[Ignore]</c> does not leave out and whose type is not a
+    /// supported scalar.
+    /// </summary>
+    /// <param name="symbol">The annotated type.</param>
+    /// <returns>The name and type display of each such member, the type's own declarations first.</returns>
+    /// <remarks>
+    /// The binders map each name once, to its most derived public declaration, so a base property hidden by a public
+    /// property of the same name is not tested, and an <c>[Ignore]</c> on that declaration, or on a property it
+    /// overrides, leaves the name out. A property the factory does not map, because it is get-only, <c>init</c>-only or
+    /// inherited, is tested all the same, since the binders reject its type when they write or read the type.
+    /// </remarks>
+    private static List<string> FindUnsupportedMembers(INamedTypeSymbol symbol)
+    {
+        var unsupported = new List<string>();
+        var names = new HashSet<string>(StringComparer.Ordinal);
+
+        for (INamedTypeSymbol? current = symbol; current is not null; current = current.BaseType)
+        {
+            foreach (ISymbol candidate in current.GetMembers())
+            {
+                if (candidate is not IPropertySymbol { IsStatic: false, IsIndexer: false, DeclaredAccessibility: Accessibility.Public } property)
+                    continue;
+
+                // A declaration of the same name in a more derived type hides this one, which the binders do not map.
+                if (!names.Add(property.Name))
+                    continue;
+
+                if (!IsIgnoredThroughOverrides(property) && !IsSupportedScalar(property.Type))
+                    unsupported.Add($"{property.Name}:{property.Type.ToDisplayString()}");
+            }
+        }
+
+        return unsupported;
     }
 
     /// <summary>
@@ -151,16 +196,21 @@ public sealed class FormatFactoryGenerator : IIncrementalGenerator
             return;
         }
 
-        foreach (string skippedMember in model.SkippedMembers)
+        // The type gets no factory rather than one that silently leaves a member out, and so reads and writes a type
+        // the reflection binders reject; [Ignore] is the way to leave a member out deliberately.
+        foreach (string unsupportedMember in model.UnsupportedMembers)
         {
-            int separator = skippedMember.IndexOf(':');
+            int separator = unsupportedMember.IndexOf(':');
             context.ReportDiagnostic(Diagnostic.Create(
                 GeneratorDiagnostics.MemberTypeUnsupported,
                 Location.None,
-                skippedMember.Substring(0, separator),
+                unsupportedMember.Substring(0, separator),
                 qualifiedName,
-                skippedMember.Substring(separator + 1)));
+                unsupportedMember.Substring(separator + 1)));
         }
+
+        if (model.UnsupportedMembers.Count > 0)
+            return;
 
         string hintName = $"{qualifiedName}.{model.Kind}.g.cs";
         context.AddSource(hintName, FactoryEmitter.Emit(model));
@@ -226,6 +276,38 @@ public sealed class FormatFactoryGenerator : IIncrementalGenerator
         }
 
         return false;
+    }
+
+    /// <summary>
+    /// Determines whether the property, or the nearest property it overrides that carries an <c>[Ignore]</c>
+    /// annotation, is excluded by an unconditional one, as the reflection binders read the inherited attribute.
+    /// </summary>
+    /// <param name="property">The property symbol.</param>
+    /// <returns><see langword="true" /> when the reflection binders leave the property out.</returns>
+    private static bool IsIgnoredThroughOverrides(IPropertySymbol property)
+    {
+        for (IPropertySymbol? current = property; current is not null; current = current.OverriddenProperty)
+        {
+            if (ReadIgnoreCondition(current) is int condition)
+                return condition == IgnoreConditionAlways;
+        }
+
+        return false;
+    }
+
+    /// <summary>
+    /// Determines whether a property type, or the type it makes nullable, is a scalar the factories convert.
+    /// </summary>
+    /// <param name="type">The property type.</param>
+    /// <returns>
+    /// <see langword="true" /> when the type is a supported scalar or its <see cref="Nullable{T}" />.
+    /// </returns>
+    private static bool IsSupportedScalar(ITypeSymbol type)
+    {
+        if (type is INamedTypeSymbol { OriginalDefinition.SpecialType: SpecialType.System_Nullable_T } nullable)
+            type = nullable.TypeArguments[0];
+
+        return ResolveScalarKind(type) != ScalarKind.Unsupported;
     }
 
     /// <summary>

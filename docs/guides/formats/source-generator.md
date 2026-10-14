@@ -185,7 +185,7 @@ string generated  = DelimitedSerializer.Serialize(trades, Trade.DelimitedFactory
 bool same = reflection == generated;                                                // true
 ```
 
-A factory's names are fixed at compile time, so `PropertyNamingPolicy` on the options is ignored by the factory overloads; use `[PropertyName]` to pin wire names. That is not the only difference: inherited, get-only and `init`-only properties, `[PropertyOrder]`, case-insensitive name matching, and `[Required]` all separate the two paths, as the package page lists under [Differences from the reflection binder](../../docs/formats/generators.md#differences-from-the-reflection-binder).
+A factory's names are fixed at compile time, so `PropertyNamingPolicy` on the options is ignored by the factory overloads; use `[PropertyName]` to pin wire names. That is not the only difference: inherited, get-only and `init`-only properties, `[PropertyOrder]`, case-insensitive name matching, `[Required]`, and a member declared as `object` all separate the two paths, as the package page lists under [Differences from the reflection binder](../../docs/formats/generators.md#differences-from-the-reflection-binder).
 
 ## Diagnostics walk-through
 
@@ -200,14 +200,23 @@ public sealed class Trade { … }          // BTFG001: … is not declared parti
 
 A nested type must have *every* containing type marked `partial` too.
 
-**`BTFG002` (warning) - a member type is not a supported scalar.** The factory is still generated; the flagged member is left out of `Headers` / `Keys` and never written or read. The reflection binder rejects such a type whole, when it writes it and when it reads it, so this is one place where the factory and the reflection path differ. Either move the value to a supported scalar (for example, join a list into a delimited `string`), or drop the member with `[Ignore]` to silence the warning deliberately.
+**`BTFG002` (error) - a member type is not a supported scalar.** No factory is generated for the type, so `Order.DelimitedFactory` fails to resolve too. The reflection binder rejects such a type whole, when it writes it and when it reads it, so the build fails where the reflection path would throw at run time, rather than emitting a factory that leaves the member out. The check covers every public instance property the reflection binder maps, so an inherited, get-only or `init`-only property of such a type fails the build too, although the factory does not map it. A member declared as `object` is refused as well, although `DelimitedSerializer` accepts one that holds a scalar. Either move the value to a supported scalar (for example, join a list into a delimited `string`), or leave the member out deliberately with `[Ignore]`, which the factory and the reflection binder both honor.
 
 ```csharp
 [DelimitedRecord]
 public sealed partial class Order
 {
     public int Id { get; set; }
-    public List<string> Tags { get; set; } = [];   // BTFG002: type 'List<string>' is not a supported scalar; the generated factory skips it
+    public List<string> Tags { get; set; } = [];   // BTFG002: type 'List<string>' is not a supported scalar, so no factory is generated
+}
+
+[DelimitedRecord]
+public sealed partial class TaggedOrder
+{
+    public int Id { get; set; }
+
+    [Ignore]
+    public List<string> Tags { get; set; } = [];   // no diagnostic: the factory and the reflection binder both leave Tags out
 }
 ```
 
