@@ -15,16 +15,22 @@ namespace Bodu.Financial.ExchangeRates;
 /// </summary>
 /// <remarks>
 /// The bar interval is fixed at one day; the date range is taken from the request and expressed as the <c>period1</c>/
-/// <c>period2</c> Unix-second query parameters. The <c>User-Agent</c> the Yahoo Finance endpoint requires is configured
-/// on the <see cref="HttpClient" /> (by the provider when it owns the client, or by the caller when the client is
-/// supplied), not per request. Connection reuse is the responsibility of the supplied <see cref="HttpClient" />
-/// (typically one created by <c>IHttpClientFactory</c>).
+/// <c>period2</c> Unix-second query parameters. The window opens at midnight UTC on the day before the start date,
+/// because a daily bar is stamped at the start of its trading day in the exchange's time zone, which for an exchange
+/// east of UTC falls on the evening before in UTC; the parser dates each bar in the exchange's time zone and drops the
+/// bars outside the requested range. The <c>User-Agent</c> the Yahoo Finance endpoint requires is configured on the
+/// <see cref="HttpClient" /> (by the provider when it owns the client, or by the caller when the client is supplied),
+/// not per request. Connection reuse is the responsibility of the supplied <see cref="HttpClient" /> (typically one
+/// created by <c>IHttpClientFactory</c>).
 /// </remarks>
 internal sealed class YahooChartRateSource
     : IPairRateSource<YahooSeriesInfo>
 {
     /// <summary>The fixed daily bar interval requested from the chart endpoint.</summary>
     private const string DailyInterval = "1d";
+
+    /// <summary>The number of seconds in a day.</summary>
+    private const long SecondsPerDay = 24 * 60 * 60;
 
     /// <summary>The HTTP client used to issue chart requests.</summary>
     private readonly HttpClient _httpClient;
@@ -72,10 +78,15 @@ internal sealed class YahooChartRateSource
             symbol,
             StringComparison.Ordinal);
 
-        long period1 = request.StartDate.ToUnixTimeSeconds();
+        // A daily bar is stamped at the start of its trading day in the exchange's time zone: for London in summer that
+        // is 23:00 UTC on the day before, before midnight UTC on the start date. Opening the window a day early keeps the
+        // start date's bar; the parser dates bars in exchange time and drops the extra day. Subtracting seconds rather
+        // than a calendar day keeps DateOnly.MinValue representable.
+        long period1 = request.StartDate.ToUnixTimeSeconds() - SecondsPerDay;
 
-        // period2 is exclusive at the source, so add a day to keep the requested end date inclusive.
-        long period2 = request.EndDate.AddDays(1).ToUnixTimeSeconds();
+        // period2 is exclusive at the source, so add a day to keep the requested end date inclusive; adding it in
+        // seconds keeps DateOnly.MaxValue representable, as for period1.
+        long period2 = request.EndDate.ToUnixTimeSeconds() + SecondsPerDay;
 
         UriBuilder builder = new(new Uri(_options.BaseAddress, path))
         {

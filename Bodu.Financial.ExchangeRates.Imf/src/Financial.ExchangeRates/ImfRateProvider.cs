@@ -175,10 +175,11 @@ public sealed class ImfRateProvider
 
     /// <inheritdoc />
     /// <remarks>
-    /// The look-back is zero because the report is loaded a whole month at a time: any date in a requested window is
-    /// covered by that month's single download, so no extra look-back window is needed.
+    /// Forwards <see cref="WebRateProviderOptions.DefaultLookback" />. The report is loaded a whole month at a time, so
+    /// an on-demand lookup loads every month the window ending on the requested date reaches: a date early in a month
+    /// also loads the month before it, which holds the nearest earlier rate when the month has none yet.
     /// </remarks>
-    protected override TimeSpan DefaultLookback => TimeSpan.Zero;
+    protected override TimeSpan DefaultLookback => _options.DefaultLookback;
 
     /// <inheritdoc />
     public override RateHistoryAvailability HistoryAvailability => _options.HistoryAvailability;
