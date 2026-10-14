@@ -200,7 +200,7 @@ reaches the wire.
 | XE.com | `Financial:Xe` | `XeRateProviderOptions` | pair | `BaseAddress` (`https://www.xe.com/`), `ChartingRatesPath` (`api/protected/charting-rates/`), `AuthBootstrapUrl` (`https://www.xe.com/currencycharts`), `AuthScriptBaseUrl` (`https://www.xe.com/_next/`) | none (token scraped at runtime) |
 | OANDA | `Financial:Oanda` | `OandaRateProviderOptions` | pair | `BaseAddress` (`https://fxds-hcc.oanda.com/`), `UpdatePath` (`api/data/update/`), `PrimePath` (`""`), `Source` (`OANDA`), `Price` (`mid`; `bid`/`ask`), `Period` (`daily`), `Adjustment` (0) | none |
 | Fixer | `Financial:Fixer` | `FixerRateProviderOptions` | pair | `BaseAddress` (`https://data.fixer.io/api/`), `TimeSeriesPath` (`timeseries`), `HistoricalPath` (`{date}`) | `ApiKey` → `access_key` query parameter |
-| exchangerate.host | `Financial:ExchangeRateHost` | `ExchangeRateHostRateProviderOptions` | pair | `BaseAddress` (`https://api.exchangerate.host/`), `TimeSeriesPath` (`timeseries`), `HistoricalPath` (`historical`) | `ApiKey` → `access_key` query parameter |
+| exchangerate.host | `Financial:ExchangeRateHost` | `ExchangeRateHostRateProviderOptions` | pair | `BaseAddress` (`https://api.exchangerate.host/`), `TimeSeriesPath` (`timeframe`), `HistoricalPath` (`historical`) | `ApiKey` → `access_key` query parameter |
 | FRED | `Financial:Fred` | `FredRateProviderOptions` | pair | `BaseAddress` (`https://api.stlouisfed.org/fred/`), `ObservationsPath` (`series/observations`), `SeriesMap` (`"EUR/USD": "DEXUSEU"` and 18 more; merges) | `ApiKey` → `api_key` query parameter |
 
 Three shapes, then, and two of them are already shown in full above. RBA's is the flat one:

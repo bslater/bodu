@@ -5,7 +5,7 @@
 A [Bodu.Financial](../Bodu.Financial) exchange-rate provider backed by the **exchangerate.host**
 (`api.exchangerate.host`) foreign-exchange REST service.
 
-It fetches the exchangerate.host time-series and single-date endpoints, parses the JSON
+It fetches the exchangerate.host `timeframe` and single-date endpoints, parses the JSON
 response, and serves the results as `Bodu.Financial.ExchangeRates.ExchangeRate` values
 through the standard `IDatedRateProvider` and `IRateProvider` contracts - so it composes
 with `Money.ConvertTo`, the caching and aggregating providers, and the rest of the
@@ -31,7 +31,8 @@ RateLookupResult usd = provider.GetRate("EUR", "USD", new DateOnly(2023, 1, 3));
   currency code (for example `USDEUR`). A pair is fetched by denominating against the source
   currency and requesting the destination currency as the quote currency.
 - **Endpoint selection.** A one-day request uses the single-date endpoint (the date is
-  carried in the `date` query parameter); a multi-day range uses the time-series endpoint.
+  carried in the `date` query parameter); a multi-day range uses the `timeframe` endpoint
+  (the bounds are carried in `start_date` and `end_date`).
 - **API key required.** Set `ApiKey`; it is presented as the `access_key` query parameter.
 - **No provider-local disk cache.** For durable caching, compose with
   `AddCachedRateProvider<…>` from the
@@ -43,7 +44,7 @@ RateLookupResult usd = provider.GetRate("EUR", "USD", new DateOnly(2023, 1, 3));
 |---|---|---|
 | `ApiKey` | *(required)* | The exchangerate.host access key, sent as `access_key`. |
 | `BaseAddress` | `https://api.exchangerate.host/` | The API host. |
-| `TimeSeriesPath` | `timeseries` | The multi-day time-series endpoint. |
+| `TimeSeriesPath` | `timeframe` | The multi-day time-frame endpoint. |
 | `HistoricalPath` | `historical` | The single-date endpoint (date sent as `date`). |
 | `HttpTimeout` | 30 s | Applied to the `HttpClient` the provider creates, or by the DI registration. |
 | `AllowSynchronousNetworkAccess` | `false` | Opt in to blocking on-demand fetches from synchronous lookups. |

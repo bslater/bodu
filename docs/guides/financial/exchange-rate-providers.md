@@ -25,7 +25,7 @@ caching; that is added in front (see the caching guide).
 | XE.com | `Bodu.Financial.ExchangeRates.Xe` (not on nuget.org) | *any pair* | per-**pair** charting-rates JSON | rolling ~10 years (server-determined, estimated) | `AddXeExchangeRates()` |
 | OANDA | `Bodu.Financial.ExchangeRates.Oanda` (not on nuget.org) | *any pair* | per-**pair** rate-history JSON | rolling ~180 days | `AddOandaExchangeRates()` |
 | Fixer (fixer.io) | `Bodu.Financial.ExchangeRates.Fixer` | *any pair* | per-**pair** time-series / single-date JSON (`access_key`) | since 1999‑01‑01 | `AddFixerExchangeRates()` |
-| exchangerate.host | `Bodu.Financial.ExchangeRates.ExchangeRateHost` | *any pair* | per-**pair** time-series / single-date JSON (`access_key`) | since 1999‑01‑01 | `AddExchangeRateHostExchangeRates()` |
+| exchangerate.host | `Bodu.Financial.ExchangeRates.ExchangeRateHost` | *any pair* | per-**pair** time-frame / single-date JSON (`access_key`) | since 1999‑01‑01 | `AddExchangeRateHostExchangeRates()` |
 | FRED (St. Louis Fed) | `Bodu.Financial.ExchangeRates.Fred` | *mapped pairs* | per-**pair** `series_id` observations JSON (`api_key`) | unbounded (per series) | `AddFredExchangeRates()` |
 | IMF | `Bodu.Financial.ExchangeRates.Imf` | USD | monthly representative-rates **TSV report** (keyless, daily) | unbounded | `AddImfExchangeRates()` |
 
@@ -329,7 +329,7 @@ RateLookupResult usd = fixer.GetRate("EUR", "USD", new DateOnly(2023, 1, 3));
 ## exchangerate.host (any pair, API key)
 
 [`ExchangeRateHostRateProvider`](xref:Bodu.Financial.ExchangeRates.ExchangeRateHostRateProvider)
-fetches the exchangerate.host time-series and single-date JSON endpoints per currency
+fetches the exchangerate.host `timeframe` and single-date JSON endpoints per currency
 pair. The response keys quotes by the concatenated source+quote code (for example
 `EURUSD`). Set the `access_key` through
 [`ExchangeRateHostRateProviderOptions.ApiKey`](xref:Bodu.Financial.ExchangeRates.ExchangeRateHostRateProviderOptions);

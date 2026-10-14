@@ -207,7 +207,7 @@ builder.Services
     .AddFixerExchangeRates(configure: options => options.ApiKey = keyVault.GetSecret("fixer-access-key"));
 ```
 
-The same shape applies to `AddExchangeRateHostExchangeRates` (`Financial:ExchangeRateHost`, `ApiKey` sent as `access_key`) and `AddFredExchangeRates` (`Financial:Fred`, `ApiKey` sent as `api_key`, plus the `SeriesMap` from pair to FRED series identifier).
+The same shape applies to `AddExchangeRateHostExchangeRates` (`Financial:ExchangeRateHost`, `ApiKey` sent as `access_key`, `TimeSeriesPath` defaulting to `timeframe` and `HistoricalPath` to `historical`) and `AddFredExchangeRates` (`Financial:Fred`, `ApiKey` sent as `api_key`, plus the `SeriesMap` from pair to FRED series identifier).
 
 ### Control the payload cache
 

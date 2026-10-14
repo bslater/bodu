@@ -16,7 +16,7 @@
     <text x="75" y="16" fill="#2E1065" text-anchor="middle" font-weight="700" font-size="10">exchangerate.host</text>
 
     <g fill="#E2E8F0" font-family="'Consolas','Menlo',monospace" font-size="10.5">
-      <text x="10" y="44">timeseries</text>
+      <text x="10" y="44">timeframe</text>
       <text x="10" y="61"><tspan fill="#94A3B8">quotes: USDEUR</tspan></text>
     </g>
     <rect x="10" y="74" width="92" height="18" rx="9" fill="#0F172A" stroke="#C084FC" stroke-width="1.2"/>

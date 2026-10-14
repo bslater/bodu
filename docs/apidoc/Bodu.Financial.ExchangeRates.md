@@ -102,7 +102,7 @@ Each provider ships its own dependency-injection registration in the `Bodu.Finan
 - <xref:Bodu.Financial.ExchangeRates.FixerRateProviderOptions> - the endpoint, `ApiKey` (`access_key`), time-series/single-date paths, HTTP, and on-demand-access configuration.
 - <xref:Bodu.Financial.ExchangeRates.FixerSeriesInfo> - a discovered pair with its base and quote currencies, surfaced by `GetAvailablePairs`.
 
-**exchangerate.host (arbitrary pairs; time-series / single-date JSON, API key)**
+**exchangerate.host (arbitrary pairs; time-frame / single-date JSON, API key)**
 
 - <xref:Bodu.Financial.ExchangeRates.ExchangeRateHostRateProvider> - the provider built on the shared `PairWebRateProvider<TSeries>` base; warm a pair with `LoadPairAsync`. Registered with `AddExchangeRateHostExchangeRates`.
 - <xref:Bodu.Financial.ExchangeRates.ExchangeRateHostRateProviderOptions> - the endpoint, `ApiKey` (`access_key`), `TimeSeriesPath` / `HistoricalPath`, HTTP, and on-demand-access configuration.

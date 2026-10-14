@@ -24,7 +24,7 @@ internal sealed class FixtureExchangeRateHostRateSource
     /// </summary>
     /// <param name="options">The provider options used while parsing fixtures.</param>
     /// <param name="fixtureByPair">
-    /// An optional pair-to-fixture map; defaults to mapping <c>EUR/USD</c> to the sample time-series fixture.
+    /// An optional pair-to-fixture map; defaults to mapping <c>EUR/USD</c> to the sample time-frame fixture.
     /// </param>
     public FixtureExchangeRateHostRateSource(
         ExchangeRateHostRateProviderOptions options,
@@ -33,7 +33,7 @@ internal sealed class FixtureExchangeRateHostRateSource
         _options = options;
         _fixtureByPair = fixtureByPair ?? new Dictionary<string, string>(StringComparer.Ordinal)
         {
-            ["EUR/USD"] = ExchangeRateHostFixtures.EurUsdTimeSeries,
+            ["EUR/USD"] = ExchangeRateHostFixtures.EurUsdTimeframe,
         };
     }
 

@@ -10,7 +10,7 @@ using Bodu.Financial.Currencies;
 namespace Bodu.Financial.ExchangeRates;
 
 /// <summary>
-/// Verifies that <see cref="ExchangeRateHostResponseParser" /> maps exchangerate.host time-series, single-date, and
+/// Verifies that <see cref="ExchangeRateHostResponseParser" /> maps exchangerate.host time-frame, single-date, and
 /// error responses to the expected observations or exceptions.
 /// </summary>
 [TestClass]
@@ -20,16 +20,16 @@ public sealed class ExchangeRateHostResponseParserTests
     private static readonly ExchangeRateHostRateProviderOptions Options = new() { ApiKey = "test-key" };
 
     /// <summary>
-    /// Verifies that a time-series response yields one observation per in-range date.
+    /// Verifies that a time-frame response yields one observation per in-range date.
     /// </summary>
     [TestMethod]
-    public void Parse_WhenTimeSeries_ShouldReturnObservationsInRange()
+    public void Parse_WhenTimeframe_ShouldReturnObservationsInRange()
     {
         CurrencyPairRequest request = new(
             new CurrencyPair(CurrencyCode.EUR, CurrencyCode.USD),
             new DateOnly(2023, 1, 2),
             new DateOnly(2023, 1, 6));
-        byte[] json = ExchangeRateHostFixtures.ReadBytes(ExchangeRateHostFixtures.EurUsdTimeSeries);
+        byte[] json = ExchangeRateHostFixtures.ReadBytes(ExchangeRateHostFixtures.EurUsdTimeframe);
 
         PairRateData<ExchangeRateHostSeriesInfo> data = ExchangeRateHostResponseParser.Parse(json, request, "EUR", "USD", Options);
 
@@ -67,16 +67,16 @@ public sealed class ExchangeRateHostResponseParserTests
     }
 
     /// <summary>
-    /// Verifies that a time-series response drops dates outside the requested inclusive range.
+    /// Verifies that a time-frame response drops dates outside the requested inclusive range.
     /// </summary>
     [TestMethod]
-    public void Parse_WhenTimeSeriesRangeNarrow_ShouldRestrictToRange()
+    public void Parse_WhenTimeframeRangeNarrow_ShouldRestrictToRange()
     {
         CurrencyPairRequest request = new(
             new CurrencyPair(CurrencyCode.EUR, CurrencyCode.USD),
             new DateOnly(2023, 1, 3),
             new DateOnly(2023, 1, 3));
-        byte[] json = ExchangeRateHostFixtures.ReadBytes(ExchangeRateHostFixtures.EurUsdTimeSeries);
+        byte[] json = ExchangeRateHostFixtures.ReadBytes(ExchangeRateHostFixtures.EurUsdTimeframe);
 
         PairRateData<ExchangeRateHostSeriesInfo> data = ExchangeRateHostResponseParser.Parse(json, request, "EUR", "USD", Options);
 
@@ -140,11 +140,11 @@ public sealed class ExchangeRateHostResponseParserTests
     }
 
     /// <summary>
-    /// Verifies that a time-series rate given as a number or a numeric string is read, and one that is not positive
+    /// Verifies that a time-frame rate given as a number or a numeric string is read, and one that is not positive
     /// or not numeric is skipped.
     /// </summary>
     [TestMethod]
-    public void Parse_WhenTimeSeriesRatesVaryInKind_ShouldReadOnlyPositiveNumbers()
+    public void Parse_WhenTimeframeRatesVaryInKind_ShouldReadOnlyPositiveNumbers()
     {
         CurrencyPairRequest request = new(
             new CurrencyPair(CurrencyCode.EUR, CurrencyCode.USD),
@@ -154,7 +154,7 @@ public sealed class ExchangeRateHostResponseParserTests
             """
             {
               "success": true,
-              "timeseries": true,
+              "timeframe": true,
               "source": "EUR",
               "quotes": {
                 "2023-01-02": { "EURUSD": "1.0668" },
