@@ -682,4 +682,62 @@ public partial class IniSerializerTests
 
         Assert.AreEqual(0, stream.Position);
     }
+
+    /// <summary>
+    /// Verifies that a section whose type is a nullable structure is read into the structure and assigned, rather than
+    /// rejected for <see cref="Nullable{T}.Value" />.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenASectionIsANullableStruct_ShouldReadItIntoTheStruct()
+    {
+        NullableStructSectionConfig result = IniSerializer.Deserialize<NullableStructSectionConfig>("Name=app\n[S]\nPort=5\nHost=h\n");
+
+        Assert.AreEqual("app", result.Name);
+        Assert.IsNotNull(result.S);
+        Assert.AreEqual(5, result.S.Value.Port);
+        Assert.AreEqual("h", result.S.Value.Host);
+    }
+
+    /// <summary>
+    /// Verifies that a section whose type is a nullable structure stays <see langword="null" /> when the document has no
+    /// such section, as a section of a class does.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenANullableStructSectionIsAbsent_ShouldLeaveItNull()
+    {
+        NullableStructSectionConfig result = IniSerializer.Deserialize<NullableStructSectionConfig>("Name=app\n");
+
+        Assert.AreEqual("app", result.Name);
+        Assert.IsNull(result.S);
+    }
+
+    /// <summary>
+    /// Verifies that the reserved global-section member, when its type is a nullable structure, reads the global keys
+    /// into the structure.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenTheGlobalSectionMemberIsANullableStruct_ShouldReadTheGlobalKeysIntoIt()
+    {
+        var options = new IniSerializerOptions { GlobalSectionName = "S" };
+
+        NullableStructSectionConfig result = IniSerializer.Deserialize<NullableStructSectionConfig>("Port=5\nHost=h\n", options);
+
+        Assert.IsNotNull(result.S);
+        Assert.AreEqual(5, result.S.Value.Port);
+        Assert.AreEqual("h", result.S.Value.Host);
+    }
+
+    /// <summary>
+    /// Verifies that a root whose type is a nullable structure is read into the structure, as a root of the structure
+    /// itself is, rather than returned as <see langword="null" />.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenTheRootIsANullableStruct_ShouldReadIt()
+    {
+        PortStruct? result = IniSerializer.Deserialize<PortStruct?>("Port=5\nHost=h\n");
+
+        Assert.IsNotNull(result);
+        Assert.AreEqual(5, result.Value.Port);
+        Assert.AreEqual("h", result.Value.Host);
+    }
 }

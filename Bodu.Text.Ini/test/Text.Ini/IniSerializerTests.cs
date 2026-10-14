@@ -219,6 +219,18 @@ public partial class IniSerializerTests
     }
 
     /// <summary>
+    /// A root model with a global key and a section whose type is a nullable structure.
+    /// </summary>
+    private sealed class NullableStructSectionConfig
+    {
+        /// <summary>Gets or sets the name (a global key).</summary>
+        public string? Name { get; set; }
+
+        /// <summary>Gets or sets the section, <see langword="null" /> unless set.</summary>
+        public PortStruct? S { get; set; }
+    }
+
+    /// <summary>
     /// A root model whose global key is a nullable number, which a value that is not a number cannot be converted to.
     /// </summary>
     private sealed class NullableCountConfig
