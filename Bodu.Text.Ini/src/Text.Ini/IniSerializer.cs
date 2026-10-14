@@ -38,7 +38,8 @@ namespace Bodu.Text.Ini;
 /// dictionary written as a section, the reserved global section included, is decided in the same way, except that a
 /// string-keyed dictionary type, a third level, is rejected. A root member declared as <see cref="object" />, which
 /// could be a key or a section, is rejected with <see cref="IniSerializationException" /> naming the member, when
-/// written and when read, whatever its value. A member nested beyond the second level is rejected. Property names honor
+/// written and when read, whatever its value. A member nested beyond the second level is rejected when its section is
+/// written and when it is read, whether or not the member can be set. Property names honor
 /// <see cref="IniSerializerOptions.PropertyNamingPolicy" /> and the
 /// <see cref="Bodu.Text.Serialization.PropertyNameAttribute" /> family; the callback interfaces (<see cref="Bodu.Text.Serialization.IOnSerializing" />
 /// and its siblings) fire around the mapping. Each member name maps to one key or section, its most derived
