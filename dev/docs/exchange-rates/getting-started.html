@@ -164,20 +164,20 @@ builder.Services.AddEcbExchangeRates(builder.Configuration);
 <pre><code class="lang-csharp">IDatedRateProvider rates = app.Services.GetRequiredService&lt;IDatedRateProvider&gt;();
 RateLookupResult result = await rates.GetRateAsync(&quot;EUR&quot;, &quot;USD&quot;, new DateOnly(2024, 1, 3));
 </code></pre>
-<p>The matching <code>appsettings.json</code> section - every key below binds to <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.EcbRateProviderOptions.html">EcbRateProviderOptions</a> and its nested <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.EcbEndpointOptions.html">EcbEndpointOptions</a>, shown at their defaults:</p>
+<p>The matching <code>appsettings.json</code> section - every key below binds to <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.EcbRateProviderOptions.html">EcbRateProviderOptions</a>, which derives from <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.WebRateProviderOptions.html">WebRateProviderOptions</a> like every provider's options, shown at its defaults:</p>
 <pre><code class="lang-json">{
   &quot;Financial&quot;: {
     &quot;Ecb&quot;: {
-      &quot;Endpoint&quot;: {
-        &quot;BaseUrl&quot;: &quot;https://www.ecb.europa.eu/stats/eurofxref/&quot;,
-        &quot;HttpTimeout&quot;: &quot;00:00:30&quot;,
-        &quot;UserAgent&quot;: &quot;Bodu.Financial.ExchangeRates.Ecb&quot;
-      },
+      &quot;BaseAddress&quot;: &quot;https://www.ecb.europa.eu/stats/eurofxref/&quot;,
+      &quot;HttpTimeout&quot;: &quot;00:00:30&quot;,
+      &quot;MaxResponseContentBufferSize&quot;: 67108864,
+      &quot;UserAgent&quot;: &quot;Bodu.Financial.ExchangeRates.Ecb&quot;,
       &quot;AllowSynchronousNetworkAccess&quot;: false,
-      &quot;EnableDiskCache&quot;: true,
-      &quot;CacheDirectory&quot;: null,
+      &quot;DefaultLookback&quot;: &quot;7.00:00:00&quot;,
       &quot;RefreshInterval&quot;: &quot;12:00:00&quot;,
       &quot;CurrencyAliases&quot;: {},
+      &quot;EnableDiskCache&quot;: true,
+      &quot;CacheDirectory&quot;: null,
       &quot;DownloadStartingLogLevel&quot;: &quot;Debug&quot;,
       &quot;DownloadCompletedLogLevel&quot;: &quot;Information&quot;,
       &quot;DownloadFailedLogLevel&quot;: &quot;Warning&quot;,
@@ -187,7 +187,7 @@ RateLookupResult result = await rates.GetRateAsync(&quot;EUR&quot;, &quot;USD&qu
   }
 }
 </code></pre>
-<p>The one member that does not bind from configuration is <code>Feeds</code> - an <code>IReadOnlyList&lt;EcbRateFeed&gt;</code> whose elements carry a constructor, defaulting to <code>EcbRateFeed.Default</code> (the 90-day feed, then the full history). Set it through the <code>configure</code> callback, which runs after binding:</p>
+<p>The members that do not bind from configuration are <code>Feeds</code> - an <code>IReadOnlyList&lt;EcbRateFeed&gt;</code> whose elements carry a constructor, defaulting to <code>EcbRateFeed.Default</code> (the 90-day feed, then the full history) - and <code>HistoryAvailability</code>, a record struct with factory members. Set them through the <code>configure</code> callback, which runs after binding:</p>
 <pre><code class="lang-csharp">builder.Services
     .AddFinancialService(builder.Configuration)
     .AddEcbExchangeRates(
@@ -196,7 +196,7 @@ RateLookupResult result = await rates.GetRateAsync(&quot;EUR&quot;, &quot;USD&qu
         configure: options =&gt; options.Feeds = new[] { EcbRateFeed.Full },
         configureResilience: resilience =&gt; resilience.Retry.MaxRetryAttempts = 5);
 </code></pre>
-<p>Options are validated at startup (<code>ValidateOnStart</code>), so a null <code>BaseUrl</code> or a non-positive refresh interval (<code>RefreshInterval</code> on every provider's options, <code>CurrentEraRefreshInterval</code> on RBA's) fails the host before the first request.</p>
+<p>Options are validated at startup (<code>ValidateOnStart</code>), so a null <code>BaseAddress</code> or a non-positive refresh interval (<code>RefreshInterval</code>, on every provider's options) fails the host before the first request.</p>
 <h3 id="supply-an-api-key-for-a-pair-provider">Supply an API key for a pair provider</h3>
 <p>Fixer, exchangerate.host, and FRED require a key on their options. <code>FixerRateProviderOptions</code> derives from <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.WebRateProviderOptions.html">WebRateProviderOptions</a>, so it validates the shared members and rejects a blank <code>ApiKey</code>. In code:</p>
 <pre><code class="lang-csharp">using Bodu.Financial.ExchangeRates;
@@ -238,9 +238,9 @@ RateLookupResult usd = fixer.GetRate(&quot;EUR&quot;, &quot;USD&quot;, new DateO
     .AddFinancialService()
     .AddFixerExchangeRates(configure: options =&gt; options.ApiKey = keyVault.GetSecret(&quot;fixer-access-key&quot;));
 </code></pre>
-<p>The same shape applies to <code>AddExchangeRateHostExchangeRates</code> (<code>Financial:ExchangeRateHost</code>, <code>ApiKey</code> sent as <code>access_key</code>) and <code>AddFredExchangeRates</code> (<code>Financial:Fred</code>, <code>ApiKey</code> sent as <code>api_key</code>, plus the <code>SeriesMap</code> from pair to FRED series identifier).</p>
+<p>The same shape applies to <code>AddExchangeRateHostExchangeRates</code> (<code>Financial:ExchangeRateHost</code>, <code>ApiKey</code> sent as <code>access_key</code>, <code>TimeSeriesPath</code> defaulting to <code>timeframe</code> and <code>HistoricalPath</code> to <code>historical</code>) and <code>AddFredExchangeRates</code> (<code>Financial:Fred</code>, <code>ApiKey</code> sent as <code>api_key</code>, plus the <code>SeriesMap</code> from pair to FRED series identifier).</p>
 <h3 id="control-the-payload-cache">Control the payload cache</h3>
-<p>The bulk providers (ECB, BoE, RBA, IMF) keep a best-effort on-disk cache of the raw files they download so immutable history is not re-fetched across process restarts. It is controlled by three options members; the ECB names are shown, the others match apart from RBA's <code>CurrentEraRefreshInterval</code> and <code>EnableDiskCache</code> default of <code>false</code>:</p>
+<p>The bulk providers (ECB, BoE, RBA, IMF) keep a best-effort on-disk cache of the raw files they download so immutable history is not re-fetched across process restarts. It is controlled by three options members; the ECB names are shown, and the others match apart from RBA's <code>EnableDiskCache</code> default of <code>false</code> and its <code>RefreshInterval</code> governing only the open-ended current era:</p>
 <table>
 <thead>
 <tr>
@@ -325,7 +325,7 @@ RateBook book = ecb.GetLoadedBook();                         // the same data as
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 72d80c9 · Built: 2026-10-14 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: bfd3775 · Built: 2026-10-14 (UTC)</span>
         </div>
       </div>
     </footer>

@@ -4941,20 +4941,6 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "api/Bodu.Financial.ExchangeRates.BoeEndpointOptions.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Bodu.Financial.ExchangeRates.BoeEndpointOptions.html"
-        }
-      },
-      "version": "",
-      "Uid": null,
-      "IsMRef": true,
-      "Title": "Bodu.Financial.ExchangeRates.BoeEndpointOptions",
-      "Summary": "<p sourcefile=\"api/Bodu.Financial.ExchangeRates.BoeEndpointOptions.yml\" sourcestartlinenumber=\"1\">Configures the provider's connection to the Bank of England Interactive Statistical Database (IADB): where the CSV\nquery endpoint lives and how the HTTP requests that drive it are shaped.</p>\n"
-    },
-    {
-      "type": "ManagedReference",
       "source_relative_path": "api/Bodu.Financial.ExchangeRates.BoeFinancialServiceBuilderExtensions.yml",
       "output": {
         ".html": {
@@ -5627,20 +5613,6 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "api/Bodu.Financial.ExchangeRates.EcbEndpointOptions.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Bodu.Financial.ExchangeRates.EcbEndpointOptions.html"
-        }
-      },
-      "version": "",
-      "Uid": null,
-      "IsMRef": true,
-      "Title": "Bodu.Financial.ExchangeRates.EcbEndpointOptions",
-      "Summary": "<p sourcefile=\"api/Bodu.Financial.ExchangeRates.EcbEndpointOptions.yml\" sourcestartlinenumber=\"1\">Configures the provider's connection to the European Central Bank's <code>eurofxref</code> endpoints: where the feed files\nare published and how the HTTP requests that fetch them are shaped.</p>\n"
-    },
-    {
-      "type": "ManagedReference",
       "source_relative_path": "api/Bodu.Financial.ExchangeRates.EcbFinancialServiceBuilderExtensions.yml",
       "output": {
         ".html": {
@@ -5791,7 +5763,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Financial.ExchangeRates.ExchangeRateHostRateProvider",
-      "Summary": "<p sourcefile=\"api/Bodu.Financial.ExchangeRates.ExchangeRateHostRateProvider.yml\" sourcestartlinenumber=\"1\">Serves exchangerate.host exchange rates as <xref href=\"Bodu.Financial.ExchangeRates.ExchangeRate\" data-throw-if-not-resolved=\"false\"></xref> values, implementing the Bodu.Financial\nprovider contracts over the exchangerate.host time-series and historical JSON REST endpoints.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Financial.ExchangeRates.ExchangeRateHostRateProvider.yml\" sourcestartlinenumber=\"1\">Serves exchangerate.host exchange rates as <xref href=\"Bodu.Financial.ExchangeRates.ExchangeRate\" data-throw-if-not-resolved=\"false\"></xref> values, implementing the Bodu.Financial\nprovider contracts over the exchangerate.host <code>timeframe</code> and <code>historical</code> JSON REST endpoints.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -5837,20 +5809,6 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "api/Bodu.Financial.ExchangeRates.FileSystemBoeResponseCache.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Bodu.Financial.ExchangeRates.FileSystemBoeResponseCache.html"
-        }
-      },
-      "version": "",
-      "Uid": null,
-      "IsMRef": true,
-      "Title": "Bodu.Financial.ExchangeRates.FileSystemBoeResponseCache",
-      "Summary": "<p sourcefile=\"api/Bodu.Financial.ExchangeRates.FileSystemBoeResponseCache.yml\" sourcestartlinenumber=\"1\">An <xref href=\"Bodu.Financial.ExchangeRates.IByteCache%601\" data-throw-if-not-resolved=\"false\"></xref> that persists downloaded IADB range responses as files in a cache directory,\nkeyed by the inclusive date range that produced them.</p>\n"
-    },
-    {
-      "type": "ManagedReference",
       "source_relative_path": "api/Bodu.Financial.ExchangeRates.FileSystemByteCache-1.yml",
       "output": {
         ".html": {
@@ -5865,20 +5823,6 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "api/Bodu.Financial.ExchangeRates.FileSystemEcbFeedCache.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Bodu.Financial.ExchangeRates.FileSystemEcbFeedCache.html"
-        }
-      },
-      "version": "",
-      "Uid": null,
-      "IsMRef": true,
-      "Title": "Bodu.Financial.ExchangeRates.FileSystemEcbFeedCache",
-      "Summary": "<p sourcefile=\"api/Bodu.Financial.ExchangeRates.FileSystemEcbFeedCache.yml\" sourcestartlinenumber=\"1\">An <xref href=\"Bodu.Financial.ExchangeRates.IByteCache%601\" data-throw-if-not-resolved=\"false\"></xref> that persists downloaded ECB feeds as files in a cache directory, keyed by the\nfeed that produced them.</p>\n"
-    },
-    {
-      "type": "ManagedReference",
       "source_relative_path": "api/Bodu.Financial.ExchangeRates.FileSystemImfReportCache.yml",
       "output": {
         ".html": {
@@ -5890,20 +5834,6 @@
       "IsMRef": true,
       "Title": "Bodu.Financial.ExchangeRates.FileSystemImfReportCache",
       "Summary": "<p sourcefile=\"api/Bodu.Financial.ExchangeRates.FileSystemImfReportCache.yml\" sourcestartlinenumber=\"1\">An <xref href=\"Bodu.Financial.ExchangeRates.IImfReportCache\" data-throw-if-not-resolved=\"false\"></xref> that persists downloaded IMF monthly reports as files in a cache directory.</p>\n"
-    },
-    {
-      "type": "ManagedReference",
-      "source_relative_path": "api/Bodu.Financial.ExchangeRates.FileSystemRbaWorkbookCache.yml",
-      "output": {
-        ".html": {
-          "relative_path": "api/Bodu.Financial.ExchangeRates.FileSystemRbaWorkbookCache.html"
-        }
-      },
-      "version": "",
-      "Uid": null,
-      "IsMRef": true,
-      "Title": "Bodu.Financial.ExchangeRates.FileSystemRbaWorkbookCache",
-      "Summary": "<p sourcefile=\"api/Bodu.Financial.ExchangeRates.FileSystemRbaWorkbookCache.yml\" sourcestartlinenumber=\"1\">An <xref href=\"Bodu.Financial.ExchangeRates.IByteCache%601\" data-throw-if-not-resolved=\"false\"></xref> that persists downloaded RBA workbooks as files in a cache directory, keyed by\nthe era workbook that produced them.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -6855,7 +6785,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Financial.ExchangeRates.WebRateProviderOptions",
-      "Summary": "<p sourcefile=\"api/Bodu.Financial.ExchangeRates.WebRateProviderOptions.yml\" sourcestartlinenumber=\"1\">Provides the configuration common to every pair-based web exchange-rate source and to the IMF provider: the endpoint\nbase address, the HTTP contract (user agent and timeout), the synchronous-access, look-back and refresh behavior,\nthe currency-alias map, and the per-concern diagnostic log levels. A concrete source derives from this type to add\nits own endpoint members and validation.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Financial.ExchangeRates.WebRateProviderOptions.yml\" sourcestartlinenumber=\"1\">Provides the configuration common to every web exchange-rate source, the pair-based sources and the Bank of England,\nECB, RBA and IMF feeds alike: the endpoint base address, the HTTP contract (user agent, timeout and response-size\ncap), the synchronous-access, look-back and refresh behavior, the advertised history, the currency-alias map, and\nthe per-concern diagnostic log levels. A concrete source derives from this type to add its own endpoint members and\nvalidation.</p>\n"
     },
     {
       "type": "ManagedReference",

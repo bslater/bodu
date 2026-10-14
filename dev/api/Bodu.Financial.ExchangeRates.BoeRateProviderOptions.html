@@ -93,7 +93,7 @@
 
   <h1 id="Bodu_Financial_ExchangeRates_BoeRateProviderOptions" data-uid="Bodu.Financial.ExchangeRates.BoeRateProviderOptions" class="text-break" data-bodu-frameworks="net8.0 net10.0">
 BoeRateProviderOptions Class
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/72d80c981f6c2cb5e0a8570e44500edf695b6627/Bodu.Financial.ExchangeRates.Boe/src/Financial.ExchangeRates/BoeRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/bfd377584057f93b1402f9a0c8567626057666c7/Bodu.Financial.ExchangeRates.Boe/src/Financial.ExchangeRates/BoeRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
   </h1>
 <div id="bodu-framework-state" hidden data-bodu-framework-list="net10.0|.NET 10|net-10.0;net8.0|.NET 8|net-8.0"></div>
 
@@ -104,7 +104,7 @@ BoeRateProviderOptions Class
   <dl><dt>Assembly</dt><dd>Bodu.Financial.ExchangeRates.Boe.dll</dd></dl>
   <dl class="bodu-package"><dt>Package</dt><dd><a class="bodu-package-id" href="https://www.nuget.org/packages/Bodu.Financial.ExchangeRates.Boe">Bodu.Financial.ExchangeRates.Boe</a> <span class="bodu-package-version">0.7.2</span>
 </dd></dl>
-  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/72d80c981f6c2cb5e0a8570e44500edf695b6627/Bodu.Financial.ExchangeRates.Boe/src/Financial.ExchangeRates/BoeRateProviderOptions.cs">BoeRateProviderOptions.cs</a></dd></dl>
+  <dl class="bodu-source"><dt>Source</dt><dd><a href="https://github.com/bslater/bodu/blob/bfd377584057f93b1402f9a0c8567626057666c7/Bodu.Financial.ExchangeRates.Boe/src/Financial.ExchangeRates/BoeRateProviderOptions.cs">BoeRateProviderOptions.cs</a></dd></dl>
   </div>
 
   <div class="markdown summary"><p>Configures how the <a class="xref" href="Bodu.Financial.ExchangeRates.BoeRateProvider.html">BoeRateProvider</a> downloads, caches, and interprets Bank of England daily spot
@@ -112,7 +112,7 @@ exchange-rate data.</p>
 </div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public sealed class BoeRateProviderOptions</code></pre>
+    <pre><code class="lang-csharp hljs">public sealed class BoeRateProviderOptions : WebRateProviderOptions</code></pre>
   </div>
 
 
@@ -122,6 +122,7 @@ exchange-rate data.</p>
     <dt>Inheritance</dt>
     <dd>
       <div><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+      <div><a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProviderOptions.html">WebRateProviderOptions</a></div>
       <div><span class="xref">BoeRateProviderOptions</span></div>
     </dd>
   </dl>
@@ -132,6 +133,54 @@ exchange-rate data.</p>
   <dl class="typelist inheritedMembers">
     <dt>Inherited Members</dt>
     <dd>
+    <div>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProviderOptions.html#Bodu_Financial_ExchangeRates_WebRateProviderOptions_Validate">WebRateProviderOptions.Validate()</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProviderOptions.html#Bodu_Financial_ExchangeRates_WebRateProviderOptions_TryValidate_System_String__">WebRateProviderOptions.TryValidate(out string)</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProviderOptions.html#Bodu_Financial_ExchangeRates_WebRateProviderOptions_BaseAddress">WebRateProviderOptions.BaseAddress</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProviderOptions.html#Bodu_Financial_ExchangeRates_WebRateProviderOptions_HttpTimeout">WebRateProviderOptions.HttpTimeout</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProviderOptions.html#Bodu_Financial_ExchangeRates_WebRateProviderOptions_MaxResponseContentBufferSize">WebRateProviderOptions.MaxResponseContentBufferSize</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProviderOptions.html#Bodu_Financial_ExchangeRates_WebRateProviderOptions_UserAgent">WebRateProviderOptions.UserAgent</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProviderOptions.html#Bodu_Financial_ExchangeRates_WebRateProviderOptions_AllowSynchronousNetworkAccess">WebRateProviderOptions.AllowSynchronousNetworkAccess</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProviderOptions.html#Bodu_Financial_ExchangeRates_WebRateProviderOptions_DefaultLookback">WebRateProviderOptions.DefaultLookback</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProviderOptions.html#Bodu_Financial_ExchangeRates_WebRateProviderOptions_RefreshInterval">WebRateProviderOptions.RefreshInterval</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProviderOptions.html#Bodu_Financial_ExchangeRates_WebRateProviderOptions_HistoryAvailability">WebRateProviderOptions.HistoryAvailability</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProviderOptions.html#Bodu_Financial_ExchangeRates_WebRateProviderOptions_CurrencyAliases">WebRateProviderOptions.CurrencyAliases</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProviderOptions.html#Bodu_Financial_ExchangeRates_WebRateProviderOptions_DownloadStartingLogLevel">WebRateProviderOptions.DownloadStartingLogLevel</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProviderOptions.html#Bodu_Financial_ExchangeRates_WebRateProviderOptions_DownloadCompletedLogLevel">WebRateProviderOptions.DownloadCompletedLogLevel</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProviderOptions.html#Bodu_Financial_ExchangeRates_WebRateProviderOptions_DownloadFailedLogLevel">WebRateProviderOptions.DownloadFailedLogLevel</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProviderOptions.html#Bodu_Financial_ExchangeRates_WebRateProviderOptions_ObservationIngestedLogLevel">WebRateProviderOptions.ObservationIngestedLogLevel</a>
+    </div>
+    <div>
+      <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProviderOptions.html#Bodu_Financial_ExchangeRates_WebRateProviderOptions_SynchronousNetworkFetchLogLevel">WebRateProviderOptions.SynchronousNetworkFetchLogLevel</a>
+    </div>
     <div>
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
     </div>
@@ -180,14 +229,28 @@ exchange-rate data.</p>
 
   <h2 id="Bodu_Financial_ExchangeRates_BoeRateProviderOptions_remarks">Remarks</h2>
   <div class="markdown level0 remarks"><p>
-Every member carries a working default, so the options bind cleanly through <code>Microsoft.Extensions.Options</code> and
-require no configuration for the common case. The dependency-injection package binds this type from configuration
-and a <code>configure</code> delegate.
+This type derives from <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProviderOptions.html">WebRateProviderOptions</a>, which supplies the endpoint base address, the HTTP
+contract (timeout, user agent and response-size cap), the synchronous-access, look-back and refresh behavior, the
+advertised history, the currency-alias map, and the per-concern log levels. The constructor points
+<a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProviderOptions.html#Bodu_Financial_ExchangeRates_WebRateProviderOptions_BaseAddress">BaseAddress</a> at the Interactive Statistical Database (IADB), identifies the
+requests with a Bodu user agent, sets a ten-day <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProviderOptions.html#Bodu_Financial_ExchangeRates_WebRateProviderOptions_DefaultLookback">DefaultLookback</a>, and floors
+the advertised history at 2 January 1975. The members declared here are Bank of England-specific: the
+<a class="xref" href="Bodu.Financial.ExchangeRates.BoeRateProviderOptions.html#Bodu_Financial_ExchangeRates_BoeRateProviderOptions_Series">Series</a> catalogue, the IADB <a class="xref" href="Bodu.Financial.ExchangeRates.BoeRateProviderOptions.html#Bodu_Financial_ExchangeRates_BoeRateProviderOptions_QueryPath">QueryPath</a>, and the on-disk cache settings.
 </p>
 <p>
-The <code>*LogLevel</code> members set the <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.loglevel">LogLevel</a> at which each diagnostic the provider emits is logged,
-so consumers can re-tune verbosity per concern without category-wide log filters. Set any of them to
-<a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.loglevel#microsoft-extensions-logging-loglevel-none">None</a> to suppress that event entirely.
+A range request is composed from <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProviderOptions.html#Bodu_Financial_ExchangeRates_WebRateProviderOptions_BaseAddress">BaseAddress</a>, <a class="xref" href="Bodu.Financial.ExchangeRates.BoeRateProviderOptions.html#Bodu_Financial_ExchangeRates_BoeRateProviderOptions_QueryPath">QueryPath</a>, the
+catalogue's series codes, and the inclusive date range. The inherited
+<a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProviderOptions.html#Bodu_Financial_ExchangeRates_WebRateProviderOptions_RefreshInterval">RefreshInterval</a> governs both the in-memory ranges and the on-disk cache: a
+cached range response older than the interval is downloaded again, and in memory a loaded range keeps for good every
+day before the day it was downloaded and every later day it returned a rate for, while its other days are downloaded
+again by a request that reaches them once the interval has passed.
+</p>
+<p>
+The IADB names series, not currencies, so <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProviderOptions.html#Bodu_Financial_ExchangeRates_WebRateProviderOptions_CurrencyAliases">CurrencyAliases</a> applies to the quote
+label of each <a class="xref" href="Bodu.Financial.ExchangeRates.BoeSeries.html">BoeSeries</a> in the catalogue: a label found among the keys is replaced by its value,
+which must be the ISO 4217 code the provider serves the series under. Every member carries a working default, so the
+options bind cleanly through <code>Microsoft.Extensions.Options</code>; the dependency-injection registration binds this
+type from configuration and a <code>configure</code> delegate.
 </p>
 </div>
 
@@ -201,11 +264,13 @@ so consumers can re-tune verbosity per concern without category-wide log filters
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_ExchangeRates_BoeRateProviderOptions__ctor" data-uid="Bodu.Financial.ExchangeRates.BoeRateProviderOptions.#ctor">
   BoeRateProviderOptions()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/72d80c981f6c2cb5e0a8570e44500edf695b6627/Bodu.Financial.ExchangeRates.Boe/src/Financial.ExchangeRates/BoeRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/bfd377584057f93b1402f9a0c8567626057666c7/Bodu.Financial.ExchangeRates.Boe/src/Financial.ExchangeRates/BoeRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="Bodu.Financial.ExchangeRates.BoeRateProviderOptions.html">BoeRateProviderOptions</a> class with the IADB as its base address,
+a Bodu user agent, a ten-day look-back, and a history floor at the 1975 inception of the daily spot series.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -220,6 +285,13 @@ so consumers can re-tune verbosity per concern without category-wide log filters
 
 
 
+  <h4 class="section" id="Bodu_Financial_ExchangeRates_BoeRateProviderOptions__ctor_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The IADB daily spot series (<code>XUDL*</code>) begin on 2 January 1975 for the longest-running currencies; some
+series start later (the euro series begins 4 January 1999, with the launch of the euro). The advertised history
+is advisory - it bounds the earliest date worth requesting for the default <a class="xref" href="Bodu.Financial.ExchangeRates.BoeRateProviderOptions.html#Bodu_Financial_ExchangeRates_BoeRateProviderOptions_Series">Series</a> catalogue, not
+a per-series guarantee - so narrow <a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProviderOptions.html#Bodu_Financial_ExchangeRates_WebRateProviderOptions_HistoryAvailability">HistoryAvailability</a> when the catalogue
+is restricted to later-inception series.</p>
+</div>
 
 
 
@@ -230,57 +302,12 @@ so consumers can re-tune verbosity per concern without category-wide log filters
 </h2>
 
 
-  <a id="Bodu_Financial_ExchangeRates_BoeRateProviderOptions_AllowSynchronousNetworkAccess_" data-uid="Bodu.Financial.ExchangeRates.BoeRateProviderOptions.AllowSynchronousNetworkAccess*"></a>
-
-  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
-  <h3 id="Bodu_Financial_ExchangeRates_BoeRateProviderOptions_AllowSynchronousNetworkAccess" data-uid="Bodu.Financial.ExchangeRates.BoeRateProviderOptions.AllowSynchronousNetworkAccess">
-  AllowSynchronousNetworkAccess
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/72d80c981f6c2cb5e0a8570e44500edf695b6627/Bodu.Financial.ExchangeRates.Boe/src/Financial.ExchangeRates/BoeRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
-  </h3>
-
-
-  <div class="markdown level1 summary"><p>Gets or sets a value indicating whether a synchronous lookup may block to download a missing range on demand.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public bool AllowSynchronousNetworkAccess { get; set; }</code></pre>
-  </div>
-
-
-
-
-
-  <h4 class="section">Property Value</h4>
-  <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
-    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> to allow synchronous, blocking downloads from <a class="xref" href="Bodu.Financial.ExchangeRates.IDatedRateProvider.html">IDatedRateProvider</a> lookups;
-<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> to serve only already-loaded data. Defaults to <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>, so the
-provider serves a snapshot of already-loaded data and a synchronous miss does not reach the network.</p>
-</dd>
-  </dl>
-
-
-
-
-  <h4 class="section" id="Bodu_Financial_ExchangeRates_BoeRateProviderOptions_AllowSynchronousNetworkAccess_remarks">Remarks</h4>
-  <div class="markdown level1 remarks"><p>Blocking on network I/O from a synchronous method can deadlock in environments with a single-threaded
-synchronization context (classic ASP.NET, WPF, WinForms), so the default is snapshot-only. Leave this
-<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a> and warm the store with <a class="xref" href="Bodu.Financial.ExchangeRates.BoeRateProvider.html#Bodu_Financial_ExchangeRates_BoeRateProvider_LoadRangeAsync_System_DateOnly_System_DateOnly_System_Threading_CancellationToken_">LoadRangeAsync(DateOnly, DateOnly, CancellationToken)</a> at startup; set
-it to <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> only to opt in to a blocking on-demand fetch from the synchronous lookup path.</p>
-</div>
-
-
-
-  </section>
-
-
   <a id="Bodu_Financial_ExchangeRates_BoeRateProviderOptions_CacheDirectory_" data-uid="Bodu.Financial.ExchangeRates.BoeRateProviderOptions.CacheDirectory*"></a>
 
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_ExchangeRates_BoeRateProviderOptions_CacheDirectory" data-uid="Bodu.Financial.ExchangeRates.BoeRateProviderOptions.CacheDirectory">
   CacheDirectory
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/72d80c981f6c2cb5e0a8570e44500edf695b6627/Bodu.Financial.ExchangeRates.Boe/src/Financial.ExchangeRates/BoeRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/bfd377584057f93b1402f9a0c8567626057666c7/Bodu.Financial.ExchangeRates.Boe/src/Financial.ExchangeRates/BoeRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -312,123 +339,12 @@ it to <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/buil
   </section>
 
 
-  <a id="Bodu_Financial_ExchangeRates_BoeRateProviderOptions_DownloadCompletedLogLevel_" data-uid="Bodu.Financial.ExchangeRates.BoeRateProviderOptions.DownloadCompletedLogLevel*"></a>
-
-  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
-  <h3 id="Bodu_Financial_ExchangeRates_BoeRateProviderOptions_DownloadCompletedLogLevel" data-uid="Bodu.Financial.ExchangeRates.BoeRateProviderOptions.DownloadCompletedLogLevel">
-  DownloadCompletedLogLevel
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/72d80c981f6c2cb5e0a8570e44500edf695b6627/Bodu.Financial.ExchangeRates.Boe/src/Financial.ExchangeRates/BoeRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
-  </h3>
-
-
-  <div class="markdown level1 summary"><p>Gets or sets the level at which a completed range download (with its observation count) is logged.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public LogLevel DownloadCompletedLogLevel { get; set; }</code></pre>
-  </div>
-
-
-
-
-
-  <h4 class="section">Property Value</h4>
-  <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.loglevel">LogLevel</a></dt>
-    <dd><p>The log level; defaults to <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.loglevel#microsoft-extensions-logging-loglevel-information">Information</a>.</p>
-</dd>
-  </dl>
-
-
-
-
-
-
-
-  </section>
-
-
-  <a id="Bodu_Financial_ExchangeRates_BoeRateProviderOptions_DownloadFailedLogLevel_" data-uid="Bodu.Financial.ExchangeRates.BoeRateProviderOptions.DownloadFailedLogLevel*"></a>
-
-  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
-  <h3 id="Bodu_Financial_ExchangeRates_BoeRateProviderOptions_DownloadFailedLogLevel" data-uid="Bodu.Financial.ExchangeRates.BoeRateProviderOptions.DownloadFailedLogLevel">
-  DownloadFailedLogLevel
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/72d80c981f6c2cb5e0a8570e44500edf695b6627/Bodu.Financial.ExchangeRates.Boe/src/Financial.ExchangeRates/BoeRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
-  </h3>
-
-
-  <div class="markdown level1 summary"><p>Gets or sets the level at which a failed range download is logged.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public LogLevel DownloadFailedLogLevel { get; set; }</code></pre>
-  </div>
-
-
-
-
-
-  <h4 class="section">Property Value</h4>
-  <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.loglevel">LogLevel</a></dt>
-    <dd><p>The log level; defaults to <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.loglevel#microsoft-extensions-logging-loglevel-warning">Warning</a>.</p>
-</dd>
-  </dl>
-
-
-
-
-
-
-
-  </section>
-
-
-  <a id="Bodu_Financial_ExchangeRates_BoeRateProviderOptions_DownloadStartingLogLevel_" data-uid="Bodu.Financial.ExchangeRates.BoeRateProviderOptions.DownloadStartingLogLevel*"></a>
-
-  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
-  <h3 id="Bodu_Financial_ExchangeRates_BoeRateProviderOptions_DownloadStartingLogLevel" data-uid="Bodu.Financial.ExchangeRates.BoeRateProviderOptions.DownloadStartingLogLevel">
-  DownloadStartingLogLevel
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/72d80c981f6c2cb5e0a8570e44500edf695b6627/Bodu.Financial.ExchangeRates.Boe/src/Financial.ExchangeRates/BoeRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
-  </h3>
-
-
-  <div class="markdown level1 summary"><p>Gets or sets the level at which the start of a range download is logged.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public LogLevel DownloadStartingLogLevel { get; set; }</code></pre>
-  </div>
-
-
-
-
-
-  <h4 class="section">Property Value</h4>
-  <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.loglevel">LogLevel</a></dt>
-    <dd><p>The log level; defaults to <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.loglevel#microsoft-extensions-logging-loglevel-debug">Debug</a>.</p>
-</dd>
-  </dl>
-
-
-
-
-
-
-
-  </section>
-
-
   <a id="Bodu_Financial_ExchangeRates_BoeRateProviderOptions_EnableDiskCache_" data-uid="Bodu.Financial.ExchangeRates.BoeRateProviderOptions.EnableDiskCache*"></a>
 
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_ExchangeRates_BoeRateProviderOptions_EnableDiskCache" data-uid="Bodu.Financial.ExchangeRates.BoeRateProviderOptions.EnableDiskCache">
   EnableDiskCache
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/72d80c981f6c2cb5e0a8570e44500edf695b6627/Bodu.Financial.ExchangeRates.Boe/src/Financial.ExchangeRates/BoeRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/bfd377584057f93b1402f9a0c8567626057666c7/Bodu.Financial.ExchangeRates.Boe/src/Financial.ExchangeRates/BoeRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -461,22 +377,22 @@ it to <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/buil
   </section>
 
 
-  <a id="Bodu_Financial_ExchangeRates_BoeRateProviderOptions_Endpoint_" data-uid="Bodu.Financial.ExchangeRates.BoeRateProviderOptions.Endpoint*"></a>
+  <a id="Bodu_Financial_ExchangeRates_BoeRateProviderOptions_QueryPath_" data-uid="Bodu.Financial.ExchangeRates.BoeRateProviderOptions.QueryPath*"></a>
 
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
-  <h3 id="Bodu_Financial_ExchangeRates_BoeRateProviderOptions_Endpoint" data-uid="Bodu.Financial.ExchangeRates.BoeRateProviderOptions.Endpoint">
-  Endpoint
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/72d80c981f6c2cb5e0a8570e44500edf695b6627/Bodu.Financial.ExchangeRates.Boe/src/Financial.ExchangeRates/BoeRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
+  <h3 id="Bodu_Financial_ExchangeRates_BoeRateProviderOptions_QueryPath" data-uid="Bodu.Financial.ExchangeRates.BoeRateProviderOptions.QueryPath">
+  QueryPath
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/bfd377584057f93b1402f9a0c8567626057666c7/Bodu.Financial.ExchangeRates.Boe/src/Financial.ExchangeRates/BoeRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
-  <div class="markdown level1 summary"><p>Gets or sets the endpoint options describing the provider's connection to the Bank of England IADB - the base
-URL, query path, transport timeout, and request identity.</p>
+  <div class="markdown level1 summary"><p>Gets or sets the relative path of the IADB CSV column query endpoint, resolved against
+<a class="xref" href="Bodu.Financial.ExchangeRates.WebRateProviderOptions.html#Bodu_Financial_ExchangeRates_WebRateProviderOptions_BaseAddress">BaseAddress</a>.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public BoeEndpointOptions Endpoint { get; set; }</code></pre>
+    <pre><code class="lang-csharp hljs">public string QueryPath { get; set; }</code></pre>
   </div>
 
 
@@ -485,183 +401,14 @@ URL, query path, transport timeout, and request identity.</p>
 
   <h4 class="section">Property Value</h4>
   <dl class="parameters">
-    <dt><a class="xref" href="Bodu.Financial.ExchangeRates.BoeEndpointOptions.html">BoeEndpointOptions</a></dt>
-    <dd><p>The endpoint options; defaults to a new <a class="xref" href="Bodu.Financial.ExchangeRates.BoeEndpointOptions.html">BoeEndpointOptions</a> targeting the IADB.</p>
+    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
+    <dd><p>The query path; defaults to <code>_iadb-fromshowcolumns.asp</code>.</p>
 </dd>
   </dl>
 
 
 
 
-
-
-
-  </section>
-
-
-  <a id="Bodu_Financial_ExchangeRates_BoeRateProviderOptions_HistoryAvailability_" data-uid="Bodu.Financial.ExchangeRates.BoeRateProviderOptions.HistoryAvailability*"></a>
-
-  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
-  <h3 id="Bodu_Financial_ExchangeRates_BoeRateProviderOptions_HistoryAvailability" data-uid="Bodu.Financial.ExchangeRates.BoeRateProviderOptions.HistoryAvailability">
-  HistoryAvailability
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/72d80c981f6c2cb5e0a8570e44500edf695b6627/Bodu.Financial.ExchangeRates.Boe/src/Financial.ExchangeRates/BoeRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
-  </h3>
-
-
-  <div class="markdown level1 summary"><p>Gets or sets the advertised history availability for the configured series.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public RateHistoryAvailability HistoryAvailability { get; set; }</code></pre>
-  </div>
-
-
-
-
-
-  <h4 class="section">Property Value</h4>
-  <dl class="parameters">
-    <dt><a class="xref" href="Bodu.Financial.ExchangeRates.RateHistoryAvailability.html">RateHistoryAvailability</a></dt>
-    <dd><p>The advertised availability; defaults to a fixed floor of 2 January 1975, the inception of the Bank of England's
-daily spot exchange-rate series.</p>
-</dd>
-  </dl>
-
-
-
-
-  <h4 class="section" id="Bodu_Financial_ExchangeRates_BoeRateProviderOptions_HistoryAvailability_remarks">Remarks</h4>
-  <div class="markdown level1 remarks"><p>The IADB daily spot series (<code>XUDL*</code>) begin on 2 January 1975 for the longest-running currencies; some
-series start later (the euro series begins 4 January 1999, with the launch of the euro). The value is advisory -
-it bounds the earliest date worth requesting for the configured <a class="xref" href="Bodu.Financial.ExchangeRates.BoeRateProviderOptions.html#Bodu_Financial_ExchangeRates_BoeRateProviderOptions_Series">Series</a> catalogue, not a
-per-series guarantee - so narrow it when the catalogue is restricted to later-inception series.</p>
-</div>
-
-
-
-  </section>
-
-
-  <a id="Bodu_Financial_ExchangeRates_BoeRateProviderOptions_ObservationIngestedLogLevel_" data-uid="Bodu.Financial.ExchangeRates.BoeRateProviderOptions.ObservationIngestedLogLevel*"></a>
-
-  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
-  <h3 id="Bodu_Financial_ExchangeRates_BoeRateProviderOptions_ObservationIngestedLogLevel" data-uid="Bodu.Financial.ExchangeRates.BoeRateProviderOptions.ObservationIngestedLogLevel">
-  ObservationIngestedLogLevel
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/72d80c981f6c2cb5e0a8570e44500edf695b6627/Bodu.Financial.ExchangeRates.Boe/src/Financial.ExchangeRates/BoeRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
-  </h3>
-
-
-  <div class="markdown level1 summary"><p>Gets or sets the level at which each individual ingested rate observation is logged.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public LogLevel ObservationIngestedLogLevel { get; set; }</code></pre>
-  </div>
-
-
-
-
-
-  <h4 class="section">Property Value</h4>
-  <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.loglevel">LogLevel</a></dt>
-    <dd><p>The log level; defaults to <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.loglevel#microsoft-extensions-logging-loglevel-trace">Trace</a>, because a load can ingest thousands of observations.</p>
-</dd>
-  </dl>
-
-
-
-
-
-
-
-  </section>
-
-
-  <a id="Bodu_Financial_ExchangeRates_BoeRateProviderOptions_OnDemandWindowDays_" data-uid="Bodu.Financial.ExchangeRates.BoeRateProviderOptions.OnDemandWindowDays*"></a>
-
-  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
-  <h3 id="Bodu_Financial_ExchangeRates_BoeRateProviderOptions_OnDemandWindowDays" data-uid="Bodu.Financial.ExchangeRates.BoeRateProviderOptions.OnDemandWindowDays">
-  OnDemandWindowDays
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/72d80c981f6c2cb5e0a8570e44500edf695b6627/Bodu.Financial.ExchangeRates.Boe/src/Financial.ExchangeRates/BoeRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
-  </h3>
-
-
-  <div class="markdown level1 summary"><p>Gets or sets the number of days before a requested date that an on-demand load fetches.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public int OnDemandWindowDays { get; set; }</code></pre>
-  </div>
-
-
-
-
-
-  <h4 class="section">Property Value</h4>
-  <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></dt>
-    <dd><p>The on-demand look-back window in days; defaults to 10.</p>
-</dd>
-  </dl>
-
-
-
-
-  <h4 class="section" id="Bodu_Financial_ExchangeRates_BoeRateProviderOptions_OnDemandWindowDays_remarks">Remarks</h4>
-  <div class="markdown level1 remarks"><p>A lookup that misses and must fetch (a synchronous lookup with <a class="xref" href="Bodu.Financial.ExchangeRates.BoeRateProviderOptions.html#Bodu_Financial_ExchangeRates_BoeRateProviderOptions_AllowSynchronousNetworkAccess">AllowSynchronousNetworkAccess</a>
-enabled, or an asynchronous single-date lookup) loads the inclusive range from the requested date minus this
-many days to the requested date, so a backward date-resolution tolerance can still find an earlier business day
-without downloading the entire history. The window has no forward part, so a forward tolerance finds nothing
-after the requested date until a later range has been loaded.</p>
-</div>
-
-
-
-  </section>
-
-
-  <a id="Bodu_Financial_ExchangeRates_BoeRateProviderOptions_RefreshInterval_" data-uid="Bodu.Financial.ExchangeRates.BoeRateProviderOptions.RefreshInterval*"></a>
-
-  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
-  <h3 id="Bodu_Financial_ExchangeRates_BoeRateProviderOptions_RefreshInterval" data-uid="Bodu.Financial.ExchangeRates.BoeRateProviderOptions.RefreshInterval">
-  RefreshInterval
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/72d80c981f6c2cb5e0a8570e44500edf695b6627/Bodu.Financial.ExchangeRates.Boe/src/Financial.ExchangeRates/BoeRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
-  </h3>
-
-
-  <div class="markdown level1 summary"><p>Gets or sets how long a cached range response remains fresh before it is re-downloaded, and how long the days of
-a loaded range the Bank of England could still publish are served before they are downloaded again.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public TimeSpan RefreshInterval { get; set; }</code></pre>
-  </div>
-
-
-
-
-
-  <h4 class="section">Property Value</h4>
-  <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.timespan">TimeSpan</a></dt>
-    <dd><p>The refresh interval; defaults to 12 hours.</p>
-</dd>
-  </dl>
-
-
-
-
-  <h4 class="section" id="Bodu_Financial_ExchangeRates_BoeRateProviderOptions_RefreshInterval_remarks">Remarks</h4>
-  <div class="markdown level1 remarks"><p>A range that ends on or near the current date can gain a new observation each business day, so cached responses
-are treated as refreshable rather than immutable. In memory, a loaded range keeps for good every day before the
-day it was downloaded and every later day it returned a rate for; its other days (today, and any later day) are
-downloaded again by a request that reaches them once this interval has passed.</p>
-</div>
 
 
 
@@ -673,7 +420,7 @@ downloaded again by a request that reaches them once this interval has passed.</
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
   <h3 id="Bodu_Financial_ExchangeRates_BoeRateProviderOptions_Series" data-uid="Bodu.Financial.ExchangeRates.BoeRateProviderOptions.Series">
   Series
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/72d80c981f6c2cb5e0a8570e44500edf695b6627/Bodu.Financial.ExchangeRates.Boe/src/Financial.ExchangeRates/BoeRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/bfd377584057f93b1402f9a0c8567626057666c7/Bodu.Financial.ExchangeRates.Boe/src/Financial.ExchangeRates/BoeRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
@@ -709,27 +456,28 @@ downloaded again by a request that reaches them once this interval has passed.</
 </h2>
 
 
-  <a id="Bodu_Financial_ExchangeRates_BoeRateProviderOptions_TryValidate_" data-uid="Bodu.Financial.ExchangeRates.BoeRateProviderOptions.TryValidate*"></a>
+  <a id="Bodu_Financial_ExchangeRates_BoeRateProviderOptions_TryValidateCore_" data-uid="Bodu.Financial.ExchangeRates.BoeRateProviderOptions.TryValidateCore*"></a>
 
   <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
-  <h3 id="Bodu_Financial_ExchangeRates_BoeRateProviderOptions_TryValidate_System_String__" data-uid="Bodu.Financial.ExchangeRates.BoeRateProviderOptions.TryValidate(System.String@)">
-  TryValidate(out string?)
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/72d80c981f6c2cb5e0a8570e44500edf695b6627/Bodu.Financial.ExchangeRates.Boe/src/Financial.ExchangeRates/BoeRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
+  <h3 id="Bodu_Financial_ExchangeRates_BoeRateProviderOptions_TryValidateCore_System_String__" data-uid="Bodu.Financial.ExchangeRates.BoeRateProviderOptions.TryValidateCore(System.String@)">
+  TryValidateCore(out string?)
+  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/bfd377584057f93b1402f9a0c8567626057666c7/Bodu.Financial.ExchangeRates.Boe/src/Financial.ExchangeRates/BoeRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
   </h3>
 
 
-  <div class="markdown level1 summary"><p>Attempts to validate the options without throwing, reporting the first invariant that is violated.</p>
+  <div class="markdown level1 summary"><p>Validates the Bank of England-specific options, ensuring the series catalogue is not empty and the query path is
+usable.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public bool TryValidate(out string? error)</code></pre>
+    <pre><code class="lang-csharp hljs">protected override bool TryValidateCore(out string? error)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>error</code> <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></dt>
-    <dd><p>When this method returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>, a message describing the first violated invariant; otherwise
+    <dd><p>When this method returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>, a message describing the violated invariant; otherwise
 <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
 </dd>
   </dl>
@@ -737,7 +485,7 @@ downloaded again by a request that reaches them once this interval has passed.</
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></dt>
-    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when every invariant holds; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when every Bank of England-specific invariant holds; otherwise <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
 </dd>
   </dl>
 
@@ -747,50 +495,7 @@ downloaded again by a request that reaches them once this interval has passed.</
 
 
 
-  <h4 class="section" id="Bodu_Financial_ExchangeRates_BoeRateProviderOptions_TryValidate_System_String___remarks">Remarks</h4>
-  <div class="markdown level1 remarks"><p>The throwing <a class="xref" href="Bodu.Financial.ExchangeRates.BoeRateProviderOptions.html#Bodu_Financial_ExchangeRates_BoeRateProviderOptions_Validate">Validate()</a> method is expressed in terms of this method, and the dependency-injection
-registration wires it into <code>ValidateOnStart</code> so misconfiguration fails fast at application startup.</p>
-</div>
 
-
-
-  </section>
-
-
-  <a id="Bodu_Financial_ExchangeRates_BoeRateProviderOptions_Validate_" data-uid="Bodu.Financial.ExchangeRates.BoeRateProviderOptions.Validate*"></a>
-
-  <section class="bodu-member" data-bodu-frameworks="net8.0 net10.0">
-  <h3 id="Bodu_Financial_ExchangeRates_BoeRateProviderOptions_Validate" data-uid="Bodu.Financial.ExchangeRates.BoeRateProviderOptions.Validate">
-  Validate()
-  <a class="header-action link-secondary" title="View source" href="https://github.com/bslater/bodu/blob/72d80c981f6c2cb5e0a8570e44500edf695b6627/Bodu.Financial.ExchangeRates.Boe/src/Financial.ExchangeRates/BoeRateProviderOptions.cs"><i class="bi bi-code-slash"></i></a>
-  </h3>
-
-
-  <div class="markdown level1 summary"><p>Validates the options, throwing when a required value is missing or an invariant is violated.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public void Validate()</code></pre>
-  </div>
-
-
-
-
-
-
-
-
-
-
-  <h4 class="section">Exceptions</h4>
-  <dl class="parameters">
-    <dt><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></dt>
-    <dd><p>Thrown when <a class="xref" href="Bodu.Financial.ExchangeRates.BoeRateProviderOptions.html#Bodu_Financial_ExchangeRates_BoeRateProviderOptions_Endpoint">Endpoint</a> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> or fails validation; <a class="xref" href="Bodu.Financial.ExchangeRates.BoeRateProviderOptions.html#Bodu_Financial_ExchangeRates_BoeRateProviderOptions_Series">Series</a> is
-<a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> or empty; <a class="xref" href="Bodu.Financial.ExchangeRates.BoeRateProviderOptions.html#Bodu_Financial_ExchangeRates_BoeRateProviderOptions_OnDemandWindowDays">OnDemandWindowDays</a> is negative; <a class="xref" href="Bodu.Financial.ExchangeRates.BoeRateProviderOptions.html#Bodu_Financial_ExchangeRates_BoeRateProviderOptions_RefreshInterval">RefreshInterval</a>
-is not greater than zero; or any <code>*LogLevel</code> is not a defined <a class="xref" href="https://learn.microsoft.com/dotnet/api/microsoft.extensions.logging.loglevel">LogLevel</a>.</p>
-</dd>
-  </dl>
 
 
   </section>
@@ -823,7 +528,7 @@ is not greater than zero; or any <code>*LogLevel</code> is not a defined <a clas
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 72d80c9 · Built: 2026-10-14 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: bfd3775 · Built: 2026-10-14 (UTC)</span>
         </div>
       </div>
     </footer>

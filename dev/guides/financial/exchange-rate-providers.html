@@ -176,7 +176,7 @@ caching; that is added in front (see the caching guide).</p>
 <td>exchangerate.host</td>
 <td><code>Bodu.Financial.ExchangeRates.ExchangeRateHost</code></td>
 <td><em>any pair</em></td>
-<td>per-<strong>pair</strong> time-series / single-date JSON (<code>access_key</code>)</td>
+<td>per-<strong>pair</strong> time-frame / single-date JSON (<code>access_key</code>)</td>
 <td>since 1999‑01‑01</td>
 <td><code>AddExchangeRateHostExchangeRates()</code></td>
 </tr>
@@ -296,15 +296,15 @@ keep a best-effort cache of the raw bytes they downloaded through <code>EnableDi
 re-fetched; the pair providers do not cache payloads. This is distinct from the <a href="exchange-rate-caching.html">rate cache</a>:
 the on-disk payload cache avoids re-downloading the source file, while the rate
 cache stores parsed, resolved rates in front of the provider.</p>
-<p><strong>Shared options.</strong> The pair-provider options - Yahoo, OFX, XE, OANDA, Fixer,
-exchangerate.host, and FRED - plus the IMF options derive from the abstract
-<a class="xref" href="../../api/Bodu.Financial.ExchangeRates.WebRateProviderOptions.html">WebRateProviderOptions</a>, so they share its surface - the
-<code>BaseAddress</code>, <code>HttpTimeout</code> (default 30s), <code>UserAgent</code>, <code>AllowSynchronousNetworkAccess</code>,
-<code>DefaultLookback</code> (default 7 days), <code>RefreshInterval</code> (default 12 hours: how long a day
-the source could still publish, such as today, is served before it is fetched again), a
-<code>CurrencyAliases</code> map for non-ISO source symbols, and the per-event <code>*LogLevel</code> knobs.
-RBA, ECB, and BoE carry their own option types (<code>RbaRateProviderOptions</code> and friends)
-with source-specific settings such as the RBA's era list. The DI registration's
+<p><strong>Shared options.</strong> Every provider's options - the pair providers (Yahoo, OFX, XE,
+OANDA, Fixer, exchangerate.host, and FRED) and the BoE, ECB, RBA, and IMF feeds - derive
+from the abstract <a class="xref" href="../../api/Bodu.Financial.ExchangeRates.WebRateProviderOptions.html">WebRateProviderOptions</a>, so they
+share its surface - the <code>BaseAddress</code>, <code>HttpTimeout</code> (default 30s), <code>UserAgent</code>,
+<code>MaxResponseContentBufferSize</code>, <code>AllowSynchronousNetworkAccess</code>, <code>DefaultLookback</code>
+(default 7 days; 10 for BoE), <code>RefreshInterval</code> (default 12 hours: how long a day the
+source could still publish, such as today, is served before it is fetched again), a
+<code>CurrencyAliases</code> map for non-ISO source symbols, and the per-event <code>*LogLevel</code> knobs -
+and add source-specific settings such as the RBA's era list. The DI registration's
 <code>configureResilience</code> parameter tunes the standard Polly handler
 (<code>HttpStandardResilienceOptions</code>) wrapped around the named <code>HttpClient</code>.</p>
 <h2 id="reserve-bank-of-australia-aud">Reserve Bank of Australia (AUD)</h2>
@@ -445,11 +445,21 @@ RateLookupResult usd = fixer.GetRate(&quot;EUR&quot;, &quot;USD&quot;, new DateO
 </code></pre>
 <h2 id="exchangeratehost-any-pair-api-key">exchangerate.host (any pair, API key)</h2>
 <p><a class="xref" href="../../api/Bodu.Financial.ExchangeRates.ExchangeRateHostRateProvider.html"><code>ExchangeRateHostRateProvider</code></a>
-fetches the exchangerate.host time-series and single-date JSON endpoints per currency
+fetches the exchangerate.host <code>timeframe</code> and single-date JSON endpoints per currency
 pair. The response keys quotes by the concatenated source+quote code (for example
 <code>EURUSD</code>). Set the <code>access_key</code> through
-<a class="xref" href="../../api/Bodu.Financial.ExchangeRates.ExchangeRateHostRateProviderOptions.html"><code>ExchangeRateHostRateProviderOptions.ApiKey</code></a>;
-the free plan is locked to a USD source currency.</p>
+<a class="xref" href="../../api/Bodu.Financial.ExchangeRates.ExchangeRateHostRateProviderOptions.html"><code>ExchangeRateHostRateProviderOptions.ApiKey</code></a>.</p>
+<div class="NOTE">
+<h5>Note</h5>
+<p>exchangerate.host's free plan supports a USD source currency and single-date requests;
+changing the source currency and the <code>timeframe</code> (multi-day) endpoint require a paid plan
+(source-currency switching from the Basic plan, time-frame queries from the Professional Plus
+plan). A request the plan does not permit surfaces as a fetch failure. On a plan without
+time-frame queries, warm one day at a time (<code>LoadPairAsync</code> with equal start and end dates),
+because the on-demand and latest-rate lookups fetch the multi-day <code>DefaultLookback</code> window. On
+the free plan request pairs whose source currency is USD; to read <code>EUR/USD</code> warm <code>USD/EUR</code>
+first, and its reverse then resolves by inversion from the loaded series.</p>
+</div>
 <pre><code class="lang-csharp">using Bodu.Financial.ExchangeRates;
 
 using var host = new ExchangeRateHostRateProvider(new ExchangeRateHostRateProviderOptions { ApiKey = &quot;…&quot; });
@@ -466,6 +476,13 @@ mapped to its series identifier through
 The options ship a built-in map for the major USD pairs and accept more; a pair with
 no mapping returns no data. Missing values (FRED's <code>&quot;.&quot;</code>) are skipped. Set the
 <code>api_key</code> through <code>FredRateProviderOptions.ApiKey</code>.</p>
+<div class="IMPORTANT">
+<h5>Important</h5>
+<p>FRED's <a href="https://fred.stlouisfed.org/docs/api/terms_of_use.html">API terms of use</a> require an
+application that uses the FRED API to place this notice prominently on the application: &quot;This
+product uses the FRED® API but is not endorsed or certified by the Federal Reserve Bank of
+St. Louis.&quot; Displaying it is the application's obligation; the provider cannot do it for you.</p>
+</div>
 <pre><code class="lang-csharp">using Bodu.Financial.ExchangeRates;
 
 using var fred = new FredRateProvider(new FredRateProviderOptions { ApiKey = &quot;…&quot; });
@@ -958,7 +975,7 @@ read-through cache and grouping providers.</li>
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 72d80c9 · Built: 2026-10-14 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: bfd3775 · Built: 2026-10-14 (UTC)</span>
         </div>
       </div>
     </footer>

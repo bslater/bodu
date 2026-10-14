@@ -45330,120 +45330,6 @@ references:
   commentId: N:Bodu.Financial.ExchangeRates
   fullName: Bodu.Financial.ExchangeRates
   nameWithType: Bodu.Financial.ExchangeRates
-- uid: Bodu.Financial.ExchangeRates.BoeEndpointOptions
-  name: BoeEndpointOptions
-  href: api/Bodu.Financial.ExchangeRates.BoeEndpointOptions.html
-  commentId: T:Bodu.Financial.ExchangeRates.BoeEndpointOptions
-  fullName: Bodu.Financial.ExchangeRates.BoeEndpointOptions
-  nameWithType: BoeEndpointOptions
-- uid: Bodu.Financial.ExchangeRates.BoeEndpointOptions.#ctor
-  name: BoeEndpointOptions()
-  href: api/Bodu.Financial.ExchangeRates.BoeEndpointOptions.html#Bodu_Financial_ExchangeRates_BoeEndpointOptions__ctor
-  commentId: M:Bodu.Financial.ExchangeRates.BoeEndpointOptions.#ctor
-  name.vb: New()
-  fullName: Bodu.Financial.ExchangeRates.BoeEndpointOptions.BoeEndpointOptions()
-  fullName.vb: Bodu.Financial.ExchangeRates.BoeEndpointOptions.New()
-  nameWithType: BoeEndpointOptions.BoeEndpointOptions()
-  nameWithType.vb: BoeEndpointOptions.New()
-- uid: Bodu.Financial.ExchangeRates.BoeEndpointOptions.#ctor*
-  name: BoeEndpointOptions
-  href: api/Bodu.Financial.ExchangeRates.BoeEndpointOptions.html#Bodu_Financial_ExchangeRates_BoeEndpointOptions__ctor_
-  commentId: Overload:Bodu.Financial.ExchangeRates.BoeEndpointOptions.#ctor
-  name.vb: New
-  fullName: Bodu.Financial.ExchangeRates.BoeEndpointOptions.BoeEndpointOptions
-  fullName.vb: Bodu.Financial.ExchangeRates.BoeEndpointOptions.New
-  nameWithType: BoeEndpointOptions.BoeEndpointOptions
-  nameWithType.vb: BoeEndpointOptions.New
-- uid: Bodu.Financial.ExchangeRates.BoeEndpointOptions.BaseUrl
-  name: BaseUrl
-  href: api/Bodu.Financial.ExchangeRates.BoeEndpointOptions.html#Bodu_Financial_ExchangeRates_BoeEndpointOptions_BaseUrl
-  commentId: P:Bodu.Financial.ExchangeRates.BoeEndpointOptions.BaseUrl
-  fullName: Bodu.Financial.ExchangeRates.BoeEndpointOptions.BaseUrl
-  nameWithType: BoeEndpointOptions.BaseUrl
-- uid: Bodu.Financial.ExchangeRates.BoeEndpointOptions.BaseUrl*
-  name: BaseUrl
-  href: api/Bodu.Financial.ExchangeRates.BoeEndpointOptions.html#Bodu_Financial_ExchangeRates_BoeEndpointOptions_BaseUrl_
-  commentId: Overload:Bodu.Financial.ExchangeRates.BoeEndpointOptions.BaseUrl
-  fullName: Bodu.Financial.ExchangeRates.BoeEndpointOptions.BaseUrl
-  nameWithType: BoeEndpointOptions.BaseUrl
-- uid: Bodu.Financial.ExchangeRates.BoeEndpointOptions.BuildRequestUrl(System.Collections.Generic.IReadOnlyList{System.String},System.DateOnly,System.DateOnly)
-  name: BuildRequestUrl(IReadOnlyList<string>, DateOnly, DateOnly)
-  href: api/Bodu.Financial.ExchangeRates.BoeEndpointOptions.html#Bodu_Financial_ExchangeRates_BoeEndpointOptions_BuildRequestUrl_System_Collections_Generic_IReadOnlyList_System_String__System_DateOnly_System_DateOnly_
-  commentId: M:Bodu.Financial.ExchangeRates.BoeEndpointOptions.BuildRequestUrl(System.Collections.Generic.IReadOnlyList{System.String},System.DateOnly,System.DateOnly)
-  name.vb: BuildRequestUrl(IReadOnlyList(Of String), DateOnly, DateOnly)
-  fullName: Bodu.Financial.ExchangeRates.BoeEndpointOptions.BuildRequestUrl(System.Collections.Generic.IReadOnlyList<string>, System.DateOnly, System.DateOnly)
-  fullName.vb: Bodu.Financial.ExchangeRates.BoeEndpointOptions.BuildRequestUrl(System.Collections.Generic.IReadOnlyList(Of String), System.DateOnly, System.DateOnly)
-  nameWithType: BoeEndpointOptions.BuildRequestUrl(IReadOnlyList<string>, DateOnly, DateOnly)
-  nameWithType.vb: BoeEndpointOptions.BuildRequestUrl(IReadOnlyList(Of String), DateOnly, DateOnly)
-- uid: Bodu.Financial.ExchangeRates.BoeEndpointOptions.BuildRequestUrl*
-  name: BuildRequestUrl
-  href: api/Bodu.Financial.ExchangeRates.BoeEndpointOptions.html#Bodu_Financial_ExchangeRates_BoeEndpointOptions_BuildRequestUrl_
-  commentId: Overload:Bodu.Financial.ExchangeRates.BoeEndpointOptions.BuildRequestUrl
-  fullName: Bodu.Financial.ExchangeRates.BoeEndpointOptions.BuildRequestUrl
-  nameWithType: BoeEndpointOptions.BuildRequestUrl
-- uid: Bodu.Financial.ExchangeRates.BoeEndpointOptions.HttpTimeout
-  name: HttpTimeout
-  href: api/Bodu.Financial.ExchangeRates.BoeEndpointOptions.html#Bodu_Financial_ExchangeRates_BoeEndpointOptions_HttpTimeout
-  commentId: P:Bodu.Financial.ExchangeRates.BoeEndpointOptions.HttpTimeout
-  fullName: Bodu.Financial.ExchangeRates.BoeEndpointOptions.HttpTimeout
-  nameWithType: BoeEndpointOptions.HttpTimeout
-- uid: Bodu.Financial.ExchangeRates.BoeEndpointOptions.HttpTimeout*
-  name: HttpTimeout
-  href: api/Bodu.Financial.ExchangeRates.BoeEndpointOptions.html#Bodu_Financial_ExchangeRates_BoeEndpointOptions_HttpTimeout_
-  commentId: Overload:Bodu.Financial.ExchangeRates.BoeEndpointOptions.HttpTimeout
-  fullName: Bodu.Financial.ExchangeRates.BoeEndpointOptions.HttpTimeout
-  nameWithType: BoeEndpointOptions.HttpTimeout
-- uid: Bodu.Financial.ExchangeRates.BoeEndpointOptions.QueryPath
-  name: QueryPath
-  href: api/Bodu.Financial.ExchangeRates.BoeEndpointOptions.html#Bodu_Financial_ExchangeRates_BoeEndpointOptions_QueryPath
-  commentId: P:Bodu.Financial.ExchangeRates.BoeEndpointOptions.QueryPath
-  fullName: Bodu.Financial.ExchangeRates.BoeEndpointOptions.QueryPath
-  nameWithType: BoeEndpointOptions.QueryPath
-- uid: Bodu.Financial.ExchangeRates.BoeEndpointOptions.QueryPath*
-  name: QueryPath
-  href: api/Bodu.Financial.ExchangeRates.BoeEndpointOptions.html#Bodu_Financial_ExchangeRates_BoeEndpointOptions_QueryPath_
-  commentId: Overload:Bodu.Financial.ExchangeRates.BoeEndpointOptions.QueryPath
-  fullName: Bodu.Financial.ExchangeRates.BoeEndpointOptions.QueryPath
-  nameWithType: BoeEndpointOptions.QueryPath
-- uid: Bodu.Financial.ExchangeRates.BoeEndpointOptions.TryValidate(System.String@)
-  name: TryValidate(out string?)
-  href: api/Bodu.Financial.ExchangeRates.BoeEndpointOptions.html#Bodu_Financial_ExchangeRates_BoeEndpointOptions_TryValidate_System_String__
-  commentId: M:Bodu.Financial.ExchangeRates.BoeEndpointOptions.TryValidate(System.String@)
-  name.vb: TryValidate(String)
-  fullName: Bodu.Financial.ExchangeRates.BoeEndpointOptions.TryValidate(out string?)
-  fullName.vb: Bodu.Financial.ExchangeRates.BoeEndpointOptions.TryValidate(String)
-  nameWithType: BoeEndpointOptions.TryValidate(out string?)
-  nameWithType.vb: BoeEndpointOptions.TryValidate(String)
-- uid: Bodu.Financial.ExchangeRates.BoeEndpointOptions.TryValidate*
-  name: TryValidate
-  href: api/Bodu.Financial.ExchangeRates.BoeEndpointOptions.html#Bodu_Financial_ExchangeRates_BoeEndpointOptions_TryValidate_
-  commentId: Overload:Bodu.Financial.ExchangeRates.BoeEndpointOptions.TryValidate
-  fullName: Bodu.Financial.ExchangeRates.BoeEndpointOptions.TryValidate
-  nameWithType: BoeEndpointOptions.TryValidate
-- uid: Bodu.Financial.ExchangeRates.BoeEndpointOptions.UserAgent
-  name: UserAgent
-  href: api/Bodu.Financial.ExchangeRates.BoeEndpointOptions.html#Bodu_Financial_ExchangeRates_BoeEndpointOptions_UserAgent
-  commentId: P:Bodu.Financial.ExchangeRates.BoeEndpointOptions.UserAgent
-  fullName: Bodu.Financial.ExchangeRates.BoeEndpointOptions.UserAgent
-  nameWithType: BoeEndpointOptions.UserAgent
-- uid: Bodu.Financial.ExchangeRates.BoeEndpointOptions.UserAgent*
-  name: UserAgent
-  href: api/Bodu.Financial.ExchangeRates.BoeEndpointOptions.html#Bodu_Financial_ExchangeRates_BoeEndpointOptions_UserAgent_
-  commentId: Overload:Bodu.Financial.ExchangeRates.BoeEndpointOptions.UserAgent
-  fullName: Bodu.Financial.ExchangeRates.BoeEndpointOptions.UserAgent
-  nameWithType: BoeEndpointOptions.UserAgent
-- uid: Bodu.Financial.ExchangeRates.BoeEndpointOptions.Validate
-  name: Validate()
-  href: api/Bodu.Financial.ExchangeRates.BoeEndpointOptions.html#Bodu_Financial_ExchangeRates_BoeEndpointOptions_Validate
-  commentId: M:Bodu.Financial.ExchangeRates.BoeEndpointOptions.Validate
-  fullName: Bodu.Financial.ExchangeRates.BoeEndpointOptions.Validate()
-  nameWithType: BoeEndpointOptions.Validate()
-- uid: Bodu.Financial.ExchangeRates.BoeEndpointOptions.Validate*
-  name: Validate
-  href: api/Bodu.Financial.ExchangeRates.BoeEndpointOptions.html#Bodu_Financial_ExchangeRates_BoeEndpointOptions_Validate_
-  commentId: Overload:Bodu.Financial.ExchangeRates.BoeEndpointOptions.Validate
-  fullName: Bodu.Financial.ExchangeRates.BoeEndpointOptions.Validate
-  nameWithType: BoeEndpointOptions.Validate
 - uid: Bodu.Financial.ExchangeRates.BoeFinancialServiceBuilderExtensions
   name: BoeFinancialServiceBuilderExtensions
   href: api/Bodu.Financial.ExchangeRates.BoeFinancialServiceBuilderExtensions.html
@@ -45621,6 +45507,18 @@ references:
   commentId: Overload:Bodu.Financial.ExchangeRates.BoeRateProvider.OnObservationIngested
   fullName: Bodu.Financial.ExchangeRates.BoeRateProvider.OnObservationIngested
   nameWithType: BoeRateProvider.OnObservationIngested
+- uid: Bodu.Financial.ExchangeRates.BoeRateProvider.OnSynchronousNetworkFetch(System.DateOnly)
+  name: OnSynchronousNetworkFetch(DateOnly)
+  href: api/Bodu.Financial.ExchangeRates.BoeRateProvider.html#Bodu_Financial_ExchangeRates_BoeRateProvider_OnSynchronousNetworkFetch_System_DateOnly_
+  commentId: M:Bodu.Financial.ExchangeRates.BoeRateProvider.OnSynchronousNetworkFetch(System.DateOnly)
+  fullName: Bodu.Financial.ExchangeRates.BoeRateProvider.OnSynchronousNetworkFetch(System.DateOnly)
+  nameWithType: BoeRateProvider.OnSynchronousNetworkFetch(DateOnly)
+- uid: Bodu.Financial.ExchangeRates.BoeRateProvider.OnSynchronousNetworkFetch*
+  name: OnSynchronousNetworkFetch
+  href: api/Bodu.Financial.ExchangeRates.BoeRateProvider.html#Bodu_Financial_ExchangeRates_BoeRateProvider_OnSynchronousNetworkFetch_
+  commentId: Overload:Bodu.Financial.ExchangeRates.BoeRateProvider.OnSynchronousNetworkFetch
+  fullName: Bodu.Financial.ExchangeRates.BoeRateProvider.OnSynchronousNetworkFetch
+  nameWithType: BoeRateProvider.OnSynchronousNetworkFetch
 - uid: Bodu.Financial.ExchangeRates.BoeRateProvider.ProviderId
   name: ProviderId
   href: api/Bodu.Financial.ExchangeRates.BoeRateProvider.html#Bodu_Financial_ExchangeRates_BoeRateProvider_ProviderId
@@ -45678,18 +45576,6 @@ references:
   fullName.vb: Bodu.Financial.ExchangeRates.BoeRateProviderOptions.New
   nameWithType: BoeRateProviderOptions.BoeRateProviderOptions
   nameWithType.vb: BoeRateProviderOptions.New
-- uid: Bodu.Financial.ExchangeRates.BoeRateProviderOptions.AllowSynchronousNetworkAccess
-  name: AllowSynchronousNetworkAccess
-  href: api/Bodu.Financial.ExchangeRates.BoeRateProviderOptions.html#Bodu_Financial_ExchangeRates_BoeRateProviderOptions_AllowSynchronousNetworkAccess
-  commentId: P:Bodu.Financial.ExchangeRates.BoeRateProviderOptions.AllowSynchronousNetworkAccess
-  fullName: Bodu.Financial.ExchangeRates.BoeRateProviderOptions.AllowSynchronousNetworkAccess
-  nameWithType: BoeRateProviderOptions.AllowSynchronousNetworkAccess
-- uid: Bodu.Financial.ExchangeRates.BoeRateProviderOptions.AllowSynchronousNetworkAccess*
-  name: AllowSynchronousNetworkAccess
-  href: api/Bodu.Financial.ExchangeRates.BoeRateProviderOptions.html#Bodu_Financial_ExchangeRates_BoeRateProviderOptions_AllowSynchronousNetworkAccess_
-  commentId: Overload:Bodu.Financial.ExchangeRates.BoeRateProviderOptions.AllowSynchronousNetworkAccess
-  fullName: Bodu.Financial.ExchangeRates.BoeRateProviderOptions.AllowSynchronousNetworkAccess
-  nameWithType: BoeRateProviderOptions.AllowSynchronousNetworkAccess
 - uid: Bodu.Financial.ExchangeRates.BoeRateProviderOptions.CacheDirectory
   name: CacheDirectory
   href: api/Bodu.Financial.ExchangeRates.BoeRateProviderOptions.html#Bodu_Financial_ExchangeRates_BoeRateProviderOptions_CacheDirectory
@@ -45702,42 +45588,6 @@ references:
   commentId: Overload:Bodu.Financial.ExchangeRates.BoeRateProviderOptions.CacheDirectory
   fullName: Bodu.Financial.ExchangeRates.BoeRateProviderOptions.CacheDirectory
   nameWithType: BoeRateProviderOptions.CacheDirectory
-- uid: Bodu.Financial.ExchangeRates.BoeRateProviderOptions.DownloadCompletedLogLevel
-  name: DownloadCompletedLogLevel
-  href: api/Bodu.Financial.ExchangeRates.BoeRateProviderOptions.html#Bodu_Financial_ExchangeRates_BoeRateProviderOptions_DownloadCompletedLogLevel
-  commentId: P:Bodu.Financial.ExchangeRates.BoeRateProviderOptions.DownloadCompletedLogLevel
-  fullName: Bodu.Financial.ExchangeRates.BoeRateProviderOptions.DownloadCompletedLogLevel
-  nameWithType: BoeRateProviderOptions.DownloadCompletedLogLevel
-- uid: Bodu.Financial.ExchangeRates.BoeRateProviderOptions.DownloadCompletedLogLevel*
-  name: DownloadCompletedLogLevel
-  href: api/Bodu.Financial.ExchangeRates.BoeRateProviderOptions.html#Bodu_Financial_ExchangeRates_BoeRateProviderOptions_DownloadCompletedLogLevel_
-  commentId: Overload:Bodu.Financial.ExchangeRates.BoeRateProviderOptions.DownloadCompletedLogLevel
-  fullName: Bodu.Financial.ExchangeRates.BoeRateProviderOptions.DownloadCompletedLogLevel
-  nameWithType: BoeRateProviderOptions.DownloadCompletedLogLevel
-- uid: Bodu.Financial.ExchangeRates.BoeRateProviderOptions.DownloadFailedLogLevel
-  name: DownloadFailedLogLevel
-  href: api/Bodu.Financial.ExchangeRates.BoeRateProviderOptions.html#Bodu_Financial_ExchangeRates_BoeRateProviderOptions_DownloadFailedLogLevel
-  commentId: P:Bodu.Financial.ExchangeRates.BoeRateProviderOptions.DownloadFailedLogLevel
-  fullName: Bodu.Financial.ExchangeRates.BoeRateProviderOptions.DownloadFailedLogLevel
-  nameWithType: BoeRateProviderOptions.DownloadFailedLogLevel
-- uid: Bodu.Financial.ExchangeRates.BoeRateProviderOptions.DownloadFailedLogLevel*
-  name: DownloadFailedLogLevel
-  href: api/Bodu.Financial.ExchangeRates.BoeRateProviderOptions.html#Bodu_Financial_ExchangeRates_BoeRateProviderOptions_DownloadFailedLogLevel_
-  commentId: Overload:Bodu.Financial.ExchangeRates.BoeRateProviderOptions.DownloadFailedLogLevel
-  fullName: Bodu.Financial.ExchangeRates.BoeRateProviderOptions.DownloadFailedLogLevel
-  nameWithType: BoeRateProviderOptions.DownloadFailedLogLevel
-- uid: Bodu.Financial.ExchangeRates.BoeRateProviderOptions.DownloadStartingLogLevel
-  name: DownloadStartingLogLevel
-  href: api/Bodu.Financial.ExchangeRates.BoeRateProviderOptions.html#Bodu_Financial_ExchangeRates_BoeRateProviderOptions_DownloadStartingLogLevel
-  commentId: P:Bodu.Financial.ExchangeRates.BoeRateProviderOptions.DownloadStartingLogLevel
-  fullName: Bodu.Financial.ExchangeRates.BoeRateProviderOptions.DownloadStartingLogLevel
-  nameWithType: BoeRateProviderOptions.DownloadStartingLogLevel
-- uid: Bodu.Financial.ExchangeRates.BoeRateProviderOptions.DownloadStartingLogLevel*
-  name: DownloadStartingLogLevel
-  href: api/Bodu.Financial.ExchangeRates.BoeRateProviderOptions.html#Bodu_Financial_ExchangeRates_BoeRateProviderOptions_DownloadStartingLogLevel_
-  commentId: Overload:Bodu.Financial.ExchangeRates.BoeRateProviderOptions.DownloadStartingLogLevel
-  fullName: Bodu.Financial.ExchangeRates.BoeRateProviderOptions.DownloadStartingLogLevel
-  nameWithType: BoeRateProviderOptions.DownloadStartingLogLevel
 - uid: Bodu.Financial.ExchangeRates.BoeRateProviderOptions.EnableDiskCache
   name: EnableDiskCache
   href: api/Bodu.Financial.ExchangeRates.BoeRateProviderOptions.html#Bodu_Financial_ExchangeRates_BoeRateProviderOptions_EnableDiskCache
@@ -45750,66 +45600,18 @@ references:
   commentId: Overload:Bodu.Financial.ExchangeRates.BoeRateProviderOptions.EnableDiskCache
   fullName: Bodu.Financial.ExchangeRates.BoeRateProviderOptions.EnableDiskCache
   nameWithType: BoeRateProviderOptions.EnableDiskCache
-- uid: Bodu.Financial.ExchangeRates.BoeRateProviderOptions.Endpoint
-  name: Endpoint
-  href: api/Bodu.Financial.ExchangeRates.BoeRateProviderOptions.html#Bodu_Financial_ExchangeRates_BoeRateProviderOptions_Endpoint
-  commentId: P:Bodu.Financial.ExchangeRates.BoeRateProviderOptions.Endpoint
-  fullName: Bodu.Financial.ExchangeRates.BoeRateProviderOptions.Endpoint
-  nameWithType: BoeRateProviderOptions.Endpoint
-- uid: Bodu.Financial.ExchangeRates.BoeRateProviderOptions.Endpoint*
-  name: Endpoint
-  href: api/Bodu.Financial.ExchangeRates.BoeRateProviderOptions.html#Bodu_Financial_ExchangeRates_BoeRateProviderOptions_Endpoint_
-  commentId: Overload:Bodu.Financial.ExchangeRates.BoeRateProviderOptions.Endpoint
-  fullName: Bodu.Financial.ExchangeRates.BoeRateProviderOptions.Endpoint
-  nameWithType: BoeRateProviderOptions.Endpoint
-- uid: Bodu.Financial.ExchangeRates.BoeRateProviderOptions.HistoryAvailability
-  name: HistoryAvailability
-  href: api/Bodu.Financial.ExchangeRates.BoeRateProviderOptions.html#Bodu_Financial_ExchangeRates_BoeRateProviderOptions_HistoryAvailability
-  commentId: P:Bodu.Financial.ExchangeRates.BoeRateProviderOptions.HistoryAvailability
-  fullName: Bodu.Financial.ExchangeRates.BoeRateProviderOptions.HistoryAvailability
-  nameWithType: BoeRateProviderOptions.HistoryAvailability
-- uid: Bodu.Financial.ExchangeRates.BoeRateProviderOptions.HistoryAvailability*
-  name: HistoryAvailability
-  href: api/Bodu.Financial.ExchangeRates.BoeRateProviderOptions.html#Bodu_Financial_ExchangeRates_BoeRateProviderOptions_HistoryAvailability_
-  commentId: Overload:Bodu.Financial.ExchangeRates.BoeRateProviderOptions.HistoryAvailability
-  fullName: Bodu.Financial.ExchangeRates.BoeRateProviderOptions.HistoryAvailability
-  nameWithType: BoeRateProviderOptions.HistoryAvailability
-- uid: Bodu.Financial.ExchangeRates.BoeRateProviderOptions.ObservationIngestedLogLevel
-  name: ObservationIngestedLogLevel
-  href: api/Bodu.Financial.ExchangeRates.BoeRateProviderOptions.html#Bodu_Financial_ExchangeRates_BoeRateProviderOptions_ObservationIngestedLogLevel
-  commentId: P:Bodu.Financial.ExchangeRates.BoeRateProviderOptions.ObservationIngestedLogLevel
-  fullName: Bodu.Financial.ExchangeRates.BoeRateProviderOptions.ObservationIngestedLogLevel
-  nameWithType: BoeRateProviderOptions.ObservationIngestedLogLevel
-- uid: Bodu.Financial.ExchangeRates.BoeRateProviderOptions.ObservationIngestedLogLevel*
-  name: ObservationIngestedLogLevel
-  href: api/Bodu.Financial.ExchangeRates.BoeRateProviderOptions.html#Bodu_Financial_ExchangeRates_BoeRateProviderOptions_ObservationIngestedLogLevel_
-  commentId: Overload:Bodu.Financial.ExchangeRates.BoeRateProviderOptions.ObservationIngestedLogLevel
-  fullName: Bodu.Financial.ExchangeRates.BoeRateProviderOptions.ObservationIngestedLogLevel
-  nameWithType: BoeRateProviderOptions.ObservationIngestedLogLevel
-- uid: Bodu.Financial.ExchangeRates.BoeRateProviderOptions.OnDemandWindowDays
-  name: OnDemandWindowDays
-  href: api/Bodu.Financial.ExchangeRates.BoeRateProviderOptions.html#Bodu_Financial_ExchangeRates_BoeRateProviderOptions_OnDemandWindowDays
-  commentId: P:Bodu.Financial.ExchangeRates.BoeRateProviderOptions.OnDemandWindowDays
-  fullName: Bodu.Financial.ExchangeRates.BoeRateProviderOptions.OnDemandWindowDays
-  nameWithType: BoeRateProviderOptions.OnDemandWindowDays
-- uid: Bodu.Financial.ExchangeRates.BoeRateProviderOptions.OnDemandWindowDays*
-  name: OnDemandWindowDays
-  href: api/Bodu.Financial.ExchangeRates.BoeRateProviderOptions.html#Bodu_Financial_ExchangeRates_BoeRateProviderOptions_OnDemandWindowDays_
-  commentId: Overload:Bodu.Financial.ExchangeRates.BoeRateProviderOptions.OnDemandWindowDays
-  fullName: Bodu.Financial.ExchangeRates.BoeRateProviderOptions.OnDemandWindowDays
-  nameWithType: BoeRateProviderOptions.OnDemandWindowDays
-- uid: Bodu.Financial.ExchangeRates.BoeRateProviderOptions.RefreshInterval
-  name: RefreshInterval
-  href: api/Bodu.Financial.ExchangeRates.BoeRateProviderOptions.html#Bodu_Financial_ExchangeRates_BoeRateProviderOptions_RefreshInterval
-  commentId: P:Bodu.Financial.ExchangeRates.BoeRateProviderOptions.RefreshInterval
-  fullName: Bodu.Financial.ExchangeRates.BoeRateProviderOptions.RefreshInterval
-  nameWithType: BoeRateProviderOptions.RefreshInterval
-- uid: Bodu.Financial.ExchangeRates.BoeRateProviderOptions.RefreshInterval*
-  name: RefreshInterval
-  href: api/Bodu.Financial.ExchangeRates.BoeRateProviderOptions.html#Bodu_Financial_ExchangeRates_BoeRateProviderOptions_RefreshInterval_
-  commentId: Overload:Bodu.Financial.ExchangeRates.BoeRateProviderOptions.RefreshInterval
-  fullName: Bodu.Financial.ExchangeRates.BoeRateProviderOptions.RefreshInterval
-  nameWithType: BoeRateProviderOptions.RefreshInterval
+- uid: Bodu.Financial.ExchangeRates.BoeRateProviderOptions.QueryPath
+  name: QueryPath
+  href: api/Bodu.Financial.ExchangeRates.BoeRateProviderOptions.html#Bodu_Financial_ExchangeRates_BoeRateProviderOptions_QueryPath
+  commentId: P:Bodu.Financial.ExchangeRates.BoeRateProviderOptions.QueryPath
+  fullName: Bodu.Financial.ExchangeRates.BoeRateProviderOptions.QueryPath
+  nameWithType: BoeRateProviderOptions.QueryPath
+- uid: Bodu.Financial.ExchangeRates.BoeRateProviderOptions.QueryPath*
+  name: QueryPath
+  href: api/Bodu.Financial.ExchangeRates.BoeRateProviderOptions.html#Bodu_Financial_ExchangeRates_BoeRateProviderOptions_QueryPath_
+  commentId: Overload:Bodu.Financial.ExchangeRates.BoeRateProviderOptions.QueryPath
+  fullName: Bodu.Financial.ExchangeRates.BoeRateProviderOptions.QueryPath
+  nameWithType: BoeRateProviderOptions.QueryPath
 - uid: Bodu.Financial.ExchangeRates.BoeRateProviderOptions.Series
   name: Series
   href: api/Bodu.Financial.ExchangeRates.BoeRateProviderOptions.html#Bodu_Financial_ExchangeRates_BoeRateProviderOptions_Series
@@ -45822,33 +45624,21 @@ references:
   commentId: Overload:Bodu.Financial.ExchangeRates.BoeRateProviderOptions.Series
   fullName: Bodu.Financial.ExchangeRates.BoeRateProviderOptions.Series
   nameWithType: BoeRateProviderOptions.Series
-- uid: Bodu.Financial.ExchangeRates.BoeRateProviderOptions.TryValidate(System.String@)
-  name: TryValidate(out string?)
-  href: api/Bodu.Financial.ExchangeRates.BoeRateProviderOptions.html#Bodu_Financial_ExchangeRates_BoeRateProviderOptions_TryValidate_System_String__
-  commentId: M:Bodu.Financial.ExchangeRates.BoeRateProviderOptions.TryValidate(System.String@)
-  name.vb: TryValidate(String)
-  fullName: Bodu.Financial.ExchangeRates.BoeRateProviderOptions.TryValidate(out string?)
-  fullName.vb: Bodu.Financial.ExchangeRates.BoeRateProviderOptions.TryValidate(String)
-  nameWithType: BoeRateProviderOptions.TryValidate(out string?)
-  nameWithType.vb: BoeRateProviderOptions.TryValidate(String)
-- uid: Bodu.Financial.ExchangeRates.BoeRateProviderOptions.TryValidate*
-  name: TryValidate
-  href: api/Bodu.Financial.ExchangeRates.BoeRateProviderOptions.html#Bodu_Financial_ExchangeRates_BoeRateProviderOptions_TryValidate_
-  commentId: Overload:Bodu.Financial.ExchangeRates.BoeRateProviderOptions.TryValidate
-  fullName: Bodu.Financial.ExchangeRates.BoeRateProviderOptions.TryValidate
-  nameWithType: BoeRateProviderOptions.TryValidate
-- uid: Bodu.Financial.ExchangeRates.BoeRateProviderOptions.Validate
-  name: Validate()
-  href: api/Bodu.Financial.ExchangeRates.BoeRateProviderOptions.html#Bodu_Financial_ExchangeRates_BoeRateProviderOptions_Validate
-  commentId: M:Bodu.Financial.ExchangeRates.BoeRateProviderOptions.Validate
-  fullName: Bodu.Financial.ExchangeRates.BoeRateProviderOptions.Validate()
-  nameWithType: BoeRateProviderOptions.Validate()
-- uid: Bodu.Financial.ExchangeRates.BoeRateProviderOptions.Validate*
-  name: Validate
-  href: api/Bodu.Financial.ExchangeRates.BoeRateProviderOptions.html#Bodu_Financial_ExchangeRates_BoeRateProviderOptions_Validate_
-  commentId: Overload:Bodu.Financial.ExchangeRates.BoeRateProviderOptions.Validate
-  fullName: Bodu.Financial.ExchangeRates.BoeRateProviderOptions.Validate
-  nameWithType: BoeRateProviderOptions.Validate
+- uid: Bodu.Financial.ExchangeRates.BoeRateProviderOptions.TryValidateCore(System.String@)
+  name: TryValidateCore(out string?)
+  href: api/Bodu.Financial.ExchangeRates.BoeRateProviderOptions.html#Bodu_Financial_ExchangeRates_BoeRateProviderOptions_TryValidateCore_System_String__
+  commentId: M:Bodu.Financial.ExchangeRates.BoeRateProviderOptions.TryValidateCore(System.String@)
+  name.vb: TryValidateCore(String)
+  fullName: Bodu.Financial.ExchangeRates.BoeRateProviderOptions.TryValidateCore(out string?)
+  fullName.vb: Bodu.Financial.ExchangeRates.BoeRateProviderOptions.TryValidateCore(String)
+  nameWithType: BoeRateProviderOptions.TryValidateCore(out string?)
+  nameWithType.vb: BoeRateProviderOptions.TryValidateCore(String)
+- uid: Bodu.Financial.ExchangeRates.BoeRateProviderOptions.TryValidateCore*
+  name: TryValidateCore
+  href: api/Bodu.Financial.ExchangeRates.BoeRateProviderOptions.html#Bodu_Financial_ExchangeRates_BoeRateProviderOptions_TryValidateCore_
+  commentId: Overload:Bodu.Financial.ExchangeRates.BoeRateProviderOptions.TryValidateCore
+  fullName: Bodu.Financial.ExchangeRates.BoeRateProviderOptions.TryValidateCore
+  nameWithType: BoeRateProviderOptions.TryValidateCore
 - uid: Bodu.Financial.ExchangeRates.BoeSeries
   name: BoeSeries
   href: api/Bodu.Financial.ExchangeRates.BoeSeries.html
@@ -49916,105 +49706,6 @@ references:
   commentId: Overload:Bodu.Financial.ExchangeRates.DistributedRateCacheExtensions.AddRedisRateCache
   fullName: Bodu.Financial.ExchangeRates.DistributedRateCacheExtensions.AddRedisRateCache
   nameWithType: DistributedRateCacheExtensions.AddRedisRateCache
-- uid: Bodu.Financial.ExchangeRates.EcbEndpointOptions
-  name: EcbEndpointOptions
-  href: api/Bodu.Financial.ExchangeRates.EcbEndpointOptions.html
-  commentId: T:Bodu.Financial.ExchangeRates.EcbEndpointOptions
-  fullName: Bodu.Financial.ExchangeRates.EcbEndpointOptions
-  nameWithType: EcbEndpointOptions
-- uid: Bodu.Financial.ExchangeRates.EcbEndpointOptions.#ctor
-  name: EcbEndpointOptions()
-  href: api/Bodu.Financial.ExchangeRates.EcbEndpointOptions.html#Bodu_Financial_ExchangeRates_EcbEndpointOptions__ctor
-  commentId: M:Bodu.Financial.ExchangeRates.EcbEndpointOptions.#ctor
-  name.vb: New()
-  fullName: Bodu.Financial.ExchangeRates.EcbEndpointOptions.EcbEndpointOptions()
-  fullName.vb: Bodu.Financial.ExchangeRates.EcbEndpointOptions.New()
-  nameWithType: EcbEndpointOptions.EcbEndpointOptions()
-  nameWithType.vb: EcbEndpointOptions.New()
-- uid: Bodu.Financial.ExchangeRates.EcbEndpointOptions.#ctor*
-  name: EcbEndpointOptions
-  href: api/Bodu.Financial.ExchangeRates.EcbEndpointOptions.html#Bodu_Financial_ExchangeRates_EcbEndpointOptions__ctor_
-  commentId: Overload:Bodu.Financial.ExchangeRates.EcbEndpointOptions.#ctor
-  name.vb: New
-  fullName: Bodu.Financial.ExchangeRates.EcbEndpointOptions.EcbEndpointOptions
-  fullName.vb: Bodu.Financial.ExchangeRates.EcbEndpointOptions.New
-  nameWithType: EcbEndpointOptions.EcbEndpointOptions
-  nameWithType.vb: EcbEndpointOptions.New
-- uid: Bodu.Financial.ExchangeRates.EcbEndpointOptions.BaseUrl
-  name: BaseUrl
-  href: api/Bodu.Financial.ExchangeRates.EcbEndpointOptions.html#Bodu_Financial_ExchangeRates_EcbEndpointOptions_BaseUrl
-  commentId: P:Bodu.Financial.ExchangeRates.EcbEndpointOptions.BaseUrl
-  fullName: Bodu.Financial.ExchangeRates.EcbEndpointOptions.BaseUrl
-  nameWithType: EcbEndpointOptions.BaseUrl
-- uid: Bodu.Financial.ExchangeRates.EcbEndpointOptions.BaseUrl*
-  name: BaseUrl
-  href: api/Bodu.Financial.ExchangeRates.EcbEndpointOptions.html#Bodu_Financial_ExchangeRates_EcbEndpointOptions_BaseUrl_
-  commentId: Overload:Bodu.Financial.ExchangeRates.EcbEndpointOptions.BaseUrl
-  fullName: Bodu.Financial.ExchangeRates.EcbEndpointOptions.BaseUrl
-  nameWithType: EcbEndpointOptions.BaseUrl
-- uid: Bodu.Financial.ExchangeRates.EcbEndpointOptions.HttpTimeout
-  name: HttpTimeout
-  href: api/Bodu.Financial.ExchangeRates.EcbEndpointOptions.html#Bodu_Financial_ExchangeRates_EcbEndpointOptions_HttpTimeout
-  commentId: P:Bodu.Financial.ExchangeRates.EcbEndpointOptions.HttpTimeout
-  fullName: Bodu.Financial.ExchangeRates.EcbEndpointOptions.HttpTimeout
-  nameWithType: EcbEndpointOptions.HttpTimeout
-- uid: Bodu.Financial.ExchangeRates.EcbEndpointOptions.HttpTimeout*
-  name: HttpTimeout
-  href: api/Bodu.Financial.ExchangeRates.EcbEndpointOptions.html#Bodu_Financial_ExchangeRates_EcbEndpointOptions_HttpTimeout_
-  commentId: Overload:Bodu.Financial.ExchangeRates.EcbEndpointOptions.HttpTimeout
-  fullName: Bodu.Financial.ExchangeRates.EcbEndpointOptions.HttpTimeout
-  nameWithType: EcbEndpointOptions.HttpTimeout
-- uid: Bodu.Financial.ExchangeRates.EcbEndpointOptions.ResolveFeedUrl(Bodu.Financial.ExchangeRates.EcbRateFeed)
-  name: ResolveFeedUrl(EcbRateFeed)
-  href: api/Bodu.Financial.ExchangeRates.EcbEndpointOptions.html#Bodu_Financial_ExchangeRates_EcbEndpointOptions_ResolveFeedUrl_Bodu_Financial_ExchangeRates_EcbRateFeed_
-  commentId: M:Bodu.Financial.ExchangeRates.EcbEndpointOptions.ResolveFeedUrl(Bodu.Financial.ExchangeRates.EcbRateFeed)
-  fullName: Bodu.Financial.ExchangeRates.EcbEndpointOptions.ResolveFeedUrl(Bodu.Financial.ExchangeRates.EcbRateFeed)
-  nameWithType: EcbEndpointOptions.ResolveFeedUrl(EcbRateFeed)
-- uid: Bodu.Financial.ExchangeRates.EcbEndpointOptions.ResolveFeedUrl*
-  name: ResolveFeedUrl
-  href: api/Bodu.Financial.ExchangeRates.EcbEndpointOptions.html#Bodu_Financial_ExchangeRates_EcbEndpointOptions_ResolveFeedUrl_
-  commentId: Overload:Bodu.Financial.ExchangeRates.EcbEndpointOptions.ResolveFeedUrl
-  fullName: Bodu.Financial.ExchangeRates.EcbEndpointOptions.ResolveFeedUrl
-  nameWithType: EcbEndpointOptions.ResolveFeedUrl
-- uid: Bodu.Financial.ExchangeRates.EcbEndpointOptions.TryValidate(System.String@)
-  name: TryValidate(out string?)
-  href: api/Bodu.Financial.ExchangeRates.EcbEndpointOptions.html#Bodu_Financial_ExchangeRates_EcbEndpointOptions_TryValidate_System_String__
-  commentId: M:Bodu.Financial.ExchangeRates.EcbEndpointOptions.TryValidate(System.String@)
-  name.vb: TryValidate(String)
-  fullName: Bodu.Financial.ExchangeRates.EcbEndpointOptions.TryValidate(out string?)
-  fullName.vb: Bodu.Financial.ExchangeRates.EcbEndpointOptions.TryValidate(String)
-  nameWithType: EcbEndpointOptions.TryValidate(out string?)
-  nameWithType.vb: EcbEndpointOptions.TryValidate(String)
-- uid: Bodu.Financial.ExchangeRates.EcbEndpointOptions.TryValidate*
-  name: TryValidate
-  href: api/Bodu.Financial.ExchangeRates.EcbEndpointOptions.html#Bodu_Financial_ExchangeRates_EcbEndpointOptions_TryValidate_
-  commentId: Overload:Bodu.Financial.ExchangeRates.EcbEndpointOptions.TryValidate
-  fullName: Bodu.Financial.ExchangeRates.EcbEndpointOptions.TryValidate
-  nameWithType: EcbEndpointOptions.TryValidate
-- uid: Bodu.Financial.ExchangeRates.EcbEndpointOptions.UserAgent
-  name: UserAgent
-  href: api/Bodu.Financial.ExchangeRates.EcbEndpointOptions.html#Bodu_Financial_ExchangeRates_EcbEndpointOptions_UserAgent
-  commentId: P:Bodu.Financial.ExchangeRates.EcbEndpointOptions.UserAgent
-  fullName: Bodu.Financial.ExchangeRates.EcbEndpointOptions.UserAgent
-  nameWithType: EcbEndpointOptions.UserAgent
-- uid: Bodu.Financial.ExchangeRates.EcbEndpointOptions.UserAgent*
-  name: UserAgent
-  href: api/Bodu.Financial.ExchangeRates.EcbEndpointOptions.html#Bodu_Financial_ExchangeRates_EcbEndpointOptions_UserAgent_
-  commentId: Overload:Bodu.Financial.ExchangeRates.EcbEndpointOptions.UserAgent
-  fullName: Bodu.Financial.ExchangeRates.EcbEndpointOptions.UserAgent
-  nameWithType: EcbEndpointOptions.UserAgent
-- uid: Bodu.Financial.ExchangeRates.EcbEndpointOptions.Validate
-  name: Validate()
-  href: api/Bodu.Financial.ExchangeRates.EcbEndpointOptions.html#Bodu_Financial_ExchangeRates_EcbEndpointOptions_Validate
-  commentId: M:Bodu.Financial.ExchangeRates.EcbEndpointOptions.Validate
-  fullName: Bodu.Financial.ExchangeRates.EcbEndpointOptions.Validate()
-  nameWithType: EcbEndpointOptions.Validate()
-- uid: Bodu.Financial.ExchangeRates.EcbEndpointOptions.Validate*
-  name: Validate
-  href: api/Bodu.Financial.ExchangeRates.EcbEndpointOptions.html#Bodu_Financial_ExchangeRates_EcbEndpointOptions_Validate_
-  commentId: Overload:Bodu.Financial.ExchangeRates.EcbEndpointOptions.Validate
-  fullName: Bodu.Financial.ExchangeRates.EcbEndpointOptions.Validate
-  nameWithType: EcbEndpointOptions.Validate
 - uid: Bodu.Financial.ExchangeRates.EcbFinancialServiceBuilderExtensions
   name: EcbFinancialServiceBuilderExtensions
   href: api/Bodu.Financial.ExchangeRates.EcbFinancialServiceBuilderExtensions.html
@@ -50456,18 +50147,6 @@ references:
   fullName.vb: Bodu.Financial.ExchangeRates.EcbRateProviderOptions.New
   nameWithType: EcbRateProviderOptions.EcbRateProviderOptions
   nameWithType.vb: EcbRateProviderOptions.New
-- uid: Bodu.Financial.ExchangeRates.EcbRateProviderOptions.AllowSynchronousNetworkAccess
-  name: AllowSynchronousNetworkAccess
-  href: api/Bodu.Financial.ExchangeRates.EcbRateProviderOptions.html#Bodu_Financial_ExchangeRates_EcbRateProviderOptions_AllowSynchronousNetworkAccess
-  commentId: P:Bodu.Financial.ExchangeRates.EcbRateProviderOptions.AllowSynchronousNetworkAccess
-  fullName: Bodu.Financial.ExchangeRates.EcbRateProviderOptions.AllowSynchronousNetworkAccess
-  nameWithType: EcbRateProviderOptions.AllowSynchronousNetworkAccess
-- uid: Bodu.Financial.ExchangeRates.EcbRateProviderOptions.AllowSynchronousNetworkAccess*
-  name: AllowSynchronousNetworkAccess
-  href: api/Bodu.Financial.ExchangeRates.EcbRateProviderOptions.html#Bodu_Financial_ExchangeRates_EcbRateProviderOptions_AllowSynchronousNetworkAccess_
-  commentId: Overload:Bodu.Financial.ExchangeRates.EcbRateProviderOptions.AllowSynchronousNetworkAccess
-  fullName: Bodu.Financial.ExchangeRates.EcbRateProviderOptions.AllowSynchronousNetworkAccess
-  nameWithType: EcbRateProviderOptions.AllowSynchronousNetworkAccess
 - uid: Bodu.Financial.ExchangeRates.EcbRateProviderOptions.CacheDirectory
   name: CacheDirectory
   href: api/Bodu.Financial.ExchangeRates.EcbRateProviderOptions.html#Bodu_Financial_ExchangeRates_EcbRateProviderOptions_CacheDirectory
@@ -50480,54 +50159,6 @@ references:
   commentId: Overload:Bodu.Financial.ExchangeRates.EcbRateProviderOptions.CacheDirectory
   fullName: Bodu.Financial.ExchangeRates.EcbRateProviderOptions.CacheDirectory
   nameWithType: EcbRateProviderOptions.CacheDirectory
-- uid: Bodu.Financial.ExchangeRates.EcbRateProviderOptions.CurrencyAliases
-  name: CurrencyAliases
-  href: api/Bodu.Financial.ExchangeRates.EcbRateProviderOptions.html#Bodu_Financial_ExchangeRates_EcbRateProviderOptions_CurrencyAliases
-  commentId: P:Bodu.Financial.ExchangeRates.EcbRateProviderOptions.CurrencyAliases
-  fullName: Bodu.Financial.ExchangeRates.EcbRateProviderOptions.CurrencyAliases
-  nameWithType: EcbRateProviderOptions.CurrencyAliases
-- uid: Bodu.Financial.ExchangeRates.EcbRateProviderOptions.CurrencyAliases*
-  name: CurrencyAliases
-  href: api/Bodu.Financial.ExchangeRates.EcbRateProviderOptions.html#Bodu_Financial_ExchangeRates_EcbRateProviderOptions_CurrencyAliases_
-  commentId: Overload:Bodu.Financial.ExchangeRates.EcbRateProviderOptions.CurrencyAliases
-  fullName: Bodu.Financial.ExchangeRates.EcbRateProviderOptions.CurrencyAliases
-  nameWithType: EcbRateProviderOptions.CurrencyAliases
-- uid: Bodu.Financial.ExchangeRates.EcbRateProviderOptions.DownloadCompletedLogLevel
-  name: DownloadCompletedLogLevel
-  href: api/Bodu.Financial.ExchangeRates.EcbRateProviderOptions.html#Bodu_Financial_ExchangeRates_EcbRateProviderOptions_DownloadCompletedLogLevel
-  commentId: P:Bodu.Financial.ExchangeRates.EcbRateProviderOptions.DownloadCompletedLogLevel
-  fullName: Bodu.Financial.ExchangeRates.EcbRateProviderOptions.DownloadCompletedLogLevel
-  nameWithType: EcbRateProviderOptions.DownloadCompletedLogLevel
-- uid: Bodu.Financial.ExchangeRates.EcbRateProviderOptions.DownloadCompletedLogLevel*
-  name: DownloadCompletedLogLevel
-  href: api/Bodu.Financial.ExchangeRates.EcbRateProviderOptions.html#Bodu_Financial_ExchangeRates_EcbRateProviderOptions_DownloadCompletedLogLevel_
-  commentId: Overload:Bodu.Financial.ExchangeRates.EcbRateProviderOptions.DownloadCompletedLogLevel
-  fullName: Bodu.Financial.ExchangeRates.EcbRateProviderOptions.DownloadCompletedLogLevel
-  nameWithType: EcbRateProviderOptions.DownloadCompletedLogLevel
-- uid: Bodu.Financial.ExchangeRates.EcbRateProviderOptions.DownloadFailedLogLevel
-  name: DownloadFailedLogLevel
-  href: api/Bodu.Financial.ExchangeRates.EcbRateProviderOptions.html#Bodu_Financial_ExchangeRates_EcbRateProviderOptions_DownloadFailedLogLevel
-  commentId: P:Bodu.Financial.ExchangeRates.EcbRateProviderOptions.DownloadFailedLogLevel
-  fullName: Bodu.Financial.ExchangeRates.EcbRateProviderOptions.DownloadFailedLogLevel
-  nameWithType: EcbRateProviderOptions.DownloadFailedLogLevel
-- uid: Bodu.Financial.ExchangeRates.EcbRateProviderOptions.DownloadFailedLogLevel*
-  name: DownloadFailedLogLevel
-  href: api/Bodu.Financial.ExchangeRates.EcbRateProviderOptions.html#Bodu_Financial_ExchangeRates_EcbRateProviderOptions_DownloadFailedLogLevel_
-  commentId: Overload:Bodu.Financial.ExchangeRates.EcbRateProviderOptions.DownloadFailedLogLevel
-  fullName: Bodu.Financial.ExchangeRates.EcbRateProviderOptions.DownloadFailedLogLevel
-  nameWithType: EcbRateProviderOptions.DownloadFailedLogLevel
-- uid: Bodu.Financial.ExchangeRates.EcbRateProviderOptions.DownloadStartingLogLevel
-  name: DownloadStartingLogLevel
-  href: api/Bodu.Financial.ExchangeRates.EcbRateProviderOptions.html#Bodu_Financial_ExchangeRates_EcbRateProviderOptions_DownloadStartingLogLevel
-  commentId: P:Bodu.Financial.ExchangeRates.EcbRateProviderOptions.DownloadStartingLogLevel
-  fullName: Bodu.Financial.ExchangeRates.EcbRateProviderOptions.DownloadStartingLogLevel
-  nameWithType: EcbRateProviderOptions.DownloadStartingLogLevel
-- uid: Bodu.Financial.ExchangeRates.EcbRateProviderOptions.DownloadStartingLogLevel*
-  name: DownloadStartingLogLevel
-  href: api/Bodu.Financial.ExchangeRates.EcbRateProviderOptions.html#Bodu_Financial_ExchangeRates_EcbRateProviderOptions_DownloadStartingLogLevel_
-  commentId: Overload:Bodu.Financial.ExchangeRates.EcbRateProviderOptions.DownloadStartingLogLevel
-  fullName: Bodu.Financial.ExchangeRates.EcbRateProviderOptions.DownloadStartingLogLevel
-  nameWithType: EcbRateProviderOptions.DownloadStartingLogLevel
 - uid: Bodu.Financial.ExchangeRates.EcbRateProviderOptions.EnableDiskCache
   name: EnableDiskCache
   href: api/Bodu.Financial.ExchangeRates.EcbRateProviderOptions.html#Bodu_Financial_ExchangeRates_EcbRateProviderOptions_EnableDiskCache
@@ -50540,18 +50171,6 @@ references:
   commentId: Overload:Bodu.Financial.ExchangeRates.EcbRateProviderOptions.EnableDiskCache
   fullName: Bodu.Financial.ExchangeRates.EcbRateProviderOptions.EnableDiskCache
   nameWithType: EcbRateProviderOptions.EnableDiskCache
-- uid: Bodu.Financial.ExchangeRates.EcbRateProviderOptions.Endpoint
-  name: Endpoint
-  href: api/Bodu.Financial.ExchangeRates.EcbRateProviderOptions.html#Bodu_Financial_ExchangeRates_EcbRateProviderOptions_Endpoint
-  commentId: P:Bodu.Financial.ExchangeRates.EcbRateProviderOptions.Endpoint
-  fullName: Bodu.Financial.ExchangeRates.EcbRateProviderOptions.Endpoint
-  nameWithType: EcbRateProviderOptions.Endpoint
-- uid: Bodu.Financial.ExchangeRates.EcbRateProviderOptions.Endpoint*
-  name: Endpoint
-  href: api/Bodu.Financial.ExchangeRates.EcbRateProviderOptions.html#Bodu_Financial_ExchangeRates_EcbRateProviderOptions_Endpoint_
-  commentId: Overload:Bodu.Financial.ExchangeRates.EcbRateProviderOptions.Endpoint
-  fullName: Bodu.Financial.ExchangeRates.EcbRateProviderOptions.Endpoint
-  nameWithType: EcbRateProviderOptions.Endpoint
 - uid: Bodu.Financial.ExchangeRates.EcbRateProviderOptions.Feeds
   name: Feeds
   href: api/Bodu.Financial.ExchangeRates.EcbRateProviderOptions.html#Bodu_Financial_ExchangeRates_EcbRateProviderOptions_Feeds
@@ -50564,69 +50183,21 @@ references:
   commentId: Overload:Bodu.Financial.ExchangeRates.EcbRateProviderOptions.Feeds
   fullName: Bodu.Financial.ExchangeRates.EcbRateProviderOptions.Feeds
   nameWithType: EcbRateProviderOptions.Feeds
-- uid: Bodu.Financial.ExchangeRates.EcbRateProviderOptions.ObservationIngestedLogLevel
-  name: ObservationIngestedLogLevel
-  href: api/Bodu.Financial.ExchangeRates.EcbRateProviderOptions.html#Bodu_Financial_ExchangeRates_EcbRateProviderOptions_ObservationIngestedLogLevel
-  commentId: P:Bodu.Financial.ExchangeRates.EcbRateProviderOptions.ObservationIngestedLogLevel
-  fullName: Bodu.Financial.ExchangeRates.EcbRateProviderOptions.ObservationIngestedLogLevel
-  nameWithType: EcbRateProviderOptions.ObservationIngestedLogLevel
-- uid: Bodu.Financial.ExchangeRates.EcbRateProviderOptions.ObservationIngestedLogLevel*
-  name: ObservationIngestedLogLevel
-  href: api/Bodu.Financial.ExchangeRates.EcbRateProviderOptions.html#Bodu_Financial_ExchangeRates_EcbRateProviderOptions_ObservationIngestedLogLevel_
-  commentId: Overload:Bodu.Financial.ExchangeRates.EcbRateProviderOptions.ObservationIngestedLogLevel
-  fullName: Bodu.Financial.ExchangeRates.EcbRateProviderOptions.ObservationIngestedLogLevel
-  nameWithType: EcbRateProviderOptions.ObservationIngestedLogLevel
-- uid: Bodu.Financial.ExchangeRates.EcbRateProviderOptions.RefreshInterval
-  name: RefreshInterval
-  href: api/Bodu.Financial.ExchangeRates.EcbRateProviderOptions.html#Bodu_Financial_ExchangeRates_EcbRateProviderOptions_RefreshInterval
-  commentId: P:Bodu.Financial.ExchangeRates.EcbRateProviderOptions.RefreshInterval
-  fullName: Bodu.Financial.ExchangeRates.EcbRateProviderOptions.RefreshInterval
-  nameWithType: EcbRateProviderOptions.RefreshInterval
-- uid: Bodu.Financial.ExchangeRates.EcbRateProviderOptions.RefreshInterval*
-  name: RefreshInterval
-  href: api/Bodu.Financial.ExchangeRates.EcbRateProviderOptions.html#Bodu_Financial_ExchangeRates_EcbRateProviderOptions_RefreshInterval_
-  commentId: Overload:Bodu.Financial.ExchangeRates.EcbRateProviderOptions.RefreshInterval
-  fullName: Bodu.Financial.ExchangeRates.EcbRateProviderOptions.RefreshInterval
-  nameWithType: EcbRateProviderOptions.RefreshInterval
-- uid: Bodu.Financial.ExchangeRates.EcbRateProviderOptions.SynchronousNetworkFetchLogLevel
-  name: SynchronousNetworkFetchLogLevel
-  href: api/Bodu.Financial.ExchangeRates.EcbRateProviderOptions.html#Bodu_Financial_ExchangeRates_EcbRateProviderOptions_SynchronousNetworkFetchLogLevel
-  commentId: P:Bodu.Financial.ExchangeRates.EcbRateProviderOptions.SynchronousNetworkFetchLogLevel
-  fullName: Bodu.Financial.ExchangeRates.EcbRateProviderOptions.SynchronousNetworkFetchLogLevel
-  nameWithType: EcbRateProviderOptions.SynchronousNetworkFetchLogLevel
-- uid: Bodu.Financial.ExchangeRates.EcbRateProviderOptions.SynchronousNetworkFetchLogLevel*
-  name: SynchronousNetworkFetchLogLevel
-  href: api/Bodu.Financial.ExchangeRates.EcbRateProviderOptions.html#Bodu_Financial_ExchangeRates_EcbRateProviderOptions_SynchronousNetworkFetchLogLevel_
-  commentId: Overload:Bodu.Financial.ExchangeRates.EcbRateProviderOptions.SynchronousNetworkFetchLogLevel
-  fullName: Bodu.Financial.ExchangeRates.EcbRateProviderOptions.SynchronousNetworkFetchLogLevel
-  nameWithType: EcbRateProviderOptions.SynchronousNetworkFetchLogLevel
-- uid: Bodu.Financial.ExchangeRates.EcbRateProviderOptions.TryValidate(System.String@)
-  name: TryValidate(out string?)
-  href: api/Bodu.Financial.ExchangeRates.EcbRateProviderOptions.html#Bodu_Financial_ExchangeRates_EcbRateProviderOptions_TryValidate_System_String__
-  commentId: M:Bodu.Financial.ExchangeRates.EcbRateProviderOptions.TryValidate(System.String@)
-  name.vb: TryValidate(String)
-  fullName: Bodu.Financial.ExchangeRates.EcbRateProviderOptions.TryValidate(out string?)
-  fullName.vb: Bodu.Financial.ExchangeRates.EcbRateProviderOptions.TryValidate(String)
-  nameWithType: EcbRateProviderOptions.TryValidate(out string?)
-  nameWithType.vb: EcbRateProviderOptions.TryValidate(String)
-- uid: Bodu.Financial.ExchangeRates.EcbRateProviderOptions.TryValidate*
-  name: TryValidate
-  href: api/Bodu.Financial.ExchangeRates.EcbRateProviderOptions.html#Bodu_Financial_ExchangeRates_EcbRateProviderOptions_TryValidate_
-  commentId: Overload:Bodu.Financial.ExchangeRates.EcbRateProviderOptions.TryValidate
-  fullName: Bodu.Financial.ExchangeRates.EcbRateProviderOptions.TryValidate
-  nameWithType: EcbRateProviderOptions.TryValidate
-- uid: Bodu.Financial.ExchangeRates.EcbRateProviderOptions.Validate
-  name: Validate()
-  href: api/Bodu.Financial.ExchangeRates.EcbRateProviderOptions.html#Bodu_Financial_ExchangeRates_EcbRateProviderOptions_Validate
-  commentId: M:Bodu.Financial.ExchangeRates.EcbRateProviderOptions.Validate
-  fullName: Bodu.Financial.ExchangeRates.EcbRateProviderOptions.Validate()
-  nameWithType: EcbRateProviderOptions.Validate()
-- uid: Bodu.Financial.ExchangeRates.EcbRateProviderOptions.Validate*
-  name: Validate
-  href: api/Bodu.Financial.ExchangeRates.EcbRateProviderOptions.html#Bodu_Financial_ExchangeRates_EcbRateProviderOptions_Validate_
-  commentId: Overload:Bodu.Financial.ExchangeRates.EcbRateProviderOptions.Validate
-  fullName: Bodu.Financial.ExchangeRates.EcbRateProviderOptions.Validate
-  nameWithType: EcbRateProviderOptions.Validate
+- uid: Bodu.Financial.ExchangeRates.EcbRateProviderOptions.TryValidateCore(System.String@)
+  name: TryValidateCore(out string?)
+  href: api/Bodu.Financial.ExchangeRates.EcbRateProviderOptions.html#Bodu_Financial_ExchangeRates_EcbRateProviderOptions_TryValidateCore_System_String__
+  commentId: M:Bodu.Financial.ExchangeRates.EcbRateProviderOptions.TryValidateCore(System.String@)
+  name.vb: TryValidateCore(String)
+  fullName: Bodu.Financial.ExchangeRates.EcbRateProviderOptions.TryValidateCore(out string?)
+  fullName.vb: Bodu.Financial.ExchangeRates.EcbRateProviderOptions.TryValidateCore(String)
+  nameWithType: EcbRateProviderOptions.TryValidateCore(out string?)
+  nameWithType.vb: EcbRateProviderOptions.TryValidateCore(String)
+- uid: Bodu.Financial.ExchangeRates.EcbRateProviderOptions.TryValidateCore*
+  name: TryValidateCore
+  href: api/Bodu.Financial.ExchangeRates.EcbRateProviderOptions.html#Bodu_Financial_ExchangeRates_EcbRateProviderOptions_TryValidateCore_
+  commentId: Overload:Bodu.Financial.ExchangeRates.EcbRateProviderOptions.TryValidateCore
+  fullName: Bodu.Financial.ExchangeRates.EcbRateProviderOptions.TryValidateCore
+  nameWithType: EcbRateProviderOptions.TryValidateCore
 - uid: Bodu.Financial.ExchangeRates.EcbSeriesInfo
   name: EcbSeriesInfo
   href: api/Bodu.Financial.ExchangeRates.EcbSeriesInfo.html
@@ -51478,60 +51049,6 @@ references:
   fullName.vb: Bodu.Financial.ExchangeRates.ExchangeRate(Of TBase, TQuote).<>
   nameWithType: ExchangeRate<TBase, TQuote>.operator !=
   nameWithType.vb: ExchangeRate(Of TBase, TQuote).<>
-- uid: Bodu.Financial.ExchangeRates.FileSystemBoeResponseCache
-  name: FileSystemBoeResponseCache
-  href: api/Bodu.Financial.ExchangeRates.FileSystemBoeResponseCache.html
-  commentId: T:Bodu.Financial.ExchangeRates.FileSystemBoeResponseCache
-  fullName: Bodu.Financial.ExchangeRates.FileSystemBoeResponseCache
-  nameWithType: FileSystemBoeResponseCache
-- uid: Bodu.Financial.ExchangeRates.FileSystemBoeResponseCache.#ctor(System.String,Microsoft.Extensions.Logging.ILogger)
-  name: FileSystemBoeResponseCache(string?, ILogger?)
-  href: api/Bodu.Financial.ExchangeRates.FileSystemBoeResponseCache.html#Bodu_Financial_ExchangeRates_FileSystemBoeResponseCache__ctor_System_String_Microsoft_Extensions_Logging_ILogger_
-  commentId: M:Bodu.Financial.ExchangeRates.FileSystemBoeResponseCache.#ctor(System.String,Microsoft.Extensions.Logging.ILogger)
-  name.vb: New(String, ILogger)
-  fullName: Bodu.Financial.ExchangeRates.FileSystemBoeResponseCache.FileSystemBoeResponseCache(string?, Microsoft.Extensions.Logging.ILogger?)
-  fullName.vb: Bodu.Financial.ExchangeRates.FileSystemBoeResponseCache.New(String, Microsoft.Extensions.Logging.ILogger)
-  nameWithType: FileSystemBoeResponseCache.FileSystemBoeResponseCache(string?, ILogger?)
-  nameWithType.vb: FileSystemBoeResponseCache.New(String, ILogger)
-- uid: Bodu.Financial.ExchangeRates.FileSystemBoeResponseCache.#ctor*
-  name: FileSystemBoeResponseCache
-  href: api/Bodu.Financial.ExchangeRates.FileSystemBoeResponseCache.html#Bodu_Financial_ExchangeRates_FileSystemBoeResponseCache__ctor_
-  commentId: Overload:Bodu.Financial.ExchangeRates.FileSystemBoeResponseCache.#ctor
-  name.vb: New
-  fullName: Bodu.Financial.ExchangeRates.FileSystemBoeResponseCache.FileSystemBoeResponseCache
-  fullName.vb: Bodu.Financial.ExchangeRates.FileSystemBoeResponseCache.New
-  nameWithType: FileSystemBoeResponseCache.FileSystemBoeResponseCache
-  nameWithType.vb: FileSystemBoeResponseCache.New
-- uid: Bodu.Financial.ExchangeRates.FileSystemBoeResponseCache.GetFileName(System.ValueTuple{System.DateOnly,System.DateOnly})
-  name: GetFileName((DateOnly StartDate, DateOnly EndDate))
-  href: api/Bodu.Financial.ExchangeRates.FileSystemBoeResponseCache.html#Bodu_Financial_ExchangeRates_FileSystemBoeResponseCache_GetFileName_System_ValueTuple_System_DateOnly_System_DateOnly__
-  commentId: M:Bodu.Financial.ExchangeRates.FileSystemBoeResponseCache.GetFileName(System.ValueTuple{System.DateOnly,System.DateOnly})
-  name.vb: GetFileName((StartDate As DateOnly, EndDate As DateOnly))
-  fullName: Bodu.Financial.ExchangeRates.FileSystemBoeResponseCache.GetFileName((System.DateOnly StartDate, System.DateOnly EndDate))
-  fullName.vb: Bodu.Financial.ExchangeRates.FileSystemBoeResponseCache.GetFileName((StartDate As System.DateOnly, EndDate As System.DateOnly))
-  nameWithType: FileSystemBoeResponseCache.GetFileName((DateOnly StartDate, DateOnly EndDate))
-  nameWithType.vb: FileSystemBoeResponseCache.GetFileName((StartDate As DateOnly, EndDate As DateOnly))
-- uid: Bodu.Financial.ExchangeRates.FileSystemBoeResponseCache.GetFileName*
-  name: GetFileName
-  href: api/Bodu.Financial.ExchangeRates.FileSystemBoeResponseCache.html#Bodu_Financial_ExchangeRates_FileSystemBoeResponseCache_GetFileName_
-  commentId: Overload:Bodu.Financial.ExchangeRates.FileSystemBoeResponseCache.GetFileName
-  fullName: Bodu.Financial.ExchangeRates.FileSystemBoeResponseCache.GetFileName
-  nameWithType: FileSystemBoeResponseCache.GetFileName
-- uid: Bodu.Financial.ExchangeRates.FileSystemBoeResponseCache.IsFresh(System.ValueTuple{System.DateOnly,System.DateOnly},System.TimeSpan,System.TimeSpan)
-  name: IsFresh((DateOnly StartDate, DateOnly EndDate), TimeSpan, TimeSpan)
-  href: api/Bodu.Financial.ExchangeRates.FileSystemBoeResponseCache.html#Bodu_Financial_ExchangeRates_FileSystemBoeResponseCache_IsFresh_System_ValueTuple_System_DateOnly_System_DateOnly__System_TimeSpan_System_TimeSpan_
-  commentId: M:Bodu.Financial.ExchangeRates.FileSystemBoeResponseCache.IsFresh(System.ValueTuple{System.DateOnly,System.DateOnly},System.TimeSpan,System.TimeSpan)
-  name.vb: IsFresh((StartDate As DateOnly, EndDate As DateOnly), TimeSpan, TimeSpan)
-  fullName: Bodu.Financial.ExchangeRates.FileSystemBoeResponseCache.IsFresh((System.DateOnly StartDate, System.DateOnly EndDate), System.TimeSpan, System.TimeSpan)
-  fullName.vb: Bodu.Financial.ExchangeRates.FileSystemBoeResponseCache.IsFresh((StartDate As System.DateOnly, EndDate As System.DateOnly), System.TimeSpan, System.TimeSpan)
-  nameWithType: FileSystemBoeResponseCache.IsFresh((DateOnly StartDate, DateOnly EndDate), TimeSpan, TimeSpan)
-  nameWithType.vb: FileSystemBoeResponseCache.IsFresh((StartDate As DateOnly, EndDate As DateOnly), TimeSpan, TimeSpan)
-- uid: Bodu.Financial.ExchangeRates.FileSystemBoeResponseCache.IsFresh*
-  name: IsFresh
-  href: api/Bodu.Financial.ExchangeRates.FileSystemBoeResponseCache.html#Bodu_Financial_ExchangeRates_FileSystemBoeResponseCache_IsFresh_
-  commentId: Overload:Bodu.Financial.ExchangeRates.FileSystemBoeResponseCache.IsFresh
-  fullName: Bodu.Financial.ExchangeRates.FileSystemBoeResponseCache.IsFresh
-  nameWithType: FileSystemBoeResponseCache.IsFresh
 - uid: Bodu.Financial.ExchangeRates.FileSystemByteCache`1
   name: FileSystemByteCache<TKey>
   href: api/Bodu.Financial.ExchangeRates.FileSystemByteCache-1.html
@@ -51693,42 +51210,6 @@ references:
   fullName.vb: Bodu.Financial.ExchangeRates.FileSystemByteCache(Of TKey).TryGetCore
   nameWithType: FileSystemByteCache<TKey>.TryGetCore
   nameWithType.vb: FileSystemByteCache(Of TKey).TryGetCore
-- uid: Bodu.Financial.ExchangeRates.FileSystemEcbFeedCache
-  name: FileSystemEcbFeedCache
-  href: api/Bodu.Financial.ExchangeRates.FileSystemEcbFeedCache.html
-  commentId: T:Bodu.Financial.ExchangeRates.FileSystemEcbFeedCache
-  fullName: Bodu.Financial.ExchangeRates.FileSystemEcbFeedCache
-  nameWithType: FileSystemEcbFeedCache
-- uid: Bodu.Financial.ExchangeRates.FileSystemEcbFeedCache.#ctor(System.String,Microsoft.Extensions.Logging.ILogger)
-  name: FileSystemEcbFeedCache(string?, ILogger?)
-  href: api/Bodu.Financial.ExchangeRates.FileSystemEcbFeedCache.html#Bodu_Financial_ExchangeRates_FileSystemEcbFeedCache__ctor_System_String_Microsoft_Extensions_Logging_ILogger_
-  commentId: M:Bodu.Financial.ExchangeRates.FileSystemEcbFeedCache.#ctor(System.String,Microsoft.Extensions.Logging.ILogger)
-  name.vb: New(String, ILogger)
-  fullName: Bodu.Financial.ExchangeRates.FileSystemEcbFeedCache.FileSystemEcbFeedCache(string?, Microsoft.Extensions.Logging.ILogger?)
-  fullName.vb: Bodu.Financial.ExchangeRates.FileSystemEcbFeedCache.New(String, Microsoft.Extensions.Logging.ILogger)
-  nameWithType: FileSystemEcbFeedCache.FileSystemEcbFeedCache(string?, ILogger?)
-  nameWithType.vb: FileSystemEcbFeedCache.New(String, ILogger)
-- uid: Bodu.Financial.ExchangeRates.FileSystemEcbFeedCache.#ctor*
-  name: FileSystemEcbFeedCache
-  href: api/Bodu.Financial.ExchangeRates.FileSystemEcbFeedCache.html#Bodu_Financial_ExchangeRates_FileSystemEcbFeedCache__ctor_
-  commentId: Overload:Bodu.Financial.ExchangeRates.FileSystemEcbFeedCache.#ctor
-  name.vb: New
-  fullName: Bodu.Financial.ExchangeRates.FileSystemEcbFeedCache.FileSystemEcbFeedCache
-  fullName.vb: Bodu.Financial.ExchangeRates.FileSystemEcbFeedCache.New
-  nameWithType: FileSystemEcbFeedCache.FileSystemEcbFeedCache
-  nameWithType.vb: FileSystemEcbFeedCache.New
-- uid: Bodu.Financial.ExchangeRates.FileSystemEcbFeedCache.GetFileName(Bodu.Financial.ExchangeRates.EcbRateFeed)
-  name: GetFileName(EcbRateFeed)
-  href: api/Bodu.Financial.ExchangeRates.FileSystemEcbFeedCache.html#Bodu_Financial_ExchangeRates_FileSystemEcbFeedCache_GetFileName_Bodu_Financial_ExchangeRates_EcbRateFeed_
-  commentId: M:Bodu.Financial.ExchangeRates.FileSystemEcbFeedCache.GetFileName(Bodu.Financial.ExchangeRates.EcbRateFeed)
-  fullName: Bodu.Financial.ExchangeRates.FileSystemEcbFeedCache.GetFileName(Bodu.Financial.ExchangeRates.EcbRateFeed)
-  nameWithType: FileSystemEcbFeedCache.GetFileName(EcbRateFeed)
-- uid: Bodu.Financial.ExchangeRates.FileSystemEcbFeedCache.GetFileName*
-  name: GetFileName
-  href: api/Bodu.Financial.ExchangeRates.FileSystemEcbFeedCache.html#Bodu_Financial_ExchangeRates_FileSystemEcbFeedCache_GetFileName_
-  commentId: Overload:Bodu.Financial.ExchangeRates.FileSystemEcbFeedCache.GetFileName
-  fullName: Bodu.Financial.ExchangeRates.FileSystemEcbFeedCache.GetFileName
-  nameWithType: FileSystemEcbFeedCache.GetFileName
 - uid: Bodu.Financial.ExchangeRates.FileSystemImfReportCache
   name: FileSystemImfReportCache
   href: api/Bodu.Financial.ExchangeRates.FileSystemImfReportCache.html
@@ -51816,54 +51297,6 @@ references:
   commentId: Overload:Bodu.Financial.ExchangeRates.FileSystemImfReportCache.TryGet
   fullName: Bodu.Financial.ExchangeRates.FileSystemImfReportCache.TryGet
   nameWithType: FileSystemImfReportCache.TryGet
-- uid: Bodu.Financial.ExchangeRates.FileSystemRbaWorkbookCache
-  name: FileSystemRbaWorkbookCache
-  href: api/Bodu.Financial.ExchangeRates.FileSystemRbaWorkbookCache.html
-  commentId: T:Bodu.Financial.ExchangeRates.FileSystemRbaWorkbookCache
-  fullName: Bodu.Financial.ExchangeRates.FileSystemRbaWorkbookCache
-  nameWithType: FileSystemRbaWorkbookCache
-- uid: Bodu.Financial.ExchangeRates.FileSystemRbaWorkbookCache.#ctor(System.String,Microsoft.Extensions.Logging.ILogger)
-  name: FileSystemRbaWorkbookCache(string?, ILogger?)
-  href: api/Bodu.Financial.ExchangeRates.FileSystemRbaWorkbookCache.html#Bodu_Financial_ExchangeRates_FileSystemRbaWorkbookCache__ctor_System_String_Microsoft_Extensions_Logging_ILogger_
-  commentId: M:Bodu.Financial.ExchangeRates.FileSystemRbaWorkbookCache.#ctor(System.String,Microsoft.Extensions.Logging.ILogger)
-  name.vb: New(String, ILogger)
-  fullName: Bodu.Financial.ExchangeRates.FileSystemRbaWorkbookCache.FileSystemRbaWorkbookCache(string?, Microsoft.Extensions.Logging.ILogger?)
-  fullName.vb: Bodu.Financial.ExchangeRates.FileSystemRbaWorkbookCache.New(String, Microsoft.Extensions.Logging.ILogger)
-  nameWithType: FileSystemRbaWorkbookCache.FileSystemRbaWorkbookCache(string?, ILogger?)
-  nameWithType.vb: FileSystemRbaWorkbookCache.New(String, ILogger)
-- uid: Bodu.Financial.ExchangeRates.FileSystemRbaWorkbookCache.#ctor*
-  name: FileSystemRbaWorkbookCache
-  href: api/Bodu.Financial.ExchangeRates.FileSystemRbaWorkbookCache.html#Bodu_Financial_ExchangeRates_FileSystemRbaWorkbookCache__ctor_
-  commentId: Overload:Bodu.Financial.ExchangeRates.FileSystemRbaWorkbookCache.#ctor
-  name.vb: New
-  fullName: Bodu.Financial.ExchangeRates.FileSystemRbaWorkbookCache.FileSystemRbaWorkbookCache
-  fullName.vb: Bodu.Financial.ExchangeRates.FileSystemRbaWorkbookCache.New
-  nameWithType: FileSystemRbaWorkbookCache.FileSystemRbaWorkbookCache
-  nameWithType.vb: FileSystemRbaWorkbookCache.New
-- uid: Bodu.Financial.ExchangeRates.FileSystemRbaWorkbookCache.GetFileName(Bodu.Financial.ExchangeRates.RbaEraWorkbook)
-  name: GetFileName(RbaEraWorkbook)
-  href: api/Bodu.Financial.ExchangeRates.FileSystemRbaWorkbookCache.html#Bodu_Financial_ExchangeRates_FileSystemRbaWorkbookCache_GetFileName_Bodu_Financial_ExchangeRates_RbaEraWorkbook_
-  commentId: M:Bodu.Financial.ExchangeRates.FileSystemRbaWorkbookCache.GetFileName(Bodu.Financial.ExchangeRates.RbaEraWorkbook)
-  fullName: Bodu.Financial.ExchangeRates.FileSystemRbaWorkbookCache.GetFileName(Bodu.Financial.ExchangeRates.RbaEraWorkbook)
-  nameWithType: FileSystemRbaWorkbookCache.GetFileName(RbaEraWorkbook)
-- uid: Bodu.Financial.ExchangeRates.FileSystemRbaWorkbookCache.GetFileName*
-  name: GetFileName
-  href: api/Bodu.Financial.ExchangeRates.FileSystemRbaWorkbookCache.html#Bodu_Financial_ExchangeRates_FileSystemRbaWorkbookCache_GetFileName_
-  commentId: Overload:Bodu.Financial.ExchangeRates.FileSystemRbaWorkbookCache.GetFileName
-  fullName: Bodu.Financial.ExchangeRates.FileSystemRbaWorkbookCache.GetFileName
-  nameWithType: FileSystemRbaWorkbookCache.GetFileName
-- uid: Bodu.Financial.ExchangeRates.FileSystemRbaWorkbookCache.IsFresh(Bodu.Financial.ExchangeRates.RbaEraWorkbook,System.TimeSpan,System.TimeSpan)
-  name: IsFresh(RbaEraWorkbook, TimeSpan, TimeSpan)
-  href: api/Bodu.Financial.ExchangeRates.FileSystemRbaWorkbookCache.html#Bodu_Financial_ExchangeRates_FileSystemRbaWorkbookCache_IsFresh_Bodu_Financial_ExchangeRates_RbaEraWorkbook_System_TimeSpan_System_TimeSpan_
-  commentId: M:Bodu.Financial.ExchangeRates.FileSystemRbaWorkbookCache.IsFresh(Bodu.Financial.ExchangeRates.RbaEraWorkbook,System.TimeSpan,System.TimeSpan)
-  fullName: Bodu.Financial.ExchangeRates.FileSystemRbaWorkbookCache.IsFresh(Bodu.Financial.ExchangeRates.RbaEraWorkbook, System.TimeSpan, System.TimeSpan)
-  nameWithType: FileSystemRbaWorkbookCache.IsFresh(RbaEraWorkbook, TimeSpan, TimeSpan)
-- uid: Bodu.Financial.ExchangeRates.FileSystemRbaWorkbookCache.IsFresh*
-  name: IsFresh
-  href: api/Bodu.Financial.ExchangeRates.FileSystemRbaWorkbookCache.html#Bodu_Financial_ExchangeRates_FileSystemRbaWorkbookCache_IsFresh_
-  commentId: Overload:Bodu.Financial.ExchangeRates.FileSystemRbaWorkbookCache.IsFresh
-  fullName: Bodu.Financial.ExchangeRates.FileSystemRbaWorkbookCache.IsFresh
-  nameWithType: FileSystemRbaWorkbookCache.IsFresh
 - uid: Bodu.Financial.ExchangeRates.FixedDatedRateProvider
   name: FixedDatedRateProvider
   href: api/Bodu.Financial.ExchangeRates.FixedDatedRateProvider.html
@@ -56674,6 +56107,18 @@ references:
   commentId: Overload:Bodu.Financial.ExchangeRates.RbaRateProvider.OnObservationIngested
   fullName: Bodu.Financial.ExchangeRates.RbaRateProvider.OnObservationIngested
   nameWithType: RbaRateProvider.OnObservationIngested
+- uid: Bodu.Financial.ExchangeRates.RbaRateProvider.OnSynchronousNetworkFetch(System.DateOnly)
+  name: OnSynchronousNetworkFetch(DateOnly)
+  href: api/Bodu.Financial.ExchangeRates.RbaRateProvider.html#Bodu_Financial_ExchangeRates_RbaRateProvider_OnSynchronousNetworkFetch_System_DateOnly_
+  commentId: M:Bodu.Financial.ExchangeRates.RbaRateProvider.OnSynchronousNetworkFetch(System.DateOnly)
+  fullName: Bodu.Financial.ExchangeRates.RbaRateProvider.OnSynchronousNetworkFetch(System.DateOnly)
+  nameWithType: RbaRateProvider.OnSynchronousNetworkFetch(DateOnly)
+- uid: Bodu.Financial.ExchangeRates.RbaRateProvider.OnSynchronousNetworkFetch*
+  name: OnSynchronousNetworkFetch
+  href: api/Bodu.Financial.ExchangeRates.RbaRateProvider.html#Bodu_Financial_ExchangeRates_RbaRateProvider_OnSynchronousNetworkFetch_
+  commentId: Overload:Bodu.Financial.ExchangeRates.RbaRateProvider.OnSynchronousNetworkFetch
+  fullName: Bodu.Financial.ExchangeRates.RbaRateProvider.OnSynchronousNetworkFetch
+  nameWithType: RbaRateProvider.OnSynchronousNetworkFetch
 - uid: Bodu.Financial.ExchangeRates.RbaRateProvider.PreloadAsync(System.Threading.CancellationToken)
   name: PreloadAsync(CancellationToken)
   href: api/Bodu.Financial.ExchangeRates.RbaRateProvider.html#Bodu_Financial_ExchangeRates_RbaRateProvider_PreloadAsync_System_Threading_CancellationToken_
@@ -56743,30 +56188,6 @@ references:
   fullName.vb: Bodu.Financial.ExchangeRates.RbaRateProviderOptions.New
   nameWithType: RbaRateProviderOptions.RbaRateProviderOptions
   nameWithType.vb: RbaRateProviderOptions.New
-- uid: Bodu.Financial.ExchangeRates.RbaRateProviderOptions.AllowSynchronousNetworkAccess
-  name: AllowSynchronousNetworkAccess
-  href: api/Bodu.Financial.ExchangeRates.RbaRateProviderOptions.html#Bodu_Financial_ExchangeRates_RbaRateProviderOptions_AllowSynchronousNetworkAccess
-  commentId: P:Bodu.Financial.ExchangeRates.RbaRateProviderOptions.AllowSynchronousNetworkAccess
-  fullName: Bodu.Financial.ExchangeRates.RbaRateProviderOptions.AllowSynchronousNetworkAccess
-  nameWithType: RbaRateProviderOptions.AllowSynchronousNetworkAccess
-- uid: Bodu.Financial.ExchangeRates.RbaRateProviderOptions.AllowSynchronousNetworkAccess*
-  name: AllowSynchronousNetworkAccess
-  href: api/Bodu.Financial.ExchangeRates.RbaRateProviderOptions.html#Bodu_Financial_ExchangeRates_RbaRateProviderOptions_AllowSynchronousNetworkAccess_
-  commentId: Overload:Bodu.Financial.ExchangeRates.RbaRateProviderOptions.AllowSynchronousNetworkAccess
-  fullName: Bodu.Financial.ExchangeRates.RbaRateProviderOptions.AllowSynchronousNetworkAccess
-  nameWithType: RbaRateProviderOptions.AllowSynchronousNetworkAccess
-- uid: Bodu.Financial.ExchangeRates.RbaRateProviderOptions.BaseUrl
-  name: BaseUrl
-  href: api/Bodu.Financial.ExchangeRates.RbaRateProviderOptions.html#Bodu_Financial_ExchangeRates_RbaRateProviderOptions_BaseUrl
-  commentId: P:Bodu.Financial.ExchangeRates.RbaRateProviderOptions.BaseUrl
-  fullName: Bodu.Financial.ExchangeRates.RbaRateProviderOptions.BaseUrl
-  nameWithType: RbaRateProviderOptions.BaseUrl
-- uid: Bodu.Financial.ExchangeRates.RbaRateProviderOptions.BaseUrl*
-  name: BaseUrl
-  href: api/Bodu.Financial.ExchangeRates.RbaRateProviderOptions.html#Bodu_Financial_ExchangeRates_RbaRateProviderOptions_BaseUrl_
-  commentId: Overload:Bodu.Financial.ExchangeRates.RbaRateProviderOptions.BaseUrl
-  fullName: Bodu.Financial.ExchangeRates.RbaRateProviderOptions.BaseUrl
-  nameWithType: RbaRateProviderOptions.BaseUrl
 - uid: Bodu.Financial.ExchangeRates.RbaRateProviderOptions.CacheDirectory
   name: CacheDirectory
   href: api/Bodu.Financial.ExchangeRates.RbaRateProviderOptions.html#Bodu_Financial_ExchangeRates_RbaRateProviderOptions_CacheDirectory
@@ -56779,66 +56200,6 @@ references:
   commentId: Overload:Bodu.Financial.ExchangeRates.RbaRateProviderOptions.CacheDirectory
   fullName: Bodu.Financial.ExchangeRates.RbaRateProviderOptions.CacheDirectory
   nameWithType: RbaRateProviderOptions.CacheDirectory
-- uid: Bodu.Financial.ExchangeRates.RbaRateProviderOptions.CurrencyAliases
-  name: CurrencyAliases
-  href: api/Bodu.Financial.ExchangeRates.RbaRateProviderOptions.html#Bodu_Financial_ExchangeRates_RbaRateProviderOptions_CurrencyAliases
-  commentId: P:Bodu.Financial.ExchangeRates.RbaRateProviderOptions.CurrencyAliases
-  fullName: Bodu.Financial.ExchangeRates.RbaRateProviderOptions.CurrencyAliases
-  nameWithType: RbaRateProviderOptions.CurrencyAliases
-- uid: Bodu.Financial.ExchangeRates.RbaRateProviderOptions.CurrencyAliases*
-  name: CurrencyAliases
-  href: api/Bodu.Financial.ExchangeRates.RbaRateProviderOptions.html#Bodu_Financial_ExchangeRates_RbaRateProviderOptions_CurrencyAliases_
-  commentId: Overload:Bodu.Financial.ExchangeRates.RbaRateProviderOptions.CurrencyAliases
-  fullName: Bodu.Financial.ExchangeRates.RbaRateProviderOptions.CurrencyAliases
-  nameWithType: RbaRateProviderOptions.CurrencyAliases
-- uid: Bodu.Financial.ExchangeRates.RbaRateProviderOptions.CurrentEraRefreshInterval
-  name: CurrentEraRefreshInterval
-  href: api/Bodu.Financial.ExchangeRates.RbaRateProviderOptions.html#Bodu_Financial_ExchangeRates_RbaRateProviderOptions_CurrentEraRefreshInterval
-  commentId: P:Bodu.Financial.ExchangeRates.RbaRateProviderOptions.CurrentEraRefreshInterval
-  fullName: Bodu.Financial.ExchangeRates.RbaRateProviderOptions.CurrentEraRefreshInterval
-  nameWithType: RbaRateProviderOptions.CurrentEraRefreshInterval
-- uid: Bodu.Financial.ExchangeRates.RbaRateProviderOptions.CurrentEraRefreshInterval*
-  name: CurrentEraRefreshInterval
-  href: api/Bodu.Financial.ExchangeRates.RbaRateProviderOptions.html#Bodu_Financial_ExchangeRates_RbaRateProviderOptions_CurrentEraRefreshInterval_
-  commentId: Overload:Bodu.Financial.ExchangeRates.RbaRateProviderOptions.CurrentEraRefreshInterval
-  fullName: Bodu.Financial.ExchangeRates.RbaRateProviderOptions.CurrentEraRefreshInterval
-  nameWithType: RbaRateProviderOptions.CurrentEraRefreshInterval
-- uid: Bodu.Financial.ExchangeRates.RbaRateProviderOptions.DownloadCompletedLogLevel
-  name: DownloadCompletedLogLevel
-  href: api/Bodu.Financial.ExchangeRates.RbaRateProviderOptions.html#Bodu_Financial_ExchangeRates_RbaRateProviderOptions_DownloadCompletedLogLevel
-  commentId: P:Bodu.Financial.ExchangeRates.RbaRateProviderOptions.DownloadCompletedLogLevel
-  fullName: Bodu.Financial.ExchangeRates.RbaRateProviderOptions.DownloadCompletedLogLevel
-  nameWithType: RbaRateProviderOptions.DownloadCompletedLogLevel
-- uid: Bodu.Financial.ExchangeRates.RbaRateProviderOptions.DownloadCompletedLogLevel*
-  name: DownloadCompletedLogLevel
-  href: api/Bodu.Financial.ExchangeRates.RbaRateProviderOptions.html#Bodu_Financial_ExchangeRates_RbaRateProviderOptions_DownloadCompletedLogLevel_
-  commentId: Overload:Bodu.Financial.ExchangeRates.RbaRateProviderOptions.DownloadCompletedLogLevel
-  fullName: Bodu.Financial.ExchangeRates.RbaRateProviderOptions.DownloadCompletedLogLevel
-  nameWithType: RbaRateProviderOptions.DownloadCompletedLogLevel
-- uid: Bodu.Financial.ExchangeRates.RbaRateProviderOptions.DownloadFailedLogLevel
-  name: DownloadFailedLogLevel
-  href: api/Bodu.Financial.ExchangeRates.RbaRateProviderOptions.html#Bodu_Financial_ExchangeRates_RbaRateProviderOptions_DownloadFailedLogLevel
-  commentId: P:Bodu.Financial.ExchangeRates.RbaRateProviderOptions.DownloadFailedLogLevel
-  fullName: Bodu.Financial.ExchangeRates.RbaRateProviderOptions.DownloadFailedLogLevel
-  nameWithType: RbaRateProviderOptions.DownloadFailedLogLevel
-- uid: Bodu.Financial.ExchangeRates.RbaRateProviderOptions.DownloadFailedLogLevel*
-  name: DownloadFailedLogLevel
-  href: api/Bodu.Financial.ExchangeRates.RbaRateProviderOptions.html#Bodu_Financial_ExchangeRates_RbaRateProviderOptions_DownloadFailedLogLevel_
-  commentId: Overload:Bodu.Financial.ExchangeRates.RbaRateProviderOptions.DownloadFailedLogLevel
-  fullName: Bodu.Financial.ExchangeRates.RbaRateProviderOptions.DownloadFailedLogLevel
-  nameWithType: RbaRateProviderOptions.DownloadFailedLogLevel
-- uid: Bodu.Financial.ExchangeRates.RbaRateProviderOptions.DownloadStartingLogLevel
-  name: DownloadStartingLogLevel
-  href: api/Bodu.Financial.ExchangeRates.RbaRateProviderOptions.html#Bodu_Financial_ExchangeRates_RbaRateProviderOptions_DownloadStartingLogLevel
-  commentId: P:Bodu.Financial.ExchangeRates.RbaRateProviderOptions.DownloadStartingLogLevel
-  fullName: Bodu.Financial.ExchangeRates.RbaRateProviderOptions.DownloadStartingLogLevel
-  nameWithType: RbaRateProviderOptions.DownloadStartingLogLevel
-- uid: Bodu.Financial.ExchangeRates.RbaRateProviderOptions.DownloadStartingLogLevel*
-  name: DownloadStartingLogLevel
-  href: api/Bodu.Financial.ExchangeRates.RbaRateProviderOptions.html#Bodu_Financial_ExchangeRates_RbaRateProviderOptions_DownloadStartingLogLevel_
-  commentId: Overload:Bodu.Financial.ExchangeRates.RbaRateProviderOptions.DownloadStartingLogLevel
-  fullName: Bodu.Financial.ExchangeRates.RbaRateProviderOptions.DownloadStartingLogLevel
-  nameWithType: RbaRateProviderOptions.DownloadStartingLogLevel
 - uid: Bodu.Financial.ExchangeRates.RbaRateProviderOptions.EnableDiskCache
   name: EnableDiskCache
   href: api/Bodu.Financial.ExchangeRates.RbaRateProviderOptions.html#Bodu_Financial_ExchangeRates_RbaRateProviderOptions_EnableDiskCache
@@ -56863,69 +56224,21 @@ references:
   commentId: Overload:Bodu.Financial.ExchangeRates.RbaRateProviderOptions.Eras
   fullName: Bodu.Financial.ExchangeRates.RbaRateProviderOptions.Eras
   nameWithType: RbaRateProviderOptions.Eras
-- uid: Bodu.Financial.ExchangeRates.RbaRateProviderOptions.HttpTimeout
-  name: HttpTimeout
-  href: api/Bodu.Financial.ExchangeRates.RbaRateProviderOptions.html#Bodu_Financial_ExchangeRates_RbaRateProviderOptions_HttpTimeout
-  commentId: P:Bodu.Financial.ExchangeRates.RbaRateProviderOptions.HttpTimeout
-  fullName: Bodu.Financial.ExchangeRates.RbaRateProviderOptions.HttpTimeout
-  nameWithType: RbaRateProviderOptions.HttpTimeout
-- uid: Bodu.Financial.ExchangeRates.RbaRateProviderOptions.HttpTimeout*
-  name: HttpTimeout
-  href: api/Bodu.Financial.ExchangeRates.RbaRateProviderOptions.html#Bodu_Financial_ExchangeRates_RbaRateProviderOptions_HttpTimeout_
-  commentId: Overload:Bodu.Financial.ExchangeRates.RbaRateProviderOptions.HttpTimeout
-  fullName: Bodu.Financial.ExchangeRates.RbaRateProviderOptions.HttpTimeout
-  nameWithType: RbaRateProviderOptions.HttpTimeout
-- uid: Bodu.Financial.ExchangeRates.RbaRateProviderOptions.ObservationIngestedLogLevel
-  name: ObservationIngestedLogLevel
-  href: api/Bodu.Financial.ExchangeRates.RbaRateProviderOptions.html#Bodu_Financial_ExchangeRates_RbaRateProviderOptions_ObservationIngestedLogLevel
-  commentId: P:Bodu.Financial.ExchangeRates.RbaRateProviderOptions.ObservationIngestedLogLevel
-  fullName: Bodu.Financial.ExchangeRates.RbaRateProviderOptions.ObservationIngestedLogLevel
-  nameWithType: RbaRateProviderOptions.ObservationIngestedLogLevel
-- uid: Bodu.Financial.ExchangeRates.RbaRateProviderOptions.ObservationIngestedLogLevel*
-  name: ObservationIngestedLogLevel
-  href: api/Bodu.Financial.ExchangeRates.RbaRateProviderOptions.html#Bodu_Financial_ExchangeRates_RbaRateProviderOptions_ObservationIngestedLogLevel_
-  commentId: Overload:Bodu.Financial.ExchangeRates.RbaRateProviderOptions.ObservationIngestedLogLevel
-  fullName: Bodu.Financial.ExchangeRates.RbaRateProviderOptions.ObservationIngestedLogLevel
-  nameWithType: RbaRateProviderOptions.ObservationIngestedLogLevel
-- uid: Bodu.Financial.ExchangeRates.RbaRateProviderOptions.TryValidate(System.String@)
-  name: TryValidate(out string?)
-  href: api/Bodu.Financial.ExchangeRates.RbaRateProviderOptions.html#Bodu_Financial_ExchangeRates_RbaRateProviderOptions_TryValidate_System_String__
-  commentId: M:Bodu.Financial.ExchangeRates.RbaRateProviderOptions.TryValidate(System.String@)
-  name.vb: TryValidate(String)
-  fullName: Bodu.Financial.ExchangeRates.RbaRateProviderOptions.TryValidate(out string?)
-  fullName.vb: Bodu.Financial.ExchangeRates.RbaRateProviderOptions.TryValidate(String)
-  nameWithType: RbaRateProviderOptions.TryValidate(out string?)
-  nameWithType.vb: RbaRateProviderOptions.TryValidate(String)
-- uid: Bodu.Financial.ExchangeRates.RbaRateProviderOptions.TryValidate*
-  name: TryValidate
-  href: api/Bodu.Financial.ExchangeRates.RbaRateProviderOptions.html#Bodu_Financial_ExchangeRates_RbaRateProviderOptions_TryValidate_
-  commentId: Overload:Bodu.Financial.ExchangeRates.RbaRateProviderOptions.TryValidate
-  fullName: Bodu.Financial.ExchangeRates.RbaRateProviderOptions.TryValidate
-  nameWithType: RbaRateProviderOptions.TryValidate
-- uid: Bodu.Financial.ExchangeRates.RbaRateProviderOptions.UserAgent
-  name: UserAgent
-  href: api/Bodu.Financial.ExchangeRates.RbaRateProviderOptions.html#Bodu_Financial_ExchangeRates_RbaRateProviderOptions_UserAgent
-  commentId: P:Bodu.Financial.ExchangeRates.RbaRateProviderOptions.UserAgent
-  fullName: Bodu.Financial.ExchangeRates.RbaRateProviderOptions.UserAgent
-  nameWithType: RbaRateProviderOptions.UserAgent
-- uid: Bodu.Financial.ExchangeRates.RbaRateProviderOptions.UserAgent*
-  name: UserAgent
-  href: api/Bodu.Financial.ExchangeRates.RbaRateProviderOptions.html#Bodu_Financial_ExchangeRates_RbaRateProviderOptions_UserAgent_
-  commentId: Overload:Bodu.Financial.ExchangeRates.RbaRateProviderOptions.UserAgent
-  fullName: Bodu.Financial.ExchangeRates.RbaRateProviderOptions.UserAgent
-  nameWithType: RbaRateProviderOptions.UserAgent
-- uid: Bodu.Financial.ExchangeRates.RbaRateProviderOptions.Validate
-  name: Validate()
-  href: api/Bodu.Financial.ExchangeRates.RbaRateProviderOptions.html#Bodu_Financial_ExchangeRates_RbaRateProviderOptions_Validate
-  commentId: M:Bodu.Financial.ExchangeRates.RbaRateProviderOptions.Validate
-  fullName: Bodu.Financial.ExchangeRates.RbaRateProviderOptions.Validate()
-  nameWithType: RbaRateProviderOptions.Validate()
-- uid: Bodu.Financial.ExchangeRates.RbaRateProviderOptions.Validate*
-  name: Validate
-  href: api/Bodu.Financial.ExchangeRates.RbaRateProviderOptions.html#Bodu_Financial_ExchangeRates_RbaRateProviderOptions_Validate_
-  commentId: Overload:Bodu.Financial.ExchangeRates.RbaRateProviderOptions.Validate
-  fullName: Bodu.Financial.ExchangeRates.RbaRateProviderOptions.Validate
-  nameWithType: RbaRateProviderOptions.Validate
+- uid: Bodu.Financial.ExchangeRates.RbaRateProviderOptions.TryValidateCore(System.String@)
+  name: TryValidateCore(out string?)
+  href: api/Bodu.Financial.ExchangeRates.RbaRateProviderOptions.html#Bodu_Financial_ExchangeRates_RbaRateProviderOptions_TryValidateCore_System_String__
+  commentId: M:Bodu.Financial.ExchangeRates.RbaRateProviderOptions.TryValidateCore(System.String@)
+  name.vb: TryValidateCore(String)
+  fullName: Bodu.Financial.ExchangeRates.RbaRateProviderOptions.TryValidateCore(out string?)
+  fullName.vb: Bodu.Financial.ExchangeRates.RbaRateProviderOptions.TryValidateCore(String)
+  nameWithType: RbaRateProviderOptions.TryValidateCore(out string?)
+  nameWithType.vb: RbaRateProviderOptions.TryValidateCore(String)
+- uid: Bodu.Financial.ExchangeRates.RbaRateProviderOptions.TryValidateCore*
+  name: TryValidateCore
+  href: api/Bodu.Financial.ExchangeRates.RbaRateProviderOptions.html#Bodu_Financial_ExchangeRates_RbaRateProviderOptions_TryValidateCore_
+  commentId: Overload:Bodu.Financial.ExchangeRates.RbaRateProviderOptions.TryValidateCore
+  fullName: Bodu.Financial.ExchangeRates.RbaRateProviderOptions.TryValidateCore
+  nameWithType: RbaRateProviderOptions.TryValidateCore
 - uid: Bodu.Financial.ExchangeRates.RbaSeriesInfo
   name: RbaSeriesInfo
   href: api/Bodu.Financial.ExchangeRates.RbaSeriesInfo.html
