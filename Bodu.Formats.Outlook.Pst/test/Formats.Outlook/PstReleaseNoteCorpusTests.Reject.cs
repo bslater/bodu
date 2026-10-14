@@ -13,8 +13,8 @@ namespace Bodu.Formats.Outlook;
 public sealed partial class PstReleaseNoteCorpusTests
 {
     /// <summary>
-    /// Verifies that each catalogued file a fix established as structurally malformed is rejected on the selected
-    /// surface with <see cref="PstFileFormatException" />, the exception the row names.
+    /// Verifies that each catalogued file a fix established as structurally malformed, read on the Nodes surface, is
+    /// rejected with <see cref="PstFileFormatException" />, the exception the row names.
     /// </summary>
     /// <param name="fix">The catalogue row.</param>
     [TestMethod]
@@ -36,8 +36,8 @@ public sealed partial class PstReleaseNoteCorpusTests
     }
 
     /// <summary>
-    /// Verifies that each catalogued file a fix established as a variant Bodu does not read is rejected with
-    /// <see cref="PstUnsupportedFormatException" />, the exception the row names.
+    /// Verifies that each catalogued file a fix established as a variant Bodu does not read, read on the Nodes surface,
+    /// is rejected with <see cref="PstUnsupportedFormatException" />, the exception the row names.
     /// </summary>
     /// <param name="fix">The catalogue row.</param>
     [TestMethod]
@@ -79,5 +79,32 @@ public sealed partial class PstReleaseNoteCorpusTests
                 _ = RenderRow(fix);
             },
             fix.ToString());
+    }
+
+    /// <summary>
+    /// Verifies that each catalogued file a fix established as a container fault, read on the Store surface, is
+    /// rejected with <see cref="OutlookPstFormatException" />, the mail store's own exception, whose inner exception is
+    /// the container exception the row names.
+    /// </summary>
+    /// <param name="fix">The catalogue row.</param>
+    [TestMethod]
+    [TestCategory("Regression")]
+    [DynamicData(
+        nameof(StoreSurfaceContainerRows),
+        DynamicDataDisplayName = nameof(KatDisplayName.GetDisplayName),
+        DynamicDataDisplayNameDeclaringType = typeof(KatDisplayName))]
+    public void Reject_WhenFixScenarioIsContainerFaultOnStoreSurface_ShouldThrowOutlookPstFormatException(ReleaseNoteFix fix)
+    {
+        ArgumentNullException.ThrowIfNull(fix);
+
+        OutlookPstFormatException ex = Assert.ThrowsExactly<OutlookPstFormatException>(
+            () =>
+            {
+                _ = RenderRow(fix);
+            },
+            fix.ToString());
+
+        Assert.IsNotNull(ex.InnerException, fix.ToString());
+        Assert.AreEqual(fix.Expected, ex.InnerException.GetType().Name, fix.ToString());
     }
 }

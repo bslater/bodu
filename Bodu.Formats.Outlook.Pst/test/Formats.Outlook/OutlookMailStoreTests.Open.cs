@@ -12,25 +12,89 @@ namespace Bodu.Formats.Outlook;
 public partial class OutlookMailStoreTests
 {
     /// <summary>
-    /// Verifies that opening a store whose header carries the OST client magic <c>SO</c> propagates the container's
-    /// <see cref="PstUnsupportedFormatException" /> whatever the header's version, as the guides document.
+    /// Verifies that opening a store whose header carries the OST client magic <c>SO</c> throws
+    /// <see cref="OutlookPstFormatException" />, keeping the container's <see cref="PstUnsupportedFormatException" /> as
+    /// the inner exception, whatever the header's version.
     /// </summary>
     /// <param name="testName">The scenario name.</param>
     /// <param name="version">The header's <c>wVer</c>.</param>
     [TestMethod]
     [DataRow("version 23", 23)]
     [DataRow("version 36", 36)]
-    public void Open_WhenClientMagicIsOst_ShouldThrowPstUnsupportedFormatException(string testName, int version)
+    public void Open_WhenClientMagicIsOst_ShouldThrowOutlookPstFormatException(string testName, int version)
     {
         Assert.IsNotNull(testName);
         byte[] input = PstReleaseNoteCorpusTests.GenerateInput($"gen:Mail()|Header(client=0x4F53,version={version})");
 
-        var ex = Assert.ThrowsExactly<PstUnsupportedFormatException>(() =>
+        var ex = Assert.ThrowsExactly<OutlookPstFormatException>(() =>
         {
             using OutlookMailStore store = OutlookMailStore.Open(new MemoryStream(input, writable: false), new OutlookMailStoreReaderOptions());
         });
 
-        Assert.AreEqual(PstFileError.UnsupportedFormat, ex.Error);
+        Assert.IsNotNull(ex.InnerException);
+        Assert.IsInstanceOfType<PstUnsupportedFormatException>(ex.InnerException);
+        Assert.AreEqual(PstFileError.UnsupportedFormat, ((PstUnsupportedFormatException)ex.InnerException).Error);
+    }
+
+    /// <summary>
+    /// Verifies that opening a store whose header declares a content encoding other than none, permute, or cyclic throws
+    /// <see cref="OutlookPstFormatException" />, keeping the container's <see cref="PstUnsupportedFormatException" /> as
+    /// the inner exception.
+    /// </summary>
+    [TestMethod]
+    public void Open_WhenContentEncodingIsUnsupported_ShouldThrowOutlookPstFormatException()
+    {
+        byte[] input = PstReleaseNoteCorpusTests.GenerateInput("gen:Mail()|Header(crypt=0x10)");
+
+        var ex = Assert.ThrowsExactly<OutlookPstFormatException>(() =>
+        {
+            using OutlookMailStore store = OutlookMailStore.Open(new MemoryStream(input, writable: false), new OutlookMailStoreReaderOptions());
+        });
+
+        Assert.IsNotNull(ex.InnerException);
+        Assert.IsInstanceOfType<PstUnsupportedFormatException>(ex.InnerException);
+    }
+
+    /// <summary>
+    /// Verifies that opening, under strict validation, a reference store truncated to 600 bytes - past its header but
+    /// short of the length the header records - throws <see cref="OutlookPstFormatException" />, keeping the
+    /// container's <see cref="PstFileFormatException" /> as the inner exception.
+    /// </summary>
+    [TestMethod]
+    public void Open_WhenFileIsTruncated_ForStrictValidation_ShouldThrowOutlookPstFormatException()
+    {
+        byte[] truncated = PstReferenceFixtures.OpenStream(Sample1).ToArray().AsSpan(0, 600).ToArray();
+
+        var ex = Assert.ThrowsExactly<OutlookPstFormatException>(() =>
+        {
+            using OutlookMailStore store = OutlookMailStore.Open(
+                new MemoryStream(truncated, writable: false),
+                new OutlookMailStoreReaderOptions { ValidationLevel = PstValidationLevel.Strict });
+        });
+
+        Assert.IsNotNull(ex.InnerException);
+        Assert.IsInstanceOfType<PstFileFormatException>(ex.InnerException);
+        Assert.AreEqual(PstFileError.InvalidHeader, ((PstFileFormatException)ex.InnerException).Error);
+    }
+
+    /// <summary>
+    /// Verifies that opening a store whose header checksum does not match throws
+    /// <see cref="OutlookPstFormatException" />, keeping the container's <see cref="PstFileFormatException" /> as the
+    /// inner exception.
+    /// </summary>
+    [TestMethod]
+    public void Open_WhenHeaderChecksumIsBad_ShouldThrowOutlookPstFormatException()
+    {
+        byte[] input = PstReleaseNoteCorpusTests.GenerateInput("gen:Mail()|Header(crc=bad)");
+
+        var ex = Assert.ThrowsExactly<OutlookPstFormatException>(() =>
+        {
+            using OutlookMailStore store = OutlookMailStore.Open(new MemoryStream(input, writable: false), new OutlookMailStoreReaderOptions());
+        });
+
+        Assert.IsNotNull(ex.InnerException);
+        Assert.IsInstanceOfType<PstFileFormatException>(ex.InnerException);
+        Assert.AreEqual(PstFileError.InvalidHeader, ((PstFileFormatException)ex.InnerException).Error);
     }
 
     /// <summary>

@@ -16,7 +16,9 @@ namespace Bodu.Formats.Outlook;
 /// <remarks>
 /// Message views are bound to their owning <see cref="OutlookMailStore" /> session and decode their property context
 /// once, on first access. Every property remains reachable through <see cref="Properties" />; the conveniences return
-/// <see langword="null" /> when the underlying property is absent.
+/// <see langword="null" /> when the underlying property is absent. Container corruption met while the message, its
+/// recipients, or its attachments decode throws <see cref="OutlookPstFormatException" />, with the container's
+/// <see cref="PstFileException" /> as the inner exception.
 /// </remarks>
 public sealed partial class OutlookMailMessage
 {
@@ -69,13 +71,12 @@ public sealed partial class OutlookMailMessage
     /// </summary>
     /// <value>The tag-addressed property collection, decoded once on first access.</value>
     /// <exception cref="ObjectDisposedException">The owning session has been disposed.</exception>
-    /// <exception cref="PstFileException">The container is malformed.</exception>
     /// <exception cref="OutlookPstFormatException">
-    /// Under strict validation, a property value cannot be decoded.
+    /// The container is malformed, or, under strict validation, a property value cannot be decoded.
     /// </exception>
     /// <remarks>
     /// An exception thrown by <see cref="OutlookMailStoreReaderOptions.ValueOmittedCallback" /> while the properties
-    /// are decoded propagates from this access.
+    /// are decoded propagates from this access unchanged.
     /// </remarks>
     public MapiPropertyCollection Properties
     {
@@ -85,13 +86,20 @@ public sealed partial class OutlookMailMessage
 
             if (_properties is null)
             {
-                _properties = PstMapiPropertyReader.Read(
-                    _node.ReadPropertyContext(),
-                    _inheritedEncoding ?? _store.StoreEncoding,
-                    _store.Strict,
-                    _store.CreateOmissionReporter(_node.Id),
-                    out Encoding encoding);
-                _encoding = encoding;
+                try
+                {
+                    _properties = PstMapiPropertyReader.Read(
+                        _node.ReadPropertyContext(),
+                        _inheritedEncoding ?? _store.StoreEncoding,
+                        _store.Strict,
+                        _store.CreateOmissionReporter(_node.NodeId),
+                        out Encoding encoding);
+                    _encoding = encoding;
+                }
+                catch (PstFileException ex) when (_store.IsContainerFault(ex))
+                {
+                    throw PstContainer.Wrap(ex);
+                }
             }
 
             return _properties;
@@ -159,7 +167,7 @@ public sealed partial class OutlookMailMessage
     /// </summary>
     /// <returns>The subject, or the node identifier when absent.</returns>
     public override string ToString() =>
-        Subject ?? _node.Id.ToString();
+        Subject ?? _node.NodeId.ToString();
 
     /// <summary>
     /// Gets the message node, for the recipient, attachment, and body partials.

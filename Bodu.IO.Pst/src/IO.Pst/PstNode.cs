@@ -45,14 +45,17 @@ public sealed class PstNode
     /// Gets the node identifier.
     /// </summary>
     /// <value>The identifier.</value>
-    public PstNodeId Id =>
+    public PstNodeId NodeId =>
         new(_entry.NodeId);
 
     /// <summary>
     /// Gets the parent node identifier the directory records.
     /// </summary>
-    /// <value>The parent identifier, or the zero identifier when none is recorded.</value>
-    public PstNodeId ParentId =>
+    /// <value>
+    /// The parent identifier, or the zero identifier when none is recorded. For a subnode, this is the owning node's
+    /// identifier.
+    /// </value>
+    public PstNodeId ParentNodeId =>
         new(_entry.ParentNodeId);
 
     /// <summary>
@@ -220,7 +223,7 @@ public sealed class PstNode
     /// </summary>
     /// <returns>The identifier and its type.</returns>
     public override string ToString() =>
-        $"{Id} ({Id.Type})";
+        $"{NodeId} ({NodeId.Type})";
 
     /// <summary>
     /// Resolves the node's ordered data-tree leaf entries, caching them for the instance's lifetime.

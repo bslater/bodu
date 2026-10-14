@@ -11,9 +11,10 @@ namespace Bodu.Formats.Outlook;
 
 /// <summary>
 /// Corruption sweeps over copies of the real reference fixture, driven through the full messaging surface: whatever
-/// bytes are flipped or truncated, the mail reader must either decode clean or fail with the container's
-/// <see cref="PstFileException" /> family or the reader's <see cref="OutlookFormatException" /> family - never
-/// another exception type - at every validation level.
+/// bytes are flipped or truncated, the mail reader must either decode clean or fail with the reader's
+/// <see cref="OutlookFormatException" /> family - never another exception type, the container's
+/// <see cref="PstFileException" /> family included, which arrives only as the inner exception of an
+/// <see cref="OutlookPstFormatException" /> - at every validation level.
 /// </summary>
 /// <remarks>
 /// This is the format-level counterpart of the container's <c>PstMalformedCorpusTests</c>: the container sweep proves
@@ -30,13 +31,15 @@ public sealed class OutlookMailStoreMalformedCorpusTests
 
     /// <summary>
     /// Verifies that single-bit corruption anywhere in the file either decodes clean through the messaging surface or
-    /// fails with the sanctioned exception families, at every validation level.
+    /// fails with the reader's <see cref="OutlookFormatException" /> family alone, at every validation level, a
+    /// container fault arriving with the container's exception as its inner exception.
     /// </summary>
+    /// <param name="fixture">The reference fixture to corrupt.</param>
     [TestMethod]
     [TestCategory(TestCategories.Regression)]
     [DataRow(OutlookMailStoreTests.Sample1)]
     [DataRow(OutlookMailStoreTests.Sample2Ansi)]
-    public void Open_WhenBitFlipped_ShouldDecodeCleanOrThrowSanctionedFamily(string fixture)
+    public void Open_WhenBitFlipped_ShouldDecodeCleanOrThrowOutlookFormatException(string fixture)
     {
         byte[] original = PstReferenceFixtures.OpenStream(fixture).ToArray();
         var rng = new Random(0x0DDF_00D5);
@@ -50,23 +53,25 @@ public sealed class OutlookMailStoreMalformedCorpusTests
             corrupted[offset] ^= (byte)(1 << bit);
 
             foreach (PstValidationLevel level in s_levels)
-                AssertDecodesCleanOrThrowsFamily(corrupted, level, $"bit {bit} flipped at offset {offset}");
+                AssertDecodesCleanOrThrowsOutlookFamily(corrupted, level, $"bit {bit} flipped at offset {offset}");
         }
     }
 
     /// <summary>
     /// Verifies that truncation at any prefix length either decodes clean through the messaging surface or fails with
-    /// the sanctioned exception families, at every validation level.
+    /// the reader's <see cref="OutlookFormatException" /> family alone, at every validation level, a container fault
+    /// arriving with the container's exception as its inner exception.
     /// </summary>
+    /// <param name="fixture">The reference fixture to truncate.</param>
     [TestMethod]
     [TestCategory(TestCategories.Regression)]
     [DataRow(OutlookMailStoreTests.Sample1)]
     [DataRow(OutlookMailStoreTests.Sample2Ansi)]
-    public void Open_WhenTruncated_ShouldDecodeCleanOrThrowSanctionedFamily(string fixture)
+    public void Open_WhenTruncated_ShouldDecodeCleanOrThrowOutlookFormatException(string fixture)
     {
         byte[] original = PstReferenceFixtures.OpenStream(fixture).ToArray();
 
-        var lengths = new List<int> { 0, 1, 100, 512, 563, 564, 1024 };
+        var lengths = new List<int> { 0, 1, 100, 512, 563, 564, 600, 1024 };
         for (int length = 2048; length < original.Length; length += 16007)
             lengths.Add(length);
 
@@ -75,18 +80,19 @@ public sealed class OutlookMailStoreMalformedCorpusTests
             byte[] truncated = original.AsSpan(0, length).ToArray();
 
             foreach (PstValidationLevel level in s_levels)
-                AssertDecodesCleanOrThrowsFamily(truncated, level, $"truncated to {length} bytes");
+                AssertDecodesCleanOrThrowsOutlookFamily(truncated, level, $"truncated to {length} bytes");
         }
     }
 
     /// <summary>
-    /// Opens the supplied bytes as a mail store and decodes the complete messaging surface, failing the test if
-    /// anything outside the sanctioned exception families escapes.
+    /// Opens the supplied bytes as a mail store and decodes the complete messaging surface, failing the test if an
+    /// exception outside the reader's <see cref="OutlookFormatException" /> family escapes, or if an
+    /// <see cref="OutlookPstFormatException" /> carries an inner exception that is not the container's.
     /// </summary>
     /// <param name="bytes">The (possibly corrupted) file bytes.</param>
     /// <param name="level">The validation level to open with.</param>
     /// <param name="scenario">The corruption description reported on failure.</param>
-    private static void AssertDecodesCleanOrThrowsFamily(byte[] bytes, PstValidationLevel level, string scenario)
+    private static void AssertDecodesCleanOrThrowsOutlookFamily(byte[] bytes, PstValidationLevel level, string scenario)
     {
         try
         {
@@ -105,17 +111,17 @@ public sealed class OutlookMailStoreMalformedCorpusTests
                     DecodeMessage(message, depth: 0);
             }
         }
-        catch (PstFileException)
+        catch (OutlookPstFormatException ex) when (ex.InnerException is null or PstFileException)
         {
-            // The container's family remains sanctioned at the format level.
+            // The reader's own exception: a messaging-level violation, or a container fault it wraps.
         }
-        catch (OutlookFormatException)
+        catch (OutlookFormatException ex) when (ex is not OutlookPstFormatException)
         {
-            // The reader's own family covers messaging-level malformation.
+            // The rest of the reader's family.
         }
         catch (Exception ex)
         {
-            Assert.Fail($"{scenario} at {level}: unexpected {ex.GetType().Name}: {ex.Message}");
+            Assert.Fail($"{scenario} at {level}: unexpected {ex.GetType().Name} (inner {ex.InnerException?.GetType().Name ?? "none"}): {ex.Message}");
         }
     }
 

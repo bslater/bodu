@@ -20,15 +20,15 @@ public partial class PstNodeTests
     /// the diagnostic string.
     /// </summary>
     [TestMethod]
-    public void Id_WhenMessageNode_ShouldExposeDirectoryFacts()
+    public void NodeId_WhenMessageNode_ShouldExposeDirectoryFacts()
     {
         using PstFile file = PstFileTests.OpenSample1();
 
         PstNode message = file.GetNode(Sample1Message);
         PstNode store = file.GetNode(PstNodeId.MessageStore);
 
-        Assert.AreEqual(Sample1Message, message.Id);
-        Assert.AreEqual(PstNodeType.NormalMessage, message.Id.Type);
+        Assert.AreEqual(Sample1Message, message.NodeId);
+        Assert.AreEqual(PstNodeType.NormalMessage, message.NodeId.Type);
         Assert.IsTrue(message.HasSubnodes);
         Assert.IsFalse(store.HasSubnodes);
         Assert.AreEqual("0x00200024 (NormalMessage)", message.ToString());

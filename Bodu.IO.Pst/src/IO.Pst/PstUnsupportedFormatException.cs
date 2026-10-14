@@ -39,7 +39,7 @@ public sealed class PstUnsupportedFormatException
     /// <param name="message">The message that describes the error.</param>
     /// <param name="innerException">The exception that caused this error.</param>
     public PstUnsupportedFormatException(string? message, Exception? innerException)
-        : base(message, innerException, PstFileError.UnsupportedFormat)
+        : base(message, PstFileError.UnsupportedFormat, innerException)
     {
     }
 }

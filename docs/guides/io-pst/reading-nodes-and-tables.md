@@ -99,7 +99,7 @@ foreach ((PstNodeType type, int count) in census)
 Console.WriteLine($"largest payload: {largest} bytes");
 
 PstNode store = file.GetNode(PstNodeId.MessageStore);             // throws PstNodeNotFoundException when absent
-Console.WriteLine($"{store} parent={store.ParentId} subnodes={store.HasSubnodes} data={store.DataLength} bytes");
+Console.WriteLine($"{store} parent={store.ParentNodeId} subnodes={store.HasSubnodes} data={store.DataLength} bytes");
 
 if (!file.TryGetNode(new PstNodeId(PstNodeType.NormalFolder, 0x7FFFFFF), out PstNode? missing))
     Console.WriteLine("no such node");
@@ -319,7 +319,7 @@ PstNodeInfo first = file.EnumerateNodes().First(n => n.NodeId.Type == PstNodeTyp
 PstNode message = file.GetNode(first.NodeId);
 PstPropertyContext properties = message.ReadPropertyContext();
 
-Console.WriteLine($"{message}: {properties.Count} properties, parent folder {message.ParentId}");
+Console.WriteLine($"{message}: {properties.Count} properties, parent folder {message.ParentNodeId}");
 
 // 0x0037 PidTagSubject, 0x001A PidTagMessageClass - UTF-16 (0x001F) in a Unicode-format file.
 if (properties.TryGetValue(0x0037, out PstPropertyValue subject) && subject.WireType == 0x001F)
@@ -372,7 +372,7 @@ Which of these identifiers *means* subject, delivery time, or recipient type is 
 |---|---|
 | <xref:Bodu.IO.Pst.PstFile> | `OpenRead(path)` · `OpenRead(stream, leaveOpen)` · `Open(stream, options, leaveOpen)` · `IsPstFile(stream)` · `Format` · `CryptMethod` · `EnumerateNodes()` · `GetNode(id)` · `TryGetNode(id, out node)` · `Dispose` |
 | <xref:Bodu.IO.Pst.PstNodeId> | `.ctor(uint)` · `.ctor(type, index)` · `MessageStore` · `NameToIdMap` · `RootFolder` · `Value` · `Type` · `Index` |
-| <xref:Bodu.IO.Pst.PstNode> | `Id` · `ParentId` · `HasSubnodes` · `DataLength` · `ReadAllBytes()` · `OpenDataStream()` · `EnumerateSubnodes()` · `TryGetSubnode(id, out node)` · `TryGetSubnodeOfType(type, out node)` · `ReadPropertyContext()` · `ReadTableContext()` |
+| <xref:Bodu.IO.Pst.PstNode> | `NodeId` · `ParentNodeId` · `HasSubnodes` · `DataLength` · `ReadAllBytes()` · `OpenDataStream()` · `EnumerateSubnodes()` · `TryGetSubnode(id, out node)` · `TryGetSubnodeOfType(type, out node)` · `ReadPropertyContext()` · `ReadTableContext()` |
 | <xref:Bodu.IO.Pst.PstPropertyContext> | `Count` · `Contains(id)` · `EnumeratePropertyIds()` · `TryGetWireType(id, out wireType)` · `TryGetValue(id, out value)` · `GetValue(id)` · `TryGetValueLength(id, out length)` · `TryOpenValueStream(id, out stream)` · enumeration |
 | <xref:Bodu.IO.Pst.PstPropertyValue> | `PropertyId` · `WireType` · `RawData` · `GetInt16()` · `GetInt32()` · `GetInt64()` · `GetBoolean()` · `GetSingle()` · `GetDouble()` · `GetGuid()` · `GetString()` · `GetBytes()` |
 | <xref:Bodu.IO.Pst.PstTableContext> | `Columns` · `RowCount` · `EnumerateRows()` · `EnumerateRowIds()` · `TryGetRow(rowId, out row)` |

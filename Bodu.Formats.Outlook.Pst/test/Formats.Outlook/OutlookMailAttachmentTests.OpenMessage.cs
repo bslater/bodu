@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using Bodu.Formats.Outlook.Pst;
+using Bodu.IO.Pst;
 
 namespace Bodu.Formats.Outlook;
 
@@ -135,5 +136,32 @@ public partial class OutlookMailAttachmentTests
         {
             _ = attachment.OpenMessage();
         });
+    }
+
+    /// <summary>
+    /// Verifies that opening the embedded message of an attachment whose subnode tree fails its checksum under strict
+    /// validation throws <see cref="OutlookPstFormatException" />, keeping the container's
+    /// <see cref="PstFileFormatException" /> as the inner exception.
+    /// </summary>
+    [TestMethod]
+    public void OpenMessage_WhenAttachmentSubnodeTreeIsCorrupt_ShouldThrowOutlookPstFormatException()
+    {
+        // The attachment object's subnode tree is one SLBLOCK (btype 0x02, level 0, one entry) naming the embedded
+        // message, subnode 0x8024; inverting a byte of its padding fails the block's checksum.
+        byte[] file = PstReleaseNoteCorpusTests.GenerateInput("gen:Mail(att=5~~Inner)");
+        byte[] input = OutlookMailStoreTests.InvertByte(
+            file, [0x02, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x24, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00], index: 4);
+        var options = new OutlookMailStoreReaderOptions { ValidationLevel = PstValidationLevel.Strict };
+        using OutlookMailStore store = OutlookMailStore.Open(new MemoryStream(input, writable: false), options);
+        OutlookMailAttachment attachment = store.RootFolder.EnumerateSubfolders().Single().EnumerateMessages().Single().Attachments.Single();
+        Assert.AreEqual(OutlookAttachmentMethod.EmbeddedMessage, attachment.Method);
+
+        var ex = Assert.ThrowsExactly<OutlookPstFormatException>(() =>
+        {
+            _ = attachment.OpenMessage();
+        });
+
+        Assert.IsNotNull(ex.InnerException);
+        Assert.IsInstanceOfType<PstFileFormatException>(ex.InnerException);
     }
 }

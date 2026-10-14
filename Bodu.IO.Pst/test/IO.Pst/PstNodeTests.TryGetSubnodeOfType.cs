@@ -19,11 +19,11 @@ public partial class PstNodeTests
         PstNode message = file.GetNode(Sample1Message);
 
         Assert.IsTrue(message.TryGetSubnodeOfType(PstNodeType.RecipientTable, out PstNode? recipients));
-        Assert.AreEqual(0x692u, recipients.Id.Value);
-        Assert.AreEqual(Sample1Message, recipients.ParentId);
+        Assert.AreEqual(0x692u, recipients.NodeId.Value);
+        Assert.AreEqual(Sample1Message, recipients.ParentNodeId);
 
         Assert.IsTrue(message.TryGetSubnodeOfType(PstNodeType.AttachmentTable, out PstNode? attachments));
-        Assert.AreEqual(0x671u, attachments.Id.Value);
+        Assert.AreEqual(0x671u, attachments.NodeId.Value);
     }
 
     /// <summary>

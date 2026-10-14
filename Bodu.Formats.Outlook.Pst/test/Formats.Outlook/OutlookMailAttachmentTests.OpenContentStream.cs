@@ -6,6 +6,7 @@
 
 using System.Globalization;
 using Bodu.Formats.Outlook.Pst;
+using Bodu.IO.Pst;
 using Bodu.Test;
 
 namespace Bodu.Formats.Outlook;
@@ -242,5 +243,41 @@ public partial class OutlookMailAttachmentTests
 
         Assert.AreEqual(OutlookAttachmentMethod.ByValue, attachment.Method);
         CollectionAssert.AreEqual(PstMessagingFixtureBuilder.AttachmentContent, buffer.ToArray());
+    }
+
+    /// <summary>
+    /// Verifies that reading a deferred by-value payload whose second data block fails its checksum under strict
+    /// validation throws <see cref="OutlookPstFormatException" /> from the content stream, keeping the container's
+    /// <see cref="PstFileFormatException" /> as the inner exception.
+    /// </summary>
+    [TestMethod]
+    public void OpenContentStream_WhenADeferredPayloadBlockIsCorrupt_ShouldThrowOutlookPstFormatExceptionOnRead()
+    {
+        // 0x200024 is the Inbox's first message; its attachment keeps a 20,000-byte payload in a subnode, three blocks
+        // of at most 8,176 bytes.
+        byte[] file = PstReleaseNoteCorpusTests.GenerateInput("gen:Mail(att=1~big.bin~fill:20000~data=subnode)");
+        uint attachmentId = FindAttachmentObjectId(file, 0x200024);
+        uint dataId;
+        using (PstFile container = PstFile.Open(new MemoryStream(file, writable: false), new PstFileOptions()))
+        {
+            Assert.IsTrue(container.GetNode(new PstNodeId(0x200024)).TryGetSubnode(new PstNodeId(attachmentId), out PstNode? attachmentNode));
+            dataId = attachmentNode.EnumerateSubnodes().MaxBy(static subnode => subnode.DataLength)!.NodeId.Value;
+        }
+
+        byte[] payload = OutlookMailStoreTests.ReadNodePayload(file, 0x200024, attachmentId, dataId);
+        Assert.AreEqual(20000, payload.Length);
+        byte[] input = OutlookMailStoreTests.InvertByte(file, payload.AsSpan(8176, 8176), index: 100);
+        var options = new OutlookMailStoreReaderOptions { ValidationLevel = PstValidationLevel.Strict, MaxInlineAttachmentBytes = 1024 };
+        using OutlookMailStore store = OutlookMailStore.Open(new MemoryStream(input, writable: false), options);
+        OutlookMailAttachment attachment = store.RootFolder.EnumerateSubfolders().Single().EnumerateMessages().Single().Attachments.Single();
+        using Stream content = attachment.OpenContentStream();
+
+        var ex = Assert.ThrowsExactly<OutlookPstFormatException>(() =>
+        {
+            content.CopyTo(Stream.Null);
+        });
+
+        Assert.IsNotNull(ex.InnerException);
+        Assert.IsInstanceOfType<PstFileFormatException>(ex.InnerException);
     }
 }

@@ -43,7 +43,7 @@ public sealed class PstNodeNotFoundException
     /// <param name="message">The message that describes the error.</param>
     /// <param name="innerException">The exception that caused this error.</param>
     public PstNodeNotFoundException(string? message, Exception? innerException)
-        : base(message, innerException, PstFileError.NodeNotFound)
+        : base(message, PstFileError.NodeNotFound, innerException)
     {
     }
 }

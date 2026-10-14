@@ -38,6 +38,47 @@ public partial class OutlookMailStoreTests
     }
 
     /// <summary>
+    /// Verifies that reading the properties of a reference store truncated to 600 bytes, which opens because its header
+    /// is intact, throws <see cref="OutlookPstFormatException" />, keeping the container's
+    /// <see cref="PstFileFormatException" /> as the inner exception, so a handler for the reader's family catches it.
+    /// </summary>
+    [TestMethod]
+    public void Properties_WhenFileIsTruncated_ShouldThrowOutlookPstFormatException()
+    {
+        byte[] truncated = PstReferenceFixtures.OpenStream(Sample1).ToArray().AsSpan(0, 600).ToArray();
+        using OutlookMailStore store = OutlookMailStore.Open(new MemoryStream(truncated, writable: false), new OutlookMailStoreReaderOptions());
+
+        var ex = Assert.ThrowsExactly<OutlookPstFormatException>(() =>
+        {
+            _ = store.Properties;
+        });
+
+        Assert.IsNotNull(ex.InnerException);
+        Assert.IsInstanceOfType<PstFileFormatException>(ex.InnerException);
+    }
+
+    /// <summary>
+    /// Verifies that reading the properties of a store whose message-store object has a corrupt heap throws
+    /// <see cref="OutlookPstFormatException" />, keeping the container's <see cref="PstFileFormatException" /> as the
+    /// inner exception.
+    /// </summary>
+    [TestMethod]
+    public void Properties_WhenStoreObjectHeapIsCorrupt_ShouldThrowOutlookPstFormatException()
+    {
+        byte[] input = GenerateWithCorruptHeap("gen:Mail()", 0x21);
+        using OutlookMailStore store = OutlookMailStore.Open(new MemoryStream(input, writable: false), new OutlookMailStoreReaderOptions());
+
+        var ex = Assert.ThrowsExactly<OutlookPstFormatException>(() =>
+        {
+            _ = store.Properties;
+        });
+
+        Assert.IsNotNull(ex.InnerException);
+        Assert.IsInstanceOfType<PstFileFormatException>(ex.InnerException);
+        Assert.AreEqual(PstFileError.InvalidHeap, ((PstFileFormatException)ex.InnerException).Error);
+    }
+
+    /// <summary>
     /// Verifies that a store whose message-store object node is absent still exposes its folder hierarchy - the
     /// folders decode under the fallback encoding instead of failing on the missing node - and reports an empty
     /// store property collection.

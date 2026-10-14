@@ -20,7 +20,7 @@ public partial class PstFileTests
         {
             PstNode node = file.GetNode(id);
 
-            Assert.AreEqual(id, node.Id);
+            Assert.AreEqual(id, node.NodeId);
         }
     }
 

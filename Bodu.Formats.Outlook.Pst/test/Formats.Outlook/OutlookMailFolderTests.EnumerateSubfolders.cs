@@ -63,4 +63,27 @@ public partial class OutlookMailFolderTests
         Assert.IsTrue(messageCount >= 1, "The oracle folder holds at least the oracle message.");
         Assert.AreEqual(sample.EnumerateSubfolders().Any(), sample.HasSubfolders);
     }
+
+    /// <summary>
+    /// Verifies that enumerating the subfolders of a folder whose hierarchy table has a corrupt heap throws
+    /// <see cref="OutlookPstFormatException" /> as the enumeration runs, keeping the container's
+    /// <see cref="PstFileFormatException" /> as the inner exception.
+    /// </summary>
+    [TestMethod]
+    public void EnumerateSubfolders_WhenHierarchyTableHeapIsCorrupt_ShouldThrowOutlookPstFormatException()
+    {
+        // 0x12D is the root folder's (0x122) hierarchy table.
+        byte[] input = OutlookMailStoreTests.GenerateWithCorruptHeap("gen:Mail()", 0x12D);
+        using OutlookMailStore store = OutlookMailStore.Open(new MemoryStream(input, writable: false), new OutlookMailStoreReaderOptions());
+        OutlookMailFolder root = store.RootFolder;
+
+        var ex = Assert.ThrowsExactly<OutlookPstFormatException>(() =>
+        {
+            _ = root.EnumerateSubfolders().ToList();
+        });
+
+        Assert.IsNotNull(ex.InnerException);
+        Assert.IsInstanceOfType<PstFileFormatException>(ex.InnerException);
+        Assert.AreEqual(PstFileError.InvalidHeap, ((PstFileFormatException)ex.InnerException).Error);
+    }
 }

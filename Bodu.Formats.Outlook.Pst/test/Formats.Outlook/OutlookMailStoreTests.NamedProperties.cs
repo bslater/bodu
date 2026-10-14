@@ -53,6 +53,46 @@ public partial class OutlookMailStoreTests
     }
 
     /// <summary>
+    /// Verifies that resolving a property name in a store whose name-to-id map node has a corrupt heap throws
+    /// <see cref="OutlookPstFormatException" />, keeping the container's <see cref="PstFileFormatException" /> as the
+    /// inner exception.
+    /// </summary>
+    [TestMethod]
+    public void TryGetPropertyName_WhenNameToIdMapHeapIsCorrupt_ShouldThrowOutlookPstFormatException()
+    {
+        byte[] input = GenerateWithCorruptHeap("gen:Mail(names=n~2~0x8233)", 0x61);
+        using OutlookMailStore store = OutlookMailStore.Open(new MemoryStream(input, writable: false), new OutlookMailStoreReaderOptions());
+
+        var ex = Assert.ThrowsExactly<OutlookPstFormatException>(() =>
+        {
+            _ = store.TryGetPropertyName(new MapiPropertyTag(0x8000, MapiPropertyType.Unicode), out _);
+        });
+
+        Assert.IsNotNull(ex.InnerException);
+        Assert.IsInstanceOfType<PstFileFormatException>(ex.InnerException);
+    }
+
+    /// <summary>
+    /// Verifies that resolving a named-property identifier in a store whose name-to-id map node has a corrupt heap
+    /// throws <see cref="OutlookPstFormatException" />, keeping the container's <see cref="PstFileFormatException" /> as
+    /// the inner exception.
+    /// </summary>
+    [TestMethod]
+    public void TryGetNamedPropertyId_WhenNameToIdMapHeapIsCorrupt_ShouldThrowOutlookPstFormatException()
+    {
+        byte[] input = GenerateWithCorruptHeap("gen:Mail(names=n~2~0x8233)", 0x61);
+        using OutlookMailStore store = OutlookMailStore.Open(new MemoryStream(input, writable: false), new OutlookMailStoreReaderOptions());
+
+        var ex = Assert.ThrowsExactly<OutlookPstFormatException>(() =>
+        {
+            _ = store.TryGetNamedPropertyId(new MapiNamedProperty(PstMessagingFixtureBuilder.PublicStringsPropertySetId, 0x8233u), out _);
+        });
+
+        Assert.IsNotNull(ex.InnerException);
+        Assert.IsInstanceOfType<PstFileFormatException>(ex.InnerException);
+    }
+
+    /// <summary>
     /// Verifies that an identity the map does not carry, and a tag outside the mapped range, both resolve to nothing.
     /// </summary>
     [TestMethod]

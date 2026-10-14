@@ -20,7 +20,9 @@ namespace Bodu.Formats.Outlook;
 /// The conveniences return <see langword="null" /> when the underlying property is absent; every attachment property
 /// remains reachable through <see cref="Properties" />. Content access is method-specific:
 /// <see cref="OpenContentStream" /> serves a by-value payload and <see cref="OpenMessage" /> serves an embedded
-/// message - each throws <see cref="NotSupportedException" /> for the other method kinds.
+/// message - each throws <see cref="NotSupportedException" /> for the other method kinds. Container corruption met
+/// while the attachment decodes, or while its content stream is read, throws <see cref="OutlookPstFormatException" />,
+/// with the container's <see cref="PstFileException" /> as the inner exception.
 /// </remarks>
 public sealed class OutlookMailAttachment
 {
@@ -63,9 +65,8 @@ public sealed class OutlookMailAttachment
     /// </summary>
     /// <value>The tag-addressed property collection, decoded once on first access.</value>
     /// <exception cref="ObjectDisposedException">The owning session has been disposed.</exception>
-    /// <exception cref="PstFileException">The container is malformed.</exception>
     /// <exception cref="OutlookPstFormatException">
-    /// Under strict validation, a property value cannot be decoded.
+    /// The container is malformed, or, under strict validation, a property value cannot be decoded.
     /// </exception>
     /// <remarks>
     /// <para>
@@ -76,7 +77,7 @@ public sealed class OutlookMailAttachment
     /// </para>
     /// <para>
     /// An exception thrown by <see cref="OutlookMailStoreReaderOptions.ValueOmittedCallback" /> while the properties
-    /// are decoded propagates from this access.
+    /// are decoded propagates from this access unchanged.
     /// </para>
     /// </remarks>
     public MapiPropertyCollection Properties
@@ -87,16 +88,23 @@ public sealed class OutlookMailAttachment
 
             if (_properties is null)
             {
-                _context ??= _node.ReadPropertyContext();
-                _properties = PstMapiPropertyReader.Read(
-                    _context,
-                    _owner.MessageEncoding,
-                    _store.Strict,
-                    _store.CreateOmissionReporter(_node.Id),
-                    MapiPropertyIds.AttachData,
-                    _store.MaxInlineAttachmentBytes,
-                    out Encoding encoding);
-                _encoding = encoding;
+                try
+                {
+                    _context ??= _node.ReadPropertyContext();
+                    _properties = PstMapiPropertyReader.Read(
+                        _context,
+                        _owner.MessageEncoding,
+                        _store.Strict,
+                        _store.CreateOmissionReporter(_node.NodeId),
+                        MapiPropertyIds.AttachData,
+                        _store.MaxInlineAttachmentBytes,
+                        out Encoding encoding);
+                    _encoding = encoding;
+                }
+                catch (PstFileException ex) when (_store.IsContainerFault(ex))
+                {
+                    throw PstContainer.Wrap(ex);
+                }
             }
 
             return _properties;
@@ -168,6 +176,7 @@ public sealed class OutlookMailAttachment
     /// The <c>PidTagAttachSize</c> value the writer recorded; when absent, the length of the by-value payload;
     /// <see langword="null" /> when neither is available.
     /// </value>
+    /// <exception cref="OutlookPstFormatException">The container is malformed.</exception>
     /// <remarks>
     /// The payload length is read from the store's index structures, so a deferred payload is never materialized to
     /// measure it.
@@ -185,12 +194,15 @@ public sealed class OutlookMailAttachment
     /// web-referenced, embedded, or OLE attachment, or one that declares no content, carries no byte payload in the
     /// store.
     /// </exception>
-    /// <exception cref="OutlookPstFormatException">The by-value content payload is missing.</exception>
-    /// <exception cref="PstFileException">The container is malformed.</exception>
+    /// <exception cref="OutlookPstFormatException">
+    /// The by-value content payload is missing, or the container is malformed.
+    /// </exception>
     /// <remarks>
     /// A payload decoded inline (at or below <see cref="OutlookMailStoreReaderOptions.MaxInlineAttachmentBytes" />) is
     /// served from the decoded bytes without copying; a larger payload is streamed from the store block by block and is
-    /// never held in memory in full. The stream is bound to the owning session.
+    /// never held in memory in full. The stream is bound to the owning session, and a read that meets a corrupt block
+    /// throws <see cref="OutlookPstFormatException" />, with the container's <see cref="PstFileException" /> as the
+    /// inner exception.
     /// </remarks>
     public Stream OpenContentStream()
     {
@@ -210,9 +222,10 @@ public sealed class OutlookMailAttachment
             return new MemoryStream(segment.Array!, segment.Offset, segment.Count, writable: false);
         }
 
-        // A deferred payload is present in the collection with a null value; its bytes stay in the store.
-        if (Properties.Contains(s_attachDataTag) && _context!.TryOpenValueStream(MapiPropertyIds.AttachData, out Stream? stream))
-            return stream;
+        // A deferred payload is present in the collection with a null value; its bytes stay in the store, so reads of
+        // the stream are translated as the store's other reads are.
+        if (Properties.Contains(s_attachDataTag) && TryOpenDeferredPayload(out Stream? stream))
+            return new PstContentStream(stream);
 
         throw new OutlookPstFormatException(OutlookPstResourceStrings.Format_Invalid_PstAttachmentContent);
     }
@@ -224,14 +237,61 @@ public sealed class OutlookMailAttachment
     /// <returns>
     /// The payload length, or <see langword="null" /> when the attachment carries no by-value payload.
     /// </returns>
+    /// <exception cref="OutlookPstFormatException">The container is malformed.</exception>
     private long? GetPayloadLength()
     {
         if (Properties.GetBinary(MapiPropertyIds.AttachData) is ReadOnlyMemory<byte> content)
             return content.Length;
 
-        return Properties.Contains(s_attachDataTag) && _context!.TryGetValueLength(MapiPropertyIds.AttachData, out long length)
-            ? length
-            : null;
+        if (!Properties.Contains(s_attachDataTag))
+            return null;
+
+        try
+        {
+            return _context!.TryGetValueLength(MapiPropertyIds.AttachData, out long length) ? length : null;
+        }
+        catch (PstFileException ex) when (_store.IsContainerFault(ex))
+        {
+            throw PstContainer.Wrap(ex);
+        }
+    }
+
+    /// <summary>
+    /// Attempts to find the nested message node, the message-typed subnode of the attachment object.
+    /// </summary>
+    /// <param name="messageNode">When this method returns <see langword="true" />, the nested message node.</param>
+    /// <returns><see langword="true" /> when the attachment object carries a nested message subnode.</returns>
+    /// <exception cref="OutlookPstFormatException">The container is malformed.</exception>
+    private bool TryGetEmbeddedMessageNode([System.Diagnostics.CodeAnalysis.MaybeNullWhen(false)] out PstNode messageNode)
+    {
+        try
+        {
+            return _node.TryGetSubnodeOfType(PstNodeType.NormalMessage, out messageNode);
+        }
+        catch (PstFileException ex) when (_store.IsContainerFault(ex))
+        {
+            throw PstContainer.Wrap(ex);
+        }
+    }
+
+    /// <summary>
+    /// Attempts to open the deferred by-value payload as a stream over the store.
+    /// </summary>
+    /// <param name="stream">
+    /// When this method returns <see langword="true" />, the container's stream over the payload.
+    /// </param>
+    /// <returns><see langword="true" /> when the attachment object carries the payload.</returns>
+    /// <exception cref="OutlookPstFormatException">The container is malformed.</exception>
+    private bool TryOpenDeferredPayload([System.Diagnostics.CodeAnalysis.MaybeNullWhen(false)] out Stream stream)
+    {
+        try
+        {
+            return _context!.TryOpenValueStream(MapiPropertyIds.AttachData, out stream);
+        }
+        catch (PstFileException ex) when (_store.IsContainerFault(ex))
+        {
+            throw PstContainer.Wrap(ex);
+        }
     }
 
     /// <summary>
@@ -245,10 +305,9 @@ public sealed class OutlookMailAttachment
     /// The attachment's <see cref="Method" /> is not <see cref="OutlookAttachmentMethod.EmbeddedMessage" />.
     /// </exception>
     /// <exception cref="OutlookPstFormatException">
-    /// The attachment carries no nested message subnode, or the nested message would sit deeper than
-    /// <see cref="OutlookMailStoreReaderOptions.MaxEmbeddedMessageDepth" />.
+    /// The attachment carries no nested message subnode, the nested message would sit deeper than
+    /// <see cref="OutlookMailStoreReaderOptions.MaxEmbeddedMessageDepth" />, or the container is malformed.
     /// </exception>
-    /// <exception cref="PstFileException">The container is malformed.</exception>
     /// <remarks>
     /// The nested message is the message-typed subnode of the attachment object (MS-PST §2.4.6.3); its code-page
     /// strings inherit the attachment's encoding.
@@ -267,7 +326,7 @@ public sealed class OutlookMailAttachment
                 CultureInfo.CurrentCulture, OutlookPstResourceStrings.Format_Invalid_PstEmbeddedMessageDepth, _store.MaxEmbeddedMessageDepth));
         }
 
-        if (_node.TryGetSubnodeOfType(PstNodeType.NormalMessage, out PstNode? messageNode))
+        if (TryGetEmbeddedMessageNode(out PstNode? messageNode))
             return new OutlookMailMessage(_store, messageNode, AttachmentEncoding, _owner.EmbeddedDepth + 1);
 
         throw new OutlookPstFormatException(OutlookPstResourceStrings.Format_Invalid_PstEmbeddedMessage);

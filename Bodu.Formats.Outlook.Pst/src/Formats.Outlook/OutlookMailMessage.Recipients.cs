@@ -19,13 +19,14 @@ public sealed partial class OutlookMailMessage
     /// </summary>
     /// <value>The recipient views, built once on first access; empty when the message has no recipient table.</value>
     /// <exception cref="ObjectDisposedException">The owning session has been disposed.</exception>
-    /// <exception cref="PstFileException">The container is malformed.</exception>
     /// <exception cref="OutlookPstFormatException">
-    /// Under strict validation, a recipient row carries an undecodable value.
+    /// The container is malformed, or, under strict validation, a recipient row carries an undecodable value.
     /// </exception>
     /// <remarks>
     /// Recipients are row-resident: each recipient-table row's cells decode directly into the recipient's property
-    /// collection, with code-page strings decoded under the message's encoding.
+    /// collection, with code-page strings decoded under the message's encoding. An exception thrown by
+    /// <see cref="OutlookMailStoreReaderOptions.ValueOmittedCallback" /> while the rows are decoded propagates from
+    /// this access unchanged.
     /// </remarks>
     public IReadOnlyList<OutlookRecipient> Recipients
     {
@@ -33,7 +34,19 @@ public sealed partial class OutlookMailMessage
         {
             _store.ThrowIfDisposed();
 
-            return _recipients ??= BuildRecipients();
+            if (_recipients is null)
+            {
+                try
+                {
+                    _recipients = BuildRecipients();
+                }
+                catch (PstFileException ex) when (_store.IsContainerFault(ex))
+                {
+                    throw PstContainer.Wrap(ex);
+                }
+            }
+
+            return _recipients;
         }
     }
 
@@ -50,7 +63,7 @@ public sealed partial class OutlookMailMessage
         foreach (PstTableRow row in tableNode.ReadTableContext().EnumerateRows())
         {
             recipients.Add(new OutlookRecipient(PstMapiPropertyReader.ReadRow(
-                row, MessageEncoding, _store.Strict, _store.CreateOmissionReporter(tableNode.Id, row.RowId))));
+                row, MessageEncoding, _store.Strict, _store.CreateOmissionReporter(tableNode.NodeId, row.RowId))));
         }
 
         return [.. recipients];

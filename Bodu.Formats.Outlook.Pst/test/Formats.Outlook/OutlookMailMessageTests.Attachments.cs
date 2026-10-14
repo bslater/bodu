@@ -92,4 +92,27 @@ public partial class OutlookMailMessageTests
             _ = message.Attachments;
         });
     }
+
+    /// <summary>
+    /// Verifies that reading the attachments of a message whose attachment table has a corrupt heap throws
+    /// <see cref="OutlookPstFormatException" />, keeping the container's <see cref="PstFileFormatException" /> as the
+    /// inner exception.
+    /// </summary>
+    [TestMethod]
+    public void Attachments_WhenAttachmentTableHeapIsCorrupt_ShouldThrowOutlookPstFormatException()
+    {
+        // Subnode 0x671 of the Inbox's first message (0x200024) is its attachment table.
+        byte[] input = OutlookMailStoreTests.GenerateWithCorruptHeap("gen:Mail(att=1~a.txt~hello)", 0x200024, 0x671);
+        using OutlookMailStore store = OutlookMailStore.Open(new MemoryStream(input, writable: false), new OutlookMailStoreReaderOptions());
+        OutlookMailMessage message = store.RootFolder.EnumerateSubfolders().Single().EnumerateMessages().Single();
+
+        var ex = Assert.ThrowsExactly<OutlookPstFormatException>(() =>
+        {
+            _ = message.Attachments;
+        });
+
+        Assert.IsNotNull(ex.InnerException);
+        Assert.IsInstanceOfType<PstFileFormatException>(ex.InnerException);
+        Assert.AreEqual(PstFileError.InvalidHeap, ((PstFileFormatException)ex.InnerException).Error);
+    }
 }

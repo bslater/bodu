@@ -11,7 +11,7 @@ namespace Bodu.IO.Pst;
 /// <see cref="PstFileFormatException" /> and <see cref="PstUnsupportedFormatException" /> derived from it.
 /// </summary>
 [TestClass]
-public class PstFileExceptionTests
+public partial class PstFileExceptionTests
 {
     /// <summary>
     /// Verifies that the derived exceptions extend the base so consumers can catch the family together.

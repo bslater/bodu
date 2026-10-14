@@ -22,7 +22,9 @@ namespace Bodu.Formats.Outlook;
 /// </para>
 /// <para>
 /// Under strict validation a table row that does not reference a valid node of the expected kind throws
-/// <see cref="OutlookPstFormatException" />; under the tolerant levels the row is skipped.
+/// <see cref="OutlookPstFormatException" />; under the tolerant levels the row is skipped. Container corruption met
+/// while the folder decodes or enumerates throws <see cref="OutlookPstFormatException" /> at every level, with the
+/// container's <see cref="PstFileException" /> as the inner exception.
 /// </para>
 /// </remarks>
 public sealed class OutlookMailFolder
@@ -63,13 +65,12 @@ public sealed class OutlookMailFolder
     /// </summary>
     /// <value>The tag-addressed property collection, decoded once on first access.</value>
     /// <exception cref="ObjectDisposedException">The owning session has been disposed.</exception>
-    /// <exception cref="PstFileException">The container is malformed.</exception>
     /// <exception cref="OutlookPstFormatException">
-    /// Under strict validation, a property value cannot be decoded.
+    /// The container is malformed, or, under strict validation, a property value cannot be decoded.
     /// </exception>
     /// <remarks>
     /// An exception thrown by <see cref="OutlookMailStoreReaderOptions.ValueOmittedCallback" /> while the properties
-    /// are decoded propagates from this access.
+    /// are decoded propagates from this access unchanged.
     /// </remarks>
     public MapiPropertyCollection Properties
     {
@@ -79,13 +80,20 @@ public sealed class OutlookMailFolder
 
             if (_properties is null)
             {
-                _properties = PstMapiPropertyReader.Read(
-                    _node.ReadPropertyContext(),
-                    _inheritedEncoding ?? _store.StoreEncoding,
-                    _store.Strict,
-                    _store.CreateOmissionReporter(_node.Id),
-                    out Encoding encoding);
-                _encoding = encoding;
+                try
+                {
+                    _properties = PstMapiPropertyReader.Read(
+                        _node.ReadPropertyContext(),
+                        _inheritedEncoding ?? _store.StoreEncoding,
+                        _store.Strict,
+                        _store.CreateOmissionReporter(_node.NodeId),
+                        out Encoding encoding);
+                    _encoding = encoding;
+                }
+                catch (PstFileException ex) when (_store.IsContainerFault(ex))
+                {
+                    throw PstContainer.Wrap(ex);
+                }
             }
 
             return _properties;
@@ -132,9 +140,8 @@ public sealed class OutlookMailFolder
     /// </summary>
     /// <returns>The subfolder views; empty when the folder has no hierarchy table.</returns>
     /// <exception cref="ObjectDisposedException">The owning session has been disposed.</exception>
-    /// <exception cref="PstFileException">The container is malformed.</exception>
     /// <exception cref="OutlookPstFormatException">
-    /// Under strict validation, a hierarchy row does not reference a valid folder node.
+    /// The container is malformed, or, under strict validation, a hierarchy row does not reference a valid folder node.
     /// </exception>
     /// <remarks>
     /// Search folders are Outlook runtime state, not archive content, and are excluded from the enumeration at every
@@ -143,7 +150,7 @@ public sealed class OutlookMailFolder
     public IEnumerable<OutlookMailFolder> EnumerateSubfolders()
     {
         foreach (PstNode node in EnumerateTableNodes(
-            PstStoreLayout.HierarchyTableOf(_node.Id), PstNodeType.NormalFolder, silentlySkipped: PstNodeType.SearchFolder))
+            PstStoreLayout.HierarchyTableOf(_node.NodeId), PstNodeType.NormalFolder, silentlySkipped: PstNodeType.SearchFolder))
         {
             yield return new OutlookMailFolder(_store, node, FolderEncoding);
         }
@@ -154,13 +161,12 @@ public sealed class OutlookMailFolder
     /// </summary>
     /// <returns>The message views; empty when the folder has no contents table.</returns>
     /// <exception cref="ObjectDisposedException">The owning session has been disposed.</exception>
-    /// <exception cref="PstFileException">The container is malformed.</exception>
     /// <exception cref="OutlookPstFormatException">
-    /// Under strict validation, a contents row does not reference a valid message node.
+    /// The container is malformed, or, under strict validation, a contents row does not reference a valid message node.
     /// </exception>
     public IEnumerable<OutlookMailMessage> EnumerateMessages()
     {
-        foreach (PstNode node in EnumerateTableNodes(PstStoreLayout.ContentsTableOf(_node.Id), PstNodeType.NormalMessage))
+        foreach (PstNode node in EnumerateTableNodes(PstStoreLayout.ContentsTableOf(_node.NodeId), PstNodeType.NormalMessage))
             yield return new OutlookMailMessage(_store, node, FolderEncoding);
     }
 
@@ -169,13 +175,13 @@ public sealed class OutlookMailFolder
     /// </summary>
     /// <returns>The associated-message views; empty when the folder has no associated-contents table.</returns>
     /// <exception cref="ObjectDisposedException">The owning session has been disposed.</exception>
-    /// <exception cref="PstFileException">The container is malformed.</exception>
     /// <exception cref="OutlookPstFormatException">
-    /// Under strict validation, an associated-contents row does not reference a valid message node.
+    /// The container is malformed, or, under strict validation, an associated-contents row does not reference a valid
+    /// message node.
     /// </exception>
     public IEnumerable<OutlookMailMessage> EnumerateAssociatedMessages()
     {
-        foreach (PstNode node in EnumerateTableNodes(PstStoreLayout.AssociatedContentsTableOf(_node.Id), PstNodeType.AssociatedMessage))
+        foreach (PstNode node in EnumerateTableNodes(PstStoreLayout.AssociatedContentsTableOf(_node.NodeId), PstNodeType.AssociatedMessage))
             yield return new OutlookMailMessage(_store, node, FolderEncoding);
     }
 
@@ -184,7 +190,7 @@ public sealed class OutlookMailFolder
     /// </summary>
     /// <returns>The display name, or the node identifier when unnamed.</returns>
     public override string ToString() =>
-        DisplayName ?? _node.Id.ToString();
+        DisplayName ?? _node.NodeId.ToString();
 
     /// <summary>
     /// Gets the encoding the folder's code-page strings decoded with, forcing the properties to decode first.
@@ -210,7 +216,25 @@ public sealed class OutlookMailFolder
     /// without error at every validation level.
     /// </param>
     /// <returns>The referenced nodes, in row order; empty when the table node is absent.</returns>
-    private IEnumerable<PstNode> EnumerateTableNodes(PstNodeId tableId, PstNodeType expectedType, PstNodeType? silentlySkipped = null)
+    /// <exception cref="OutlookPstFormatException">
+    /// The container is malformed, or, under strict validation, a row does not reference a valid node of the expected
+    /// type.
+    /// </exception>
+    /// <remarks>
+    /// The rows are read as the sequence is enumerated, so a container fault surfaces from the enumeration and is
+    /// translated there.
+    /// </remarks>
+    private IEnumerable<PstNode> EnumerateTableNodes(PstNodeId tableId, PstNodeType expectedType, PstNodeType? silentlySkipped = null) =>
+        _store.GuardContainer(ReadTableNodes(tableId, expectedType, silentlySkipped));
+
+    /// <summary>
+    /// Reads the object nodes a table's rows reference, letting a container fault propagate.
+    /// </summary>
+    /// <param name="tableId">The composed table node identifier.</param>
+    /// <param name="expectedType">The node type a row must reference.</param>
+    /// <param name="silentlySkipped">A node type skipped without error at every validation level.</param>
+    /// <returns>The referenced nodes, in row order; empty when the table node is absent.</returns>
+    private IEnumerable<PstNode> ReadTableNodes(PstNodeId tableId, PstNodeType expectedType, PstNodeType? silentlySkipped)
     {
         if (!_store.TryGetNode(tableId, out PstNode? tableNode))
             yield break;
@@ -221,7 +245,7 @@ public sealed class OutlookMailFolder
             if (rowNodeId.Type == silentlySkipped)
                 continue;
 
-            if (!_store.TryGetNode(rowNodeId, out PstNode? node) || node.Id.Type != expectedType)
+            if (!_store.TryGetNode(rowNodeId, out PstNode? node) || node.NodeId.Type != expectedType)
             {
                 if (_store.Strict)
                 {

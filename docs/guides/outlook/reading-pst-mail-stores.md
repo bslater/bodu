@@ -48,7 +48,7 @@ using var store = OutlookMailStore.Open(stream, options, leaveOpen: true);
 Console.WriteLine(store.DisplayName);
 ```
 
-`IsPstFile` checks only the `!BDN` magic and restores the stream position, so it is cheap to call ahead of a full open. It answers `true` for *any* PST variant: Unicode and ANSI files then open, while an OST file (client magic `SO`, whatever its version) and the 4 KiB-page variant are rejected by the container with <xref:Bodu.IO.Pst.PstUnsupportedFormatException>.
+`IsPstFile` checks only the `!BDN` magic and restores the stream position, so it is cheap to call ahead of a full open. It answers `true` for *any* PST variant: Unicode and ANSI files then open, while an OST file (client magic `SO`, whatever its version) and the 4 KiB-page variant are rejected with <xref:Bodu.Formats.Outlook.OutlookPstFormatException>, whose `InnerException` is the container's <xref:Bodu.IO.Pst.PstUnsupportedFormatException>.
 
 ## Pattern 1 - inventory a store
 
@@ -355,16 +355,16 @@ foreach (OutlookMailMessage message in AllMessages(store.RootFolder))
 
 The Windows code pages that dominate real-world mail are available on every platform because the reader registers `CodePagesEncodingProvider`, which ships in the shared framework, so the package needs no extra dependency for them.
 
-## Errors: two families, not one
+## Errors: one family, container faults wrapped
 
-The `.pst` reader reports failures through two unrelated exception hierarchies, and - unlike the `.msg` reader, which wraps container faults - it lets the container's exceptions propagate **unwrapped**:
+The `.pst` reader reports every failure to read a store as <xref:Bodu.Formats.Outlook.OutlookPstFormatException>, the `.pst` member of the <xref:Bodu.Formats.Outlook.OutlookFormatException> family, so one handler catches both Outlook formats. Like the `.msg` reader, it wraps the faults of its container: the container's <xref:Bodu.IO.Pst.PstFileException> is the `InnerException`, and its `Error` carries the <xref:Bodu.IO.Pst.PstFileError> category. A messaging-level violation has no inner exception.
 
 | Exception | Raised for | Where |
 |---|---|---|
-| <xref:Bodu.IO.Pst.PstFileFormatException> | The stream is not structurally a PST file, or a page, block, tree, heap, or context is malformed, at every validation level - including a property whose heap reference does not resolve (`InvalidHeap`), whose fixed-width value is shorter than its type (`InvalidPropertyContext`), or whose value names a subnode the node does not contain (`InvalidSubnodeTree`), unless `OmitUnresolvableValues` omits that value; `Error` carries the <xref:Bodu.IO.Pst.PstFileError> category. Also `LimitExceeded` when a node payload exceeds `MaxNodeDataLength`. | `Open`, and any property, folder, message, or attachment read. |
-| <xref:Bodu.IO.Pst.PstUnsupportedFormatException> | An OST file of any version (the 4 KiB-page variant among them), or a content encoding other than none, permute, or cyclic (Windows Information Protection, `0x10`, among them). | `Open`. |
-| <xref:Bodu.IO.Pst.PstFileException> (base) | Catch-all for the container family. | Everywhere the two above apply. |
-| <xref:Bodu.Formats.Outlook.OutlookPstFormatException> | A messaging-level violation of MS-PST: under strict validation a hierarchy, contents, or attachment row that references no valid node, an undecodable property value or recipient cell, an undefined attachment method, or a malformed name-to-id map; at every level a missing by-value payload (a by-value attachment with no `PidTagAttachDataBinary` property) or embedded-message subnode, a tripped embedded-message depth, or a malformed / oversized compressed-RTF body. | Folder and message enumeration, `Properties`, `Recipients`, `Method`, `OpenContentStream`, `OpenMessage`, `BodyRtf`. |
+| <xref:Bodu.Formats.Outlook.OutlookPstFormatException>, `InnerException` a <xref:Bodu.IO.Pst.PstFileFormatException> | The stream is not structurally a PST file, or a page, block, tree, heap, or context is malformed, at every validation level - including a property whose heap reference does not resolve (`InvalidHeap`), whose fixed-width value is shorter than its type (`InvalidPropertyContext`), or whose value names a subnode the node does not contain (`InvalidSubnodeTree`), unless `OmitUnresolvableValues` omits that value. Also `LimitExceeded` when a node payload exceeds `MaxNodeDataLength`. | `Open`, any property, folder, message, or attachment read, and a read of a content stream. |
+| <xref:Bodu.Formats.Outlook.OutlookPstFormatException>, `InnerException` a <xref:Bodu.IO.Pst.PstUnsupportedFormatException> | An OST file of any version (the 4 KiB-page variant among them), or a content encoding other than none, permute, or cyclic (Windows Information Protection, `0x10`, among them). | `Open`. |
+| <xref:Bodu.Formats.Outlook.OutlookPstFormatException>, `InnerException` a <xref:Bodu.IO.Pst.PstNodeNotFoundException> | A store without its root folder node. | `RootFolder`. |
+| <xref:Bodu.Formats.Outlook.OutlookPstFormatException>, no `InnerException` | A messaging-level violation of MS-PST: under strict validation a hierarchy, contents, or attachment row that references no valid node, an undecodable property value or recipient cell, an undefined attachment method, or a malformed name-to-id map; at every level a missing by-value payload (a by-value attachment with no `PidTagAttachDataBinary` property) or embedded-message subnode, a tripped embedded-message depth, or a malformed / oversized compressed-RTF body. | Folder and message enumeration, `Properties`, `Recipients`, `Method`, `OpenContentStream`, `OpenMessage`, `BodyRtf`. |
 | <xref:System.NotSupportedException> | A content accessor that does not match the attachment's `Method`. | `OpenContentStream`, `OpenMessage`. |
 | <xref:System.ObjectDisposedException> | Any member after the session is disposed. | Everywhere. |
 | <xref:System.ArgumentException> | The stream is not readable and seekable. | `Open` / `OpenRead(stream)`. |
@@ -379,13 +379,13 @@ try
     foreach (OutlookMailFolder folder in store.RootFolder.EnumerateSubfolders())
         Console.WriteLine(folder.DisplayName);
 }
-catch (PstUnsupportedFormatException)
+catch (OutlookPstFormatException ex) when (ex.InnerException is PstUnsupportedFormatException)
 {
     Console.WriteLine("A recognized but unsupported variant (an OST file, or an unsupported content encoding).");
 }
-catch (PstFileException ex)
+catch (OutlookPstFormatException ex) when (ex.InnerException is PstFileException container)
 {
-    Console.WriteLine($"Container corruption: {ex.Error} - {ex.Message}");
+    Console.WriteLine($"Container corruption: {container.Error} - {container.Message}");
 }
 catch (OutlookPstFormatException ex)
 {
@@ -397,7 +397,7 @@ catch (OutlookPstFormatException ex)
 ```
 
 > [!TIP]
-> Under the default `Compatible` level the reader is forgiving: a property value the MAPI decoding rejects (a malformed multi-valued value, for one) is omitted, a table row that references no valid node is skipped, and an undefined attachment method is inferred. A fault in a property context itself - a heap reference that does not resolve, a fixed-width value shorter than its type, a value in a subnode the node does not have - is container corruption and fails the read with <xref:Bodu.IO.Pst.PstFileFormatException> at every level; to recover the rest of such an object, set `OmitUnresolvableValues` (see [Salvaging a damaged store](reader-options-and-limits.md#salvaging-a-damaged-store)). Reach for `Strict` when you are validating a corpus and want those conditions to surface as `OutlookPstFormatException` instead - see [Reader options and resource limits](reader-options-and-limits.md).
+> Under the default `Compatible` level the reader is forgiving: a property value the MAPI decoding rejects (a malformed multi-valued value, for one) is omitted, a table row that references no valid node is skipped, and an undefined attachment method is inferred. A fault in a property context itself - a heap reference that does not resolve, a fixed-width value shorter than its type, a value in a subnode the node does not have - is container corruption and fails the read at every level, with <xref:Bodu.IO.Pst.PstFileFormatException> as the `InnerException` of the <xref:Bodu.Formats.Outlook.OutlookPstFormatException>; to recover the rest of such an object, set `OmitUnresolvableValues` (see [Salvaging a damaged store](reader-options-and-limits.md#salvaging-a-damaged-store)). Reach for `Strict` when you are validating a corpus and want the tolerated conditions to throw `OutlookPstFormatException` instead - see [Reader options and resource limits](reader-options-and-limits.md).
 
 ## API summary
 

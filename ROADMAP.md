@@ -275,7 +275,7 @@ README that lists its sources and what the rows found
 | `corpus/compound/` | `Bodu.IO.Compound` | 5 | 397 |
 | `corpus/biff/` | `Bodu.IO.Biff`, `Bodu.Formats.Excel.Binary` | 6 | 867 |
 | `corpus/msg/` | `Bodu.Formats.Outlook.Msg` and the shared Outlook decode layer | 5 | 447 |
-| `corpus/pst/` | `Bodu.IO.Pst`, `Bodu.Formats.Outlook.Pst` | 4 | 580 |
+| `corpus/pst/` | `Bodu.IO.Pst`, `Bodu.Formats.Outlook.Pst` | 4 | 583 |
 
 The rest of what 1.3.0 carries:
 
@@ -1005,7 +1005,7 @@ Landed since the previous revision:
 - **ANSI stores** (2026-09-04): `wVer` 14/15 files read through the same
   NDB readers, driven by an internal `PstLayout` descriptor.
 - **The release-note catalogue** (1.3.0): four `.pst` readers' fixes,
-  580 rows (`corpus/pst/`); the defects they found are fixed, so every
+  583 rows (`corpus/pst/`); the defects they found are fixed, so every
   Unicode version from 23 up but 36 now opens, and a B-tree page or
   heap allocation outside its bounds is rejected.
 

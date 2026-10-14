@@ -54,7 +54,7 @@ Both readers open a disposable **session** that owns the container, decode every
 
 - <xref:Bodu.Formats.Outlook.OutlookFormatException> - the family base; catch it to handle both formats.
 - <xref:Bodu.Formats.Outlook.OutlookMsgFormatException> - not a compound file, a malformed container (the <xref:Bodu.IO.Compound.CompoundFileFormatException> is wrapped as `InnerException`), an MS-OXMSG violation under strict validation, or a tripped depth / RTF limit.
-- <xref:Bodu.Formats.Outlook.OutlookPstFormatException> - a messaging-level MS-PST violation (an invalid table row under strict validation, a malformed name-to-id map, a tripped limit). Container corruption is not wrapped: it propagates as the <xref:Bodu.IO.Pst.PstFileException> family, and a failed open throws <xref:Bodu.IO.Pst.PstFileFormatException> or <xref:Bodu.IO.Pst.PstUnsupportedFormatException> directly.
+- <xref:Bodu.Formats.Outlook.OutlookPstFormatException> - not a PST file or an unsupported variant, a malformed container (the <xref:Bodu.IO.Pst.PstFileException>, with its <xref:Bodu.IO.Pst.PstFileError> category, is wrapped as `InnerException`, from the open or from any later read), or a messaging-level MS-PST violation (an invalid table row under strict validation, a malformed name-to-id map, a tripped limit).
 
 ## Example
 
@@ -120,8 +120,14 @@ try
     using var store = OutlookMailStore.Open(File.OpenRead("suspect.pst"), options);
     Console.WriteLine(store.DisplayName);
 }
-catch (PstFileException ex)          { Console.WriteLine($"container: {ex.Error}"); }
-catch (OutlookPstFormatException ex) { Console.WriteLine($"messaging: {ex.Message}"); }
+catch (OutlookPstFormatException ex) when (ex.InnerException is PstFileException container)
+{
+    Console.WriteLine($"container: {container.Error}");
+}
+catch (OutlookPstFormatException ex)
+{
+    Console.WriteLine($"messaging: {ex.Message}");
+}
 ```
 
 ## Notes
@@ -131,5 +137,5 @@ catch (OutlookPstFormatException ex) { Console.WriteLine($"messaging: {ex.Messag
 - **Code pages.** `String8` properties decode through the object's message code page, then its internet code page, then Windows-1252, with child objects inheriting; the readers register `CodePagesEncodingProvider` so Windows code pages resolve on every platform.
 - **Compressed RTF is bounded.** `BodyRtf` decompresses `PidTagRtfCompressed` (MS-OXRTFCP) on first access; the declared size lies outside the payload's checksum, so `MaxDecompressedRtfBytes` is enforced before allocation at every validation level. Set `DecompressRtf = false` to keep the raw payload only.
 - **Large attachments stream.** A by-value payload above `MaxInlineAttachmentBytes` is left in the container and served only through `OpenContentStream()` - in the `.msg` reader sector by sector under `CompoundReadStrategy.Streaming`, in the `.pst` reader block by block always.
-- **Two error styles.** The `.msg` reader wraps container failures in <xref:Bodu.Formats.Outlook.OutlookMsgFormatException>; the `.pst` reader lets <xref:Bodu.IO.Pst.PstFileException> propagate and reserves <xref:Bodu.Formats.Outlook.OutlookPstFormatException> for messaging-level violations. Catch <xref:Bodu.Formats.Outlook.OutlookFormatException> for the family and the container family beneath it.
+- **One error family.** Both readers wrap container failures: the `.msg` reader in <xref:Bodu.Formats.Outlook.OutlookMsgFormatException>, the `.pst` reader in <xref:Bodu.Formats.Outlook.OutlookPstFormatException>, each keeping the container's exception as `InnerException`. Catch <xref:Bodu.Formats.Outlook.OutlookFormatException> for every failure to read either format.
 - **See also:** the [introduction](~/docs/outlook/index.md), [core concepts](~/docs/outlook/concepts.md), and [getting started](~/docs/outlook/getting-started.md); the [Bodu.Formats.Outlook guides](~/guides/outlook/index.md); and the containers <xref:Bodu.IO.Compound> and <xref:Bodu.IO.Pst>.

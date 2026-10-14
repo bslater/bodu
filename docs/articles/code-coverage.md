@@ -62,7 +62,11 @@ Microsoft Code Coverage XML export for focused review.
 
 Every collected package sits at or above **90% line coverage**, and
 `bld/coverage-thresholds.json` holds a per-package floor at roughly its measured
-rate. The floor is a gate, not a target: a package well above it is not
+rate (the measurement less the 0.5pp grace band, as
+`tools/Update-CoverageThresholds.ps1` records it). The ratchet,
+`tools/New-CoverageMatrix.ps1 -Check`, also fails for a collected package that
+has no floor, so a new package is gated from its first collection. The floor is
+a gate, not a target: a package well above it is not
 "finished", and a package at it is not in trouble. What the invariant buys is
 that a new gap has to be introduced deliberately - the ratchet fails the build
 before an untested subsystem can arrive quietly inside an otherwise healthy
