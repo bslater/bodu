@@ -36,9 +36,11 @@
     <EmbeddedResource Include="Fixtures\ReleaseNotes\*-fixes.csv" />
   </ItemGroup>
 
-  <!-- Compiles the opted-in documentation snippets (DocumentationSnippetCompileTests). -->
+  <!-- Compiles the opted-in documentation snippets (DocumentationSnippetCompileTests). The Outlook landing pages show
+       both readers side by side, so the .msg reader is referenced for their snippets only. -->
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
+    <ProjectReference Include="..\..\Bodu.Formats.Outlook.Msg\src\Bodu.Formats.Outlook.Msg.csproj" />
   </ItemGroup>
 
 </Project>

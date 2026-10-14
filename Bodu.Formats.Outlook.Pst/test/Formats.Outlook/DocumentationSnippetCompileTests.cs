@@ -11,8 +11,8 @@ using Microsoft.CodeAnalysis.CSharp;
 namespace Bodu.Formats.Outlook;
 
 /// <summary>
-/// Compiles the PST documentation examples that are explicitly opted in, so a code sample cannot silently drift
-/// from the public API it documents.
+/// Compiles the PST container and Outlook landing-page documentation examples that are explicitly opted in, so a code
+/// sample cannot silently drift from the public API it documents.
 /// </summary>
 /// <remarks>
 /// A fenced <c>csharp</c> block is compiled only when the line immediately preceding its opening fence is the sentinel
@@ -30,18 +30,23 @@ public sealed partial class DocumentationSnippetCompileTests
     /// <summary>
     /// The documentation directories, relative to the repository root, whose opted-in snippets this test compiles.
     /// </summary>
+    /// <remarks>
+    /// The Outlook landing pages show the <c>.msg</c> and <c>.pst</c> readers side by side; this project references both,
+    /// whereas the <c>.msg</c> test project, which compiles the Outlook guides, references only its own reader.
+    /// </remarks>
     private static readonly string[] s_snippetDirectories =
     [
         Path.Combine("docs", "docs", "io-pst"),
+        Path.Combine("docs", "docs", "outlook"),
     ];
 
     /// <summary>
-    /// Verifies that every opted-in PST documentation snippet compiles against the current public API, with at least
-    /// one snippet marked so the guard is demonstrably wired.
+    /// Verifies that every opted-in PST container and Outlook landing-page documentation snippet compiles against the
+    /// current public API, with at least one snippet marked so the guard is demonstrably wired.
     /// </summary>
     [TestMethod]
     [TestCategory("Regression")]
-    public void IoPstDocSnippets_WhenMarkedForCompile_ShouldCompile()
+    public void DocSnippets_WhenMarkedForCompile_ShouldCompile()
     {
         IReadOnlyList<string>? files = FindMarkedSnippetFiles();
         if (files is null)
@@ -62,7 +67,7 @@ public sealed partial class DocumentationSnippetCompileTests
                 List<Diagnostic> errors = Compile(snippet, references);
                 if (errors.Count > 0)
                 {
-                    failures.AppendLine($"{Path.GetFileName(file)}:");
+                    failures.AppendLine($"{Path.GetFileName(Path.GetDirectoryName(file))}/{Path.GetFileName(file)}:");
                     foreach (Diagnostic error in errors)
                         failures.AppendLine($"  {error.Id}: {error.GetMessage()}");
                 }
@@ -129,20 +134,25 @@ public sealed partial class DocumentationSnippetCompileTests
     }
 
     /// <summary>
-    /// Compiles a snippet as the body of a method and returns the error diagnostics. Leading <c>using</c> directive
-    /// lines are dropped first - documentation snippets often show them for context, but the wrapper method already
-    /// imports the covered namespaces.
+    /// Compiles a snippet as the body of a method and returns the error diagnostics. The snippet's <c>using</c>
+    /// directive lines are moved to the top of the compilation unit first - documentation snippets show the namespaces
+    /// they need, such as <c>Bodu.IO.Compound</c> for the <c>.msg</c> reader's options, and a directive the wrapper
+    /// already imports is harmless.
     /// </summary>
     /// <param name="snippet">The snippet body (method-body statements, optionally preceded by using directives).</param>
     /// <param name="references">The metadata references to compile against.</param>
     /// <returns>The error-severity diagnostics, empty when the snippet compiles.</returns>
     private static List<Diagnostic> Compile(string snippet, List<MetadataReference> references)
     {
-        snippet = string.Join(
-            Environment.NewLine,
-            snippet.Split('\n').Where(static line => !System.Text.RegularExpressions.Regex.IsMatch(line.Trim(), @"^using [A-Za-z0-9_.]+;$")));
+        string[] lines = snippet.Split('\n');
+        static bool IsUsingDirective(string line) =>
+            System.Text.RegularExpressions.Regex.IsMatch(line.Trim(), @"^using [A-Za-z0-9_.]+;$");
+
+        string directives = string.Concat(lines.Where(IsUsingDirective).Select(static line => line.Trim()));
+        snippet = string.Join(Environment.NewLine, lines.Where(static line => !IsUsingDirective(line)));
 
         string source =
+            directives +
             "using System;" +
             "using System.Collections.Generic;" +
             "using System.IO;" +
