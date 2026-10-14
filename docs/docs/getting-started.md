@@ -121,11 +121,12 @@ int oldest = buffer.Dequeue(); // 2
 using Bodu.Collections.Generic.Concurrent;
 
 var seen = new ConcurrentHashSet<string>(StringComparer.OrdinalIgnoreCase);
+string[] correlationIds = ["order-1", "order-2", "ORDER-1"];
 
-Parallel.ForEach(events, e =>
+Parallel.ForEach(correlationIds, id =>
 {
-    if (seen.Add(e.CorrelationId))   // true only for the first arrival
-        ProcessFirstOccurrence(e);
+    if (seen.Add(id))   // true only for the first arrival of each id
+        Console.WriteLine($"first: {id}");
 });
 ```
 
@@ -175,7 +176,7 @@ using Bodu.IO.Hashing.Checksums;
 
 byte[] data = Encoding.UTF8.GetBytes("the quick brown fox");
 
-using var crc = new Crc(CrcStandard.CRC32_ISOHDLC);
+var crc = new Crc(CrcStandard.CRC32_ISOHDLC);   // not IDisposable: nothing to release
 crc.Append(data);
 string hex = Convert.ToHexString(crc.GetCurrentHash());
 ```
@@ -259,6 +260,7 @@ Three different jobs that all sound like "text" - see the **[Text & Serializatio
 **Bodu.Text.Encoding** is a library of binary-to-text encoders - Base16, Base32, Base64, Base58, and Base85 - each with span- and UTF-8-friendly overloads, `OperationStatus` streaming, and a unified `IBinaryEncoding` interface for runtime-pluggable selection.
 
 ```csharp
+using System.Security.Cryptography;
 using Bodu.Text.Encoding;
 
 byte[] digest = SHA256.HashData("hello"u8.ToArray());
@@ -273,6 +275,9 @@ string urlSafe  = Base64.Encode(digest, Base64Variant.UrlSafe);             // R
 Pick the encoding from configuration at runtime via the unified interface:
 
 ```csharp
+using Bodu.Text.Encoding;
+
+byte[] rawBytes = [0xFB, 0xFF, 0x01];
 IBinaryEncoding encoding = BinaryEncodings.Get("base64-urlsafe");
 string token = encoding.Encode(rawBytes);
 byte[] back  = encoding.Decode(token);
@@ -296,6 +301,7 @@ var filter = TextFilter.Parse(
     "!*debug*",     // '!' flips the pattern to an exclude
 ]);
 
+string[] lines = ["error: disk full", "warn: retrying", "info: started", "error-debug: trace"];
 var kept = filter.FilterToList(lines);       // bulk filtering, source order preserved
 var why  = filter.Evaluate("error-debug");   // → Excluded, decided by "!*debug*"
 ```
@@ -307,7 +313,7 @@ var why  = filter.Evaluate("error-debug");   // → Excluded, decided by "!*debu
 **Bodu.Text.Formats** parses and emits self-framing serialization formats - Delimited (CSV / TSV), DotEnv, and Ini - each through a strongly-typed value model and a span- and stream-friendly codec with `Try*` overloads.
 
 ```csharp
-using Bodu.Text.Ini;
+using Bodu.Text.Ini.Nodes;
 
 IniObject config = IniNode.Parse("""
     ; connection settings
@@ -318,10 +324,10 @@ IniObject config = IniNode.Parse("""
 
 config["database"].AsObject()["port"].AsValue().Value = "5433";
 
-string text = config.ToString();   // comments and ordering preserved
+string text = config.ToString();   // the comment line and the entry order survive
 ```
 
-The parsed model retains comments, ordering, and whitespace, so a `Parse` → mutate → `Format` cycle round-trips the source. The Delimited and DotEnv namespaces follow the same `Parse` / `Format` shape.
+The INI tree keeps comment lines and the order of sections and entries, so a `Parse` → mutate → `ToString` cycle preserves the document's shape. It does not keep inline comments or the source's spacing: the writer emits `key=value`, so `host = localhost` comes back as `host=localhost`. The Delimited and DotEnv trees share the same `Parse` / `ToString` (or `ToUtf8Bytes`) shape but carry no comments.
 
 → **[Introduction](formats/index.md)** · **[Getting started](formats/getting-started.md)** · **[Guides](../guides/formats/index.md)**
 
@@ -332,14 +338,14 @@ The parsed model retains comments, ordering, and whitespace, so a `Parse` → mu
 ```csharp
 using Bodu.Text.Toml;
 
+string toml = TomlSerializer.Serialize(new ServerConfig { Host = "localhost", Port = 8080 });
+ServerConfig config = TomlSerializer.Deserialize<ServerConfig>(toml);
+
 public sealed class ServerConfig
 {
     public string Host { get; set; } = "";
     public int Port { get; set; }
 }
-
-string toml = TomlSerializer.Serialize(new ServerConfig { Host = "localhost", Port = 8080 });
-ServerConfig config = TomlSerializer.Deserialize<ServerConfig>(toml);
 ```
 
 Swap `Toml` for `Bencode` (and `string` for `byte[]`) for the Bencode equivalent, or for `Yaml` for a YAML document. Bencode (BEP 3) object mapping lives here, not in `Bodu.Text.Formats`.
@@ -439,7 +445,9 @@ Mixing currencies on the typed form is a compile error; on the runtime form it t
 
 ```csharp
 using Bodu.Financial;
+using Microsoft.Extensions.DependencyInjection;
 
+var services = new ServiceCollection();
 services.AddFinancialService();
 ```
 
@@ -530,7 +538,7 @@ foreach (PstPropertyValue value in store.ReadPropertyContext())
 
 ### Bodu.Formats.Outlook
 
-**Bodu.Formats.Outlook** is the shared MAPI value model; **Bodu.Formats.Outlook.Msg** reads a `.msg` message over `Bodu.IO.Compound`, and **Bodu.Formats.Outlook.Pst** reads a `.pst` mail store over `Bodu.IO.Pst`. Both are read-only and both surface the same recipient, attachment, and body types.
+**Bodu.Formats.Outlook** is the shared MAPI value model; **Bodu.Formats.Outlook.Msg** reads a `.msg` message over `Bodu.IO.Compound`, and **Bodu.Formats.Outlook.Pst** reads a `.pst` mail store over `Bodu.IO.Pst`. Both are read-only. They share the MAPI value model and the `OutlookRecipient` type, and expose similar attachment and body members: the `.msg` reader's attachments are `OutlookAttachment`, the `.pst` reader's `OutlookMailAttachment`, and each message type carries its own `BodyText` / `BodyHtml` / `BodyRtf`.
 
 ```csharp
 using Bodu.Formats.Outlook;

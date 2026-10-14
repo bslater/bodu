@@ -64,18 +64,26 @@ Cross the line the moment the trust assumption changes. A CRC that guards a down
 - **KDFs** - memory-hard password hashing (Argon2id / Argon2i / Argon2d, scrypt) and the extract-and-expand `Hkdf` for high-entropy secrets.
 - **One-time passwords** - `Hotp` (RFC 4226) and `Totp` (RFC 6238) code generation and verification.
 
-The lifecycle shape differs accordingly. Non-cryptographic hashes snapshot non-destructively; cryptographic algorithms finalize and dispose:
+The lifecycle shape differs accordingly. Non-cryptographic hashes snapshot non-destructively and hold nothing to release - `Crc` and its siblings derive from `NonCryptographicHashAlgorithm`, which is not `IDisposable`, so they need no `using`. The cryptographic algorithms derive from `HashAlgorithm` / `SymmetricAlgorithm`, finalize per computation, and are disposed when you are done with them:
 
 ```csharp
-// Bodu.IO.Hashing - streaming with non-destructive snapshots.
-using var crc = new Crc(CrcStandard.CRC32_ISOHDLC);
+using System.Security.Cryptography;
+using Bodu.IO.Hashing.Checksums;
+using Bodu.Security.Cryptography;
+
+byte[] chunk1 = "the quick "u8.ToArray();
+byte[] chunk2 = "brown fox"u8.ToArray();
+
+// Bodu.IO.Hashing - streaming with non-destructive snapshots; nothing to dispose.
+var crc = new Crc(CrcStandard.CRC32_ISOHDLC);
 crc.Append(chunk1);
 crc.Append(chunk2);
 byte[] checksum = crc.GetCurrentHash();   // snapshot; appending may continue
 
 // Bodu.Security.Cryptography - keyed hash over the BCL HashAlgorithm contract.
+byte[] key = RandomNumberGenerator.GetBytes(16);
 using var mac = new SipHash64 { Key = key };
-byte[] tag = mac.ComputeHash(message);    // compare with FixedTimeEquals, never ==
+byte[] tag = mac.ComputeHash(chunk1);     // compare with FixedTimeEquals, never ==
 ```
 
 ## Which library do I need?
