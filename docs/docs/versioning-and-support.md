@@ -59,7 +59,7 @@ A Preview package is **promoted** to Stable once its API has settled. It joins t
 | Container and mail-store readers | `Bodu.IO.Pst`, `Bodu.Formats.Outlook`, `Bodu.Formats.Outlook.Msg`, `Bodu.Formats.Outlook.Pst` |
 | Exchange-rate providers over published APIs | `Bodu.Financial.ExchangeRates.Boe`, `.Ecb`, `.Rba`, `.Fixer`, `.ExchangeRateHost`, `.Fred` |
 
-A package settles its API while it is still Preview, so the release that promotes it can still change its API: read the release notes when you move one of these packages from 0.7.1 to 1.3.0. From 1.3.0 on, each is held to the Stable promise.
+A package settles its API while it is still Preview, so the release that promotes it can still change its API: read the [release notes](release-notes.md#upgrading-to-130) when you move one of these packages from 0.7.1 to 1.3.0. From 1.3.0 on, each is held to the Stable promise.
 
 A package can also move the other way. In 1.3.0 the IMF, Yahoo, and OFX providers were retiered from Preview to Experimental, because each reads a feed its operator does not publish as an API. They stay on the Preview stream, at 0.7.2.
 
@@ -97,6 +97,7 @@ Every API page names the package its type ships in and that package's version, u
 
 ## Where to go next
 
+- **[Release notes](release-notes.md)** - what to change when you upgrade, and every release so far.
 - **[Package matrix](package-matrix.md)** - every package with its tier, version, and dependencies.
 - **[Getting started](getting-started.md)** - install commands and a first sample from each library.
 - **[Calendar value sets](../guides/core/day-of-week-set.md)** - `DayOfWeekSet` and the migration from `WeekPattern`.
