@@ -6,6 +6,7 @@
 
 using System.Globalization;
 using System.Text.Json.Nodes;
+using System.Xml.Linq;
 using Bodu.Globalization.Calendar.RangeResolution;
 
 namespace Bodu.Globalization.Calendar.Builder;
@@ -1566,7 +1567,6 @@ public partial class NotableDateDocumentBuilderTests
     [DataRow("""{ "id": "r", "strategy": { "fixed": { "month": 1, "day": 1, "skipLeapMonth": "TRUE" } } }""", "")]
     [DataRow("""{ "id": "r", "strategy": { "fixed": { "month": 1.5, "day": 1 } } }""", "")]
     [DataRow("""{ "id": "r", "strategy": { "fixed": { "month": "Smarch", "day": 1 } } }""", "")]
-    [DataRow("""{ "id": "r", "applicability": { "calendar": "Hebrew" }, "strategy": { "fixed": { "month": "nisan", "day": 15 } } }""", "")]
     [DataRow("""{ "id": "r", "applicability": { "calendar": "Hijri" }, "strategy": { "fixed": { "month": "Nisan", "day": 1 } } }""", "")]
     [DataRow("""{ "id": "r", "applicability": { "calendar": "Persian" }, "strategy": { "fixed": { "month": 13, "day": 1 } } }""", "")]
     [DataRow("""{ "id": "r", "applicability": { "calendar": "ChineseLunisolar" }, "strategy": { "fixed": { "month": 13, "day": 1, "skipLeapMonth": true } } }""", "")]
@@ -1629,6 +1629,8 @@ public partial class NotableDateDocumentBuilderTests
     [DataRow("""{ "id": "r", "applicability": { "calendar": "Hijri" }, "strategy": { "fixed": { "month": "9", "day": 1 } } }""", "")]
     [DataRow("""{ "id": "r", "applicability": { "calendar": "ChineseLunisolar" }, "strategy": { "fixed": { "month": 13, "day": 1 } } }""", "")]
     [DataRow("""{ "id": "r", "applicability": { "calendar": "Hebrew" }, "strategy": { "fixed": { "month": "LastAdar", "day": 14, "sweepCalendarYears": true } } }""", "")]
+    [DataRow("""{ "id": "r", "applicability": { "calendar": "Hebrew" }, "strategy": { "fixed": { "month": "nisan", "day": 15 } } }""", "")]
+    [DataRow("""{ "id": "r", "applicability": { "calendar": "Hebrew" }, "strategy": { "fixed": { "month": "KISLEV", "day": 25 } } }""", "")]
     [DataRow("""{ "id": "r", "recurrence": { "monthlyDay": { "dayOfMonth": 31, "invalidDayBehavior": "uselastdayofmonth" } } }""", "")]
     [DataRow("""{ "id": "r", "recurrence": { "monthlyWeekday": { "dayOfWeek": "friday", "weekOrdinal": "last" } } }""", "")]
     [DataRow("""{ "id": "r", "strategy": { "fixed": { "month": 5, "day": 1 } }, "duration": { "untilDate": { "strategy": { "weekdayNearDate": { "month": 5, "day": 3, "dayOfWeek": "friday", "direction": "onorafter" } } } } }""", "")]
@@ -1642,6 +1644,27 @@ public partial class NotableDateDocumentBuilderTests
         NotableDateResource built = NotableDateDocumentBuilder.FromJson(json).Build();
 
         CollectionAssert.AreEqual(PackBytes(loaded), PackBytes(built), rule + overrides);
+    }
+
+    /// <summary>
+    /// Verifies that a Hebrew month name written in another case, which the loader reads ignoring case, is written to
+    /// the document in its canonical spelling: an alias as the name the loader's alias takes, and a fixed-position name
+    /// as its number.
+    /// </summary>
+    /// <param name="token">The month name as written.</param>
+    /// <param name="expected">The month the document holds.</param>
+    [TestMethod]
+    [DataRow("nisan", "Nisan")]
+    [DataRow("LASTADAR", "LastAdar")]
+    [DataRow("kislev", "3")]
+    public void FromJson_WhenHebrewMonthNameDiffersInCase_ShouldWriteTheCanonicalMonth(string token, string expected)
+    {
+        string json = AttributeValueJson($$"""{ "id": "r", "applicability": { "calendar": "Hebrew" }, "strategy": { "fixed": { "month": "{{token}}", "day": 1 } } }""", "");
+
+        XDocument document = XDocument.Parse(NotableDateDocumentBuilder.FromJson(json).ToXml());
+        XNamespace ns = "urn:bodu:globalization:calendar";
+
+        Assert.AreEqual(expected, (string?)document.Descendants(ns + "Fixed").Last().Attribute("month"));
     }
 
     /// <summary>

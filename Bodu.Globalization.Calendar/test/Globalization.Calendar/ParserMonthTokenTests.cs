@@ -494,6 +494,49 @@ public sealed class ParserMonthTokenTests
     }
 
     /// <summary>
+    /// Verifies that a Hebrew month name on a Hebrew <c>Fixed</c> rule, loaded from XML in another case, is matched
+    /// ignoring case, as a Gregorian month name and an enumeration value are, and read as the month it names: a
+    /// fixed-position name as its number, and a leap-dependent name as the alias in its canonical spelling.
+    /// </summary>
+    /// <param name="token">The month name as written.</param>
+    /// <param name="month">The month the name reads as, or <c>0</c> when an alias supplies it.</param>
+    /// <param name="alias">The canonical alias the name reads as, or <see langword="null" />.</param>
+    [TestMethod]
+    [DataRow("tishri", 1, null)]
+    [DataRow("TISHRI", 1, null)]
+    [DataRow("adari", 6, null)]
+    [DataRow("nisan", 0, "Nisan")]
+    [DataRow("NISAN", 0, "Nisan")]
+    [DataRow("lastadar", 0, "LastAdar")]
+    [DataRow("ElUl", 0, "Elul")]
+    public void Load_WhenHebrewFixedMonthNameDiffersInCase_ForXml_ShouldReadTheNamedMonth(string token, int month, string? alias)
+    {
+        FixedDateStrategy strategy = Strategy(NotableDateResourceLoader.Load(CalendarFixedXml("Hebrew", token)));
+
+        Assert.AreEqual((month, alias), (strategy.Month, strategy.MonthAlias));
+    }
+
+    /// <summary>
+    /// Verifies that a Hebrew month name on a Hebrew <c>Fixed</c> rule, loaded from JSON in another case, is matched
+    /// ignoring case and read as the month it names, a leap-dependent name as the alias in its canonical spelling.
+    /// </summary>
+    /// <param name="token">The month name as written.</param>
+    /// <param name="month">The month the name reads as, or <c>0</c> when an alias supplies it.</param>
+    /// <param name="alias">The canonical alias the name reads as, or <see langword="null" />.</param>
+    [TestMethod]
+    [DataRow("tishri", 1, null)]
+    [DataRow("SHEVAT", 5, null)]
+    [DataRow("nisan", 0, "Nisan")]
+    [DataRow("adarii", 0, "AdarII")]
+    [DataRow("TAMMUZ", 0, "Tammuz")]
+    public void Load_WhenHebrewFixedMonthNameDiffersInCase_ForJson_ShouldReadTheNamedMonth(string token, int month, string? alias)
+    {
+        FixedDateStrategy strategy = Strategy(NotableDateResourceLoader.LoadJson(CalendarFixedJson("Hebrew", "\"" + token + "\"")));
+
+        Assert.AreEqual((month, alias), (strategy.Month, strategy.MonthAlias));
+    }
+
+    /// <summary>
     /// Builds a one-concept XML document with a <c>Fixed</c> rule in the supplied calendar whose month token is the
     /// supplied value.
     /// </summary>
