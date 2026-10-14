@@ -84,8 +84,9 @@ internal sealed class YahooChartRateSource
         // than a calendar day keeps DateOnly.MinValue representable.
         long period1 = request.StartDate.ToUnixTimeSeconds() - SecondsPerDay;
 
-        // period2 is exclusive at the source, so add a day to keep the requested end date inclusive.
-        long period2 = request.EndDate.AddDays(1).ToUnixTimeSeconds();
+        // period2 is exclusive at the source, so add a day to keep the requested end date inclusive; adding it in
+        // seconds keeps DateOnly.MaxValue representable, as for period1.
+        long period2 = request.EndDate.ToUnixTimeSeconds() + SecondsPerDay;
 
         UriBuilder builder = new(new Uri(_options.BaseAddress, path))
         {
