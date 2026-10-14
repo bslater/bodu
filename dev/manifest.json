@@ -21003,6 +21003,16 @@
     },
     {
       "type": "Conceptual",
+      "source_relative_path": "docs/release-notes.md",
+      "output": {
+        ".html": {
+          "relative_path": "docs/release-notes.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
       "source_relative_path": "docs/serialization/bencode/concepts.md",
       "output": {
         ".html": {
