@@ -17,6 +17,12 @@ internal static class YahooFixtures
     /// <summary>The file name of the sample AUD/USD chart response (early January 2023).</summary>
     public const string AudUsd = "audusd-2023.json";
 
+    /// <summary>
+    /// The file name of the sample AUD/USD chart response for early July 2023, quoted on London time: each daily bar is
+    /// stamped at midnight British Summer Time, 23:00 UTC on the previous day.
+    /// </summary>
+    public const string AudUsdSummer = "audusd-2023-summer.json";
+
     /// <summary>The file name of the sample chart-error response.</summary>
     public const string ErrorNotFound = "error-not-found.json";
 

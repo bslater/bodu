@@ -221,6 +221,105 @@ public class YahooChartResponseParserTests
     }
 
     /// <summary>
+    /// Verifies that daily bars Yahoo stamps at midnight British Summer Time, 23:00 UTC on the previous day, are dated
+    /// on their trading day in the exchange's time zone rather than on the UTC date of the stamp.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenBarsAreStampedAtLondonSummerMidnight_ShouldDateEachBarInExchangeTimeZone()
+    {
+        byte[] json = YahooFixtures.ReadBytes(YahooFixtures.AudUsdSummer);
+        CurrencyPairRequest request = new(new CurrencyPair(CurrencyCode.AUD, CurrencyCode.USD), new DateOnly(2023, 7, 1), new DateOnly(2023, 7, 31));
+
+        PairRateData<YahooSeriesInfo> data = YahooChartResponseParser.Parse(json, request, Symbol, new YahooRateProviderOptions());
+
+        CollectionAssert.AreEqual(
+            new[]
+            {
+                new RateObservation(new DateOnly(2023, 7, 3), 0.6656m),
+                new RateObservation(new DateOnly(2023, 7, 4), 0.6680m),
+                new RateObservation(new DateOnly(2023, 7, 5), 0.6705m),
+            },
+            data.Observations.ToArray());
+    }
+
+    /// <summary>
+    /// Verifies that a bar dated on its exchange trading day is kept by a request for that day alone, although the
+    /// UTC date of its stamp is the day before.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenRequestCoversOnlyTheBarsExchangeDate_ShouldKeepTheBar()
+    {
+        byte[] json = YahooFixtures.ReadBytes(YahooFixtures.AudUsdSummer);
+        CurrencyPairRequest request = new(new CurrencyPair(CurrencyCode.AUD, CurrencyCode.USD), new DateOnly(2023, 7, 3), new DateOnly(2023, 7, 3));
+
+        PairRateData<YahooSeriesInfo> data = YahooChartResponseParser.Parse(json, request, Symbol, new YahooRateProviderOptions());
+
+        CollectionAssert.AreEqual(new[] { new RateObservation(new DateOnly(2023, 7, 3), 0.6656m) }, data.Observations.ToArray());
+    }
+
+    /// <summary>
+    /// Verifies that when the exchange time zone is not one the system knows, each bar is dated by the response's
+    /// <c>gmtoffset</c>.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenExchangeTimeZoneIsUnknown_ShouldDateBarsByGmtOffset()
+    {
+        byte[] json = Encoding.UTF8.GetBytes(
+            """
+            {
+              "chart": {
+                "result": [
+                  {
+                    "meta": { "currency": "USD", "gmtoffset": 3600, "exchangeTimezoneName": "Bodu/NoSuchZone" },
+                    "timestamp": [ 1688338800 ],
+                    "indicators": { "quote": [ { "close": [ 0.6656 ] } ] }
+                  }
+                ],
+                "error": null
+              }
+            }
+            """);
+        CurrencyPairRequest request = new(new CurrencyPair(CurrencyCode.AUD, CurrencyCode.USD), new DateOnly(2023, 7, 1), new DateOnly(2023, 7, 31));
+
+        PairRateData<YahooSeriesInfo> data = YahooChartResponseParser.Parse(json, request, Symbol, new YahooRateProviderOptions());
+
+        CollectionAssert.AreEqual(new[] { new RateObservation(new DateOnly(2023, 7, 3), 0.6656m) }, data.Observations.ToArray());
+    }
+
+    /// <summary>
+    /// Verifies that a bar is dated by the exchange time zone's offset on its own date rather than by
+    /// <c>gmtoffset</c>, which is the offset when the response was produced: a summer bar in a response produced in
+    /// winter is still dated on its London trading day.
+    /// </summary>
+    [TestMethod]
+    public void Parse_WhenGmtOffsetDiffersFromTheBarsOffset_ShouldDateBarByExchangeTimeZone()
+    {
+        if (!TimeZoneInfo.TryFindSystemTimeZoneById("Europe/London", out _))
+            Assert.Inconclusive("The Europe/London time zone is not available on this system.");
+
+        byte[] json = Encoding.UTF8.GetBytes(
+            """
+            {
+              "chart": {
+                "result": [
+                  {
+                    "meta": { "currency": "USD", "gmtoffset": 0, "timezone": "GMT", "exchangeTimezoneName": "Europe/London" },
+                    "timestamp": [ 1688338800 ],
+                    "indicators": { "quote": [ { "close": [ 0.6656 ] } ] }
+                  }
+                ],
+                "error": null
+              }
+            }
+            """);
+        CurrencyPairRequest request = new(new CurrencyPair(CurrencyCode.AUD, CurrencyCode.USD), new DateOnly(2023, 7, 1), new DateOnly(2023, 7, 31));
+
+        PairRateData<YahooSeriesInfo> data = YahooChartResponseParser.Parse(json, request, Symbol, new YahooRateProviderOptions());
+
+        CollectionAssert.AreEqual(new[] { new RateObservation(new DateOnly(2023, 7, 3), 0.6656m) }, data.Observations.ToArray());
+    }
+
+    /// <summary>
     /// Builds a single-result chart response from the supplied timestamp and close arrays.
     /// </summary>
     /// <param name="timestamps">The JSON text of the <c>timestamp</c> array.</param>
