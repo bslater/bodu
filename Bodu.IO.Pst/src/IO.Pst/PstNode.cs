@@ -56,6 +56,23 @@ public sealed class PstNode
         new(_entry.ParentNodeId);
 
     /// <summary>
+    /// Gets the node identifier.
+    /// </summary>
+    /// <value>The identifier.</value>
+    public PstNodeId NodeId =>
+        throw new NotImplementedException();
+
+    /// <summary>
+    /// Gets the parent node identifier the directory records.
+    /// </summary>
+    /// <value>
+    /// The parent identifier, or the zero identifier when none is recorded. For a subnode, this is the owning node's
+    /// identifier.
+    /// </value>
+    public PstNodeId ParentNodeId =>
+        throw new NotImplementedException();
+
+    /// <summary>
     /// Gets a value indicating whether the node carries a subnode tree.
     /// </summary>
     /// <value><see langword="true" /> when subnodes are present.</value>
