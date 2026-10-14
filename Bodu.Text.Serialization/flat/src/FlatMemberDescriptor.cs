@@ -39,6 +39,7 @@ internal sealed class FlatMemberDescriptor
         _property = member as PropertyInfo;
         _field = member as FieldInfo;
 
+        MemberName = member.Name;
         Name = member.GetCustomAttribute<PropertyNameAttribute>()?.Name ?? namingPolicy?.ConvertName(member.Name) ?? member.Name;
         MemberType = _property?.PropertyType ?? _field!.FieldType;
         ScalarType = Nullable.GetUnderlyingType(MemberType) ?? MemberType;
@@ -52,6 +53,11 @@ internal sealed class FlatMemberDescriptor
         IgnoreCondition = condition == Bodu.Text.Serialization.IgnoreCondition.Always ? null : condition;
         Order = member.GetCustomAttribute<PropertyOrderAttribute>()?.Order ?? 0;
     }
+
+    /// <summary>
+    /// Gets the name the member is declared with, before any <see cref="PropertyNameAttribute" /> or naming policy.
+    /// </summary>
+    public string MemberName { get; }
 
     /// <summary>
     /// Gets the resolved serialized name of the member.

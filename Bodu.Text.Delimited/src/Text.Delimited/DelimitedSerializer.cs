@@ -31,6 +31,13 @@ namespace Bodu.Text.Delimited;
 /// <see cref="DelimitedSerializationException" /> before anything is read or written.
 /// </para>
 /// <para>
+/// A dictionary is written as <see cref="KeyValuePair{TKey, TValue}" /> records, with <c>Key</c> and <c>Value</c>
+/// columns, and those records read back: although both members are get-only, each record is created through the pair's
+/// constructor from the fields of the two columns, matched by header name, as they are written, or by position with
+/// <see cref="DelimitedSerializerOptions.NoHeader" />, and a column the document lacks leaves its half at its default.
+/// The column of any other get-only member is written and not read back.
+/// </para>
+/// <para>
 /// Field values convert with the invariant culture. An empty field, or one of white space only, binds
 /// <see langword="null" /> to a member of a nullable value type, such as <see cref="Nullable{T}" /> of
 /// <see cref="int" /> or of <see cref="DateTime" />. A nullable <see cref="char" /> is the exception: only an empty
@@ -258,7 +265,7 @@ public static partial class DelimitedSerializer
             return result;
         }
 
-        int[]? columns = CreateColumnMap(headers, members, effective);
+        int[]? columns = CreateColumnMap(headers, members, typeof(TRecord), effective);
         foreach (string[] row in rows)
             result.Add((TRecord)BindRecord(row, columns, members, typeof(TRecord)));
 

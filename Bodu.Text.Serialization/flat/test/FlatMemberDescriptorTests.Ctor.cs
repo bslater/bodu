@@ -86,4 +86,20 @@ public sealed partial class FlatMemberDescriptorTests
         Assert.AreEqual(FlatScalarKind.DateOnly, descriptor.ScalarKind);
         Assert.IsTrue(descriptor.IsScalar);
     }
+
+    /// <summary>
+    /// Verifies that the member's declared name is kept apart from the serialized name that a
+    /// <see cref="PropertyNameAttribute" /> or a naming policy gives it.
+    /// </summary>
+    [TestMethod]
+    public void Ctor_WhenTheMemberIsRenamed_ShouldKeepItsDeclaredName()
+    {
+        var renamed = new FlatMemberDescriptor(typeof(MemberSample).GetProperty(nameof(MemberSample.Count))!, namingPolicy: null);
+        var converted = new FlatMemberDescriptor(typeof(KeyValuePair<string, int>).GetProperty(nameof(KeyValuePair<string, int>.Key))!, NamingPolicy.CamelCase);
+
+        Assert.AreEqual("CUSTOM_KEY", renamed.Name);
+        Assert.AreEqual(nameof(MemberSample.Count), renamed.MemberName);
+        Assert.AreEqual("key", converted.Name);
+        Assert.AreEqual("Key", converted.MemberName);
+    }
 }

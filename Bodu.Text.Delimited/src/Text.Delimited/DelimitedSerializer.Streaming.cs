@@ -241,7 +241,7 @@ public static partial class DelimitedSerializer
                 if (!isStringArray && !ReferenceEquals(headers, mappedHeaders))
                 {
                     mappedHeaders = headers;
-                    columns = CreateColumnMap(headers ?? [], members, effective);
+                    columns = CreateColumnMap(headers ?? [], members, typeof(TRecord), effective);
                 }
 
                 foreach ((string[] row, int line, long offset) in rows)

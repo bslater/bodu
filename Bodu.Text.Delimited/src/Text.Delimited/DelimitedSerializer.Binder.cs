@@ -5,8 +5,10 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using System.Reflection;
 
 using Bodu.Text.Delimited.Writer;
 using Bodu.Text.Serialization;
@@ -22,6 +24,9 @@ public static partial class DelimitedSerializer
     /// <summary>The message describing why the serializer requires dynamic code.</summary>
     internal const string RequiresDynamicCodeMessage =
         "Reflection-based delimited serialization may require runtime code generation.";
+
+    /// <summary>The constructor of each <see cref="KeyValuePair{TKey, TValue}" /> record type read.</summary>
+    private static readonly ConcurrentDictionary<Type, ConstructorInfo> s_keyValuePairConstructors = new();
 
     /// <summary>
     /// Writes a single POCO record as a delimited object.
@@ -92,20 +97,26 @@ public static partial class DelimitedSerializer
     /// </summary>
     /// <param name="headers">The header column names, or an empty list for a headerless document.</param>
     /// <param name="members">The mapped members.</param>
+    /// <param name="recordType">The record type.</param>
     /// <param name="options">The serializer options.</param>
     /// <returns>
     /// For each member, the index of the first column whose header has its name, or <c>-1</c> when it has none or is
-    /// not writable; <see langword="null" /> for a headerless document, whose fields bind by position.
+    /// not bound; <see langword="null" /> for a headerless document, whose fields bind by position.
     /// </returns>
-    private static int[]? CreateColumnMap(List<string> headers, FlatMemberDescriptor[] members, DelimitedSerializerOptions options)
+    /// <remarks>
+    /// A writable member is bound, and so are both members of a <see cref="KeyValuePair{TKey, TValue}" /> record, which
+    /// are get-only but are set through its constructor.
+    /// </remarks>
+    private static int[]? CreateColumnMap(List<string> headers, FlatMemberDescriptor[] members, Type recordType, DelimitedSerializerOptions options)
     {
         if (headers.Count == 0)
             return null;
 
+        bool constructed = IsKeyValuePair(recordType);
         StringComparison comparison = options.PropertyNameCaseInsensitive ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
         int[] columns = new int[members.Length];
         for (int i = 0; i < members.Length; i++)
-            columns[i] = members[i].CanWrite ? IndexOfHeader(headers, members[i].Name, comparison) : -1;
+            columns[i] = members[i].CanWrite || constructed ? IndexOfHeader(headers, members[i].Name, comparison) : -1;
 
         return columns;
     }
@@ -127,12 +138,16 @@ public static partial class DelimitedSerializer
     /// bind by position, as a generated <see cref="IDelimitedRecordFactory{TRecord}" /> binds them: the columns are
     /// those <c>Serialize</c> writes, one for each readable member in member order, so a field binds to the member
     /// written in its position, a get-only member's field is skipped, and a member past the last field keeps its
-    /// default.
+    /// default. A <see cref="KeyValuePair{TKey, TValue}" /> record, whose <c>Key</c> and <c>Value</c> are get-only, is
+    /// created through its constructor from the fields of both instead.
     /// </remarks>
     [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
     [RequiresDynamicCode(RequiresDynamicCodeMessage)]
     private static object BindRecord(string[] fields, int[]? columns, FlatMemberDescriptor[] members, Type recordType)
     {
+        if (IsKeyValuePair(recordType))
+            return BindKeyValuePair(fields, columns, members, recordType);
+
         object instance = Activator.CreateInstance(recordType)!;
         (instance as IOnDeserializing)?.OnDeserializing();
 
@@ -154,6 +169,58 @@ public static partial class DelimitedSerializer
 
         return instance;
     }
+
+    /// <summary>
+    /// Binds a row to a new <see cref="KeyValuePair{TKey, TValue}" /> record through its constructor, from the fields
+    /// of its <c>Key</c> and <c>Value</c> columns, which are matched by header name, or without a header by position.
+    /// </summary>
+    /// <param name="fields">The decoded field values.</param>
+    /// <param name="columns">
+    /// The column of each member, from <see cref="CreateColumnMap" />, or <see langword="null" /> for a headerless
+    /// document.
+    /// </param>
+    /// <param name="members">
+    /// The mapped members, <c>Key</c> and <c>Value</c>, in the order their columns are written.
+    /// </param>
+    /// <param name="recordType">The <see cref="KeyValuePair{TKey, TValue}" /> record type.</param>
+    /// <returns>The bound record.</returns>
+    /// <exception cref="DelimitedSerializationException">Thrown when a field cannot be converted.</exception>
+    /// <remarks>
+    /// Each field converts as a field of any other member does. A half whose column the document lacks, or which a
+    /// short row leaves out, is its type's default, as a missing column leaves any member at its default.
+    /// </remarks>
+    [RequiresUnreferencedCode(RequiresUnreferencedCodeMessage)]
+    private static object BindKeyValuePair(string[] fields, int[]? columns, FlatMemberDescriptor[] members, Type recordType)
+    {
+        // A null argument for a value-type half is passed to the constructor as that type's default.
+        object?[] arguments = new object?[2];
+        for (int i = 0; i < members.Length; i++)
+        {
+            int column = columns is null ? i : columns[i];
+            if (column >= 0 && column < fields.Length)
+            {
+                int argument = string.Equals(members[i].MemberName, nameof(KeyValuePair<int, int>.Key), StringComparison.Ordinal) ? 0 : 1;
+                arguments[argument] = ConvertFromString(fields[column], members[i]);
+            }
+        }
+
+        ConstructorInfo constructor = s_keyValuePairConstructors.GetOrAdd(
+            recordType,
+            static recordType => recordType.GetConstructor(recordType.GetGenericArguments())!);
+
+        return constructor.Invoke(arguments);
+    }
+
+    /// <summary>
+    /// Determines whether a record type is a <see cref="KeyValuePair{TKey, TValue}" />, the record a dictionary is
+    /// written as, whose get-only <c>Key</c> and <c>Value</c> are set through its constructor.
+    /// </summary>
+    /// <param name="recordType">The record type.</param>
+    /// <returns>
+    /// <see langword="true" /> when <paramref name="recordType" /> is a <see cref="KeyValuePair{TKey, TValue}" />.
+    /// </returns>
+    private static bool IsKeyValuePair(Type recordType) =>
+        recordType.IsGenericType && recordType.GetGenericTypeDefinition() == typeof(KeyValuePair<,>);
 
     /// <summary>
     /// Binds the fields of a headerless row to a record by position, each to the member written in its column.
