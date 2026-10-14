@@ -326,3 +326,5 @@
       href: topics/untrusted-input.md
     - name: Conformance and test vectors
       href: topics/conformance.md
+    - name: Dependency injection and configuration
+      href: topics/hosting.md

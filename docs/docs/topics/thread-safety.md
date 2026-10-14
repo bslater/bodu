@@ -87,7 +87,7 @@ For `Bodu.Core`, `Bodu.Collections`, and `Bodu.Collections.Concurrent`, the [thr
 ## Rules of thumb
 
 1. **Share immutable values and frozen configuration; confine builders, sessions, and algorithm instances.** The value types, resources, compiled filters, and frozen serializer options are made to be shared; a hash algorithm, a document session, or a builder is not.
-2. **Register singletons only for types marked Safe or Immutable.** Every Bodu dependency-injection registration adds its services as singletons, so a type you plug into one - a currency lookup, a rate provider, a cache backend - must be safe for concurrent use too.
+2. **Register singletons only for types marked Safe or Immutable.** Every Bodu dependency-injection registration adds its services as singletons, so a type you plug into one - a currency lookup, a rate provider, a cache backend - must be safe for concurrent use too; see [dependency injection and configuration](hosting.md).
 3. **Do not use a reader-writer lock for a type whose reads write.** The collections listed above rewrite state on lookup.
 4. **Give each worker its own algorithm.** For parallel hashing, share a factory (`Func<HashAlgorithm>` or `IHashAlgorithmFactory<T>`), never an instance.
 

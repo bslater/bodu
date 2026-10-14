@@ -89,7 +89,7 @@ Two of these are integrity checks, not trust boundaries. A pack's digest is unke
 
 ## Exchange-rate feeds
 
-A web provider parses whatever its endpoint returns. A payload it cannot parse throws `ExchangeRateFormatException`, and a provider that builds its own `HttpClient` caps the response at `WebRateProviderOptions.MaxResponseContentBufferSize`, 64 MiB by default. The cap is not applied to a client that is passed in, and the dependency-injection registration passes one in from `IHttpClientFactory`, so under that registration set the named client's `MaxResponseContentBufferSize` yourself if a response size limit matters to you. See [resilience](../exchange-rates/concepts.md#resilience).
+A web provider parses whatever its endpoint returns. A payload it cannot parse throws `ExchangeRateFormatException`, and a provider that builds its own `HttpClient` caps the response at `WebRateProviderOptions.MaxResponseContentBufferSize`, 64 MiB by default. The cap is not applied to a client that is passed in, and the dependency-injection registration passes one in from `IHttpClientFactory`, so under that registration set the named client's `MaxResponseContentBufferSize` yourself, as the [example host](hosting.md#one-host) does. See [resilience](../exchange-rates/concepts.md#resilience).
 
 ## Recommended settings for hostile input
 
