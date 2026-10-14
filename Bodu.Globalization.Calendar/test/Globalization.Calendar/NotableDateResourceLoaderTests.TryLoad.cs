@@ -188,6 +188,41 @@ public sealed partial class NotableDateResourceLoaderTests
     }
 
     /// <summary>
+    /// Verifies that a Gregorian fixed day beyond the longest its month ever has is reported as the
+    /// <c>BODU-CAL-DAY</c> error alone, in XML and JSON alike, rather than as a <c>BODU-CAL-STRATEGY</c> error from the
+    /// strategy's constructor.
+    /// </summary>
+    /// <param name="month">The month.</param>
+    /// <param name="day">The day.</param>
+    [TestMethod]
+    [DataRow(2, 30)]
+    [DataRow(4, 31)]
+    public void TryLoad_WhenGregorianDayIsBeyondTheMonthsLongest_ShouldReportDayDiagnostic(int month, int day)
+    {
+        string xml = $$"""
+            <NotableDateResource xmlns="urn:bodu:globalization:calendar" schemaVersion="1.0" resourceId="test.trylad.day">
+              <NotableDates>
+                <NotableDate id="x" displayName="X" category="PublicHoliday">
+                  <Rules><Rule id="r"><Strategy><Fixed month="{{month}}" day="{{day}}" /></Strategy></Rule></Rules>
+                </NotableDate>
+              </NotableDates>
+            </NotableDateResource>
+            """;
+        string json = $$"""
+            { "schemaVersion": "1.0", "resourceId": "test.trylad.day",
+              "notableDates": [ { "id": "x", "displayName": "X", "category": "PublicHoliday",
+                "rules": [ { "id": "r", "strategy": { "fixed": { "month": {{month}}, "day": {{day}} } } } ] } ] }
+            """;
+
+        _ = NotableDateResourceLoader.TryLoad(xml, _ => null, out _, out IReadOnlyList<NotableDateValidationDiagnostic> xmlDiagnostics);
+        _ = NotableDateResourceLoader.TryLoadJson(json, _ => null, out _, out IReadOnlyList<NotableDateValidationDiagnostic> jsonDiagnostics);
+
+        string[] expected = ["BODU-CAL-DAY"];
+        CollectionAssert.AreEquivalent(expected, xmlDiagnostics.Select(d => d.Code).ToArray(), "XML");
+        CollectionAssert.AreEquivalent(expected, jsonDiagnostics.Select(d => d.Code).ToArray(), "JSON");
+    }
+
+    /// <summary>
     /// Verifies that an imported resource whose content is not well-formed is reported as a <c>BODU-CAL-SYNTAX</c> error
     /// diagnostic naming the import, rather than a <see cref="FormatException" />, through both collect-mode entry
     /// points.
