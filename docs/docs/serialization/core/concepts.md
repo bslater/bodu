@@ -41,7 +41,7 @@ The policy converts *member* names. It does not rewrite `[PropertyName]` values,
 <xref:Bodu.Text.Serialization.IgnoreCondition> has two different kinds of member:
 
 - **`Always`** removes the member at metadata-resolution time. It is neither written nor read - an input key with that name is treated as unmapped.
-- **`WhenWritingNull`** and **`WhenWritingDefault`** are evaluated at *write* time only. The effective condition for a member is `[Ignore(Condition = …)]` when present, otherwise the options-level `DefaultIgnoreCondition`; a member-level `Never` therefore opts a member *out* of an options-level default. Reading is never affected by these two values.
+- **`WhenWritingNull`** and **`WhenWritingDefault`** are evaluated at *write* time only. The effective condition for a member is `[Ignore(Condition = …)]` when present, otherwise the options-level `DefaultIgnoreCondition`; a member-level `Never` therefore opts a member *out* of an options-level default. Reading is never affected by these two values. `WhenWritingDefault` compares a value with the default of the member's declared type, as `System.Text.Json` does: `null` for a reference type or a `Nullable<T>`, so `0` in an `int?` is written, and the zero value of any other value type. INI and DotEnv follow the same rule, and so does the INI factory the source generator emits; Delimited applies no write-time condition and writes every mapped member.
 
 Formats with no null literal behave as though `WhenWritingNull` were always on - TOML omits a `null` member regardless of the condition - while YAML writes `null` unless a condition suppresses it.
 

@@ -148,7 +148,7 @@ public static partial class DotEnvSerializer
 
             object? memberValue = member.GetValue(value);
 
-            if (FlatBinding.ShouldSkipOnWrite(memberValue, member.IgnoreCondition, options.DefaultIgnoreCondition))
+            if (FlatBinding.ShouldSkipOnWrite(memberValue, member.MemberType, member.IgnoreCondition, options.DefaultIgnoreCondition))
                 continue;
 
             ThrowIfNotScalar(memberValue, member.MemberType, member.ScalarKind, member.Name);

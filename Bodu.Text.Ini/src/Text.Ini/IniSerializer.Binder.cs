@@ -164,7 +164,7 @@ public static partial class IniSerializer
             if (member.IsScalar)
             {
                 object? memberValue = member.GetValue(value);
-                if (FlatBinding.ShouldSkipOnWrite(memberValue, member.IgnoreCondition, options.DefaultIgnoreCondition))
+                if (FlatBinding.ShouldSkipOnWrite(memberValue, member.MemberType, member.IgnoreCondition, options.DefaultIgnoreCondition))
                     continue;
 
                 WriteEntry(ref writer, string.Empty, member.Name, ValueToString(memberValue, member.ScalarKind));
@@ -183,7 +183,7 @@ public static partial class IniSerializer
                 continue;
 
             object? memberValue = member.GetValue(value);
-            if (FlatBinding.ShouldSkipOnWrite(memberValue, member.IgnoreCondition, options.DefaultIgnoreCondition))
+            if (FlatBinding.ShouldSkipOnWrite(memberValue, member.MemberType, member.IgnoreCondition, options.DefaultIgnoreCondition))
                 continue;
 
             WriteHeader(ref writer, member.Name);
@@ -233,7 +233,7 @@ public static partial class IniSerializer
                 continue;
 
             object? memberValue = member.GetValue(body);
-            if (FlatBinding.ShouldSkipOnWrite(memberValue, member.IgnoreCondition, options.DefaultIgnoreCondition))
+            if (FlatBinding.ShouldSkipOnWrite(memberValue, member.MemberType, member.IgnoreCondition, options.DefaultIgnoreCondition))
                 continue;
 
             WriteEntry(ref writer, entrySection, member.Name, ValueToString(memberValue, member.ScalarKind));

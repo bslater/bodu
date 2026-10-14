@@ -196,15 +196,25 @@ internal static class FlatBinding
     /// the options' default.
     /// </summary>
     /// <param name="value">The member's value.</param>
+    /// <param name="declaredType">
+    /// The member's declared type, whose default value is left out under
+    /// <see cref="IgnoreCondition.WhenWritingDefault" />.
+    /// </param>
     /// <param name="memberCondition">The member's own ignore condition, or <see langword="null" />.</param>
     /// <param name="defaultCondition">The options' default ignore condition.</param>
     /// <returns><see langword="true" /> when the member is left out.</returns>
-    internal static bool ShouldSkipOnWrite(object? value, IgnoreCondition? memberCondition, IgnoreCondition defaultCondition) =>
+    /// <remarks>
+    /// As in <c>System.Text.Json</c>, a member's default is the default of its declared type: <see langword="null" />
+    /// for a reference type and for a <see cref="Nullable{T}" />, and the zero value of any other value type. A
+    /// nullable member that holds its underlying type's default, such as <c>0</c> in an <see cref="int" />?, is
+    /// therefore written, and reads back as that value rather than as <see langword="null" />.
+    /// </remarks>
+    internal static bool ShouldSkipOnWrite(object? value, Type declaredType, IgnoreCondition? memberCondition, IgnoreCondition defaultCondition) =>
         (memberCondition ?? defaultCondition) switch
         {
             IgnoreCondition.Always => true,
             IgnoreCondition.WhenWritingNull => value is null,
-            IgnoreCondition.WhenWritingDefault => value is null || IsDefaultValue(value),
+            IgnoreCondition.WhenWritingDefault => value is null || (declaredType.IsValueType && Nullable.GetUnderlyingType(declaredType) is null && IsDefaultValue(value)),
             _ => false,
         };
 
