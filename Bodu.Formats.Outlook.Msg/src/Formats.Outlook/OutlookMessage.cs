@@ -25,6 +25,11 @@ namespace Bodu.Formats.Outlook;
 /// <see cref="SenderName" />, the time stamps, and the rest) are lazy views over that collection and return
 /// <see langword="null" /> when the underlying property is absent.
 /// </para>
+/// <para>
+/// The session is single-threaded: its members, and the members of every recipient, attachment, and nested message
+/// obtained from it, must not be called concurrently. The recipients, the attachments, and the named-property map are
+/// decoded on first access and cached without synchronization.
+/// </para>
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[

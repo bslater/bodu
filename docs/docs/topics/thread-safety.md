@@ -80,9 +80,9 @@ For `Bodu.Core`, `Bodu.Collections`, and `Bodu.Collections.Concurrent`, the [thr
 |---|---|---|
 | `CompoundFile`, opened read-only and buffered (the default) | Safe | The whole source is read at open, so access never touches it again. Opened unbuffered, reads are serialized against the shared source position: concurrent, but not parallel. |
 | `CompoundFile`, opened for editing | Not stated | The thread statement covers read-only instances only. Edits are staged until `Commit`; make them from one thread. |
-| `ExcelBinaryWorkbook` | Not stated | The type has no thread statement. Its parsed state is fixed after opening and each sheet read opens its own stream over the container, so it inherits the container's behavior; an `ExcelWorksheetReader` is a forward-only reader for one consumer. |
+| `ExcelBinaryWorkbook` | Single-threaded | Its remarks say to call its members from one thread at a time; an `ExcelWorksheetReader` is a forward-only reader for one consumer. |
 | `PstFile`, `OutlookMailStore` | Single-threaded | Their remarks say a session's members, and those of every view obtained from it, must not be called concurrently. |
-| `OutlookMessage` | Single-threaded | No thread statement; its recipients, attachments, and bodies are decoded on first access and cached without synchronization. |
+| `OutlookMessage` | Single-threaded | Its remarks say a message's members, and those of every recipient, attachment, and nested message obtained from it, must not be called concurrently; its recipients, attachments, and named-property map are decoded on first access and cached without synchronization. |
 
 ## Rules of thumb
 

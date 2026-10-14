@@ -32,6 +32,10 @@ namespace Bodu.Formats.Excel;
 /// The session owns the underlying container and, unless the caller opts to leave it open, the source stream; dispose
 /// the workbook when reading is complete.
 /// </para>
+/// <para>
+/// The workbook is not guaranteed safe for concurrent use: call its members from one thread at a time. Each
+/// <see cref="ExcelWorksheetReader" /> it returns is a forward-only reader for a single consumer.
+/// </para>
 /// <example>
 /// <code language="csharp">
 ///<![CDATA[
