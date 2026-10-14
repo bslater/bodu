@@ -97,6 +97,25 @@ public class YahooChartRateSourceTests
     }
 
     /// <summary>
+    /// Verifies that a range ending on <see cref="DateOnly.MaxValue" /> is requested through the end of that day, with
+    /// <c>period2</c> at the Unix seconds of the midnight that follows it, rather than failing to compute the day after.
+    /// </summary>
+    [TestMethod]
+    public async Task LoadPairAsync_WhenEndDateIsMaxValue_ShouldRequestThroughTheLastDay()
+    {
+        StubHttpMessageHandler handler = new(YahooFixtures.ReadBytes(YahooFixtures.AudUsd));
+        using HttpClient client = new(handler);
+        YahooRateProvider provider = new(client, new YahooRateProviderOptions());
+
+        await provider.LoadPairAsync("AUD", "USD", new DateOnly(2023, 1, 1), DateOnly.MaxValue);
+
+        // 2022-12-31T00:00:00Z and 10000-01-01T00:00:00Z, the midnight after 9999-12-31.
+        Assert.IsNotNull(handler.LastRequestUri);
+        Assert.AreEqual(253402300800L, WindowedChartHttpMessageHandler.ReadQueryValue(handler.LastRequestUri!, "period2"));
+        Assert.AreEqual(1672444800L, WindowedChartHttpMessageHandler.ReadQueryValue(handler.LastRequestUri!, "period1"));
+    }
+
+    /// <summary>
     /// Creates a windowed chart for AUD/USD quoted on London time, holding the bars for 3, 4 and 5 July 2023, each
     /// stamped at midnight British Summer Time.
     /// </summary>
