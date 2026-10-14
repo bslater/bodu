@@ -73,9 +73,10 @@ public abstract class WebRateProviderOptions
     /// <see cref="RateProviderHttpClientFactory.DefaultMaxResponseContentBufferSize" /> (64 MiB).
     /// </value>
     /// <remarks>
-    /// This value is applied when the provider creates and owns its own <see cref="HttpClient" />. When a client is
-    /// supplied to the provider directly, bounding its response size is the caller's responsibility and this value is
-    /// not applied.
+    /// This value is applied when the provider creates and owns its own <see cref="HttpClient" />, and to the named
+    /// client that a provider's dependency-injection registration (such as <c>AddEcbExchangeRates</c>) configures. When
+    /// a client is passed to the provider's constructor directly, bounding its response size is the caller's
+    /// responsibility and this value is not applied.
     /// </remarks>
     public long MaxResponseContentBufferSize { get; set; } =
         RateProviderHttpClientFactory.DefaultMaxResponseContentBufferSize;
