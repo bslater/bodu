@@ -75,6 +75,58 @@ public sealed class NotableDateCachingExtensionsTests
     }
 
     /// <summary>
+    /// Verifies that the decorator wraps the unkeyed <see cref="INotableDateService" /> when a keyed registration was
+    /// added after it.
+    /// </summary>
+    [TestMethod]
+    public void AddCachedNotableDateService_WhenKeyedServiceRegisteredAfterUnkeyed_ShouldDecorateTheUnkeyedService()
+    {
+        var services = new ServiceCollection();
+        services.AddNotableDateService(AmericasCalendarData.LoadResource("US"));
+        services.AddNotableDateService("US", AmericasCalendarData.LoadResource("US"));
+        services.AddCachedNotableDateService(cacheFactory: _ => new InMemoryNotableDateCache());
+
+        using ServiceProvider provider = services.BuildServiceProvider();
+        INotableDateService resolved = provider.GetRequiredService<INotableDateService>();
+
+        Assert.IsInstanceOfType<CachingNotableDateService>(resolved);
+    }
+
+    /// <summary>
+    /// Verifies that the decorator leaves a keyed <see cref="INotableDateService" /> registration resolvable and
+    /// undecorated.
+    /// </summary>
+    [TestMethod]
+    public void AddCachedNotableDateService_WhenKeyedServiceRegisteredAfterUnkeyed_ShouldKeepTheKeyedService()
+    {
+        var services = new ServiceCollection();
+        services.AddNotableDateService(AmericasCalendarData.LoadResource("US"));
+        services.AddNotableDateService("US", AmericasCalendarData.LoadResource("US"));
+        services.AddCachedNotableDateService(cacheFactory: _ => new InMemoryNotableDateCache());
+
+        using ServiceProvider provider = services.BuildServiceProvider();
+        INotableDateService resolved = provider.GetRequiredKeyedService<INotableDateService>("US");
+
+        Assert.IsInstanceOfType<NotableDateService>(resolved);
+    }
+
+    /// <summary>
+    /// Verifies that registering the caching decorator when only keyed notable-date services are registered throws
+    /// <see cref="InvalidOperationException" />.
+    /// </summary>
+    [TestMethod]
+    public void AddCachedNotableDateService_WhenOnlyKeyedServiceRegistered_ShouldThrowInvalidOperationException()
+    {
+        var services = new ServiceCollection();
+        services.AddNotableDateService("US", AmericasCalendarData.LoadResource("US"));
+
+        Assert.ThrowsExactly<InvalidOperationException>(() =>
+        {
+            _ = services.AddCachedNotableDateService();
+        });
+    }
+
+    /// <summary>
     /// Verifies that registering the caching decorator without a notable-date service throws.
     /// </summary>
     [TestMethod]
