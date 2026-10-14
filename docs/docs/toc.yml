@@ -320,3 +320,9 @@
       href: topics/trimming-and-native-aot.md
     - name: Thread safety
       href: topics/thread-safety.md
+    - name: Errors and exceptions
+      href: topics/errors-and-exceptions.md
+    - name: Reading untrusted input
+      href: topics/untrusted-input.md
+    - name: Conformance and test vectors
+      href: topics/conformance.md
