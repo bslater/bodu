@@ -8213,7 +8213,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Bodu.Formats.Outlook.OutlookPstFormatException",
-      "Summary": "<p sourcefile=\"api/Bodu.Formats.Outlook.OutlookPstFormatException.yml\" sourcestartlinenumber=\"1\">Represents a violation of the Outlook personal-folders messaging conventions (MS-PST) while reading a mail store.</p>\n"
+      "Summary": "<p sourcefile=\"api/Bodu.Formats.Outlook.OutlookPstFormatException.yml\" sourcestartlinenumber=\"1\">Represents an error raised when a mail store (a <code>.pst</code> file) is structurally invalid or violates the Outlook\npersonal-folders messaging conventions (MS-PST).</p>\n"
     },
     {
       "type": "ManagedReference",

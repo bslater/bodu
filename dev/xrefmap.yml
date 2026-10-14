@@ -101332,15 +101332,6 @@ references:
   fullName.vb: Bodu.IO.Pst.PstFileException.New(String, System.Exception)
   nameWithType: PstFileException.PstFileException(string?, Exception?)
   nameWithType.vb: PstFileException.New(String, Exception)
-- uid: Bodu.IO.Pst.PstFileException.#ctor(System.String,System.Exception,Bodu.IO.Pst.PstFileError)
-  name: PstFileException(string?, Exception?, PstFileError)
-  href: api/Bodu.IO.Pst.PstFileException.html#Bodu_IO_Pst_PstFileException__ctor_System_String_System_Exception_Bodu_IO_Pst_PstFileError_
-  commentId: M:Bodu.IO.Pst.PstFileException.#ctor(System.String,System.Exception,Bodu.IO.Pst.PstFileError)
-  name.vb: New(String, Exception, PstFileError)
-  fullName: Bodu.IO.Pst.PstFileException.PstFileException(string?, System.Exception?, Bodu.IO.Pst.PstFileError)
-  fullName.vb: Bodu.IO.Pst.PstFileException.New(String, System.Exception, Bodu.IO.Pst.PstFileError)
-  nameWithType: PstFileException.PstFileException(string?, Exception?, PstFileError)
-  nameWithType.vb: PstFileException.New(String, Exception, PstFileError)
 - uid: Bodu.IO.Pst.PstFileException.#ctor*
   name: PstFileException
   href: api/Bodu.IO.Pst.PstFileException.html#Bodu_IO_Pst_PstFileException__ctor_
@@ -101572,18 +101563,18 @@ references:
   commentId: Overload:Bodu.IO.Pst.PstNode.HasSubnodes
   fullName: Bodu.IO.Pst.PstNode.HasSubnodes
   nameWithType: PstNode.HasSubnodes
-- uid: Bodu.IO.Pst.PstNode.Id
-  name: Id
-  href: api/Bodu.IO.Pst.PstNode.html#Bodu_IO_Pst_PstNode_Id
-  commentId: P:Bodu.IO.Pst.PstNode.Id
-  fullName: Bodu.IO.Pst.PstNode.Id
-  nameWithType: PstNode.Id
-- uid: Bodu.IO.Pst.PstNode.Id*
-  name: Id
-  href: api/Bodu.IO.Pst.PstNode.html#Bodu_IO_Pst_PstNode_Id_
-  commentId: Overload:Bodu.IO.Pst.PstNode.Id
-  fullName: Bodu.IO.Pst.PstNode.Id
-  nameWithType: PstNode.Id
+- uid: Bodu.IO.Pst.PstNode.NodeId
+  name: NodeId
+  href: api/Bodu.IO.Pst.PstNode.html#Bodu_IO_Pst_PstNode_NodeId
+  commentId: P:Bodu.IO.Pst.PstNode.NodeId
+  fullName: Bodu.IO.Pst.PstNode.NodeId
+  nameWithType: PstNode.NodeId
+- uid: Bodu.IO.Pst.PstNode.NodeId*
+  name: NodeId
+  href: api/Bodu.IO.Pst.PstNode.html#Bodu_IO_Pst_PstNode_NodeId_
+  commentId: Overload:Bodu.IO.Pst.PstNode.NodeId
+  fullName: Bodu.IO.Pst.PstNode.NodeId
+  nameWithType: PstNode.NodeId
 - uid: Bodu.IO.Pst.PstNode.OpenDataStream
   name: OpenDataStream()
   href: api/Bodu.IO.Pst.PstNode.html#Bodu_IO_Pst_PstNode_OpenDataStream
@@ -101596,18 +101587,18 @@ references:
   commentId: Overload:Bodu.IO.Pst.PstNode.OpenDataStream
   fullName: Bodu.IO.Pst.PstNode.OpenDataStream
   nameWithType: PstNode.OpenDataStream
-- uid: Bodu.IO.Pst.PstNode.ParentId
-  name: ParentId
-  href: api/Bodu.IO.Pst.PstNode.html#Bodu_IO_Pst_PstNode_ParentId
-  commentId: P:Bodu.IO.Pst.PstNode.ParentId
-  fullName: Bodu.IO.Pst.PstNode.ParentId
-  nameWithType: PstNode.ParentId
-- uid: Bodu.IO.Pst.PstNode.ParentId*
-  name: ParentId
-  href: api/Bodu.IO.Pst.PstNode.html#Bodu_IO_Pst_PstNode_ParentId_
-  commentId: Overload:Bodu.IO.Pst.PstNode.ParentId
-  fullName: Bodu.IO.Pst.PstNode.ParentId
-  nameWithType: PstNode.ParentId
+- uid: Bodu.IO.Pst.PstNode.ParentNodeId
+  name: ParentNodeId
+  href: api/Bodu.IO.Pst.PstNode.html#Bodu_IO_Pst_PstNode_ParentNodeId
+  commentId: P:Bodu.IO.Pst.PstNode.ParentNodeId
+  fullName: Bodu.IO.Pst.PstNode.ParentNodeId
+  nameWithType: PstNode.ParentNodeId
+- uid: Bodu.IO.Pst.PstNode.ParentNodeId*
+  name: ParentNodeId
+  href: api/Bodu.IO.Pst.PstNode.html#Bodu_IO_Pst_PstNode_ParentNodeId_
+  commentId: Overload:Bodu.IO.Pst.PstNode.ParentNodeId
+  fullName: Bodu.IO.Pst.PstNode.ParentNodeId
+  nameWithType: PstNode.ParentNodeId
 - uid: Bodu.IO.Pst.PstNode.ReadAllBytes
   name: ReadAllBytes()
   href: api/Bodu.IO.Pst.PstNode.html#Bodu_IO_Pst_PstNode_ReadAllBytes

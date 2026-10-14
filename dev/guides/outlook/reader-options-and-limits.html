@@ -234,7 +234,7 @@ Console.WriteLine(store.DisplayName);
 <td><code>long</code></td>
 <td>256 MiB</td>
 <td>Forwarded to the container as <a class="xref" href="../../api/Bodu.IO.Pst.PstFileOptions.html#Bodu_IO_Pst_PstFileOptions_MaxNodeDataLength">MaxNodeDataLength</a>: the largest node payload materialized at once - the ceiling on any single property value, attachment payload, or table the store decodes whole. Streaming reads (<code>OpenContentStream()</code> on a deferred payload) are unbounded by design.</td>
-<td>The <strong>container</strong> refuses the read with <a class="xref" href="../../api/Bodu.IO.Pst.PstFileFormatException.html">PstFileFormatException</a> and <code>Error == PstFileError.LimitExceeded</code>, at every validation level. It propagates unwrapped.</td>
+<td>The <strong>container</strong> refuses the read with <a class="xref" href="../../api/Bodu.IO.Pst.PstFileFormatException.html">PstFileFormatException</a> and <code>Error == PstFileError.LimitExceeded</code>, at every validation level. The store wraps it: the caller sees <a class="xref" href="../../api/Bodu.Formats.Outlook.OutlookPstFormatException.html">OutlookPstFormatException</a> with that exception as <code>InnerException</code>.</td>
 </tr>
 <tr>
 <td><code>MaxEmbeddedMessageDepth</code></td>
@@ -292,7 +292,7 @@ Console.WriteLine(store.DisplayName);
 <tr>
 <td><code>MaxDataTreeLeaves</code></td>
 <td><strong>No</strong></td>
-<td>The container default of 65,536 leaf blocks per node. A data tree fanning out further is refused with <code>PstFileFormatException</code> / <code>LimitExceeded</code> exactly like an oversized payload.</td>
+<td>The container default of 65,536 leaf blocks per node. A data tree fanning out further is refused with <code>PstFileFormatException</code> / <code>LimitExceeded</code>, wrapped in <code>OutlookPstFormatException</code>, exactly like an oversized payload.</td>
 </tr>
 </tbody>
 </table>
@@ -316,7 +316,7 @@ Console.WriteLine(store.DisplayName);
 <li>An undefined <code>PidTagAttachMethod</code> value (the tolerant levels infer <code>ByValue</code> / <code>None</code>).</li>
 <li>A malformed name-to-id map.</li>
 </ul>
-<p>At every level the reader throws for a missing by-value payload (a by-value attachment with no <code>PidTagAttachDataBinary</code> property), a missing embedded-message subnode, and the depth and RTF limits. What the tolerant levels omit is a value the MAPI decoding rejects, as listed above; a fault in a property context itself - a heap reference that does not resolve (<code>InvalidHeap</code>), a fixed-width value shorter than its type (<code>InvalidPropertyContext</code>), or a value reference to a subnode the node does not contain (<code>InvalidSubnodeTree</code>) - is container corruption and fails the read at every level, unless <code>OmitUnresolvableValues</code> is set (see <a href="#salvaging-a-damaged-store">Salvaging a damaged store</a>). Container corruption is never wrapped: it surfaces as the <a class="xref" href="../../api/Bodu.IO.Pst.PstFileException.html">PstFileException</a> family (see <a href="reading-pst-mail-stores.html#errors-two-families-not-one">Reading .pst mail stores</a>), and under <code>Strict</code> the container also rejects any page or block whose CRC, trailer signature, or block identifier disagrees, an unknown wire type in a property context, and a table row matrix that holds more rows than its row index declares.</p>
+<p>At every level the reader throws for a missing by-value payload (a by-value attachment with no <code>PidTagAttachDataBinary</code> property), a missing embedded-message subnode, and the depth and RTF limits. What the tolerant levels omit is a value the MAPI decoding rejects, as listed above; a fault in a property context itself - a heap reference that does not resolve (<code>InvalidHeap</code>), a fixed-width value shorter than its type (<code>InvalidPropertyContext</code>), or a value reference to a subnode the node does not contain (<code>InvalidSubnodeTree</code>) - is container corruption and fails the read at every level, unless <code>OmitUnresolvableValues</code> is set (see <a href="#salvaging-a-damaged-store">Salvaging a damaged store</a>). Container corruption surfaces as <a class="xref" href="../../api/Bodu.Formats.Outlook.OutlookPstFormatException.html">OutlookPstFormatException</a> with the container's <a class="xref" href="../../api/Bodu.IO.Pst.PstFileException.html">PstFileException</a> as <code>InnerException</code> (see <a href="reading-pst-mail-stores.html#errors-one-family-container-faults-wrapped">Reading .pst mail stores</a>), and under <code>Strict</code> the container also rejects any page or block whose CRC, trailer signature, or block identifier disagrees, an unknown wire type in a property context, and a table row matrix that holds more rows than its row index declares.</p>
 <h2 id="salvaging-a-damaged-store">Salvaging a damaged store</h2>
 <p>By default one value whose reference into the container does not resolve fails the whole object it belongs to, so a single damaged property hides a message's subject, sender and bodies too. To recover what a damaged store still holds, set <code>OmitUnresolvableValues</code>: the value is left out, the rest of the object decodes, and each omission is reported to <code>ValueOmittedCallback</code>, so the caller can tell a salvaged object from a clean one.</p>
 <pre><code class="lang-csharp">using Bodu.Formats.Outlook;
@@ -393,7 +393,7 @@ foreach (OutlookAttachment attachment in message.Attachments)
 // pj1.txt: inline=False size=89 streamed=89
 </code></pre>
 <h2 id="when-a-limit-trips">When a limit trips</h2>
-<p>The node-payload ceiling is enforced by the container, so it surfaces as the container's exception - and because the <code>.pst</code> reader does not wrap container faults, that is what you catch:</p>
+<p>The node-payload ceiling is enforced by the container, so it surfaces as the container's exception, which the <code>.pst</code> reader wraps like any other container fault - match it as the <code>InnerException</code>:</p>
 <pre><code class="lang-csharp">using Bodu.Formats.Outlook;
 using Bodu.IO.Pst;
 
@@ -404,9 +404,9 @@ try
     using var store = OutlookMailStore.Open(File.OpenRead(&quot;archive.pst&quot;), options);
     Console.WriteLine(store.DisplayName);
 }
-catch (PstFileFormatException ex) when (ex.Error == PstFileError.LimitExceeded)
+catch (OutlookPstFormatException ex) when (ex.InnerException is PstFileFormatException { Error: PstFileError.LimitExceeded } limit)
 {
-    Console.WriteLine($&quot;{ex.Error}: {ex.Message}&quot;);
+    Console.WriteLine($&quot;{limit.Error}: {limit.Message}&quot;);
 }
 
 // LimitExceeded: The data behind block 716 exceeds the session's configured resource limits.
@@ -475,14 +475,14 @@ static void Descend(OutlookMailMessage message)
 <td><code>MaxNodeDataLength</code></td>
 <td>Container</td>
 <td>-</td>
-<td><a class="xref" href="../../api/Bodu.IO.Pst.PstFileFormatException.html">PstFileFormatException</a>, <code>Error == LimitExceeded</code></td>
+<td><a class="xref" href="../../api/Bodu.Formats.Outlook.OutlookPstFormatException.html">OutlookPstFormatException</a> wrapping <a class="xref" href="../../api/Bodu.IO.Pst.PstFileFormatException.html">PstFileFormatException</a>, <code>Error == LimitExceeded</code></td>
 <td>Any read that materializes a node</td>
 </tr>
 <tr>
 <td><code>MaxDataTreeLeaves</code> (not surfaced)</td>
 <td>Container</td>
 <td>-</td>
-<td><a class="xref" href="../../api/Bodu.IO.Pst.PstFileFormatException.html">PstFileFormatException</a>, <code>Error == LimitExceeded</code></td>
+<td><a class="xref" href="../../api/Bodu.Formats.Outlook.OutlookPstFormatException.html">OutlookPstFormatException</a> wrapping <a class="xref" href="../../api/Bodu.IO.Pst.PstFileFormatException.html">PstFileFormatException</a>, <code>Error == LimitExceeded</code></td>
 <td>Any read that walks a data tree</td>
 </tr>
 </tbody>
@@ -545,7 +545,7 @@ catch (ArgumentOutOfRangeException ex)
     <footer class="border-top text-secondary">
       <div class="container-xxl">
         <div class="flex-fill">
-          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: b449a86 · Built: 2026-10-14 (UTC)</span>
+          Documentation © 2026 Bodu contributors · Licensed under the MIT licence · Generated by <strong>DocFX</strong><br><span class="docs-build-meta">Documents Bodu <strong>1.3.0</strong> (Stable) and <strong>0.7.2</strong> (Preview) · Source: bslater/bodu · Branch: master · Commit: 72d80c9 · Built: 2026-10-14 (UTC)</span>
         </div>
       </div>
     </footer>
