@@ -486,6 +486,53 @@ public partial class IniSerializerTests
     }
 
     /// <summary>
+    /// A root model whose section type has a get-only member that is not a scalar.
+    /// </summary>
+    private sealed class GetOnlyListSectionConfig
+    {
+        /// <summary>Gets or sets the section.</summary>
+        public GetOnlyListSection S { get; set; } = new();
+    }
+
+    /// <summary>
+    /// A section model with a get-only list, which nests beyond INI's two levels whether it is written or read.
+    /// </summary>
+    private sealed class GetOnlyListSection
+    {
+        /// <summary>Gets or sets the name.</summary>
+        public string Name { get; set; } = "a";
+
+        /// <summary>Gets the values, which no key can hold.</summary>
+        public List<int> Values { get; } = [];
+    }
+
+    /// <summary>
+    /// A root model whose section type has a get-only scalar member and an ignored get-only list.
+    /// </summary>
+    private sealed class GetOnlyMembersSectionConfig
+    {
+        /// <summary>Gets or sets the section.</summary>
+        public GetOnlyMembersSection S { get; set; } = new();
+    }
+
+    /// <summary>
+    /// A section model with a settable scalar, a get-only scalar, which is written and not read, and a get-only list
+    /// left out with <see cref="Bodu.Text.Serialization.IgnoreAttribute" />.
+    /// </summary>
+    private sealed class GetOnlyMembersSection
+    {
+        /// <summary>Gets or sets the name.</summary>
+        public string Name { get; set; } = "a";
+
+        /// <summary>Gets a computed value.</summary>
+        public string Computed => "computed";
+
+        /// <summary>Gets the values, which neither direction maps.</summary>
+        [Bodu.Text.Serialization.Ignore]
+        public List<int> Values { get; } = [];
+    }
+
+    /// <summary>
     /// A dictionary keyed by <see cref="int" /> that implements the generic <see cref="IDictionary{TKey, TValue}" />
     /// interface but not the non-generic <see cref="IDictionary" />, so that it is neither a string-keyed dictionary nor
     /// one the serializer recognizes as a dictionary through the non-generic interface.

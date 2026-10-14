@@ -569,4 +569,42 @@ public partial class IniSerializerTests
 
         Assert.IsTrue(ex.Message.Contains("'O'", StringComparison.Ordinal), ex.Message);
     }
+
+    /// <summary>
+    /// Verifies that a section type with a get-only member that is not a scalar, which writing rejects, throws
+    /// <see cref="IniSerializationException" /> naming the member when a section, or the reserved global section, is
+    /// read into it, rather than binding the settable members and leaving the get-only one out.
+    /// </summary>
+    /// <param name="testName">The scenario name.</param>
+    /// <param name="text">The INI text to read.</param>
+    /// <param name="globalSectionName">The reserved global-section name, or <see langword="null" />.</param>
+    [TestMethod]
+    [DataRow("A section", "[S]\nName=b\n", null)]
+    [DataRow("The global section", "Name=b\n", "S")]
+    public void Deserialize_WhenASectionTypeHasAGetOnlyMemberThatIsNotAScalar_ShouldThrowIniSerializationException(string testName, string text, string? globalSectionName)
+    {
+        var options = new IniSerializerOptions { GlobalSectionName = globalSectionName };
+
+        var ex = Assert.ThrowsExactly<IniSerializationException>(() =>
+        {
+            _ = IniSerializer.Deserialize<GetOnlyListSectionConfig>(text, options);
+        }, testName);
+
+        Assert.IsTrue(ex.Message.Contains("'Values'", StringComparison.Ordinal), ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that a section type with a get-only scalar member, and a get-only list left out with
+    /// <see cref="Bodu.Text.Serialization.IgnoreAttribute" />, still reads, binding its settable members and leaving the get-only ones as they
+    /// are.
+    /// </summary>
+    [TestMethod]
+    public void Deserialize_WhenASectionTypeHasAGetOnlyScalarAndAnIgnoredGetOnlyList_ShouldBindTheSettableMembers()
+    {
+        GetOnlyMembersSectionConfig result = IniSerializer.Deserialize<GetOnlyMembersSectionConfig>("[S]\nName=b\nComputed=x\n");
+
+        Assert.AreEqual("b", result.S.Name);
+        Assert.AreEqual("computed", result.S.Computed);
+        Assert.AreEqual(0, result.S.Values.Count);
+    }
 }

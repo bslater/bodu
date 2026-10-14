@@ -366,4 +366,25 @@ public partial class IniSerializerTests
         Assert.AreEqual(expectedHost, result.Database.Host);
         Assert.AreEqual(0, result.Database.Port);
     }
+
+    /// <summary>
+    /// Verifies that a section type with a get-only member that is not a scalar is rejected in both directions with
+    /// the same <see cref="IniSerializationException" />, so that no document reads into a value that cannot be written
+    /// back.
+    /// </summary>
+    [TestMethod]
+    public void SerializeDeserialize_WhenASectionTypeHasAGetOnlyMemberThatIsNotAScalar_ShouldThrowTheSameExceptionInBothDirections()
+    {
+        var written = Assert.ThrowsExactly<IniSerializationException>(() =>
+        {
+            _ = IniSerializer.Serialize(new GetOnlyListSectionConfig());
+        });
+
+        var read = Assert.ThrowsExactly<IniSerializationException>(() =>
+        {
+            _ = IniSerializer.Deserialize<GetOnlyListSectionConfig>("[S]\nName=a\n");
+        });
+
+        Assert.AreEqual(written.Message, read.Message);
+    }
 }
