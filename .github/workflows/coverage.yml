@@ -198,7 +198,10 @@ jobs:
   # ---------------------------------------------------------------------------------------------
   aggregate:
     needs: [scope, collect]
-    if: always() && needs.scope.outputs.mode != 'skip'
+    # always() keeps the merge and its report running when a collect shard fails, but only after a
+    # scope that succeeded: a skipped scope (a draft pull request) has no mode, which is not 'skip',
+    # and merging nothing would fail the run and comment an empty summary on the pull request (#1341).
+    if: always() && needs.scope.result == 'success' && needs.scope.outputs.mode != 'skip'
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout
