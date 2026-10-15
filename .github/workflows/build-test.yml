@@ -14,17 +14,27 @@ permissions:
   issues: write
 
 jobs:
-  # Runs on both Ubuntu 24.04 and 26.04 while GitHub moves ubuntu-latest from one to the other,
-  # gradually, between October 19 and November 19, 2026. Drop ubuntu-24.04 from the list once 26.04
-  # has proven itself. fail-fast is off so a failure on one image does not cancel the other.
+  # Runs on Windows as well as Linux (#1339): a Windows checkout differs in line endings, path
+  # separators and file sharing, and only a Windows leg sees a test or a library path that depends on
+  # them. The Linux legs run on both Ubuntu 24.04 and 26.04 while GitHub moves ubuntu-latest from one
+  # to the other, gradually, between October 19 and November 19, 2026. Drop ubuntu-24.04 from the list
+  # once 26.04 has proven itself. fail-fast is off so a failure on one image does not cancel the
+  # others. Windows stays last in the list, so the pull request comment below, which only the first
+  # image posts, keeps coming from Linux.
   build-test:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-24.04, ubuntu-26.04]
+        os: [ubuntu-24.04, ubuntu-26.04, windows-2025]
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 45
+    # Windows runners restore, build and start test hosts more slowly than Linux ones.
+    timeout-minutes: ${{ startsWith(matrix.os, 'windows') && 90 || 45 }}
     if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
+
+    # The script steps are bash on every image, Git Bash on Windows; the pwsh steps name their shell.
+    defaults:
+      run:
+        shell: bash
 
     steps:
       - name: Checkout
@@ -35,14 +45,17 @@ jobs:
           submodules: recursive
 
       # Bash-only and seconds to run, so it gates before the SDK setup: a namespace/folder violation
-      # fails the same way locally and here, without waiting on a full restore and build.
+      # fails the same way locally and here, without waiting on a full restore and build. It checks the
+      # repository's content, which is the same on every image, so it runs on Linux only.
       - name: Check folder / namespace alignment
+        if: runner.os == 'Linux'
         run: bash bld/check-folder-namespace-alignment.sh
 
       # Same rationale: bash-only and seconds to run, so a malformed manifest or a shipping package
       # missing its README, tier banner or icon fails here rather than in a release run - after a tag
-      # has been pushed and a nuget.org version can no longer be withdrawn.
+      # has been pushed and a nuget.org version can no longer be withdrawn. Linux only, as above.
       - name: Check release manifest
+        if: runner.os == 'Linux'
         run: bash bld/check-release-manifest.sh
 
       - name: Setup .NET
@@ -482,20 +495,25 @@ jobs:
           list-tests: failed
 
   # The job above runs every suite on x64, where the Argon2 AdvSimd kernel and the GHASH PMULL kernel cannot
-  # execute. This one runs the two cryptography suites on GitHub's hosted ARM64 runner (free for public
-  # repositories), on both frameworks, so both kernels are held to the same vectors as the x64 ones and the SIMD
-  # opt-out is proven on ARM64 too. SimdCapabilitiesTests fails if the AdvSimd gate is closed here, so the job cannot
-  # silently fall back to the scalar Argon2 kernel; the PMULL gate opens wherever the processor lists 'pmull' among
-  # the features the step below reports. It proves correctness; performance is measured separately. Like the
-  # job above, it runs on both Ubuntu 24.04 and 26.04 until 24.04 is dropped.
+  # execute. This one runs the two cryptography suites on GitHub's hosted ARM64 runners, Linux and Windows (both
+  # free for public repositories), on both frameworks, so both kernels are held to the same vectors as the x64 ones
+  # and the SIMD opt-out is proven on ARM64 too. SimdCapabilitiesTests fails if the AdvSimd gate is closed here, so
+  # the job cannot silently fall back to the scalar Argon2 kernel; the PMULL gate opens wherever the processor
+  # offers polynomial multiplication, which the step below reports. It proves correctness; performance is measured
+  # separately. Like the job above, it runs on both Ubuntu 24.04 and 26.04 until 24.04 is dropped, and on Windows
+  # 11 ARM64 (#1339).
   build-test-arm64:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-24.04-arm, ubuntu-26.04-arm]
+        os: [ubuntu-24.04-arm, ubuntu-26.04-arm, windows-11-arm]
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 30
+    timeout-minutes: ${{ startsWith(matrix.os, 'windows') && 60 || 30 }}
     if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
+
+    defaults:
+      run:
+        shell: bash
 
     env:
       TEST_PROJECTS: >-
@@ -522,9 +540,20 @@ jobs:
             --output "${{ github.workspace }}/local-packages"
 
       - name: Report processor
+        if: runner.os == 'Linux'
         run: |
           uname -m
           grep -m1 -i 'features' /proc/cpuinfo || true
+
+      - name: Report processor (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $env:PROCESSOR_ARCHITECTURE
+          (Get-CimInstance Win32_Processor).Name
+          # PF_ARM_V8_CRYPTO_INSTRUCTIONS_AVAILABLE (30) covers PMULL, which the GHASH kernel needs.
+          Add-Type -Namespace Native -Name Kernel32 -MemberDefinition '[DllImport("kernel32.dll")] public static extern bool IsProcessorFeaturePresent(uint feature);'
+          "ARMv8 crypto instructions (PMULL): {0}" -f [Native.Kernel32]::IsProcessorFeaturePresent(30)
 
       - name: Restore
         run: |

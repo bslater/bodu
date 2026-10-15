@@ -160,7 +160,7 @@ See **Test Tiers** below for the category convention each runsettings file appli
 
 `test.runsettings` enables parallel execution (`MaxCpuCount=0`) and disables AppDomains.
 
-**Reproducing what CI runs.** Five differences make a green local run a weaker signal than it looks,
+**Reproducing what CI runs.** Six differences make a green local run a weaker signal than it looks,
 and the first two have bitten:
 
 - **CI uses `test.runsettings`, not `bvt.runsettings`.** `test.runsettings` excludes only `Stress`
@@ -173,8 +173,15 @@ and the first two have bitten:
   in CI. Install the .NET 8 runtime and leave `DOTNET_ROLL_FORWARD` unset when the result is meant to
   mean anything about the `net8.0` leg.
 - **Some code runs only on ARM64.** `build-test.yml`'s `build-test-arm64` job runs the two
-  cryptography test projects on GitHub's hosted ARM64 runner, the only place the Argon2 AdvSimd shim
-  executes; on x64 its tests report inconclusive. A green x64 run says nothing about that path.
+  cryptography test projects on GitHub's hosted ARM64 runners, Linux and Windows, the only place the
+  Argon2 AdvSimd shim executes; on x64 its tests report inconclusive. A green x64 run says nothing
+  about that path.
+- **CI runs on Windows as well as Linux.** `build-test.yml` runs every test project, sample and tool on
+  `windows-2025` beside the two Ubuntu images, and `release.yml`'s test gate, the `Bodu.CodeStyle`
+  workflow and the NativeAOT smoke do the same (#1339). A Windows checkout converts every text file to
+  CRLF line endings (`core.autocrlf=true`) except the ones `.gitattributes` pins to LF (`*.cs`,
+  `*.csv`), and paths, file sharing and case sensitivity differ too, so a test that reads a fixture
+  byte for byte, or assumes a path separator, can pass on Linux and fail there.
 - **CI treats warnings as errors.** `build-test.yml` builds every test project, and then every sample,
   the maintenance generators under `tools/` (which `bodu.slnx` leaves out) and the docs project
   (`docs/doc.csproj`), with `-p:TreatWarningsAsErrors=true`, so any compiler or
