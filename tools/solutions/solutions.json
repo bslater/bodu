@@ -172,7 +172,6 @@
       "Bodu.Text.Configuration/bench/Bodu.Text.Configuration.Benchmarks.csproj",
       "Bodu.Text.Encoding/bench/Bodu.Text.Encoding.Benchmarks.csproj",
       "Bodu.Text.Filtering/bench/Bodu.Text.Filtering.Benchmarks.csproj",
-      "samples/Globalization.Calendar/Bodu.Globalization.Calendar.Samples.Caching/Bodu.Globalization.Calendar.Samples.Caching.csproj",
       "samples/Globalization.Calendar/Bodu.Globalization.Calendar.Samples.RulePackToolchain/Bodu.Globalization.Calendar.Samples.RulePackToolchain.csproj",
       "samples/Globalization.Calendar/Bodu.Globalization.Calendar.Samples.ValidationLint/Bodu.Globalization.Calendar.Samples.ValidationLint.csproj"
     ]

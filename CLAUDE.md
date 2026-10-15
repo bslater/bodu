@@ -208,14 +208,14 @@ and the first two have bitten:
   `dotnet-install.sh --jsonfile global.json --install-dir <dir>` installs the pinned one beside the
   others.
 
-**Restore and build must agree on the configuration.** Fifteen projects - the benchmarks, the AOT
-smoke app, the `Calendar.Tool` / `.Build` toolchain, and three samples - are excluded from the *Debug*
+**Restore and build must agree on the configuration.** Fourteen projects - the benchmarks, the AOT
+smoke app, the `Calendar.Tool` / `.Build` toolchain, and two samples - are excluded from the *Debug*
 solution configuration in `bodu.slnx` (`<Build Solution="Debug|*" Project="false" />`). `dotnet
 restore bodu.slnx` defaults to Debug and therefore skips them, while `dotnet build bodu.slnx -c
 Release` builds them, so the pair
 
 ```bash
-dotnet restore bodu.slnx                        # Debug: 15 projects skipped
+dotnet restore bodu.slnx                        # Debug: 14 projects skipped
 dotnet build   bodu.slnx -c Release --no-restore # ... which then fail with NETSDK1004
 ```
 
@@ -229,7 +229,9 @@ A project that runs the toolchain has to be excluded from Debug along with it. A
 not build a reference that the active configuration excludes, so in Debug the `CompileNotableDatePack`
 task assembly under `Bodu.Globalization.Calendar.Build/src/bin/Debug` never exists, and the consuming
 project fails with `MSB4062`, in Visual Studio and in `dotnet build bodu.slnx` alike. That is why the
-`RulePackToolchain` sample is one of the three samples excluded.
+`RulePackToolchain` sample is one of the two samples excluded. The same holds in reverse: a test project
+that references a sample must not reference an excluded one, which is why the calendar `Caching` sample
+is no longer excluded now that `Bodu.Globalization.Calendar.Samples.Caching.Test` tests it.
 
 The generated solution views (see **Solution views** above) carry none of these exclusions, so every
 project in a view builds, and restores, in Debug as in Release: `bodu.tooling.slnx` builds the toolchain

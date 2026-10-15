@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>$(BoduNetTargets)</TargetFrameworks>
+    <RootNamespace>Bodu.Globalization.Calendar.Samples.Caching</RootNamespace>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Bodu.Test\test\Bodu.Test.csproj" />
+    <ProjectReference Include="..\Bodu.Globalization.Calendar.Samples.Caching\Bodu.Globalization.Calendar.Samples.Caching.csproj" />
+  </ItemGroup>
+
+</Project>
