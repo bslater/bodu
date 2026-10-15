@@ -32,6 +32,15 @@ public sealed partial class ReleaseNoteCatalogTests
         Encoding.ASCII.GetBytes(Header + ReleaseNoteCatalog.ColumnLine + "\n" + string.Concat(rows.Select(row => row + "\n")));
 
     /// <summary>
+    /// Rewrites a catalog's line feeds as a carriage return and a line feed, as Git for Windows checks a file out
+    /// where line endings are converted and no attribute pins them.
+    /// </summary>
+    /// <param name="content">The catalog's bytes, with line feeds.</param>
+    /// <returns>The catalog's bytes, with every line ending in a carriage return and a line feed.</returns>
+    private static byte[] WithCarriageReturns(byte[] content) =>
+        Encoding.ASCII.GetBytes(Encoding.ASCII.GetString(content).Replace("\n", "\r\n", StringComparison.Ordinal));
+
+    /// <summary>
     /// Asserts that a catalog reports exactly one problem, mentioning the given text.
     /// </summary>
     /// <param name="catalog">The loaded catalog.</param>
