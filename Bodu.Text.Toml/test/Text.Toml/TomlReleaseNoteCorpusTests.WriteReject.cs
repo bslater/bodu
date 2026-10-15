@@ -16,7 +16,7 @@ public sealed partial class TomlReleaseNoteCorpusTests
     /// cannot be written, throws <see cref="TomlSerializationException" />, the exception the row names.
     /// </summary>
     /// <param name="fix">The catalog row.</param>
-    [TestMethod]
+    [TestMethod(UnfoldingStrategy = TestDataSourceUnfoldingStrategy.Unfold)]
     [TestCategory("Regression")]
     [Timeout(RowTimeout)]
     [DynamicData(

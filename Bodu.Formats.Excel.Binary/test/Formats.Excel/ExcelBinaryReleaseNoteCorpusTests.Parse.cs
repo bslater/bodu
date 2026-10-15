@@ -16,7 +16,7 @@ public sealed partial class ExcelBinaryReleaseNoteCorpusTests
     /// to the expected sheets and cells or records.
     /// </summary>
     /// <param name="fix">The catalog row.</param>
-    [TestMethod]
+    [TestMethod(UnfoldingStrategy = TestDataSourceUnfoldingStrategy.Unfold)]
     [TestCategory("Regression")]
     [Timeout(RowTimeout)]
     [DynamicData(

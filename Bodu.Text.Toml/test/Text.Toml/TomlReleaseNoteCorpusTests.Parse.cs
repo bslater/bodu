@@ -18,7 +18,7 @@ public sealed partial class TomlReleaseNoteCorpusTests
     /// values its expected tagged JSON describes.
     /// </summary>
     /// <param name="fix">The catalog row.</param>
-    [TestMethod]
+    [TestMethod(UnfoldingStrategy = TestDataSourceUnfoldingStrategy.Unfold)]
     [TestCategory("Regression")]
     [Timeout(RowTimeout)]
     [DynamicData(

@@ -16,7 +16,7 @@ public sealed partial class ExcelBinaryReleaseNoteCorpusTests
     /// listing equals the input's, and the expected bytes when the row gives them.
     /// </summary>
     /// <param name="fix">The catalog row.</param>
-    [TestMethod]
+    [TestMethod(UnfoldingStrategy = TestDataSourceUnfoldingStrategy.Unfold)]
     [TestCategory("Regression")]
     [Timeout(RowTimeout)]
     [DynamicData(
