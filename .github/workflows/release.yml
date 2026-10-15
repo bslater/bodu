@@ -66,16 +66,23 @@ jobs:
   # ship.
   # ---------------------------------------------------------------------------------------------
   test:
-    # Runs on both Ubuntu 24.04 and 26.04 while GitHub moves ubuntu-latest from one to the other,
-    # gradually, between October 19 and November 19, 2026, so a release is gated on both. Drop
-    # ubuntu-24.04 from the list once 26.04 has proven itself. fail-fast is off so a failure on one
-    # image does not cancel the other, and the gate reports both.
+    # Runs on Windows as well as Linux, as build-test.yml does, so a release is gated on both
+    # operating systems (#1339). The Linux legs run on both Ubuntu 24.04 and 26.04 while GitHub moves
+    # ubuntu-latest from one to the other, gradually, between October 19 and November 19, 2026, so a
+    # release is gated on both. Drop ubuntu-24.04 from the list once 26.04 has proven itself.
+    # fail-fast is off so a failure on one image does not cancel the others, and the gate reports all.
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-24.04, ubuntu-26.04]
+        os: [ubuntu-24.04, ubuntu-26.04, windows-2025]
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 45
+    # Windows runners restore, build and start test hosts more slowly than Linux ones.
+    timeout-minutes: ${{ startsWith(matrix.os, 'windows') && 90 || 45 }}
+
+    # The script steps are bash on every image, Git Bash on Windows.
+    defaults:
+      run:
+        shell: bash
 
     # Deliberately NO job-level CONFIGURATION env. MSBuild reads environment variables as global
     # properties and property names are case-insensitive, so CONFIGURATION=Release silently becomes

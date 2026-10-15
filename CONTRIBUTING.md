@@ -71,8 +71,11 @@ A local run is a weaker signal than CI unless it matches CI. To match it:
 - **Use the pinned SDK.** A different SDK ships different analyzers and can disagree with CI in either
   direction. `dotnet --version` at the repository root names the one in use.
 
-Some code runs only on ARM64, and CI runs the cryptography tests on an ARM64 runner as well; on x64 those
-tests report inconclusive.
+Some code runs only on ARM64, and CI runs the cryptography tests on ARM64 runners as well, Linux and
+Windows; on x64 those tests report inconclusive. CI also runs every test on Windows x64 as well as Linux,
+so a test that depends on line endings, path separators or file sharing fails there if it is not
+portable: a Windows checkout gives every text file CRLF line endings unless `.gitattributes` pins it to
+LF.
 
 If you restore and build as separate steps, pass the same configuration to both
 (`dotnet restore bodu.slnx -p:Configuration=Release`): a few projects, such as the benchmarks, are
@@ -136,9 +139,9 @@ change's scope belongs in its own issue and its own pull request.
 Every pull request runs:
 
 - **Build and Test** - every test project, every sample, the maintenance tools under `tools/` and the
-  docs project, built with warnings as errors on Linux x64, where the tests and samples then run; the
-  cryptography tests on Linux ARM64; and the solution packed as the release packs it, without the test
-  assemblies' access to internals and with package validation.
+  docs project, built with warnings as errors on Linux x64 and Windows x64, where the tests and samples
+  then run; the cryptography tests on Linux and Windows ARM64; and the solution packed as the release
+  packs it, without the test assemblies' access to internals and with package validation.
 - **Policy Gate** - the deterministic checks in `bld/check-policy.sh` and the folder and namespace
   alignment check.
 - **Claude Policy Review** - an automated review against the judgment-based conventions in `CLAUDE.md`.
