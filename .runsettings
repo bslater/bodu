@@ -13,6 +13,11 @@
     <!-- Optional: Set results directory -->
     <!-- <ResultsDirectory>.\TestResults</ResultsDirectory> -->
 
-    <TestCaseFilter>TestCategory!=Stress</TestCaseFilter>
+    <!--
+      The settings a bare dotnet test and Visual Studio use: every test except the on-demand tiers, the Stress loops
+      and the Census artifact generator, which rewrites the committed kat-census.txt. Each runs only through its own
+      settings file (stress.runsettings / a developer-triggered Census run).
+    -->
+    <TestCaseFilter>TestCategory!=Stress&amp;TestCategory!=Census</TestCaseFilter>
   </RunConfiguration>
 </RunSettings>
