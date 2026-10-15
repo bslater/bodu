@@ -30,7 +30,9 @@ Nine checks, each independently runnable, all run by ``all``:
                when it names any
   sessions     every *.runsettings file at the repository root states its
                session limit in the comment above <TestSessionTimeout>, as
-               "N minutes per assembly", and the value is that many minutes
+               "N minutes per assembly", and the value is that many minutes;
+               and its <TestCaseFilter> keeps the on-demand Stress and Census
+               tiers out, unless it selects the tiers it runs by name
   spelling     the prose of every /// comment in a C# file under a project's
                src/ or test/ folder, or a shared/ source folder, uses no
                British spelling bld/docs-checks/us-spelling.txt lists
@@ -799,16 +801,50 @@ def session_timeout_problems(rel: str, text: str) -> list[str]:
     return []
 
 
+# The element that selects a run's tests, and the category terms it is written in.
+_TEST_CASE_FILTER = re.compile(r"<TestCaseFilter>(.*?)</TestCaseFilter>", re.DOTALL)
+_CATEGORY_TERM = re.compile(r"TestCategory\s*(!?=)\s*([A-Za-z0-9_.]+)")
+
+# The tiers a run includes only by asking for them: Stress runs for tens of minutes, and Census rewrites the committed
+# Bodu.Security.Cryptography/test/kat-census.txt.
+_ON_DEMAND_CATEGORIES = ("Stress", "Census")
+
+
+def on_demand_filter_problems(rel: str, text: str) -> list[str]:
+    """Reports a runsettings file whose ``TestCaseFilter`` lets an on-demand tier run.
+
+    A filter whose every category term selects a tier by name (``TestCategory=Smoke``) runs what it asks for. Any
+    other filter must exclude each on-demand tier, and a file with no filter runs every test, those tiers included.
+    """
+    match = _TEST_CASE_FILTER.search(text)
+    if match is None:
+        return [f"{rel}: sets no <TestCaseFilter>, so it runs the on-demand {' and '.join(_ON_DEMAND_CATEGORIES)} tiers"]
+
+    line_no = text.count("\n", 0, match.start(1)) + 1
+    terms = _CATEGORY_TERM.findall(match.group(1).replace("&amp;", "&"))
+    if terms and all(operator == "=" for operator, _ in terms):
+        return []
+
+    excluded = {name for operator, name in terms if operator == "!="}
+    return [
+        f"{rel}:{line_no}: <TestCaseFilter> runs the on-demand {category} tier; add TestCategory!={category}"
+        for category in _ON_DEMAND_CATEGORIES
+        if category not in excluded]
+
+
 def check_sessions() -> list[str]:
-    """Holds each runsettings file's session limit to the limit its comment states.
+    """Holds each runsettings file's session limit to the limit its comment states, and keeps on-demand tiers out.
 
     CI's Test step, the coverage workflow and the documented test tiers each run under one of the runsettings files
-    at the repository root. A limit far longer than intended lets a hung test run until the job's own timeout,
-    which names no test.
+    at the repository root, and the root ``.runsettings`` is the one a bare ``dotnet test`` and Visual Studio use. A
+    limit far longer than intended lets a hung test run until the job's own timeout, which names no test, and a filter
+    that lets the Census tier through rewrites a committed file on every run.
     """
     problems = []
     for name in sorted(n for n in os.listdir(ROOT) if n.endswith(".runsettings")):
-        problems += session_timeout_problems(name, read(os.path.join(ROOT, name)))
+        text = read(os.path.join(ROOT, name))
+        problems += session_timeout_problems(name, text)
+        problems += on_demand_filter_problems(name, text)
     return problems
 
 

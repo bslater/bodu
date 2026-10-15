@@ -226,6 +226,46 @@ class SessionTimeoutTests(unittest.TestCase):
         self.assertEqual([], session_problems("<RunSettings>\n  <RunConfiguration>\n  </RunConfiguration>\n</RunSettings>\n"))
 
 
+def filter_problems(test_case_filter: str | None) -> list[str]:
+    element = f"    <TestCaseFilter>{test_case_filter}</TestCaseFilter>\n" if test_case_filter is not None else ""
+    text = f"<RunSettings>\n  <RunConfiguration>\n    <MaxCpuCount>0</MaxCpuCount>\n{element}  </RunConfiguration>\n</RunSettings>\n"
+    return check_docs.on_demand_filter_problems("x.runsettings", text)
+
+
+class OnDemandFilterTests(unittest.TestCase):
+    """The on-demand tiers, Stress and Census, that on_demand_filter_problems keeps out of a runsettings filter."""
+
+    def test_on_demand_filter_problems_when_filter_excludes_both_tiers_should_report_nothing(self) -> None:
+        self.assertEqual([], filter_problems("TestCategory!=Stress&amp;TestCategory!=Census"))
+
+    def test_on_demand_filter_problems_when_filter_also_excludes_regression_should_report_nothing(self) -> None:
+        self.assertEqual([], filter_problems("TestCategory!=Regression&amp;TestCategory!=Stress&amp;TestCategory!=Census"))
+
+    def test_on_demand_filter_problems_when_filter_excludes_only_stress_should_report_census_at_its_line(self) -> None:
+        found = filter_problems("TestCategory!=Stress")
+        self.assertEqual(1, len(found))
+        self.assertTrue(found[0].startswith("x.runsettings:4: <TestCaseFilter> runs the on-demand Census tier"), found[0])
+        self.assertIn("TestCategory!=Census", found[0])
+
+    def test_on_demand_filter_problems_when_filter_excludes_neither_tier_should_report_both(self) -> None:
+        found = filter_problems("TestCategory!=Regression")
+        self.assertEqual(2, len(found))
+        self.assertIn("Stress", found[0])
+        self.assertIn("Census", found[1])
+
+    def test_on_demand_filter_problems_when_filter_selects_a_tier_by_name_should_report_nothing(self) -> None:
+        self.assertEqual([], filter_problems("TestCategory=Smoke"))
+        self.assertEqual([], filter_problems("TestCategory=Stress"))
+
+    def test_on_demand_filter_problems_when_file_sets_no_filter_should_report_it(self) -> None:
+        found = filter_problems(None)
+        self.assertEqual(1, len(found))
+        self.assertTrue(found[0].startswith("x.runsettings: sets no <TestCaseFilter>"), found[0])
+
+    def test_check_sessions_when_repository_settings_are_read_should_report_nothing(self) -> None:
+        self.assertEqual([], check_docs.check_sessions())
+
+
 
 # The word pairs the spelling tests read, in the data file's grammar.
 SPELLING_PAIRS_TEXT = (
