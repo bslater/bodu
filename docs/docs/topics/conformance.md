@@ -20,7 +20,7 @@ Use it to judge how a behavior was established before you depend on it, and to k
 
 ## Hashing and cryptography
 
-`Bodu.Security.Cryptography` is held to the published vectors of every algorithm it implements. The test suite's known-answer census (`Bodu.Security.Cryptography/test/kat-census.txt`) records 7,231 vectors across eleven families - digests, AEAD, block ciphers, KDFs, signatures, key agreement, key encapsulation, key generation and validation, stream ciphers, and HPKE - and a second test assembly runs the known-answer suites again with SIMD acceleration switched off, so the scalar paths are held to the same vectors as the accelerated ones.
+`Bodu.Security.Cryptography` is held to the published vectors of every algorithm it implements. The test suite's known-answer census (`Bodu.Security.Cryptography/test/kat-census.txt`) records 7,232 vectors across eleven families - digests, AEAD, block ciphers, KDFs, signatures, key agreement, key encapsulation, key generation and validation, stream ciphers, and HPKE - and a second test assembly runs the known-answer suites again with SIMD acceleration switched off, so the scalar paths are held to the same vectors as the accelerated ones.
 
 | Area | Sources |
 |---|---|
