@@ -21,7 +21,7 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
     /// This test uses reflection to reassign the property's current hashValue after calling <see cref="HashAlgorithm.Dispose" />. This
     /// ensures concrete <see cref="HashAlgorithm" /> implementations enforce correct disposal behavior.
     /// </remarks>
-    [TestMethod(UnfoldingStrategy = TestDataSourceUnfoldingStrategy.Unfold)]
+    [TestMethod]
     [DynamicData(nameof(GetAlgorithmWritableProperties), DynamicDataDisplayName = nameof(TestHelpers.GetTypePropertyDisplayName), DynamicDataDisplayNameDeclaringType = typeof(TestHelpers))]
     public void Dispose_WhenAssigningProperty_ShouldThrowExactly(PropertyInfo property)
     {
@@ -70,7 +70,7 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
     /// Verifies that a disposable algorithm properly zeroes or nullifies its internal fields after disposal.
     /// </summary>
     /// <param name="field">The field to inspect for zeroed or null state.</param>
-    [TestMethod(UnfoldingStrategy = TestDataSourceUnfoldingStrategy.Unfold)]
+    [TestMethod]
     [DynamicData(nameof(GetAlgorithmFields), DynamicDataDisplayName = nameof(TestHelpers.GetTypeFieldDisplayName), DynamicDataDisplayNameDeclaringType = typeof(TestHelpers))]
     public void Dispose_WhenCalled_ShouldZeroDeclaredField(FieldInfo field)
     {

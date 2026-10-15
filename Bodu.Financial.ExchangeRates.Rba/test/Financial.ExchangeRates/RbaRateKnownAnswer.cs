@@ -24,10 +24,22 @@ namespace Bodu.Financial.ExchangeRates;
 /// <see cref="Type" /> records why the row was chosen for its currency in the source workbook: the first, last,
 /// minimum, maximum, or median rate.
 /// </para>
+/// <para>
+/// The record is <see cref="SerializableAttribute">serializable</see> so that MSTest can write each row and run it as a
+/// test of its own; without that, MSTest folds every row into one test. It holds <see cref="Date" /> as a day number
+/// because the .NET 8 <c>DataContractJsonSerializer</c> writes a <see cref="DateOnly" /> as an empty object and reads it
+/// back as <see cref="DateOnly.MinValue" />, which a test run discovered separately would then query.
+/// </para>
 /// </remarks>
+[Serializable]
 public sealed record RbaRateKnownAnswer
     : IKat
 {
+    /// <summary>
+    /// The observation date's <see cref="DateOnly.DayNumber" />, which every serializer MSTest uses can write.
+    /// </summary>
+    private readonly int _dayNumber;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="RbaRateKnownAnswer" /> class.
     /// </summary>
@@ -42,7 +54,7 @@ public sealed record RbaRateKnownAnswer
     {
         SourceFileName = sourceFileName;
         Type = type;
-        Date = date;
+        _dayNumber = date.DayNumber;
         Currency = currency;
         ExpectedRate = expectedRate;
     }
@@ -63,7 +75,7 @@ public sealed record RbaRateKnownAnswer
     /// Gets the observation date.
     /// </summary>
     /// <value>The calendar date of the rate.</value>
-    public DateOnly Date { get; }
+    public DateOnly Date => DateOnly.FromDayNumber(_dayNumber);
 
     /// <summary>
     /// Gets the ISO 4217 code of the quote currency.
