@@ -181,7 +181,9 @@ and the first two have bitten:
   workflow and the NativeAOT smoke do the same (#1339). A Windows checkout converts every text file to
   CRLF line endings (`core.autocrlf=true`) except the ones `.gitattributes` pins to LF (`*.cs`,
   `*.csv`), and paths, file sharing and case sensitivity differ too, so a test that reads a fixture
-  byte for byte, or assumes a path separator, can pass on Linux and fail there.
+  byte for byte, or assumes a path separator, can pass on Linux and fail there. A working copy cloned
+  before a pin was added keeps its CRLF copies until they are rewritten; the release-note catalogue
+  tests then report "the line ends in CRLF", and `corpus/README.md` gives the commands that rewrite them.
 - **CI treats warnings as errors.** `build-test.yml` builds every test project, and then every sample,
   the maintenance generators under `tools/` (which `bodu.slnx` leaves out) and the docs project
   (`docs/doc.csproj`), with `-p:TreatWarningsAsErrors=true`, so any compiler or

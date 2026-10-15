@@ -27,6 +27,11 @@ namespace Bodu.Test.Corpus;
 /// <see cref="Problems" />, so a governance test can report them all at once. The checks cover the file's bytes, the
 /// header, the columns, and each row's class, kind, case, options, escapes, expectation and reason.
 /// </para>
+/// <para>
+/// A catalog whose lines end in a carriage return and a line feed, as a working copy cloned before
+/// <c>.gitattributes</c> pinned <c>*.csv</c> to line feeds holds it, is reported once with that cause and its remedy,
+/// and is otherwise read as its line-feed form, so the rows still load and the line endings are the one problem.
+/// </para>
 /// </remarks>
 public sealed class ReleaseNoteCatalog
 {
@@ -134,6 +139,15 @@ public sealed class ReleaseNoteCatalog
         CheckBytes(fileName, content, problems);
 
         string[] lines = Encoding.ASCII.GetString(content).Split('\n');
+
+        // CheckBytes reports a CRLF line ending once; dropping its carriage return reads each line as its line-feed
+        // form, so a stale Windows checkout reports its cause rather than a column line and rows that cannot be read.
+        for (int i = 0; i < lines.Length; i++)
+        {
+            if (lines[i].EndsWith('\r'))
+                lines[i] = lines[i][..^1];
+        }
+
         int count = lines.Length > 0 && lines[^1].Length == 0 ? lines.Length - 1 : lines.Length;
         int index = 0;
 
@@ -262,11 +276,16 @@ public sealed class ReleaseNoteCatalog
     /// <param name="fileName">The catalog's file name, for messages.</param>
     /// <param name="content">The catalog's bytes.</param>
     /// <param name="problems">Receives one message per problem found.</param>
+    /// <remarks>
+    /// A carriage return that ends a line is reported once, as a CRLF line ending with the remedy, and the scan
+    /// continues; any other byte outside printable ASCII is reported and ends the scan.
+    /// </remarks>
     private static void CheckBytes(string fileName, ReadOnlySpan<byte> content, List<string> problems)
     {
         if (content.IsEmpty || content[^1] != (byte)'\n')
             problems.Add($"{fileName}: the file does not end with a line feed");
 
+        bool lineEndingReported = false;
         int line = 1;
         for (int i = 0; i < content.Length; i++)
         {
@@ -274,6 +293,22 @@ public sealed class ReleaseNoteCatalog
             if (b == (byte)'\n')
             {
                 line++;
+                continue;
+            }
+
+            if (b == (byte)'\r' && i + 1 < content.Length && content[i + 1] == (byte)'\n')
+            {
+                // Git for Windows writes CRLF line endings for a text file no attribute pins, which is how a working
+                // copy cloned before .gitattributes pinned *.csv still holds its catalogs.
+                if (!lineEndingReported)
+                {
+                    problems.Add(
+                        $"{fileName}:{line}: the line ends in CRLF, not a line feed alone: this working copy predates the "
+                        + ".gitattributes rule that keeps *.csv at LF, so delete the .csv files and check them out again "
+                        + "(see corpus/README.md)");
+                    lineEndingReported = true;
+                }
+
                 continue;
             }
 

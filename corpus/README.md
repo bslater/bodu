@@ -91,6 +91,18 @@ A catalogue is UTF-8 holding only printable ASCII and line feeds. It opens with 
 `library,version,reference,summary,class,case,kind,options,input,expected,expectation,reason`.
 `.gitattributes` pins `*.csv` to `eol=lf`, so a checkout keeps the line feeds on every platform, Git for Windows'
 `core.autocrlf=true` included, and `ReleaseNoteCatalogTests` loads every catalogue as such a checkout writes it.
+A working copy cloned before that pin keeps CRLF copies until they are rewritten, and its catalogue tests then report
+"the line ends in CRLF". Delete the catalogues and check them out again, at the repository root:
+
+```powershell
+git ls-files '*.csv' | ForEach-Object { Remove-Item $_ }; git checkout -- '*.csv'   # PowerShell
+```
+
+```bash
+git ls-files -z '*.csv' | xargs -0 rm -f -- && git checkout -- '*.csv'                # bash
+```
+
+`git ls-files --eol -- '*.csv'` lists each file's line endings in the working copy (`w/crlf` or `w/lf`).
 
 | Column | Content |
 |---|---|
