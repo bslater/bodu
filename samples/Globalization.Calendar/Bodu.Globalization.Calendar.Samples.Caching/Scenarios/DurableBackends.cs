@@ -48,11 +48,11 @@ public static class DurableBackends
         {
             var sqliteEngine = new CountingNotableDateService(AsiaPacificCalendarData.CreateService("AU"));
 
-            // First service: cold, so the year is computed and written to the database file.
-            using (var first = new CachingNotableDateService(
-                sqliteEngine,
-                new SqliteNotableDateCache(databaseFile),
-                new NotableDateCachingOptions()))
+            // First service: cold, so the year is computed and written to the database file. The caller owns
+            // the cache (pass ownsCache: true to hand it to the service instead), and the cache holds its
+            // database file open until it is disposed, so each one gets its own using.
+            using (var firstCache = new SqliteNotableDateCache(databaseFile))
+            using (var first = new CachingNotableDateService(sqliteEngine, firstCache, new NotableDateCachingOptions()))
             {
                 var resolved = first.Resolve(year, "AU");
                 Console.WriteLine($"  SQLite  cold  : {resolved.Count,3} occurrences, engine resolutions = {sqliteEngine.RangeResolutions}"
@@ -60,10 +60,8 @@ public static class DurableBackends
             }
 
             // Second service over the SAME file, with the first one already disposed: the year survives.
-            using (var second = new CachingNotableDateService(
-                sqliteEngine,
-                new SqliteNotableDateCache(databaseFile),
-                new NotableDateCachingOptions()))
+            using (var secondCache = new SqliteNotableDateCache(databaseFile))
+            using (var second = new CachingNotableDateService(sqliteEngine, secondCache, new NotableDateCachingOptions()))
             {
                 var resolved = second.Resolve(year, "AU");
                 Console.WriteLine($"  SQLite  warm  : {resolved.Count,3} occurrences, engine resolutions = {sqliteEngine.RangeResolutions}"
