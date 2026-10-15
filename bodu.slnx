@@ -275,6 +275,7 @@
   <Folder Name="/Samples/Financial/">
     <Project Path="samples/Financial/Bodu.Financial.Samples.AggregatedRates/Bodu.Financial.Samples.AggregatedRates.csproj" />
     <Project Path="samples/Financial/Bodu.Financial.Samples.CachedRates/Bodu.Financial.Samples.CachedRates.csproj" />
+    <Project Path="samples/Financial/Bodu.Financial.Samples.CachedRates.Test/Bodu.Financial.Samples.CachedRates.Test.csproj" />
     <Project Path="samples/Financial/Bodu.Financial.Samples.CurrencyServices/Bodu.Financial.Samples.CurrencyServices.csproj" />
     <Project Path="samples/Financial/Bodu.Financial.Samples.CustomProvider.Test/Bodu.Financial.Samples.CustomProvider.Test.csproj" />
     <Project Path="samples/Financial/Bodu.Financial.Samples.CustomProvider/Bodu.Financial.Samples.CustomProvider.csproj" />
@@ -289,9 +290,8 @@
     <Project Path="samples/Formats.Outlook/Bodu.Formats.Outlook.Msg.Samples.MessageReading/Bodu.Formats.Outlook.Msg.Samples.MessageReading.csproj" />
   </Folder>
   <Folder Name="/Samples/Globalization.Calendar/">
-    <Project Path="samples/Globalization.Calendar/Bodu.Globalization.Calendar.Samples.Caching/Bodu.Globalization.Calendar.Samples.Caching.csproj">
-      <Build Solution="Debug|*" Project="false" />
-    </Project>
+    <Project Path="samples/Globalization.Calendar/Bodu.Globalization.Calendar.Samples.Caching.Test/Bodu.Globalization.Calendar.Samples.Caching.Test.csproj" />
+    <Project Path="samples/Globalization.Calendar/Bodu.Globalization.Calendar.Samples.Caching/Bodu.Globalization.Calendar.Samples.Caching.csproj" />
     <Project Path="samples/Globalization.Calendar/Bodu.Globalization.Calendar.Samples.CustomAlgorithm.Test/Bodu.Globalization.Calendar.Samples.CustomAlgorithm.Test.csproj" />
     <Project Path="samples/Globalization.Calendar/Bodu.Globalization.Calendar.Samples.CustomAlgorithm/Bodu.Globalization.Calendar.Samples.CustomAlgorithm.csproj" />
     <Project Path="samples/Globalization.Calendar/Bodu.Globalization.Calendar.Samples.CustomCalendar/Bodu.Globalization.Calendar.Samples.CustomCalendar.csproj" />

@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>$(BoduNetTargets)</TargetFrameworks>
+    <RootNamespace>Bodu.Financial.Samples.CachedRates</RootNamespace>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Bodu.Test\test\Bodu.Test.csproj" />
+    <ProjectReference Include="..\Bodu.Financial.Samples.CachedRates\Bodu.Financial.Samples.CachedRates.csproj" />
+  </ItemGroup>
+
+</Project>
