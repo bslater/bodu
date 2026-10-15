@@ -16,7 +16,7 @@ public sealed partial class TomlReleaseNoteCorpusTests
     /// the expected text, when the row gives it, and text that reads back to the same values as the input.
     /// </summary>
     /// <param name="fix">The catalog row.</param>
-    [TestMethod]
+    [TestMethod(UnfoldingStrategy = TestDataSourceUnfoldingStrategy.Unfold)]
     [TestCategory("Regression")]
     [Timeout(RowTimeout)]
     [DynamicData(
