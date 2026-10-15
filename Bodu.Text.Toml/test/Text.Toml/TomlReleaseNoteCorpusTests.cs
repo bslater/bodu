@@ -47,7 +47,12 @@ public sealed partial class TomlReleaseNoteCorpusTests
     private const string Area = "toml";
 
     /// <summary>The time, in milliseconds, that one row may run before it fails.</summary>
-    private const int RowTimeout = 10_000;
+    /// <remarks>
+    /// The limit catches a parser or writer that loops forever, not a slow one, so it leaves room for a Debug build under
+    /// an IDE's debugger, which can run a row many times slower than CI's Release build. Each row runs as its own test, so
+    /// a row that passes the limit fails alone.
+    /// </remarks>
+    private const int RowTimeout = 60_000;
 
     /// <summary>The option names a catalog row may use, each mapped by <see cref="RowOptions.Parse" />.</summary>
     private static readonly string[] s_optionNames = ["SpecVersion", "MaxDepth"];

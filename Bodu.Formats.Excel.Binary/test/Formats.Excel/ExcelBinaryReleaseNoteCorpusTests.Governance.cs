@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Reflection;
+
 using Bodu.Test.Corpus;
 
 namespace Bodu.Formats.Excel;
@@ -134,6 +136,26 @@ public sealed partial class ExcelBinaryReleaseNoteCorpusTests
     public void FixCatalogues_WhenComparedWithTheCorpusTree_ShouldMatchByteForByte()
     {
         CorpusTree.AssertEmbeddedCopiesMatch(typeof(ExcelBinaryReleaseNoteCorpusTests).Assembly, Area);
+    }
+
+    /// <summary>
+    /// Verifies that every method that runs catalog rows under <see cref="TimeoutAttribute" /> gives each row its own
+    /// test, so that a row that runs past the timeout fails alone: MSTest cancels the remaining rows of a folded
+    /// data-driven method once one of them times out.
+    /// </summary>
+    [TestMethod]
+    public void RowMethods_WhenRunUnderATimeout_ShouldUnfoldTheirRows()
+    {
+        MethodInfo[] timed = [.. typeof(ExcelBinaryReleaseNoteCorpusTests).GetMethods().Where(method => method.GetCustomAttribute<TimeoutAttribute>() is not null)];
+
+        Assert.IsNotEmpty(timed);
+        foreach (MethodInfo method in timed)
+        {
+            TestMethodAttribute? test = method.GetCustomAttribute<TestMethodAttribute>();
+
+            Assert.IsNotNull(test, $"{method.Name} is not a test method.");
+            Assert.AreEqual(TestDataSourceUnfoldingStrategy.Unfold, test.UnfoldingStrategy, $"{method.Name} folds its rows into one test.");
+        }
     }
 
     /// <summary>

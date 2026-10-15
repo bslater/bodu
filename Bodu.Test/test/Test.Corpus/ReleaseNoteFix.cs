@@ -30,6 +30,12 @@ namespace Bodu.Test.Corpus;
 /// Where the expected result comes from: <c>upstream</c>, <c>spec</c>, <c>derived</c> or <c>oracle:&lt;tool&gt;</c>.
 /// </param>
 /// <param name="Reason">Why the row has its class, citing its source.</param>
+/// <remarks>
+/// The row is <see cref="SerializableAttribute">serializable</see> because MSTest serializes a data-driven test's rows to
+/// give each its own test. A row that cannot be serialized is silently folded into one test with the others, and then a
+/// row that times out cancels every row after it.
+/// </remarks>
+[Serializable]
 public sealed record ReleaseNoteFix(
     string FileName,
     int LineNumber,

@@ -18,7 +18,7 @@ public sealed partial class ExcelBinaryReleaseNoteCorpusTests
     /// surface its row selects, with exactly the exception the row names.
     /// </summary>
     /// <param name="fix">The catalog row.</param>
-    [TestMethod]
+    [TestMethod(UnfoldingStrategy = TestDataSourceUnfoldingStrategy.Unfold)]
     [TestCategory("Regression")]
     [Timeout(RowTimeout)]
     [DynamicData(

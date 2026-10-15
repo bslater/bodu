@@ -41,7 +41,12 @@ public sealed partial class ExcelBinaryReleaseNoteCorpusTests
     private const string Area = "biff";
 
     /// <summary>The time, in milliseconds, that one row may run before it fails.</summary>
-    private const int RowTimeout = 10_000;
+    /// <remarks>
+    /// The limit catches a reader that loops forever, not a slow one, so it leaves room for a Debug build under an IDE's
+    /// debugger: the slowest row, an SST of 1,048,577 strings, runs in about 0.3 s in CI's Release build and about 1 s in
+    /// a Debug build. Each row runs as its own test, so a row that passes the limit fails alone.
+    /// </remarks>
+    private const int RowTimeout = 60_000;
 
     /// <summary>The option names a catalog row may use, each mapped by <see cref="RowOptions.Parse" />.</summary>
     private static readonly string[] s_optionNames = ["Surface", "Version", "Book", "Formats", "DetectDates"];
