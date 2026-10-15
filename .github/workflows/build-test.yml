@@ -213,12 +213,26 @@ jobs:
           # legs, and the step above has compiled both, so running each sample twice
           # would double the step's wall-clock for no additional signal. --no-build runs what that
           # step compiled.
+          #
+          # A failing sample does not end the step: every sample runs, each failure is reported, and
+          # the step fails at the end, so one failing sample cannot hide the ones after it (#1344).
+          failed=()
           for proj in $projects; do
             name=$(basename "$proj" .csproj)
             echo "::group::Run $name"
-            dotnet run --project "$proj" --configuration Release --framework net10.0 --no-build
+            rc=0
+            dotnet run --project "$proj" --configuration Release --framework net10.0 --no-build || rc=$?
             echo "::endgroup::"
+            if [ "$rc" -ne 0 ]; then
+              echo "::error::Sample $name exited with code $rc"
+              failed+=("$name")
+            fi
           done
+
+          if [ "${#failed[@]}" -gt 0 ]; then
+            echo "::error::${#failed[@]} sample(s) failed: ${failed[*]}" >&2
+            exit 1
+          fi
 
       - name: Upload TRX artifact
         if: always()
