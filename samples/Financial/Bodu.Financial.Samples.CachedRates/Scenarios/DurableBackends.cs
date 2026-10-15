@@ -50,10 +50,10 @@ public static class DurableBackends
         {
             var sqliteSource = new CountingRateProvider(StaticRates.LoadAudDaily());
 
-            using (var first = new CachingRateProvider(
-                sqliteSource,
-                new SqliteRateCache(StaticRates.ProviderName, databaseFile),
-                new CachingRateOptions()))
+            // The caller owns the cache: CachingRateProvider leaves it open when it is disposed, and the cache
+            // holds its database file open until it is disposed itself, so each one gets its own using.
+            using (var firstCache = new SqliteRateCache(StaticRates.ProviderName, databaseFile))
+            using (var first = new CachingRateProvider(sqliteSource, firstCache, new CachingRateOptions()))
             {
                 var result = first.GetRate("AUD", "USD", date);
                 Console.WriteLine($"  SQLite  cold  : AUD/USD {result.Rate.Rate,-10:0.######} source calls = {sqliteSource.CallCount}"
@@ -61,10 +61,8 @@ public static class DurableBackends
             }
 
             // A second provider over the same file, with the first disposed: the row is still there.
-            using (var second = new CachingRateProvider(
-                sqliteSource,
-                new SqliteRateCache(StaticRates.ProviderName, databaseFile),
-                new CachingRateOptions()))
+            using (var secondCache = new SqliteRateCache(StaticRates.ProviderName, databaseFile))
+            using (var second = new CachingRateProvider(sqliteSource, secondCache, new CachingRateOptions()))
             {
                 var result = second.GetRate("AUD", "USD", date);
                 Console.WriteLine($"  SQLite  warm  : AUD/USD {result.Rate.Rate,-10:0.######} source calls = {sqliteSource.CallCount}"
