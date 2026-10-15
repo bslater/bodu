@@ -146,6 +146,55 @@ public sealed partial class ReleaseNoteCatalogTests
     }
 
     /// <summary>
+    /// Verifies that a catalog whose lines end in a carriage return and a line feed, as a checkout made before
+    /// <c>.gitattributes</c> pinned <c>*.csv</c> to line feeds writes it, is reported once, at its first line, with
+    /// the cause and the remedy named.
+    /// </summary>
+    [TestMethod]
+    public void Load_WhenLinesEndInCarriageReturnLineFeed_ShouldReportOneProblemNamingTheCause()
+    {
+        byte[] content = WithCarriageReturns(Catalog(ValidRow));
+
+        ReleaseNoteCatalog catalog = ReleaseNoteCatalog.Load("sample-fixes.csv", content);
+
+        AssertSingleProblem(catalog, "CRLF");
+        Assert.StartsWith("sample-fixes.csv:1: ", catalog.Problems[0]);
+        Assert.Contains("corpus/README.md", catalog.Problems[0]);
+    }
+
+    /// <summary>
+    /// Verifies that a catalog whose lines end in a carriage return and a line feed reads the same header lines and
+    /// rows as its line-feed form, so the line endings are the only problem reported and the rows' tests still run.
+    /// </summary>
+    [TestMethod]
+    public void Load_WhenLinesEndInCarriageReturnLineFeed_ShouldReadTheSameHeaderAndRows()
+    {
+        byte[] lineFeeds = Catalog(ValidRow, "sample,0.9.0,,\"Quote a \"\"field\"\", with a comma\",n/a,,,,,,,packaging");
+        ReleaseNoteCatalog expected = ReleaseNoteCatalog.Load("sample-fixes.csv", lineFeeds);
+
+        ReleaseNoteCatalog catalog = ReleaseNoteCatalog.Load("sample-fixes.csv", WithCarriageReturns(lineFeeds));
+
+        CollectionAssert.AreEqual(expected.HeaderLines.ToList(), catalog.HeaderLines.ToList());
+        CollectionAssert.AreEqual(expected.Rows.ToList(), catalog.Rows.ToList());
+    }
+
+    /// <summary>
+    /// Verifies that a catalog with line endings of a carriage return and a line feed still reports a byte outside
+    /// printable ASCII elsewhere in it, as well as the line endings.
+    /// </summary>
+    [TestMethod]
+    public void Load_WhenLinesEndInCarriageReturnLineFeedAndAByteIsNotPrintable_ShouldReportBoth()
+    {
+        byte[] content = WithCarriageReturns(Catalog(ValidRow));
+        content[^6] = 0x7F;
+
+        ReleaseNoteCatalog catalog = ReleaseNoteCatalog.Load("sample-fixes.csv", content);
+
+        Assert.IsTrue(catalog.Problems.Any(problem => problem.Contains("CRLF", StringComparison.Ordinal)), string.Join(Environment.NewLine, catalog.Problems));
+        Assert.IsTrue(catalog.Problems.Any(problem => problem.StartsWith("sample-fixes.csv:5: ", StringComparison.Ordinal) && problem.Contains("0x7F", StringComparison.Ordinal)), string.Join(Environment.NewLine, catalog.Problems));
+    }
+
+    /// <summary>
     /// Verifies that a missing required header line is reported.
     /// </summary>
     [TestMethod]

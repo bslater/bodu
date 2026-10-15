@@ -75,7 +75,9 @@ Some code runs only on ARM64, and CI runs the cryptography tests on ARM64 runner
 Windows; on x64 those tests report inconclusive. CI also runs every test on Windows x64 as well as Linux,
 so a test that depends on line endings, path separators or file sharing fails there if it is not
 portable: a Windows checkout gives every text file CRLF line endings unless `.gitattributes` pins it to
-LF.
+LF. A working copy cloned before a pin was added keeps its CRLF copies until they are rewritten; the
+release-note catalogue tests then report "the line ends in CRLF", and `corpus/README.md` gives the
+commands that rewrite them.
 
 If you restore and build as separate steps, pass the same configuration to both
 (`dotnet restore bodu.slnx -p:Configuration=Release`): a few projects, such as the benchmarks, are
